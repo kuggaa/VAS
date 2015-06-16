@@ -17,12 +17,13 @@
 //
 using System;
 using System.Collections.Generic;
+using LongoMatch.Core.Common;
 
 namespace LongoMatch.DB.Views
 {
 	public interface IQueryView<T>
 	{
-		List<T> Query (Dictionary<string, object> filter);
+		List<T> Query (QueryFilter filter);
 	}
 
 }
