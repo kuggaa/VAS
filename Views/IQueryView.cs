@@ -18,12 +18,15 @@
 using System;
 using System.Collections.Generic;
 using LongoMatch.Core.Common;
+using LongoMatch.Core.Interfaces;
 
 namespace LongoMatch.DB.Views
 {
 	public interface IQueryView<T>
 	{
 		IEnumerable<T> Query (QueryFilter filter);
+
+		IEnumerable<T> QueryFull (QueryFilter filter, IStorableObjectsCache cache);
 	}
 
 }
