@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using Couchbase.Lite;
 using LongoMatch.Core.Store;
 
-namespace LongoMatch.DB.Views
+namespace VAS.DB.Views
 {
 	public class PlayersView: GenericView <Player>
 	{

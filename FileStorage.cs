@@ -23,7 +23,7 @@ using LongoMatch.Core.Migration;
 using LongoMatch.Core.Store;
 using LongoMatch.Core.Store.Templates;
 
-namespace LongoMatch.DB
+namespace VAS.DB
 {
 	public static class FileStorage
 	{

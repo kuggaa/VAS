@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using Couchbase.Lite;
 using LongoMatch.Core.Store.Templates;
 
-namespace LongoMatch.DB.Views
+namespace VAS.DB.Views
 {
 	public class DashboardsView: GenericView <Dashboard>
 	{

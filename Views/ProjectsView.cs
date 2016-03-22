@@ -22,7 +22,7 @@ using LongoMatch.Core.Store;
 using Newtonsoft.Json.Linq;
 using System.Collections.Specialized;
 
-namespace LongoMatch.DB.Views
+namespace VAS.DB.Views
 {
 	public class ProjectsView: GenericView <Project>
 	{

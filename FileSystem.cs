@@ -22,7 +22,7 @@ using ICSharpCode.SharpZipLib.VirtualFileSystem;
 using VFileAttributes = ICSharpCode.SharpZipLib.VirtualFileSystem.FileAttributes;
 using System.IO;
 
-namespace LongoMatch.DB
+namespace VAS.DB
 {
 	class FileSystem : IVirtualFileSystem
 	{

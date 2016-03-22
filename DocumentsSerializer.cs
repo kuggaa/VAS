@@ -30,7 +30,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
-namespace LongoMatch.DB
+namespace VAS.DB
 {
 	static class DocumentsSerializer
 	{

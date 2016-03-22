@@ -19,7 +19,7 @@ using System;
 using LongoMatch.Core.Store;
 using LongoMatch.Core.Store.Templates;
 
-namespace LongoMatch.DB.Views
+namespace VAS.DB.Views
 {
 	public class EventTypeView:  GenericView <EventType>
 	{

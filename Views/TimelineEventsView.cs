@@ -23,7 +23,7 @@ using Couchbase.Lite;
 using LongoMatch.Core.Store;
 using Newtonsoft.Json.Linq;
 
-namespace LongoMatch.DB.Views
+namespace VAS.DB.Views
 {
 	public class TimelineEventsView: GenericView <TimelineEvent>
 	{

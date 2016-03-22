@@ -27,7 +27,7 @@ using LongoMatch.Core.Serialization;
 using LongoMatch.Core.Store;
 using Newtonsoft.Json.Linq;
 
-namespace LongoMatch.DB.Views
+namespace VAS.DB.Views
 {
 	/// <summary>
 	/// Generic View for the Couchbase database that indexes properties with

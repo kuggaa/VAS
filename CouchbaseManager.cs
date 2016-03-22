@@ -21,10 +21,11 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Couchbase.Lite;
+using LongoMatch;
 using LongoMatch.Core.Common;
 using LongoMatch.Core.Interfaces;
 
-namespace LongoMatch.DB
+namespace VAS.DB
 {
 	public class CouchbaseManager: IStorageManager
 	{

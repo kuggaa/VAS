@@ -20,7 +20,7 @@ using LongoMatch.Core.Interfaces;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace LongoMatch.DB
+namespace VAS.DB
 {
 	public abstract class ObjectsCache<T, W>
 	{
@@ -95,7 +95,7 @@ namespace LongoMatch.DB
 	{
 		public override Guid GetReference (IStorable obj)
 		{
-			return obj != null ? obj.ID: Guid.Empty;
+			return obj != null ? obj.ID : Guid.Empty;
 		}
 	}
 }

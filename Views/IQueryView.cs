@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using LongoMatch.Core.Filters;
 using LongoMatch.Core.Interfaces;
 
-namespace LongoMatch.DB.Views
+namespace VAS.DB.Views
 {
 	public interface IQueryView<T>
 	{

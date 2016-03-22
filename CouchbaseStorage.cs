@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using Couchbase.Lite;
+using LongoMatch;
 using LongoMatch.Core;
 using LongoMatch.Core.Common;
 using LongoMatch.Core.Filters;
@@ -25,14 +26,15 @@ using LongoMatch.Core.Interfaces;
 using LongoMatch.Core.Serialization;
 using LongoMatch.Core.Store;
 using LongoMatch.Core.Store.Templates;
-using LongoMatch.DB.Views;
+using VAS.DB.Views;
 using System.Linq;
 using System.IO;
 using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib;
+using VAS.DB;
 
-namespace LongoMatch.DB
+namespace VAS.DB
 {
 	public class CouchbaseStorage: IStorage
 	{

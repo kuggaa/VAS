@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace LongoMatch.DB
+namespace VAS.DB
 {
 	public class SerializationContext
 	{
