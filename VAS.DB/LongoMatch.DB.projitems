@@ -11,9 +11,6 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CouchbaseStorage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DocumentsSerializer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)..\AssemblyInfo\AssemblyInfo.cs">
-      <Link>AssemblyInfo.cs</Link>
-    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)SerializationContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ObjectsCache.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TimelineEventsView.cs" />
@@ -28,5 +25,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Views\EventTypeView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Migration\DatabaseMigration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FileSystem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Properties\AssemblyInfo.cs" />
   </ItemGroup>
 </Project>
