@@ -6,7 +6,7 @@
     <SharedGUID>{D6E928F2-1BAA-4D67-BD81-B549E9B89E83}</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>LongoMatch.DB</Import_RootNamespace>
+    <Import_RootNamespace>VAS.DB</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CouchbaseStorage.cs" />
