@@ -20,12 +20,11 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using Couchbase.Lite;
-using LongoMatch.Core.Common;
-using LongoMatch.Core.Filters;
-using LongoMatch.Core.Interfaces;
-using LongoMatch.Core.Serialization;
-using LongoMatch.Core.Store;
 using Newtonsoft.Json.Linq;
+using VAS.Core.Common;
+using VAS.Core.Filters;
+using VAS.Core.Interfaces;
+using VAS.Core.Serialization;
 
 namespace VAS.DB.Views
 {

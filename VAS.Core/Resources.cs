@@ -15,23 +15,16 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
-using System.Collections.Generic;
-using Couchbase.Lite;
-using LongoMatch.Core.Store.Templates;
+using System.IO;
+using VAS.Core.Common;
 
-namespace VAS.DB.Views
+namespace VAS.Core
 {
-	public class TeamsView: GenericView <Team>
+	public static class Resources
 	{
-		public TeamsView (CouchbaseStorage storage) : base (storage)
+		public static Image LoadImage (string name)
 		{
-		}
-
-		protected override string ViewVersion {
-			get {
-				return "1";
-			}
+			return new Image (Path.Combine (Config.dataDir, name));
 		}
 	}
 }

@@ -20,20 +20,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Couchbase.Lite;
-using LongoMatch.Core.Common;
-using LongoMatch.Core.Interfaces;
-using LongoMatch.Core.Serialization;
-using LongoMatch.Core.Store;
-using LongoMatch.Core.Store.Templates;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
+using VAS.Core.Common;
+using VAS.Core.Interfaces;
+using VAS.Core.Serialization;
+using VAS.Core.Store;
 
 namespace VAS.DB
 {
-	static class DocumentsSerializer
+	public static class DocumentsSerializerHelper
 	{
+		static DocumentsSerializerHelper ()
+		{
+			TypeTranslation = new Dictionary<Type, Type> ();
+		}
+
+		internal static Dictionary<Type,Type> TypeTranslation {
+			get;
+			set;
+		}
+
+		public static void AddTypeTranslation(Type fromType, Type toType)
+		{
+			if (TypeTranslation.ContainsKey (fromType)) {
+				TypeTranslation [fromType] = toType;
+			} else {
+				TypeTranslation.Add (fromType, toType);				
+			}
+		}
+	}
+
+	public static class DocumentsSerializer
+	{
+
 		public const string DOC_TYPE = "DocType";
 		public const string OBJ_TYPE = "ObjType";
 		public const string PARENT_PROPNAME = "Parent";
@@ -101,7 +123,7 @@ namespace VAS.DB
 			// to read IStorable children and add them to the cache. But to prevent slowing down deserialization
 			// we use this temporal hack for projects.
 			if (storable is Project) {
-				context.Cache.AddReference ((storable as Project).Description.FileSet);
+				context.Cache.AddReference ((storable as Project).FileSet);
 			}
 
 			context.ContractResolver = new StorablesStackContractResolver (context, storable, true);
@@ -130,7 +152,7 @@ namespace VAS.DB
 		/// </summary>
 		/// <returns>The object id.</returns>
 		/// <param name="id">The document id.</param>
-		internal static string IDStringFromString (string id)
+		public static string IDStringFromString (string id)
 		{
 			if (id == null) {
 				return id;
@@ -309,12 +331,14 @@ namespace VAS.DB
 		{
 			Type type;
 
+			if (DocumentsSerializerHelper.TypeTranslation.ContainsKey (storable.GetType ())) {
+				return DocumentsSerializerHelper.TypeTranslation [storable.GetType ()].Name;
+			}
+
 			if (storable is EventType) {
 				type = typeof(EventType);
 			} else if (storable is TimelineEvent) {
 				type = typeof(TimelineEvent);
-			} else if (storable is TeamTemplate) {
-				type = typeof(Team);
 			} else if (storable is Timer) {
 				type = typeof(Timer);
 			} else {

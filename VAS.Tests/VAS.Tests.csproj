@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4ECD63CF-7153-4BCF-83D4-66E543CF3E8F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>VAS.Tests</RootNamespace>
+    <AssemblyName>VAS.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\oneplay-longomatch\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLitePCL.raw">
+      <HintPath>..\..\oneplay-longomatch\packages\SQLitePCL.raw.0.8.3\lib\net45\SQLitePCL.raw.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLitePCL.ugly">
+      <HintPath>..\..\oneplay-longomatch\packages\SQLitePCL.ugly.0.8.3\lib\portable-net45+netcore45+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\SQLitePCL.ugly.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib.Portable">
+      <HintPath>..\..\oneplay-longomatch\packages\SharpZipLib.Portable.0.86.0.0003\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid+Xamarin.iOS10\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
+    </Reference>
+    <Reference Include="Stateless">
+      <HintPath>..\..\oneplay-longomatch\packages\Stateless.2.5.21.0\lib\portable-net40+sl50+win+wp80\Stateless.dll</HintPath>
+    </Reference>
+    <Reference Include="Couchbase.Lite">
+      <HintPath>..\..\oneplay-longomatch\packages\Couchbase.Lite.LM.1.1.2.0\lib\net45\Couchbase.Lite.dll</HintPath>
+    </Reference>
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Moq">
+      <HintPath>..\..\oneplay-longomatch\packages\Moq.4.2.1506.2016\lib\net40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq, Version=4.2.1308.2321, Culture=neutral, PublicKeyToken=69f491c39445e920">
+      <Package>moq</Package>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Test.cs" />
+    <Compile Include="Core\TestResources.cs" />
+    <Compile Include="Core\Common\TestCloner.cs" />
+    <Compile Include="Core\Common\TestColor.cs" />
+    <Compile Include="Core\Common\TestDirectoryMonitor.cs" />
+    <Compile Include="Core\Common\TestExtensions.cs" />
+    <Compile Include="Core\Common\TestImage.cs" />
+    <Compile Include="DB\TestDatabaseManager.cs" />
+    <Compile Include="DB\TestStorage.cs" />
+    <Compile Include="DB\TestViews.cs" />
+    <Compile Include="Core\Filters\TestQueryFilter.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="Core\Serialization\TestObjectChangedParser.cs" />
+    <Compile Include="Core\Store\Drawables\TestAngle.cs" />
+    <Compile Include="Core\Store\Drawables\TestEllipse.cs" />
+    <Compile Include="Core\Store\Drawables\TestLine.cs" />
+    <Compile Include="Core\Store\Drawables\TestMultipoints.cs" />
+    <Compile Include="Core\Store\Drawables\TestQuadrilateral.cs" />
+    <Compile Include="Core\Store\Drawables\TestRectangle.cs" />
+    <Compile Include="Core\Store\Drawables\TestDrawable.cs" />
+    <Compile Include="Core\Store\Drawables\TestText.cs" />
+    <Compile Include="Core\Store\Drawables\TestCircle.cs" />
+    <Compile Include="Core\Store\Drawables\TestCross.cs" />
+    <Compile Include="Core\Store\Drawables\TestCounter.cs" />
+    <Compile Include="Core\Store\Playlists\TestPlaylist.cs" />
+    <Compile Include="Core\Store\Playlists\TestPlaylistPlayElement.cs" />
+    <Compile Include="Core\Store\Templates\TestDashboard.cs" />
+    <Compile Include="Core\Store\TestActionLink.cs" />
+    <Compile Include="Core\Store\TestCoordinates.cs" />
+    <Compile Include="Core\Store\TestDashboardButton.cs" />
+    <Compile Include="Core\Store\TestEventType.cs" />
+    <Compile Include="Core\Store\TestFrameDrawing.cs" />
+    <Compile Include="Core\Store\TestHotkey.cs" />
+    <Compile Include="Core\Store\TestMediaFile.cs" />
+    <Compile Include="Core\Store\TestMediaFileSet.cs" />
+    <Compile Include="Core\Store\TestPlayer.cs" />
+    <Compile Include="Core\Store\TestPoint.cs" />
+    <Compile Include="Core\Store\TestProject.cs" />
+    <Compile Include="Core\Store\TestTag.cs" />
+    <Compile Include="Core\Store\TestTime.cs" />
+    <Compile Include="Core\Store\TestTimelineEvent.cs" />
+    <Compile Include="Core\Store\TestTimeNode.cs" />
+    <Compile Include="Core\Store\TestTimer.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="data\longomatch-dark-bg.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\longomatch.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VAS.DB\VAS.DB.Net45.csproj">
+      <Project>{EC395325-994F-47F6-8FC2-AC17EC452EDA}</Project>
+      <Name>VAS.DB.Net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VAS.Core\VAS.Core.Net45.csproj">
+      <Project>{08AE7734-B995-4E0D-AD8F-38F597E0D4DF}</Project>
+      <Name>VAS.Core.Net45</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Core\" />
+    <Folder Include="data\" />
+    <Folder Include="Core\Common\" />
+    <Folder Include="Core\Filters\" />
+    <Folder Include="Core\Store\" />
+    <Folder Include="Core\Store\Drawables\" />
+    <Folder Include="Core\Serialization\" />
+    <Folder Include="Core\Store\Playlists\" />
+    <Folder Include="Core\Store\Templates\" />
+    <Folder Include="DB\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Core\dibujo.svg">
+      <LogicalName>dibujo.svg</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

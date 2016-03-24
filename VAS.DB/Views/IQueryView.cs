@@ -15,10 +15,9 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using System.Collections.Generic;
-using LongoMatch.Core.Filters;
-using LongoMatch.Core.Interfaces;
+using VAS.Core.Filters;
+using VAS.Core.Interfaces;
 
 namespace VAS.DB.Views
 {

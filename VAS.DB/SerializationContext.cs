@@ -17,10 +17,10 @@
 //
 using System;
 using Couchbase.Lite;
-using LongoMatch.Core.Interfaces;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using VAS.Core.Interfaces;
 
 namespace VAS.DB
 {

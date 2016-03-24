@@ -17,22 +17,21 @@
 //
 using System;
 using System.Collections.Generic;
-using Couchbase.Lite;
-using LongoMatch;
-using LongoMatch.Core;
-using LongoMatch.Core.Common;
-using LongoMatch.Core.Filters;
-using LongoMatch.Core.Interfaces;
-using LongoMatch.Core.Serialization;
-using LongoMatch.Core.Store;
-using LongoMatch.Core.Store.Templates;
-using VAS.DB.Views;
-using System.Linq;
 using System.IO;
-using ICSharpCode.SharpZipLib.Tar;
-using ICSharpCode.SharpZipLib.GZip;
+using System.Linq;
+using Couchbase.Lite;
 using ICSharpCode.SharpZipLib;
+using ICSharpCode.SharpZipLib.GZip;
+using ICSharpCode.SharpZipLib.Tar;
+using VAS.Core;
+using VAS.Core.Common;
+using VAS.Core.Filters;
+using VAS.Core.Interfaces;
+using VAS.Core.Serialization;
+using VAS.Core.Store;
+using VAS.Core.Store.Templates;
 using VAS.DB;
+using VAS.DB.Views;
 
 namespace VAS.DB
 {
@@ -327,11 +326,10 @@ namespace VAS.DB
 			}
 		}
 
-		void InitializeViews ()
+		protected virtual void InitializeViews ()
 		{
 			views = new Dictionary <Type, object> ();
 			AddView (typeof(Dashboard), new DashboardsView (this));
-			AddView (typeof(Team), new TeamsView (this));
 			AddView (typeof(Project), new ProjectsView (this));
 			AddView (typeof(Player), new PlayersView (this));
 			AddView (typeof(TimelineEvent), new TimelineEventsView (this));
