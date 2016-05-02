@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+
 //using LongoMatch.Core.Store;
 //using LongoMatch.Core.Store.Templates;
 using NUnit.Framework;
@@ -28,6 +29,7 @@ using VAS.Core.Serialization;
 using VAS.Core.Store;
 using VAS.Core.Store.Templates;
 using System.Collections.ObjectModel;
+using VAS.Services;
 
 namespace VAS.Tests
 {
@@ -86,6 +88,31 @@ namespace VAS.Tests
 
 			#endregion
 		}
+
+		public class PlaylistManagerDummy : PlaylistManagerBase
+		{
+			#region implemented abstract members of PlaylistManagerBase
+
+			protected override void HandleLoadPlayEvent (TimelineEvent play)
+			{
+				if (OpenedProject == null || OpenedProjectType == ProjectType.FakeCaptureProject) {
+					return;
+				}
+				if (play != null) {
+					LoadPlay (play as TimelineEvent, new Time (0), true);
+				} else if (Player != null) {
+					Player.UnloadCurrentEvent ();
+				}
+				Config.EventsBroker.EmitEventLoaded (play as TimelineEvent);
+			}
+
+			protected override void HandleKeyPressed (object sender, HotKey key)
+			{
+			}
+
+			#endregion
+		}
+
 
 
 		static bool debugLine = false;
