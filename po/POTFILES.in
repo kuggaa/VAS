@@ -1,0 +1,9 @@
+VAS.Core/Common/Device.cs
+VAS.Core/Common/Exceptions.cs
+VAS.Core/Common/VideoStandards.cs
+VAS.Core/Store/EventType.cs
+VAS.Core/Store/HotKey.cs
+VAS.Core/Store/MediaFileSet.cs
+VAS.Core/Store/Project.cs
+VAS.Core/Store/Templates/Dashboard.cs
+VAS.DB/CouchbaseStorage.cs
