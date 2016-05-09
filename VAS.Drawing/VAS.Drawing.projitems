@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>{4041429C-9260-473E-93DB-E6B5389B7115}</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>VAS.Drawing</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Widgets\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Widgets\Blackboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BackgroundCanvas.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SelectionCanvas.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Canvas.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\CanvasObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils.cs" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2F6513F2-B52E-4903-9B37-8BF84FE7DBC2}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>VAS.UI</RootNamespace>
+    <AssemblyName>VAS.UI</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="UI\" />
+    <Folder Include="UI\Component\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="UI\Component\TimelineBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VAS.Core\VAS.Core.Net45.csproj">
+      <Project>{08AE7734-B995-4E0D-AD8F-38F597E0D4DF}</Project>
+      <Name>VAS.Core.Net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VAS.Drawing.Cairo\VAS.Drawing.Cairo.csproj">
+      <Project>{AE98609B-353C-4CE4-A5B7-606BB4EE3576}</Project>
+      <Name>VAS.Drawing.Cairo</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+  </ItemGroup>
+</Project>
