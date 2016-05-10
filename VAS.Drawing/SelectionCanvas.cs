@@ -2,7 +2,6 @@
 //  Copyright (C) 2015 Fluendo S.A.
 //
 //
-
 using System;
 using System.Collections.Generic;
 using System.Linq;

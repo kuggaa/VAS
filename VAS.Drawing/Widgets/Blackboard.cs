@@ -22,7 +22,6 @@ using VAS.Core.Handlers;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
-using VAS.Core.Store;
 
 namespace VAS.Drawing.Widgets
 {

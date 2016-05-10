@@ -2,10 +2,9 @@
 //  Copyright (C) 2015 Fluendo S.A.
 //
 //
-
 using System;
-using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Common;
+using VAS.Core.Interfaces.Drawing;
 
 namespace VAS.Drawing
 {
