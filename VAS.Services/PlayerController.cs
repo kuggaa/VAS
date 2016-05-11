@@ -637,6 +637,7 @@ namespace VAS.Services
 				Log.Error ("Event does not have timing info: " + evt);
 			}
 			EmitElementLoaded (evt, false);
+			Config.EventsBroker.EmitEventLoaded (evt);
 		}
 
 		public virtual void UnloadCurrentEvent ()
@@ -742,6 +743,7 @@ namespace VAS.Services
 		protected virtual void EmitEventUnloaded ()
 		{
 			EmitElementLoaded (null, false);
+			Config.EventsBroker.EmitEventLoaded (null);
 		}
 
 		protected virtual void EmitRateChanged (float rate)

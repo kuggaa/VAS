@@ -843,7 +843,15 @@ namespace VAS.Tests.Services
 		public void TestUnloadEvent ()
 		{
 			int elementLoaded = 0;
+			int brokerElementLoaded = 0;
 			PreparePlayer ();
+			Config.EventsBroker.EventLoadedEvent += (evt) => {
+				if (evt == null) {
+					brokerElementLoaded--;
+				} else {
+					brokerElementLoaded++;
+				}
+			};
 			player.ElementLoadedEvent += (element, hasNext) => {
 				if (element == null) {
 					elementLoaded--;
@@ -854,10 +862,12 @@ namespace VAS.Tests.Services
 			// Load
 			player.LoadEvent (evt, new Time (0), true);
 			Assert.AreEqual (1, elementLoaded);
+			Assert.AreEqual (1, brokerElementLoaded);
 			Assert.AreEqual (evt.CamerasConfig, player.CamerasConfig);
 			// Unload
 			player.UnloadCurrentEvent ();
 			Assert.AreEqual (0, elementLoaded);
+			Assert.AreEqual (0, brokerElementLoaded);
 			// Check that cameras have been restored
 			Assert.AreEqual (new List<CameraConfig> { new CameraConfig (0), new CameraConfig (1) }, player.CamerasConfig);
 
@@ -869,10 +879,12 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (evt.CamerasConfig, new List <CameraConfig> { new CameraConfig (0) });
 			player.LoadEvent (evt, new Time (0), true);
 			Assert.AreEqual (1, elementLoaded);
+			Assert.AreEqual (1, brokerElementLoaded);
 			Assert.AreEqual (evt.CamerasConfig, player.CamerasConfig);
 			/* And unload */
 			player.UnloadCurrentEvent ();
 			Assert.AreEqual (0, elementLoaded);
+			Assert.AreEqual (0, brokerElementLoaded);
 			// Check that cameras have been restored
 			Assert.AreEqual (new List<CameraConfig> { new CameraConfig (2), new CameraConfig (3) }, player.CamerasConfig);
 		}
@@ -915,8 +927,14 @@ namespace VAS.Tests.Services
 		public void TestLoadEvent ()
 		{
 			int elementLoaded = 0;
+			int brokerElementLoaded = 0;
 			int prepareView = 0;
 
+			Config.EventsBroker.EventLoadedEvent += (evt) => {
+				if (evt != null) {
+					brokerElementLoaded++;
+				}
+			};
 			player.ElementLoadedEvent += (element, hasNext) => {
 				if (element != null) {
 					elementLoaded++;
@@ -942,12 +960,14 @@ namespace VAS.Tests.Services
 
 			player.Ready ();
 			Assert.AreEqual (1, elementLoaded);
+			Assert.AreEqual (1, brokerElementLoaded);
 			Assert.AreEqual (mfs, player.FileSet);
 
 			player.LoadEvent (evt, new Time (0), true);
 			Assert.AreEqual (mfs, player.FileSet);
 			Assert.IsFalse (player.Playing);
 			Assert.AreEqual (2, elementLoaded);
+			Assert.AreEqual (2, brokerElementLoaded);
 			playerMock.Verify (p => p.Seek (It.IsAny<Time> (), It.IsAny<bool> (), It.IsAny<bool> ()), Times.Never ());
 
 
@@ -960,7 +980,8 @@ namespace VAS.Tests.Services
 			playerMock.Verify (p => p.Play (false), Times.Once ());
 			playerMock.VerifySet (p => p.Rate = 1);
 			Assert.AreEqual (2, elementLoaded);
-			elementLoaded = 0;
+			Assert.AreEqual (2, brokerElementLoaded);
+			elementLoaded = brokerElementLoaded = 0;
 			playerMock.ResetCalls ();
 
 			/* Open with a new MediaFileSet and also check seekTime and playing values*/
@@ -969,7 +990,8 @@ namespace VAS.Tests.Services
 			evt.FileSet = nfs;
 			player.LoadEvent (evt, evt.Duration, false);
 			Assert.AreEqual (1, elementLoaded);
-			elementLoaded = 0;
+			Assert.AreEqual (1, brokerElementLoaded);
+			elementLoaded = brokerElementLoaded = 0;
 			Assert.IsTrue (nfs.Equals (player.FileSet));
 			Assert.AreEqual (nfs, player.FileSet);
 			playerMock.Verify (p => p.Open (nfs [0]));
@@ -992,7 +1014,8 @@ namespace VAS.Tests.Services
 			};
 			player.LoadEvent (evt2, new Time (0), true);
 			Assert.AreEqual (1, elementLoaded);
-			elementLoaded = 0;
+			Assert.AreEqual (1, brokerElementLoaded);
+			elementLoaded = brokerElementLoaded = 0;
 			playerMock.Verify (p => p.Open (nfs [0]), Times.Never ());
 			playerMock.Verify (p => p.Seek (evt2.Start, true, false), Times.Once ());
 			playerMock.Verify (p => p.Play (false), Times.Once ());
@@ -1000,7 +1023,6 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (evt2.CamerasConfig, player.CamerasConfig);
 			Assert.AreEqual (evt2.CamerasLayout, player.CamerasLayout);
 			playerMock.ResetCalls ();
-
 		}
 
 		[Test ()]
