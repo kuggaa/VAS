@@ -98,6 +98,8 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\PropertyIndex.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\PropertyPreload.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Events\EventsAggregator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Events\EventTypes.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
@@ -109,5 +111,6 @@
     <Folder Include="$(MSBuildThisFileDirectory)Store\" />
     <Folder Include="$(MSBuildThisFileDirectory)Store\Drawables\" />
     <Folder Include="$(MSBuildThisFileDirectory)Store\Templates\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Events\" />
   </ItemGroup>
 </Project>
