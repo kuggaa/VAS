@@ -401,6 +401,8 @@ namespace VAS.Core.Common
 		None
 	}
 
+	// FIXME: VAS doesn't have Seasons or Competitions, that should go to LongoMatch
+	// FIXME: This should be more extensible: some way to allow the final application to add elements.
 	public enum ProjectSortMethod
 	{
 		Name,

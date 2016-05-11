@@ -24,19 +24,6 @@ namespace VAS.Tests.Core.Common
 	[TestFixture ()]
 	public class TestColor
 	{
-		//		[Test ()]
-		//		public void TestSerialization ()
-		//		{
-		//			Color c = new Color (255, 10, 255, 10);
-		//
-		//			Utils.CheckSerialization (c);
-		//			Color c1 = Utils.SerializeDeserialize (c);
-		//			Assert.AreEqual (c, c1);
-		//
-		//			YCbCrColor yc = new YCbCrColor (2, 3, 4);
-		//			Utils.CheckSerialization (yc, true);
-		//		}
-
 		[Test ()]
 		public void TestParse ()
 		{

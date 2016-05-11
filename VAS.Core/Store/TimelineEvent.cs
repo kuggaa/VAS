@@ -385,6 +385,7 @@ namespace VAS.Core.Store
 			}
 		}
 
+		// FIXME: Make more flexible (& improve the names)
 		public void AddDefaultPositions ()
 		{
 			if (EventType.TagFieldPosition) {
@@ -414,6 +415,7 @@ namespace VAS.Core.Store
 			}
 		}
 
+		// FIXME: Make more flexible (& improve the names)
 		public Coordinates CoordinatesInFieldPosition (FieldPositionType pos)
 		{
 			switch (pos) {
@@ -445,6 +447,7 @@ namespace VAS.Core.Store
 			}
 		}
 
+		// FIXME: Move this to LongoMatch
 		// Prevents the deprecated Team field to be serialized, but allowing the field to be deserialized
 		// for migrations.
 		public bool ShouldSerializeTeam ()

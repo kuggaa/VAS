@@ -89,12 +89,5 @@ namespace VAS.Core.Interfaces
 		/// <param name="copy">Name of the copy.</param>
 		void Copy (T template, string copy);
 	}
-
-	/*
-	public interface ICategoriesTemplatesProvider: ITemplateProvider<Dashboard>
-	{
-
-	}
-	*/
 }
 

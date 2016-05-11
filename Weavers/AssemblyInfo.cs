@@ -17,7 +17,7 @@
 //
 using System;
 
-namespace LongoMatch.Weaver
+namespace VAS.Weavers
 {
 	public class AssemblyInfo
 	{

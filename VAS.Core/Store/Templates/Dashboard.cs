@@ -51,6 +51,7 @@ namespace VAS.Core.Store.Templates
 		public Dashboard ()
 		{
 			try {
+				// FIXME: We need a more flexible structure for this
 				FieldBackground = Config.FieldBackground;
 				HalfFieldBackground = Config.HalfFieldBackground;
 				GoalBackground = Config.GoalBackground;
@@ -144,6 +145,7 @@ namespace VAS.Core.Store.Templates
 			set;
 		}
 
+		// FIXME: Make more flexible
 		/// <summary>
 		/// The field background image
 		/// </summary>
@@ -152,6 +154,7 @@ namespace VAS.Core.Store.Templates
 			set;
 		}
 
+		// FIXME: Make more flexible
 		/// <summary>
 		/// The half field background image
 		/// </summary>
@@ -160,6 +163,7 @@ namespace VAS.Core.Store.Templates
 			set;
 		}
 
+		// FIXME: Make more flexible
 		/// <summary>
 		/// The goal background image
 		/// </summary>
@@ -342,6 +346,7 @@ namespace VAS.Core.Store.Templates
 			return button;
 		}
 
+		// FIXME: Move to LongoMatch
 		protected void FillDefaultTemplate (int count)
 		{
 			for (int i = 1; i <= count; i++)

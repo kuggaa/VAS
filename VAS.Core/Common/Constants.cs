@@ -37,6 +37,7 @@ namespace VAS.Core.Common
 		public const string IMAGE_EXT = ".svg";
 		#endif
 		
+		// FIXME: Fields, goals, etc are from LongoMatch, we need a more flexible structure.
 		public const string FIELD_BACKGROUND = "images/fields/field-full" + IMAGE_EXT;
 		public const string HALF_FIELD_BACKGROUND = "images/fields/field-half" + IMAGE_EXT;
 		public const string HHALF_FIELD_BACKGROUND = "images/fields/field-full-teameditor" + IMAGE_EXT;
@@ -44,6 +45,7 @@ namespace VAS.Core.Common
 
 		public const int DB_VERSION = 1;
 		
+		// FIXME: These are style constants, they should be somewhere style-specific
 		public const int MAX_THUMBNAIL_SIZE = 100;
 		public const int BUTTON_WIDTH = 120;
 		public const int BUTTON_HEIGHT = 80;

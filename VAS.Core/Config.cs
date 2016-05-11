@@ -22,8 +22,6 @@ using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Serialization;
 
-//using Constants = VAS.Core.Common.Constants;
-
 namespace VAS
 {
 	public class Config
@@ -33,7 +31,7 @@ namespace VAS
 		public static string configDirectory = ".";
 		public static string dataDir = ".";
 		
-		//		/* State */
+		/* State */
 		public static EventsBroker EventsBrokerBase;
 
 		protected static StyleConf style;
@@ -41,70 +39,14 @@ namespace VAS
 
 		public static void Init ()
 		{
-			string home = null;
-
-			if (Environment.GetEnvironmentVariable ("LGM_UNINSTALLED") != null) {
-				Config.baseDirectory = Path.GetFullPath (".");
-				Config.dataDir = "../data";
-			} else {
-				if (Utils.OS == OperatingSystemID.Android) {
-					Config.baseDirectory = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
-				} else if (Utils.OS == OperatingSystemID.iOS) {
-					Config.baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-				} else {
-					Config.baseDirectory = Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "../");
-					if (!Directory.Exists (Path.Combine (Config.baseDirectory, "share", Constants.SOFTWARE_NAME))) {
-						Config.baseDirectory = Path.Combine (Config.baseDirectory, "../");
-					}
-				}
-				if (!Directory.Exists (Path.Combine (Config.baseDirectory, "share", Constants.SOFTWARE_NAME)))
-					Log.Warning ("Prefix directory not found");
-				Config.dataDir = Path.Combine (Config.baseDirectory, "share", Constants.SOFTWARE_NAME.ToLower ());
-			}
-
-			if (Utils.OS == OperatingSystemID.Android) {
-				home = Config.baseDirectory;
-			} else if (Utils.OS == OperatingSystemID.iOS) {
-				home = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.MyDocuments), "..", "Library");
-			} else {
-				/* Check for the magic file PORTABLE to check if it's a portable version
-					* and the config goes in the same folder as the binaries */
-				//if (File.Exists (Path.Combine (Config.baseDirectory, Constants.PORTABLE_FILE))) {
-				//home = Config.baseDirectory;
-				//} else {
-				home = Environment.GetEnvironmentVariable ("LONGOMATCH_HOME");
-				if (home != null && !Directory.Exists (home)) {
-					try {
-						Directory.CreateDirectory (home);
-					} catch (Exception ex) {
-						Log.Exception (ex);
-						Log.Warning (String.Format ("LONGOMATCH_HOME {0} not found", home));
-						home = null;
-					}
-				}
-				if (home == null) {
-					home = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
-				}
-				//}
-			}
-
-			Config.homeDirectory = Path.Combine (home, Constants.SOFTWARE_NAME);
-			Config.configDirectory = Config.homeDirectory;
-
-			// Migrate old config directory the home directory so that OS X users can easilly find
-			// log files and config files without having to access hidden folders
-			if (Environment.OSVersion.Platform != PlatformID.Win32NT) {
-				string oldHome = Path.Combine (home, "." + Constants.SOFTWARE_NAME.ToLower ()); 
-				string configFilename = Constants.SOFTWARE_NAME.ToLower () + "-1.0.config";
-				string configFilepath = Path.Combine (oldHome, configFilename);
-				if (File.Exists (configFilepath) && !File.Exists (Config.ConfigFile)) {
-					try {
-						File.Move (configFilepath, Config.ConfigFile);
-					} catch (Exception ex) {
-						Log.Exception (ex);
-					}
-				}
-			}
+			/* NOTE
+			*  All derived Configs should set the following:
+			*  
+			*  Config.baseDirectory
+			*  Config.configDirectory
+			*  Config.dataDir
+			*  Config.homeDirectory
+			*/
 		}
 
 		public static void LoadState (ConfigState newState)
