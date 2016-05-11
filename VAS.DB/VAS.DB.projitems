@@ -22,6 +22,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)CouchbaseManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\EventTypeView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FileSystem.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Properties\AssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\AssemblyInfo\AssemblyInfo.cs">
+      <Link>AssemblyInfo.cs</Link>
+    </Compile>
   </ItemGroup>
 </Project>

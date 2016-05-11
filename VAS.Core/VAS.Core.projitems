@@ -95,6 +95,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Store\DashboardButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StyleConf.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Config.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\AssemblyInfo\AssemblyInfo.cs">
+      <Link>AssemblyInfo.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
