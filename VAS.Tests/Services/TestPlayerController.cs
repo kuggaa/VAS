@@ -591,19 +591,23 @@ namespace VAS.Tests.Services
 		{
 			int nextSent = 0;
 			PreparePlayer ();
-			Config.EventsBroker.PlaylistElementSelectedEvent += (p, e, pl) => nextSent++;
+			Config.EventsBroker.PlaylistElementLoadedEvent += (p, el) => nextSent++;
 
 			player.Next ();
 			Assert.AreEqual (0, nextSent);
 
 			player.LoadPlaylistEvent (playlist, plImage, true);
-			player.Next ();
+			Assert.AreEqual (0, playlist.CurrentIndex);
 			Assert.AreEqual (1, nextSent);
+
+			player.Next ();
+			Assert.AreEqual (1, playlist.CurrentIndex);
+			Assert.AreEqual (2, nextSent);
 
 			playlist.Next ();
 			Assert.IsFalse (playlist.HasNext ());
 			player.Next ();
-			Assert.AreEqual (1, nextSent);
+			Assert.AreEqual (2, nextSent);
 		}
 
 		[Test ()]
@@ -634,7 +638,7 @@ namespace VAS.Tests.Services
 			int prevSent = 0;
 			currentTime = new Time (0);
 			PreparePlayer ();
-			Config.EventsBroker.PlaylistElementSelectedEvent += (p, e, pl) => prevSent++;
+			Config.EventsBroker.PlaylistElementLoadedEvent += (p, e) => prevSent++;
 
 			player.Previous (false);
 			playerMock.Verify (p => p.Seek (new Time (0), true, false));
@@ -647,12 +651,13 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (0, prevSent);
 
 			player.LoadPlaylistEvent (playlist, plImage, true);
+			Assert.AreEqual (1, prevSent);
 			playerMock.ResetCalls ();
 			player.Previous (false);
-			Assert.AreEqual (0, prevSent);
+			Assert.AreEqual (1, prevSent);
 			playlist.Next ();
 			player.Previous (false);
-			Assert.AreEqual (1, prevSent);
+			Assert.AreEqual (2, prevSent);
 		}
 
 		[Test ()]
@@ -684,7 +689,7 @@ namespace VAS.Tests.Services
 			currentTime = new Time (4000);
 			PreparePlayer ();
 			Config.EventsBroker.EmitOpenedProjectChanged (new Utils.ProjectDummy (), ProjectType.FileProject, null, null);
-			Config.EventsBroker.PlaylistElementSelectedEvent += (p, e, pl) => playlistElementSelected++;
+			Config.EventsBroker.LoadPlaylistElementEvent += (p, e, pl) => playlistElementSelected++;
 
 			Config.EventsBroker.EmitLoadEvent (evt);
 			// loadedPlay != null
@@ -702,7 +707,7 @@ namespace VAS.Tests.Services
 			int playlistElementSelected = 0;
 			currentTime = new Time (4000);
 			PreparePlayer ();
-			Config.EventsBroker.PlaylistElementSelectedEvent += (p, e, pl) => playlistElementSelected++;
+			Config.EventsBroker.LoadPlaylistElementEvent += (p, e, pl) => playlistElementSelected++;
 			playerMock.ResetCalls ();
 			// loadedPlay == null
 
@@ -715,10 +720,10 @@ namespace VAS.Tests.Services
 		[Test ()]
 		public void TestPrev3 ()
 		{
-			int playlistElementSelected = 0;
+			int playlistElementLoaded = 0;
 			currentTime = new Time (4000);
 			PreparePlayer ();
-			Config.EventsBroker.PlaylistElementSelectedEvent += (p, e, pl) => playlistElementSelected++;
+			Config.EventsBroker.PlaylistElementLoadedEvent += (p, e) => playlistElementLoaded++;
 
 			Playlist localPlaylist = new Playlist ();
 			PlaylistPlayElement element = new PlaylistPlayElement (new TimelineEvent ());
@@ -728,20 +733,21 @@ namespace VAS.Tests.Services
 			player.LoadPlaylistEvent (localPlaylist, element, false);
 			playerMock.ResetCalls ();
 
+			Assert.AreEqual (1, playlistElementLoaded);
 			player.Previous (false);
 
 			playerMock.Verify (player => player.Seek (element.Play.Start, true, false), Times.Once ());
-			Assert.AreEqual (1, playlistElementSelected);
+			Assert.AreEqual (2, playlistElementLoaded);
 		}
 
 
 		[Test ()]
 		public void TestPrev4 ()
 		{
-			int playlistElementSelected = 0;
+			int playlistElementLoaded = 0;
 			currentTime = new Time (499);
 			PreparePlayer ();
-			Config.EventsBroker.PlaylistElementSelectedEvent += (p, e, pl) => playlistElementSelected++;
+			Config.EventsBroker.LoadPlaylistElementEvent += (p, e, pl) => playlistElementLoaded++;
 
 			Playlist localPlaylist = new Playlist ();
 			PlaylistPlayElement element0 = new PlaylistPlayElement (new TimelineEvent ());
@@ -754,17 +760,17 @@ namespace VAS.Tests.Services
 
 			player.Previous (false);
 
-			Assert.AreEqual (0, playlistElementSelected);
+			Assert.AreEqual (0, playlistElementLoaded);
 			Assert.AreSame (element0, localPlaylist.Selected);
 		}
 
 		[Test ()]
 		public void TestPrev5 ()
 		{
-			int playlistElementSelected = 0;
+			int playlistElementLoaded = 0;
 			currentTime = new Time (499);
 			PreparePlayer ();
-			Config.EventsBroker.PlaylistElementSelectedEvent += (p, e, pl) => playlistElementSelected++;
+			Config.EventsBroker.PlaylistElementLoadedEvent += (p, e) => playlistElementLoaded++;
 
 			Playlist localPlaylist = new Playlist ();
 			IPlaylistElement element = new PlaylistImage (new Image (1, 1), new Time (10));
@@ -774,17 +780,17 @@ namespace VAS.Tests.Services
 
 			player.Previous (false);
 
-			Assert.AreEqual (0, playlistElementSelected);
+			Assert.AreEqual (0, playlistElementLoaded);
 			playerMock.Verify (player => player.Seek (It.IsAny<Time> (), It.IsAny<bool> (), It.IsAny<bool> ()), Times.Never ());
 		}
 
 		[Test ()]
 		public void TestPrev6 ()
 		{
-			int playlistElementSelected = 0;
+			int playlistElementLoaded = 0;
 			currentTime = new Time (4000);
 			PreparePlayer ();
-			Config.EventsBroker.PlaylistElementSelectedEvent += (p, e, pl) => playlistElementSelected++;
+			Config.EventsBroker.PlaylistElementLoadedEvent += (p, e) => playlistElementLoaded++;
 
 			Playlist localPlaylist = new Playlist ();
 			PlaylistPlayElement element0 = new PlaylistPlayElement (new TimelineEvent ());
@@ -797,7 +803,7 @@ namespace VAS.Tests.Services
 
 			player.Previous (true);
 
-			Assert.AreEqual (0, playlistElementSelected);
+			Assert.AreEqual (0, playlistElementLoaded);
 			Assert.AreSame (element0, localPlaylist.Selected);
 		}
 
@@ -1309,13 +1315,13 @@ namespace VAS.Tests.Services
 
 			player.LoadedPlaylist = localPlaylist;
 
-			Config.EventsBroker.EmitPlaylistElementSelected (localPlaylist, element0, false);
+			Config.EventsBroker.EmitLoadPlaylistElement (localPlaylist, element0, false);
 			PreparePlayer ();
 
 			playerMock.ResetCalls ();
 
 			int playlistElementSelected = 0;
-			Config.EventsBroker.PlaylistElementSelectedEvent += (p, e, pl) => playlistElementSelected++;
+			Config.EventsBroker.PlaylistElementLoadedEvent += (p, e) => playlistElementSelected++;
 
 			player.PresentationMode = true;
 			player.Seek (new Time (15), true, false, false);
@@ -1339,16 +1345,16 @@ namespace VAS.Tests.Services
 			element.Play.Stop = new Time (10);
 			localPlaylist.Elements.Add (element0);
 			localPlaylist.Elements.Add (element);
-			Config.EventsBroker.EmitPlaylistElementSelected (localPlaylist, element0, false);
+			Config.EventsBroker.EmitLoadPlaylistElement (localPlaylist, element0, false);
 			PreparePlayer ();
 			playerMock.ResetCalls ();
 
-			int playlistElementSelected = 0;
-			Config.EventsBroker.PlaylistElementSelectedEvent += (p, e, pl) => playlistElementSelected++;
+			int playlistElementLoaded = 0;
+			Config.EventsBroker.LoadPlaylistElementEvent += (p, e, pl) => playlistElementLoaded++;
 
 			player.PresentationMode = true;
 			player.Seek (new Time (5), true, false, false);
-			Assert.AreEqual (0, playlistElementSelected);
+			Assert.AreEqual (0, playlistElementLoaded);
 			playerMock.Verify (p => p.Seek (new Time (15), true, false), Times.Once ());
 		}
 
@@ -1369,7 +1375,7 @@ namespace VAS.Tests.Services
 			playerMock.ResetCalls ();
 
 			int playlistElementSelected = 0;
-			Config.EventsBroker.PlaylistElementSelectedEvent += (p, e, pl) => playlistElementSelected++;
+			Config.EventsBroker.LoadPlaylistElementEvent += (p, e, pl) => playlistElementSelected++;
 
 			player.PresentationMode = true;
 			Assert.IsFalse (player.Seek (new Time (5000), true, false, false));
@@ -1391,7 +1397,7 @@ namespace VAS.Tests.Services
 			playerMock.ResetCalls ();
 
 			int playlistElementSelected = 0;
-			Config.EventsBroker.PlaylistElementSelectedEvent += (p, e, pl) => playlistElementSelected++;
+			Config.EventsBroker.LoadPlaylistElementEvent += (p, e, pl) => playlistElementSelected++;
 
 			player.PresentationMode = true;
 			Assert.IsFalse (player.Seek (new Time (4000), true, false, false));

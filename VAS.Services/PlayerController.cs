@@ -445,7 +445,7 @@ namespace VAS.Services
 					Log.Debug (String.Format ("There is no playlist element at {0}.", time));
 					return false;
 				}
-				Config.EventsBroker.EmitPlaylistElementSelected (LoadedPlaylist, elementAtTime, false);
+				LoadPlaylistEvent (LoadedPlaylist, elementAtTime, false);
 			}
 
 			time -= elementStart;
@@ -609,6 +609,7 @@ namespace VAS.Services
 				LoadFrameDrawing (element as PlaylistDrawing, playing);
 			}
 			EmitElementLoaded (element, playlist.HasNext ());
+			Config.EventsBroker.EmitPlaylistElementLoaded (playlist, element);
 		}
 
 		public virtual void LoadEvent (TimelineEvent evt, Time seekTime, bool playing)
@@ -657,7 +658,7 @@ namespace VAS.Services
 			Log.Debug ("Next");
 			if (loadedPlaylistElement != null) {
 				if (LoadedPlaylist.HasNext ()) {
-					Config.EventsBroker.EmitPlaylistElementSelected (LoadedPlaylist, LoadedPlaylist.Next (), Playing);
+					LoadPlaylistEvent (LoadedPlaylist, LoadedPlaylist.Next (), Playing);
 				} else {
 					Pause ();
 					Seek (new Time (0), true);
@@ -681,11 +682,11 @@ namespace VAS.Services
 					start = (loadedPlaylistElement as PlaylistPlayElement).Play.Start;
 				}
 				if (!force && (CurrentTime - start).MSeconds > 500) {
-					Config.EventsBroker.EmitPlaylistElementSelected (LoadedPlaylist, loadedPlaylistElement, Playing);
+					LoadPlaylistEvent (LoadedPlaylist, loadedPlaylistElement, Playing);
 					return;
 				}
 				if (LoadedPlaylist.HasPrev ()) {
-					Config.EventsBroker.EmitPlaylistElementSelected (LoadedPlaylist, LoadedPlaylist.Prev (), Playing);
+					LoadPlaylistEvent (LoadedPlaylist, LoadedPlaylist.Prev (), Playing);
 				}
 			} else {
 				Seek (new Time (0), true);

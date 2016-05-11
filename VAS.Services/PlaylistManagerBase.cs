@@ -108,7 +108,7 @@ namespace VAS.Services
 			filter = null;
 		}
 
-		protected virtual void HandlePlaylistElementSelected (Playlist playlist, IPlaylistElement element, bool playing = false)
+		protected virtual void HandleLoadPlaylistElement (Playlist playlist, IPlaylistElement element, bool playing = false)
 		{
 			if (element != null) {
 				playlist.SetActive (element);
@@ -225,7 +225,7 @@ namespace VAS.Services
 			Config.EventsBroker.PreviousPlaylistElementEvent += HandlePrev;
 			Config.EventsBroker.NextPlaylistElementEvent += HandleNext;
 			Config.EventsBroker.LoadEventEvent += HandleLoadPlayEvent;
-			Config.EventsBroker.PlaylistElementSelectedEvent += HandlePlaylistElementSelected;
+			Config.EventsBroker.LoadPlaylistElementEvent += HandleLoadPlaylistElement;
 			Config.EventsBroker.PlaybackRateChanged += HandlePlaybackRateChanged;
 			Config.EventsBroker.TimeNodeChanged += HandlePlayChanged;
 			Config.EventsBroker.SeekEvent += HandleSeekEvent;
@@ -245,7 +245,7 @@ namespace VAS.Services
 			Config.EventsBroker.PreviousPlaylistElementEvent -= HandlePrev;
 			Config.EventsBroker.NextPlaylistElementEvent -= HandleNext;
 			Config.EventsBroker.LoadEventEvent -= HandleLoadPlayEvent;
-			Config.EventsBroker.PlaylistElementSelectedEvent -= HandlePlaylistElementSelected;
+			Config.EventsBroker.LoadPlaylistElementEvent -= HandleLoadPlaylistElement;
 			Config.EventsBroker.PlaybackRateChanged -= HandlePlaybackRateChanged;
 			Config.EventsBroker.TimeNodeChanged -= HandlePlayChanged;
 			Config.EventsBroker.SeekEvent -= HandleSeekEvent;

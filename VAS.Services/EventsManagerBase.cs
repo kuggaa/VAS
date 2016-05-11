@@ -80,7 +80,7 @@ namespace VAS.Services
 			loadedPlay = play;
 		}
 
-		protected abstract void HandlePlaylistElementSelectedEvent (Playlist playlist, IPlaylistElement element, bool playing);
+		protected abstract void HandlePlaylistElementLoaded (Playlist playlist, IPlaylistElement element);
 
 		protected virtual void HandleDetach ()
 		{

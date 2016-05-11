@@ -81,8 +81,10 @@ namespace VAS.Core.Handlers
 	public delegate void NextPlaylistElementHandler (Playlist playlist);
 	/* Play previous playlist element */
 	public delegate void PreviousPlaylistElementHandler (Playlist playlist);
+	/* Request a play list element to be selected */
+	public delegate void LoadPlaylistElementHandler (Playlist playlist,IPlaylistElement element,bool playing);
 	/* A play list element is selected */
-	public delegate void PlaylistElementSelectedHandler (Playlist playlist,IPlaylistElement element,bool playing);
+	public delegate void PlaylistElementLoadedHandler (Playlist playlist,IPlaylistElement element);
 
 	/* GUI */
 	public delegate void ManageJobsHandler ();

@@ -43,7 +43,8 @@ namespace VAS.Core.Common
 		/* Playlist */
 		public event RenderPlaylistHandler RenderPlaylist;
 		public event AddPlaylistElementHandler AddPlaylistElementEvent;
-		public event PlaylistElementSelectedHandler PlaylistElementSelectedEvent;
+		public event LoadPlaylistElementHandler LoadPlaylistElementEvent;
+		public event PlaylistElementLoadedHandler PlaylistElementLoadedEvent;
 		public event NewPlaylistHandler NewPlaylistEvent;
 		public event NextPlaylistElementHandler NextPlaylistElementEvent;
 		public event PreviousPlaylistElementHandler PreviousPlaylistElementEvent;
@@ -112,10 +113,16 @@ namespace VAS.Core.Common
 			}
 		}
 
-		public virtual void EmitPlaylistElementSelected (Playlist playlist, IPlaylistElement element, bool playing)
+		public virtual void EmitLoadPlaylistElement (Playlist playlist, IPlaylistElement element, bool playing)
 		{
-			if (PlaylistElementSelectedEvent != null)
-				PlaylistElementSelectedEvent (playlist, element, playing);
+			if (LoadPlaylistElementEvent != null)
+				LoadPlaylistElementEvent (playlist, element, playing);
+		}
+
+		public virtual void EmitPlaylistElementLoaded (Playlist playlist, IPlaylistElement element)
+		{
+			if (PlaylistElementLoadedEvent != null)
+				PlaylistElementLoadedEvent (playlist, element);
 		}
 
 		public void EmitRenderPlaylist (Playlist playlist)
