@@ -20,36 +20,34 @@
 using System;
 using System.Collections.Generic;
 using Gtk;
-using LongoMatch.Core.Store;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Store;
 using VAS.UI.Helpers;
-using Constants = LongoMatch.Core.Common.Constants;
 using Image = VAS.Core.Common.Image;
-using LMCommon = LongoMatch.Core.Common;
 using Misc = VAS.UI.Helpers.Misc;
 
 namespace VAS.UI
 {
-	[System.ComponentModel.Category ("CesarPlayer")]
+	[System.ComponentModel.Category ("VAS")]
 	[System.ComponentModel.ToolboxItem (true)]
+
 	public partial class CapturerBin : Gtk.Bin, ICapturerBin
 	{
-		CapturerType type;
-		CaptureSettings settings;
-		bool delayStart;
-		Period currentPeriod;
-		uint timeoutID;
-		TimeNode currentTimeNode;
-		Time accumTime;
-		DateTime currentPeriodStart;
-		List<string> gamePeriods;
-		TimelineEvent lastevent;
-		MediaFile outputFile;
-		bool readyToCapture;
+		protected CapturerType type;
+		protected CaptureSettings settings;
+		protected bool delayStart;
+		protected Period currentPeriod;
+		protected uint timeoutID;
+		protected TimeNode currentTimeNode;
+		protected Time accumTime;
+		protected DateTime currentPeriodStart;
+		protected List<string> gamePeriods;
+		protected TimelineEvent lastevent;
+		protected MediaFile outputFile;
+		protected bool readyToCapture;
 
 		public CapturerBin ()
 		{
@@ -112,7 +110,7 @@ namespace VAS.UI
 			base.OnDestroyed ();
 		}
 
-		public CapturerType Mode {
+		public virtual CapturerType Mode {
 			set {
 				type = value;
 				videowindow.Visible = value == CapturerType.Live;
@@ -130,18 +128,18 @@ namespace VAS.UI
 			}
 		}
 
-		public bool Capturing {
+		public virtual bool Capturing {
 			get;
 			set;
 		}
 
-		public CaptureSettings CaptureSettings {
+		public virtual CaptureSettings CaptureSettings {
 			get {
 				return settings;
 			}
 		}
 
-		public List<string> PeriodsNames {
+		public virtual List<string> PeriodsNames {
 			set {
 				gamePeriods = value;
 				if (gamePeriods != null && gamePeriods.Count > 0) {
@@ -155,7 +153,7 @@ namespace VAS.UI
 			}
 		}
 
-		public ICapturer Capturer {
+		public virtual ICapturer Capturer {
 			get;
 			set;
 		}
@@ -165,7 +163,7 @@ namespace VAS.UI
 			get;
 		}
 
-		public Time CurrentCaptureTime {
+		public virtual Time CurrentCaptureTime {
 			get {
 				int timeDiff;
 				
@@ -174,7 +172,7 @@ namespace VAS.UI
 			}
 		}
 
-		Time ElapsedTime {
+		protected virtual Time ElapsedTime {
 			get {
 				if (currentPeriod != null) {
 					return currentPeriod.TotalTime;
@@ -185,7 +183,7 @@ namespace VAS.UI
 			}
 		}
 
-		bool ReadyToCapture {
+		protected virtual bool ReadyToCapture {
 			get {
 				return readyToCapture;
 			}
@@ -195,7 +193,7 @@ namespace VAS.UI
 			}
 		}
 
-		public void StartPeriod ()
+		public virtual void StartPeriod ()
 		{
 			string periodName;
 			if (!ReadyToCapture) {
@@ -234,7 +232,7 @@ namespace VAS.UI
 			Log.Debug ("Start new period start=", currentTimeNode.Start.ToMSecondsString ());
 		}
 
-		public void StopPeriod ()
+		public virtual void StopPeriod ()
 		{
 			if (currentPeriod == null) {
 				string msg = Catalog.GetString ("Period recording not started");
@@ -256,7 +254,7 @@ namespace VAS.UI
 			Capturing = false;
 		}
 
-		public void PausePeriod ()
+		public virtual void PausePeriod ()
 		{
 			if (currentPeriod == null) {
 				string msg = Catalog.GetString ("Period recording not started");
@@ -271,7 +269,7 @@ namespace VAS.UI
 			Capturing = false;
 		}
 
-		public void ResumePeriod ()
+		public virtual void ResumePeriod ()
 		{
 			if (currentPeriod == null) {
 				string msg = Catalog.GetString ("Period recording not started");
@@ -285,7 +283,7 @@ namespace VAS.UI
 			Capturing = true;
 		}
 
-		void SetStyle (int height, int fontSize, int timeWidth)
+		protected virtual void SetStyle (int height, int fontSize, int timeWidth)
 		{
 			string font = String.Format ("{0} {1}px", Config.Style.Font, fontSize);
 			Pango.FontDescription desc = Pango.FontDescription.FromString (font);
@@ -312,7 +310,7 @@ namespace VAS.UI
 
 		}
 
-		bool UpdateTime ()
+		protected virtual bool UpdateTime ()
 		{
 			if (currentTimeNode != null) {
 				currentTimeNode.Stop = CurrentCaptureTime;
@@ -320,27 +318,27 @@ namespace VAS.UI
 			hourlabel.Markup = ElapsedTime.Hours.ToString ("d2");
 			minuteslabel.Markup = ElapsedTime.Minutes.ToString ("d2");
 			secondslabel.Markup = ElapsedTime.Seconds.ToString ("d2");
-			((LMCommon.EventsBroker)Config.EventsBroker).EmitCapturerTick (CurrentCaptureTime);
+			Config.EventsBroker.EmitCapturerTick (CurrentCaptureTime);
 			return true;
 		}
 
-		void HandleSaveClicked (object sender, EventArgs e)
+		protected virtual void HandleSaveClicked (object sender, EventArgs e)
 		{
 			string msg = Catalog.GetString ("Do you want to finish the current capture?");
 			if (MessagesHelpers.QuestionMessage (this, msg)) {
-				((LMCommon.EventsBroker)Config.EventsBroker).EmitCaptureFinished (false, true);
+				Config.EventsBroker.EmitCaptureFinished (false, true);
 			}
 		}
 
-		void HandleCloseClicked (object sender, EventArgs e)
+		protected virtual void HandleCloseClicked (object sender, EventArgs e)
 		{
 			string msg = Catalog.GetString ("Do you want to close and cancel the current capture?");
 			if (MessagesHelpers.QuestionMessage (this, msg)) {
-				((LMCommon.EventsBroker)Config.EventsBroker).EmitCaptureFinished (true, false);
+				Config.EventsBroker.EmitCaptureFinished (true, false);
 			}
 		}
 
-		public void Run (CaptureSettings settings, MediaFile outputFile)
+		public virtual void Run (CaptureSettings settings, MediaFile outputFile)
 		{
 			Reset ();
 			if (type == CapturerType.Live) {
@@ -365,7 +363,7 @@ namespace VAS.UI
 			}
 		}
 
-		public void Close ()
+		public virtual void Close ()
 		{
 			if (currentPeriod != null) {
 				StopPeriod ();
@@ -384,7 +382,7 @@ namespace VAS.UI
 			Capturer = null;
 		}
 
-		public Image CurrentCaptureFrame {
+		public virtual Image CurrentCaptureFrame {
 			get {
 				if (Capturer == null)
 					return null;
@@ -399,7 +397,7 @@ namespace VAS.UI
 			}
 		}
 
-		void Reset ()
+		protected virtual void Reset ()
 		{
 			currentPeriod = null;
 			currentTimeNode = null;
@@ -416,7 +414,7 @@ namespace VAS.UI
 			lasteventbox.Visible = false;
 		}
 
-		void Configure ()
+		protected virtual void Configure ()
 		{
 			VideoMuxerType muxer;
 
@@ -437,14 +435,14 @@ namespace VAS.UI
 			videowindow.MessageVisible = true;
 		}
 
-		void HandleReady (object sender, EventArgs e)
+		protected virtual void HandleReady (object sender, EventArgs e)
 		{
 			if (delayStart) {
 				Configure ();
 			}
 		}
 
-		void DeviceChanged (int deviceID)
+		protected virtual void DeviceChanged (int deviceID)
 		{
 			string msg;
 			/* device disconnected, pause capture */
@@ -460,53 +458,53 @@ namespace VAS.UI
 			}
 		}
 
-		void OnError (object sender, string message)
+		protected virtual void OnError (object sender, string message)
 		{
 			Application.Invoke (delegate {
-				((LMCommon.EventsBroker)Config.EventsBroker).EmitCaptureError (sender, message);
+				Config.EventsBroker.EmitCaptureError (sender, message);
 			});
 		}
 
-		void OnDeviceChange (int deviceID)
+		protected virtual void OnDeviceChange (int deviceID)
 		{
 			Application.Invoke (delegate {
 				DeviceChanged (deviceID);
 			});
 		}
 
-		void HandleExposeEvent (object o, ExposeEventArgs args)
+		protected virtual void HandleExposeEvent (object o, ExposeEventArgs args)
 		{
 			if (Capturer != null) {
 				Capturer.Expose ();
 			}
 		}
 
-		void HandleEventCreated (TimelineEvent evt)
+		protected virtual void HandleEventCreated (TimelineEvent evt)
 		{
 			lasteventbox.Visible = true;
 			lastlabel.Text = evt.Name;
 			lastlabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (evt.Color));
-			lastevent = evt as TimelineEventLongoMatch;
+			lastevent = evt;
 		}
 
-		void HandlePlayLast (object sender, EventArgs e)
+		protected virtual void HandlePlayLast (object sender, EventArgs e)
 		{
 			if (lastevent != null) {
-				((LMCommon.EventsBroker)Config.EventsBroker).EmitLoadEvent (lastevent);
+				Config.EventsBroker.EmitLoadEvent (lastevent);
 			}
 		}
 
-		void HandleDeleteLast (object sender, EventArgs e)
+		protected virtual void HandleDeleteLast (object sender, EventArgs e)
 		{
 			if (lastevent != null) {
-				((LMCommon.EventsBroker)Config.EventsBroker).EmitEventsDeleted (new List<TimelineEventLongoMatch> { lastevent });
+				Config.EventsBroker.EmitEventsDeleted (new List<TimelineEvent> { lastevent });
 				lastevent = null;
 				lasteventbox.Visible = false;
 			}
 			
 		}
 
-		void HandleMediaInfo (int width, int height, int parN, int parD)
+		protected virtual void HandleMediaInfo (int width, int height, int parN, int parD)
 		{
 			Application.Invoke (delegate {
 				videowindow.Ratio = (float)width / height * parN / parD;
@@ -516,10 +514,13 @@ namespace VAS.UI
 			});
 		}
 
-		void HandleReadyToCapture (object sender)
+		protected virtual void HandleReadyToCapture (object sender)
 		{
 			videowindow.MessageVisible = false;
 			ReadyToCapture = true;
 		}
+
+
+
 	}
 }

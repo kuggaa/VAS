@@ -10,7 +10,7 @@ namespace VAS.UI
 		
 		private global::Gtk.HBox hbox3;
 		
-		private global::LongoMatch.Gui.VideoWindow videowindow;
+		private global::VAS.UI.VideoWindow videowindow;
 		
 		private global::Gtk.DrawingArea blackboarddrawingarea;
 		
@@ -75,10 +75,10 @@ namespace VAS.UI
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);
-			// Widget LongoMatch.Gui.PlayerView
+			// Widget VAS.UI.PlayerView
 			global::Stetic.BinContainer.Attach (this);
-			this.Name = "LongoMatch.Gui.PlayerView";
-			// Container child LongoMatch.Gui.PlayerView.Gtk.Container+ContainerChild
+			this.Name = "VAS.UI.PlayerView";
+			// Container child VAS.UI.PlayerView.Gtk.Container+ContainerChild
 			this.vbox3 = new global::Gtk.VBox ();
 			this.vbox3.Name = "vbox3";
 			this.vbox3.Spacing = 6;
@@ -91,7 +91,7 @@ namespace VAS.UI
 			this.hbox3.Name = "hbox3";
 			this.hbox3.Spacing = 6;
 			// Container child hbox3.Gtk.Box+BoxChild
-			this.videowindow = new global::LongoMatch.Gui.VideoWindow ();
+			this.videowindow = new global::VAS.UI.VideoWindow ();
 			this.videowindow.Events = ((global::Gdk.EventMask)(256));
 			this.videowindow.Name = "videowindow";
 			this.videowindow.Ratio = 0F;

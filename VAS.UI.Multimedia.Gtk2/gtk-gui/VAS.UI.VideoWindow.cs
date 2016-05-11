@@ -13,10 +13,10 @@ namespace VAS.UI
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);
-			// Widget LongoMatch.Gui.VideoWindow
+			// Widget VAS.UI.VideoWindow
 			global::Stetic.BinContainer.Attach (this);
-			this.Name = "LongoMatch.Gui.VideoWindow";
-			// Container child LongoMatch.Gui.VideoWindow.Gtk.Container+ContainerChild
+			this.Name = "VAS.UI.VideoWindow";
+			// Container child VAS.UI.VideoWindow.Gtk.Container+ContainerChild
 			this.totalbox = new global::Gtk.HBox ();
 			this.totalbox.Name = "totalbox";
 			// Container child totalbox.Gtk.Box+BoxChild

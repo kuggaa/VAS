@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Gdk;
 using Gtk;
-using LongoMatch.Drawing.Widgets;
 using Pango;
 using VAS;
 using VAS.Core;
@@ -36,23 +35,23 @@ using VAS.Drawing.Cairo;
 using VAS.Drawing.Widgets;
 using VAS.Services;
 using Helpers = VAS.UI.Helpers;
-using LMCommon = LongoMatch.Core.Common;
+
 
 namespace VAS.UI
 {
-	[System.ComponentModel.Category ("LongoMatch")]
+	[System.ComponentModel.Category ("VAS")]
 	[System.ComponentModel.ToolboxItem (true)]
 
 	public partial class PlayerView : Gtk.Bin, IPlayerView
 	{
-		const int SCALE_FPS = 25;
-		IPlayerController player;
-		bool seeking, IsPlayingPrevState, muted, ignoreRate, ignoreVolume;
-		double previousVLevel = 1;
+		protected const int SCALE_FPS = 25;
+		protected IPlayerController player;
+		protected bool seeking, IsPlayingPrevState, muted, ignoreRate, ignoreVolume;
+		protected double previousVLevel = 1;
 		protected VolumeWindow vwin;
-		Blackboard blackboard;
-		PlayerViewOperationMode mode;
-		Time duration;
+		protected Blackboard blackboard;
+		protected PlayerViewOperationMode mode;
+		protected Time duration;
 
 		#region Constructors
 
@@ -98,7 +97,7 @@ namespace VAS.UI
 			timescale.Adjustment.StepIncrement = 0.0001;
 			Helpers.Misc.SetFocus (vbox3, false);
 			videowindow.CanFocus = true;
-			detachbutton.Clicked += (sender, e) => ((LMCommon.EventsBroker)Config.EventsBroker).EmitDetach ();
+			detachbutton.Clicked += (sender, e) => Config.EventsBroker.EmitDetach ();
 			ratescale.ModifyFont (FontDescription.FromString (Config.Style.Font + " 8"));
 			controlsbox.HeightRequest = StyleConf.PlayerCapturerControlsHeight;
 
@@ -128,13 +127,13 @@ namespace VAS.UI
 
 		#region Properties
 
-		public bool SupportsMultipleCameras {
+		public virtual bool SupportsMultipleCameras {
 			get {
 				return false;
 			}
 		}
 
-		public bool PlayerAttached {
+		public virtual bool PlayerAttached {
 			set {
 				if (value) {
 					detachbuttonimage.Pixbuf = Helpers.Misc.LoadIcon ("longomatch-control-attach",
@@ -148,7 +147,7 @@ namespace VAS.UI
 			}
 		}
 
-		public IPlayerController Player {
+		public virtual IPlayerController Player {
 			get {
 				return player;
 			}
@@ -174,7 +173,7 @@ namespace VAS.UI
 			}
 		}
 
-		public PlayerViewOperationMode Mode {
+		public virtual PlayerViewOperationMode Mode {
 			set {
 				mode = value;
 				switch (mode) {
@@ -197,7 +196,7 @@ namespace VAS.UI
 			}
 		}
 
-		public object CamerasLayout {
+		public virtual object CamerasLayout {
 			get {
 				return 0;
 			}
@@ -205,7 +204,7 @@ namespace VAS.UI
 			}
 		}
 
-		public List<CameraConfig> CamerasConfig {
+		public virtual List<CameraConfig> CamerasConfig {
 			get {
 				return new List<CameraConfig> { new CameraConfig (0) };
 			}
@@ -213,7 +212,7 @@ namespace VAS.UI
 			}
 		}
 
-		public bool TogglePlayOnClick {
+		public virtual bool TogglePlayOnClick {
 			get;
 			set;
 		}
@@ -222,21 +221,21 @@ namespace VAS.UI
 
 		#region Private methods
 
-		bool ControlsSensitive {
+		protected virtual bool ControlsSensitive {
 			set {
 				controlsbox.Sensitive = value;
 				ratescale.Sensitive = value;
 			}
 		}
 
-		bool ShowControls {
+		protected virtual bool ShowControls {
 			set {
 				controlsbox.Visible = value;
 				ratescale.Visible = value;
 			}
 		}
 
-		bool Compact {
+		protected virtual bool Compact {
 			set {
 				prevbutton.Visible = nextbutton.Visible = jumplabel.Visible =
 					jumpspinbutton.Visible = tlabel.Visible = timelabel.Visible =
@@ -244,14 +243,14 @@ namespace VAS.UI
 			}
 		}
 
-		bool DrawingsVisible {
+		protected virtual bool DrawingsVisible {
 			set {
 				videowindow.Visible = !value;
 				blackboarddrawingarea.Visible = value;
 			}
 		}
 
-		void ResetGui ()
+		protected virtual void ResetGui ()
 		{
 			if (mode != PlayerViewOperationMode.LiveAnalysisReview) {
 				closebutton.Visible = false;
@@ -268,7 +267,7 @@ namespace VAS.UI
 			videowindow.Visible = true;
 		}
 
-		void ConnectSignals ()
+		protected virtual void ConnectSignals ()
 		{
 			vwin.VolumeChanged += new VolumeChangedHandler (OnVolumeChanged);
 			closebutton.Clicked += HandleClosebuttonClicked;
@@ -286,7 +285,7 @@ namespace VAS.UI
 			jumpspinbutton.ValueChanged += HandleJumpValueChanged;
 		}
 
-		void LoadImage (VAS.Core.Common.Image image, FrameDrawing drawing)
+		protected virtual void LoadImage (VAS.Core.Common.Image image, FrameDrawing drawing)
 		{
 			if (image == null) {
 				DrawingsVisible = false;
@@ -298,7 +297,7 @@ namespace VAS.UI
 			blackboarddrawingarea.QueueDraw ();
 		}
 
-		float GetRateFromScale ()
+		protected virtual float GetRateFromScale ()
 		{
 			VScale scale = ratescale;
 			double val = scale.Value;
@@ -311,7 +310,7 @@ namespace VAS.UI
 			return (float)val;
 		}
 
-		void CreateWindows ()
+		protected virtual void CreateWindows ()
 		{
 			videowindow.ButtonPressEvent += OnVideoboxButtonPressEvent;
 			videowindow.ScrollEvent += OnVideoboxScrollEvent;
@@ -320,12 +319,12 @@ namespace VAS.UI
 			videowindow.CanFocus = true;
 		}
 
-		void SetVolumeIcon (string name)
+		protected virtual void SetVolumeIcon (string name)
 		{
 			volumebuttonimage.Pixbuf = Helpers.Misc.LoadIcon (name, IconSize.Button, 0);
 		}
 
-		void UpdateTime (Time currentTime, Time duration)
+		protected virtual void UpdateTime (Time currentTime, Time duration)
 		{
 			timelabel.Text = currentTime.ToMSecondsString (true) + "/" + duration.ToMSecondsString ();
 			if (duration.MSeconds == 0) {
@@ -339,12 +338,12 @@ namespace VAS.UI
 
 		#region ControllerCallbacks
 
-		void HandleVolumeChangedEvent (double level)
+		protected virtual void HandleVolumeChangedEvent (double level)
 		{
 			/* Unused: volume is retrieved before launching the volume window */
 		}
 
-		void HandleTimeChangedEvent (Time currentTime, Time duration, bool seekable)
+		protected virtual void HandleTimeChangedEvent (Time currentTime, Time duration, bool seekable)
 		{
 			if (seeking)
 				return;
@@ -354,7 +353,7 @@ namespace VAS.UI
 			timescale.Sensitive = seekable;
 		}
 
-		void HandlePlaybackStateChangedEvent (object sender, bool playing)
+		protected virtual void HandlePlaybackStateChangedEvent (object sender, bool playing)
 		{
 			if (playing) {
 				playbutton.Hide ();
@@ -365,7 +364,7 @@ namespace VAS.UI
 			}
 		}
 
-		void HandlePlaybackRateChangedEvent (float rate)
+		protected virtual void HandlePlaybackRateChangedEvent (float rate)
 		{
 			ignoreRate = true;
 			double value;
@@ -381,7 +380,7 @@ namespace VAS.UI
 			ignoreRate = false;
 		}
 
-		void HandleLoadDrawingsEvent (FrameDrawing frameDrawing)
+		protected virtual void HandleLoadDrawingsEvent (FrameDrawing frameDrawing)
 		{
 			if (frameDrawing != null) {
 				LoadImage (Player.CurrentFrame, frameDrawing);
@@ -390,7 +389,7 @@ namespace VAS.UI
 			}
 		}
 
-		void HandleElementLoadedEvent (object element, bool hasNext)
+		protected virtual void HandleElementLoadedEvent (object element, bool hasNext)
 		{
 			if (element == null) {
 				DrawingsVisible = false;
@@ -414,7 +413,7 @@ namespace VAS.UI
 
 		#region UI Callbacks
 
-		void HandleExposeEvent (object sender, ExposeEventArgs args)
+		protected virtual void HandleExposeEvent (object sender, ExposeEventArgs args)
 		{
 			Player.Expose ();
 			/* The player draws over the eventbox when it's resized
@@ -424,7 +423,7 @@ namespace VAS.UI
 		}
 
 		[GLib.ConnectBefore]
-		void HandleTimescaleButtonPress (object o, Gtk.ButtonPressEventArgs args)
+		protected virtual void HandleTimescaleButtonPress (object o, Gtk.ButtonPressEventArgs args)
 		{
 			if (args.Event.Button == 1) {
 				args.Event.SetButton (2);
@@ -441,7 +440,7 @@ namespace VAS.UI
 		}
 
 		[GLib.ConnectBefore]
-		void HandleTimescaleButtonRelease (object o, Gtk.ButtonReleaseEventArgs args)
+		protected virtual void HandleTimescaleButtonRelease (object o, Gtk.ButtonReleaseEventArgs args)
 		{
 			if (args.Event.Button == 1) {
 				args.Event.SetButton (2);
@@ -457,7 +456,7 @@ namespace VAS.UI
 			}
 		}
 
-		void HandleTimescaleValueChanged (object sender, System.EventArgs e)
+		protected virtual void HandleTimescaleValueChanged (object sender, System.EventArgs e)
 		{
 			if (seeking) {
 				Player.Seek (timescale.Value);
@@ -465,18 +464,18 @@ namespace VAS.UI
 			}
 		}
 
-		void HandlePlaybuttonClicked (object sender, System.EventArgs e)
+		protected virtual void HandlePlaybuttonClicked (object sender, System.EventArgs e)
 		{
 			Player.Play ();
 		}
 
-		void HandleVolumebuttonClicked (object sender, System.EventArgs e)
+		protected virtual void HandleVolumebuttonClicked (object sender, System.EventArgs e)
 		{
 			vwin.SetLevel (Player.Volume);
 			vwin.Show ();
 		}
 
-		void OnVolumeChanged (double level)
+		protected virtual void OnVolumeChanged (double level)
 		{
 			double prevLevel;
 
@@ -497,27 +496,27 @@ namespace VAS.UI
 				muted = false;
 		}
 
-		void HandlePausebuttonClicked (object sender, System.EventArgs e)
+		protected virtual void HandlePausebuttonClicked (object sender, System.EventArgs e)
 		{
 			Player.Pause ();
 		}
 
-		void HandleClosebuttonClicked (object sender, System.EventArgs e)
+		protected virtual void HandleClosebuttonClicked (object sender, System.EventArgs e)
 		{
-			((LMCommon.EventsBroker)Config.EventsBroker).EmitLoadEvent (null);
+			Config.EventsBroker.EmitLoadEvent (null);
 		}
 
-		void HandlePrevbuttonClicked (object sender, System.EventArgs e)
+		protected virtual void HandlePrevbuttonClicked (object sender, System.EventArgs e)
 		{
 			Player.Previous ();
 		}
 
-		void HandleNextbuttonClicked (object sender, System.EventArgs e)
+		protected virtual void HandleNextbuttonClicked (object sender, System.EventArgs e)
 		{
 			Player.Next ();
 		}
 
-		void HandleRateFormatValue (object o, Gtk.FormatValueArgs args)
+		protected virtual void HandleRateFormatValue (object o, Gtk.FormatValueArgs args)
 		{
 			int val = (int)args.Value;
 			if (val >= SCALE_FPS) {
@@ -528,7 +527,7 @@ namespace VAS.UI
 			}
 		}
 
-		void HandleRateValueChanged (object sender, System.EventArgs e)
+		protected virtual void HandleRateValueChanged (object sender, System.EventArgs e)
 		{
 			float val = GetRateFromScale ();
 
@@ -543,11 +542,11 @@ namespace VAS.UI
 
 			if (!ignoreRate) {
 				Player.Rate = val;
-				((LMCommon.EventsBroker)Config.EventsBroker).EmitPlaybackRateChanged (val);
+				Config.EventsBroker.EmitPlaybackRateChanged (val);
 			}
 		}
 
-		void OnVideoboxButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
+		protected virtual void OnVideoboxButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
 		{
 			/* FIXME: The pointer is grabbed when the event box is clicked.
 			 * Make sure to ungrab it in order to avoid clicks outisde the window
@@ -558,7 +557,7 @@ namespace VAS.UI
 			}
 		}
 
-		void OnVideoboxScrollEvent (object o, Gtk.ScrollEventArgs args)
+		protected virtual void OnVideoboxScrollEvent (object o, Gtk.ScrollEventArgs args)
 		{
 			switch (args.Event.Direction) {
 			case ScrollDirection.Down:
@@ -576,17 +575,17 @@ namespace VAS.UI
 			}
 		}
 
-		void HandleDrawButtonClicked (object sender, System.EventArgs e)
+		protected virtual void HandleDrawButtonClicked (object sender, System.EventArgs e)
 		{
-			((LMCommon.EventsBroker)Config.EventsBroker).EmitDrawFrame (null, -1, CamerasConfig [0], true);
+			Config.EventsBroker.EmitDrawFrame (null, -1, CamerasConfig [0], true);
 		}
 
-		void HandleJumpValueChanged (object sender, EventArgs e)
+		protected virtual void HandleJumpValueChanged (object sender, EventArgs e)
 		{
 			Player.Step = new Time (jumpspinbutton.ValueAsInt * 1000);
 		}
 
-		void HandleReady (object sender, EventArgs e)
+		protected virtual void HandleReady (object sender, EventArgs e)
 		{
 			Player.ViewPorts = new List<IViewPort> { videowindow };
 			Player.Ready ();

@@ -29,8 +29,6 @@ using VAS.Core.Store;
 
 namespace VAS.Video.Utils
 {
-
-
 	public class FramesSeriesCapturer
 	{
 		IFramesCapturer capturer;
@@ -62,18 +60,18 @@ namespace VAS.Video.Utils
 			this.cancel = false;
 		}
 
-		public void Cancel ()
+		public virtual void Cancel ()
 		{
 			cancel = true;
 		}
 
-		public void Start ()
+		public virtual void Start ()
 		{
 			Thread thread = new Thread (new ThreadStart (CaptureFrames));
 			thread.Start ();
 		}
 
-		public void CaptureFrames ()
+		public virtual void CaptureFrames ()
 		{
 			Time pos;
 			VAS.Core.Common.Image frame;

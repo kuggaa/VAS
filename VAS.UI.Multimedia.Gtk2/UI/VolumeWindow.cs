@@ -35,7 +35,7 @@ namespace VAS.UI
 			volumescale.Adjustment.StepIncrement = 0.0001;
 		}
 
-		public void SetLevel (double level)
+		public virtual void SetLevel (double level)
 		{
 			volumescale.Value = level;
 		}

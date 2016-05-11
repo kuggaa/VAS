@@ -19,16 +19,19 @@ using System;
 using Gdk;
 using Gtk;
 using VAS.Core.Interfaces.GUI;
+using VAS.Multimedia.Utils;
 
 
 namespace VAS.UI
 {
+	[System.ComponentModel.Category ("VAS")]
 	[System.ComponentModel.ToolboxItem (true)]
+
 	public partial class VideoWindow : Gtk.Bin, IViewPort
 	{
-		AspectFrame frame;
-		DrawingArea drawingWindow;
-		bool dragStarted;
+		protected AspectFrame frame;
+		protected DrawingArea drawingWindow;
+		protected bool dragStarted;
 
 		public event EventHandler ReadyEvent;
 		public new event ExposeEventHandler ExposeEvent;
@@ -70,25 +73,25 @@ namespace VAS.UI
 			messageLabel.Ellipsize = Pango.EllipsizeMode.End;
 		}
 
-		public object WindowHandle {
+		public virtual object WindowHandle {
 			get;
 			private set;
 		}
 
-		public string Message {
+		public virtual string Message {
 			set {
 				messageLabel.Text = value;
 			}
 		}
 
-		public bool MessageVisible {
+		public virtual bool MessageVisible {
 			set {
 				videoeventbox.Visible = !value;
 				messageLabel.Visible = value;
 			}
 		}
 
-		public float Ratio {
+		public virtual float Ratio {
 			set {
 				frame.Ratio = value;
 			}
@@ -97,30 +100,30 @@ namespace VAS.UI
 			}
 		}
 
-		public float Xalign {
+		public virtual float Xalign {
 			set {
 				frame.Xalign = value;
 			}
 		}
 
-		public float Yalign {
+		public virtual float Yalign {
 			set {
 				frame.Yalign = value;
 			}
 		}
 
-		public bool Ready {
+		public virtual bool Ready {
 			get;
 			set;
 		}
 
-		public Cursor Cursor {
+		public virtual Cursor Cursor {
 			set {
 				drawingWindow.GdkWindow.Cursor = value;
 			}
 		}
 
-		void HandleMotionNotifyEvent (object o, MotionNotifyEventArgs args)
+		protected virtual void HandleMotionNotifyEvent (object o, MotionNotifyEventArgs args)
 		{
 			if (dragStarted == true) {
 				if (VideoDragged != null) {
@@ -129,14 +132,14 @@ namespace VAS.UI
 			}
 		}
 
-		void HandleScrollEvent (object o, ScrollEventArgs args)
+		protected virtual void HandleScrollEvent (object o, ScrollEventArgs args)
 		{
 			if (ScrollEvent != null) {
 				ScrollEvent (this, args);
 			}
 		}
 
-		void HandleExposeEvent (object o, ExposeEventArgs args)
+		protected virtual void HandleExposeEvent (object o, ExposeEventArgs args)
 		{
 			if (!Ready) {
 				Ready = true;
@@ -149,7 +152,7 @@ namespace VAS.UI
 			}
 		}
 
-		void HandleButtonPressEvent (object o, ButtonPressEventArgs args)
+		protected virtual void HandleButtonPressEvent (object o, ButtonPressEventArgs args)
 		{
 			if (o == drawingWindow) {
 				dragStarted = true;
@@ -163,7 +166,7 @@ namespace VAS.UI
 			}
 		}
 
-		void HandleButtonReleaseEvent (object o, ButtonReleaseEventArgs args)
+		protected virtual void HandleButtonReleaseEvent (object o, ButtonReleaseEventArgs args)
 		{
 			if (o == drawingWindow) {
 				dragStarted = false;
@@ -177,7 +180,7 @@ namespace VAS.UI
 			}
 		}
 
-		void HandleRealized (object sender, EventArgs e)
+		protected virtual void HandleRealized (object sender, EventArgs e)
 		{
 			WindowHandle = drawingWindow.GdkWindow.GetWindowHandle ();
 		}

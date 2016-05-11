@@ -27,16 +27,16 @@ namespace VAS.Video.Utils
 {
 	public class Remuxer
 	{
-		MediaFile inputFile;
-		string outputFilepath;
-		Dialog dialog;
-		ProgressBar pb;
-		IRemuxer remuxer;
-		IMultimediaToolkit multimedia;
-		uint timeout;
-		bool cancelled;
-		VideoMuxerType muxer;
-		Window parent;
+		protected MediaFile inputFile;
+		protected string outputFilepath;
+		protected Dialog dialog;
+		protected ProgressBar pb;
+		protected IRemuxer remuxer;
+		protected IMultimediaToolkit multimedia;
+		protected uint timeout;
+		protected bool cancelled;
+		protected VideoMuxerType muxer;
+		protected Window parent;
 
 		public Remuxer (MediaFile inputFile, string outputFilepath = null,
 		                VideoMuxerType muxer = VideoMuxerType.Mp4)
@@ -58,7 +58,7 @@ namespace VAS.Video.Utils
 			this.multimedia = new MultimediaToolkit ();
 		}
 
-		public string Remux (Window parent)
+		public virtual string Remux (Window parent)
 		{
 			VBox box;
 			Label label;
@@ -108,7 +108,7 @@ namespace VAS.Video.Utils
 			return outputFilepath;
 		}
 
-		void Error (string error)
+		protected virtual void Error (string error)
 		{
 			MessageDialog md = new MessageDialog (parent, DialogFlags.Modal, MessageType.Error,
 				                   ButtonsType.Ok,
@@ -118,14 +118,14 @@ namespace VAS.Video.Utils
 			Cancel ();
 		}
 
-		void HandleRemuxerError (object sender, string error)
+		protected virtual void HandleRemuxerError (object sender, string error)
 		{
 			Application.Invoke (delegate {
 				Error (error);
 			});
 		}
 
-		void HandleRemuxerProgress (float progress)
+		protected virtual void HandleRemuxerProgress (float progress)
 		{
 			if (progress == 1) {
 				Application.Invoke (delegate {
@@ -153,19 +153,19 @@ namespace VAS.Video.Utils
 			throw new Exception ("Muxer format not supported");
 		}
 
-		private bool Update ()
+		protected virtual bool Update ()
 		{
 			pb.Pulse ();			
 			return true;
 		}
 
-		private void Stop ()
+		protected virtual void Stop ()
 		{
 			GLib.Source.Remove (timeout);
 			dialog.Destroy ();
 		}
 
-		void Cancel ()
+		protected virtual void Cancel ()
 		{
 			cancelled = true;
 			Stop ();

@@ -22,12 +22,13 @@ using VAS.UI.Helpers;
 
 namespace VAS.UI
 {
-	[System.ComponentModel.Category ("LongoMatch")]
+	[System.ComponentModel.Category ("VAS")]
 	[System.ComponentModel.ToolboxItem (true)]
+
 	public partial class PlayerCapturerBin : Gtk.Bin
 	{
-		IPlayerView playerview;
-		PlayerViewOperationMode mode;
+		protected IPlayerView playerview;
+		protected PlayerViewOperationMode mode;
 
 		public PlayerCapturerBin ()
 		{
@@ -51,7 +52,7 @@ namespace VAS.UI
 			base.OnDestroyed ();
 		}
 
-		public IPlayerController Player {
+		public virtual IPlayerController Player {
 			set {
 				Player.ElementLoadedEvent += HandleElementLoadedEvent;
 				Player.PrepareViewEvent += HandlePrepareViewEvent;
@@ -62,7 +63,7 @@ namespace VAS.UI
 			}
 		}
 
-		public ICapturerBin Capturer {
+		public virtual ICapturerBin Capturer {
 			get {
 				return capturerbin;
 			}
@@ -81,7 +82,7 @@ namespace VAS.UI
 			}
 		}
 
-		public void ShowPlayer ()
+		public virtual void ShowPlayer ()
 		{
 			playerbox.Visible = true;
 			replayhbox.Visible = false;
@@ -91,24 +92,24 @@ namespace VAS.UI
 				capturerbox.Visible = false;
 		}
 
-		public void ShowCapturer ()
+		public virtual void ShowCapturer ()
 		{
 			playerbox.Visible = false;
 			livebox.Visible = false;
 			capturerbox.Visible = true;
 		}
 
-		public void AttachPlayer (bool attached)
+		public virtual void AttachPlayer (bool attached)
 		{
 			playerview.PlayerAttached = attached;
 		}
 
-		void HandlePrepareViewEvent ()
+		protected virtual void HandlePrepareViewEvent ()
 		{
 			ShowPlayer ();
 		}
 
-		void HandleElementLoadedEvent (object element, bool hasNext)
+		protected virtual void HandleElementLoadedEvent (object element, bool hasNext)
 		{
 			if (element == null) {
 				if (mode == PlayerViewOperationMode.Analysis) {
@@ -118,14 +119,14 @@ namespace VAS.UI
 				Player.Pause ();
 				ShowCapturer ();
 			} else {
-				if (element is TimelineEventLongoMatch && mode == PlayerViewOperationMode.LiveAnalysisReview) {
-					ShowPlayer ();
-					livebox.Visible = replayhbox.Visible = true;
-				}
+//				if (element is TimelineEventLongoMatch && mode == PlayerViewOperationMode.LiveAnalysisReview) {
+//					ShowPlayer ();
+//					livebox.Visible = replayhbox.Visible = true;
+//				}
 			}
 		}
 
-		protected void OnBacktolivebuttonClicked (object sender, System.EventArgs e)
+		protected virtual void OnBacktolivebuttonClicked (object sender, System.EventArgs e)
 		{
 			Player.Pause ();
 			ShowCapturer ();

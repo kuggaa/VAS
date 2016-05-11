@@ -15,15 +15,15 @@ namespace VAS.UI
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);
-			// Widget LongoMatch.Gui.VolumeWindow
-			this.Name = "LongoMatch.Gui.VolumeWindow";
+			// Widget VAS.UI.VolumeWindow
+			this.Name = "VAS.UI.VolumeWindow";
 			this.Title = "";
 			this.WindowPosition = ((global::Gtk.WindowPosition)(2));
 			this.Decorated = false;
 			this.DestroyWithParent = true;
 			this.SkipPagerHint = true;
 			this.SkipTaskbarHint = true;
-			// Container child LongoMatch.Gui.VolumeWindow.Gtk.Container+ContainerChild
+			// Container child VAS.UI.VolumeWindow.Gtk.Container+ContainerChild
 			this.vbox2 = new global::Gtk.VBox ();
 			this.vbox2.Name = "vbox2";
 			// Container child vbox2.Gtk.Box+BoxChild

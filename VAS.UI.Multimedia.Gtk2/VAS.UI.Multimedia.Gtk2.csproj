@@ -5,32 +5,31 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{473E7B85-AF42-40E8-BE21-46FF6CCC34D0}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>VAS.UI.Multimedia.Gtk2</RootNamespace>
+    <RootNamespace>VAS</RootNamespace>
+    <ApplicationIcon>.</ApplicationIcon>
+    <CodePage>65001</CodePage>
     <AssemblyName>VAS.UI.Multimedia.Gtk2</AssemblyName>
+    <AssemblyOriginatorKeyFile>..\..\..\Proyectos\longomatch\CesarPlayer</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <CodePage>65001</CodePage>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <AssemblyOriginatorKeyFile>..\..\..\Proyectos\longomatch\CesarPlayer</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+    <OutputPath>..\bin</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <Execution>
       <Execution clr-version="Net_2_0" />
     </Execution>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin</OutputPath>
+    <OutputPath>..\bin</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Execution>
@@ -40,25 +39,25 @@
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Gui\" />
-    <Folder Include="Gui\Utils\" />
+    <Folder Include="UI\" />
+    <Folder Include="UI\Utils\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Gui\CapturerBin.cs" />
-    <Compile Include="Gui\VolumeWindow.cs" />
+    <Compile Include="UI\CapturerBin.cs" />
+    <Compile Include="UI\VolumeWindow.cs" />
     <Compile Include="gtk-gui\generated.cs" />
-    <Compile Include="gtk-gui\LongoMatch.Gui.CapturerBin.cs" />
-    <Compile Include="gtk-gui\LongoMatch.Gui.VolumeWindow.cs" />
-    <Compile Include="Gui\PlayerCapturerBin.cs" />
-    <Compile Include="gtk-gui\LongoMatch.Gui.PlayerCapturerBin.cs" />
-    <Compile Include="Gui\Utils\Remuxer.cs" />
+    <Compile Include="gtk-gui\VAS.UI.CapturerBin.cs" />
+    <Compile Include="gtk-gui\VAS.UI.VolumeWindow.cs" />
+    <Compile Include="UI\PlayerCapturerBin.cs" />
+    <Compile Include="gtk-gui\VAS.UI.PlayerCapturerBin.cs" />
+    <Compile Include="UI\Utils\Remuxer.cs" />
     <Compile Include="MultimediaToolkit.cs" />
-    <Compile Include="Gui\Utils\FramesCapturer.cs" />
-    <Compile Include="Gui\VideoWindow.cs" />
-    <Compile Include="gtk-gui\LongoMatch.Gui.VideoWindow.cs" />
-    <Compile Include="Gui\PlayerView.cs" />
-    <Compile Include="gtk-gui\LongoMatch.Gui.PlayerView.cs" />
-    <Compile Include="..\..\AssemblyInfo\AssemblyInfo.cs">
+    <Compile Include="UI\Utils\FramesCapturer.cs" />
+    <Compile Include="UI\VideoWindow.cs" />
+    <Compile Include="gtk-gui\VAS.UI.VideoWindow.cs" />
+    <Compile Include="UI\PlayerView.cs" />
+    <Compile Include="gtk-gui\VAS.UI.PlayerView.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
   </ItemGroup>
@@ -102,6 +101,14 @@
     <ProjectReference Include="..\VAS.Multimedia\VAS.Multimedia.csproj">
       <Project>{269608A7-5DBC-4A2C-B7AF-D094B6FA88AC}</Project>
       <Name>VAS.Multimedia</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VAS.Services.Net45\VAS.Services.Net45.csproj">
+      <Project>{153BFD3F-6E06-451B-AD79-6C207762BBBB}</Project>
+      <Name>VAS.Services.Net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VAS.Drawing.Cairo\VAS.Drawing.Cairo.csproj">
+      <Project>{AE98609B-353C-4CE4-A5B7-606BB4EE3576}</Project>
+      <Name>VAS.Drawing.Cairo</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

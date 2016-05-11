@@ -6,7 +6,7 @@ namespace VAS.UI
 	{
 		private global::Gtk.VBox vbox1;
 		
-		private global::LongoMatch.Gui.VideoWindow videowindow;
+		private global::VAS.UI.VideoWindow videowindow;
 		
 		private global::Gtk.Alignment alignment1;
 		
@@ -73,15 +73,15 @@ namespace VAS.UI
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);
-			// Widget LongoMatch.Gui.CapturerBin
+			// Widget VAS.UI.CapturerBin
 			global::Stetic.BinContainer.Attach (this);
-			this.Name = "LongoMatch.Gui.CapturerBin";
-			// Container child LongoMatch.Gui.CapturerBin.Gtk.Container+ContainerChild
+			this.Name = "VAS.UI.CapturerBin";
+			// Container child VAS.UI.CapturerBin.Gtk.Container+ContainerChild
 			this.vbox1 = new global::Gtk.VBox ();
 			this.vbox1.Name = "vbox1";
 			this.vbox1.Spacing = 6;
 			// Container child vbox1.Gtk.Box+BoxChild
-			this.videowindow = new global::LongoMatch.Gui.VideoWindow ();
+			this.videowindow = new global::VAS.UI.VideoWindow ();
 			this.videowindow.Events = ((global::Gdk.EventMask)(256));
 			this.videowindow.Name = "videowindow";
 			this.videowindow.Ratio = 0F;
