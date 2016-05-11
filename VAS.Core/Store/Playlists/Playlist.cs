@@ -45,8 +45,8 @@ namespace VAS.Core.Store.Playlists
 
 		#region Properties
 
-		[LongoMatchPropertyPreload]
-		[LongoMatchPropertyIndex (0)]
+		[PropertyPreload]
+		[PropertyIndex (0)]
 		public string Name {
 			get;
 			set;
@@ -93,7 +93,7 @@ namespace VAS.Core.Store.Playlists
 		/// <summary>
 		/// Duration in time for the playlist.
 		/// </summary>
-		[LongoMatchPropertyPreload]
+		[PropertyPreload]
 		public Time Duration {
 			get;
 			set;

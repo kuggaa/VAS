@@ -20,9 +20,9 @@ using System;
 namespace VAS.Core.Serialization
 {
 	[AttributeUsage (AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = false)]
-	public class LongoMatchPropertyIndex: Attribute
+	public class PropertyIndex: Attribute
 	{
-		public LongoMatchPropertyIndex (int index)
+		public PropertyIndex (int index)
 		{
 			Index = index;
 		}

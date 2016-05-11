@@ -20,7 +20,7 @@ using System;
 namespace VAS.Core.Serialization
 {
 	[AttributeUsage (AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = false)]
-	public class LongoMatchPropertyPreload: Attribute
+	public class PropertyPreload: Attribute
 	{
 	}
 }

@@ -116,8 +116,8 @@ namespace VAS.Core.Store.Templates
 		/// <summary>
 		/// The name of the dashboard
 		/// </summary>
-		[LongoMatchPropertyIndex (0)]
-		[LongoMatchPropertyPreload]
+		[PropertyIndex (0)]
+		[PropertyPreload]
 		public string Name {
 			get;
 			set;
@@ -138,7 +138,7 @@ namespace VAS.Core.Store.Templates
 		/// <summary>
 		/// The icon used for this dashboard
 		/// </summary>
-		[LongoMatchPropertyPreload]
+		[PropertyPreload]
 		public Image Image {
 			get;
 			set;

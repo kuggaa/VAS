@@ -56,8 +56,8 @@ namespace VAS.Core.Store
 		/// <summary>
 		/// A short description of the time node
 		/// </summary>
-		[LongoMatchPropertyPreload]
-		[LongoMatchPropertyIndex (0)]
+		[PropertyPreload]
+		[PropertyIndex (0)]
 		public virtual string Name {
 			get;
 			set;

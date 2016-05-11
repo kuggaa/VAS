@@ -187,8 +187,8 @@ namespace VAS.Core.Store
 		/// <summary>
 		/// The <see cref="EventType"/> in wich this event is tagged
 		/// </summary>
-		[LongoMatchPropertyPreload]
-		[LongoMatchPropertyIndex (1)]
+		[PropertyPreload]
+		[PropertyIndex (1)]
 		public EventType EventType {
 			get;
 			set;

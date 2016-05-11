@@ -48,22 +48,22 @@ namespace VAS.Core.Store
 		/// <summary>
 		/// My name
 		/// </summary>
-		[LongoMatchPropertyIndex (0)]
-		[LongoMatchPropertyPreload]
+		[PropertyIndex (0)]
+		[PropertyPreload]
 		public string Name {
 			get;
 			set;
 		}
 
-		[LongoMatchPropertyIndex (1)]
-		[LongoMatchPropertyPreload]
+		[PropertyIndex (1)]
+		[PropertyPreload]
 		public string LastName {
 			get;
 			set;
 		}
 
-		[LongoMatchPropertyIndex (2)]
-		[LongoMatchPropertyPreload]
+		[PropertyIndex (2)]
+		[PropertyPreload]
 		public string NickName {
 			get;
 			set;
@@ -72,7 +72,7 @@ namespace VAS.Core.Store
 		/// <summary>
 		/// My photo
 		/// </summary>
-		[LongoMatchPropertyPreload]
+		[PropertyPreload]
 		public Image Photo {
 			get;
 			set;

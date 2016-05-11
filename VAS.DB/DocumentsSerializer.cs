@@ -543,7 +543,7 @@ namespace VAS.DB
 			JsonProperty property = base.CreateProperty (member, memberSerialization);
 			if (property.DeclaringType == context.ParentType) {
 				if (preservePreloadProperties &&
-				    property.AttributeProvider.GetAttributes (typeof(LongoMatchPropertyPreload), true).Any ()) {
+				    property.AttributeProvider.GetAttributes (typeof(PropertyPreload), true).Any ()) {
 					property.Ignored = true;
 				}
 			}

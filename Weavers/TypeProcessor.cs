@@ -50,7 +50,7 @@ public class TypeProcessor
 			}
 
 			if (property.CustomAttributes.
-				FirstOrDefault (a => a.AttributeType.Name == "LongoMatchPropertyPreload") != null) {
+				FirstOrDefault (a => a.AttributeType.Name == "PropertyPreload") != null) {
 				logInfo ("\tSkip preloaded property: " + property.Name);
 				continue;
 			}
