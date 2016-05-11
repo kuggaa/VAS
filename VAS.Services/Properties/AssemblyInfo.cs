@@ -21,7 +21,7 @@ using System.Runtime.CompilerServices;
 // Information about this assembly is defined by the following attributes.
 // Change them to the values specific to your project.
 
-[assembly: AssemblyTitle ("VAS.Services.Net45")]
+[assembly: AssemblyTitle ("VAS.Services")]
 [assembly: AssemblyDescription ("")]
 [assembly: AssemblyConfiguration ("")]
 [assembly: AssemblyCompany ("")]
@@ -36,9 +36,10 @@ using System.Runtime.CompilerServices;
 
 [assembly: AssemblyVersion ("1.0.*")]
 
-// The following attributes are used to specify the signing key for the assembly,
-// if desired. See the Mono documentation for more information about signing.
-
-//[assembly: AssemblyDelaySign(false)]
-//[assembly: AssemblyKeyFile("")]
-
+// The following attributes specify the key for the sign of your assembly. See the
+// .NET Framework documentation for more information about signing.
+// This is not required, if you don't want signing let these attributes like they're.
+[assembly: AssemblyDelaySign (false)]
+[assembly: AssemblyKeyFile ("")]
+[assembly: InternalsVisibleTo ("VAS.Tests")]
+[assembly: InternalsVisibleTo ("Tests")]

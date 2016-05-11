@@ -39,7 +39,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <Import Project="..\VAS.Services\VAS.Services.projitems" Label="Shared" Condition="Exists('..\VAS.Services\VAS.Services.projitems')" />
+  <Import Project="VAS.Services.projitems" Label="Shared" Condition="Exists('VAS.Services.projitems')" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\VAS.Core\VAS.Core.Net45.csproj">
