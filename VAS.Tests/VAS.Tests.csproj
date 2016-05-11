@@ -104,6 +104,7 @@
     <Compile Include="Core\Store\TestTimeNode.cs" />
     <Compile Include="Core\Store\TestTimer.cs" />
     <Compile Include="Services\TestPlayerController.cs" />
+    <Compile Include="Services\TestPlaylistManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

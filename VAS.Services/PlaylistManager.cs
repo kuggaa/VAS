@@ -28,25 +28,21 @@ using Timer = System.Threading.Timer;
 
 namespace VAS.Services
 {
-	public abstract class PlaylistManagerBase: IService
+	public class PlaylistManager: IService
 	{
 		EventsFilter filter;
 
-		public PlaylistManagerBase ()
-		{
-		}
-
-		public virtual IPlayerController Player {
+		public IPlayerController Player {
 			get;
 			set;
 		}
 
-		public virtual Project OpenedProject {
+		public Project OpenedProject {
 			get;
 			set;
 		}
 
-		public virtual ProjectType OpenedProjectType {
+		public ProjectType OpenedProjectType {
 			get;
 			set;
 		}
@@ -60,14 +56,6 @@ namespace VAS.Services
 				if (playing) {
 					Player.Play ();
 				}
-			}
-		}
-
-		protected virtual void HandlePlayChanged (TimeNode tNode, Time time)
-		{
-			LoadPlay (tNode as TimelineEvent, time, false);
-			if (filter != null) {
-				filter.Update ();
 			}
 		}
 
@@ -117,7 +105,36 @@ namespace VAS.Services
 				Player.LoadPlaylistEvent (playlist, element, playing);
 		}
 
-		protected abstract void HandleLoadPlayEvent (TimelineEvent play);
+		protected virtual void HandlePlayChanged (TimeNode tNode, Time time)
+		{
+			if (tNode is TimelineEvent) {
+				LoadPlay (tNode as TimelineEvent, time, false);
+				if (filter != null) {
+					filter.Update ();
+				}
+			}
+		}
+
+		protected virtual void HandleLoadPlayEvent (TimelineEvent play)
+		{
+			if (OpenedProject == null || OpenedProjectType == ProjectType.FakeCaptureProject) {
+				return;
+			}
+
+			if (play?.Duration.MSeconds == 0) {
+				// These events don't have duration, we start playing as if it was a seek
+				Player.Switch (null, null, null);
+				Player.UnloadCurrentEvent ();
+				Player.Seek (play.EventTime, true);
+				Player.Play ();
+			} else {
+				if (play != null) {
+					LoadPlay (play, new Time (0), true);
+				} else if (Player != null) {
+					Player.UnloadCurrentEvent ();
+				}
+			}
+		}
 
 		protected virtual void HandleNext (Playlist playlist)
 		{
@@ -199,8 +216,6 @@ namespace VAS.Services
 			}
 		}
 
-		protected abstract void HandleKeyPressed (object sender, HotKey key);
-
 		#region IService
 
 		public virtual int Level {
@@ -230,7 +245,6 @@ namespace VAS.Services
 			Config.EventsBroker.TimeNodeChanged += HandlePlayChanged;
 			Config.EventsBroker.SeekEvent += HandleSeekEvent;
 			Config.EventsBroker.TogglePlayEvent += HandleTogglePlayEvent;
-			Config.EventsBroker.KeyPressed += HandleKeyPressed;
 
 			return true;
 		}
@@ -250,7 +264,6 @@ namespace VAS.Services
 			Config.EventsBroker.TimeNodeChanged -= HandlePlayChanged;
 			Config.EventsBroker.SeekEvent -= HandleSeekEvent;
 			Config.EventsBroker.TogglePlayEvent -= HandleTogglePlayEvent;
-			Config.EventsBroker.KeyPressed -= HandleKeyPressed;
 
 			return true;
 		}

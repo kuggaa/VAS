@@ -12,6 +12,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)EventsManagerBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PlayerController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UpdatesNotifier.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)PlaylistManagerBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PlaylistManager.cs" />
   </ItemGroup>
 </Project>

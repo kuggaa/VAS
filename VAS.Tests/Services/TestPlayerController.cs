@@ -44,7 +44,7 @@ namespace VAS.Tests.Services
 		TimelineEvent evt2;
 		PlaylistImage plImage;
 		Playlist playlist;
-		PlaylistManagerBase plMan;
+		PlaylistManager plMan;
 
 		int elementLoaded;
 
@@ -108,7 +108,7 @@ namespace VAS.Tests.Services
 
 			playlist.SetActive (playlist.Elements [0]);
 
-			plMan = new Utils.PlaylistManagerDummy ();
+			plMan = new PlaylistManager ();
 			plMan.Player = player;
 			plMan.Start ();
 
@@ -1354,7 +1354,7 @@ namespace VAS.Tests.Services
 		[Test ()]
 		public void TestPresentationSeekSameElement ()
 		{
-			var plMan = new Utils.PlaylistManagerDummy ();
+			var plMan = new PlaylistManager ();
 			plMan.Player = player;
 			plMan.Start ();
 

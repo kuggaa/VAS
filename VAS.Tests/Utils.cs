@@ -17,19 +17,16 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
-
-//using LongoMatch.Core.Store;
-//using LongoMatch.Core.Store.Templates;
 using NUnit.Framework;
 using VAS.Core.Common;
+using VAS.Core.Filters;
 using VAS.Core.Interfaces;
 using VAS.Core.Serialization;
 using VAS.Core.Store;
 using VAS.Core.Store.Templates;
-using System.Collections.ObjectModel;
-using VAS.Services;
 
 namespace VAS.Tests
 {
@@ -43,6 +40,26 @@ namespace VAS.Tests
 		public class DashboardDummy : Dashboard
 		{
 			//dummy class for abstract validation. Copied from LongoMatch and adapted to VAS.
+		}
+
+		public class EventsFilterDummy : EventsFilter
+		{
+			//dummy class for abstract validation.
+			public EventsFilterDummy (Project project) : base (project)
+			{
+			}
+
+			#region implemented abstract members of EventsFilter
+
+			protected override void UpdateVisiblePlayers ()
+			{
+			}
+
+			protected override void UpdateVisiblePlays ()
+			{
+			}
+
+			#endregion
 		}
 
 		//dummy class for abstract validation. Copied ffrom LongoMatch and adapted to VAS.
@@ -88,32 +105,6 @@ namespace VAS.Tests
 
 			#endregion
 		}
-
-		public class PlaylistManagerDummy : PlaylistManagerBase
-		{
-			#region implemented abstract members of PlaylistManagerBase
-
-			protected override void HandleLoadPlayEvent (TimelineEvent play)
-			{
-				if (OpenedProject == null || OpenedProjectType == ProjectType.FakeCaptureProject) {
-					return;
-				}
-				if (play != null) {
-					LoadPlay (play as TimelineEvent, new Time (0), true);
-				} else if (Player != null) {
-					Player.UnloadCurrentEvent ();
-				}
-				Config.EventsBroker.EmitEventLoaded (play as TimelineEvent);
-			}
-
-			protected override void HandleKeyPressed (object sender, HotKey key)
-			{
-			}
-
-			#endregion
-		}
-
-
 
 		static bool debugLine = false;
 
