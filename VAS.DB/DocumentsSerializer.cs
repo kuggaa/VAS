@@ -316,7 +316,7 @@ namespace VAS.DB
 			settings.ObjectCreationHandling = ObjectCreationHandling.Replace;
 			settings.Converters.Add (new ImageConverter (rev));
 			settings.Converters.Add (new VersionConverter ());
-			settings.Converters.Add (new LongoMatchConverter (false));
+			settings.Converters.Add (new VASConverter (false));
 			settings.Converters.Add (new StorablesConverter (objType, context));
 			return settings;
 		}

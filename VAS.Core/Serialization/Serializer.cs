@@ -139,22 +139,22 @@ namespace VAS.Core.Serialization
 				settings.TypeNameHandling = TypeNameHandling.Objects;
 				settings.ObjectCreationHandling = ObjectCreationHandling.Replace;
 				settings.Converters.Add (new VersionConverter ());
-				settings.Converters.Add (new LongoMatchConverter (true));
+				settings.Converters.Add (new VASConverter (true));
 				//settings.ReferenceResolver = new IdReferenceResolver ();
 				return settings;
 			}
 		}
 	}
 
-	public class LongoMatchConverter : JsonConverter
+	public class VASConverter : JsonConverter
 	{
 		bool handleImages;
 
-		public LongoMatchConverter () : this (true)
+		public VASConverter () : this (true)
 		{
 		}
 
-		public LongoMatchConverter (bool handleImages)
+		public VASConverter (bool handleImages)
 		{
 			this.handleImages = handleImages;
 		}

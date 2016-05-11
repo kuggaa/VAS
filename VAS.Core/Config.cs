@@ -325,7 +325,7 @@ namespace VAS
 	}
 
 	[Serializable]
-	[JsonConverter (typeof(LongoMatchConverter))]
+	[JsonConverter (typeof(VASConverter))]
 	public class ConfigState
 	{
 		public bool fastTagging;
