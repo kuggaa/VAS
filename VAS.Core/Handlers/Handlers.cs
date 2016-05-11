@@ -144,12 +144,14 @@ namespace VAS.Core.Handlers
 	public delegate void BackEventHandle ();
 	/* Camera dragging */
 	public delegate void CameraDraggedHandler (MediaFile file,TimeNode timenode);
+
+	/* Show project stats */
 	public delegate void ShowTimersMenuHandler (List<TimeNode> timenodes);
 	public delegate void ShowTimerMenuHandler (Timer timer,Time time);
+	public delegate void ShowTimelineMenuHandler (List<TimelineEvent> plays,EventType cat,Time time);
 
 	/* Project Events */
 	public delegate void SaveProjectHandler (Project project,ProjectType projectType);
 	public delegate bool CloseOpenendProjectHandler ();
 	public delegate void ShowProjectStats (Project project);
-
 }

@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Widgets\" />
+    <Folder Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Widgets\Blackboard.cs" />
@@ -19,5 +20,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\CanvasObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimelineObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Widgets\TimelineLabels.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\LabelObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimeNodeObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\CameraObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimelineEventObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\NeedleObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Widgets\Timerule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Widgets\PlaysTimeline.cs" />
   </ItemGroup>
 </Project>
