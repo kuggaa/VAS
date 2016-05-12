@@ -286,5 +286,17 @@ namespace VAS.UI.Component
 			(Config.EventsBroker).EmitLoadEvent (null);
 			(Config.EventsBroker).EmitSeekEvent (pos, accurate, synchronous, throttled);
 		}
+
+		/// <summary>
+		///  Temporal, until we have a panel style as in Longomatch (AnalysisComponent, CodingWidget, PlaylistManager ...)
+		/// </summary>
+		/// <param name="mf">Mf.</param>
+		public virtual void SetMediaFile (MediaFile mf)
+		{
+			timeoutID = GLib.Timeout.Add (TIMEOUT_MS, UpdateTime);
+			timerule.Duration = mf.Duration;
+
+			QueueDraw ();
+		}
 	}
 }
