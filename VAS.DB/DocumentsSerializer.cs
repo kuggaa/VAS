@@ -43,7 +43,7 @@ namespace VAS.DB
 			set;
 		}
 
-		public static void AddTypeTranslation(Type fromType, Type toType)
+		public static void AddTypeTranslation (Type fromType, Type toType)
 		{
 			if (TypeTranslation.ContainsKey (fromType)) {
 				TypeTranslation [fromType] = toType;
@@ -326,7 +326,6 @@ namespace VAS.DB
 			return JsonSerializer.Create (GetSerializerSettings (objType, context, rev));
 		}
 
-		#pragma warning disable 0618
 		static string GetDocumentType (IStorable storable)
 		{
 			Type type;
@@ -346,7 +345,6 @@ namespace VAS.DB
 			}
 			return type.Name;
 		}
-		#pragma warning restore 0618
 	}
 
 	/// <summary>
