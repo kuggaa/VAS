@@ -49,8 +49,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IStorage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IStorageManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ITemplates.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Serialization\LongoMatchPropertyIndex.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Serialization\LongoMatchPropertyPreload.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\ObjectChangedParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\Serializer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\StorableNode.cs" />
@@ -98,6 +96,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)..\AssemblyInfo\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Serialization\PropertyIndex.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Serialization\PropertyPreload.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
