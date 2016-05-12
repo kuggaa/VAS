@@ -115,10 +115,9 @@ namespace VAS.Tests.DB
 			// Remove the StorageInfo doc to get more understandable document count results
 			db.GetDocument (Guid.Empty.ToString ()).Delete ();
 
-			Environment.SetEnvironmentVariable ("LONGOMATCH_HOME", tmpPath);
-			Environment.SetEnvironmentVariable ("LGM_UNINSTALLED", "1");
-			//CoreServices.Init ();
-			Config.Init ();
+			Config.baseDirectory = tmpPath;
+			Config.homeDirectory = homePath;
+
 			/* Check default folders */
 			CheckDirs ();
 		}
