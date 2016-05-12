@@ -131,6 +131,11 @@ namespace VAS.UI
 			Player.Pause ();
 			ShowCapturer ();
 		}
+
+		public void ShowDettachButtonInPlayer (bool show)
+		{
+			playerview.ShowDettachButton (show);
+		}
 	}
 }
 

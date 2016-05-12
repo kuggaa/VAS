@@ -28,6 +28,8 @@ namespace VAS.Core.Interfaces.GUI
 		bool SupportsMultipleCameras { get; }
 
 		bool PlayerAttached { set; }
+
+		void ShowDettachButton (bool show);
 	}
 }
 
