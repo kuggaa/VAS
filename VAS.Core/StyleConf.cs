@@ -20,6 +20,7 @@ using VAS.Core.Serialization;
 
 namespace VAS.Core.Common
 {
+	// FIXME: Split this in LongoMatch-specific & VAS styles
 	public class StyleConf
 	{
 		public const string IMAGE_EXT = Constants.IMAGE_EXT;
