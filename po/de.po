@@ -1,0 +1,112 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+# Claus Marxmeier <alladin@routeme.de>, 2014
+# Franziska Nagel <franziskanagel@gmail.com>, 2015
+# Ron Rover <ronny.rover@yahoo.com>, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: LongoMatch\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-05-12 18:38+0200\n"
+"PO-Revision-Date: 2016-03-06 21:02+0000\n"
+"Last-Translator: ylatuya <ylatuya@gmail.com>\n"
+"Language-Team: German (http://www.transifex.com/ylatuya/longomatch/language/"
+"de/)\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../VAS.Core/Common/Device.cs:76
+msgid "Default"
+msgstr "Voreinstellung"
+
+#: ../VAS.Core/Common/Exceptions.cs:28
+msgid "Database locked:"
+msgstr "Datenbank gesperrt:"
+
+#: ../VAS.Core/Common/Exceptions.cs:37
+msgid "Unknown database error:"
+msgstr "Unbekannter Datenbankfehler:"
+
+#: ../VAS.Core/Common/Exceptions.cs:46
+msgid "Project loading failed:"
+msgstr "Laden des Projektes fehlgeschlagen:"
+
+#: ../VAS.Core/Common/Exceptions.cs:55
+msgid "Project file not found:\n"
+msgstr "Projektdatei nicht gefunden\n"
+
+#: ../VAS.Core/Common/Exceptions.cs:63
+msgid "The name contains invalid characters: "
+msgstr "Der Name enthält ungültige Zeichen:"
+
+#: ../VAS.Core/Common/Exceptions.cs:71
+msgid "Hotkey already in use: "
+msgstr "Tastenkombination wird bereits verwendet:"
+
+#: ../VAS.Core/Common/VideoStandards.cs:58
+msgid "Keep original size"
+msgstr "Originalgröße beibehalten"
+
+#: ../VAS.Core/Store/EventType.cs:84 ../VAS.Core/Store/EventType.cs:92
+msgid "Sort by name"
+msgstr "Nach Name sortieren"
+
+#: ../VAS.Core/Store/EventType.cs:86 ../VAS.Core/Store/EventType.cs:96
+msgid "Sort by start time"
+msgstr "Nach Startzeit sortieren"
+
+#: ../VAS.Core/Store/EventType.cs:88 ../VAS.Core/Store/EventType.cs:98
+msgid "Sort by stop time"
+msgstr "Nach Stoppzeit sortieren"
+
+#: ../VAS.Core/Store/EventType.cs:90 ../VAS.Core/Store/EventType.cs:100
+msgid "Sort by duration"
+msgstr "Nach Dauer sortieren"
+
+#: ../VAS.Core/Store/HotKey.cs:141
+msgid "Not defined"
+msgstr "Nicht definiert"
+
+#: ../VAS.Core/Store/MediaFileSet.cs:131
+msgid "Main camera angle"
+msgstr "Hauptkamerawinkel"
+
+#: ../VAS.Core/Store/MediaFileSet.cs:134
+msgid "Angle 2"
+msgstr "Winkel 2"
+
+#: ../VAS.Core/Store/MediaFileSet.cs:137
+msgid "Angle 3"
+msgstr "Winkel 3"
+
+#: ../VAS.Core/Store/MediaFileSet.cs:140
+msgid "Angle 4"
+msgstr "Winkel 4"
+
+#: ../VAS.Core/Store/Project.cs:367
+msgid "The file you are trying to load is not a valid project"
+msgstr "Die zu ladende Datei ist kein gültiges Projekt"
+
+#: ../VAS.Core/Store/Templates/Dashboard.cs:259
+msgid "Success"
+msgstr "Erfolg"
+
+#: ../VAS.Core/Store/Templates/Dashboard.cs:260
+#: ../VAS.Core/Store/Templates/Dashboard.cs:262
+msgid "Outcome"
+msgstr "Ergebnis"
+
+#: ../VAS.Core/Store/Templates/Dashboard.cs:261
+msgid "Failure"
+msgstr "Fehler"
+
+#: ../VAS.DB/CouchbaseStorage.cs:155 ../VAS.DB/CouchbaseStorage.cs:215
+#: ../VAS.DB/CouchbaseStorage.cs:256
+msgid "Error deleting object from the storage"
+msgstr ""

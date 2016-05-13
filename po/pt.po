@@ -1,0 +1,109 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: LongoMatch\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-05-12 18:38+0200\n"
+"PO-Revision-Date: 2016-02-29 15:58+0000\n"
+"Last-Translator: ylatuya <ylatuya@gmail.com>\n"
+"Language-Team: Portuguese (http://www.transifex.com/ylatuya/longomatch/"
+"language/pt/)\n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../VAS.Core/Common/Device.cs:76
+msgid "Default"
+msgstr ""
+
+#: ../VAS.Core/Common/Exceptions.cs:28
+msgid "Database locked:"
+msgstr ""
+
+#: ../VAS.Core/Common/Exceptions.cs:37
+msgid "Unknown database error:"
+msgstr ""
+
+#: ../VAS.Core/Common/Exceptions.cs:46
+msgid "Project loading failed:"
+msgstr ""
+
+#: ../VAS.Core/Common/Exceptions.cs:55
+msgid "Project file not found:\n"
+msgstr ""
+
+#: ../VAS.Core/Common/Exceptions.cs:63
+msgid "The name contains invalid characters: "
+msgstr ""
+
+#: ../VAS.Core/Common/Exceptions.cs:71
+msgid "Hotkey already in use: "
+msgstr ""
+
+#: ../VAS.Core/Common/VideoStandards.cs:58
+msgid "Keep original size"
+msgstr "Manter o tamanho original"
+
+#: ../VAS.Core/Store/EventType.cs:84 ../VAS.Core/Store/EventType.cs:92
+msgid "Sort by name"
+msgstr "Ordenar por nome"
+
+#: ../VAS.Core/Store/EventType.cs:86 ../VAS.Core/Store/EventType.cs:96
+msgid "Sort by start time"
+msgstr "Ordenador por tempo incial"
+
+#: ../VAS.Core/Store/EventType.cs:88 ../VAS.Core/Store/EventType.cs:98
+msgid "Sort by stop time"
+msgstr "Ordenar por tempo final"
+
+#: ../VAS.Core/Store/EventType.cs:90 ../VAS.Core/Store/EventType.cs:100
+msgid "Sort by duration"
+msgstr "Ordenar por duração"
+
+#: ../VAS.Core/Store/HotKey.cs:141
+msgid "Not defined"
+msgstr "Não definida"
+
+#: ../VAS.Core/Store/MediaFileSet.cs:131
+msgid "Main camera angle"
+msgstr ""
+
+#: ../VAS.Core/Store/MediaFileSet.cs:134
+msgid "Angle 2"
+msgstr ""
+
+#: ../VAS.Core/Store/MediaFileSet.cs:137
+msgid "Angle 3"
+msgstr ""
+
+#: ../VAS.Core/Store/MediaFileSet.cs:140
+msgid "Angle 4"
+msgstr ""
+
+#: ../VAS.Core/Store/Project.cs:367
+msgid "The file you are trying to load is not a valid project"
+msgstr "O ficheiro que está a tentar carregar não é um projecto válido"
+
+#: ../VAS.Core/Store/Templates/Dashboard.cs:259
+msgid "Success"
+msgstr ""
+
+#: ../VAS.Core/Store/Templates/Dashboard.cs:260
+#: ../VAS.Core/Store/Templates/Dashboard.cs:262
+msgid "Outcome"
+msgstr ""
+
+#: ../VAS.Core/Store/Templates/Dashboard.cs:261
+msgid "Failure"
+msgstr ""
+
+#: ../VAS.DB/CouchbaseStorage.cs:155 ../VAS.DB/CouchbaseStorage.cs:215
+#: ../VAS.DB/CouchbaseStorage.cs:256
+msgid "Error deleting object from the storage"
+msgstr ""

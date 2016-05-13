@@ -1,0 +1,117 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+# eugen pop <eugen_tennis@yahoo.com>, 2014
+# eugen pop <eugen_tennis@yahoo.com>, 2014
+# Maurizio Napolitano <maurizio.napolitano@okfn.org>, 2014
+# Natalia Venero <nvenero@fluendo.com>, 2016
+# Pasquale Oliva <pasqualeoliva1985@gmail.com>, 2015
+# Pasquale Oliva <pasqualeoliva1985@gmail.com>, 2015
+# ylatuya <ylatuya@gmail.com>, 2015
+# ylatuya <ylatuya@gmail.com>, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: LongoMatch\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-05-12 18:38+0200\n"
+"PO-Revision-Date: 2016-02-29 15:58+0000\n"
+"Last-Translator: ylatuya <ylatuya@gmail.com>\n"
+"Language-Team: Italian (http://www.transifex.com/ylatuya/longomatch/language/"
+"it/)\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../VAS.Core/Common/Device.cs:76
+msgid "Default"
+msgstr "Predefinito"
+
+#: ../VAS.Core/Common/Exceptions.cs:28
+msgid "Database locked:"
+msgstr "Database bloccato:"
+
+#: ../VAS.Core/Common/Exceptions.cs:37
+msgid "Unknown database error:"
+msgstr "Errore sconosciuto nel database:"
+
+#: ../VAS.Core/Common/Exceptions.cs:46
+msgid "Project loading failed:"
+msgstr "Errore nel caricamento del progetto:"
+
+#: ../VAS.Core/Common/Exceptions.cs:55
+msgid "Project file not found:\n"
+msgstr "File del progetto non trovato:\n"
+
+#: ../VAS.Core/Common/Exceptions.cs:63
+msgid "The name contains invalid characters: "
+msgstr "Il nome contiene caratteri invalidi:"
+
+#: ../VAS.Core/Common/Exceptions.cs:71
+msgid "Hotkey already in use: "
+msgstr "Tasto rapido già in uso:"
+
+#: ../VAS.Core/Common/VideoStandards.cs:58
+msgid "Keep original size"
+msgstr "Mantieni la dimensione originale"
+
+#: ../VAS.Core/Store/EventType.cs:84 ../VAS.Core/Store/EventType.cs:92
+msgid "Sort by name"
+msgstr "Ordina per nome"
+
+#: ../VAS.Core/Store/EventType.cs:86 ../VAS.Core/Store/EventType.cs:96
+msgid "Sort by start time"
+msgstr "Ordina per tempo di inizio"
+
+#: ../VAS.Core/Store/EventType.cs:88 ../VAS.Core/Store/EventType.cs:98
+msgid "Sort by stop time"
+msgstr "Ordina per tempo di stop"
+
+#: ../VAS.Core/Store/EventType.cs:90 ../VAS.Core/Store/EventType.cs:100
+msgid "Sort by duration"
+msgstr "Ordina per durata"
+
+#: ../VAS.Core/Store/HotKey.cs:141
+msgid "Not defined"
+msgstr "Non definito"
+
+#: ../VAS.Core/Store/MediaFileSet.cs:131
+msgid "Main camera angle"
+msgstr "Angolo della camera principale"
+
+#: ../VAS.Core/Store/MediaFileSet.cs:134
+msgid "Angle 2"
+msgstr "Angolo 2"
+
+#: ../VAS.Core/Store/MediaFileSet.cs:137
+msgid "Angle 3"
+msgstr "Angolo 3"
+
+#: ../VAS.Core/Store/MediaFileSet.cs:140
+msgid "Angle 4"
+msgstr "Angolo 4"
+
+#: ../VAS.Core/Store/Project.cs:367
+msgid "The file you are trying to load is not a valid project"
+msgstr "Il file che hai tentato di caricare non è un file di progetto valido"
+
+#: ../VAS.Core/Store/Templates/Dashboard.cs:259
+msgid "Success"
+msgstr "Successo"
+
+#: ../VAS.Core/Store/Templates/Dashboard.cs:260
+#: ../VAS.Core/Store/Templates/Dashboard.cs:262
+msgid "Outcome"
+msgstr "Risultato"
+
+#: ../VAS.Core/Store/Templates/Dashboard.cs:261
+msgid "Failure"
+msgstr " Errore"
+
+#: ../VAS.DB/CouchbaseStorage.cs:155 ../VAS.DB/CouchbaseStorage.cs:215
+#: ../VAS.DB/CouchbaseStorage.cs:256
+msgid "Error deleting object from the storage"
+msgstr "Errore eliminando oggetto dallo storage"

@@ -1,0 +1,114 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+# Marek Černocký <marek@manet.cz>, 2010-2015
+# Marek Černocký <marek@manet.cz>, 2014-2015
+# Marek Černocký <marek@manet.cz>, 2015
+# Pavel Bárta <BartyCok@email.cz>, 2009
+# Petr Tronicek <petr.tronicek@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: LongoMatch\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-05-12 18:38+0200\n"
+"PO-Revision-Date: 2016-02-29 15:58+0000\n"
+"Last-Translator: ylatuya <ylatuya@gmail.com>\n"
+"Language-Team: Czech (http://www.transifex.com/ylatuya/longomatch/language/"
+"cs/)\n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: ../VAS.Core/Common/Device.cs:76
+msgid "Default"
+msgstr "Výchozí"
+
+#: ../VAS.Core/Common/Exceptions.cs:28
+msgid "Database locked:"
+msgstr "Databáze uzamčena:"
+
+#: ../VAS.Core/Common/Exceptions.cs:37
+msgid "Unknown database error:"
+msgstr "Neznámá chyba databáze:"
+
+#: ../VAS.Core/Common/Exceptions.cs:46
+msgid "Project loading failed:"
+msgstr "Načtení projektu selhalo"
+
+#: ../VAS.Core/Common/Exceptions.cs:55
+msgid "Project file not found:\n"
+msgstr "Soubor projektu nenalezen:\n"
+
+#: ../VAS.Core/Common/Exceptions.cs:63
+msgid "The name contains invalid characters: "
+msgstr "Název obsahuje neplatné znaky: "
+
+#: ../VAS.Core/Common/Exceptions.cs:71
+msgid "Hotkey already in use: "
+msgstr "Horká klávesa je již použita: "
+
+#: ../VAS.Core/Common/VideoStandards.cs:58
+msgid "Keep original size"
+msgstr "Zachovat původní velikost"
+
+#: ../VAS.Core/Store/EventType.cs:84 ../VAS.Core/Store/EventType.cs:92
+msgid "Sort by name"
+msgstr "Řadit podle názvu"
+
+#: ../VAS.Core/Store/EventType.cs:86 ../VAS.Core/Store/EventType.cs:96
+msgid "Sort by start time"
+msgstr "Řadit podle času začátku"
+
+#: ../VAS.Core/Store/EventType.cs:88 ../VAS.Core/Store/EventType.cs:98
+msgid "Sort by stop time"
+msgstr "Řadit podle času konce"
+
+#: ../VAS.Core/Store/EventType.cs:90 ../VAS.Core/Store/EventType.cs:100
+msgid "Sort by duration"
+msgstr "Řadit podle délky"
+
+#: ../VAS.Core/Store/HotKey.cs:141
+msgid "Not defined"
+msgstr "Není definován"
+
+#: ../VAS.Core/Store/MediaFileSet.cs:131
+msgid "Main camera angle"
+msgstr "Úhel hlavní kamery"
+
+#: ../VAS.Core/Store/MediaFileSet.cs:134
+msgid "Angle 2"
+msgstr "Úhel 2"
+
+#: ../VAS.Core/Store/MediaFileSet.cs:137
+msgid "Angle 3"
+msgstr "Úhel 3"
+
+#: ../VAS.Core/Store/MediaFileSet.cs:140
+msgid "Angle 4"
+msgstr "Úhel 4"
+
+#: ../VAS.Core/Store/Project.cs:367
+msgid "The file you are trying to load is not a valid project"
+msgstr "Soubor, který se pokoušíte načíst, není platný projekt"
+
+#: ../VAS.Core/Store/Templates/Dashboard.cs:259
+msgid "Success"
+msgstr "Úspěch"
+
+#: ../VAS.Core/Store/Templates/Dashboard.cs:260
+#: ../VAS.Core/Store/Templates/Dashboard.cs:262
+msgid "Outcome"
+msgstr "Výsledek"
+
+#: ../VAS.Core/Store/Templates/Dashboard.cs:261
+msgid "Failure"
+msgstr "Chyba"
+
+#: ../VAS.DB/CouchbaseStorage.cs:155 ../VAS.DB/CouchbaseStorage.cs:215
+#: ../VAS.DB/CouchbaseStorage.cs:256
+msgid "Error deleting object from the storage"
+msgstr ""

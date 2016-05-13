@@ -1,0 +1,115 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+# Gjält van Denderen <gjaltvd@gmail.com>, 2014
+# Gunter <dutchandsuch.translations@gmail.com>, 2015
+# Natalia Venero <nvenero@fluendo.com>, 2016
+# Peter Strikwerda &lt;prs6208@telfort.nl&gt;, 2009-2010
+# Philip Hendrix <philip.hendrix@telenet.be>, 2014
+# p.r.strikwerda <prs6208@telfort.nl>, 2014-2015
+msgid ""
+msgstr ""
+"Project-Id-Version: LongoMatch\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-05-12 18:38+0200\n"
+"PO-Revision-Date: 2016-02-29 15:58+0000\n"
+"Last-Translator: ylatuya <ylatuya@gmail.com>\n"
+"Language-Team: Dutch (http://www.transifex.com/ylatuya/longomatch/language/"
+"nl/)\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../VAS.Core/Common/Device.cs:76
+msgid "Default"
+msgstr "Beginwaarde"
+
+#: ../VAS.Core/Common/Exceptions.cs:28
+msgid "Database locked:"
+msgstr "Databestand beveiligd:"
+
+#: ../VAS.Core/Common/Exceptions.cs:37
+msgid "Unknown database error:"
+msgstr "Onbekende fout in databestand"
+
+#: ../VAS.Core/Common/Exceptions.cs:46
+msgid "Project loading failed:"
+msgstr "Project laden mislukt:"
+
+#: ../VAS.Core/Common/Exceptions.cs:55
+msgid "Project file not found:\n"
+msgstr "Project bestand niet gevonden: \n"
+
+#: ../VAS.Core/Common/Exceptions.cs:63
+msgid "The name contains invalid characters: "
+msgstr "De naam bevat onjuiste tekens"
+
+#: ../VAS.Core/Common/Exceptions.cs:71
+msgid "Hotkey already in use: "
+msgstr "Sneltoets is al in gebruik:"
+
+#: ../VAS.Core/Common/VideoStandards.cs:58
+msgid "Keep original size"
+msgstr "Originele grootte bewaren"
+
+#: ../VAS.Core/Store/EventType.cs:84 ../VAS.Core/Store/EventType.cs:92
+msgid "Sort by name"
+msgstr "Op naam sorteren"
+
+#: ../VAS.Core/Store/EventType.cs:86 ../VAS.Core/Store/EventType.cs:96
+msgid "Sort by start time"
+msgstr "Op starttijd sorteren"
+
+#: ../VAS.Core/Store/EventType.cs:88 ../VAS.Core/Store/EventType.cs:98
+msgid "Sort by stop time"
+msgstr "Op stoptijd sorteren"
+
+#: ../VAS.Core/Store/EventType.cs:90 ../VAS.Core/Store/EventType.cs:100
+msgid "Sort by duration"
+msgstr "Op duur sorteren"
+
+#: ../VAS.Core/Store/HotKey.cs:141
+msgid "Not defined"
+msgstr "Niet gedefinieerd"
+
+#: ../VAS.Core/Store/MediaFileSet.cs:131
+msgid "Main camera angle"
+msgstr "Hoek van de hoofdcamera"
+
+#: ../VAS.Core/Store/MediaFileSet.cs:134
+msgid "Angle 2"
+msgstr "Hoek 2"
+
+#: ../VAS.Core/Store/MediaFileSet.cs:137
+msgid "Angle 3"
+msgstr "Hoek 3"
+
+#: ../VAS.Core/Store/MediaFileSet.cs:140
+msgid "Angle 4"
+msgstr "Hoek 4"
+
+#: ../VAS.Core/Store/Project.cs:367
+msgid "The file you are trying to load is not a valid project"
+msgstr "Het bestand dat u tracht te laden is geen geldig project"
+
+#: ../VAS.Core/Store/Templates/Dashboard.cs:259
+msgid "Success"
+msgstr "Succes"
+
+#: ../VAS.Core/Store/Templates/Dashboard.cs:260
+#: ../VAS.Core/Store/Templates/Dashboard.cs:262
+msgid "Outcome"
+msgstr "Resultaat"
+
+#: ../VAS.Core/Store/Templates/Dashboard.cs:261
+msgid "Failure"
+msgstr "Niet geslaagd"
+
+#: ../VAS.DB/CouchbaseStorage.cs:155 ../VAS.DB/CouchbaseStorage.cs:215
+#: ../VAS.DB/CouchbaseStorage.cs:256
+msgid "Error deleting object from the storage"
+msgstr "Foutmelding object verwijderen van opslagruimte"
