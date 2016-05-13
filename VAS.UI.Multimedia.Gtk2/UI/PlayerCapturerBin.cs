@@ -136,6 +136,27 @@ namespace VAS.UI
 		{
 			playerview.ShowDettachButton (show);
 		}
+
+
+		protected virtual Gtk.HBox Livebox {
+			get {
+				return livebox;
+			}
+
+			set {
+				livebox = value;
+			}
+		}
+
+		protected virtual Gtk.HBox Replayhbox {
+			get {
+				return replayhbox;
+			}
+
+			set {
+				replayhbox = value;
+			}
+		}
 	}
 }
 
