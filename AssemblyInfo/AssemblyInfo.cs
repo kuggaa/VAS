@@ -21,8 +21,8 @@ using System.Runtime.CompilerServices;
 // Information about this assembly is defined by the following attributes.
 // Change them to the values specific to your project.
 
-[assembly: AssemblyTitle ("VAS.Core.Net45")]
-[assembly: AssemblyDescription ("")]
+[assembly: AssemblyTitle ("VAS")]
+[assembly: AssemblyDescription ("Video Analysis Solution")]
 [assembly: AssemblyConfiguration ("")]
 [assembly: AssemblyCompany ("")]
 [assembly: AssemblyProduct ("")]
