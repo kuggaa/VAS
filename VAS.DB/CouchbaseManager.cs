@@ -21,16 +21,15 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Couchbase.Lite;
-using LongoMatch;
-using LongoMatch.Core.Common;
-using LongoMatch.Core.Interfaces;
+using VAS.Core.Common;
+using VAS.Core.Interfaces;
 
 namespace VAS.DB
 {
 	public class CouchbaseManager: IStorageManager
 	{
-		readonly Manager manager;
-		IStorage activeDB;
+		protected readonly Manager manager;
+		protected IStorage activeDB;
 
 		public CouchbaseManager (string dbDir)
 		{
@@ -52,13 +51,13 @@ namespace VAS.DB
 			}
 		}
 
-		public IStorage Add (string name)
+		public virtual IStorage Add (string name)
 		{
 			// Couchbase doesn't accept uppercase databases.
 			name = SanitizeDBName (name);
 			var storage = Add (name, false);
 			if (storage != null) {
-				Config.EventsBroker?.EmitDatabaseCreated (name);
+				Config.EventsBrokerBase?.EmitDatabaseCreated (name);
 			}
 			return storage;
 		}
@@ -102,7 +101,7 @@ namespace VAS.DB
 
 		#endregion
 
-		IStorage Add (string name, bool check)
+		protected virtual IStorage Add (string name, bool check)
 		{
 			if (check && manager.AllDatabaseNames.Contains (name)) {
 				throw new Exception ("A database with the same name already exists");
@@ -126,7 +125,7 @@ namespace VAS.DB
 		/// </summary>
 		/// <returns>The sanitized DB name.</returns>
 		/// <param name="originalName">name.</param>
-		string SanitizeDBName (string name)
+		protected string SanitizeDBName (string name)
 		{
 			name = name.ToLower ();
 			name = name.Normalize (NormalizationForm.FormD);

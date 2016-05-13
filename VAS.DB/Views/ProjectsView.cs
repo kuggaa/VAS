@@ -15,12 +15,8 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
-using Couchbase.Lite;
-using System.Collections.Generic;
-using LongoMatch.Core.Store;
-using Newtonsoft.Json.Linq;
-using System.Collections.Specialized;
+
+using VAS.Core.Store;
 
 namespace VAS.DB.Views
 {
@@ -36,27 +32,6 @@ namespace VAS.DB.Views
 			get {
 				return VERSION;
 			}
-		}
-
-		protected override  OrderedDictionary FilterProperties {
-			get {
-				return new OrderedDictionary { { "Title", false }, { "Season", false },
-					{ "Competition", false }, { "LocalName", false }, { "VisitorName", false }
-				};
-			}
-		}
-
-		protected override object GenKeys (IDictionary<string, object> document)
-		{
-			List<object> keys = new List<object> ();
-			JObject desc = document ["Description"] as JObject;
-
-			keys.Add (desc ["Title"]);
-			keys.Add (desc ["Season"]);
-			keys.Add (desc ["Competition"]);
-			keys.Add (desc ["LocalName"]);
-			keys.Add (desc ["VisitorName"]);
-			return new PropertyKey (keys);
 		}
 	}
 }

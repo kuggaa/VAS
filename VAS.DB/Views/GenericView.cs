@@ -20,21 +20,20 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using Couchbase.Lite;
-using LongoMatch.Core.Common;
-using LongoMatch.Core.Filters;
-using LongoMatch.Core.Interfaces;
-using LongoMatch.Core.Serialization;
-using LongoMatch.Core.Store;
 using Newtonsoft.Json.Linq;
+using VAS.Core.Common;
+using VAS.Core.Filters;
+using VAS.Core.Interfaces;
+using VAS.Core.Serialization;
 
 namespace VAS.DB.Views
 {
 	/// <summary>
 	/// Generic View for the Couchbase database that indexes properties with
-	/// the <see cref="LongoMatchPropertyIndex"/> attribute and make it possible
+	/// the <see cref="PropertyIndex"/> attribute and make it possible
 	/// to perform queries using a <see cref="QueryFilter"/>.
 	/// The view also stores a preloaded version of the object that is returned in the
-	/// query using the properties with the attribute <see cref="LongoMatchPropertyPreload"/>
+	/// query using the properties with the attribute <see cref="PropertyPreload"/>
 	/// </summary>
 	public abstract class GenericView<T>: IQueryView <T> where T : IStorable
 	{
@@ -50,16 +49,16 @@ namespace VAS.DB.Views
 			// List all properties that will are included in the preloaded version of the object
 			// returned in the queries
 			PreviewProperties = typeof(T).GetProperties ().
-				Where (prop => Attribute.IsDefined (prop, typeof(LongoMatchPropertyPreload))).
+				Where (prop => Attribute.IsDefined (prop, typeof(PropertyPreload))).
 				Select (p => p.Name).ToList ();
 
 			// List all properties that are indexed for the queries sorted by Index
 			FilterProperties = new OrderedDictionary ();
 			FilterProperties.Add (DocumentsSerializer.PARENT_PROPNAME, true);
 			foreach (var prop in typeof(T).GetProperties ().
-				Select (p => new { P = p, A = p.GetCustomAttributes (typeof(LongoMatchPropertyIndex), true)}).
+				Select (p => new { P = p, A = p.GetCustomAttributes (typeof(PropertyIndex), true)}).
 				Where (x => x.A.Length == 1).
-				OrderBy (x => (x.A [0] as LongoMatchPropertyIndex).Index)) {
+				OrderBy (x => (x.A [0] as PropertyIndex).Index)) {
 				FilterProperties.Add (prop.P.Name, typeof(IStorable).IsAssignableFrom (prop.P.PropertyType));
 			}
 		}
