@@ -51,9 +51,79 @@ AM_GLIB_GNU_GETTEXT
 # END Internationalization
 #*******************************************************************************
 
+dnl Mono and C# compiler
+dnl Check first for a 4.0 compiler or than fallback to 2.0
+SHAMROCK_CHECK_MONO_MODULE(2.4.0)
+PKG_CHECK_EXISTS([mono >= 2.8],
+		[SHAMROCK_FIND_MONO_4_0_COMPILER
+		SHAMROCK_CHECK_MONO_4_0_GAC_ASSEMBLIES([
+			System.Data
+			Mono.Cairo
+			Mono.Posix
+		])]
+,
+		[SHAMROCK_FIND_MONO_2_0_COMPILER
+		SHAMROCK_CHECK_MONO_2_0_GAC_ASSEMBLIES([
+			System.Data
+			Mono.Cairo
+			Mono.Posix
+		])])
+AC_SUBST(MCS, ["$MCS"])
+SHAMROCK_FIND_MONO_RUNTIME
+
+dnl Check for xbuild
+AC_PATH_PROG(XBUILD, xbuild)
+
+dnl Moq (optional) disable test if not found
+PKG_CHECK_MODULES(MOQ, moq,
+	do_tests="yes", do_tests="no")
+AC_SUBST(MOQ_LIBS)
+AM_CONDITIONAL(ENABLE_TESTS, test "x$do_tests" = "xyes")
+if test "x$do_tests" = "xno"; then
+	AC_MSG_WARN([Could not find moq: tests will not be available])
+fi
+
+AC_MSG_CHECKING([for the OS type])
+ostype=""
+
+XBUILD_CONSTANTS=HAVE_GTK
+
+case "$host" in
+  *-*-mingw*|*-*-cygwin*)
+    ostype=Windows
+    AC_DEFINE(OSTYPE_WINDOWS)
+    XBUILD_CONSTANTS="$XBUILD_CONSTANTS OSTYPE_WINDOWS"
+    ;;
+  *-*-darwin*)
+    AC_DEFINE(OSTYPE_OS_X)
+    ostype=OS_X
+    XBUILD_CONSTANTS="$XBUILD_CONSTANTS OSTYPE_OS_X"
+    ;;
+  *-*-linux*)
+    AC_DEFINE(OSTYPE_LINUX)
+    XBUILD_CONSTANTS="$XBUILD_CONSTANTS OSTYPE_LINUX"
+    ostype=Linux
+    ;;
+esac
+AM_CONDITIONAL(OSTYPE_WINDOWS, test x$ostype = xWindows)
+AM_CONDITIONAL(OSTYPE_OS_X, test x$ostype = xOS_X)
+AM_CONDITIONAL(OSTYPE_LINUX, test x$ostype = xLinux)
+AC_SUBST(XBUILD_CONSTANTS, ["$XBUILD_CONSTANTS"])
+AC_MSG_RESULT($ostype)
+
 AC_CONFIG_FILES([
 Makefile
+
+build/Makefile
+build/m4/Makefile
+
 po/Makefile.in
+
+AssemblyInfo/AssemblyInfo.cs
+VAS.DB/Makefile
+VAS.Core/Makefile
+
+
 ])
 
 AC_OUTPUT

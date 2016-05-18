@@ -1,3 +1,3 @@
-PROJECT_FILE = LongoMatch.DB.Net45.csproj
-ASSEMBLY=LongoMatch.DB.dll
+PROJECT_FILE = VAS.DB.Net45.csproj
+ASSEMBLY=VAS.DB.dll
 include $(top_srcdir)/build/build.mk

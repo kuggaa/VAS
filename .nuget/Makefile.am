@@ -4,6 +4,7 @@ NuGet.exe:
 restore: NuGet.exe
 	mono NuGet.exe install $(top_srcdir)/VAS.Core/packages.config -source "https://www.nuget.org/api/v2/;$(expanded_datadir)/nuget" -NonInteractive -solutionDir ../
 	mono NuGet.exe install $(top_srcdir)/VAS.DB/packages.config -source "https://www.nuget.org/api/v2/;$(expanded_datadir)/nuget" -NonInteractive -solutionDir ../
+	mono NuGet.exe install $(top_srcdir)/Weavers/packages.config -source "https://www.nuget.org/api/v2/;$(expanded_datadir)/nuget" -NonInteractive -solutionDir ../
 
 all: restore
 
