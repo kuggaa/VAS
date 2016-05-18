@@ -18,6 +18,7 @@
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
+using VAS.Core.Store;
 using VAS.UI.Helpers;
 
 namespace VAS.UI
@@ -119,10 +120,10 @@ namespace VAS.UI
 				Player.Pause ();
 				ShowCapturer ();
 			} else {
-//				if (element is TimelineEventLongoMatch && mode == PlayerViewOperationMode.LiveAnalysisReview) {
-//					ShowPlayer ();
-//					livebox.Visible = replayhbox.Visible = true;
-//				}
+				if (element is TimelineEvent && mode == PlayerViewOperationMode.LiveAnalysisReview) {
+					ShowPlayer ();
+					livebox.Visible = replayhbox.Visible = true;
+				}
 			}
 		}
 
