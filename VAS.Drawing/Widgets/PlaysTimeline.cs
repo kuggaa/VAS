@@ -38,14 +38,14 @@ namespace VAS.Drawing.Widgets
 		public event ShowTimersMenuHandler ShowTimersMenuEvent;
 		public event ShowTimerMenuHandler ShowTimerMenuEvent;
 
-		Project project;
-		EventsFilter playsFilter;
-		double secondsPerPixel;
-		Time duration, currentTime;
-		TimelineEvent loadedEvent;
-		bool movingTimeNode;
-		Dictionary<TimelineObject, object> timelineToFilter;
-		Dictionary<EventType, CategoryTimeline> eventsTimelines;
+		protected Project project;
+		protected EventsFilter playsFilter;
+		protected double secondsPerPixel;
+		protected Time duration, currentTime;
+		protected TimelineEvent loadedEvent;
+		protected bool movingTimeNode;
+		protected Dictionary<TimelineObject, object> timelineToFilter;
+		protected Dictionary<EventType, CategoryTimeline> eventsTimelines;
 
 		public PlaysTimeline (IWidget widget) : base (widget)
 		{
@@ -170,7 +170,7 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
-		void Update ()
+		protected void Update ()
 		{
 			double width = duration.TotalSeconds / SecondsPerPixel;
 			widget.Width = width + 10;
@@ -180,7 +180,7 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
-		void AddTimeline (TimelineObject tl, object filter)
+		protected void AddTimeline (TimelineObject tl, object filter)
 		{
 			AddObject (tl);
 			timelineToFilter [tl] = filter;
@@ -189,18 +189,18 @@ namespace VAS.Drawing.Widgets
 			} 
 		}
 
-		void FillCanvas ()
+		protected virtual void FillCanvas ()
 		{
 			TimelineObject tl;
 			int i = 0;
 
-			tl = new TimerTimeline (project.Periods.Select (p => p as Timer).ToList (),
-				true, NodeDraggingMode.All, false, duration,
-				i * StyleConf.TimelineCategoryHeight,
-				Utils.ColorForRow (i), Config.Style.PaletteBackgroundDark);
-			AddTimeline (tl, null);
-			PeriodsTimeline = tl as TimerTimeline;
-			i++;
+//			tl = new TimerTimeline (project.Periods.Select (p => p as Timer).ToList (),
+//				true, NodeDraggingMode.All, false, duration,
+//				i * StyleConf.TimelineCategoryHeight,
+//				Utils.ColorForRow (i), Config.Style.PaletteBackgroundDark);
+//			AddTimeline (tl, null);
+//			PeriodsTimeline = tl as TimerTimeline;
+//			i++;
 
 			foreach (Timer t in project.Timers) {
 				tl = new TimerTimeline (new List<Timer> { t }, false, NodeDraggingMode.All, false, duration,
@@ -224,7 +224,7 @@ namespace VAS.Drawing.Widgets
 			HeightRequest = Objects.Count * StyleConf.TimelineCategoryHeight;
 		}
 
-		void UpdateVisibleCategories ()
+		protected void UpdateVisibleCategories ()
 		{
 			int i = 0;
 			foreach (TimelineObject timeline in Objects) {
@@ -240,7 +240,7 @@ namespace VAS.Drawing.Widgets
 			widget.ReDraw ();
 		}
 
-		void ShowTimersMenu (Point coords)
+		protected void ShowTimersMenu (Point coords)
 		{
 			if (coords.Y >= PeriodsTimeline.OffsetY &&
 			    coords.Y < PeriodsTimeline.OffsetY + PeriodsTimeline.Height) {
@@ -256,7 +256,7 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
-		void ShowPlaysMenu (Point coords, CategoryTimeline catTimeline)
+		protected void ShowPlaysMenu (Point coords, CategoryTimeline catTimeline)
 		{
 			EventType ev = null;
 			List<TimelineEvent> plays;

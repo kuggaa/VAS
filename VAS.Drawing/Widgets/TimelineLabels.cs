@@ -19,19 +19,19 @@ using System.Collections.Generic;
 using System.Linq;
 using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Filters;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
-using VASDrawing = VAS.Drawing;
-using VAS.Core.Filters;
 using VAS.Drawing.CanvasObjects.Timeline;
+using VASDrawing = VAS.Drawing;
 
 namespace VAS.Drawing.Widgets
 {
 	public class TimelineLabels : Canvas
 	{
-		Project project;
-		EventsFilter filter;
-		Dictionary<LabelObject, object> labelToObject;
+		protected Project project;
+		protected EventsFilter filter;
+		protected Dictionary<LabelObject, object> labelToObject;
 
 		public TimelineLabels (IWidget widget) : base (widget)
 		{
@@ -63,13 +63,13 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
-		void AddLabel (LabelObject label, object obj)
+		protected virtual void AddLabel (LabelObject label, object obj)
 		{
 			Objects.Add (label);
 			labelToObject [label] = obj;
 		}
 
-		void FillCanvas ()
+		protected virtual void FillCanvas ()
 		{
 			LabelObject l;
 			int i = 0, w, h;
@@ -77,10 +77,10 @@ namespace VAS.Drawing.Widgets
 			w = StyleConf.TimelineLabelsWidth;
 			h = StyleConf.TimelineCategoryHeight;
 
-			l = new LabelObject (w, h, i * h);
-			l.Name = Catalog.GetString ("Periods");
-			AddLabel (l, null);
-			i++;
+//			l = new LabelObject (w, h, i * h);
+//			l.Name = Catalog.GetString ("Periods");
+//			AddLabel (l, null);
+//			i++;
 
 			foreach (Timer t in project.Timers) {
 				l = new TimerLabelObject (t, w, h, i * h);
@@ -102,7 +102,7 @@ namespace VAS.Drawing.Widgets
 			WidthRequest = (int)width;
 		}
 
-		void UpdateVisibleCategories ()
+		protected virtual void UpdateVisibleCategories ()
 		{
 			int i = 0;
 			foreach (LabelObject label in Objects) {

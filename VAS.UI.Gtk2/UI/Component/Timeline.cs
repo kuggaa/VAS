@@ -57,8 +57,8 @@ namespace VAS.UI.Component
 			this.Build ();
 			this.timerule = new Timerule (new WidgetWrapper (timerulearea));
 			timerule.SeekEvent += HandleTimeruleSeek;
-			this.timeline = new PlaysTimeline (new WidgetWrapper (timelinearea));
-			this.labels = new TimelineLabels (new WidgetWrapper (labelsarea));
+			this.timeline = createPlaysTimeline ();
+			this.labels = createTimelineLabels ();
 
 			focusbuttonimage.Pixbuf = Helpers.Misc.LoadIcon ("longomatch-dash-center-view", Gtk.IconSize.Menu, 0);
 
@@ -137,6 +137,26 @@ namespace VAS.UI.Component
 		public virtual void ZoomOut ()
 		{
 			focusscale.Adjustment.Value += focusscale.Adjustment.StepIncrement;
+		}
+
+		protected virtual PlaysTimeline createPlaysTimeline ()
+		{
+			return new PlaysTimeline (new WidgetWrapper (timelinearea));
+		}
+
+		protected virtual TimelineLabels createTimelineLabels ()
+		{
+			return new TimelineLabels (new WidgetWrapper (labelsarea));
+		}
+
+		protected DrawingArea getTimelinearea ()
+		{
+			return timelinearea;
+		}
+
+		protected DrawingArea getLabelsarea ()
+		{
+			return labelsarea;
 		}
 
 		public virtual void SetProject (Project project, EventsFilter filter)
