@@ -194,14 +194,6 @@ namespace VAS.Drawing.Widgets
 			TimelineObject tl;
 			int i = 0;
 
-//			tl = new TimerTimeline (project.Periods.Select (p => p as Timer).ToList (),
-//				true, NodeDraggingMode.All, false, duration,
-//				i * StyleConf.TimelineCategoryHeight,
-//				Utils.ColorForRow (i), Config.Style.PaletteBackgroundDark);
-//			AddTimeline (tl, null);
-//			PeriodsTimeline = tl as TimerTimeline;
-//			i++;
-
 			foreach (Timer t in project.Timers) {
 				tl = new TimerTimeline (new List<Timer> { t }, false, NodeDraggingMode.All, false, duration,
 					i * StyleConf.TimelineCategoryHeight,

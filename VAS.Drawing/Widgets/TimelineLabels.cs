@@ -77,11 +77,6 @@ namespace VAS.Drawing.Widgets
 			w = StyleConf.TimelineLabelsWidth;
 			h = StyleConf.TimelineCategoryHeight;
 
-//			l = new LabelObject (w, h, i * h);
-//			l.Name = Catalog.GetString ("Periods");
-//			AddLabel (l, null);
-//			i++;
-
 			foreach (Timer t in project.Timers) {
 				l = new TimerLabelObject (t, w, h, i * h);
 				AddLabel (l, t);
