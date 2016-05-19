@@ -55,6 +55,11 @@ namespace VAS.UI.Component
 		public Timeline ()
 		{
 			this.Build ();
+			Initialization ();
+		}
+
+		protected void Initialization ()
+		{
 			this.timerule = new Timerule (new WidgetWrapper (timerulearea));
 			timerule.SeekEvent += HandleTimeruleSeek;
 			this.timeline = createPlaysTimeline ();
@@ -121,6 +126,24 @@ namespace VAS.UI.Component
 			set {
 				player = value;
 				timerule.Player = player;
+			}
+		}
+
+		protected HScale FocusScale {
+			get {
+				return focusscale;
+			}
+			set {
+				focusscale = value;
+			}
+		}
+
+		protected VBox LeftBox {
+			get {
+				return leftbox;
+			}
+			set {
+				leftbox = value;
 			}
 		}
 

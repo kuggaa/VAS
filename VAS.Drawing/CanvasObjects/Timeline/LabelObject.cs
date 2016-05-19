@@ -19,6 +19,7 @@ using System;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
+using VAS.Core;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
@@ -80,13 +81,13 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			get;
 		}
 
-		double RectSize {
+		protected double RectSize {
 			get {
 				return Height - StyleConf.TimelineLabelVSpacing * 2;
 			}
 		}
 
-		double TextOffset {
+		protected double TextOffset {
 			get {
 				return StyleConf.TimelineLabelHSpacing * 2 + RectSize;
 			}
@@ -190,6 +191,88 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			tk.StrokeColor = Config.Style.PaletteWidgets;
 			tk.DrawText (new Point (0, y), Width - StyleConf.TimelineLabelHSpacing, Height, Name);
 			tk.End ();
+		}
+	}
+
+	public class VideoLabelObject : LabelObject
+	{
+		OpenButton openButton;
+		const int OPEN_BUTTON_MARGIN = 5;
+		const int OPEN_IMAGE_PADDING = 2;
+
+
+		protected struct OpenButton
+		{
+			public Color BackgroundColor;
+			public Color BorderColor;
+			public Image BackgroundImage;
+			public int Width;
+			public int Height;
+			public Point Position;
+			public int ImagePadding;
+		};
+
+		public VideoLabelObject (double width, double height, double offsetY) :
+			base (width, height, offsetY)
+		{
+			Name = Catalog.GetString ("Video");
+			Color = Color.Blue1;
+
+			openButton.BackgroundColor = Config.Style.PaletteBackgroundLight;
+			openButton.BorderColor = Config.Style.PaletteBackgroundDark;
+			openButton.BackgroundImage = Resources.LoadImage (StyleConf.OpenButton);
+			openButton.Width = (int)RectSize;
+			openButton.Height = (int)RectSize;
+			openButton.ImagePadding = OPEN_IMAGE_PADDING;
+		}
+
+		public override void Draw (IDrawingToolkit tk, Area area)
+		{
+			double hs, vs;
+			double y;
+
+			hs = StyleConf.TimelineLabelHSpacing;
+			vs = StyleConf.TimelineLabelVSpacing;
+			y = OffsetY - Math.Floor (Scroll);
+			tk.Begin ();
+			tk.FillColor = BackgroundColor;
+			tk.StrokeColor = BackgroundColor;
+			tk.LineWidth = 0;
+			tk.DrawRectangle (new Point (0, y), Width, Height);
+
+			/* Draw a rectangle with the category color */
+			tk.FillColor = Color;
+			tk.StrokeColor = Color;
+			tk.DrawRectangle (new Point (hs, y + vs), RectSize, RectSize);
+
+			/* Draw category name */
+			tk.FontSlant = FontSlant.Normal;
+			tk.FontWeight = FontWeight.Bold;
+			tk.FontSize = StyleConf.TimelineCameraFontSize;
+			tk.FillColor = Config.Style.PaletteWidgets;
+			tk.FontAlignment = FontAlignment.Left;
+			tk.StrokeColor = Config.Style.PaletteWidgets;
+			tk.DrawText (new Point (TextOffset, y), Width - TextOffset, Height, Name);
+
+			/* Draw Open button */
+			SetOpenButtonProperties (Width);
+			tk.LineWidth = StyleConf.ButtonLineWidth;
+			tk.FillColor = openButton.BackgroundColor;
+			tk.StrokeColor = openButton.BorderColor;
+			tk.DrawRoundedRectangle (openButton.Position, openButton.Width, openButton.Height, 2);
+			//setting pad for the image
+			Point imagePoint = openButton.Position + new Point (openButton.ImagePadding, openButton.ImagePadding);
+			int imageWidth = openButton.Width - (openButton.ImagePadding * 2);
+			int imageHeight = openButton.Height - (openButton.ImagePadding * 2);
+			tk.DrawImage (imagePoint, imageWidth, imageHeight, openButton.BackgroundImage, ScaleMode.AspectFit, false);
+
+			tk.End ();
+		}
+
+		void SetOpenButtonProperties (double startX)
+		{
+			openButton.Position = new Point (startX - RectSize - OPEN_BUTTON_MARGIN, OffsetY + OPEN_BUTTON_MARGIN);
+			openButton.BackgroundColor = Config.Style.PaletteBackgroundLight;
 		}
 	}
 }
