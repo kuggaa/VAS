@@ -8,8 +8,6 @@
     <RootNamespace>VAS.Tests</RootNamespace>
     <AssemblyName>VAS.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -57,7 +55,9 @@
     <Reference Include="Moq">
       <HintPath>..\..\oneplay-longomatch\packages\Moq.4.2.1506.2016\lib\net40\Moq.dll</HintPath>
     </Reference>
-    <Reference Include="Moq, Version=4.2.1308.2321, Culture=neutral, PublicKeyToken=69f491c39445e920" />
+    <Reference Include="Moq, Version=4.2.1308.2321, Culture=neutral, PublicKeyToken=69f491c39445e920">
+      <Package>moq</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Test.cs" />

@@ -17,12 +17,14 @@
 //
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using VAS.Core.Filters;
 using VAS.Core.Handlers;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
+using VAS.Core.Store.Templates;
 
 namespace VAS.Core.Common
 {
@@ -32,7 +34,17 @@ namespace VAS.Core.Common
 		public event EventCreatedHandler EventCreatedEvent;
 		public event EventLoadedHandler EventLoadedEvent;
 		public event TimeNodeChangedHandler TimeNodeChanged;
+		public event DeleteEventsHandler EventsDeletedEvent;
+		public event SnapshotSeriesHandler SnapshotSeries;
+		public event MoveEventHandler MoveToEventTypeEvent;
+		public event DuplicateEventsHandler DuplicateEventsEvent;
+		public event TagSubcategoriesChangedHandler TagSubcategoriesChangedEvent;
+		public event EventEditedHandler EventEditedEvent;
 
+		public event NewEventHandler NewEventEvent;
+		public event NewDashboardEventHandler NewDashboardEventEvent;
+
+		public event DashboardEditedHandler DashboardEditedEvent;
 
 		public event TimeNodeStartedHandler TimeNodeStartedEvent;
 		public event TimeNodeStoppedHandler TimeNodeStoppedEvent;
@@ -57,14 +69,27 @@ namespace VAS.Core.Common
 		public event PlaybackRateChangedHandler PlaybackRateChanged;
 		public event SeekEventHandler SeekEvent;
 		public event TogglePlayEventHandler TogglePlayEvent;
+		public event DetachPlayerHandler Detach;
 
 		/* IMainController */
 		public event ConvertVideoFilesHandler ConvertVideoFilesEvent;
+		public event QuitApplicationHandler QuitApplicationEvent;
 
 		public event OpenedProjectChangedHandler OpenedProjectChanged;
-
 		public event OpenedPresentationChangedHandler OpenedPresentationChanged;
 
+		/* Project options */
+		public event SaveProjectHandler SaveProjectEvent;
+		public event CloseOpenendProjectHandler CloseOpenedProjectEvent;
+		public event ShowFullScreenHandler ShowFullScreenEvent;
+
+
+		public void EmitNewEvent (EventType eventType, List<Player> players = null, ObservableCollection<Team> teams = null,
+		                          List<Tag> tags = null, Time start = null, Time stop = null, Time eventTime = null)
+		{
+			if (NewEventEvent != null)
+				NewEventEvent (eventType, players, teams, tags, start, stop, eventTime, null);
+		}
 
 		public void EmitEventCreated (TimelineEvent evt)
 		{
@@ -83,6 +108,33 @@ namespace VAS.Core.Common
 		{
 			if (TimeNodeChanged != null)
 				TimeNodeChanged (tn, time);
+		}
+
+		public void EmitEventsDeleted (List<TimelineEvent> events)
+		{
+			if (EventsDeletedEvent != null)
+				EventsDeletedEvent (events);
+		}
+
+		public void EmitNewDashboardEvent (TimelineEvent evt, DashboardButton btn, bool edit, List<DashboardButton> from)
+		{
+			if (NewDashboardEventEvent != null) {
+				if (from == null)
+					from = new List<DashboardButton> ();
+				NewDashboardEventEvent (evt, btn, edit, from);
+			}
+		}
+
+		public virtual void EmitMoveToEventType (TimelineEvent evnt, EventType eventType)
+		{
+			if (MoveToEventTypeEvent != null)
+				MoveToEventTypeEvent (evnt, eventType);
+		}
+
+		public void EmitDuplicateEvent (List<TimelineEvent> events)
+		{
+			if (DuplicateEventsEvent != null)
+				DuplicateEventsEvent (events);
 		}
 
 		public void EmitMultimediaError (object sender, string message)
@@ -234,6 +286,66 @@ namespace VAS.Core.Common
 		{
 			if (TogglePlayEvent != null) {
 				TogglePlayEvent (playing);
+			}
+		}
+
+		public void EmitSnapshotSeries (TimelineEvent play)
+		{
+			if (SnapshotSeries != null)
+				SnapshotSeries (play);
+		}
+
+		public void EmitDashboardEdited ()
+		{
+			if (DashboardEditedEvent != null) {
+				DashboardEditedEvent ();
+			}
+		}
+
+		public void EmitSaveProject (Project project, ProjectType projectType)
+		{
+			if (SaveProjectEvent != null)
+				SaveProjectEvent (project, projectType);
+		}
+
+		public bool EmitCloseOpenedProject ()
+		{
+			if (CloseOpenedProjectEvent != null)
+				return CloseOpenedProjectEvent ();
+			return false;
+		}
+
+		public void EmitTagSubcategories (bool active)
+		{
+			if (TagSubcategoriesChangedEvent != null)
+				TagSubcategoriesChangedEvent (active);
+		}
+
+		public void EmitEventEdited (TimelineEvent play)
+		{
+			if (EventEditedEvent != null) {
+				EventEditedEvent (play);
+			}
+		}
+
+		public void EmitShowFullScreen (bool active)
+		{
+			if (ShowFullScreenEvent != null) {
+				ShowFullScreenEvent (active);
+			}
+		}
+
+		public void EmitQuitApplication ()
+		{
+			if (QuitApplicationEvent != null) {
+				QuitApplicationEvent ();
+			}
+		}
+
+		public void EmitDetach ()
+		{
+			if (Detach != null) {
+				Detach ();
 			}
 		}
 	}

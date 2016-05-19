@@ -122,6 +122,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Multimedia\IVideoEditor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\ITool.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Store\Templates\Team.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

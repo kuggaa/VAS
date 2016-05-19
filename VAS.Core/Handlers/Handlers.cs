@@ -19,6 +19,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using VAS.Core.Common;
 using VAS.Core.Filters;
 using VAS.Core.Interfaces;
@@ -26,15 +27,43 @@ using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
+using VAS.Core.Store.Templates;
 
 namespace VAS.Core.Handlers
 {
 	/* An event was loaded */
 	public delegate void EventLoadedHandler (TimelineEvent evt);
+
 	/* An events needs to be loaded */
 	public delegate void LoadEventHandler (TimelineEvent evt);
+
 	/* An event has been created */
 	public delegate void EventCreatedHandler (TimelineEvent evt);
+
+	/* A list of plays needs to be deleted */
+	public delegate void DeleteEventsHandler (List<TimelineEvent> events);
+
+	/* Create snapshots for a play */
+	public delegate void SnapshotSeriesHandler (TimelineEvent evt);
+
+	/* Move the event to a different event category */
+	public delegate void MoveEventHandler (TimelineEvent play,EventType eventType);
+
+	/* An event was edited */
+	public delegate void EventEditedHandler (TimelineEvent play);
+
+	/* Duplicate play */
+	public delegate void DuplicateEventsHandler (List<TimelineEvent> events);
+
+	/* Add a new event to the current project from the dashboard */
+	public delegate void NewDashboardEventHandler (TimelineEvent evt,DashboardButton btn,bool edit,List<DashboardButton> from);
+
+	/* A new play needs to be created for a specific category at the current play time */
+	public delegate void NewEventHandler (EventType eventType,List<Player> players,ObservableCollection<Team> team,
+		List<Tag> tags,Time start,Time stop,Time EventTime,DashboardButton btn);
+
+	/* Edit the event subcategories */
+	public delegate void TagSubcategoriesChangedHandler (bool tagsubcategories);
 
 	public delegate void TimeNodeStartedHandler (TimeNode tn,TimerButton btn,List<DashboardButton> from);
 	public delegate void TimeNodeStoppedHandler (TimeNode tn,TimerButton btn,List<DashboardButton> from);
@@ -117,5 +146,10 @@ namespace VAS.Core.Handlers
 	public delegate void CameraDraggedHandler (MediaFile file,TimeNode timenode);
 	public delegate void ShowTimersMenuHandler (List<TimeNode> timenodes);
 	public delegate void ShowTimerMenuHandler (Timer timer,Time time);
+
+	/* Project Events */
+	public delegate void SaveProjectHandler (Project project,ProjectType projectType);
+	public delegate bool CloseOpenendProjectHandler ();
+	public delegate void ShowProjectStats (Project project);
 
 }

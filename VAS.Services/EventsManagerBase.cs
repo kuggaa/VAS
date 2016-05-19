@@ -30,10 +30,12 @@ using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Core.Filters;
+using VAS.Core.Store.Templates;
+using System.IO;
 
 namespace VAS.Services
 {
-	public abstract class EventsManagerBase : IService
+	public class CoreEventsManager : IService
 	{
 		/* Current play loaded. null if no play is loaded */
 		protected TimelineEvent loadedPlay;
@@ -46,20 +48,41 @@ namespace VAS.Services
 		protected ICapturerBin capturer;
 		protected IFramesCapturer framesCapturer;
 
-		public EventsManagerBase ()
+		protected void HandleOpenedProjectChanged (Project project, ProjectType projectType,
+		                                           VAS.Core.Filters.EventsFilter filter, IAnalysisWindowBase analysisWindow)
 		{
+			this.openedProject = project;
+			this.projectType = projectType;
+			this.filter = filter;
+
+			if (project == null) {
+				if (framesCapturer != null) {
+					framesCapturer.Dispose ();
+					framesCapturer = null;
+				}
+				return;
+			}
+
+			if (projectType == ProjectType.FileProject) {
+				framesCapturer = Config.MultimediaToolkit.GetFramesCapturer ();
+				framesCapturer.Open (openedProject.FileSet.First ().FilePath);
+			}
+			this.analysisWindow = analysisWindow;
+			player = analysisWindow.Player;
+			capturer = analysisWindow.Capturer;
 		}
 
-		protected abstract void HandleOpenedProjectChanged (Project project, ProjectType projectType,
-		                                                    EventsFilter filter, IAnalysisWindowBase analysisWindow);
-
-		//typed required for database storage
-		protected abstract void Save (Project project);
+		void Save (Project project)
+		{
+			if (Config.AutoSave) {
+				Config.DatabaseManager.ActiveDB.Store (project);
+			}
+		}
 
 		protected virtual void DeletePlays (List<TimelineEvent> plays, bool update = true)
 		{
 			Log.Debug (plays.Count + " plays deleted");
-			analysisWindow.DeletePlays (plays.Cast<TimelineEvent> ().ToList ());
+			analysisWindow.DeletePlays (plays.ToList ());
 			openedProject.RemoveEvents (plays);
 			if (projectType == ProjectType.FileProject) {
 				Save (openedProject);
@@ -80,7 +103,14 @@ namespace VAS.Services
 			loadedPlay = play;
 		}
 
-		protected abstract void HandlePlaylistElementLoaded (Playlist playlist, IPlaylistElement element);
+		protected virtual void HandlePlaylistElementLoaded (Playlist playlist, IPlaylistElement element)
+		{
+			if (element is PlaylistPlayElement) {
+				loadedPlay = (element as PlaylistPlayElement).Play;
+			} else {
+				loadedPlay = null;
+			}
+		}
 
 		protected virtual void HandleDetach ()
 		{
@@ -92,11 +122,6 @@ namespace VAS.Services
 		protected virtual void HandleTagSubcategoriesChangedEvent (bool tagsubcategories)
 		{
 			Config.FastTagging = !tagsubcategories;
-		}
-
-		protected virtual void HandleShowProjectStatsEvent (Project project)
-		{
-			Config.GUIToolkit.ShowProjectStats (project);
 		}
 
 		protected virtual void HandleDrawFrame (TimelineEvent play, int drawingIndex, CameraConfig camConfig, bool current)
@@ -146,7 +171,39 @@ namespace VAS.Services
 			}
 		}
 
-		protected abstract void RenderPlay (Project project, TimelineEvent play);
+		protected void RenderPlay (Project project, TimelineEvent play)
+		{
+			Playlist playlist;
+			EncodingSettings settings;
+			EditionJob job;
+			string outputDir, outputProjectDir, outputFile;
+
+			if (Config.AutoRenderDir == null ||
+			    !Directory.Exists (Config.AutoRenderDir)) {
+				outputDir = Config.VideosDir;
+			} else {
+				outputDir = Config.AutoRenderDir;
+			}
+
+			outputProjectDir = Path.Combine (outputDir,
+				Utils.SanitizePath (project.ShortDescription));
+			outputFile = String.Format ("{0}-{1}.mp4", play.EventType.Name, play.Name);
+			outputFile = Utils.SanitizePath (outputFile, ' ');
+			outputFile = Path.Combine (outputProjectDir, outputFile);
+			try {
+				PlaylistPlayElement element;
+
+				Directory.CreateDirectory (outputProjectDir);
+				settings = EncodingSettings.DefaultRenderingSettings (outputFile);
+				playlist = new Playlist ();
+				element = new PlaylistPlayElement (play);
+				playlist.Elements.Add (element);
+				job = new EditionJob (playlist, settings);
+				Config.RenderingJobsManger.AddJob (job);
+			} catch (Exception ex) {
+				Log.Exception (ex);
+			}
+		}
 
 		protected Image CaptureFrame (Time tagtime)
 		{
@@ -226,21 +283,26 @@ namespace VAS.Services
 			AddNewPlay (play);
 		}
 
-		protected virtual void OnPlaysDeleted (List<TimelineEvent> plays)
+		protected virtual void HandleDeleteEvents (List<TimelineEvent> plays)
 		{
 			DeletePlays (plays);
 		}
 
-		protected abstract void OnDuplicatePlays (List<TimelineEvent> plays);
-
-
-		protected virtual void OnSnapshotSeries (TimelineEvent play)
+		protected virtual void HandleCreateSnaphotSeries (TimelineEvent play)
 		{
 			player.Pause ();
 			Config.GUIToolkit.ExportFrameSeries (openedProject, play, Config.SnapshotsDir);
 		}
 
-		protected abstract void OnPlayCategoryChanged (TimelineEvent play, EventType evType);
+		protected void HandleMoveToEventType (TimelineEvent play, EventType evType)
+		{
+			var newplay = play.Clone ();
+			DeletePlays (new List<TimelineEvent> { play }, false);
+			openedProject.AddEvent (newplay);
+			analysisWindow.AddPlay (newplay);
+			Save (openedProject);
+			filter.Update ();
+		}
 
 		protected virtual void HandleDashboardEditedEvent ()
 		{
@@ -248,7 +310,47 @@ namespace VAS.Services
 			analysisWindow.ReloadProject ();
 		}
 
-		protected abstract void HandleKeyPressed (object sender, HotKey key);
+		void HandleDuplicateEvents (List<TimelineEvent> plays)
+		{
+			foreach (var play in plays) {
+				var copy = play.Clone ();
+				openedProject.AddEvent (copy);
+				analysisWindow.AddPlay (copy);
+			}
+			filter.Update ();
+		}
+
+		public void HandleNewEvent (EventType evType, List<Player> players, ObservableCollection<Team> teams, List<Tag> tags,
+		                            Time start, Time stop, Time eventTime, DashboardButton btn)
+		{
+			if (openedProject == null) {
+				return;
+			} else if (projectType == ProjectType.FileProject && player == null) {
+				Log.Error ("Player not set, new event will not be created");
+				return;
+			} else if (projectType == ProjectType.CaptureProject ||
+			           projectType == ProjectType.URICaptureProject ||
+			           projectType == ProjectType.FakeCaptureProject) {
+				if (!capturer.Capturing) {
+					Config.GUIToolkit.WarningMessage (Catalog.GetString ("Video capture is stopped"));
+					return;
+				}
+			}
+			Log.Debug (String.Format ("New play created start:{0} stop:{1} category:{2}",
+				start.ToMSecondsString (), stop.ToMSecondsString (),
+				evType.Name));
+			/* Add the new created play to the project and update the GUI */
+			var play = openedProject.AddEvent (evType, start, stop, eventTime, null);
+			play.Teams = teams;
+			if (players != null) {
+				play.Players = new ObservableCollection<Player> (players);
+			}
+			if (tags != null) {
+				play.Tags = new ObservableCollection<Tag> (tags);
+			}
+			AddNewPlay (play);
+		}
+
 
 		#region IService
 
@@ -260,13 +362,55 @@ namespace VAS.Services
 
 		public virtual string Name {
 			get {
-				return "Events";
+				return "Core Events";
 			}
 		}
 
-		public abstract bool Start ();
+		public bool Start ()
+		{
+			Config.EventsBroker.EventsDeletedEvent += HandleDeleteEvents;
+			Config.EventsBroker.EventLoadedEvent += HandlePlayLoaded;
+			Config.EventsBroker.PlaylistElementLoadedEvent += HandlePlaylistElementLoaded;
+			Config.EventsBroker.OpenedProjectChanged += HandleOpenedProjectChanged;
+			Config.EventsBroker.DrawFrame += HandleDrawFrame;
+			Config.EventsBroker.SnapshotSeries += HandleCreateSnaphotSeries;
 
-		public abstract bool Stop ();
+			Config.EventsBroker.MoveToEventTypeEvent += HandleMoveToEventType;
+			Config.EventsBroker.DuplicateEventsEvent += HandleDuplicateEvents;
+
+			Config.EventsBroker.NewDashboardEventEvent += HandleNewDashboardEvent;
+			Config.EventsBroker.NewEventEvent += HandleNewEvent;
+
+			Config.EventsBroker.DashboardEditedEvent += HandleDashboardEditedEvent;
+
+			Config.EventsBroker.TagSubcategoriesChangedEvent += HandleTagSubcategoriesChangedEvent;
+			Config.EventsBroker.Detach += HandleDetach;
+			Config.EventsBroker.ShowFullScreenEvent += HandleShowFullScreenEvent;
+			return true;
+		}
+
+		public bool Stop ()
+		{
+			Config.EventsBroker.EventsDeletedEvent -= HandleDeleteEvents;
+			Config.EventsBroker.EventLoadedEvent -= HandlePlayLoaded;
+			Config.EventsBroker.PlaylistElementLoadedEvent -= HandlePlaylistElementLoaded;
+			Config.EventsBroker.OpenedProjectChanged -= HandleOpenedProjectChanged;
+			Config.EventsBroker.DrawFrame -= HandleDrawFrame;
+			Config.EventsBroker.SnapshotSeries -= HandleCreateSnaphotSeries;
+
+			Config.EventsBroker.MoveToEventTypeEvent -= HandleMoveToEventType;
+			Config.EventsBroker.DuplicateEventsEvent -= HandleDuplicateEvents;
+
+			Config.EventsBroker.NewDashboardEventEvent -= HandleNewDashboardEvent;
+			Config.EventsBroker.NewEventEvent -= HandleNewEvent;
+
+			Config.EventsBroker.DashboardEditedEvent -= HandleDashboardEditedEvent;
+
+			Config.EventsBroker.TagSubcategoriesChangedEvent -= HandleTagSubcategoriesChangedEvent;
+			Config.EventsBroker.Detach -= HandleDetach;
+			Config.EventsBroker.ShowFullScreenEvent -= HandleShowFullScreenEvent;
+			return true;
+		}
 
 		#endregion
 	}
