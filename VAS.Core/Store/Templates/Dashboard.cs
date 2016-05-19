@@ -42,9 +42,9 @@ namespace VAS.Core.Store.Templates
 
 		public const int CURRENT_VERSION = 1;
 		protected const int CAT_WIDTH = 120;
-		const int CAT_HEIGHT = 80;
-		const int MIN_WIDTH = 320;
-		const int MIN_HEIGHT = 240;
+		protected const int CAT_HEIGHT = 80;
+		protected const int MIN_WIDTH = 320;
+		protected const int MIN_HEIGHT = 100;
 
 		ObservableCollection<DashboardButton> list;
 
@@ -210,7 +210,7 @@ namespace VAS.Core.Store.Templates
 				if (List.Count == 0) {
 					return MIN_HEIGHT;
 				}
-				return Math.Max (MIN_WIDTH, (int)List.Max (c => c.Position.Y + c.Height));
+				return Math.Max (MIN_HEIGHT, (int)List.Max (c => c.Position.Y + c.Height));
 			}
 		}
 
@@ -317,7 +317,7 @@ namespace VAS.Core.Store.Templates
 		/// </summary>
 		/// <returns>A new button.</returns>
 		/// <param name="index">Index of this button used to name it</param>
-		public AnalysisEventButton AddDefaultItem (int index)
+		public virtual AnalysisEventButton AddDefaultItem (int index)
 		{
 			AnalysisEventButton button;
 			AnalysisEventType evtype;
@@ -329,7 +329,6 @@ namespace VAS.Core.Store.Templates
 				SortMethod = SortMethodType.SortByStartTime,
 				Color = c
 			};
-			AddDefaultTags (evtype);
 
 			button = new  AnalysisEventButton {
 				EventType = evtype,
@@ -338,7 +337,7 @@ namespace VAS.Core.Store.Templates
 				HotKey = h,
 				/* Leave the first row for the timers and score */
 				Position = new Point (10 + (index % 7) * (CAT_WIDTH + 10),
-					10 + (index / 7 + 1) * (CAT_HEIGHT + 10)),
+					10 + (index / 7) * (CAT_HEIGHT + 10)),
 				Width = CAT_WIDTH,
 				Height = CAT_HEIGHT,
 			};

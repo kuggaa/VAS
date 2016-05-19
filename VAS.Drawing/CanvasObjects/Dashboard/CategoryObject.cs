@@ -101,7 +101,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		public override Image Icon {
 			get {
-				return iconImage;
+				if (Button.ShowIcon)
+					return iconImage;
+				else
+					return null;
 			}
 		}
 
@@ -122,6 +125,12 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		bool ShowTags {
 			get {
 				return (Button.ShowSubcategories || ShowLinks) && Button.AnalysisEventType.Tags.Count != 0;
+			}
+		}
+
+		bool ShowHotkey {
+			get {
+				return (Button.ShowHotkey && Button.HotKey.Key != -1);
 			}
 		}
 
@@ -315,10 +324,12 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		public override void ClickPressed (Point p, ButtonModifier modif)
 		{
-			if (Mode == DashboardMode.Edit) {
+			if (Mode == DashboardMode.Edit || Button.ShowSettingIcon) {
 				editClicked = CheckRect (p, editRect, editbutton);
-				return;
+				if (editClicked && Button.ShowSettingIcon)
+					return;
 			}
+
 			foreach (Rectangle rect in buttonsRects.Keys) {
 				if (CheckRect (p, rect, buttonsRects [rect])) {
 					return;
@@ -442,12 +453,17 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 					return;
 				}
 			} else {
-				if (!Recording) {
+				if (!Recording && Icon != null) {
 					width = Width;
 					height = Height - HeaderHeight;
 					pos = new Point (Position.X, Position.Y + HeaderHeight);
 					fontSize = StyleConf.ButtonNameFontSize;
 					ellipsize = false;
+				} else {
+					width = HeaderTextWidth;
+					height = HeaderHeight;
+					pos = new Point (Position.X + 5, Position.Y + 5);
+					fontSize = StyleConf.ButtonHeaderFontSize;
 				}
 				rects.Add (new Rectangle (Position, Width, Height), Button);
 			}
@@ -464,7 +480,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			Color c;
 			double width, height;
 
-			if (Mode != DashboardMode.Edit || ShowLinks || !Button.ShowSubcategories) {
+			if ((Mode != DashboardMode.Edit || ShowLinks || !Button.ShowSubcategories) && !Button.ShowSettingIcon) {
 				return;
 			}
 
@@ -648,6 +664,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			DrawImage (tk);
 			DrawHeader (tk);
 			DrawRecordButton (tk);
+			DrawHotkey (tk);
 
 			foreach (List<Tag> tags in tagsByGroup.Values) {
 				DrawTagsGroup (tk, tags, ref yptr);
@@ -665,6 +682,31 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 
 			tk.End ();
+		}
+
+		void DrawHotkey (IDrawingToolkit tk)
+		{
+			if (ShowHotkey) {
+				Color textColor;
+				Point pos;
+				double width, height;
+				int fontSize;
+
+				if (Active) {
+					textColor = BackgroundColor;
+				} else {
+					textColor = TextColor;
+				}
+				fontSize = StyleConf.ButtonHeaderFontSize;
+				width = 30;
+				height = fontSize;
+				pos = new Point (Position.X + 2, Position.Y + (Height - (fontSize + 4)));
+				tk.FontSize = fontSize;
+				tk.StrokeColor = BackgroundColor;
+				tk.StrokeColor = textColor;
+				tk.FontWeight = FontWeight.Light;
+				tk.DrawText (pos, width, height, "(" + Button.HotKey.ToString () + ")", false, false);
+			}
 		}
 
 		void CreateBackBufferSurface ()
