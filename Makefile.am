@@ -10,6 +10,8 @@ dist-hook:
 ACLOCAL_AMFLAGS = -I build/m4 -I build/m4/shamrock
 
 SUBDIRS = \
+	build \
+	.nuget \
 	VAS.Core \
 	VAS.DB \
 	po

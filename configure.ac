@@ -3,6 +3,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ([2.54])
 AC_INIT([VAS],[0.2],
 	[contact@fluendo.com])
+AC_CONFIG_AUX_DIR([.])
 AM_INIT_AUTOMAKE([1.11 foreign])
 AM_SILENT_RULES([yes])
 AM_MAINTAINER_MODE([enable])
@@ -112,18 +113,19 @@ AC_SUBST(XBUILD_CONSTANTS, ["$XBUILD_CONSTANTS"])
 AC_MSG_RESULT($ostype)
 
 AC_CONFIG_FILES([
-Makefile
+.nuget/Makefile
 
-build/Makefile
+AssemblyInfo/AssemblyInfo.cs
+
 build/m4/Makefile
+build/Makefile
+
+Makefile
 
 po/Makefile.in
 
-AssemblyInfo/AssemblyInfo.cs
-VAS.DB/Makefile
 VAS.Core/Makefile
-
-
+VAS.DB/Makefile
 ])
 
 AC_OUTPUT
