@@ -9,9 +9,9 @@
     <Import_RootNamespace>VAS.Services</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)EventsManagerBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PlayerController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UpdatesNotifier.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PlaylistManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CoreEventsManager.cs" />
   </ItemGroup>
 </Project>
