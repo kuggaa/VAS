@@ -72,8 +72,8 @@ namespace VAS.Core.Store.Templates
 			set;
 		}
 
-		[LongoMatchPropertyIndex (0)]
-		[LongoMatchPropertyPreload]
+		[PropertyIndex (0)]
+		[PropertyPreload]
 		public String Name {
 			get;
 			set;
@@ -94,7 +94,7 @@ namespace VAS.Core.Store.Templates
 			}
 		}
 
-		[LongoMatchPropertyPreload]
+		[PropertyPreload]
 		public Image Shield {
 			get;
 			set;
