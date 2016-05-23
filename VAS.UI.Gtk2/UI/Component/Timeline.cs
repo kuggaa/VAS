@@ -147,6 +147,15 @@ namespace VAS.UI.Component
 			}
 		}
 
+		public virtual DrawingArea LabelsArea {
+			get {
+				return labelsarea;
+			}
+			set {
+				labelsarea = value;
+			}
+		}
+
 		public virtual void Fit ()
 		{
 			focusbutton.Click ();

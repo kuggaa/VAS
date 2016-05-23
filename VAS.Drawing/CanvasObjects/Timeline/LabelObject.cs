@@ -274,5 +274,21 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			openButton.Position = new Point (startX - RectSize - OPEN_BUTTON_MARGIN, OffsetY + OPEN_BUTTON_MARGIN);
 			openButton.BackgroundColor = Config.Style.PaletteBackgroundLight;
 		}
+
+		public bool ClickInsideOpenButton (Point p)
+		{
+			bool insideX = false;
+			bool insideY = false;
+
+
+			if (p.X >= openButton.Position.X && p.X <= openButton.Position.X + openButton.Width) {
+				insideX = true;
+			}
+			if (p.Y >= openButton.Position.Y && p.Y <= openButton.Position.Y + openButton.Height) {
+				insideY = true;
+			}
+
+			return insideX && insideY;
+		}
 	}
 }
