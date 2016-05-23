@@ -20,6 +20,7 @@ using System.IO;
 using Newtonsoft.Json;
 using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Serialization;
 
 namespace VAS
@@ -33,6 +34,7 @@ namespace VAS
 		
 		/* State */
 		public static EventsBroker EventsBrokerBase;
+		public static EventsAggregator EventsAggregator;
 
 		protected static StyleConf style;
 		protected static ConfigState state;
