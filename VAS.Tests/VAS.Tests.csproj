@@ -8,8 +8,6 @@
     <RootNamespace>VAS.Tests</RootNamespace>
     <AssemblyName>VAS.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -105,6 +103,8 @@
     <Compile Include="Core\Store\TestTimelineEvent.cs" />
     <Compile Include="Core\Store\TestTimeNode.cs" />
     <Compile Include="Core\Store\TestTimer.cs" />
+    <Compile Include="Services\TestPlayerController.cs" />
+    <Compile Include="Services\TestPlaylistManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -124,6 +124,10 @@
     <ProjectReference Include="..\VAS.Core\VAS.Core.Net45.csproj">
       <Project>{08AE7734-B995-4E0D-AD8F-38F597E0D4DF}</Project>
       <Name>VAS.Core.Net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VAS.Services\VAS.Services.Net45.csproj">
+      <Project>{153BFD3F-6E06-451B-AD79-6C207762BBBB}</Project>
+      <Name>VAS.Services.Net45</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

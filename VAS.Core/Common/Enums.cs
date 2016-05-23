@@ -473,4 +473,23 @@ namespace VAS.Core.Common
 		/// </summary>
 		Deleted,
 	}
+
+	/* The values must be kept in sync with the combobox in
+	 * LongoMatch.GUI/Gui/Component/LinkProperties.cs */
+	public enum LinkAction
+	{
+		Toggle = 0,
+		Replicate = 1,
+	}
+
+	/* The values must be kept in sync with the combobox in
+	 * LongoMatch.GUI/Gui/Component/LinkProperties.cs */
+	public enum TeamLinkAction
+	{
+		Clear = 0,
+		Keep = 1,
+		Invert = 2
+	}
+
+
 }

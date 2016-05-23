@@ -22,11 +22,25 @@ using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Serialization;
+using VAS.Core.Interfaces.GUI;
+using VAS.Core.Interfaces.Multimedia;
+using VAS.Core.Interfaces.Drawing;
+using VAS.Core.Interfaces;
 
 namespace VAS
 {
-	public class Config
+	public abstract class Config
 	{
+		/* State */
+		public static IGUIToolkit GUIToolkit;
+		public static IMultimediaToolkit MultimediaToolkit;
+		public static IDrawingToolkit DrawingToolkit;
+		public static EventsBroker EventsBroker;
+
+		public static IStorageManager DatabaseManager;
+		public static IRenderingJobsManager RenderingJobsManger;
+
+
 		public static string homeDirectory = ".";
 		public static string baseDirectory = ".";
 		public static string configDirectory = ".";
@@ -38,6 +52,15 @@ namespace VAS
 
 		protected static StyleConf style;
 		protected static ConfigState state;
+
+		static ConfigState stateLongomatch {
+			get {
+				return (state as ConfigState);
+			}
+			set {
+				state = value;
+			}
+		}
 
 		public static void Init ()
 		{
@@ -148,6 +171,206 @@ namespace VAS
 		}
 
 		#region Properties
+
+		static public Image Background {
+			get;
+			set;
+		}
+
+		static public string Copyright {
+			get;
+			set;
+		}
+
+		static public string License {
+			get;
+			set;
+		}
+
+		static public string SoftwareName {
+			get;
+			set;
+		}
+
+		static public string SoftwareIconName {
+			get;
+			set;
+		}
+
+		static public bool SupportsMultiCamera {
+			get;
+			set;
+		}
+
+		static public bool SupportsFullHD {
+			get;
+			set;
+		}
+
+		static public bool SupportsActionLinks {
+			get;
+			set;
+		}
+
+		static public bool SupportsZoom {
+			get;
+			set;
+		}
+
+		static public string LatestVersionURL {
+			get;
+			set;
+		}
+
+		public static bool FastTagging {
+			get {
+				return state.fastTagging;
+			}
+			set {
+				state.fastTagging = value;
+				Save ();
+			}
+		}
+
+		public static bool UseGameUnits {
+			get;
+			set;
+		}
+
+		public static string Lang {
+			get {
+				return state.lang;
+			}
+			set {
+				state.lang = value;
+				Save ();
+			}
+		}
+
+		public static VideoStandard CaptureVideoStandard {
+			get {
+				return state.captureVideoStandard;
+			}
+			set {
+				state.captureVideoStandard = value;
+				Save ();
+			}
+		}
+
+		public static EncodingProfile CaptureEncodingProfile {
+			get {
+				return state.captureEncodingProfile;
+			}
+			set {
+				state.captureEncodingProfile = value;
+				Save ();
+
+			}
+		}
+
+		public static EncodingQuality CaptureEncodingQuality {
+			get {
+				return state.captureEncodingQuality;
+			}
+			set {
+				state.captureEncodingQuality = value;
+				Save ();
+
+			}
+		}
+
+		public static bool AutoSave {
+			get {
+				return state.autoSave;
+			}
+			set {
+				state.autoSave = value;
+				Save ();
+			}
+		}
+
+		public static bool AutoRenderPlaysInLive {
+			get {
+				return state.autorender;
+			}
+			set {
+				state.autorender = value;
+				Save ();
+			}
+		}
+
+		public static string AutoRenderDir {
+			get {
+				return state.autorenderDir;
+			}
+			set {
+				state.autorenderDir = value;
+				Save ();
+			}
+		}
+
+		public static string LastDir {
+			get {
+				return state.lastDir;
+			}
+			set {
+				state.lastDir = value;
+				Save ();
+			}
+		}
+
+		public static string LastRenderDir {
+			get {
+				return state.lastRenderDir;
+			}
+			set {
+				state.lastRenderDir = value;
+				Save ();
+			}
+		}
+
+		public static bool ReviewPlaysInSameWindow {
+			get {
+				return state.reviewPlaysInSameWindow;
+			}
+			set {
+				state.reviewPlaysInSameWindow = value;
+				Save ();
+			}
+		}
+
+		public static string DefaultTemplate {
+			get {
+				return state.defaultTemplate;
+			}
+			set {
+				state.defaultTemplate = value;
+				Save ();
+			}
+		}
+
+
+		public static ProjectSortMethod ProjectSortMethod {
+			get {
+				return state.projectSortMethod;
+			}
+			set {
+				state.projectSortMethod = value;
+				Save ();
+			}
+		}
+
+		public static Version IgnoreUpdaterVersion {
+			get {
+				return state.ignoreUpdaterVersion;
+			}
+			set {
+				state.ignoreUpdaterVersion = value;
+				Save ();
+			}
+		}
+
+
 
 		static public Version Version {
 			get;

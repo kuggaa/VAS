@@ -26,6 +26,7 @@ using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.Serialization;
+using VAS.Core.Store.Templates;
 
 namespace VAS.Core.Store
 {
@@ -41,6 +42,9 @@ namespace VAS.Core.Store
 		ObservableCollection<FrameDrawing> drawings;
 		ObservableCollection<Tag> tags;
 		ObservableCollection<CameraConfig> camerasConfig;
+		ObservableCollection<Player> players;
+		ObservableCollection<Team> teams;
+
 
 		#region Constructors
 
@@ -52,6 +56,8 @@ namespace VAS.Core.Store
 			Rate = 1.0f;
 			ID = Guid.NewGuid ();
 			CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+			Players = new ObservableCollection<Player> ();
+			Teams = new ObservableCollection<Team> ();
 		}
 
 		public void Dispose ()
@@ -210,6 +216,44 @@ namespace VAS.Core.Store
 		public bool Selected {
 			get;
 			set;
+		}
+
+		/// <summary>
+		/// List of players tagged in this event.
+		/// </summary>
+		[PropertyIndex (0)]
+		public ObservableCollection<Player> Players {
+			get {
+				return players;
+			}
+			set {
+				if (players != null) {
+					players.CollectionChanged -= ListChanged;
+				}
+				players = value;
+				if (players != null) {
+					players.CollectionChanged += ListChanged;
+				}
+			}
+		}
+
+		/// <summary>
+		/// A list of teams tagged in this event.
+		/// </summary>
+		[PropertyIndex (3)]
+		public ObservableCollection<Team> Teams {
+			get {
+				return teams;
+			}
+			set {
+				if (teams != null) {
+					teams.CollectionChanged -= ListChanged;
+				}
+				teams = value ?? new ObservableCollection<Team> ();
+				if (teams != null) {
+					teams.CollectionChanged += ListChanged;
+				}
+			}
 		}
 
 		/// <summary>
@@ -445,6 +489,18 @@ namespace VAS.Core.Store
 				GoalPosition = co;
 				break;
 			}
+		}
+
+		/// <summary>
+		/// Clone this instance, creating a deep copy of the object with a new ID
+		/// </summary>
+		public TimelineEvent Clone ()
+		{
+			var newplay = Cloner.Clone (this);
+			newplay.ID = Guid.NewGuid ();
+			newplay.EventType = EventType;
+			newplay.Players = Players;
+			return newplay;
 		}
 
 		// FIXME: Move this to LongoMatch

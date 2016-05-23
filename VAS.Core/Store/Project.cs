@@ -201,6 +201,16 @@ namespace VAS.Core.Store
 			set;
 		}
 
+		/// <summary>
+		/// Gets a short description of the project.
+		/// </summary>
+		/// <value>The short description.</value>
+		[JsonIgnore]
+		[PropertyChanged.DoNotNotify]
+		public virtual string ShortDescription {
+			get;
+		}
+
 		public virtual bool IsFakeCapture {
 			get;
 			set;

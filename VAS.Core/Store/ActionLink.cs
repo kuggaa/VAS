@@ -40,11 +40,29 @@ namespace VAS.Core.Store
 			KeepPlayerTags = true;
 			SourceTags = new ObservableCollection<Tag> ();
 			DestinationTags = new ObservableCollection<Tag> ();
+			TeamAction = TeamLinkAction.Keep;
 		}
 
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public bool IsChanged {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// The type of action that will be performed in the destination.
+		/// </summary>
+		public LinkAction Action {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// The type of action that will be performed in the destination
+		/// for team tagged in the source event.
+		/// </summary>
+		public TeamLinkAction TeamAction {
 			get;
 			set;
 		}
@@ -99,7 +117,7 @@ namespace VAS.Core.Store
 					destinationTags.CollectionChanged += ListChanged;
 				}
 			}
-		}			
+		}
 
 		/// <summary>
 		/// If <c>true</c>, players tagged in the source event will be copied
