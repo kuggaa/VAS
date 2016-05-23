@@ -11,6 +11,7 @@ ACLOCAL_AMFLAGS = -I build/m4 -I build/m4/shamrock
 
 SUBDIRS = \
 	build \
+	pkgconfig \
 	.nuget \
 	VAS.Core \
 	VAS.DB \

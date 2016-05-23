@@ -126,6 +126,10 @@ po/Makefile.in
 
 VAS.Core/Makefile
 VAS.DB/Makefile
+
+pkgconfig/Makefile
+pkgconfig/vas-db.pc
+pkgconfig/vas-core.pc
 ])
 
 AC_OUTPUT
