@@ -16,16 +16,17 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // 
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Store;
 using VAS.UI.Helpers;
+using VAS.Core;
 
 namespace VAS.UI
 {
 	[System.ComponentModel.Category ("VAS")]
 	[System.ComponentModel.ToolboxItem (true)]
-
 	public partial class PlayerCapturerBin : Gtk.Bin
 	{
 		protected IPlayerView playerview;
@@ -44,6 +45,9 @@ namespace VAS.UI
 			playerbox.PackEnd (playerview as Gtk.Widget);
 			(playerview as Gtk.Widget).ShowAll ();
 			Player = playerview.Player;
+
+			Config.EventsAggregator.Subscribe<LoadVideoEvent> (HandleLoadVideoEvent, ThreadMethod.UIThread);
+			Config.EventsAggregator.Subscribe<CloseVideoEvent> (HandleCloseVideoEvent, ThreadMethod.UIThread);
 		}
 
 		protected override void OnDestroyed ()
@@ -103,6 +107,31 @@ namespace VAS.UI
 		public virtual void AttachPlayer (bool attached)
 		{
 			playerview.PlayerAttached = attached;
+		}
+
+		protected virtual void HandleLoadVideoEvent (LoadVideoEvent loadVideoEvent)
+		{
+			Config.EventsAggregator.Publish<ChangeVideoMessageEvent> (
+				new ChangeVideoMessageEvent () {
+					message = null
+				});
+
+			ShowDettachButtonInPlayer (false);
+			Player.IgnoreTicks = false;
+			Player.Open (loadVideoEvent.mfs);
+			Player.Play ();
+		}
+
+		protected virtual void HandleCloseVideoEvent (CloseVideoEvent closeVideoEvent)
+		{
+			if (Player is VAS.Services.PlayerController) {
+				(Player as VAS.Services.PlayerController).ResetCounter ();
+
+				Config.EventsAggregator.Publish<ChangeVideoMessageEvent> (
+					new ChangeVideoMessageEvent () {
+						message = Catalog.GetString ("No video loaded")
+					});
+			}
 		}
 
 		protected virtual void HandlePrepareViewEvent ()

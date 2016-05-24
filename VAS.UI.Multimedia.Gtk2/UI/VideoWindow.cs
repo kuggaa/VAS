@@ -20,6 +20,7 @@ using Gdk;
 using Gtk;
 using VAS.Core.Interfaces.GUI;
 using VAS.Multimedia.Utils;
+using VAS.Core.Events;
 
 
 namespace VAS.UI
@@ -71,6 +72,14 @@ namespace VAS.UI
 
 			MessageVisible = false;
 			messageLabel.Ellipsize = Pango.EllipsizeMode.End;
+
+			Config.EventsAggregator.Subscribe<ChangeVideoMessageEvent> (HandleChangeVideoMessage, ThreadMethod.UIThread);
+		}
+
+		void HandleChangeVideoMessage (ChangeVideoMessageEvent changeVideoMessageEvent)
+		{
+			this.Message = changeVideoMessageEvent.message;
+			this.MessageVisible = changeVideoMessageEvent.message != null && changeVideoMessageEvent.message != String.Empty;
 		}
 
 		public virtual object WindowHandle {
