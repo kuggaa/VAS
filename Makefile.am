@@ -15,6 +15,7 @@ SUBDIRS = \
 	.nuget \
 	VAS.Core \
 	VAS.DB \
+	VAS.UI.Helpers.Gtk2 \
 	po
 
 

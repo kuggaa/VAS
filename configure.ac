@@ -126,10 +126,12 @@ po/Makefile.in
 
 VAS.Core/Makefile
 VAS.DB/Makefile
+VAS.UI.Helpers.Gtk2/Makefile
 
 pkgconfig/Makefile
 pkgconfig/vas-db.pc
 pkgconfig/vas-core.pc
+pkgconfig/vas-ui-helpers-gtk2.pc
 ])
 
 AC_OUTPUT
