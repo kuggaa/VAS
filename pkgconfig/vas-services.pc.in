@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+vasdir=@libdir@/@PACKAGE@
+
+Name: VAS.Services
+Description: VAS Services framework for .NET
+Version: @VERSION@
+Requires: vas-core vas-drawing
+Libs: -r:${vasdir}/VAS.Services.dll

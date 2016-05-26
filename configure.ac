@@ -127,11 +127,19 @@ po/Makefile.in
 VAS.Core/Makefile
 VAS.DB/Makefile
 VAS.UI.Helpers.Gtk2/Makefile
+VAS.Services/Makefile
+VAS.Multimedia/Makefile
+VAS.Drawing.Cairo/Makefile
+Weavers/Makefile
+
 
 pkgconfig/Makefile
 pkgconfig/vas-db.pc
 pkgconfig/vas-core.pc
 pkgconfig/vas-ui-helpers-gtk2.pc
+pkgconfig/vas-services.pc
+pkgconfig/vas-multimedia.pc
+pkgconfig/vas-drawing-cairo.pc
 ])
 
 AC_OUTPUT
