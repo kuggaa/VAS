@@ -1,7 +1,8 @@
 dnl Warning: This is an automatically generated file, do not edit!
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ([2.54])
-AC_INIT([VAS],[0.2],
+AC_INIT([VAS],
+	m4_esyscmd([build/git-version-gen .tarball-version]),
 	[contact@fluendo.com])
 AC_CONFIG_AUX_DIR([.])
 AM_INIT_AUTOMAKE([1.11 foreign])
