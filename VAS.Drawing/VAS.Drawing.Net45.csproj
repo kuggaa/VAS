@@ -34,7 +34,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <Import Project="..\VAS.Drawing\VAS.Drawing.projitems" Label="Shared" Condition="Exists('..\VAS.Drawing\VAS.Drawing.projitems')" />
+  <Import Project="VAS.Drawing.projitems" Label="Shared" Condition="Exists('VAS.Drawing.projitems')" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\VAS.Core\VAS.Core.Net45.csproj">

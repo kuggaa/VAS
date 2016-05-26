@@ -11,8 +11,6 @@
     <AssemblyName>VAS.UI.Multimedia.Gtk2</AssemblyName>
     <AssemblyOriginatorKeyFile>..\..\..\Proyectos\longomatch\CesarPlayer</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -90,10 +88,6 @@
       <Project>{08AE7734-B995-4E0D-AD8F-38F597E0D4DF}</Project>
       <Name>VAS.Core.Net45</Name>
     </ProjectReference>
-    <ProjectReference Include="..\VAS.Drawing.Net45\VAS.Drawing.Net45.csproj">
-      <Project>{F99F378C-8C75-4888-A173-C7B4EC2D37E0}</Project>
-      <Name>VAS.Drawing.Net45</Name>
-    </ProjectReference>
     <ProjectReference Include="..\VAS.UI.Helpers.Gtk2\VAS.UI.Helpers.Gtk2.csproj">
       <Project>{E75E30DC-C1CF-4683-9A36-65B91EF10095}</Project>
       <Name>VAS.UI.Helpers.Gtk2</Name>
@@ -102,13 +96,17 @@
       <Project>{269608A7-5DBC-4A2C-B7AF-D094B6FA88AC}</Project>
       <Name>VAS.Multimedia</Name>
     </ProjectReference>
-    <ProjectReference Include="..\VAS.Services.Net45\VAS.Services.Net45.csproj">
-      <Project>{153BFD3F-6E06-451B-AD79-6C207762BBBB}</Project>
-      <Name>VAS.Services.Net45</Name>
-    </ProjectReference>
     <ProjectReference Include="..\VAS.Drawing.Cairo\VAS.Drawing.Cairo.csproj">
       <Project>{AE98609B-353C-4CE4-A5B7-606BB4EE3576}</Project>
       <Name>VAS.Drawing.Cairo</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VAS.Services\VAS.Services.Net45.csproj">
+      <Project>{153BFD3F-6E06-451B-AD79-6C207762BBBB}</Project>
+      <Name>VAS.Services.Net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VAS.Drawing\VAS.Drawing.Net45.csproj">
+      <Project>{F99F378C-8C75-4888-A173-C7B4EC2D37E0}</Project>
+      <Name>VAS.Drawing.Net45</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

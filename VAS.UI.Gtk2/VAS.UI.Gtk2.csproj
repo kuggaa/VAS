@@ -81,13 +81,13 @@
       <Project>{E75E30DC-C1CF-4683-9A36-65B91EF10095}</Project>
       <Name>VAS.UI.Helpers.Gtk2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\VAS.Drawing.Net45\VAS.Drawing.Net45.csproj">
-      <Project>{F99F378C-8C75-4888-A173-C7B4EC2D37E0}</Project>
-      <Name>VAS.Drawing.Net45</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Weavers\Weavers.csproj">
       <Project>{A7BA3B58-76E6-461C-B842-3D4DC4995B42}</Project>
       <Name>Weavers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VAS.Drawing\VAS.Drawing.Net45.csproj">
+      <Project>{F99F378C-8C75-4888-A173-C7B4EC2D37E0}</Project>
+      <Name>VAS.Drawing.Net45</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>
