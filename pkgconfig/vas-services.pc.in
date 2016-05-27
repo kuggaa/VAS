@@ -6,5 +6,5 @@ vasdir=@libdir@/@PACKAGE@
 Name: VAS.Services
 Description: VAS Services framework for .NET
 Version: @VERSION@
-Requires: vas-core vas-drawing
+Requires: vas-core
 Libs: -r:${vasdir}/VAS.Services.dll
