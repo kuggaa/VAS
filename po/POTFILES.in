@@ -7,3 +7,10 @@ VAS.Core/Store/MediaFileSet.cs
 VAS.Core/Store/Project.cs
 VAS.Core/Store/Templates/Dashboard.cs
 VAS.DB/CouchbaseStorage.cs
+VAS.Multimedia/Capturer/FakeCapturer.cs
+VAS.Multimedia/Utils/GstDiscoverer.cs
+VAS.Services/CoreEventsManager.cs
+VAS.Services/PlayerController.cs
+VAS.Services/PlaylistManager.cs
+VAS.UI.Helpers.Gtk2/MessagesHelpers.cs
+VAS.UI.Helpers.Gtk2/Misc.cs
