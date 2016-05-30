@@ -16,8 +16,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml.Serialization;
@@ -36,12 +38,32 @@ namespace VAS.Core.Serialization
 
 		private Serializer ()
 		{
+			TypesMappings = new Dictionary<string, Type> ();
+			NamespacesReplacements = new Dictionary<string, Tuple<string, string>> ();
 		}
 
 		public static Serializer Instance {
 			get {
 				return instance;
 			}
+		}
+
+		/// <summary>
+		/// Gets or sets a mapping of type names to types
+		/// </summary>
+		/// <value>The types mappings.</value>
+		public static Dictionary<string, Type> TypesMappings {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets a mapping of namespaces to replace
+		/// </summary>
+		/// <value>The types mappings.</value>
+		public static Dictionary<string, Tuple<string, string>> NamespacesReplacements {
+			get;
+			set;
 		}
 
 		public void Save<T> (T obj, Stream stream,
@@ -141,6 +163,7 @@ namespace VAS.Core.Serialization
 				settings.Converters.Add (new VersionConverter ());
 				settings.Converters.Add (new VASConverter (true));
 				//settings.ReferenceResolver = new IdReferenceResolver ();
+				settings.Binder = new MigrationBinder (Serializer.TypesMappings, Serializer.NamespacesReplacements);
 				return settings;
 			}
 		}
@@ -252,6 +275,63 @@ namespace VAS.Core.Serialization
 					});
 			}
 			return contract;
+		}
+	}
+
+	/// <summary>
+	/// This binder allows mapping renamed types to their new names, making it possible to deserialize
+	/// objects created with older versions of the software.
+	/// </summary>
+	public class MigrationBinder : DefaultSerializationBinder
+	{
+		readonly Dictionary<string, Type> cachedTypes;
+		readonly Dictionary<string, Tuple<string, string>> namespacesReplacements;
+
+		public MigrationBinder (Dictionary<string, Type> typesMappings, Dictionary<string, Tuple<string, string>> namespacesReplacements)
+		{
+			cachedTypes = typesMappings.ToDictionary (entry => entry.Key,
+				entry => entry.Value);
+			this.namespacesReplacements = namespacesReplacements;
+		}
+
+		public override Type BindToType (string assemblyName, string typeName)
+		{
+			Type type = null;
+			string originalTypeName = typeName;
+
+			// Try first with our cache, which is a combination of already resolved types and types mappings
+			// configured by the user
+			cachedTypes.TryGetValue (typeName, out type);
+			if (type != null) {
+				return type;
+			}
+
+			// Try without any replacemente first
+			try {
+				type = base.BindToType (assemblyName, typeName);
+				if (type != null) {
+					cachedTypes.Add (typeName, type);
+					return type;
+				}
+			} catch (JsonSerializationException) {
+			}
+
+			// Try to replace the namespace if it matches with any of the replacements
+			foreach (var kv in namespacesReplacements) {
+				if (typeName.StartsWith (kv.Key)) {
+					var newnamespace = kv.Value.Item1;
+					typeName = typeName.Replace (kv.Key, newnamespace);
+					assemblyName = kv.Value.Item2;
+					break;
+				}
+			}
+
+			// Try again with the replacements
+			type = base.BindToType (assemblyName, typeName);
+			if (type != null) {
+				cachedTypes.Add (originalTypeName, type);
+			}
+			return type;
 		}
 	}
 }

@@ -28,7 +28,7 @@ namespace VAS.Core.Common
 		
 		public const string FAKE_PROJECT = "@Fake Project@";
 
-		public const string PROJECT_EXT = "";
+		public const string PROJECT_EXT = ".lgm";
 
 		#if OSTYPE_ANDROID || OSTYPE_IOS
 				public const string IMAGE_EXT = ".png";

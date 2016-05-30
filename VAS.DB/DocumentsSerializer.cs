@@ -318,6 +318,7 @@ namespace VAS.DB
 			settings.Converters.Add (new VersionConverter ());
 			settings.Converters.Add (new VASConverter (false));
 			settings.Converters.Add (new StorablesConverter (objType, context));
+			settings.Binder = new MigrationBinder (Serializer.TypesMappings, Serializer.NamespacesReplacements);
 			return settings;
 		}
 
