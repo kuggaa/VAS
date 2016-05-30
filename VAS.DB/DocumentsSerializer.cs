@@ -28,31 +28,10 @@ using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.Serialization;
 using VAS.Core.Store;
+using VAS.Core.Store.Templates;
 
 namespace VAS.DB
 {
-	public static class DocumentsSerializerHelper
-	{
-		static DocumentsSerializerHelper ()
-		{
-			TypeTranslation = new Dictionary<Type, Type> ();
-		}
-
-		internal static Dictionary<Type,Type> TypeTranslation {
-			get;
-			set;
-		}
-
-		public static void AddTypeTranslation (Type fromType, Type toType)
-		{
-			if (TypeTranslation.ContainsKey (fromType)) {
-				TypeTranslation [fromType] = toType;
-			} else {
-				TypeTranslation.Add (fromType, toType);				
-			}
-		}
-	}
-
 	public static class DocumentsSerializer
 	{
 
@@ -60,6 +39,19 @@ namespace VAS.DB
 		public const string OBJ_TYPE = "ObjType";
 		public const string PARENT_PROPNAME = "Parent";
 		public const char ID_SEP_CHAR = '&';
+
+		/// <summary>
+		/// A doctionary of base types and their corresponding document type name.
+		/// For example, all instances of the base type TimelineEvent will have the same document type: "TimelineEvent".
+		/// </summary>
+		/// <value>The list of base types.</value>
+		public static Dictionary<Type, string> DocumentTypeBaseTypes = new Dictionary<Type, string> {
+			{ typeof(EventType), "EventType" },
+			{ typeof(TimelineEvent), "TimelineEvent" },
+			{ typeof(Team), "Team" },
+			{ typeof(Dashboard), "Dashboard" },
+			{ typeof(Player), "Player" },
+		};
 
 		/// <summary>
 		/// Saves a storable object in the database.
@@ -329,20 +321,14 @@ namespace VAS.DB
 
 		static string GetDocumentType (IStorable storable)
 		{
-			Type type;
+			Type type = storable.GetType ();
 
-			if (DocumentsSerializerHelper.TypeTranslation.ContainsKey (storable.GetType ())) {
-				return DocumentsSerializerHelper.TypeTranslation [storable.GetType ()].Name;
-			}
+			foreach (var kv in DocumentTypeBaseTypes) {
+				Type baseType = kv.Key;
 
-			if (storable is EventType) {
-				type = typeof(EventType);
-			} else if (storable is TimelineEvent) {
-				type = typeof(TimelineEvent);
-			} else if (storable is Timer) {
-				type = typeof(Timer);
-			} else {
-				type = storable.GetType ();
+				if (baseType.IsAssignableFrom (storable.GetType ())) {
+					return kv.Value;
+				}
 			}
 			return type.Name;
 		}

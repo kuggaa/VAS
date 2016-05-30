@@ -15,13 +15,23 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using System.Collections.Generic;
+using VAS.Core.Common;
 using VAS.Core.Filters;
 using VAS.Core.Interfaces;
 
 namespace VAS.DB.Views
 {
-	public interface IQueryView<T>
+
+	public interface IQueryView
+	{
+		Type Type { get; }
+
+		string DocumentType { get; }
+	}
+
+	public interface IQueryView<T>: IQueryView
 	{
 		IEnumerable<T> Query (QueryFilter filter);
 

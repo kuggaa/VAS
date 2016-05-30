@@ -51,7 +51,7 @@ namespace VAS.DB
 			}
 		}
 
-		public virtual IStorage Add (string name)
+		public IStorage Add (string name)
 		{
 			// Couchbase doesn't accept uppercase databases.
 			name = SanitizeDBName (name);
@@ -101,20 +101,25 @@ namespace VAS.DB
 
 		#endregion
 
-		protected virtual IStorage Add (string name, bool check)
+		protected IStorage Add (string name, bool check)
 		{
 			if (check && manager.AllDatabaseNames.Contains (name)) {
 				throw new Exception ("A database with the same name already exists");
 			}
 			try {
 				Log.Information ("Creating new database " + name);
-				IStorage db = new CouchbaseStorage (manager, name);
+				IStorage db = CreateStorage (name);
 				Databases.Add (db);
 				return db;
 			} catch (Exception ex) {
 				Log.Exception (ex);
 				return null;
 			}
+		}
+
+		protected virtual IStorage CreateStorage (string name)
+		{
+			return new CouchbaseStorage (manager, name);
 		}
 
 		/// <summary>

@@ -71,8 +71,10 @@ namespace VAS.DB
 			mutex = new object ();
 			FetchInfo ();
 			Compact ();
-			InitializeViews ();
+			views = new Dictionary <Type, object> ();
 			VFS.SetCurrent (new FileSystem ());
+			InitializeViews ();
+			InitializeDocumentTypeMappings ();
 		}
 
 		#region IStorage implementation
@@ -328,12 +330,20 @@ namespace VAS.DB
 
 		protected virtual void InitializeViews ()
 		{
-			views = new Dictionary <Type, object> ();
 			AddView (typeof(Dashboard), new DashboardsView (this));
 			AddView (typeof(Project), new ProjectsView (this));
 			AddView (typeof(Player), new PlayersView (this));
 			AddView (typeof(TimelineEvent), new TimelineEventsView (this));
 			AddView (typeof(EventType), new EventTypeView (this));
+		}
+
+		protected virtual void InitializeDocumentTypeMappings ()
+		{
+			Dictionary<Type, string> typesToDocumentTypes = new Dictionary<Type, string> ();
+			foreach (IQueryView view in views.Values) {
+				typesToDocumentTypes.Add (view.Type, view.DocumentType);
+			}
+			DocumentsSerializer.DocumentTypeBaseTypes = typesToDocumentTypes;
 		}
 
 		void AddDirectoryFilesToTar (TarArchive tarArchive, string sourceDirectory, bool recurse)

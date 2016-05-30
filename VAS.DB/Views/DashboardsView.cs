@@ -23,6 +23,7 @@ namespace VAS.DB.Views
 	{
 		public DashboardsView (CouchbaseStorage storage) : base (storage)
 		{
+			DocumentType = "Dashboard";
 		}
 
 		protected override string ViewVersion {
