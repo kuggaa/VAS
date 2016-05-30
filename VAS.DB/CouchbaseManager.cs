@@ -57,7 +57,7 @@ namespace VAS.DB
 			name = SanitizeDBName (name);
 			var storage = Add (name, false);
 			if (storage != null) {
-				Config.EventsBrokerBase?.EmitDatabaseCreated (name);
+				Config.EventsBroker?.EmitDatabaseCreated (name);
 			}
 			return storage;
 		}
