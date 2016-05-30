@@ -28,6 +28,7 @@ using VAS.Drawing.CanvasObjects.Timeline;
 using LMCommon = VAS.Core.Common;
 using VASDrawing = VAS.Drawing;
 using VAS.Core.Filters;
+using VAS.Core.Events;
 
 namespace VAS.Drawing.Widgets
 {
@@ -56,6 +57,9 @@ namespace VAS.Drawing.Widgets
 			SelectionMode = MultiSelectionMode.MultipleWithModifier;
 			SingleSelectionObjects.Add (typeof(TimerTimeNodeObject));
 			currentTime = new Time (0);
+
+			Config.EventsAggregator.Subscribe<LoadVideoEvent> (HandleLoadVideoMessage, ThreadMethod.UIThread);
+			Config.EventsAggregator.Subscribe<CloseVideoEvent> (HandleCloseVideoEvent, ThreadMethod.UIThread);
 		}
 
 		public PlaysTimeline () : this (null)
@@ -194,26 +198,40 @@ namespace VAS.Drawing.Widgets
 			TimelineObject tl;
 			int i = 0;
 
+			FillCanvasForTimers (i);
+			FillCanvasForEventTypes (i);
+
+			UpdateVisibleCategories ();
+			Update ();
+			HeightRequest = Objects.Count * StyleConf.TimelineCategoryHeight;
+		}
+
+		protected virtual void FillCanvasForTimers (int line)
+		{
+			TimelineObject tl;
+
 			foreach (Timer t in project.Timers) {
 				tl = new TimerTimeline (new List<Timer> { t }, false, NodeDraggingMode.All, false, duration,
-					i * StyleConf.TimelineCategoryHeight,
-					Utils.ColorForRow (i), Config.Style.PaletteBackgroundDark);
+					line * StyleConf.TimelineCategoryHeight,
+					Utils.ColorForRow (line), Config.Style.PaletteBackgroundDark);
 				AddTimeline (tl, t);
 			}
-			                        
+		}
+
+		protected virtual void FillCanvasForEventTypes (int line)
+		{
+			TimelineObject tl;
+
 			foreach (EventType type in project.EventTypes) {
 				List<TimelineEvent> timelineEventList = project.EventsByType (type);
 				var timelineEventLongoMatchList = new List<TimelineEvent> ();
 				timelineEventList.ForEach (x => timelineEventLongoMatchList.Add (x));
 				tl = new CategoryTimeline (project, timelineEventLongoMatchList, duration,
-					i * StyleConf.TimelineCategoryHeight,
-					Utils.ColorForRow (i), playsFilter);
+					line * StyleConf.TimelineCategoryHeight,
+					Utils.ColorForRow (line), playsFilter);
 				AddTimeline (tl, type);
-				i++;
+				line++;
 			}
-			UpdateVisibleCategories ();
-			Update ();
-			HeightRequest = Objects.Count * StyleConf.TimelineCategoryHeight;
 		}
 
 		protected void UpdateVisibleCategories ()
@@ -337,6 +355,26 @@ namespace VAS.Drawing.Widgets
 					moveTime = to.Start;
 				}
 				Config.EventsBroker.EmitSeekEvent (moveTime, true);
+			}
+		}
+
+		public void HandleLoadVideoMessage (LoadVideoEvent changeVideoMessageEvent)
+		{
+			if (this.project != null) {
+				this.project.FileSet = changeVideoMessageEvent.mfs;
+				ClearObjects ();
+				duration = changeVideoMessageEvent.mfs.Duration;
+				FillCanvas ();
+			}
+		}
+
+		protected virtual void HandleCloseVideoEvent (CloseVideoEvent closeVideoEvent)
+		{
+			if (this.project != null) {
+				this.project.FileSet.RemoveAll (x => x.VideoCodec.Any ());
+				ClearObjects ();
+				duration = new Time (0);
+				FillCanvas ();
 			}
 		}
 	}
