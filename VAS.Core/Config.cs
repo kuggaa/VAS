@@ -72,6 +72,26 @@ namespace VAS
 			*  Config.dataDir
 			*  Config.homeDirectory
 			*/
+
+			InitTranslations ();
+		}
+
+		// copied from OneplayLongomMatch::CoreServices
+		public static void InitTranslations ()
+		{
+			string localesDir = Config.RelativeToPrefix ("share/locale");
+
+			if (!Directory.Exists (localesDir)) {
+				var cerbero_prefix = Environment.GetEnvironmentVariable ("CERBERO_PREFIX");
+				if (cerbero_prefix != null) {
+					localesDir = Path.Combine (cerbero_prefix, "share", "locale");
+				} else {
+					Log.ErrorFormat ("'{0}' does not exist. This looks like an uninstalled execution." +
+					"Define CERBERO_PREFIX.", localesDir);
+				}
+			}
+			/* Init internationalization support */
+			Catalog.SetDomain (Constants.SOFTWARE_NAME.ToLower (), localesDir);
 		}
 
 		public static void LoadState (ConfigState newState)

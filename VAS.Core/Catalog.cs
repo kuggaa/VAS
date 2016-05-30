@@ -29,27 +29,66 @@
 //    Methods that require tuning are bound as `internal syscal_NAME' methods
 //    and then a `NAME' method is exposed.
 //
-
 using System;
+using System.Runtime.InteropServices;
 
 namespace VAS.Core
 {
 
-	public class Catalog
+	/// <summary>
+	/// Custom implementation of <see cref="Mono.Unix.Catalog"/> 
+	/// to support translations from the domain set by the plugin.
+	/// </summary>
+	public static class Catalog
 	{
-		public static void Init (String package, String localedir)
+		static string CurrentDomain;
+
+		[DllImport ("intl", CallingConvention = CallingConvention.Cdecl)]
+		static extern IntPtr bindtextdomain (string domainname, string dirname);
+
+		[DllImport ("intl", CallingConvention = CallingConvention.Cdecl)]
+		static extern IntPtr bind_textdomain_codeset (string domainname,
+		                                              string codeset);
+
+		public static void SetDomain (String package, String localedir)
 		{
-			Mono.Unix.Catalog.Init (package, localedir);
+			CurrentDomain = package;
+
+			if (bindtextdomain (package, localedir) == IntPtr.Zero)
+				throw new Exception ();
+			if (bind_textdomain_codeset (package, "UTF-8") == IntPtr.Zero)
+				throw new Exception ();
 		}
+
+		[DllImport ("libglib-2.0.dll")]
+		static extern IntPtr g_dgettext (string domain, IntPtr instring);
 
 		public static String GetString (String s)
 		{
-			return Mono.Unix.Catalog.GetString (s);
+			IntPtr sptr = GLib.Marshaller.StringToPtrGStrdup (s);
+			try {
+				IntPtr r = g_dgettext (CurrentDomain, sptr);
+				return GLib.Marshaller.Utf8PtrToString (r);
+			} finally {
+				GLib.Marshaller.Free (sptr);
+			}
 		}
+
+		[DllImport ("libglib-2.0.dll")]
+		static extern IntPtr g_dngettext (string domain, IntPtr singular, IntPtr plural, Int32 n);
 
 		public static String GetPluralString (String s, String p, Int32 n)
 		{
-			return Mono.Unix.Catalog.GetPluralString (s, p, n);
+			IntPtr ints = GLib.Marshaller.StringToPtrGStrdup (s);
+			IntPtr intp = GLib.Marshaller.StringToPtrGStrdup (p);
+
+			try {
+				IntPtr r = g_dngettext (CurrentDomain, ints, intp, n);
+				return GLib.Marshaller.Utf8PtrToString (r);
+			} finally {
+				GLib.Marshaller.Free (ints);
+				GLib.Marshaller.Free (intp);
+			}
 		}
 	}
 }

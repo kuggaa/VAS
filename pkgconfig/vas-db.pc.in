@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+vasdir=@libdir@/@PACKAGE@
+
+Name: VAS.DB
+Description: VAS Database framework for .NET
+Version: @VERSION@
+Requires: vas-core
+Libs: -r:${vasdir}/VAS.DB.dll

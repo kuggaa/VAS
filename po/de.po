@@ -1,0 +1,221 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+# Claus Marxmeier <alladin@routeme.de>, 2014
+# Franziska Nagel <franziskanagel@gmail.com>, 2015
+# Ron Rover <ronny.rover@yahoo.com>, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: LongoMatch\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-05-27 11:58+0200\n"
+"PO-Revision-Date: 2016-03-06 21:02+0000\n"
+"Last-Translator: ylatuya <ylatuya@gmail.com>\n"
+"Language-Team: German (http://www.transifex.com/ylatuya/longomatch/language/"
+"de/)\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../VAS.Core/Common/Device.cs:76
+msgid "Default"
+msgstr "Voreinstellung"
+
+#: ../VAS.Core/Common/Exceptions.cs:28
+msgid "Database locked:"
+msgstr "Datenbank gesperrt:"
+
+#: ../VAS.Core/Common/Exceptions.cs:37
+msgid "Unknown database error:"
+msgstr "Unbekannter Datenbankfehler:"
+
+#: ../VAS.Core/Common/Exceptions.cs:46
+msgid "Project loading failed:"
+msgstr "Laden des Projektes fehlgeschlagen:"
+
+#: ../VAS.Core/Common/Exceptions.cs:55
+msgid "Project file not found:\n"
+msgstr "Projektdatei nicht gefunden\n"
+
+#: ../VAS.Core/Common/Exceptions.cs:63
+msgid "The name contains invalid characters: "
+msgstr "Der Name enthält ungültige Zeichen:"
+
+#: ../VAS.Core/Common/Exceptions.cs:71
+msgid "Hotkey already in use: "
+msgstr "Tastenkombination wird bereits verwendet:"
+
+#: ../VAS.Core/Common/VideoStandards.cs:58
+msgid "Keep original size"
+msgstr "Originalgröße beibehalten"
+
+#: ../VAS.Core/Store/EventType.cs:84 ../VAS.Core/Store/EventType.cs:92
+msgid "Sort by name"
+msgstr "Nach Name sortieren"
+
+#: ../VAS.Core/Store/EventType.cs:86 ../VAS.Core/Store/EventType.cs:96
+msgid "Sort by start time"
+msgstr "Nach Startzeit sortieren"
+
+#: ../VAS.Core/Store/EventType.cs:88 ../VAS.Core/Store/EventType.cs:98
+msgid "Sort by stop time"
+msgstr "Nach Stoppzeit sortieren"
+
+#: ../VAS.Core/Store/EventType.cs:90 ../VAS.Core/Store/EventType.cs:100
+msgid "Sort by duration"
+msgstr "Nach Dauer sortieren"
+
+#: ../VAS.Core/Store/HotKey.cs:141
+msgid "Not defined"
+msgstr "Nicht definiert"
+
+#: ../VAS.Core/Store/MediaFileSet.cs:131
+msgid "Main camera angle"
+msgstr "Hauptkamerawinkel"
+
+#: ../VAS.Core/Store/MediaFileSet.cs:134
+msgid "Angle 2"
+msgstr "Winkel 2"
+
+#: ../VAS.Core/Store/MediaFileSet.cs:137
+msgid "Angle 3"
+msgstr "Winkel 3"
+
+#: ../VAS.Core/Store/MediaFileSet.cs:140
+msgid "Angle 4"
+msgstr "Winkel 4"
+
+#: ../VAS.Core/Store/Project.cs:370
+msgid "The file you are trying to load is not a valid project"
+msgstr "Die zu ladende Datei ist kein gültiges Projekt"
+
+#: ../VAS.Core/Store/Templates/Dashboard.cs:263
+msgid "Success"
+msgstr "Erfolg"
+
+#: ../VAS.Core/Store/Templates/Dashboard.cs:264
+#: ../VAS.Core/Store/Templates/Dashboard.cs:266
+msgid "Outcome"
+msgstr "Ergebnis"
+
+#: ../VAS.Core/Store/Templates/Dashboard.cs:265
+msgid "Failure"
+msgstr "Fehler"
+
+#: ../VAS.DB/CouchbaseStorage.cs:155 ../VAS.DB/CouchbaseStorage.cs:215
+#: ../VAS.DB/CouchbaseStorage.cs:256
+msgid "Error deleting object from the storage"
+msgstr ""
+
+#: ../VAS.Multimedia/Capturer/FakeCapturer.cs:100
+msgid "Fake live source"
+msgstr "Simulierte Live-Quelle"
+
+#: ../VAS.Multimedia/Utils/GstDiscoverer.cs:61
+msgid "Could not parse file:"
+msgstr "Kann Datei nicht verarbeiten:"
+
+#: ../VAS.Services/CoreEventsManager.cs:168
+msgid "Error capturing video frame"
+msgstr "Fehler bei der Videoaufnahme"
+
+#: ../VAS.Services/CoreEventsManager.cs:261
+#: ../VAS.Services/CoreEventsManager.cs:335
+msgid "Video capture is stopped"
+msgstr "Die Aufnahme wurde gestoppt"
+
+#: ../VAS.Services/PlayerController.cs:918
+msgid "Invalid camera configuration"
+msgstr "Ungültige Kamerakonfiguration"
+
+#: ../VAS.Services/PlayerController.cs:1269
+msgid "Out of scope"
+msgstr " Außerhalb des Sichtfeldes"
+
+#: ../VAS.Services/PlaylistManager.cs:169
+msgid "New playlist"
+msgstr "Neue Wiedergabeliste"
+
+#: ../VAS.Services/PlaylistManager.cs:174
+msgid "Playlist name:"
+msgstr "Name der Wiedergabeliste:"
+
+#: ../VAS.Services/PlaylistManager.cs:178
+#, fuzzy
+msgid "A playlist already exists with the same name"
+msgstr "Es existiert bereits eine Datenbank mit diesem Namen"
+
+#: ../VAS.UI.Helpers.Gtk2/MessagesHelpers.cs:125
+msgid "Add"
+msgstr "Hinzufügen"
+
+#: ../VAS.UI.Helpers.Gtk2/MessagesHelpers.cs:141
+#, csharp-format
+msgid ""
+"Version {0} is available!\n"
+"(You are using version {1})\n"
+"<a href=\"{2}\">Click here to get it.</a>"
+msgstr ""
+"Version {0}  ist verfügbar.\n"
+"(Sie nutzen Version {1}) \n"
+"<a href=\"{2}\">Hier klicken zur Aktualisierung</a>"
+
+#: ../VAS.UI.Helpers.Gtk2/MessagesHelpers.cs:149
+msgid "New version available"
+msgstr "Neue Version verfügbar"
+
+#: ../VAS.UI.Helpers.Gtk2/MessagesHelpers.cs:152
+msgid "Changes:"
+msgstr "Änderungen:"
+
+#: ../VAS.UI.Helpers.Gtk2/MessagesHelpers.cs:156
+msgid "Do not notify me again until next version"
+msgstr "Nicht weiter erinnern bis zur nächsten Version"
+
+#: ../VAS.UI.Helpers.Gtk2/Misc.cs:57
+msgid "Choose an image"
+msgstr "Bild auswählen"
+
+#: ../VAS.UI.Helpers.Gtk2/Misc.cs:69
+msgid "Image file format not supported"
+msgstr "Bildformat wird nicht unterstützt"
+
+#: ../VAS.UI.Helpers.Gtk2/Misc.cs:288
+msgid "Analyzing video file:"
+msgstr "Videodatei wird analysiert:"
+
+#: ../VAS.UI.Helpers.Gtk2/Misc.cs:302
+msgid "Timeout parsing file."
+msgstr "Timeout Parsing-Datei."
+
+#: ../VAS.UI.Helpers.Gtk2/Misc.cs:304
+msgid "This file doesn't contain a video stream."
+msgstr "Diese Datei enthält keinen Videostream."
+
+#: ../VAS.UI.Helpers.Gtk2/Misc.cs:306
+msgid "This file contains a video stream but its length is 0."
+msgstr "Diese Datei enthält zwar einen Videostream, der aber die Länge 0 hat."
+
+#: ../VAS.UI.Helpers.Gtk2/Misc.cs:323
+msgid "Open file"
+msgstr "Datei öffnen"
+
+#: ../VAS.UI.Helpers.Gtk2/Misc.cs:333
+msgid ""
+"This file is not in a supported format, convert it with the video conversion "
+"tool"
+msgstr ""
+"Diese Datei ist nicht im unterstützten Format, konvertieren Sie es mit dem "
+"Videokonvertierungs-Werkzeug"
+
+#: ../VAS.UI.Helpers.Gtk2/Misc.cs:337
+msgid ""
+"This file needs to be converted into a more suitable format.(This step will "
+"only take a few minutes)"
+msgstr ""
+"Diese Datei muss in ein geeignetes Format umgewandelt werden. (Dieser "
+"Schritt dauert nur einige wenige Minuten)"

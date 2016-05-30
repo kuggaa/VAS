@@ -1,3 +1,3 @@
-PROJECT_FILE = LongoMatch.Drawing.Cairo.csproj
-ASSEMBLY=LongoMatch.Drawing.Cairo.dll
+PROJECT_FILE = VAS.Drawing.Cairo.csproj
+ASSEMBLY=VAS.Drawing.Cairo.dll
 include $(top_srcdir)/build/build.mk
