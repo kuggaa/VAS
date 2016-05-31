@@ -13,13 +13,13 @@ SUBDIRS = \
 	build \
 	pkgconfig \
 	.nuget \
+	Weavers \
 	VAS.Core \
 	VAS.DB \
 	VAS.UI.Helpers.Gtk2 \
 	VAS.Drawing.Cairo \
 	VAS.Multimedia \
 	VAS.Services \
-	Weavers \
 	po
 
 
