@@ -23,6 +23,7 @@ namespace VAS.DB.Views
 	{
 		public PlayersView (CouchbaseStorage storage) : base (storage)
 		{
+			DocumentType = "Player";
 		}
 
 		protected override string ViewVersion {

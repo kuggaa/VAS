@@ -26,6 +26,7 @@ namespace VAS.DB.Views
 
 		public ProjectsView (CouchbaseStorage storage) : base (storage)
 		{
+			DocumentType = "Project";
 		}
 
 		protected override string ViewVersion {

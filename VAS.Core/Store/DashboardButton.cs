@@ -246,7 +246,7 @@ namespace VAS.Core.Store
 
 			if (Timer != null) {
 				currentNode = Timer.Start (start);
-				Config.EventsBrokerBase.EmitTimeNodeStartedEvent (currentNode, this, from);
+				Config.EventsBroker.EmitTimeNodeStartedEvent (currentNode, this, from);
 			}
 		}
 
@@ -257,7 +257,7 @@ namespace VAS.Core.Store
 
 			if (Timer != null) {
 				Timer.Stop (stop);
-				Config.EventsBrokerBase.EmitTimeNodeStoppedEvent (currentNode, this, from);
+				Config.EventsBroker.EmitTimeNodeStoppedEvent (currentNode, this, from);
 				currentNode = null;
 			}
 		}

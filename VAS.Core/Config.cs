@@ -47,7 +47,6 @@ namespace VAS
 		public static string dataDir = ".";
 		
 		/* State */
-		public static EventsBroker EventsBrokerBase;
 		public static EventsAggregator EventsAggregator;
 
 		protected static StyleConf style;

@@ -44,7 +44,6 @@ namespace VAS.DB.Views
 		{
 			this.storage = storage;
 			db = storage.Database;
-			GetView ();
 
 			// List all properties that will are included in the preloaded version of the object
 			// returned in the queries
@@ -61,6 +60,26 @@ namespace VAS.DB.Views
 				OrderBy (x => (x.A [0] as PropertyIndex).Index)) {
 				FilterProperties.Add (prop.P.Name, typeof(IStorable).IsAssignableFrom (prop.P.PropertyType));
 			}
+			DocumentType = typeof(T).Name;
+		}
+
+		/// <summary>
+		/// Return the object type
+		/// </summary>
+		/// <value>The type.</value>
+		public Type Type {
+			get {
+				return typeof(T);
+			}
+		}
+
+		/// <summary>
+		/// The document type associated with this view.
+		/// </summary>
+		/// <value>The type of the document.</value>
+		public string DocumentType {
+			get;
+			protected set;
 		}
 
 		/// <summary>
@@ -167,10 +186,9 @@ namespace VAS.DB.Views
 		/// <returns>The view.</returns>
 		View GetView ()
 		{
-			string docType = typeof(T).Name; 
-			View view = db.GetView (docType);
+			View view = db.GetView (DocumentType);
 			if (view.Map == null) {
-				view.SetMap (GetMap (docType), ViewVersion);
+				view.SetMap (GetMap (DocumentType), ViewVersion);
 			}
 			return view;
 		}

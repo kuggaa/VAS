@@ -23,6 +23,7 @@ namespace VAS.DB.Views
 	{
 		public EventTypeView (CouchbaseStorage storage) : base (storage)
 		{
+			DocumentType = "EventType";
 		}
 
 		protected override string ViewVersion {

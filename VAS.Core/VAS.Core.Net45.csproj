@@ -46,7 +46,7 @@
 			<HintPath>..\packages\PropertyChanged.Fody.1.50.3\Lib\portable-net4+sl4+wp8+win8+wpa81+MonoAndroid16+MonoTouch40\PropertyChanged.dll</HintPath>
 		</Reference>
 		<Reference Include="Prism">
-			<HintPath>..\packages\Prism.Core.6.1.0\lib\net45\Prism.dll</HintPath>
+			<HintPath>$(SolutionDir)\packages\Prism.Core.6.1.0\lib\net45\Prism.dll</HintPath>
 		</Reference>
 	</ItemGroup>
 	<Import Project="VAS.Core.projitems" Label="Shared" Condition="Exists('VAS.Core.projitems')" />
