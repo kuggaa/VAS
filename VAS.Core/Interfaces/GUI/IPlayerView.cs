@@ -29,7 +29,7 @@ namespace VAS.Core.Interfaces.GUI
 
 		bool PlayerAttached { set; }
 
-		void ShowDettachButton (bool show);
+		void ShowDetachButton (bool show);
 	}
 }
 

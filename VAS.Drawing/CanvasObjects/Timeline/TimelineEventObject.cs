@@ -88,16 +88,6 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			double y1, y2;
 		
 			tk.LineWidth = lineWidth;
-			//WIP
-			//			List<Team> teams = Event.TaggedTeams;
-			//			if (teams.Count == 1) {
-			//				color = teams [0].Color;
-			//			} else {
-			//				color = Config.Style.PaletteWidgets;
-			//			}
-				
-			//			tk.FillColor = color;
-			//			tk.StrokeColor = color;
 			y1 = OffsetY + 6;
 			y2 = OffsetY + Height - 6;
 			tk.DrawLine (new Point (start, y1), new Point (start, y2));

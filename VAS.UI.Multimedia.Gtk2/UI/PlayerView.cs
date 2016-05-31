@@ -591,7 +591,7 @@ namespace VAS.UI
 			Player.Ready ();
 		}
 
-		public virtual void ShowDettachButton (bool show)
+		public virtual void ShowDetachButton (bool show)
 		{
 			this.detachbutton.Visible = show;
 		}

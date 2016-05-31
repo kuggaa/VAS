@@ -164,7 +164,7 @@ namespace VAS.UI
 
 		public void ShowDettachButtonInPlayer (bool show)
 		{
-			playerview.ShowDettachButton (show);
+			playerview.ShowDetachButton (show);
 		}
 
 
