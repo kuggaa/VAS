@@ -60,6 +60,7 @@ namespace VAS.UI.Component
 		protected void Initialization ()
 		{
 			this.timerule = new Timerule (new WidgetWrapper (timerulearea));
+			timerule.CenterPlayheadClicked += HandleFocusClicked;
 			timerule.SeekEvent += HandleTimeruleSeek;
 			this.timeline = createPlaysTimeline ();
 			this.labels = createTimelineLabels ();
