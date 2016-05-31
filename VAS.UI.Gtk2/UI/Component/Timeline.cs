@@ -122,8 +122,14 @@ namespace VAS.UI.Component
 				return player;
 			}
 			set {
+				if (player != null) {
+					player.TimeChangedEvent -= HandleTimeChangedEvent;
+				}
 				player = value;
 				timerule.Player = player;
+				if (player != null) {
+					player.TimeChangedEvent += HandleTimeChangedEvent;
+				}
 			}
 		}
 
@@ -333,6 +339,11 @@ namespace VAS.UI.Component
 		{
 			(Config.EventsBroker).EmitLoadEvent (null);
 			(Config.EventsBroker).EmitSeekEvent (pos, accurate, synchronous, throttled);
+		}
+
+		void HandleTimeChangedEvent (Time currentTime, Time duration, bool seekable)
+		{
+			CurrentTime = currentTime;
 		}
 
 		/// <summary>
