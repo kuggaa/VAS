@@ -57,7 +57,6 @@
   <ItemGroup>
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="UI\Component\Timeline.cs" />
-    <Compile Include="UI\Menu\PeriodsMenuBase.cs" />
     <Compile Include="UI\Menu\PlaysMenuBase.cs" />
     <Compile Include="gtk-gui\VAS.UI.Component.Timeline.cs" />
   </ItemGroup>

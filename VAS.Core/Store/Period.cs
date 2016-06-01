@@ -21,6 +21,9 @@ using Newtonsoft.Json;
 
 namespace VAS.Core.Store
 {
+	/// <summary>
+	/// FIXME: Periods should be only in LongoMatch and not in VAS
+	/// </summary>
 	[Serializable]
 	public class Period: Timer
 	{

@@ -49,7 +49,6 @@ namespace VAS.UI.Component
 		protected Time currentTime, nextCurrentTime;
 		protected PlaysMenuBase menu;
 		protected Project project;
-		protected PeriodsMenuBase periodsmenu;
 		protected IPlayerController player;
 
 		public Timeline ()
@@ -95,7 +94,6 @@ namespace VAS.UI.Component
 			};
 
 			menu = new PlaysMenuBase ();
-			periodsmenu = new PeriodsMenuBase ();
 		}
 
 		protected override void OnDestroyed ()
@@ -222,7 +220,6 @@ namespace VAS.UI.Component
 
 			timeline.ShowMenuEvent += HandleShowMenu;
 			timeline.ShowTimersMenuEvent += HandleShowTimersMenu;
-			timeline.ShowTimerMenuEvent += HandleShowTimerMenuEvent;
 			QueueDraw ();
 		}
 
@@ -335,11 +332,6 @@ namespace VAS.UI.Component
 			m.Add (item);
 			m.ShowAll ();
 			m.Popup ();
-		}
-
-		protected void HandleShowTimerMenuEvent (Timer timer, Time time)
-		{
-			periodsmenu.ShowMenu (project, timer, time, timeline.PeriodsTimeline, timeline);
 		}
 
 		protected void HandleTimeruleSeek (Time pos, bool accurate, bool synchronous = false, bool throttled = false)
