@@ -48,7 +48,6 @@ namespace VAS.UI
 
 			Config.EventsAggregator.Subscribe<LoadVideoEvent> (HandleLoadVideoEvent, ThreadMethod.UIThread);
 			Config.EventsAggregator.Subscribe<CloseVideoEvent> (HandleCloseVideoEvent, ThreadMethod.UIThread);
-			Config.EventsBroker.SeekEvent += HandleSeek;
 		}
 
 		protected override void OnDestroyed ()
@@ -59,7 +58,7 @@ namespace VAS.UI
 		}
 
 		public virtual IPlayerController Player {
-			set {
+			private set {
 				Player.ElementLoadedEvent += HandleElementLoadedEvent;
 				Player.PrepareViewEvent += HandlePrepareViewEvent;
 			}
@@ -186,14 +185,6 @@ namespace VAS.UI
 
 			set {
 				replayhbox = value;
-			}
-		}
-
-		// FIXME: shouldn't be here...
-		public void HandleSeek (Time time, bool accurate, bool synchronous = false, bool throttled = false)
-		{
-			if (Player.Opened) {
-				Player.Seek (time, accurate, synchronous, throttled);
 			}
 		}
 	}

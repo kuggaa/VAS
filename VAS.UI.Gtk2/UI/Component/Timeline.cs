@@ -128,6 +128,7 @@ namespace VAS.UI.Component
 				}
 				player = value;
 				timerule.Player = player;
+				timeline.Player = player;
 				if (player != null) {
 					player.TimeChangedEvent += HandleTimeChangedEvent;
 				}
@@ -187,7 +188,7 @@ namespace VAS.UI.Component
 
 		protected virtual PlaysTimeline createPlaysTimeline ()
 		{
-			return new PlaysTimeline (new WidgetWrapper (timelinearea));
+			return new PlaysTimeline (new WidgetWrapper (timelinearea), Player);
 		}
 
 		protected virtual TimelineLabels createTimelineLabels ()
@@ -339,7 +340,7 @@ namespace VAS.UI.Component
 		protected void HandleTimeruleSeek (Time pos, bool accurate, bool synchronous = false, bool throttled = false)
 		{
 			(Config.EventsBroker).EmitLoadEvent (null);
-			(Config.EventsBroker).EmitSeekEvent (pos, accurate, synchronous, throttled);
+			player.Seek (pos, accurate, synchronous, throttled);
 		}
 
 		void HandleTimeChangedEvent (Time currentTime, Time duration, bool seekable)
