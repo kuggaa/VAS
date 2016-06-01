@@ -1,7 +1,6 @@
 BUILD_DIR ?= $(top_builddir)/bin
 ASSEMBLY_FILE ?= $(BUILD_DIR)/$(ASSEMBLY)
-OUTPUT_DIR ?= $(pkglibdir)
-
+OUTPUT_DIR ?= $(libdir)/@USER_PACKAGE@
 
 XBUILD_CMD = $(XBUILD) \
  /property:DefineConstants="$(XBUILD_CONSTANTS)" \
@@ -37,7 +36,7 @@ desktopdir = $(datadir)/applications
 desktop_in_files = $(DESKTOP_FILE)
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 
-imagesdir = @datadir@/@PACKAGE@/images
+imagesdir = @datadir@/@USER_PACKAGE@/images
 images_DATA = $(IMAGES)
 
 logo_48dir = @datadir@/icons/hicolor/48x48/apps
