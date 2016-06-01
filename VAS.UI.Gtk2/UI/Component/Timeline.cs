@@ -156,6 +156,15 @@ namespace VAS.UI.Component
 			}
 		}
 
+		public virtual DrawingArea TimelineArea {
+			get {
+				return timelinearea;
+			}
+			set {
+				timelinearea = value;
+			}
+		}
+
 		public virtual void Fit ()
 		{
 			focusbutton.Click ();
@@ -183,12 +192,12 @@ namespace VAS.UI.Component
 
 		protected DrawingArea getTimelinearea ()
 		{
-			return timelinearea;
+			return TimelineArea;
 		}
 
 		protected DrawingArea getLabelsarea ()
 		{
-			return labelsarea;
+			return LabelsArea;
 		}
 
 		public virtual void SetProject (Project project, EventsFilter filter)

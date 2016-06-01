@@ -358,7 +358,7 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
-		public void HandleLoadVideoMessage (LoadVideoEvent changeVideoMessageEvent)
+		protected void HandleLoadVideoMessage (LoadVideoEvent changeVideoMessageEvent)
 		{
 			if (this.project != null) {
 				this.project.FileSet = changeVideoMessageEvent.mfs;
@@ -368,10 +368,10 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
-		protected virtual void HandleCloseVideoEvent (CloseVideoEvent closeVideoEvent)
+		protected void HandleCloseVideoEvent (CloseVideoEvent closeVideoEvent)
 		{
 			if (this.project != null) {
-				this.project.FileSet.RemoveAll (x => x.VideoCodec.Any ());
+				this.project.FileSet.Clear ();
 				ClearObjects ();
 				duration = new Time (0);
 				FillCanvas ();

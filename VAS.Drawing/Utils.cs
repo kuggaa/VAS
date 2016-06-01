@@ -71,9 +71,17 @@ namespace VAS.Drawing
 
 		public static ICanvasSelectableObject CanvasFromDrawableObject (IBlackboardObject drawable)
 		{
-			string objecttype = String.Format ("LongoMatch.Drawing.CanvasObjects.Blackboard.{0}Object",
-				                    drawable.GetType ().ToString ().Split ('.').Last ());
-			ObjectHandle handle = Activator.CreateInstance (null, objecttype);
+			string[] typeSplit = drawable.GetType ().ToString ().Split ('.');
+			string objecttype = String.Format ("{1}.Drawing.CanvasObjects.Blackboard.{0}Object",
+				                    typeSplit.Last (), typeSplit.First ());
+			ObjectHandle handle = null;
+			try {
+				handle = Activator.CreateInstance (null, objecttype);
+			} catch { 
+				objecttype = String.Format ("VAS.Drawing.CanvasObjects.Blackboard.{0}Object",
+					typeSplit.Last ());
+				handle = Activator.CreateInstance (null, objecttype);
+			}
 			ICanvasDrawableObject d = (ICanvasDrawableObject)handle.Unwrap ();
 			d.IDrawableObject = drawable;
 			return d;
