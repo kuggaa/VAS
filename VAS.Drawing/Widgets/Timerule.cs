@@ -244,14 +244,11 @@ namespace VAS.Drawing.Widgets
 		{
 			base.HandleLeftButton (coords, modif);
 
-			if (!Selections.Any ()) {
-				needle.X = coords.X;
-				if (SeekEvent != null) {
-					SeekEvent (Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel),
-						true);
-				}
-				needle.ReDraw ();
+			needle.X = coords.X;
+			if (SeekEvent != null) {
+				SeekEvent (Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel), true);
 			}
+			needle.ReDraw ();
 		}
 
 		protected override void HandleDoubleClick (Point coords, ButtonModifier modif)

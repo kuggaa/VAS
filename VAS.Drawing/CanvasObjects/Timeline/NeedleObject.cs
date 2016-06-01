@@ -101,11 +101,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 		public Selection GetSelection (Point point, double precision, bool inMotion = false)
 		{
-			if ((Math.Abs (point.X - X) < Width / 2 + precision)) {
-				return new Selection (this, SelectionPosition.All, 0);
-			} else {
-				return null;
-			}
+			// Always select the playhead, regardless of where it's clicked.
+			return new Selection (this, SelectionPosition.All, 0);
 		}
 
 		public void Move (Selection s, Point p, Point start)
