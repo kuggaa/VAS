@@ -193,11 +193,6 @@ namespace VAS.UI.Component
 			return TimelineArea;
 		}
 
-		protected DrawingArea getLabelsarea ()
-		{
-			return LabelsArea;
-		}
-
 		public virtual void SetProject (Project project, EventsFilter filter)
 		{
 			this.project = project;
