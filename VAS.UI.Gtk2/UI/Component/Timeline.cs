@@ -103,6 +103,9 @@ namespace VAS.UI.Component
 				GLib.Source.Remove (timeoutID);
 				timeoutID = 0;
 			}
+			// Unsubscribe events
+			Player = null;
+
 			timerule.Dispose ();
 			timeline.Dispose ();
 			labels.Dispose ();
