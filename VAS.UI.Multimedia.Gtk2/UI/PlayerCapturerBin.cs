@@ -116,7 +116,7 @@ namespace VAS.UI
 					message = null
 				});
 
-			ShowDettachButtonInPlayer (false);
+			ShowDetachButtonInPlayer (false);
 			Player.IgnoreTicks = false;
 			Player.Open (loadVideoEvent.mfs);
 			Player.Play ();
@@ -162,7 +162,7 @@ namespace VAS.UI
 			ShowCapturer ();
 		}
 
-		public void ShowDettachButtonInPlayer (bool show)
+		public void ShowDetachButtonInPlayer (bool show)
 		{
 			playerview.ShowDetachButton (show);
 		}
