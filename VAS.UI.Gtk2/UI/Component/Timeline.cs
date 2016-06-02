@@ -47,7 +47,7 @@ namespace VAS.UI.Component
 		protected double secondsPerPixel;
 		protected uint timeoutID;
 		protected Time currentTime, nextCurrentTime;
-		protected PlaysMenuBase menu;
+		protected PlaysMenu menu;
 		protected Project project;
 		protected IPlayerController player;
 
@@ -93,7 +93,7 @@ namespace VAS.UI.Component
 				zoomhbox.HeightRequest = args.Allocation.Height + spacing;
 			};
 
-			menu = new PlaysMenuBase ();
+			menu = new PlaysMenu ();
 		}
 
 		protected override void OnDestroyed ()

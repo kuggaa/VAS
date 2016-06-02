@@ -27,7 +27,7 @@ using VAS.Core;
 
 namespace VAS.UI.Menus
 {
-	public class PlaysMenuBase : Gtk.Menu
+	public class PlaysMenu : Gtk.Menu
 	{
 		public event EventHandler EditPlayEvent;
 
