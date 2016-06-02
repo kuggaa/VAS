@@ -30,6 +30,7 @@ using Image = VAS.Core.Common.Image;
 using Point = VAS.Core.Common.Point;
 using Rectangle = Gdk.Rectangle;
 using VASDrawing = VAS.Core.Handlers.Drawing;
+using System.Collections.Generic;
 
 namespace VAS.Drawing.Cairo
 {
@@ -60,6 +61,7 @@ namespace VAS.Drawing.Cairo
 			widget.ButtonPressEvent += HandleButtonPressEvent;
 			widget.ButtonReleaseEvent += HandleButtonReleaseEvent;
 			widget.MotionNotifyEvent += HandleMotionNotifyEvent;
+			Gdk.Window.DebugUpdates = true;
 		}
 
 		public void Dispose ()
@@ -106,28 +108,24 @@ namespace VAS.Drawing.Cairo
 			}
 		}
 
-		public void ReDraw (Area area = null)
+		public void ReDraw (IEnumerable<Area> areas = null)
 		{
 			if (widget.GdkWindow == null) {
 				return;
 			}
-			if (area == null) {
+			if (areas == null) {
 				Gdk.Region region = widget.GdkWindow.ClipRegion;
 				widget.GdkWindow.InvalidateRegion (region, true);
 			} else {
-				widget.GdkWindow.InvalidateRect (
-					new Gdk.Rectangle ((int)area.Start.X - 1, (int)area.Start.Y - 1,
-						(int)Math.Ceiling (area.Width) + 2,
-						(int)Math.Ceiling (area.Height) + 2),
-					true);
+				foreach (Area area in areas) {
+					widget.GdkWindow.InvalidateRect (
+						new Gdk.Rectangle ((int)area.Start.X - 1, (int)area.Start.Y - 1,
+							(int)Math.Ceiling (area.Width) + 2,
+							(int)Math.Ceiling (area.Height) + 2),
+						true);
+				}
 			}
 			widget.GdkWindow.ProcessUpdates (true);
-		}
-
-		public void ReDraw (IMovableObject drawable)
-		{
-			/* FIXME: get region from drawable */
-			ReDraw ();
 		}
 
 		public void ShowTooltip (string text)
@@ -237,7 +235,7 @@ namespace VAS.Drawing.Cairo
 					}
 					cc.Rectangle (area.Start.X, area.Start.Y, area.Width, area.Height);
 					cc.Clip ();
-					DrawEvent (c, area);
+					DrawEvent (c, new List<Area> { area });
 				}
 			}
 		}

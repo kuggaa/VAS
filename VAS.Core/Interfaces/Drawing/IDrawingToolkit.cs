@@ -23,24 +23,8 @@ namespace VAS.Core.Interfaces.Drawing
 	public interface IContext:IDisposable
 	{
 		object Value { get; }
-	}
 
-	public interface ISurface:IDisposable
-	{
-		Image Copy ();
-
-		object Value { get; }
-
-		IContext Context { get; }
-
-		int Width { get; }
-
-		int Height { get; }
-	}
-
-	public interface IDrawingToolkit
-	{
-		IContext Context { set; get; }
+		#region Properties
 
 		int LineWidth { set; }
 
@@ -64,13 +48,7 @@ namespace VAS.Core.Interfaces.Drawing
 
 		bool UseAntialias { set; }
 
-		ISurface CreateSurface (string filename, bool warnOnDispose = true);
-
-		ISurface CreateSurface (int width, int height, Image image = null, bool warnOnDispose = true);
-
-		void DrawSurface (ISurface surface, Point p = null);
-
-		void DrawSurface (Point start, double width, double height, ISurface surface, ScaleMode mode);
+		#endregion
 
 		void Begin ();
 
@@ -81,6 +59,10 @@ namespace VAS.Core.Interfaces.Drawing
 		void TranslateAndScale (Point translation, Point scale);
 
 		void Clip (Area are);
+
+		void DrawSurface (ISurface surface, Point p = null);
+
+		void DrawSurface (Point start, double width, double height, ISurface surface, ScaleMode mode);
 
 		void DrawLine (Point start, Point stop);
 
@@ -109,16 +91,37 @@ namespace VAS.Core.Interfaces.Drawing
 
 		void DrawArrow (Point start, Point stop, int lenght, double degrees, bool closed);
 
-		void Save (ICanvas canvas, Area area, string filename);
-
-		Image Copy (ICanvas canvas, Area area);
-
 		Area UserToDevice (Area area);
+	}
 
+	public interface ISurface:IDisposable
+	{
+		Image Copy ();
+
+		object Value { get; }
+
+		IContext Context { get; }
+
+		int Width { get; }
+
+		int Height { get; }
+	}
+
+	public interface IDrawingToolkit
+	{
 		void Invoke (EventHandler handler);
+
+		ISurface CreateSurface (string filename, bool warnOnDispose = true);
+
+		ISurface CreateSurface (int width, int height, Image image = null, bool warnOnDispose = true);
 
 		void MeasureText (string text, out int width, out int height,
 		                  string fontFamily, int fontSize, FontWeight fontWeight);
+
+		/// FIXME: create an extension method Save and Copy
+		void Save (ICanvas canvas, Area area, string filename);
+
+		Image Copy (ICanvas canvas, Area area);
 	}
 }
 

@@ -19,6 +19,7 @@ using System;
 using VAS.Core.Handlers.Drawing;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
+using System.Collections.Generic;
 
 namespace VAS.Core.Interfaces.Drawing
 {
@@ -35,9 +36,7 @@ namespace VAS.Core.Interfaces.Drawing
 
 		double Height { get; set; }
 
-		void ReDraw (Area area = null);
-
-		void ReDraw (IMovableObject drawable);
+		void ReDraw (IEnumerable<Area> area = null);
 
 		void SetCursor (CursorType type);
 

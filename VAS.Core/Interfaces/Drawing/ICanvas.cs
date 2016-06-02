@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 using VAS.Core.Common;
 using VAS.Core.Handlers.Drawing;
 using VAS.Core.Interfaces.Drawing;
@@ -25,7 +26,7 @@ namespace VAS.Core.Interfaces.Drawing
 
 	public interface ICanvas: IDisposable
 	{
-		void Draw (IContext context, Area area);
+		void Draw (IContext context, IEnumerable<Area> area);
 
 		void SetWidget (IWidget widget);
 	}
@@ -35,11 +36,13 @@ namespace VAS.Core.Interfaces.Drawing
 		event CanvasHandler ClickedEvent;
 		event RedrawHandler RedrawEvent;
 
-		void Draw (IDrawingToolkit tk, Area area);
+		void Draw (IContext context, IEnumerable<Area> area);
 
 		bool Visible { set; get; }
 
 		string Description { set; get; }
+
+		Area DrawArea { get; }
 
 		void ClickPressed (Point p, ButtonModifier modif);
 
