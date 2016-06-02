@@ -66,7 +66,7 @@ namespace VAS.UI.Helpers
 			return (res == (int)ResponseType.Yes);
 		}
 
-		static public int ButtonsMessage (Widget parent, string question, Dictionary<string, bool> textButtons, string title = null)
+		static public int ButtonsMessage (Widget parent, string question, List<string> textButtons, int? focusIndex, string title = null)
 		{
 			Window toplevel;
 
@@ -81,16 +81,17 @@ namespace VAS.UI.Helpers
 
 			md.Icon = Misc.LoadIcon ("longomatch", IconSize.Button, 0);
 			md.Title = title;
-			int i = 1;
-			foreach (var buttonText in textButtons) {
-				var t = md.AddButton (buttonText.Key, i);
 
-				if (buttonText.Value) {
+			for (int i = 0; i < textButtons.Count; i++) {
+				var buttonText = textButtons [i];
+
+				var t = md.AddButton (buttonText, i + 1);
+
+				if (focusIndex.HasValue && focusIndex.Value == i) {
 					md.Focus = t;
 				}
-
-				i++;
 			}
+
 			var res = md.Run ();
 			md.Destroy ();
 			return res;
