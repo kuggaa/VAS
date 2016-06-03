@@ -37,9 +37,6 @@
       <Package>newtonsoft-json</Package>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
   <Import Project="VAS.Services.projitems" Label="Shared" Condition="Exists('VAS.Services.projitems')" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

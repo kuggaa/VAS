@@ -50,7 +50,9 @@
     <Compile Include="Player\ObjectManager.cs" />
     <Compile Include="Utils\Devices.cs" />
     <Compile Include="Utils\WindowHandle.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\AssemblyInfo\AssemblyInfo.cs">
+      <Link>AssemblyInfo.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Capturer\" />
@@ -59,7 +61,6 @@
     <Folder Include="Editor\" />
     <Folder Include="Remuxer\" />
     <Folder Include="Player\" />
-    <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />

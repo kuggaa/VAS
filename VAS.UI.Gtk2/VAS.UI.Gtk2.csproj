@@ -61,6 +61,9 @@
     <Compile Include="UI\Component\Timeline.cs" />
     <Compile Include="gtk-gui\VAS.UI.Component.Timeline.cs" />
     <Compile Include="UI\Menu\PlaysMenu.cs" />
+    <Compile Include="..\AssemblyInfo\AssemblyInfo.cs">
+      <Link>AssemblyInfo.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

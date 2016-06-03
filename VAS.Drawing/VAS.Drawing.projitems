@@ -29,5 +29,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\NeedleObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Widgets\Timerule.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Widgets\PlaysTimeline.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\AssemblyInfo\AssemblyInfo.cs">
+      <Link>AssemblyInfo.cs</Link>
+    </Compile>
   </ItemGroup>
 </Project>
