@@ -518,7 +518,7 @@ namespace VAS.Drawing.Widgets
 				}
 				to.Active = false;
 			}
-			NewTagEvent (button.EventType, null, tags, start, stop, eventTime, button);
+			NewTagEvent (button.EventType, null, null, tags, start, stop, eventTime, button);
 		}
 	}
 }

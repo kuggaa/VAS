@@ -16,7 +16,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using VAS.Core.Store;
+using VAS.Core.Store.Templates;
 
 namespace VAS.Core.Events
 {
@@ -31,6 +33,8 @@ namespace VAS.Core.Events
 		public EventType EventType { get; set; }
 
 		public List<Player> Players { get; set; }
+
+		public ObservableCollection<Team> Teams { get; set; }
 
 		public List<Tag> Tags { get; set; }
 
