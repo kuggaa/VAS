@@ -31,11 +31,7 @@ namespace VAS.Core.Interfaces.GUI
 
 		void CloseOpenedProject ();
 
-		void AddPlay (TimelineEvent play);
-
 		void UpdateCategories ();
-
-		void DeletePlays (List<TimelineEvent> plays);
 
 		void DetachPlayer ();
 
