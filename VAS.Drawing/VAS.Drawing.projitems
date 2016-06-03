@@ -32,5 +32,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)..\AssemblyInfo\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasFromDrawableObjectRegistry.cs" />
   </ItemGroup>
 </Project>
