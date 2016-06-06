@@ -14,7 +14,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <Optimize>false</Optimize>
-    <OutputPath>..\bin</OutputPath>
+    <OutputPath>..\..\bin</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -23,7 +23,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>false</Optimize>
-    <OutputPath>..\bin</OutputPath>
+    <OutputPath>..\..\bin</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -50,7 +50,9 @@
     <Compile Include="Player\ObjectManager.cs" />
     <Compile Include="Utils\Devices.cs" />
     <Compile Include="Utils\WindowHandle.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\AssemblyInfo\AssemblyInfo.cs">
+      <Link>AssemblyInfo.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Capturer\" />
@@ -59,7 +61,6 @@
     <Folder Include="Editor\" />
     <Folder Include="Remuxer\" />
     <Folder Include="Player\" />
-    <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -73,13 +74,13 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\..\libcesarplayer\liblongomatch.cproj">
-      <Project>{513A86B7-13B9-4209-91C3-3840E68CF2F8}</Project>
-      <Name>liblongomatch</Name>
-    </ProjectReference>
     <ProjectReference Include="..\VAS.Core\VAS.Core.Net45.csproj">
       <Project>{08AE7734-B995-4E0D-AD8F-38F597E0D4DF}</Project>
       <Name>VAS.Core.Net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\libvas\libvas.cproj">
+      <Project>{513A86B7-13B9-4209-91C3-3840E68CF2F8}</Project>
+      <Name>libvas</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

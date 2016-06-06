@@ -124,6 +124,7 @@ namespace VAS.Core.Common
 		public const string SubsIcon = "icons/hicolor/scalable/actions/longomatch-subs-arrow" + IMAGE_EXT;
 		public const string DefaultShield = "icons/hicolor/scalable/actions/longomatch-default-shield" + IMAGE_EXT;
 
+		public const string OpenButton = "icons/hicolor/scalable/actions/longomatch-open" + IMAGE_EXT;
 		public const string EditButton = "icons/hicolor/scalable/actions/longomatch-pencil" + IMAGE_EXT;
 		public const string ApplyButton = "icons/hicolor/scalable/actions/longomatch-apply-button" + IMAGE_EXT;
 		public const string CancelButton = "icons/hicolor/scalable/actions/longomatch-mark" + IMAGE_EXT;

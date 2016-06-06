@@ -717,6 +717,13 @@ namespace VAS.Services
 
 		#endregion
 
+		public virtual void ResetCounter ()
+		{
+			Stop ();
+			EmitTimeChanged (new Time (0), new Time (0));
+			IgnoreTicks = true;
+		}
+
 		#region Signals
 
 		protected virtual void EmitLoadDrawings (FrameDrawing drawing = null)

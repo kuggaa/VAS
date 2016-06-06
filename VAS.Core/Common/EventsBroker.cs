@@ -32,9 +32,9 @@ namespace VAS.Core.Common
 	{
 		public event LoadEventHandler LoadEventEvent;
 		public event EventCreatedHandler EventCreatedEvent;
+		public event DeleteEventsHandler EventsDeletedEvent;
 		public event EventLoadedHandler EventLoadedEvent;
 		public event TimeNodeChangedHandler TimeNodeChanged;
-		public event DeleteEventsHandler EventsDeletedEvent;
 		public event SnapshotSeriesHandler SnapshotSeries;
 		public event MoveEventHandler MoveToEventTypeEvent;
 		public event DuplicateEventsHandler DuplicateEventsEvent;
@@ -63,8 +63,11 @@ namespace VAS.Core.Common
 
 		/* Player and Capturer */
 		public event TickHandler PlayerTick;
+		public event TickHandler CapturerTick;
 		public event ErrorHandler MultimediaError;
+		public event ErrorHandler CaptureError;
 		public event DrawFrameHandler DrawFrame;
+		public event CaptureFinishedHandler CaptureFinished;
 		public event StateChangeHandler PlaybackStateChangedEvent;
 		public event PlaybackRateChangedHandler PlaybackRateChanged;
 		public event SeekEventHandler SeekEvent;
@@ -148,6 +151,20 @@ namespace VAS.Core.Common
 		{
 			if (PlaybackStateChangedEvent != null) {
 				PlaybackStateChangedEvent (sender, playing);
+			}
+		}
+
+		public virtual void EmitDetach ()
+		{
+			if (Detach != null) {
+				Detach ();
+			}
+		}
+
+		public void EmitCaptureError (object sender, string message)
+		{
+			if (CaptureError != null) {
+				CaptureError (sender, message);
 			}
 		}
 
@@ -342,10 +359,22 @@ namespace VAS.Core.Common
 			}
 		}
 
-		public void EmitDetach ()
+		public void EmitCapturerTick (Time currentTime)
 		{
-			if (Detach != null) {
-				Detach ();
+			if (CapturerTick != null) {
+				CapturerTick (currentTime);
+			}
+		}
+
+		/// <summary>
+		/// Signals the current capture has finished.
+		/// </summary>
+		/// <param name="cancel">If set to <c>true</c> the capture was cancelled.</param>
+		/// <param name="reopn">If set to <c>true</c> the finished project is reopened.</param>
+		public void EmitCaptureFinished (bool cancel, bool reopen)
+		{
+			if (CaptureFinished != null) {
+				CaptureFinished (cancel, reopen);
 			}
 		}
 	}
