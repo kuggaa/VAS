@@ -57,7 +57,7 @@ namespace VAS.UI.Component
 			Initialization ();
 		}
 
-		protected void Initialization ()
+		void Initialization ()
 		{
 			this.timerule = new Timerule (new WidgetWrapper (timerulearea));
 			timerule.CenterPlayheadClicked += HandleFocusClicked;
