@@ -31,6 +31,17 @@ AC_PROG_INSTALL
 ASSEMBLY_VERSION=`echo $PACKAGE_VERSION |cut -d'-' -f1`
 AC_SUBST(ASSEMBLY_VERSION)
 
+# Set a new parameter to define the installation path
+
+AC_ARG_WITH([userpackage], AC_HELP_STRING([--with-userpackage],[Set installation path]))
+if test "x$with_userpackage" != "x";
+	then USER_PACKAGE="$with_userpackage";
+	else USER_PACKAGE="$vas";
+fi
+AC_SUBST(USER_PACKAGE)
+
+# END Set a new parameter to define the installation path
+
 #*******************************************************************************
 # Internationalization
 #*******************************************************************************
