@@ -274,7 +274,7 @@ namespace VAS.DB
 
 			doc = db.GetExistingDocument (idStr);
 			if (doc != null) {
-				Type realType = Type.GetType (doc.Properties [OBJ_TYPE] as string);
+				Type realType = context.Binder.BindToType (doc.Properties [OBJ_TYPE] as string);
 				if (realType == null) {
 					/* Should never happen */
 					Log.Error ("Error getting type " + doc.Properties [OBJ_TYPE] as string);
@@ -310,7 +310,7 @@ namespace VAS.DB
 			settings.Converters.Add (new VersionConverter ());
 			settings.Converters.Add (new VASConverter (false));
 			settings.Converters.Add (new StorablesConverter (objType, context));
-			settings.Binder = new MigrationBinder (Serializer.TypesMappings, Serializer.NamespacesReplacements);
+			settings.Binder = context.Binder;
 			return settings;
 		}
 
