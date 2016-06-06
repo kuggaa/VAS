@@ -154,7 +154,7 @@ namespace VAS.DB
 					}
 				});
 				if (!success) {
-					throw new StorageException (Catalog.GetString ("Error deleting object from the storage"));
+					throw new StorageException (Catalog.GetString ("Error filling object from the storage"));
 				}
 			}
 		}
