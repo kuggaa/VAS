@@ -38,6 +38,11 @@ namespace VAS.UI.Menus
 		protected Time time;
 		protected Project project;
 
+		public PlaysMenu ()
+		{
+			CreateMenu ();
+		}
+
 		public void ShowListMenu (Project project, List<TimelineEvent> plays)
 		{
 			ShowMenu (project, plays, null, null, project.EventTypes, true);
@@ -78,36 +83,15 @@ namespace VAS.UI.Menus
 				//				isSubstitution = plays [0] is SubstitutionEvent;
 			}
 		
-			if (isLineup || isSubstitution) {
-				edit.Visible = true;
-				del.Visible = isSubstitution;
-				snapshot.Visible = moveCat.Visible = drawings.Visible =
-							addPLN.Visible = render.Visible = duplicate.Visible = false;
-			} else {
-				edit.Visible = editableName && plays.Count () == 1;
-				snapshot.Visible = plays.Count () == 1;
-				moveCat.Visible = plays.Count () == 1 && eventTypes != null;
-				drawings.Visible = plays.Count () == 1 && plays.FirstOrDefault ().Drawings.Count > 0;
-				del.Visible = plays.Count () > 0;
-				addPLN.Visible = plays.Count () > 0;
-				render.Visible = plays.Count () > 0;
-				duplicate.Visible = plays.Count () > 0;
-			}
-		
-			if (project.ProjectType == ProjectType.FakeCaptureProject) {
-				snapshot.Visible = render.Visible = false;
-			}
-		
+
+			del.Visible = plays.Count () > 0;
+
 			if (plays.Count () > 0) {
 				string label = String.Format ("{0} ({1})", Catalog.GetString ("Delete"), plays.Count ());
 				del.SetLabel (label);
-				label = String.Format ("{0} ({1})", Catalog.GetString ("Export to video file"), plays.Count ());
-				render.SetLabel (label);
-				label = String.Format ("{0} ({1})", Catalog.GetString ("Duplicate "), plays.Count ());
-				duplicate.SetLabel (label);
 			}
 		
-			if (moveCat.Visible) {
+			/*if (moveCat.Visible) {
 				Menu catMenu = new Menu ();
 				foreach (EventType c in eventTypes) {
 					if (plays.FirstOrDefault ().EventType == c)
@@ -120,9 +104,9 @@ namespace VAS.UI.Menus
 				}
 				catMenu.ShowAll ();
 				moveCat.Submenu = catMenu;
-			}
+			}*/
 		
-			if (drawings.Visible) {
+			/*if (drawings.Visible) {
 				Menu drawingsMenu = new Menu ();
 				for (int i = 0; i < plays.FirstOrDefault ().Drawings.Count; i++) {
 					int index = i;
@@ -150,7 +134,7 @@ namespace VAS.UI.Menus
 			}
 		
 			FillAddToPlaylistMenu (addPLN, project, this.plays);
-		
+			*/
 			Popup ();
 		}
 
@@ -191,6 +175,27 @@ namespace VAS.UI.Menus
 				plMenu.ShowAll ();
 				addToPlaylistMenu.Submenu = plMenu;
 			}
+		}
+
+		void CreateMenu ()
+		{
+			newPlay = new MenuItem ("");
+			Add (newPlay);
+			newPlay.Activated += HandleNewPlayActivated;
+
+			del = new MenuItem ("");
+			del.Activated += (sender, e) => Config.EventsBroker.EmitEventsDeleted (plays);
+			Add (del);
+
+			ShowAll ();
+		}
+
+		void HandleNewPlayActivated (object sender, EventArgs e)
+		{
+			Config.EventsBroker.EmitNewEvent (eventType,
+				eventTime: time,
+				start: time - new Time { TotalSeconds = 10 },
+				stop: time + new Time { TotalSeconds = 10 });
 		}
 
 		void EmitRenderPlaylist (List<TimelineEvent> plays)
