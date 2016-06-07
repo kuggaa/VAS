@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using VAS.Core.Interfaces;
+using VAS.Core.Serialization;
 
 namespace VAS.DB
 {
@@ -34,6 +35,7 @@ namespace VAS.DB
 			Cache = new StorableObjectsCache ();
 			Stack = new Stack<IStorable> ();
 			SaveChildren = true;
+			Binder = new MigrationBinder (Serializer.TypesMappings, Serializer.NamespacesReplacements);
 		}
 
 		void Init (Database db, Revision rev, StorableObjectsCache cache)
@@ -104,6 +106,15 @@ namespace VAS.DB
 		/// </summary>
 		/// <value>The contract resolver.</value>
 		public IContractResolver ContractResolver {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// The migration binder to resolve types from names.
+		/// </summary>
+		/// <value>The binder.</value>
+		public MigrationBinder Binder {
 			get;
 			set;
 		}

@@ -294,6 +294,17 @@ namespace VAS.Core.Serialization
 			this.namespacesReplacements = namespacesReplacements;
 		}
 
+		/// <summary>
+		/// Converts a formated type string to a real <see cref="Type"/>.
+		/// </summary>
+		/// <returns>The resolved type.</returns>
+		/// <param name="assemblyTypeNameString">The string with the type name and assembly name.</param>
+		public Type BindToType (string assemblyTypeNameString)
+		{
+			var assemblyTypeName = assemblyTypeNameString.Split (',');
+			return BindToType (assemblyTypeName [1].Trim (), assemblyTypeName [0].Trim ());
+		}
+
 		public override Type BindToType (string assemblyName, string typeName)
 		{
 			Type type = null;
