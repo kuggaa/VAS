@@ -135,10 +135,12 @@ namespace VAS.Drawing.Widgets
 			set {
 				if (player != null) {
 					player.PlaybackStateChangedEvent -= HandlePlaybackStateChanged;
+					player.TimeChangedEvent -= HandleTimeChangedEvent;
 				}
 				player = value;
 				if (player != null) {
 					player.PlaybackStateChangedEvent += HandlePlaybackStateChanged;
+					player.TimeChangedEvent += HandleTimeChangedEvent;
 				}
 			}
 		}
@@ -242,14 +244,11 @@ namespace VAS.Drawing.Widgets
 		{
 			base.HandleLeftButton (coords, modif);
 
-			if (!Selections.Any ()) {
-				needle.X = coords.X;
-				if (SeekEvent != null) {
-					SeekEvent (Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel),
-						true);
-				}
-				needle.ReDraw ();
+			needle.X = coords.X;
+			if (SeekEvent != null) {
+				SeekEvent (Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel), true);
 			}
+			needle.ReDraw ();
 		}
 
 		protected override void HandleDoubleClick (Point coords, ButtonModifier modif)
@@ -266,6 +265,13 @@ namespace VAS.Drawing.Widgets
 		void HandlePlaybackStateChanged (object sender, bool playing)
 		{
 			PlayingState = playing;
+		}
+
+		void HandleTimeChangedEvent (Time currentTime, Time duration, bool seekable)
+		{
+			CurrentTime = currentTime;
+			Duration = duration;
+			// FIXME: do we need to do anything with seekable?
 		}
 
 		public override void Draw (IContext context, Area area)

@@ -57,9 +57,10 @@ namespace VAS.UI.Component
 			Initialization ();
 		}
 
-		protected void Initialization ()
+		void Initialization ()
 		{
 			this.timerule = new Timerule (new WidgetWrapper (timerulearea));
+			timerule.CenterPlayheadClicked += HandleFocusClicked;
 			timerule.SeekEvent += HandleTimeruleSeek;
 			this.timeline = createPlaysTimeline ();
 			this.labels = createTimelineLabels ();
@@ -102,6 +103,9 @@ namespace VAS.UI.Component
 				GLib.Source.Remove (timeoutID);
 				timeoutID = 0;
 			}
+			// Unsubscribe events
+			Player = null;
+
 			timerule.Dispose ();
 			timeline.Dispose ();
 			labels.Dispose ();
@@ -122,8 +126,15 @@ namespace VAS.UI.Component
 				return player;
 			}
 			set {
+				if (player != null) {
+					player.TimeChangedEvent -= HandleTimeChangedEvent;
+				}
 				player = value;
 				timerule.Player = player;
+				timeline.Player = player;
+				if (player != null) {
+					player.TimeChangedEvent += HandleTimeChangedEvent;
+				}
 			}
 		}
 
@@ -180,7 +191,7 @@ namespace VAS.UI.Component
 
 		protected virtual PlaysTimeline createPlaysTimeline ()
 		{
-			return new PlaysTimeline (new WidgetWrapper (timelinearea));
+			return new PlaysTimeline (new WidgetWrapper (timelinearea), Player);
 		}
 
 		protected virtual TimelineLabels createTimelineLabels ()
@@ -332,7 +343,12 @@ namespace VAS.UI.Component
 		protected void HandleTimeruleSeek (Time pos, bool accurate, bool synchronous = false, bool throttled = false)
 		{
 			(Config.EventsBroker).EmitLoadEvent (null);
-			(Config.EventsBroker).EmitSeekEvent (pos, accurate, synchronous, throttled);
+			player.Seek (pos, accurate, synchronous, throttled);
+		}
+
+		void HandleTimeChangedEvent (Time currentTime, Time duration, bool seekable)
+		{
+			CurrentTime = currentTime;
 		}
 
 		/// <summary>

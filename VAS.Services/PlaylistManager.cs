@@ -198,13 +198,6 @@ namespace VAS.Services
 				Config.RenderingJobsManger.AddJob (job);
 		}
 
-		protected virtual void HandleSeekEvent (Time pos, bool accurate, bool synchronous = false, bool throttled = false)
-		{
-			if (Player != null) {
-				Player.Seek (pos, accurate, synchronous, throttled);
-			}
-		}
-
 		protected virtual void HandleTogglePlayEvent (bool playing)
 		{
 			if (Player != null) {
@@ -243,7 +236,6 @@ namespace VAS.Services
 			Config.EventsBroker.LoadPlaylistElementEvent += HandleLoadPlaylistElement;
 			Config.EventsBroker.PlaybackRateChanged += HandlePlaybackRateChanged;
 			Config.EventsBroker.TimeNodeChanged += HandlePlayChanged;
-			Config.EventsBroker.SeekEvent += HandleSeekEvent;
 			Config.EventsBroker.TogglePlayEvent += HandleTogglePlayEvent;
 
 			return true;
@@ -262,7 +254,6 @@ namespace VAS.Services
 			Config.EventsBroker.LoadPlaylistElementEvent -= HandleLoadPlaylistElement;
 			Config.EventsBroker.PlaybackRateChanged -= HandlePlaybackRateChanged;
 			Config.EventsBroker.TimeNodeChanged -= HandlePlayChanged;
-			Config.EventsBroker.SeekEvent -= HandleSeekEvent;
 			Config.EventsBroker.TogglePlayEvent -= HandleTogglePlayEvent;
 
 			return true;

@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Handlers;
+using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
@@ -48,7 +49,7 @@ namespace VAS.Drawing.Widgets
 		protected Dictionary<TimelineObject, object> timelineToFilter;
 		protected Dictionary<EventType, CategoryTimeline> eventsTimelines;
 
-		public PlaysTimeline (IWidget widget) : base (widget)
+		public PlaysTimeline (IWidget widget, IPlayerController player) : base (widget)
 		{
 			eventsTimelines = new Dictionary<EventType, CategoryTimeline> ();
 			timelineToFilter = new Dictionary<TimelineObject, object> ();
@@ -57,12 +58,13 @@ namespace VAS.Drawing.Widgets
 			SelectionMode = MultiSelectionMode.MultipleWithModifier;
 			SingleSelectionObjects.Add (typeof(TimerTimeNodeObject));
 			currentTime = new Time (0);
+			Player = player;
 
 			Config.EventsAggregator.Subscribe<LoadVideoEvent> (HandleLoadVideoMessage, ThreadMethod.UIThread);
 			Config.EventsAggregator.Subscribe<CloseVideoEvent> (HandleCloseVideoEvent, ThreadMethod.UIThread);
 		}
 
-		public PlaysTimeline () : this (null)
+		public PlaysTimeline () : this (null, null)
 		{
 		}
 
@@ -86,6 +88,11 @@ namespace VAS.Drawing.Widgets
 			if (widget != null) {
 				widget.Height = Objects.Count * StyleConf.TimelineCategoryHeight;
 			}
+		}
+
+		public IPlayerController Player {
+			get;
+			set;
 		}
 
 		public Time CurrentTime {
@@ -354,7 +361,7 @@ namespace VAS.Drawing.Widgets
 				} else {
 					moveTime = to.Start;
 				}
-				Config.EventsBroker.EmitSeekEvent (moveTime, true);
+				Player?.Seek (moveTime, true);
 			}
 		}
 

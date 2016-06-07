@@ -58,7 +58,7 @@ namespace VAS.UI
 		}
 
 		public virtual IPlayerController Player {
-			set {
+			private set {
 				Player.ElementLoadedEvent += HandleElementLoadedEvent;
 				Player.PrepareViewEvent += HandlePrepareViewEvent;
 			}
