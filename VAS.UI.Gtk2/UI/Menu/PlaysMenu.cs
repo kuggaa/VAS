@@ -78,9 +78,6 @@ namespace VAS.UI.Menus
 		
 			if (plays == null) {
 				plays = new List<TimelineEvent> ();
-				//			} else if (plays.Count == 1) {
-				//				isLineup = plays [0] is LineupEvent;
-				//				isSubstitution = plays [0] is SubstitutionEvent;
 			}
 		
 
@@ -90,51 +87,7 @@ namespace VAS.UI.Menus
 				string label = String.Format ("{0} ({1})", Catalog.GetString ("Delete"), plays.Count ());
 				del.SetLabel (label);
 			}
-		
-			/*if (moveCat.Visible) {
-				Menu catMenu = new Menu ();
-				foreach (EventType c in eventTypes) {
-					if (plays.FirstOrDefault ().EventType == c)
-						continue;
-					var item = new MenuItem (c.Name);
-					catMenu.Append (item);
-					item.Activated += (sender, e) => {
-//						Config.EventsBroker.EmitMoveToEventType (plays [0], c);
-					}; 
-				}
-				catMenu.ShowAll ();
-				moveCat.Submenu = catMenu;
-			}*/
-		
-			/*if (drawings.Visible) {
-				Menu drawingsMenu = new Menu ();
-				for (int i = 0; i < plays.FirstOrDefault ().Drawings.Count; i++) {
-					int index = i;
-					MenuItem drawingItem = new MenuItem (Catalog.GetString ("Drawing ") + (i + 1));
-					MenuItem editItem = new MenuItem (Catalog.GetString ("Edit"));
-					MenuItem deleteItem = new MenuItem (Catalog.GetString ("Delete"));
-					Menu drawingMenu = new Menu ();
-		
-					drawingsMenu.Append (drawingItem);
-					drawingMenu.Append (editItem);
-					drawingMenu.Append (deleteItem);
-					editItem.Activated += (sender, e) => {
-						Config.EventsBroker.EmitDrawFrame (plays.FirstOrDefault (), index,
-							plays.FirstOrDefault ().Drawings [index].CameraConfig, false);
-					}; 
-					deleteItem.Activated += (sender, e) => {
-						plays.FirstOrDefault ().Drawings.RemoveAt (index);
-						plays.FirstOrDefault ().UpdateMiniature ();
-					}; 
-					drawingItem.Submenu = drawingMenu;
-					drawingMenu.ShowAll ();
-				}
-				drawingsMenu.ShowAll ();
-				drawings.Submenu = drawingsMenu;
-			}
-		
-			FillAddToPlaylistMenu (addPLN, project, this.plays);
-			*/
+
 			Popup ();
 		}
 

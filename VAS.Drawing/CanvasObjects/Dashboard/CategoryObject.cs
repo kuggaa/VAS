@@ -326,7 +326,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		{
 			if (Mode == DashboardMode.Edit || Button.ShowSettingIcon) {
 				editClicked = CheckRect (p, editRect, editbutton);
-				if (editClicked && Button.ShowSettingIcon)
+				if (editClicked || Mode == DashboardMode.Edit)
 					return;
 			}
 
@@ -686,27 +686,28 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		void DrawHotkey (IDrawingToolkit tk)
 		{
-			if (ShowHotkey) {
-				Color textColor;
-				Point pos;
-				double width, height;
-				int fontSize;
+			if (!ShowHotkey)
+				return;
 
-				if (Active) {
-					textColor = BackgroundColor;
-				} else {
-					textColor = TextColor;
-				}
-				fontSize = StyleConf.ButtonHeaderFontSize;
-				width = 30;
-				height = fontSize;
-				pos = new Point (Position.X + 2, Position.Y + (Height - (fontSize + 4)));
-				tk.FontSize = fontSize;
-				tk.StrokeColor = BackgroundColor;
-				tk.StrokeColor = textColor;
-				tk.FontWeight = FontWeight.Light;
-				tk.DrawText (pos, width, height, "(" + Button.HotKey.ToString () + ")", false, false);
+			Color textColor;
+			Point pos;
+			double width, height;
+			int fontSize;
+
+			if (Active) {
+				textColor = BackgroundColor;
+			} else {
+				textColor = TextColor;
 			}
+			fontSize = StyleConf.ButtonHeaderFontSize;
+			width = 30;
+			height = fontSize;
+			pos = new Point (Position.X + 2, Position.Y + (Height - (fontSize + 4)));
+			tk.FontSize = fontSize;
+			tk.StrokeColor = BackgroundColor;
+			tk.StrokeColor = textColor;
+			tk.FontWeight = FontWeight.Light;
+			tk.DrawText (pos, width, height, "(" + Button.HotKey.ToString () + ")", false, false);
 		}
 
 		void CreateBackBufferSurface ()
