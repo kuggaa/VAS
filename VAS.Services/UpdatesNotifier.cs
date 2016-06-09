@@ -19,11 +19,11 @@ namespace VAS.Services
 		static public bool FetchNewVersion (string url, string filename)
 		{
 			var userAgent = String.Format ("{0}/{1} ({2};{3};{4})",
-				                Config.SoftwareName,
-				                Config.Version,
+				                App.Current.SoftwareName,
+				                App.Current.Version,
 				                Utils.OS,
 				                Environment.OSVersion.VersionString,
-				                Config.BuildVersion);
+				                App.Current.BuildVersion);
 			try {
 				var wb = new WebClient ();
 				wb.Headers.Add ("User-Agent", userAgent);
@@ -69,8 +69,8 @@ namespace VAS.Services
 
 		static public void CheckForUpdates ()
 		{
-			string tempFile = Path.Combine (Config.HomeDir, "latest.json");
-			if (!FetchNewVersion (Config.LatestVersionURL, tempFile))
+			string tempFile = Path.Combine (App.Current.HomeDir, "latest.json");
+			if (!FetchNewVersion (App.Current.LatestVersionURL, tempFile))
 				return;
 
 			Version latestVersion;
@@ -88,19 +88,19 @@ namespace VAS.Services
 			Log.InformationFormat ("UpdatesNotifier: Current version is {0} and latest available is {1}: Update needed.",
 				currentVersion, latestVersion);
 
-			if (latestVersion == Config.IgnoreUpdaterVersion) {
+			if (latestVersion == App.Current.Config.IgnoreUpdaterVersion) {
 				Log.InformationFormat ("UpdatesNotifier: Version {0} has been silenced. Not warning user about update.",
 					latestVersion);
 				return;
 			}
 
-			Config.GUIToolkit.Invoke (async delegate {
-				bool ignore = await Config.GUIToolkit.NewVersionAvailable (currentVersion, latestVersion,
+			App.Current.GUIToolkit.Invoke (async delegate {
+				bool ignore = await App.Current.GUIToolkit.NewVersionAvailable (currentVersion, latestVersion,
 					              downloadURL, changeLog, null);
 				if (ignore) {
 					/* User requested to ignore this version */
 					Log.InformationFormat ("UpdatesNotifier: Marking version {0} as silenced.", latestVersion);
-					Config.IgnoreUpdaterVersion = latestVersion;
+					App.Current.Config.IgnoreUpdaterVersion = latestVersion;
 				}
 			});
 		}

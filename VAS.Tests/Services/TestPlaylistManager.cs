@@ -52,22 +52,22 @@ namespace VAS.Tests
 			mfs.Add (new MediaFile { FilePath = "test1", VideoWidth = 320, VideoHeight = 240, Par = 1 });
 			mfs.Add (new MediaFile { FilePath = "test2", VideoWidth = 320, VideoHeight = 240, Par = 1 });
 
-			Config.EventsBroker = new EventsBroker ();
+			App.Current.EventsBroker = new EventsBroker ();
 			mockAnalysisWindow = new Mock<IAnalysisWindowBase> ();
 			mockPlayerController = new Mock<IPlayerController> ();
 			mockPlayerController.SetupAllProperties ();
 			mockAnalysisWindow.SetupGet (m => m.Player).Returns (mockPlayerController.Object);
 			mockVideoRenderer = new Mock<IRenderingJobsManager> ();
 
-			Config.EventsBroker.PlaylistElementLoadedEvent += (playlist, element) => playlistElementLoaded = true;
+			App.Current.EventsBroker.PlaylistElementLoadedEvent += (playlist, element) => playlistElementLoaded = true;
 		}
 
 		[SetUp ()]
 		public void Setup ()
 		{
 			mockGuiToolkit = new Mock<IGUIToolkit> ();
-			Config.GUIToolkit = mockGuiToolkit.Object;
-			Config.RenderingJobsManger = mockVideoRenderer.Object; 
+			App.Current.GUIToolkit = mockGuiToolkit.Object;
+			App.Current.RenderingJobsManger = mockVideoRenderer.Object; 
 
 			plmanager = new PlaylistManager ();
 			plmanager.Start ();
@@ -88,7 +88,7 @@ namespace VAS.Tests
 
 		void OpenProject (Project project = null, ProjectType projectType = ProjectType.FileProject)
 		{
-			Config.EventsBroker.EmitOpenedProjectChanged (project, projectType,
+			App.Current.EventsBroker.EmitOpenedProjectChanged (project, projectType,
 				new TestUtils.EventsFilterDummy (project), mockAnalysisWindow.Object);
 		}
 
@@ -100,7 +100,7 @@ namespace VAS.Tests
 				It.IsAny<string> (), It.IsAny<object> ())).Returns (Task.Factory.StartNew (() => name));
 
 			TestUtils.ProjectDummy project = new TestUtils.ProjectDummy ();
-			Config.EventsBroker.EmitNewPlaylist (project);
+			App.Current.EventsBroker.EmitNewPlaylist (project);
 
 			mockGuiToolkit.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
 				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Once ());
@@ -115,7 +115,7 @@ namespace VAS.Tests
 		{
 			// We DON'T Setup the QueryMessage, it will return null, and continue without creating the playlist
 			TestUtils.ProjectDummy project = new TestUtils.ProjectDummy ();
-			Config.EventsBroker.EmitNewPlaylist (project);
+			App.Current.EventsBroker.EmitNewPlaylist (project);
 
 			mockGuiToolkit.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
 				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Once ());
@@ -141,9 +141,9 @@ namespace VAS.Tests
 			}));
 
 			TestUtils.ProjectDummy project = new TestUtils.ProjectDummy ();
-			Config.EventsBroker.EmitNewPlaylist (project);
+			App.Current.EventsBroker.EmitNewPlaylist (project);
 			called = false;
-			Config.EventsBroker.EmitNewPlaylist (project);
+			App.Current.EventsBroker.EmitNewPlaylist (project);
 
 			mockGuiToolkit.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
 				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Exactly (3));
@@ -162,7 +162,7 @@ namespace VAS.Tests
 			var elementList = new List<IPlaylistElement> ();
 			elementList.Add (element);
 
-			Config.EventsBroker.EmitAddPlaylistElement (playlist, elementList);
+			App.Current.EventsBroker.EmitAddPlaylistElement (playlist, elementList);
 
 			Assert.AreEqual (elementList, playlist.Elements.ToList ());
 		}
@@ -174,7 +174,7 @@ namespace VAS.Tests
 				It.IsAny<string> (), It.IsAny<object> ())).Returns (Task.Factory.StartNew (() => "name"));
 
 			var elementList = new List<IPlaylistElement> ();
-			Config.EventsBroker.EmitAddPlaylistElement (null, elementList);
+			App.Current.EventsBroker.EmitAddPlaylistElement (null, elementList);
 			mockGuiToolkit.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
 				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Once ());
 		}
@@ -185,7 +185,7 @@ namespace VAS.Tests
 			// We DON'T Setup the QueryMessage, it will return null, and continue without creating the playlist
 			var elementList = new List<IPlaylistElement> ();
 
-			Config.EventsBroker.EmitAddPlaylistElement (null, elementList);
+			App.Current.EventsBroker.EmitAddPlaylistElement (null, elementList);
 			mockGuiToolkit.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
 				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Once ());
 		}
@@ -194,7 +194,7 @@ namespace VAS.Tests
 		public void TestLoadPlayEvent ()
 		{
 			TimelineEvent element = new TimelineEvent { Start = new Time (0), Stop = new Time (5) };
-			Config.EventsBroker.EmitLoadEvent (element);
+			App.Current.EventsBroker.EmitLoadEvent (element);
 			mockPlayerController.Verify (player => player.LoadEvent (element, new Time (0), true),
 				Times.Once ());
 		}
@@ -203,7 +203,7 @@ namespace VAS.Tests
 		public void TestLoadPlayEventNull ()
 		{
 			TimelineEvent element = null;
-			Config.EventsBroker.EmitLoadEvent (element);
+			App.Current.EventsBroker.EmitLoadEvent (element);
 			mockPlayerController.Verify (player => player.UnloadCurrentEvent (), Times.Once ());
 		}
 
@@ -211,7 +211,7 @@ namespace VAS.Tests
 		public void TestLoadPlayEventWithoutDuration ()
 		{
 			TimelineEvent element = new TimelineEvent { Start = new Time (0), Stop = new Time (0) };
-			Config.EventsBroker.EmitLoadEvent (element);
+			App.Current.EventsBroker.EmitLoadEvent (element);
 			mockPlayerController.Verify (
 				player => player.Seek (element.EventTime, true, false, false), Times.Once ());
 			mockPlayerController.Verify (player => player.Play (false), Times.Once ());
@@ -223,7 +223,7 @@ namespace VAS.Tests
 			var project = new TestUtils.ProjectDummy ();
 			OpenProject (project, ProjectType.FakeCaptureProject);
 			TimelineEvent element = new TimelineEvent ();
-			Config.EventsBroker.EmitLoadEvent (element);
+			App.Current.EventsBroker.EmitLoadEvent (element);
 			mockPlayerController.Verify (player => player.Seek (It.IsAny<Time> (), It.IsAny<bool> (),
 				It.IsAny<bool> (), It.IsAny<bool> ()), Times.Never ());
 			mockPlayerController.Verify (player => player.Play (false), Times.Never ());
@@ -233,11 +233,11 @@ namespace VAS.Tests
 		public void TestPrev ()
 		{
 			TimelineEvent element = new TimelineEvent ();
-			Config.EventsBroker.EmitLoadEvent (element);
+			App.Current.EventsBroker.EmitLoadEvent (element);
 			// loadedPlay != null
 			mockPlayerController.ResetCalls ();
 
-			Config.EventsBroker.EmitPreviousPlaylistElement (null);
+			App.Current.EventsBroker.EmitPreviousPlaylistElement (null);
 
 			mockPlayerController.Verify (player => player.Previous (false), Times.Once ());
 		}
@@ -246,11 +246,11 @@ namespace VAS.Tests
 		public void TestNext ()
 		{
 			TimelineEvent element = new TimelineEvent ();
-			Config.EventsBroker.EmitLoadEvent (element);
+			App.Current.EventsBroker.EmitLoadEvent (element);
 			// loadedPlay != null
 			mockPlayerController.ResetCalls ();
 
-			Config.EventsBroker.EmitNextPlaylistElement (null);
+			App.Current.EventsBroker.EmitNextPlaylistElement (null);
 
 			mockPlayerController.Verify (player => player.Next (), Times.Once ());
 		}
@@ -267,11 +267,11 @@ namespace VAS.Tests
 			IPlayerController playercontroller = mockPlayerController.Object;
 			mockPlayerController.ResetCalls ();
 
-			Config.EventsBroker.EmitOpenedPresentationChanged (presentation, playercontroller);
+			App.Current.EventsBroker.EmitOpenedPresentationChanged (presentation, playercontroller);
 
 			Assert.AreSame (playercontroller, plmanager.Player);
 
-			Config.EventsBroker.EmitLoadPlaylistElement (presentation, element, true);
+			App.Current.EventsBroker.EmitLoadPlaylistElement (presentation, element, true);
 			mockPlayerController.Verify (
 				player => player.LoadPlaylistEvent (presentation, element, true), Times.Once ());
 		}
@@ -288,11 +288,11 @@ namespace VAS.Tests
 			IPlayerController playercontroller = mockPlayerController.Object;
 			mockPlayerController.ResetCalls ();
 
-			Config.EventsBroker.EmitOpenedPresentationChanged (null, playercontroller);
+			App.Current.EventsBroker.EmitOpenedPresentationChanged (null, playercontroller);
 
 			Assert.AreSame (playercontroller, plmanager.Player);
 
-			Config.EventsBroker.EmitLoadPlaylistElement (presentation, element, true);
+			App.Current.EventsBroker.EmitLoadPlaylistElement (presentation, element, true);
 			mockPlayerController.Verify (player => player.LoadPlaylistEvent (presentation, element, true), Times.Once ());
 		}
 
@@ -310,9 +310,9 @@ namespace VAS.Tests
 			IPlayerController playercontroller = mockPlayerController.Object;
 			mockPlayerController.ResetCalls ();
 
-			Config.EventsBroker.EmitOpenedPresentationChanged (presentation, null);
+			App.Current.EventsBroker.EmitOpenedPresentationChanged (presentation, null);
 
-			Config.EventsBroker.EmitLoadPlaylistElement (presentation, element, true);
+			App.Current.EventsBroker.EmitLoadPlaylistElement (presentation, element, true);
 		}
 
 		[Test ()]
@@ -326,8 +326,8 @@ namespace VAS.Tests
 			presentation.Elements.Add (element);
 			presentation.Elements.Add (element2);
 
-			Config.EventsBroker.EmitOpenedPresentationChanged (null, null);
-			Config.EventsBroker.EmitLoadPlaylistElement (presentation, element, true);
+			App.Current.EventsBroker.EmitOpenedPresentationChanged (null, null);
+			App.Current.EventsBroker.EmitLoadPlaylistElement (presentation, element, true);
 		}
 
 		[Test ()]
@@ -336,7 +336,7 @@ namespace VAS.Tests
 			TimelineEvent timelineEvent = new TimelineEvent ();
 			timelineEvent.Start = new Time (10);
 			timelineEvent.Stop = new Time (20);
-			Config.EventsBroker.EmitTimeNodeChanged (timelineEvent, new Time (5));
+			App.Current.EventsBroker.EmitTimeNodeChanged (timelineEvent, new Time (5));
 
 			mockPlayerController.Verify (p => p.LoadEvent (timelineEvent, new Time (5), false), Times.Once);
 		}

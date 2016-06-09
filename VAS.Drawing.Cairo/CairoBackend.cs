@@ -52,7 +52,7 @@ namespace VAS.Drawing.Cairo
 			UseAntialias = true;
 			LineWidth = 2;
 			FontSize = 12;
-			FontFamily = Config.Style.Font;
+			FontFamily = App.Current.Style.Font;
 			FontWeight = FontWeight.Normal;
 			FontSlant = FontSlant.Normal;
 			LineStyle = LineStyle.Normal;

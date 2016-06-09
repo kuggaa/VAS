@@ -24,7 +24,7 @@ namespace VAS.Core
 	{
 		public static Image LoadImage (string name)
 		{
-			return new Image (Path.Combine (Config.dataDir, name));
+			return new Image (Path.Combine (App.Current.dataDir, name));
 		}
 	}
 }

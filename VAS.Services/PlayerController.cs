@@ -609,7 +609,7 @@ namespace VAS.Services
 				LoadFrameDrawing (element as PlaylistDrawing, playing);
 			}
 			EmitElementLoaded (element, playlist.HasNext ());
-			Config.EventsBroker.EmitPlaylistElementLoaded (playlist, element);
+			App.Current.EventsBroker.EmitPlaylistElementLoaded (playlist, element);
 		}
 
 		public virtual void LoadEvent (TimelineEvent evt, Time seekTime, bool playing)
@@ -637,7 +637,7 @@ namespace VAS.Services
 				Log.Error ("Event does not have timing info: " + evt);
 			}
 			EmitElementLoaded (evt, false);
-			Config.EventsBroker.EmitEventLoaded (evt);
+			App.Current.EventsBroker.EmitEventLoaded (evt);
 		}
 
 		public virtual void UnloadCurrentEvent ()
@@ -709,9 +709,9 @@ namespace VAS.Services
 				evt = (loadedPlaylistElement as PlaylistPlayElement).Play;
 			}
 			if (evt != null) {
-				Config.EventsBroker.EmitDrawFrame (evt, -1, CamerasConfig [0], true);
+				App.Current.EventsBroker.EmitDrawFrame (evt, -1, CamerasConfig [0], true);
 			} else {
-				Config.EventsBroker.EmitDrawFrame (null, -1, null, true);
+				App.Current.EventsBroker.EmitDrawFrame (null, -1, null, true);
 			}
 		}
 
@@ -750,7 +750,7 @@ namespace VAS.Services
 		protected virtual void EmitEventUnloaded ()
 		{
 			EmitElementLoaded (null, false);
-			Config.EventsBroker.EmitEventLoaded (null);
+			App.Current.EventsBroker.EmitEventLoaded (null);
 		}
 
 		protected virtual void EmitRateChanged (float rate)
@@ -778,7 +778,7 @@ namespace VAS.Services
 		{
 			if (PlaybackStateChangedEvent != null && !disposed) {
 				PlaybackStateChangedEvent (sender, playing);
-				Config.EventsBroker.EmitPlaybackStateChanged (sender, playing);
+				App.Current.EventsBroker.EmitPlaybackStateChanged (sender, playing);
 			}
 		}
 
@@ -921,7 +921,7 @@ namespace VAS.Services
 				FileSet = fileSet;
 				// Check if the view failed to configure a proper cam config
 				if (CamerasConfig == null) {
-					Config.EventsBroker.EmitMultimediaError (this, 
+					App.Current.EventsBroker.EmitMultimediaError (this, 
 						Catalog.GetString ("Invalid camera configuration"));
 					FileSet = null;
 					return;
@@ -1101,14 +1101,14 @@ namespace VAS.Services
 		{
 			if (supportMultipleCameras) {
 				try {
-					player = multiPlayer = Config.MultimediaToolkit.GetMultiPlayer ();
+					player = multiPlayer = App.Current.MultimediaToolkit.GetMultiPlayer ();
 					multiPlayer.ScopeChangedEvent += HandleScopeChangedEvent;
 				} catch {
 					Log.Error ("Player with support for multiple cameras not found");
 				}
 			}
 			if (player == null) {
-				player = Config.MultimediaToolkit.GetPlayer ();
+				player = App.Current.MultimediaToolkit.GetPlayer ();
 			}
 
 
@@ -1197,7 +1197,7 @@ namespace VAS.Services
 				}
 				videoTS = currentTime;
 
-				Config.EventsBroker.EmitPlayerTick (currentTime);
+				App.Current.EventsBroker.EmitPlayerTick (currentTime);
 				return true;
 			}
 		}
@@ -1210,7 +1210,7 @@ namespace VAS.Services
 		 * be deferred to the UI main thread */
 		protected virtual void HandleStateChange (object sender, bool playing)
 		{
-			Config.GUIToolkit.Invoke (delegate {
+			App.Current.GUIToolkit.Invoke (delegate {
 				if (playing) {
 					ReconfigureTimeout (TIMEOUT_MS);
 				} else {
@@ -1226,7 +1226,7 @@ namespace VAS.Services
 
 		protected virtual void HandleReadyToSeek (object sender)
 		{
-			Config.GUIToolkit.Invoke (delegate {
+			App.Current.GUIToolkit.Invoke (delegate {
 				readyToSeek = true;
 				streamLength = player.StreamLength;
 				if (pendingSeek != null) {
@@ -1245,7 +1245,7 @@ namespace VAS.Services
 
 		protected virtual void HandleEndOfStream (object sender)
 		{
-			Config.GUIToolkit.Invoke (delegate {
+			App.Current.GUIToolkit.Invoke (delegate {
 				if (loadedPlaylistElement is PlaylistVideo) {
 					Next ();
 				} else {
@@ -1265,8 +1265,8 @@ namespace VAS.Services
 
 		protected virtual void HandleError (object sender, string message)
 		{
-			Config.GUIToolkit.Invoke (delegate {
-				Config.EventsBroker.EmitMultimediaError (sender, message);
+			App.Current.GUIToolkit.Invoke (delegate {
+				App.Current.EventsBroker.EmitMultimediaError (sender, message);
 			});
 		}
 
@@ -1284,7 +1284,7 @@ namespace VAS.Services
 
 		protected virtual void HandleTimeout (Object state)
 		{
-			Config.GUIToolkit.Invoke (delegate {
+			App.Current.GUIToolkit.Invoke (delegate {
 				if (!IgnoreTicks) {
 					Tick ();
 				}
@@ -1293,7 +1293,7 @@ namespace VAS.Services
 
 		protected virtual void HandleSeekEvent (SeekType type, Time start, float rate)
 		{
-			Config.GUIToolkit.Invoke (delegate {
+			App.Current.GUIToolkit.Invoke (delegate {
 				EmitLoadDrawings (null);
 				/* We only use it for backwards framestepping for now */
 				if (type == SeekType.StepDown || type == SeekType.StepUp) {

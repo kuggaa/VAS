@@ -37,11 +37,6 @@ namespace VAS
 			set;
 		}
 
-		//		protected App (Config config)
-		//		{
-		//			Config = config;
-		//		}
-
 		public static void Init (App appInit, string evUninstalled, string softwareName, string portableFile, string evHome)
 		{
 			/* NOTE

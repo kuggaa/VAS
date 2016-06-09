@@ -56,7 +56,7 @@ namespace VAS.Drawing.Widgets
 			tool = DrawTool.Selection;
 			currentZoom = 1;
 			MinZoom = MaxZoom = 1;
-			if (Config.SupportsZoom) {
+			if (App.Current.SupportsZoom) {
 				MaxZoom = 4;
 			}
 		}
@@ -377,8 +377,8 @@ namespace VAS.Drawing.Widgets
 					if (text.Value == null) {
 						return;
 					}
-					Config.DrawingToolkit.MeasureText (text.Value, out width, out heigth,
-						Config.Style.Font, FontSize, FontWeight.Normal);
+					App.Current.DrawingToolkit.MeasureText (text.Value, out width, out heigth,
+						App.Current.Style.Font, FontSize, FontWeight.Normal);
 					text.Update (new Point (MoveStart.X - width / 2, MoveStart.Y - heigth / 2),
 						width, heigth);
 					text.TextColor = TextColor.Copy ();
@@ -530,7 +530,7 @@ namespace VAS.Drawing.Widgets
 		{
 			tk.Context = context;
 			tk.Begin ();
-			tk.Clear (Config.Style.PaletteBackground);
+			tk.Clear (App.Current.Style.PaletteBackground);
 			tk.End ();
 			
 			base.Draw (context, area);

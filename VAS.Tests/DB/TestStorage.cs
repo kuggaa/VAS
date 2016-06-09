@@ -115,8 +115,8 @@ namespace VAS.Tests.DB
 			// Remove the StorageInfo doc to get more understandable document count results
 			db.GetDocument (Guid.Empty.ToString ()).Delete ();
 
-			Config.baseDirectory = tmpPath;
-			Config.homeDirectory = homePath;
+			App.Current.baseDirectory = tmpPath;
+			App.Current.homeDirectory = homePath;
 
 			/* Check default folders */
 			CheckDirs ();
@@ -124,18 +124,18 @@ namespace VAS.Tests.DB
 
 		private static void CheckDirs ()
 		{
-			if (!System.IO.Directory.Exists (Config.HomeDir))
-				System.IO.Directory.CreateDirectory (Config.HomeDir);
-			if (!System.IO.Directory.Exists (Config.SnapshotsDir))
-				System.IO.Directory.CreateDirectory (Config.SnapshotsDir);
-			if (!System.IO.Directory.Exists (Config.PlayListDir))
-				System.IO.Directory.CreateDirectory (Config.PlayListDir);
-			if (!System.IO.Directory.Exists (Config.DBDir))
-				System.IO.Directory.CreateDirectory (Config.DBDir);
-			if (!System.IO.Directory.Exists (Config.VideosDir))
-				System.IO.Directory.CreateDirectory (Config.VideosDir);
-			if (!System.IO.Directory.Exists (Config.TempVideosDir))
-				System.IO.Directory.CreateDirectory (Config.TempVideosDir);
+			if (!System.IO.Directory.Exists (App.Current.HomeDir))
+				System.IO.Directory.CreateDirectory (App.Current.HomeDir);
+			if (!System.IO.Directory.Exists (App.Current.SnapshotsDir))
+				System.IO.Directory.CreateDirectory (App.Current.SnapshotsDir);
+			if (!System.IO.Directory.Exists (App.Current.PlayListDir))
+				System.IO.Directory.CreateDirectory (App.Current.PlayListDir);
+			if (!System.IO.Directory.Exists (App.Current.DBDir))
+				System.IO.Directory.CreateDirectory (App.Current.DBDir);
+			if (!System.IO.Directory.Exists (App.Current.VideosDir))
+				System.IO.Directory.CreateDirectory (App.Current.VideosDir);
+			if (!System.IO.Directory.Exists (App.Current.TempVideosDir))
+				System.IO.Directory.CreateDirectory (App.Current.TempVideosDir);
 		}
 
 		[TestFixtureTearDown]
@@ -396,7 +396,7 @@ namespace VAS.Tests.DB
 			var res = storage.Backup ();
 			Assert.IsTrue (res);
 
-			string outputPath = Path.Combine (Config.DBDir, storage.Info.Name + ".tar.gz");
+			string outputPath = Path.Combine (App.Current.DBDir, storage.Info.Name + ".tar.gz");
 			Assert.IsTrue (File.Exists (outputPath));
 		}
 

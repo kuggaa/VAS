@@ -27,12 +27,12 @@ namespace VAS.UI.Helpers
 		public ExternalWindow () : base (WindowType.Toplevel)
 		{
 			// Configure window icon
-			Icon = Misc.LoadIcon (Config.SoftwareIconName, IconSize.Dialog);
+			Icon = Misc.LoadIcon (App.Current.SoftwareIconName, IconSize.Dialog);
 
 			box = new EventBox ();
 			box.Name = "lightbackgroundeventbox";
 			box.KeyPressEvent += (o, args) => {
-				Config.EventsBroker.EmitKeyPressed (this, Keyboard.ParseEvent (args.Event));
+				App.Current.EventsBroker.EmitKeyPressed (this, Keyboard.ParseEvent (args.Event));
 			};
 			base.Add (box);
 			box.CanFocus = true;

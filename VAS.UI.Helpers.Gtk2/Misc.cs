@@ -54,7 +54,7 @@ namespace VAS.UI.Helpers
 			StreamReader file;
 			string filename;
 
-			filename = Config.GUIToolkit.OpenFile (Catalog.GetString ("Choose an image"),
+			filename = App.Current.GUIToolkit.OpenFile (Catalog.GetString ("Choose an image"),
 				null, null, "Images", new string[] { "*.png", "*.jpg", "*.jpeg", "*.svg" }); 
 			if (filename != null) {
 				// For Win32 compatibility we need to open the image file
@@ -66,7 +66,7 @@ namespace VAS.UI.Helpers
 					file.Close ();
 				} catch (Exception ex) {
 					Log.Exception (ex);
-					Config.GUIToolkit.ErrorMessage (Catalog.GetString ("Image file format not supported"), widget);
+					App.Current.GUIToolkit.ErrorMessage (Catalog.GetString ("Image file format not supported"), widget);
 				}
 			}
 			return pimage;
@@ -285,11 +285,11 @@ namespace VAS.UI.Helpers
 
 			try {
 				Exception ex = null;
-				busy = Config.GUIToolkit.BusyDialog (Catalog.GetString ("Analyzing video file:") + "\n" +
+				busy = App.Current.GUIToolkit.BusyDialog (Catalog.GetString ("Analyzing video file:") + "\n" +
 				filename, parent);
 				System.Action action = () => {
 					try {
-						mediaFile = Config.MultimediaToolkit.DiscoverFile (filename);
+						mediaFile = App.Current.MultimediaToolkit.DiscoverFile (filename);
 					} catch (Exception e) {
 						ex = e;
 					}
@@ -307,7 +307,7 @@ namespace VAS.UI.Helpers
 				}
 			} catch (Exception ex) {
 				busy.Destroy ();
-				Config.GUIToolkit.ErrorMessage (ex.Message, parent);
+				App.Current.GUIToolkit.ErrorMessage (ex.Message, parent);
 				return null;
 			}
 			return mediaFile;
@@ -316,8 +316,8 @@ namespace VAS.UI.Helpers
 		public static MediaFile OpenFile (object parent)
 		{
 			MediaFile mediaFile;
-			IGUIToolkit gui = Config.GUIToolkit;
-			IMultimediaToolkit multimedia = Config.MultimediaToolkit;
+			IGUIToolkit gui = App.Current.GUIToolkit;
+			IMultimediaToolkit multimedia = App.Current.MultimediaToolkit;
 			string filename;
 			
 			filename = gui.OpenFile (Catalog.GetString ("Open file"), null, null);
@@ -329,7 +329,7 @@ namespace VAS.UI.Helpers
 				try {
 					if (multimedia.FileNeedsRemux (mediaFile)) {
 						// HACK: We only authorize remuxing in the pro version.
-						if (!Config.SupportsFullHD) {
+						if (!App.Current.SupportsFullHD) {
 							string msg = Catalog.GetString ("This file is not in a supported format, " +
 							             "convert it with the video conversion tool");
 							throw new Exception (msg);

@@ -77,12 +77,12 @@ namespace VAS.Multimedia.Utils
 			/* Use a custom path for the registry in Windows */
 			Environment.SetEnvironmentVariable ("GST_REGISTRY", GetRegistryPath ());
 			Environment.SetEnvironmentVariable ("GST_PLUGIN_PATH",
-				Config.RelativeToPrefix (Path.Combine ("lib", "gstreamer-0.10")));
+				App.Current.RelativeToPrefix (Path.Combine ("lib", "gstreamer-0.10")));
 		}
 
 		private static string GetRegistryPath ()
 		{
-			return Path.Combine (Config.ConfigDir, Constants.SOFTWARE_NAME.ToLower () + "_gst_registry.bin");
+			return Path.Combine (App.Current.ConfigDir, Constants.SOFTWARE_NAME.ToLower () + "_gst_registry.bin");
 		}
 
 		private static bool CheckBasicPlugins ()

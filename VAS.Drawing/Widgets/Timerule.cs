@@ -55,7 +55,7 @@ namespace VAS.Drawing.Widgets
 			currentTime = new Time (0);
 			AdjustSizeToDuration = false;
 			ContinuousSeek = true;
-			BackgroundColor = Config.Style.PaletteBackgroundDark;
+			BackgroundColor = App.Current.Style.PaletteBackgroundDark;
 			Accuracy = 5.0f;
 			PlayerMode = false;
 		}
@@ -214,7 +214,7 @@ namespace VAS.Drawing.Widgets
 		protected override void StartMove (Selection sel)
 		{
 			WasPlaying = PlayingState;
-			Config.EventsBroker.EmitTogglePlayEvent (false);
+			App.Current.EventsBroker.EmitTogglePlayEvent (false);
 		}
 
 		protected override void StopMove (bool moved)
@@ -225,7 +225,7 @@ namespace VAS.Drawing.Widgets
 						true);
 				}
 			}
-			Config.EventsBroker.EmitTogglePlayEvent (WasPlaying);
+			App.Current.EventsBroker.EmitTogglePlayEvent (WasPlaying);
 		}
 
 		protected override void SelectionMoved (Selection sel)
@@ -295,15 +295,15 @@ namespace VAS.Drawing.Widgets
 
 			Begin (context);
 			tk.LineWidth = 0;
-			BackgroundColor = Config.Style.PaletteBackground;
+			BackgroundColor = App.Current.Style.PaletteBackground;
 			DrawBackground ();
 
-			tk.FillColor = Config.Style.PaletteBackgroundDark;
+			tk.FillColor = App.Current.Style.PaletteBackgroundDark;
 			tk.DrawRectangle (new Point (area.Start.X, area.Start.Y + area.Height - RuleHeight), area.Width, RuleHeight);
 
 
-			tk.StrokeColor = Config.Style.PaletteWidgets;
-			tk.FillColor = Config.Style.PaletteWidgets;
+			tk.StrokeColor = App.Current.Style.PaletteWidgets;
+			tk.FillColor = App.Current.Style.PaletteWidgets;
 			tk.LineWidth = Constants.TIMELINE_LINE_WIDTH;
 			tk.FontSlant = FontSlant.Normal;
 			tk.FontSize = FontSize;

@@ -42,9 +42,9 @@ namespace VAS.Core.Store
 			Height = Constants.BUTTON_HEIGHT;
 			BackgroundColor = Color.Red.Copy (true);
 			if (Utils.OS == OperatingSystemID.Android || Utils.OS == OperatingSystemID.iOS) {
-				TextColor = Config.Style.PaletteBackground.Copy (true);
+				TextColor = App.Current.Style.PaletteBackground.Copy (true);
 			} else {
-				TextColor = Config.Style.PaletteBackgroundLight.Copy (true);
+				TextColor = App.Current.Style.PaletteBackgroundLight.Copy (true);
 			}
 			HotKey = new HotKey { IsChanged = false };
 			ActionLinks = new ObservableCollection <ActionLink> ();
@@ -267,7 +267,7 @@ namespace VAS.Core.Store
 
 			if (Timer != null) {
 				currentNode = Timer.Start (start);
-				Config.EventsBroker.EmitTimeNodeStartedEvent (currentNode, this, from);
+				App.Current.EventsBroker.EmitTimeNodeStartedEvent (currentNode, this, from);
 			}
 		}
 
@@ -278,7 +278,7 @@ namespace VAS.Core.Store
 
 			if (Timer != null) {
 				Timer.Stop (stop);
-				Config.EventsBroker.EmitTimeNodeStoppedEvent (currentNode, this, from);
+				App.Current.EventsBroker.EmitTimeNodeStoppedEvent (currentNode, this, from);
 				currentNode = null;
 			}
 		}

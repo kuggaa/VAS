@@ -52,9 +52,9 @@ namespace VAS.Core.Store.Templates
 		{
 			try {
 				// FIXME: We need a more flexible structure for this
-				FieldBackground = Config.FieldBackground;
-				HalfFieldBackground = Config.HalfFieldBackground;
-				GoalBackground = Config.GoalBackground;
+				FieldBackground = App.Current.FieldBackground;
+				HalfFieldBackground = App.Current.HalfFieldBackground;
+				GoalBackground = App.Current.GoalBackground;
 			} catch {
 				/* Ingore for unit tests */
 			}

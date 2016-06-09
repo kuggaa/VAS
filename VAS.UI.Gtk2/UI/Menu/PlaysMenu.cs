@@ -157,7 +157,7 @@ namespace VAS.UI.Menus
 			foreach (TimelineEvent p in plays) {
 				pl.Elements.Add (new PlaylistPlayElement (p));
 			}
-			Config.EventsBroker.EmitRenderPlaylist (pl);
+			App.Current.EventsBroker.EmitRenderPlaylist (pl);
 		}
 	}
 }

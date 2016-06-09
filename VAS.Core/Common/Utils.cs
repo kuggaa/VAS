@@ -40,8 +40,8 @@ namespace VAS.Core.Common
 			get {
 				return string.Format (
 					"Running LongoMatch {0} build:\"{1}\" OS:\"{2}\" OS Version:\"{3}\"",
-					Config.Version,
-					Config.BuildVersion,
+					App.Current.Version,
+					App.Current.BuildVersion,
 					Utils.OS,
 					Environment.OSVersion.VersionString);
 			}
