@@ -127,6 +127,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Store\Templates\Team.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Events\MultimediaEvents.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IProgressReport.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
