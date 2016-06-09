@@ -93,8 +93,7 @@ namespace VAS.UI.Component
 				int spacing = (int)scrolledwindow1.StyleGetProperty ("scrollbar-spacing");
 				zoomhbox.HeightRequest = args.Allocation.Height + spacing;
 			};
-
-			menu = new PlaysMenu ();
+			Config.EventsBroker.PlayerTick += HandlePlayerTick;
 		}
 
 		protected override void OnDestroyed ()
@@ -104,6 +103,7 @@ namespace VAS.UI.Component
 				timeoutID = 0;
 			}
 			// Unsubscribe events
+			Config.EventsBroker.PlayerTick -= HandlePlayerTick;
 			Player = null;
 
 			timerule.Dispose ();
@@ -126,15 +126,9 @@ namespace VAS.UI.Component
 				return player;
 			}
 			set {
-				if (player != null) {
-					player.TimeChangedEvent -= HandleTimeChangedEvent;
-				}
 				player = value;
 				timerule.Player = player;
 				timeline.Player = player;
-				if (player != null) {
-					player.TimeChangedEvent += HandleTimeChangedEvent;
-				}
 			}
 		}
 
@@ -346,7 +340,7 @@ namespace VAS.UI.Component
 			player.Seek (pos, accurate, synchronous, throttled);
 		}
 
-		void HandleTimeChangedEvent (Time currentTime, Time duration, bool seekable)
+		void HandlePlayerTick (Time currentTime)
 		{
 			CurrentTime = currentTime;
 		}
