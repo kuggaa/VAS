@@ -196,14 +196,70 @@ namespace VAS.Core.Filters
 			}
 		}
 
-		protected abstract void UpdateVisiblePlays ();
+		protected virtual void UpdateVisiblePlays ()
+		{
+			VisiblePlays = new List<TimelineEvent> ();
 
+			foreach (TimelineEvent play in project.Timeline) {
+				if (IsVisibleByPlayer (play) && IsVisibleByCategory (play) && IsVisibleByPeriod (play) &&
+				    IsVisibleByTag (play) && IsVisibleByTimer (play)) {
+					VisiblePlays.Add (play);
+				}
+			}
+		}
 
 		protected virtual void EmitFilterUpdated ()
 		{
 			if (!Silent && FilterUpdated != null)
 				FilterUpdated ();
 		}
+
+		protected virtual bool IsVisibleByCategory (TimelineEvent play)
+		{
+			if (!VisibleEventTypes.Contains (play.EventType))
+				return false;
+			if (!eventsFilter.ContainsKey (play.EventType))
+				return true;
+
+			List<Tag> tags = eventsFilter [play.EventType];
+			if (tags.Count == 0 || tags.Intersect (play.Tags).Any ()) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		protected virtual bool IsVisibleByTag (TimelineEvent play)
+		{
+			if (tagsFilter.Count <= 0)
+				return true;
+
+			if (!tagsFilter.Intersect (play.Tags).Any ()) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+
+		protected abstract bool IsVisibleByPlayer (TimelineEvent play);
+
+		protected virtual bool IsVisibleByTimer (TimelineEvent play)
+		{
+			if (timersFilter.Count == 0) {
+				return true;
+			}
+			bool timer_match = false;
+			foreach (Timer t in timersFilter) {
+				foreach (TimeNode tn in t.Nodes) {
+					if (tn.Join (play) != null) {
+						timer_match = true;
+					}
+				}
+			}
+			return timer_match;
+		}
+
+		protected abstract bool IsVisibleByPeriod (TimelineEvent play);
 	}
 }
 
