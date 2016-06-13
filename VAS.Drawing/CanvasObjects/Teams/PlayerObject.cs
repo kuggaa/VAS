@@ -81,12 +81,10 @@ namespace VAS.Drawing.CanvasObjects.Teams
 			}
 		}
 
-		public Selection GetSelection (Point point, double precision, bool inMotion = false)
+		public virtual Selection GetSelection (Point point, double precision, bool inMotion = false)
 		{
-			Point position = new Point (Position.X - Width / 2, Position.Y - Height / 2);
-
-			if (point.X >= position.X && point.X <= position.X + Width) {
-				if (point.Y >= position.Y && point.Y <= position.Y + Height) {
+			if (point.X >= Position.X && point.X <= Position.X + Width) {
+				if (point.Y >= Position.Y && point.Y <= Position.Y + Height) {
 					return new Selection (this, SelectionPosition.All, 0);
 				}
 			}
@@ -113,7 +111,7 @@ namespace VAS.Drawing.CanvasObjects.Teams
 
 			tk.Begin ();
 			start = new Point (Size / 2, Size / 2);
-			tk.TranslateAndScale (Position - start, new Point (scale, scale));
+			tk.TranslateAndScale (Center - start, new Point (scale, scale));
 
 			if (!UpdateDrawArea (tk, area, new Area (zero, size, size))) {
 				tk.End ();

@@ -180,6 +180,19 @@ namespace VAS.Drawing.CanvasObjects
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets the center of the object, calculated from Position, Width & Height.
+		/// </summary>
+		/// <value>The center.</value>
+		public virtual Point Center {
+			get {
+				return Position + new Point (Width / 2, Height / 2);
+			}
+			set {
+				Position = value - new Point (Width / 2, Height / 2);
+			}
+		}
+
 	}
 
 	public abstract class CanvasButtonObject: FixedSizeCanvasObject
