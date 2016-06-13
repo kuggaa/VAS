@@ -12,6 +12,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)Widgets\" />
     <Folder Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\" />
     <Folder Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\" />
+    <Folder Include="$(MSBuildThisFileDirectory)CanvasObjects\Teams\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Widgets\Blackboard.cs" />
@@ -42,5 +43,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\TagObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\TimerObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Widgets\DashboardCanvas.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Teams\PlayerObject.cs" />
   </ItemGroup>
 </Project>

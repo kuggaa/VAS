@@ -28,6 +28,7 @@ using FontWeight = VAS.Core.Common.FontWeight;
 using Image = VAS.Core.Common.Image;
 using LineStyle = VAS.Core.Common.LineStyle;
 using Point = VAS.Core.Common.Point;
+using VAS.Core;
 
 namespace VAS.Drawing.Cairo
 {
@@ -154,7 +155,7 @@ namespace VAS.Drawing.Cairo
 
 		public ISurface CreateSurface (string filename, bool warnOnDispose = true)
 		{
-			Image img = new Image (filename);
+			Image img = Resources.LoadImage (filename);
 			return CreateSurface (img.Width, img.Height, img, warnOnDispose);
 		}
 
