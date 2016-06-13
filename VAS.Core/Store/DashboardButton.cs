@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
@@ -47,6 +48,9 @@ namespace VAS.Core.Store
 			}
 			HotKey = new HotKey { IsChanged = false };
 			ActionLinks = new ObservableCollection <ActionLink> ();
+			ShowIcon = false;
+			ShowHotkey = false;
+			ShowSettingIcon = false;
 		}
 
 		[JsonIgnore]
@@ -92,6 +96,23 @@ namespace VAS.Core.Store
 		}
 
 		public virtual Image BackgroundImage {
+			get;
+			set;
+		}
+
+		[DefaultValue (true)]
+		[JsonProperty (DefaultValueHandling = DefaultValueHandling.Populate)]
+		public bool ShowIcon {
+			get;
+			set;
+		}
+
+		public bool ShowHotkey {
+			get;
+			set;
+		}
+
+		public bool ShowSettingIcon {
 			get;
 			set;
 		}

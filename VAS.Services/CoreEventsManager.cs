@@ -67,9 +67,11 @@ namespace VAS.Services
 				framesCapturer = Config.MultimediaToolkit.GetFramesCapturer ();
 				framesCapturer.Open (openedProject.FileSet.First ().FilePath);
 			}
-			this.analysisWindow = analysisWindow;
-			player = analysisWindow.Player;
-			capturer = analysisWindow.Capturer;
+			if (analysisWindow != null) {
+				this.analysisWindow = analysisWindow;
+				player = analysisWindow.Player;
+				capturer = analysisWindow.Capturer;
+			}
 		}
 
 		void Save (Project project)
@@ -82,7 +84,6 @@ namespace VAS.Services
 		protected virtual void DeletePlays (List<TimelineEvent> plays, bool update = true)
 		{
 			Log.Debug (plays.Count + " plays deleted");
-			analysisWindow.DeletePlays (plays.ToList ());
 			openedProject.RemoveEvents (plays);
 			if (projectType == ProjectType.FileProject) {
 				Save (openedProject);
@@ -234,7 +235,6 @@ namespace VAS.Services
 			}
 
 			filter.Update ();
-			analysisWindow.AddPlay (play);
 			Config.EventsBroker.EmitEventCreated (play);
 			if (projectType == ProjectType.FileProject) {
 				player.Play ();
@@ -299,7 +299,7 @@ namespace VAS.Services
 			var newplay = play.Clone ();
 			DeletePlays (new List<TimelineEvent> { play }, false);
 			openedProject.AddEvent (newplay);
-			analysisWindow.AddPlay (newplay);
+			Config.EventsBroker.EmitEventCreated (newplay);
 			Save (openedProject);
 			filter.Update ();
 		}
@@ -315,7 +315,7 @@ namespace VAS.Services
 			foreach (var play in plays) {
 				var copy = play.Clone ();
 				openedProject.AddEvent (copy);
-				analysisWindow.AddPlay (copy);
+				Config.EventsBroker.EmitEventCreated (copy);
 			}
 			filter.Update ();
 		}

@@ -102,6 +102,8 @@ namespace VAS.Tests.Core.Store.Templates
 			Utils.DashboardDummy dashboard = new Utils.DashboardDummy ();
 			AnalysisEventButton b1 = dashboard.AddDefaultItem (0);
 			AnalysisEventButton b2 = dashboard.AddDefaultItem (1);
+			dashboard.AddDefaultTags (b1.AnalysisEventType);
+			dashboard.AddDefaultTags (b2.AnalysisEventType);
 
 			b1.ActionLinks.Add (new ActionLink { DestinationButton = b2 });
 			dashboard.RemoveDeadLinks (b2);

@@ -11,6 +11,7 @@
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Widgets\" />
     <Folder Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\" />
+    <Folder Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Widgets\Blackboard.cs" />
@@ -33,5 +34,13 @@
       <Link>AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)CanvasFromDrawableObjectRegistry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\ButtonObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\DashboardButtonObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\LinkAnchorObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\ActionLinkObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\CategoryObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\TagObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\TimerObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Widgets\DashboardCanvas.cs" />
   </ItemGroup>
 </Project>

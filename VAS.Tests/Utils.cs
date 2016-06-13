@@ -55,8 +55,14 @@ namespace VAS.Tests
 			{
 			}
 
-			protected override void UpdateVisiblePlays ()
+			protected override bool IsVisibleByPlayer (TimelineEvent play)
 			{
+				return true;
+			}
+
+			protected override bool IsVisibleByPeriod (TimelineEvent play)
+			{
+				return true;
 			}
 
 			#endregion

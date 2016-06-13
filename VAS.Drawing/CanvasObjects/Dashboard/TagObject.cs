@@ -1,61 +1,55 @@
-// 
-//  Copyright (C) 2011 Andoni Morales Alastruey
-// 
+//
+//  Copyright (C) 2014 Andoni Morales Alastruey
+//
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation; either version 2 of the License, or
 //  (at your option) any later version.
-// 
+//
 //  This program is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 //  GNU General Public License for more details.
-//  
+//
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
-// 
-using System.Collections.Generic;
-
+//
+using VAS.Core;
 using VAS.Core.Common;
-using VAS.Core.Filters;
 using VAS.Core.Store;
 
-namespace VAS.Core.Interfaces.GUI
+namespace VAS.Drawing.CanvasObjects.Dashboard
 {
-	public interface IAnalysisWindowBase
+	public class TagObject: DashboardButtonObject
 	{
-		void SetProject (Project project, ProjectType projectType, CaptureSettings props, EventsFilter filter);
+		static Image iconImage;
 
-		void ReloadProject ();
+		public TagObject (TagButton tagger) : base (tagger)
+		{
+			TagButton = tagger;
+			Toggle = true;
+			SupportsLinks = false;
+			if (iconImage == null) {
+				iconImage = Resources.LoadImage (StyleConf.ButtonTagIcon);
+			}
+		}
 
-		void CloseOpenedProject ();
+		public TagButton TagButton {
+			get;
+			set;
+		}
 
-		void UpdateCategories ();
+		public override Image Icon {
+			get {
+				return iconImage;
+			}
+		}
 
-		void DetachPlayer ();
-
-		void ZoomIn ();
-
-		void ZoomOut ();
-
-		void FitTimeline ();
-
-		void ShowDashboard ();
-
-		void ShowTimeline ();
-
-		void ShowZonalTags ();
-
-		void ClickButton (DashboardButton button, Tag tag = null);
-
-		void TagPlayer (Player player);
-
-		//void TagTeam (TeamType team);
-
-		IPlayerController Player{ get; }
-
-		ICapturerBin Capturer{ get; }
+		public override string Text {
+			get {
+				return TagButton.Tag.Value;
+			}
+		}
 	}
 }
-

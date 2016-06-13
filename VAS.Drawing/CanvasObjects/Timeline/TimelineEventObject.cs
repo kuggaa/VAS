@@ -94,7 +94,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			tk.DrawLine (new Point (stop, y1), new Point (stop, y2));
 		}
 
-		protected virtual void Draw (IDrawingToolkit tk, Area area)
+		public override void Draw (IDrawingToolkit tk, Area area)
 		{
 			double start, stop;
 			int lineWidth = StyleConf.TimelineLineSize;
