@@ -64,7 +64,7 @@ namespace VAS.Services
 			}
 
 			if (projectType == ProjectType.FileProject) {
-				framesCapturer = Config.MultimediaToolkit.GetFramesCapturer ();
+				framesCapturer = App.Current.MultimediaToolkit.GetFramesCapturer ();
 				framesCapturer.Open (openedProject.FileSet.First ().FilePath);
 			}
 			if (analysisWindow != null) {
@@ -76,8 +76,9 @@ namespace VAS.Services
 
 		void Save (Project project)
 		{
-			if (Config.AutoSave) {
-				Config.DatabaseManager.ActiveDB.Store (project);
+			var config = VAS.App.Current.Config;
+			if (VAS.App.Current.Config.AutoSave) {
+				App.Current.DatabaseManager.ActiveDB.Store (project);
 			}
 		}
 
@@ -89,14 +90,14 @@ namespace VAS.Services
 				Save (openedProject);
 			}
 			if (loadedPlay != null && plays.Contains (loadedPlay)) {
-				Config.EventsBroker.EmitLoadEvent (null);
+				App.Current.EventsBroker.EmitLoadEvent (null);
 			}
 			filter.Update ();
 		}
 
 		protected virtual void HandleShowFullScreenEvent (bool fullscreen)
 		{
-			Config.GUIToolkit.FullScreen = fullscreen;
+			App.Current.GUIToolkit.FullScreen = fullscreen;
 		}
 
 		protected virtual void HandlePlayLoaded (TimelineEvent play)
@@ -122,7 +123,7 @@ namespace VAS.Services
 
 		protected virtual void HandleTagSubcategoriesChangedEvent (bool tagsubcategories)
 		{
-			Config.FastTagging = !tagsubcategories;
+			App.Current.Config.FastTagging = !tagsubcategories;
 		}
 
 		protected virtual void HandleDrawFrame (TimelineEvent play, int drawingIndex, CameraConfig camConfig, bool current)
@@ -153,7 +154,7 @@ namespace VAS.Services
 			if (framesCapturer != null && !current) {
 				if (camConfig.Index > 0) {
 					IFramesCapturer auxFramesCapturer;
-					auxFramesCapturer = Config.MultimediaToolkit.GetFramesCapturer ();
+					auxFramesCapturer = App.Current.MultimediaToolkit.GetFramesCapturer ();
 					auxFramesCapturer.Open (openedProject.FileSet [camConfig.Index].FilePath);
 					Time offset = openedProject.FileSet [camConfig.Index].Offset;
 					pixbuf = auxFramesCapturer.GetFrame (pos + offset, true, -1, -1);
@@ -166,9 +167,9 @@ namespace VAS.Services
 				pixbuf = player.CurrentFrame;
 			}
 			if (pixbuf == null) {
-				Config.GUIToolkit.ErrorMessage (Catalog.GetString ("Error capturing video frame"));
+				App.Current.GUIToolkit.ErrorMessage (Catalog.GetString ("Error capturing video frame"));
 			} else {
-				Config.GUIToolkit.DrawingTool (pixbuf, play, drawing, camConfig, openedProject);
+				App.Current.GUIToolkit.DrawingTool (pixbuf, play, drawing, camConfig, openedProject);
 			}
 		}
 
@@ -179,11 +180,11 @@ namespace VAS.Services
 			EditionJob job;
 			string outputDir, outputProjectDir, outputFile;
 
-			if (Config.AutoRenderDir == null ||
-			    !Directory.Exists (Config.AutoRenderDir)) {
-				outputDir = Config.VideosDir;
+			if (App.Current.Config.AutoRenderDir == null ||
+			    !Directory.Exists (App.Current.Config.AutoRenderDir)) {
+				outputDir = App.Current.VideosDir;
 			} else {
-				outputDir = Config.AutoRenderDir;
+				outputDir = App.Current.Config.AutoRenderDir;
 			}
 
 			outputProjectDir = Path.Combine (outputDir,
@@ -200,7 +201,7 @@ namespace VAS.Services
 				element = new PlaylistPlayElement (play);
 				playlist.Elements.Add (element);
 				job = new EditionJob (playlist, settings);
-				Config.RenderingJobsManger.AddJob (job);
+				App.Current.RenderingJobsManger.AddJob (job);
 			} catch (Exception ex) {
 				Log.Exception (ex);
 			}
@@ -235,7 +236,7 @@ namespace VAS.Services
 			}
 
 			filter.Update ();
-			Config.EventsBroker.EmitEventCreated (play);
+			App.Current.EventsBroker.EmitEventCreated (play);
 			if (projectType == ProjectType.FileProject) {
 				player.Play ();
 			}
@@ -243,7 +244,7 @@ namespace VAS.Services
 
 			if (projectType == ProjectType.CaptureProject ||
 			    projectType == ProjectType.URICaptureProject) {
-				if (Config.AutoRenderPlaysInLive) {
+				if (App.Current.Config.AutoRenderPlaysInLive) {
 					RenderPlay (openedProject, play);
 				}
 			}
@@ -258,7 +259,7 @@ namespace VAS.Services
 			    projectType == ProjectType.URICaptureProject ||
 			    projectType == ProjectType.FakeCaptureProject) {
 				if (!capturer.Capturing) {
-					Config.GUIToolkit.WarningMessage (Catalog.GetString ("Video capture is stopped"));
+					App.Current.GUIToolkit.WarningMessage (Catalog.GetString ("Video capture is stopped"));
 					return;
 				}
 			}
@@ -267,12 +268,12 @@ namespace VAS.Services
 				if (projectType == ProjectType.FileProject) {
 					bool playing = player.Playing;
 					player.Pause ();
-					await Config.GUIToolkit.EditPlay (play, openedProject, true, true, true, true);
+					await App.Current.GUIToolkit.EditPlay (play, openedProject, true, true, true, true);
 					if (playing) {
 						player.Play ();
 					}
 				} else {
-					await Config.GUIToolkit.EditPlay (play, openedProject, true, true, true, true);
+					await App.Current.GUIToolkit.EditPlay (play, openedProject, true, true, true, true);
 				}
 			}
 
@@ -291,7 +292,7 @@ namespace VAS.Services
 		protected virtual void HandleCreateSnaphotSeries (TimelineEvent play)
 		{
 			player.Pause ();
-			Config.GUIToolkit.ExportFrameSeries (openedProject, play, Config.SnapshotsDir);
+			App.Current.GUIToolkit.ExportFrameSeries (openedProject, play, App.Current.SnapshotsDir);
 		}
 
 		protected void HandleMoveToEventType (TimelineEvent play, EventType evType)
@@ -332,7 +333,7 @@ namespace VAS.Services
 			           projectType == ProjectType.URICaptureProject ||
 			           projectType == ProjectType.FakeCaptureProject) {
 				if (!capturer.Capturing) {
-					Config.GUIToolkit.WarningMessage (Catalog.GetString ("Video capture is stopped"));
+					App.Current.GUIToolkit.WarningMessage (Catalog.GetString ("Video capture is stopped"));
 					return;
 				}
 			}
@@ -368,47 +369,47 @@ namespace VAS.Services
 
 		public bool Start ()
 		{
-			Config.EventsBroker.EventsDeletedEvent += HandleDeleteEvents;
-			Config.EventsBroker.EventLoadedEvent += HandlePlayLoaded;
-			Config.EventsBroker.PlaylistElementLoadedEvent += HandlePlaylistElementLoaded;
-			Config.EventsBroker.OpenedProjectChanged += HandleOpenedProjectChanged;
-			Config.EventsBroker.DrawFrame += HandleDrawFrame;
-			Config.EventsBroker.SnapshotSeries += HandleCreateSnaphotSeries;
+			App.Current.EventsBroker.EventsDeletedEvent += HandleDeleteEvents;
+			App.Current.EventsBroker.EventLoadedEvent += HandlePlayLoaded;
+			App.Current.EventsBroker.PlaylistElementLoadedEvent += HandlePlaylistElementLoaded;
+			App.Current.EventsBroker.OpenedProjectChanged += HandleOpenedProjectChanged;
+			App.Current.EventsBroker.DrawFrame += HandleDrawFrame;
+			App.Current.EventsBroker.SnapshotSeries += HandleCreateSnaphotSeries;
 
-			Config.EventsBroker.MoveToEventTypeEvent += HandleMoveToEventType;
-			Config.EventsBroker.DuplicateEventsEvent += HandleDuplicateEvents;
+			App.Current.EventsBroker.MoveToEventTypeEvent += HandleMoveToEventType;
+			App.Current.EventsBroker.DuplicateEventsEvent += HandleDuplicateEvents;
 
-			Config.EventsBroker.NewDashboardEventEvent += HandleNewDashboardEvent;
-			Config.EventsBroker.NewEventEvent += HandleNewEvent;
+			App.Current.EventsBroker.NewDashboardEventEvent += HandleNewDashboardEvent;
+			App.Current.EventsBroker.NewEventEvent += HandleNewEvent;
 
-			Config.EventsBroker.DashboardEditedEvent += HandleDashboardEditedEvent;
+			App.Current.EventsBroker.DashboardEditedEvent += HandleDashboardEditedEvent;
 
-			Config.EventsBroker.TagSubcategoriesChangedEvent += HandleTagSubcategoriesChangedEvent;
-			Config.EventsBroker.Detach += HandleDetach;
-			Config.EventsBroker.ShowFullScreenEvent += HandleShowFullScreenEvent;
+			App.Current.EventsBroker.TagSubcategoriesChangedEvent += HandleTagSubcategoriesChangedEvent;
+			App.Current.EventsBroker.Detach += HandleDetach;
+			App.Current.EventsBroker.ShowFullScreenEvent += HandleShowFullScreenEvent;
 			return true;
 		}
 
 		public bool Stop ()
 		{
-			Config.EventsBroker.EventsDeletedEvent -= HandleDeleteEvents;
-			Config.EventsBroker.EventLoadedEvent -= HandlePlayLoaded;
-			Config.EventsBroker.PlaylistElementLoadedEvent -= HandlePlaylistElementLoaded;
-			Config.EventsBroker.OpenedProjectChanged -= HandleOpenedProjectChanged;
-			Config.EventsBroker.DrawFrame -= HandleDrawFrame;
-			Config.EventsBroker.SnapshotSeries -= HandleCreateSnaphotSeries;
+			App.Current.EventsBroker.EventsDeletedEvent -= HandleDeleteEvents;
+			App.Current.EventsBroker.EventLoadedEvent -= HandlePlayLoaded;
+			App.Current.EventsBroker.PlaylistElementLoadedEvent -= HandlePlaylistElementLoaded;
+			App.Current.EventsBroker.OpenedProjectChanged -= HandleOpenedProjectChanged;
+			App.Current.EventsBroker.DrawFrame -= HandleDrawFrame;
+			App.Current.EventsBroker.SnapshotSeries -= HandleCreateSnaphotSeries;
 
-			Config.EventsBroker.MoveToEventTypeEvent -= HandleMoveToEventType;
-			Config.EventsBroker.DuplicateEventsEvent -= HandleDuplicateEvents;
+			App.Current.EventsBroker.MoveToEventTypeEvent -= HandleMoveToEventType;
+			App.Current.EventsBroker.DuplicateEventsEvent -= HandleDuplicateEvents;
 
-			Config.EventsBroker.NewDashboardEventEvent -= HandleNewDashboardEvent;
-			Config.EventsBroker.NewEventEvent -= HandleNewEvent;
+			App.Current.EventsBroker.NewDashboardEventEvent -= HandleNewDashboardEvent;
+			App.Current.EventsBroker.NewEventEvent -= HandleNewEvent;
 
-			Config.EventsBroker.DashboardEditedEvent -= HandleDashboardEditedEvent;
+			App.Current.EventsBroker.DashboardEditedEvent -= HandleDashboardEditedEvent;
 
-			Config.EventsBroker.TagSubcategoriesChangedEvent -= HandleTagSubcategoriesChangedEvent;
-			Config.EventsBroker.Detach -= HandleDetach;
-			Config.EventsBroker.ShowFullScreenEvent -= HandleShowFullScreenEvent;
+			App.Current.EventsBroker.TagSubcategoriesChangedEvent -= HandleTagSubcategoriesChangedEvent;
+			App.Current.EventsBroker.Detach -= HandleDetach;
+			App.Current.EventsBroker.ShowFullScreenEvent -= HandleShowFullScreenEvent;
 			return true;
 		}
 

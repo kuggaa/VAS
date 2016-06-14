@@ -1,5 +1,5 @@
 ﻿//
-//  Copyright (C) 2015 Fluendo S.A.
+//  Copyright (C) 2016 FLUENDO S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,17 +15,33 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System.IO;
-using VAS.Core.Common;
+using ICSharpCode.SharpZipLib;
+using VAS;
+using NUnit.Framework;
+using VAS.DB;
 
-namespace VAS.Core
+namespace VAS.Tests
 {
-	public static class Resources
+	[SetUpFixture]
+	public class SetupClass
 	{
-		public static Image LoadImage (string name)
+		[SetUp]
+		public void Setup ()
 		{
-			return new Image (Path.Combine (App.Current.dataDir, name));
+			// Initialize VAS.Core by using a type, this will call the module initialization
+			VFS.SetCurrent (new FileSystem ());
+			App.Current = new AppDummy ();
+			App.Current.Config = new ConfigDummy ();
 		}
 	}
-}
 
+	public class AppDummy : App
+	{
+		//Dummy class for VAS.App
+	}
+
+	public class ConfigDummy : Config
+	{
+		//Dummy class for VAS.Config
+	}
+}

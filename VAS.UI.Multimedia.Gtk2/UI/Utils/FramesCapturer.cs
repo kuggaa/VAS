@@ -48,7 +48,7 @@ namespace VAS.Video.Utils
 
 		public FramesSeriesCapturer (MediaFileSet fileSet, TimelineEvent evt, uint interval, string outputDir)
 		{
-			this.capturer = Config.MultimediaToolkit.GetFramesCapturer ();
+			this.capturer = App.Current.MultimediaToolkit.GetFramesCapturer ();
 			this.fileSet = fileSet;
 			this.evt = evt;
 			this.start = evt.Start;

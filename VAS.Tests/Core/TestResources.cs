@@ -28,7 +28,7 @@ namespace VAS.Tests.Core
 		[TestFixtureSetUp ()]
 		public void Setup ()
 		{
-			Config.dataDir = "./data/";
+			App.Current.dataDir = "./data/";
 		}
 
 		[Test ()]

@@ -97,8 +97,8 @@ namespace VAS.UI
 			timescale.Adjustment.StepIncrement = 0.0001;
 			Helpers.Misc.SetFocus (vbox3, false);
 			videowindow.CanFocus = true;
-			detachbutton.Clicked += (sender, e) => Config.EventsBroker.EmitDetach ();
-			ratescale.ModifyFont (FontDescription.FromString (Config.Style.Font + " 8"));
+			detachbutton.Clicked += (sender, e) => App.Current.EventsBroker.EmitDetach ();
+			ratescale.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 8"));
 			controlsbox.HeightRequest = StyleConf.PlayerCapturerControlsHeight;
 
 			Player = new PlayerController ();
@@ -503,7 +503,7 @@ namespace VAS.UI
 
 		protected virtual void HandleClosebuttonClicked (object sender, System.EventArgs e)
 		{
-			Config.EventsBroker.EmitLoadEvent (null);
+			App.Current.EventsBroker.EmitLoadEvent (null);
 		}
 
 		protected virtual void HandlePrevbuttonClicked (object sender, System.EventArgs e)
@@ -542,7 +542,7 @@ namespace VAS.UI
 
 			if (!ignoreRate) {
 				Player.Rate = val;
-				Config.EventsBroker.EmitPlaybackRateChanged (val);
+				App.Current.EventsBroker.EmitPlaybackRateChanged (val);
 			}
 		}
 
@@ -577,7 +577,7 @@ namespace VAS.UI
 
 		protected virtual void HandleDrawButtonClicked (object sender, System.EventArgs e)
 		{
-			Config.EventsBroker.EmitDrawFrame (null, -1, CamerasConfig [0], true);
+			App.Current.EventsBroker.EmitDrawFrame (null, -1, CamerasConfig [0], true);
 		}
 
 		protected virtual void HandleJumpValueChanged (object sender, EventArgs e)

@@ -51,12 +51,12 @@ namespace VAS.Core.Common
 		
 		public static EncodingSettings DefaultRenderingSettings (string outputFilepath)
 		{
-			return new EncodingSettings (Config.RenderVideoStandard,
-				Config.RenderEncodingProfile,
-				Config.RenderEncodingQuality,
-				Config.FPS_N, Config.FPS_D,
+			return new EncodingSettings (App.Current.Config.RenderVideoStandard,
+				App.Current.Config.RenderEncodingProfile,
+				App.Current.Config.RenderEncodingQuality,
+				App.Current.Config.FPS_N, App.Current.Config.FPS_D,
 				outputFilepath,
-				Config.EnableAudio, Config.OverlayTitle, 20);
+				App.Current.Config.EnableAudio, App.Current.Config.OverlayTitle, 20);
 		}
 
 		/// <summary>

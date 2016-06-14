@@ -35,7 +35,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			TimeNode = node;
 			SelectionMode = NodeSelectionMode.All;
 			DraggingMode = NodeDraggingMode.All;
-			LineColor = Config.Style.PaletteBackgroundLight;
+			LineColor = App.Current.Style.PaletteBackgroundLight;
 			Height = StyleConf.TimelineCategoryHeight;
 			ClippingMode = NodeClippingMode.Strict;
 		}
@@ -247,8 +247,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 			
 			if (Selected) {
-				tk.FillColor = Config.Style.PaletteActive;
-				tk.StrokeColor = Config.Style.PaletteActive;
+				tk.FillColor = App.Current.Style.PaletteActive;
+				tk.StrokeColor = App.Current.Style.PaletteActive;
 			} else {
 				tk.FillColor = LineColor;
 				tk.StrokeColor = LineColor;
@@ -271,8 +271,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			if (ShowName) {
 				tk.FontSize = StyleConf.TimelineFontSize;
 				tk.FontWeight = FontWeight.Bold;
-				tk.FillColor = Config.Style.PaletteActive;
-				tk.StrokeColor = Config.Style.PaletteActive;
+				tk.FillColor = App.Current.Style.PaletteActive;
+				tk.StrokeColor = App.Current.Style.PaletteActive;
 				tk.DrawText (new Point (StartX, OffsetY), StopX - StartX, Height / 2, TimeNode.Name);
 			}
 			tk.End ();

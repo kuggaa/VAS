@@ -38,16 +38,16 @@ namespace VAS.UI
 			replayhbox.HeightRequest = livebox.HeightRequest = StyleConf.PlayerCapturerControlsHeight;
 			replayimage.Pixbuf = Misc.LoadIcon ("longomatch-replay", StyleConf.PlayerCapturerIconSize);
 			liveimage.Pixbuf = Misc.LoadIcon ("longomatch-live", StyleConf.PlayerCapturerIconSize);
-			livelabel.ModifyFg (Gtk.StateType.Normal, Misc.ToGdkColor (Config.Style.PaletteActive));
-			replaylabel.ModifyFg (Gtk.StateType.Normal, Misc.ToGdkColor (Config.Style.PaletteActive));
+			livelabel.ModifyFg (Gtk.StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteActive));
+			replaylabel.ModifyFg (Gtk.StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteActive));
 			livebox.Visible = replayhbox.Visible = true;
-			playerview = Config.GUIToolkit.GetPlayerView ();
+			playerview = App.Current.GUIToolkit.GetPlayerView ();
 			playerbox.PackEnd (playerview as Gtk.Widget);
 			(playerview as Gtk.Widget).ShowAll ();
 			Player = playerview.Player;
 
-			Config.EventsAggregator.Subscribe<LoadVideoEvent> (HandleLoadVideoEvent, ThreadMethod.UIThread);
-			Config.EventsAggregator.Subscribe<CloseVideoEvent> (HandleCloseVideoEvent, ThreadMethod.UIThread);
+			App.Current.EventsAggregator.Subscribe<LoadVideoEvent> (HandleLoadVideoEvent, ThreadMethod.UIThread);
+			App.Current.EventsAggregator.Subscribe<CloseVideoEvent> (HandleCloseVideoEvent, ThreadMethod.UIThread);
 		}
 
 		protected override void OnDestroyed ()
@@ -91,7 +91,7 @@ namespace VAS.UI
 		{
 			playerbox.Visible = true;
 			replayhbox.Visible = false;
-			if (mode == PlayerViewOperationMode.LiveAnalysisReview && Config.ReviewPlaysInSameWindow)
+			if (mode == PlayerViewOperationMode.LiveAnalysisReview && App.Current.Config.ReviewPlaysInSameWindow)
 				capturerbox.Visible = true;
 			else
 				capturerbox.Visible = false;
@@ -111,7 +111,7 @@ namespace VAS.UI
 
 		protected virtual void HandleLoadVideoEvent (LoadVideoEvent loadVideoEvent)
 		{
-			Config.EventsAggregator.Publish<ChangeVideoMessageEvent> (
+			App.Current.EventsAggregator.Publish<ChangeVideoMessageEvent> (
 				new ChangeVideoMessageEvent () {
 					message = null
 				});
@@ -127,7 +127,7 @@ namespace VAS.UI
 			if (Player is VAS.Services.PlayerController) {
 				(Player as VAS.Services.PlayerController).ResetCounter ();
 
-				Config.EventsAggregator.Publish<ChangeVideoMessageEvent> (
+				App.Current.EventsAggregator.Publish<ChangeVideoMessageEvent> (
 					new ChangeVideoMessageEvent () {
 						message = Catalog.GetString ("No video loaded")
 					});

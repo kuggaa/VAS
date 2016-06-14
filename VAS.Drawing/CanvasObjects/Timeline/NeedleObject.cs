@@ -83,7 +83,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		{
 			if (!surfacesInitialized) {
 				Image img = Resources.LoadImage (StyleConf.TimelineNeedleResource);
-				needle = Config.DrawingToolkit.CreateSurface (img.Width, img.Height, img, false);
+				needle = App.Current.DrawingToolkit.CreateSurface (img.Width, img.Height, img, false);
 				surfacesInitialized = true;
 			}
 		}

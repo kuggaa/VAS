@@ -96,8 +96,8 @@ namespace VAS.UI
 			Periods = new List<Period> ();
 			Reset ();
 			Mode = CapturerType.Live;
-			Config.EventsBroker.EventCreatedEvent += HandleEventCreated;
-			lastlabel.ModifyFont (Pango.FontDescription.FromString (Config.Style.Font + " 8px"));
+			App.Current.EventsBroker.EventCreatedEvent += HandleEventCreated;
+			lastlabel.ModifyFont (Pango.FontDescription.FromString (App.Current.Style.Font + " 8px"));
 			ReadyToCapture = false;
 		}
 
@@ -106,7 +106,7 @@ namespace VAS.UI
 			if (timeoutID != 0) {
 				GLib.Source.Remove (timeoutID);
 			}
-			Config.EventsBroker.EventCreatedEvent -= HandleEventCreated;
+			App.Current.EventsBroker.EventCreatedEvent -= HandleEventCreated;
 			base.OnDestroyed ();
 		}
 
@@ -202,7 +202,7 @@ namespace VAS.UI
 			
 			if (currentPeriod != null) {
 				string msg = Catalog.GetString ("Period recording already started");
-				Config.GUIToolkit.WarningMessage (msg, this);
+				App.Current.GUIToolkit.WarningMessage (msg, this);
 				return;
 			}
 			recbutton.Visible = false;
@@ -236,7 +236,7 @@ namespace VAS.UI
 		{
 			if (currentPeriod == null) {
 				string msg = Catalog.GetString ("Period recording not started");
-				Config.GUIToolkit.WarningMessage (msg, this);
+				App.Current.GUIToolkit.WarningMessage (msg, this);
 				return;
 			}
 			
@@ -258,7 +258,7 @@ namespace VAS.UI
 		{
 			if (currentPeriod == null) {
 				string msg = Catalog.GetString ("Period recording not started");
-				Config.GUIToolkit.WarningMessage (msg, this);
+				App.Current.GUIToolkit.WarningMessage (msg, this);
 				return;
 			}
 			Log.Debug ("Pause period at currentTime=", CurrentCaptureTime.ToMSecondsString ());
@@ -273,7 +273,7 @@ namespace VAS.UI
 		{
 			if (currentPeriod == null) {
 				string msg = Catalog.GetString ("Period recording not started");
-				Config.GUIToolkit.WarningMessage (msg, this);
+				App.Current.GUIToolkit.WarningMessage (msg, this);
 				return;
 			}
 			Log.Debug ("Resume period at currentTime=", CurrentCaptureTime.ToMSecondsString ());
@@ -285,28 +285,28 @@ namespace VAS.UI
 
 		protected virtual void SetStyle (int height, int fontSize, int timeWidth)
 		{
-			string font = String.Format ("{0} {1}px", Config.Style.Font, fontSize);
+			string font = String.Format ("{0} {1}px", App.Current.Style.Font, fontSize);
 			Pango.FontDescription desc = Pango.FontDescription.FromString (font);
 
 			controllerbox.HeightRequest = height;
-			hourseventbox.ModifyBg (StateType.Normal, Misc.ToGdkColor (Config.Style.PaletteBackgroundDark));
-			hourlabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (Config.Style.PaletteText));
+			hourseventbox.ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteBackgroundDark));
+			hourlabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteText));
 			hourlabel.ModifyFont (desc);
 			hourseventbox.WidthRequest = timeWidth;
-			minuteseventbox.ModifyBg (StateType.Normal, Misc.ToGdkColor (Config.Style.PaletteBackgroundDark));
-			minuteslabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (Config.Style.PaletteText));
+			minuteseventbox.ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteBackgroundDark));
+			minuteslabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteText));
 			minuteslabel.ModifyFont (desc);
 			minuteseventbox.WidthRequest = timeWidth;
-			secondseventbox.ModifyBg (StateType.Normal, Misc.ToGdkColor (Config.Style.PaletteBackgroundDark));
-			secondslabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (Config.Style.PaletteText));
+			secondseventbox.ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteBackgroundDark));
+			secondslabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteText));
 			secondslabel.ModifyFont (desc);
 			secondseventbox.WidthRequest = timeWidth;
 			label1.ModifyFont (desc);
-			label1.ModifyFg (StateType.Normal, Misc.ToGdkColor (Config.Style.PaletteText));
+			label1.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteText));
 			label2.ModifyFont (desc);
-			label2.ModifyFg (StateType.Normal, Misc.ToGdkColor (Config.Style.PaletteText));
+			label2.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteText));
 			periodlabel.ModifyFont (desc);
-			periodlabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (Config.Style.PaletteText));
+			periodlabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteText));
 
 		}
 
@@ -318,7 +318,7 @@ namespace VAS.UI
 			hourlabel.Markup = ElapsedTime.Hours.ToString ("d2");
 			minuteslabel.Markup = ElapsedTime.Minutes.ToString ("d2");
 			secondslabel.Markup = ElapsedTime.Seconds.ToString ("d2");
-			Config.EventsBroker.EmitCapturerTick (CurrentCaptureTime);
+			App.Current.EventsBroker.EmitCapturerTick (CurrentCaptureTime);
 			return true;
 		}
 
@@ -326,7 +326,7 @@ namespace VAS.UI
 		{
 			string msg = Catalog.GetString ("Do you want to finish the current capture?");
 			if (MessagesHelpers.QuestionMessage (this, msg)) {
-				Config.EventsBroker.EmitCaptureFinished (false, true);
+				App.Current.EventsBroker.EmitCaptureFinished (false, true);
 			}
 		}
 
@@ -334,7 +334,7 @@ namespace VAS.UI
 		{
 			string msg = Catalog.GetString ("Do you want to close and cancel the current capture?");
 			if (MessagesHelpers.QuestionMessage (this, msg)) {
-				Config.EventsBroker.EmitCaptureFinished (true, false);
+				App.Current.EventsBroker.EmitCaptureFinished (true, false);
 			}
 		}
 
@@ -344,7 +344,7 @@ namespace VAS.UI
 			if (type == CapturerType.Live) {
 				ReadyToCapture = false;
 				videowindow.Message = Catalog.GetString ("Loading");
-				Capturer = Config.MultimediaToolkit.GetCapturer ();
+				Capturer = App.Current.MultimediaToolkit.GetCapturer ();
 				this.outputFile = outputFile;
 				this.settings = settings;
 				videowindow.Ratio = (float)outputFile.VideoWidth / outputFile.VideoHeight;
@@ -461,7 +461,7 @@ namespace VAS.UI
 		protected virtual void OnError (object sender, string message)
 		{
 			Application.Invoke (delegate {
-				Config.EventsBroker.EmitCaptureError (sender, message);
+				App.Current.EventsBroker.EmitCaptureError (sender, message);
 			});
 		}
 
@@ -490,14 +490,14 @@ namespace VAS.UI
 		protected virtual void HandlePlayLast (object sender, EventArgs e)
 		{
 			if (lastevent != null) {
-				Config.EventsBroker.EmitLoadEvent (lastevent);
+				App.Current.EventsBroker.EmitLoadEvent (lastevent);
 			}
 		}
 
 		protected virtual void HandleDeleteLast (object sender, EventArgs e)
 		{
 			if (lastevent != null) {
-				Config.EventsBroker.EmitEventsDeleted (new List<TimelineEvent> { lastevent });
+				App.Current.EventsBroker.EmitEventsDeleted (new List<TimelineEvent> { lastevent });
 				lastevent = null;
 				lasteventbox.Visible = false;
 			}

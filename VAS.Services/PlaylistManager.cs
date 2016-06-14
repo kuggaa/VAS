@@ -171,12 +171,12 @@ namespace VAS.Services
 			bool done = false;
 			if (project != null) {
 				while (name != null && !done) {
-					name = Config.GUIToolkit.QueryMessage (Catalog.GetString ("Playlist name:"), null, name).Result;
+					name = App.Current.GUIToolkit.QueryMessage (Catalog.GetString ("Playlist name:"), null, name).Result;
 					if (name != null) {
 						done = true;
 						if (project.Playlists.Any (p => p.Name == name)) {
 							string msg = Catalog.GetString ("A playlist already exists with the same name");
-							Config.GUIToolkit.ErrorMessage (msg);
+							App.Current.GUIToolkit.ErrorMessage (msg);
 							done = false;
 						}
 					}
@@ -191,11 +191,11 @@ namespace VAS.Services
 
 		protected virtual void HandleRenderPlaylist (Playlist playlist)
 		{
-			List<EditionJob> jobs = Config.GUIToolkit.ConfigureRenderingJob (playlist);
+			List<EditionJob> jobs = App.Current.GUIToolkit.ConfigureRenderingJob (playlist);
 			if (jobs == null)
 				return;
 			foreach (Job job in jobs)
-				Config.RenderingJobsManger.AddJob (job);
+				App.Current.RenderingJobsManger.AddJob (job);
 		}
 
 		protected virtual void HandleTogglePlayEvent (bool playing)
@@ -225,36 +225,36 @@ namespace VAS.Services
 
 		public virtual bool Start ()
 		{
-			Config.EventsBroker.NewPlaylistEvent += HandleNewPlaylist;
-			Config.EventsBroker.AddPlaylistElementEvent += HandleAddPlaylistElement;
-			Config.EventsBroker.RenderPlaylist += HandleRenderPlaylist;
-			Config.EventsBroker.OpenedProjectChanged += HandleOpenedProjectChanged;
-			Config.EventsBroker.OpenedPresentationChanged += HandleOpenedPresentationChanged;
-			Config.EventsBroker.PreviousPlaylistElementEvent += HandlePrev;
-			Config.EventsBroker.NextPlaylistElementEvent += HandleNext;
-			Config.EventsBroker.LoadEventEvent += HandleLoadPlayEvent;
-			Config.EventsBroker.LoadPlaylistElementEvent += HandleLoadPlaylistElement;
-			Config.EventsBroker.PlaybackRateChanged += HandlePlaybackRateChanged;
-			Config.EventsBroker.TimeNodeChanged += HandlePlayChanged;
-			Config.EventsBroker.TogglePlayEvent += HandleTogglePlayEvent;
+			App.Current.EventsBroker.NewPlaylistEvent += HandleNewPlaylist;
+			App.Current.EventsBroker.AddPlaylistElementEvent += HandleAddPlaylistElement;
+			App.Current.EventsBroker.RenderPlaylist += HandleRenderPlaylist;
+			App.Current.EventsBroker.OpenedProjectChanged += HandleOpenedProjectChanged;
+			App.Current.EventsBroker.OpenedPresentationChanged += HandleOpenedPresentationChanged;
+			App.Current.EventsBroker.PreviousPlaylistElementEvent += HandlePrev;
+			App.Current.EventsBroker.NextPlaylistElementEvent += HandleNext;
+			App.Current.EventsBroker.LoadEventEvent += HandleLoadPlayEvent;
+			App.Current.EventsBroker.LoadPlaylistElementEvent += HandleLoadPlaylistElement;
+			App.Current.EventsBroker.PlaybackRateChanged += HandlePlaybackRateChanged;
+			App.Current.EventsBroker.TimeNodeChanged += HandlePlayChanged;
+			App.Current.EventsBroker.TogglePlayEvent += HandleTogglePlayEvent;
 
 			return true;
 		}
 
 		public virtual bool Stop ()
 		{
-			Config.EventsBroker.NewPlaylistEvent -= HandleNewPlaylist;
-			Config.EventsBroker.AddPlaylistElementEvent -= HandleAddPlaylistElement;
-			Config.EventsBroker.RenderPlaylist -= HandleRenderPlaylist;
-			Config.EventsBroker.OpenedProjectChanged -= HandleOpenedProjectChanged;
-			Config.EventsBroker.OpenedPresentationChanged -= HandleOpenedPresentationChanged;
-			Config.EventsBroker.PreviousPlaylistElementEvent -= HandlePrev;
-			Config.EventsBroker.NextPlaylistElementEvent -= HandleNext;
-			Config.EventsBroker.LoadEventEvent -= HandleLoadPlayEvent;
-			Config.EventsBroker.LoadPlaylistElementEvent -= HandleLoadPlaylistElement;
-			Config.EventsBroker.PlaybackRateChanged -= HandlePlaybackRateChanged;
-			Config.EventsBroker.TimeNodeChanged -= HandlePlayChanged;
-			Config.EventsBroker.TogglePlayEvent -= HandleTogglePlayEvent;
+			App.Current.EventsBroker.NewPlaylistEvent -= HandleNewPlaylist;
+			App.Current.EventsBroker.AddPlaylistElementEvent -= HandleAddPlaylistElement;
+			App.Current.EventsBroker.RenderPlaylist -= HandleRenderPlaylist;
+			App.Current.EventsBroker.OpenedProjectChanged -= HandleOpenedProjectChanged;
+			App.Current.EventsBroker.OpenedPresentationChanged -= HandleOpenedPresentationChanged;
+			App.Current.EventsBroker.PreviousPlaylistElementEvent -= HandlePrev;
+			App.Current.EventsBroker.NextPlaylistElementEvent -= HandleNext;
+			App.Current.EventsBroker.LoadEventEvent -= HandleLoadPlayEvent;
+			App.Current.EventsBroker.LoadPlaylistElementEvent -= HandleLoadPlaylistElement;
+			App.Current.EventsBroker.PlaybackRateChanged -= HandlePlaybackRateChanged;
+			App.Current.EventsBroker.TimeNodeChanged -= HandlePlayChanged;
+			App.Current.EventsBroker.TogglePlayEvent -= HandleTogglePlayEvent;
 
 			return true;
 		}

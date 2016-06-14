@@ -36,12 +36,12 @@ namespace VAS.Drawing
 
 		public Canvas (IWidget widget)
 		{
-			tk = Config.DrawingToolkit;
+			tk = App.Current.DrawingToolkit;
 			Objects = new List<ICanvasObject> ();
 			ScaleX = 1;
 			ScaleY = 1;
 			Translation = new Point (0, 0);
-			BackgroundColor = Config.Style.PaletteBackground;
+			BackgroundColor = App.Current.Style.PaletteBackground;
 			SetWidget (widget);
 		}
 

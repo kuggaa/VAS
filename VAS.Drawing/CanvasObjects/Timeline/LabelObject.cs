@@ -59,8 +59,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		public double RequiredWidth {
 			get {
 				int width, height;
-				Config.DrawingToolkit.MeasureText (
-					Name, out width, out height, Config.Style.Font,
+				App.Current.DrawingToolkit.MeasureText (
+					Name, out width, out height, App.Current.Style.Font,
 					DEFAULT_FONT_SIZE, DEFAULT_FONT_WEIGHT);
 				return TextOffset + width + StyleConf.TimelineLabelHSpacing;
 			}
@@ -116,9 +116,9 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			tk.FontSlant = FontSlant.Normal;
 			tk.FontWeight = DEFAULT_FONT_WEIGHT;
 			tk.FontSize = DEFAULT_FONT_SIZE;
-			tk.FillColor = Config.Style.PaletteWidgets;
+			tk.FillColor = App.Current.Style.PaletteWidgets;
 			tk.FontAlignment = FontAlignment.Left;
-			tk.StrokeColor = Config.Style.PaletteWidgets;
+			tk.StrokeColor = App.Current.Style.PaletteWidgets;
 			tk.DrawText (new Point (TextOffset, y), Width - TextOffset, Height, Name);
 			tk.End ();
 		}
@@ -178,7 +178,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			// Draw background
 			tk.Begin ();
 			tk.FillColor = BackgroundColor;
-			tk.StrokeColor = Config.Style.PaletteWidgets;
+			tk.StrokeColor = App.Current.Style.PaletteWidgets;
 			tk.LineWidth = 1;
 			tk.DrawRectangle (new Point (0, y), Width, Height);
 
@@ -186,9 +186,9 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			tk.FontSlant = FontSlant.Normal;
 			tk.FontWeight = FontWeight.Bold;
 			tk.FontSize = StyleConf.TimelineCameraFontSize;
-			tk.FillColor = Config.Style.PaletteWidgets;
+			tk.FillColor = App.Current.Style.PaletteWidgets;
 			tk.FontAlignment = FontAlignment.Right;
-			tk.StrokeColor = Config.Style.PaletteWidgets;
+			tk.StrokeColor = App.Current.Style.PaletteWidgets;
 			tk.DrawText (new Point (0, y), Width - StyleConf.TimelineLabelHSpacing, Height, Name);
 			tk.End ();
 		}
@@ -218,8 +218,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			Name = Catalog.GetString ("Video");
 			Color = Color.Blue1;
 
-			openButton.BackgroundColor = Config.Style.PaletteBackgroundLight;
-			openButton.BorderColor = Config.Style.PaletteBackgroundDark;
+			openButton.BackgroundColor = App.Current.Style.PaletteBackgroundLight;
+			openButton.BorderColor = App.Current.Style.PaletteBackgroundDark;
 			openButton.BackgroundImage = Resources.LoadImage (StyleConf.OpenButton);
 			openButton.Width = (int)RectSize;
 			openButton.Height = (int)RectSize;
@@ -249,9 +249,9 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			tk.FontSlant = FontSlant.Normal;
 			tk.FontWeight = FontWeight.Bold;
 			tk.FontSize = StyleConf.TimelineCameraFontSize;
-			tk.FillColor = Config.Style.PaletteWidgets;
+			tk.FillColor = App.Current.Style.PaletteWidgets;
 			tk.FontAlignment = FontAlignment.Left;
-			tk.StrokeColor = Config.Style.PaletteWidgets;
+			tk.StrokeColor = App.Current.Style.PaletteWidgets;
 			tk.DrawText (new Point (TextOffset, y), Width - TextOffset, Height, Name);
 
 			/* Draw Open button */
@@ -272,7 +272,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		void SetOpenButtonProperties (double startX)
 		{
 			openButton.Position = new Point (startX - RectSize - OPEN_BUTTON_MARGIN, OffsetY + OPEN_BUTTON_MARGIN);
-			openButton.BackgroundColor = Config.Style.PaletteBackgroundLight;
+			openButton.BackgroundColor = App.Current.Style.PaletteBackgroundLight;
 		}
 
 		public bool ClickInsideOpenButton (Point p)

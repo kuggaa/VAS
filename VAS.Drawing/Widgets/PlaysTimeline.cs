@@ -60,8 +60,8 @@ namespace VAS.Drawing.Widgets
 			currentTime = new Time (0);
 			Player = player;
 
-			Config.EventsAggregator.Subscribe<LoadVideoEvent> (HandleLoadVideoMessage, ThreadMethod.UIThread);
-			Config.EventsAggregator.Subscribe<CloseVideoEvent> (HandleCloseVideoEvent, ThreadMethod.UIThread);
+			App.Current.EventsAggregator.Subscribe<LoadVideoEvent> (HandleLoadVideoMessage, ThreadMethod.UIThread);
+			App.Current.EventsAggregator.Subscribe<CloseVideoEvent> (HandleCloseVideoEvent, ThreadMethod.UIThread);
 		}
 
 		public PlaysTimeline () : this (null, null)
@@ -220,7 +220,7 @@ namespace VAS.Drawing.Widgets
 			foreach (Timer t in project.Timers) {
 				tl = new TimerTimeline (new List<Timer> { t }, false, NodeDraggingMode.All, false, duration,
 					line * StyleConf.TimelineCategoryHeight,
-					Utils.ColorForRow (line), Config.Style.PaletteBackgroundDark);
+					Utils.ColorForRow (line), App.Current.Style.PaletteBackgroundDark);
 				AddTimeline (tl, t);
 			}
 		}
@@ -296,7 +296,7 @@ namespace VAS.Drawing.Widgets
 					loadedEvent = ev;
 				}
 			}
-			Config.EventsBroker.EmitLoadEvent (ev);
+			App.Current.EventsBroker.EmitLoadEvent (ev);
 		}
 
 		protected override void StartMove (Selection sel)
@@ -309,7 +309,7 @@ namespace VAS.Drawing.Widgets
 			}
 			if (sel.Drawable is TimeNodeObject) {
 				movingTimeNode = true;
-				Config.EventsBroker.EmitTogglePlayEvent (false);
+				App.Current.EventsBroker.EmitTogglePlayEvent (false);
 			}
 		}
 
@@ -317,7 +317,7 @@ namespace VAS.Drawing.Widgets
 		{
 			widget.SetCursor (CursorType.Arrow);
 			if (movingTimeNode) {
-				Config.EventsBroker.EmitTogglePlayEvent (true);
+				App.Current.EventsBroker.EmitTogglePlayEvent (true);
 				movingTimeNode = false;
 			}
 		}
@@ -352,7 +352,7 @@ namespace VAS.Drawing.Widgets
 				} else {
 					moveTime = new Time (0);
 				}
-				Config.EventsBroker.EmitTimeNodeChanged (play, moveTime);
+				App.Current.EventsBroker.EmitTimeNodeChanged (play, moveTime);
 			} else if (co is TimeNodeObject) {
 				TimeNode to = (co as TimeNodeObject).TimeNode;
 				

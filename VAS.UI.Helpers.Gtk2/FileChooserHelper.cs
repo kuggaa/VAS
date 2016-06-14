@@ -94,8 +94,8 @@ namespace VAS.UI.Helpers
 			fChooser.SelectMultiple = allowMultiple;
 			if (defaultFolder != null) {
 				fChooser.SetCurrentFolder (defaultFolder);
-			} else if (Config.LastDir != null) {
-				fChooser.SetCurrentFolder (Config.LastDir);
+			} else if (App.Current.Config.LastDir != null) {
+				fChooser.SetCurrentFolder (App.Current.Config.LastDir);
 			}
 			if (defaultName != null)
 				fChooser.CurrentName = defaultName;
@@ -115,7 +115,7 @@ namespace VAS.UI.Helpers
 			} else {
 				path = new List<string> (fChooser.Filenames);
 				if (defaultFolder == null && fChooser.Filenames.Length > 0) {
-					Config.LastDir = System.IO.Path.GetDirectoryName (fChooser.Filenames [0]);
+					App.Current.Config.LastDir = System.IO.Path.GetDirectoryName (fChooser.Filenames [0]);
 				}
 			}
 

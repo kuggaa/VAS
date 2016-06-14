@@ -109,16 +109,16 @@ namespace VAS.DB
 		public bool Backup ()
 		{
 			try {
-				string outputFilename = Path.Combine (Config.DBDir, storageName + ".tar.gz");
+				string outputFilename = Path.Combine (App.Current.DBDir, storageName + ".tar.gz");
 				using (FileStream fs = new FileStream (outputFilename, FileMode.Create, FileAccess.Write, FileShare.None)) {
 					using (Stream gzipStream = new GZipOutputStream (fs)) {
 						using (TarArchive tarArchive = TarArchive.CreateOutputTarArchive (gzipStream)) {
 							foreach (string n in new string[] {"", "-wal", "-shm"}) {
 								TarEntry tarEntry = TarEntry.CreateEntryFromFile (
-									                    Path.Combine (Config.DBDir, storageName + ".cblite" + n));
+									                    Path.Combine (App.Current.DBDir, storageName + ".cblite" + n));
 								tarArchive.WriteEntry (tarEntry, true);
 							}
-							AddDirectoryFilesToTar (tarArchive, Path.Combine (Config.DBDir, storageName + " attachments"), true);
+							AddDirectoryFilesToTar (tarArchive, Path.Combine (App.Current.DBDir, storageName + " attachments"), true);
 						}
 					}
 				}

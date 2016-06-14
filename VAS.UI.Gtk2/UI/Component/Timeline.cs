@@ -336,7 +336,7 @@ namespace VAS.UI.Component
 
 		protected void HandleTimeruleSeek (Time pos, bool accurate, bool synchronous = false, bool throttled = false)
 		{
-			(Config.EventsBroker).EmitLoadEvent (null);
+			(App.Current.EventsBroker).EmitLoadEvent (null);
 			player.Seek (pos, accurate, synchronous, throttled);
 		}
 

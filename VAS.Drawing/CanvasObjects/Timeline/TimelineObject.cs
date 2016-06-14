@@ -192,8 +192,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				p.Draw (tk, area);
 			}
 
-			tk.FillColor = Config.Style.PaletteTool;
-			tk.StrokeColor = Config.Style.PaletteTool;
+			tk.FillColor = App.Current.Style.PaletteTool;
+			tk.StrokeColor = App.Current.Style.PaletteTool;
 			tk.LineWidth = VASDrawing.Constants.TIMELINE_LINE_WIDTH;
 			position = VASDrawing.Utils.TimeToPos (CurrentTime, secondsPerPixel);
 			tk.DrawLine (new Point (position, OffsetY),
@@ -236,7 +236,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		{
 			Image img = Resources.LoadImage (name);
 			img.Scale (StyleConf.TimelineCategoryHeight, StyleConf.TimelineCategoryHeight);
-			return Config.DrawingToolkit.CreateSurface (img.Width, img.Height, img);
+			return App.Current.DrawingToolkit.CreateSurface (img.Width, img.Height, img);
 		}
 	}
 
@@ -385,8 +385,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			if (ShowLine) {
 				// We want the background line and overlay to use the same starting point although they have different sizes.
 				double linepos = OffsetY + Height / 2 + StyleConf.TimelineLineSize / 2;
-				tk.FillColor = Config.Style.PaletteBackgroundDark;
-				tk.StrokeColor = Config.Style.PaletteBackgroundDark;
+				tk.FillColor = App.Current.Style.PaletteBackgroundDark;
+				tk.StrokeColor = App.Current.Style.PaletteBackgroundDark;
 				tk.LineWidth = StyleConf.TimelineBackgroundLineSize;
 				tk.DrawLine (new Point (0, linepos),
 					new Point (Width, linepos));

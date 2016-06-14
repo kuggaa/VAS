@@ -33,9 +33,9 @@ namespace VAS.Drawing
 			Color c;
 
 			if (row % 2 == 0) {
-				c = Config.Style.PaletteBackground;
+				c = App.Current.Style.PaletteBackground;
 			} else {
-				c = Config.Style.PaletteBackgroundLight;
+				c = App.Current.Style.PaletteBackgroundLight;
 			}
 			return c;
 		}
