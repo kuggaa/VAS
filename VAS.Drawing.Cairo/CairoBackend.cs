@@ -18,9 +18,10 @@
 using System;
 using Cairo;
 using Gdk;
-using VAS.Core.Interfaces.Drawing;
 using Pango;
+using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Interfaces.Drawing;
 using Color = VAS.Core.Common.Color;
 using FontAlignment = VAS.Core.Common.FontAlignment;
 using FontSlant = VAS.Core.Common.FontSlant;
@@ -28,7 +29,6 @@ using FontWeight = VAS.Core.Common.FontWeight;
 using Image = VAS.Core.Common.Image;
 using LineStyle = VAS.Core.Common.LineStyle;
 using Point = VAS.Core.Common.Point;
-using VAS.Core;
 
 namespace VAS.Drawing.Cairo
 {
