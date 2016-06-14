@@ -76,7 +76,7 @@ namespace VAS.Drawing.CanvasObjects.Teams
 		public virtual void LoadSurfaces ()
 		{
 			if (!surfacesCached) {
-				DefaultPhoto = Config.DrawingToolkit.CreateSurface (StyleConf.PlayerPhoto, false);
+				DefaultPhoto = App.Current.DrawingToolkit.CreateSurface (StyleConf.PlayerPhoto, false);
 				surfacesCached = true;
 			}
 		}
@@ -119,7 +119,7 @@ namespace VAS.Drawing.CanvasObjects.Teams
 			}
 
 			/* Background */
-			tk.FillColor = Config.Style.PaletteBackgroundDark;
+			tk.FillColor = App.Current.Style.PaletteBackgroundDark;
 			tk.LineWidth = 0;
 			tk.DrawRectangle (zero, StyleConf.PlayerSize, StyleConf.PlayerSize);
 			
