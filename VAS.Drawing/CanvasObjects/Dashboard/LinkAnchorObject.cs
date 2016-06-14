@@ -187,7 +187,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		ISurface CreateSurface (string name)
 		{
 			Image img = Resources.LoadImage (name);
-			return Config.DrawingToolkit.CreateSurface (img.Width, img.Height, img, false);
+			return App.Current.DrawingToolkit.CreateSurface (img.Width, img.Height, img, false);
 		}
 
 	}

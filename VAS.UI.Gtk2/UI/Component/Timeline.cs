@@ -93,7 +93,7 @@ namespace VAS.UI.Component
 				int spacing = (int)scrolledwindow1.StyleGetProperty ("scrollbar-spacing");
 				zoomhbox.HeightRequest = args.Allocation.Height + spacing;
 			};
-			Config.EventsBroker.PlayerTick += HandlePlayerTick;
+			App.Current.EventsBroker.PlayerTick += HandlePlayerTick;
 		}
 
 		protected override void OnDestroyed ()
@@ -103,7 +103,7 @@ namespace VAS.UI.Component
 				timeoutID = 0;
 			}
 			// Unsubscribe events
-			Config.EventsBroker.PlayerTick -= HandlePlayerTick;
+			App.Current.EventsBroker.PlayerTick -= HandlePlayerTick;
 			Player = null;
 
 			timerule.Dispose ();

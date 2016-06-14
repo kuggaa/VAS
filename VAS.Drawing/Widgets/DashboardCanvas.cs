@@ -57,7 +57,7 @@ namespace VAS.Drawing.Widgets
 			FitMode = FitMode.Fit;
 			CurrentTime = new Time (0);
 			AddTag = new Tag ("", "");
-			BackgroundColor = Config.Style.PaletteBackground;
+			BackgroundColor = App.Current.Style.PaletteBackground;
 			buttonsDict = new Dictionary<DashboardButton, DashboardButtonObject> ();
 		}
 

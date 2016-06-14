@@ -300,7 +300,7 @@ namespace VAS.Services
 			var newplay = play.Clone ();
 			DeletePlays (new List<TimelineEvent> { play }, false);
 			openedProject.AddEvent (newplay);
-			Config.EventsBroker.EmitEventCreated (newplay);
+			App.Current.EventsBroker.EmitEventCreated (newplay);
 			Save (openedProject);
 			filter.Update ();
 		}
@@ -316,7 +316,7 @@ namespace VAS.Services
 			foreach (var play in plays) {
 				var copy = play.Clone ();
 				openedProject.AddEvent (copy);
-				Config.EventsBroker.EmitEventCreated (copy);
+				App.Current.EventsBroker.EmitEventCreated (copy);
 			}
 			filter.Update ();
 		}
