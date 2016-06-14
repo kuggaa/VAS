@@ -48,10 +48,6 @@ namespace VAS
 			*  Config.homeDirectory
 			*/
 
-			if (Current == null) {
-				return;
-			}
-
 			Current = appInit;
 			InitTranslations ();
 

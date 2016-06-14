@@ -195,7 +195,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		void TimerCallback (Object state)
 		{
-			Config.DrawingToolkit.Invoke (delegate {
+			App.Current.DrawingToolkit.Invoke (delegate {
 				EmitCreateEvent ();
 			});
 		}
@@ -484,7 +484,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				return;
 			}
 
-			c = Config.Style.PaletteBackgroundDark;
+			c = App.Current.Style.PaletteBackgroundDark;
 			width = StyleConf.ButtonRecWidth;
 			height = HeaderHeight;
 			pos = new Point (Position.X + Width - StyleConf.ButtonRecWidth,
@@ -557,7 +557,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				Position.Y);
 			width = StyleConf.ButtonRecWidth;
 			height = HeaderHeight;
-			tk.FillColor = Config.Style.PaletteBackgroundDark;
+			tk.FillColor = App.Current.Style.PaletteBackgroundDark;
 			tk.LineWidth = 0;
 			tk.DrawRectangle (pos, width, height);
 			tk.StrokeColor = Color.Green1;
@@ -586,7 +586,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			height = HeaderHeight;
 			tk.FontSize = StyleConf.ButtonButtonsFontSize;
 			if (!Recording) {
-				tk.FillColor = Config.Style.PaletteBackgroundDark;
+				tk.FillColor = App.Current.Style.PaletteBackgroundDark;
 				tk.StrokeColor = BackgroundColor;
 				tk.LineWidth = StyleConf.ButtonLineWidth;
 				tk.DrawRectangle (pos, width, height);
@@ -712,7 +712,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		void CreateBackBufferSurface ()
 		{
-			IDrawingToolkit tk = Config.DrawingToolkit;
+			IDrawingToolkit tk = App.Current.DrawingToolkit;
 
 			ResetBackbuffer ();
 

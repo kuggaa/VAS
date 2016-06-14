@@ -33,10 +33,10 @@ namespace VAS.Drawing.CanvasObjects
 
 		public ButtonObject ()
 		{
-			BackgroundColor = Config.Style.PaletteBackgroundLight;
-			BackgroundColorActive = Config.Style.PaletteActive;
-			BorderColor = Config.Style.PaletteBackgroundDark;
-			TextColor = Config.Style.PaletteText;
+			BackgroundColor = App.Current.Style.PaletteBackgroundLight;
+			BackgroundColorActive = App.Current.Style.PaletteActive;
+			BorderColor = App.Current.Style.PaletteBackgroundDark;
+			TextColor = App.Current.Style.PaletteText;
 			MinWidth = 20;
 			MinHeight = 20;
 		}
@@ -194,7 +194,7 @@ namespace VAS.Drawing.CanvasObjects
 				return;
 			}
 			tk.StrokeColor = VASDrawing.Constants.SELECTION_INDICATOR_COLOR;
-			tk.StrokeColor = Config.Style.PaletteActive;
+			tk.StrokeColor = App.Current.Style.PaletteActive;
 			tk.FillColor = null;
 			tk.LineStyle = LineStyle.Dashed;
 			tk.LineWidth = 2;
@@ -262,7 +262,7 @@ namespace VAS.Drawing.CanvasObjects
 
 		void CreateBackBufferSurface ()
 		{
-			IDrawingToolkit tk = Config.DrawingToolkit;
+			IDrawingToolkit tk = App.Current.DrawingToolkit;
 
 			ResetBackbuffer ();
 			backBufferSurface = tk.CreateSurface ((int)Width, (int)Height);

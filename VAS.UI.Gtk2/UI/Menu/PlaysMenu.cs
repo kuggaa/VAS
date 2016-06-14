@@ -137,7 +137,7 @@ namespace VAS.UI.Menus
 			newPlay.Activated += HandleNewPlayActivated;
 
 			del = new MenuItem ("");
-			del.Activated += (sender, e) => Config.EventsBroker.EmitEventsDeleted (plays);
+			del.Activated += (sender, e) => App.Current.EventsBroker.EmitEventsDeleted (plays);
 			Add (del);
 
 			ShowAll ();
@@ -145,7 +145,7 @@ namespace VAS.UI.Menus
 
 		void HandleNewPlayActivated (object sender, EventArgs e)
 		{
-			Config.EventsBroker.EmitNewEvent (eventType,
+			App.Current.EventsBroker.EmitNewEvent (eventType,
 				eventTime: time,
 				start: time - new Time { TotalSeconds = 10 },
 				stop: time + new Time { TotalSeconds = 10 });
