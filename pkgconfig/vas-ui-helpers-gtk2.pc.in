@@ -1,7 +1,7 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
-vasdir=@libdir@/@PACKAGE@
+vasdir=@libdir@/@USER_PACKAGE@
 
 Name: VAS.UI.Helpers.Gtk2
 Description: VAS GTK# UI helpers framework for .NET
