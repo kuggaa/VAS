@@ -97,9 +97,28 @@ namespace VAS.Core.Store
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="VAS.Core.Store.Player"/> is locked for tagging.
+		/// </summary>
+		/// <value><c>true</c> if locked; otherwise, <c>false</c>.</value>
+		public bool Locked {
+			get;
+			set;
+		}
+
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Color Color {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="VAS.Core.Store.Player"/> is currently tagged.
+		/// </summary>
+		/// <value><c>true</c> if tagged; otherwise, <c>false</c>.</value>
+		[JsonIgnore]
+		public bool Tagged {
 			get;
 			set;
 		}

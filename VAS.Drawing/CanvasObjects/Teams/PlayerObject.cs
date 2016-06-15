@@ -72,6 +72,15 @@ namespace VAS.Drawing.CanvasObjects.Teams
 			}
 		}
 
+		public override bool Active {
+			get {
+				return player.Tagged;
+			}
+			set {
+				player.Tagged = value;
+			}
+		}
+
 		public virtual void LoadSurfaces ()
 		{
 			if (!surfacesCached) {
