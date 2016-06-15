@@ -15,7 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using VAS.Core;
+using System.ComponentModel;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
@@ -28,6 +28,7 @@ namespace VAS.Drawing.CanvasObjects.Teams
 	{
 		protected static ISurface DefaultPhoto;
 		static bool surfacesCached = false;
+		Player player;
 
 		public PlayerObject ()
 		{
@@ -41,8 +42,18 @@ namespace VAS.Drawing.CanvasObjects.Teams
 		}
 
 		public Player Player {
-			get;
-			set;
+			get {
+				return player;
+			}
+			set {
+				if (player != null) {
+					player.PropertyChanged -= HandlePropertyChanged;
+				}
+				player = value;
+				if (player != null) {
+					player.PropertyChanged += HandlePropertyChanged;
+				}
+			}
 		}
 
 		public int Size {
@@ -143,6 +154,11 @@ namespace VAS.Drawing.CanvasObjects.Teams
 			Size = (int)PlayersIconSize.Medium;
 			Toggle = true;
 			LoadSurfaces ();
+		}
+
+		void HandlePropertyChanged (object sender, PropertyChangedEventArgs args)
+		{
+			ReDraw ();
 		}
 	}
 }
