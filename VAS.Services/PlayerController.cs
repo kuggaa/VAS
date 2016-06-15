@@ -445,7 +445,6 @@ namespace VAS.Services
 					Log.Debug (String.Format ("There is no playlist element at {0}.", time));
 					return false;
 				}
-				LoadedPlaylist.SetActive (elementAtTime);
 				LoadPlaylistEvent (LoadedPlaylist, elementAtTime, false);
 			}
 
@@ -609,6 +608,7 @@ namespace VAS.Services
 			} else if (element is PlaylistDrawing) {
 				LoadFrameDrawing (element as PlaylistDrawing, playing);
 			}
+			LoadedPlaylist.SetActive (element);
 			EmitElementLoaded (element, playlist.HasNext ());
 			App.Current.EventsBroker.EmitPlaylistElementLoaded (playlist, element);
 		}
