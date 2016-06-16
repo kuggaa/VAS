@@ -596,7 +596,7 @@ namespace VAS.Tests.Services
 			player.Next ();
 			Assert.AreEqual (0, nextSent);
 
-			player.LoadPlaylistEvent (playlist, plImage, true);
+			player.LoadPlaylistEvent (playlist, playlist.Elements [0], true);
 			Assert.AreEqual (0, playlist.CurrentIndex);
 			Assert.AreEqual (1, nextSent);
 
@@ -650,7 +650,7 @@ namespace VAS.Tests.Services
 			playerMock.Verify (p => p.Seek (evt.Start, true, false));
 			Assert.AreEqual (0, prevSent);
 
-			player.LoadPlaylistEvent (playlist, plImage, true);
+			player.LoadPlaylistEvent (playlist, playlist.Elements [0], true);
 			Assert.AreEqual (1, prevSent);
 			playerMock.ResetCalls ();
 			player.Previous (false);
