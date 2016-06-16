@@ -61,18 +61,6 @@ namespace VAS.Drawing.CanvasObjects.Teams
 			}
 		}
 
-		public override double Width {
-			get {
-				return Size;
-			}
-		}
-
-		public override double Height {
-			get {
-				return Size;
-			}
-		}
-
 		public virtual void LoadSurfaces ()
 		{
 			if (!surfacesCached) {
