@@ -76,7 +76,7 @@ namespace VAS.Drawing.CanvasObjects.Teams
 		public virtual void LoadSurfaces ()
 		{
 			if (!surfacesCached) {
-				DefaultPhoto = App.Current.DrawingToolkit.CreateSurface (StyleConf.PlayerPhoto, false);
+				DefaultPhoto = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.PlayerPhoto, false);
 				surfacesCached = true;
 			}
 		}

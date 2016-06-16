@@ -153,9 +153,15 @@ namespace VAS.Drawing.Cairo
 			protected get;
 		}
 
-		public ISurface CreateSurface (string filename, bool warnOnDispose = true)
+		public ISurface CreateSurfaceFromResource (string resourceName, bool warnOnDispose = true)
 		{
-			Image img = Resources.LoadImage (filename);
+			Image img = Resources.LoadImage (resourceName);
+			return CreateSurface (img.Width, img.Height, img, warnOnDispose);
+		}
+
+		public ISurface CreateSurface (string absolutePath, bool warnOnDispose = true)
+		{
+			Image img = new Image (absolutePath);
 			return CreateSurface (img.Width, img.Height, img, warnOnDispose);
 		}
 

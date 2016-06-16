@@ -64,7 +64,9 @@ namespace VAS.Core.Interfaces.Drawing
 
 		bool UseAntialias { set; }
 
-		ISurface CreateSurface (string filename, bool warnOnDispose = true);
+		ISurface CreateSurfaceFromResource (string resourceName, bool warnOnDispose = true);
+
+		ISurface CreateSurface (string absolutePath, bool warnOnDispose = true);
 
 		ISurface CreateSurface (int width, int height, Image image = null, bool warnOnDispose = true);
 

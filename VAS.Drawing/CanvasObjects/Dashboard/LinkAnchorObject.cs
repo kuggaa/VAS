@@ -176,19 +176,12 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		void LoadSurfaces ()
 		{
 			if (!surfacesCached) {
-				InIcon = CreateSurface (StyleConf.LinkIn);
-				InPrelightIcon = CreateSurface (StyleConf.LinkInPrelight);
-				OutIcon = CreateSurface (StyleConf.LinkOut);
-				OutPrelightIcon = CreateSurface (StyleConf.LinkOutPrelight);
+				InIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.LinkIn, false);
+				InPrelightIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.LinkInPrelight, false);
+				OutIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.LinkOut, false);
+				OutPrelightIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.LinkOutPrelight, false);
 				surfacesCached = true;
 			}
 		}
-
-		ISurface CreateSurface (string name)
-		{
-			Image img = Resources.LoadImage (name);
-			return App.Current.DrawingToolkit.CreateSurface (img.Width, img.Height, img, false);
-		}
-
 	}
 }

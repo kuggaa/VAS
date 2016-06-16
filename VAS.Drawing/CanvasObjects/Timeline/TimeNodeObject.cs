@@ -242,8 +242,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 			tk.Begin ();
 			if (needle == null) {
-				Image img = Resources.LoadImage (StyleConf.TimelineNeedleUP);
-				needle = tk.CreateSurface (img.Width, img.Height, img);
+				needle = tk.CreateSurfaceFromResource (StyleConf.TimelineNeedleUP);
 			}
 			
 			if (Selected) {
