@@ -323,10 +323,13 @@ namespace VAS.DB
 		{
 			Type type = storable.GetType ();
 
+			if (DocumentTypeBaseTypes.ContainsKey (type))
+				return DocumentTypeBaseTypes [type];
+
 			foreach (var kv in DocumentTypeBaseTypes) {
 				Type baseType = kv.Key;
 
-				if (baseType.IsAssignableFrom (storable.GetType ())) {
+				if (baseType.IsAssignableFrom (type)) {
 					return kv.Value;
 				}
 			}

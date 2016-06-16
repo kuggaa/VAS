@@ -608,6 +608,7 @@ namespace VAS.Services
 			} else if (element is PlaylistDrawing) {
 				LoadFrameDrawing (element as PlaylistDrawing, playing);
 			}
+			LoadedPlaylist.SetActive (element);
 			EmitElementLoaded (element, playlist.HasNext ());
 			App.Current.EventsBroker.EmitPlaylistElementLoaded (playlist, element);
 		}
