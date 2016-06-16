@@ -18,9 +18,10 @@
 using System;
 using Cairo;
 using Gdk;
-using VAS.Core.Interfaces.Drawing;
 using Pango;
+using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Interfaces.Drawing;
 using Color = VAS.Core.Common.Color;
 using FontAlignment = VAS.Core.Common.FontAlignment;
 using FontSlant = VAS.Core.Common.FontSlant;
@@ -152,9 +153,15 @@ namespace VAS.Drawing.Cairo
 			protected get;
 		}
 
-		public ISurface CreateSurface (string filename, bool warnOnDispose = true)
+		public ISurface CreateSurfaceFromResource (string resourceName, bool warnOnDispose = true)
 		{
-			Image img = new Image (filename);
+			Image img = Resources.LoadImage (resourceName);
+			return CreateSurface (img.Width, img.Height, img, warnOnDispose);
+		}
+
+		public ISurface CreateSurface (string absolutePath, bool warnOnDispose = true)
+		{
+			Image img = new Image (absolutePath);
 			return CreateSurface (img.Width, img.Height, img, warnOnDispose);
 		}
 

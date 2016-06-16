@@ -22,6 +22,7 @@ namespace VAS.Core.Common
 {
 	public class Utils
 	{
+		static Random randomGen;
 		static OperatingSystemID operatingSystem = OperatingSystemID.None;
 
 		public static string SanitizePath (string path, params char[] replaceChars)
@@ -80,6 +81,14 @@ namespace VAS.Core.Common
 				}
 				return operatingSystem;
 			}
+		}
+
+		public static Color RandomColor ()
+		{
+			if (randomGen == null)
+				randomGen = new Random ();
+			return new Color (Convert.ToByte (randomGen.Next (0, 255)), Convert.ToByte (randomGen.Next (0, 255)),
+			                  Convert.ToByte (randomGen.Next (0, 255)));
 		}
 	}
 }
