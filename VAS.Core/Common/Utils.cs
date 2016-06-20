@@ -88,7 +88,37 @@ namespace VAS.Core.Common
 			if (randomGen == null)
 				randomGen = new Random ();
 			return new Color (Convert.ToByte (randomGen.Next (0, 255)), Convert.ToByte (randomGen.Next (0, 255)),
-			                  Convert.ToByte (randomGen.Next (0, 255)));
+				Convert.ToByte (randomGen.Next (0, 255)));
+		}
+
+		public static string GetDataFilePath (string filename)
+		{
+			string fileNameTmp, result = "";
+			foreach (string dataDir in App.Current.DataDir) {
+				fileNameTmp = Path.Combine (dataDir, filename);
+				if (File.Exists (fileNameTmp)) {
+					result = fileNameTmp;
+				}
+			}
+			if (result == "") {
+				throw new FileNotFoundException ();
+			}
+			return result;
+		}
+
+		public static string GetDataDirPath (string dirname)
+		{
+			string dirNameTmp, result = "";
+			foreach (string dataDir in App.Current.DataDir) {
+				dirNameTmp = Path.Combine (dataDir, dirname);
+				if (Directory.Exists (dirNameTmp)) {
+					result = dirNameTmp;
+				}
+			}
+			if (result == "") {
+				throw new DirectoryNotFoundException ();
+			}
+			return result;
 		}
 	}
 }

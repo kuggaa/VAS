@@ -28,7 +28,8 @@ namespace VAS.Tests.Core
 		[TestFixtureSetUp ()]
 		public void Setup ()
 		{
-			App.Current.dataDir = "./data/";
+			//FIXME: RelativePrefix cannot be used
+			App.Current.DataDir.Add ("./data/");
 		}
 
 		[Test ()]
