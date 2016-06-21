@@ -356,7 +356,7 @@ namespace VAS.Core.Store
 
 		public static void Export (Project project, string file)
 		{
-			file = Path.ChangeExtension (file, Constants.PROJECT_EXT);
+			file = Path.ChangeExtension (file, App.Current.ProjectExtension);
 			Serializer.Instance.Save (project, file);
 		}
 

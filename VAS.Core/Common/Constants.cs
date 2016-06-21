@@ -20,18 +20,12 @@ namespace VAS.Core.Common
 {
 	public class Constants
 	{
-		public const string SOFTWARE_NAME = "VAS";
-
-		public const string PROJECT_NAME = SOFTWARE_NAME + " project";
-		
-		public const string DEFAULT_DB_NAME = "vas";
-		
 		public const string FAKE_PROJECT = "@Fake Project@";
-
-		public const string PROJECT_EXT = ".lgm";
 
 		#if OSTYPE_ANDROID || OSTYPE_IOS
 				public const string IMAGE_EXT = ".png";
+
+
 
 #else
 		public const string IMAGE_EXT = ".svg";

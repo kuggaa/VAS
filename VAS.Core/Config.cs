@@ -166,6 +166,6 @@ namespace VAS
 		public string CurrentDatabase {
 			get;
 			set;
-		} = Constants.DEFAULT_DB_NAME;
+		}
 	}
 }
