@@ -49,7 +49,7 @@ namespace VAS.Tests.Core
 		[Test ()]
 		public void TestLoadInvalidResource ()
 		{
-			Assert.Throws<GLib.GException> (
+			Assert.Throws<System.IO.FileNotFoundException> (
 				delegate {
 					var img = VAS.Core.Resources.LoadImage ("not-found.svg");
 				});
