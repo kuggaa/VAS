@@ -156,6 +156,7 @@ Makefile
 
 po/Makefile.in
 
+VAS.Addins/Makefile
 VAS.Core/Makefile
 VAS.DB/Makefile
 VAS.UI.Helpers.Gtk2/Makefile
