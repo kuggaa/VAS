@@ -30,7 +30,7 @@ namespace VAS.Core.Common
 				string filename, localesDir;
 				
 				langs = new List<CultureInfo> ();
-				filename = String.Format ("{0}.mo", Constants.SOFTWARE_NAME.ToLower ());
+				filename = String.Format ("{0}.mo", App.Current.SoftwareName.ToLower ());
 				localesDir = App.Current.RelativeToPrefix ("share/locale");
 				
 				langs.Add (new CultureInfo ("en"));

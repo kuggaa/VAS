@@ -49,7 +49,7 @@ namespace VAS
 			*/
 
 			Current = appInit;
-			InitTranslations ();
+			InitTranslations (softwareName);
 
 			string home = null;
 
@@ -118,7 +118,7 @@ namespace VAS
 		}
 
 		// copied from OneplayLongomMatch::CoreServices
-		static void InitTranslations ()
+		static void InitTranslations (string softwareName)
 		{
 			string localesDir = App.Current.RelativeToPrefix ("share/locale");
 
@@ -132,7 +132,7 @@ namespace VAS
 				}
 			}
 			/* Init internationalization support */
-			Catalog.SetDomain (Constants.SOFTWARE_NAME.ToLower (), localesDir);
+			Catalog.SetDomain (softwareName.ToLower (), localesDir);
 		}
 
 		public Config Config {
@@ -154,7 +154,7 @@ namespace VAS
 
 		public string ConfigFile {
 			get {
-				string filename = Constants.SOFTWARE_NAME.ToLower () + "-1.0.config";
+				string filename = App.Current.SoftwareName.ToLower () + "-1.0.config";
 				return Path.Combine (App.Current.ConfigDir, filename);
 			}
 		}
@@ -310,6 +310,16 @@ namespace VAS
 			get {
 				return Resources.LoadImage (Constants.GOAL_BACKGROUND);
 			}
+		}
+
+		public string ProjectExtension {
+			get;
+			set;
+		}
+
+		public string DefaultDBName {
+			get;
+			set;
 		}
 
 		#endregion
