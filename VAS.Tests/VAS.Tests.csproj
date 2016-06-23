@@ -108,6 +108,7 @@
     <Compile Include="Services\TestPlayerController.cs" />
     <Compile Include="Services\TestPlaylistManager.cs" />
     <Compile Include="Setup.cs" />
+    <Compile Include="Events\TestEvents.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -145,6 +146,7 @@
     <Folder Include="Core\Store\Templates\" />
     <Folder Include="DB\" />
     <Folder Include="Services\" />
+    <Folder Include="Events\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Core\dibujo.svg">

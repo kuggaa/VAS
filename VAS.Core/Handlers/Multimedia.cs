@@ -17,6 +17,7 @@
 //
 using System.Collections.ObjectModel;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Store;
 
 namespace VAS.Core.Handlers
@@ -51,6 +52,6 @@ namespace VAS.Core.Handlers
 	public delegate void ErrorHandler (object sender,string message);
 	public delegate void EosHandler (object sender);
 	public delegate void ReadyToSeekHandler (object sender);
-	public delegate void StateChangeHandler (object sender,bool playing);
+	public delegate void StateChangeHandler (PlaybackStateChangedEvent e);
 	public delegate void ReadyToCaptureHandler (object sender);
 }

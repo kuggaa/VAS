@@ -30,6 +30,7 @@ using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 
 using Timer = System.Threading.Timer;
+using VAS.Core.Events;
 
 namespace VAS.Services
 {
@@ -610,7 +611,12 @@ namespace VAS.Services
 			}
 			LoadedPlaylist.SetActive (element);
 			EmitElementLoaded (element, playlist.HasNext ());
-			App.Current.EventsBroker.EmitPlaylistElementLoaded (playlist, element);
+			App.Current.EventsBroker.Publish<PlaylistElementLoadedEvent> (
+				new PlaylistElementLoadedEvent { 
+					Playlist = playlist,
+					Element = element
+				}
+			);
 		}
 
 		public virtual void LoadEvent (TimelineEvent evt, Time seekTime, bool playing)
@@ -638,7 +644,11 @@ namespace VAS.Services
 				Log.Error ("Event does not have timing info: " + evt);
 			}
 			EmitElementLoaded (evt, false);
-			App.Current.EventsBroker.EmitEventLoaded (evt);
+			App.Current.EventsBroker.Publish<EventLoadedEvent> (
+				new EventLoadedEvent {
+					TimelineEvent = evt
+				}
+			);
 		}
 
 		public virtual void UnloadCurrentEvent ()
@@ -710,9 +720,23 @@ namespace VAS.Services
 				evt = (loadedPlaylistElement as PlaylistPlayElement).Play;
 			}
 			if (evt != null) {
-				App.Current.EventsBroker.EmitDrawFrame (evt, -1, CamerasConfig [0], true);
+				App.Current.EventsBroker.Publish<DrawFrameEvent> (
+					new DrawFrameEvent {
+						Play = evt,
+						DrawingIndex = -1,
+						CamConfig = CamerasConfig [0],
+						Current = true
+					}
+				);
 			} else {
-				App.Current.EventsBroker.EmitDrawFrame (null, -1, null, true);
+				App.Current.EventsBroker.Publish<DrawFrameEvent> (
+					new DrawFrameEvent {
+						Play = null,
+						DrawingIndex = -1,
+						CamConfig = null,
+						Current = true
+					}
+				);
 			}
 		}
 
@@ -751,7 +775,9 @@ namespace VAS.Services
 		protected virtual void EmitEventUnloaded ()
 		{
 			EmitElementLoaded (null, false);
-			App.Current.EventsBroker.EmitEventLoaded (null);
+			App.Current.EventsBroker.Publish<EventLoadedEvent> (
+				new EventLoadedEvent ()
+			);
 		}
 
 		protected virtual void EmitRateChanged (float rate)
@@ -778,8 +804,12 @@ namespace VAS.Services
 		protected virtual void EmitPlaybackStateChanged (object sender, bool playing)
 		{
 			if (PlaybackStateChangedEvent != null && !disposed) {
-				PlaybackStateChangedEvent (sender, playing);
-				App.Current.EventsBroker.EmitPlaybackStateChanged (sender, playing);
+				PlaybackStateChangedEvent playbackStateChangedEvent = new PlaybackStateChangedEvent {
+					Sender = sender, 
+					Playing = playing
+				};
+				PlaybackStateChangedEvent (playbackStateChangedEvent);
+				App.Current.EventsBroker.Publish<PlaybackStateChangedEvent> (playbackStateChangedEvent);
 			}
 		}
 
@@ -922,8 +952,12 @@ namespace VAS.Services
 				FileSet = fileSet;
 				// Check if the view failed to configure a proper cam config
 				if (CamerasConfig == null) {
-					App.Current.EventsBroker.EmitMultimediaError (this, 
-						Catalog.GetString ("Invalid camera configuration"));
+					App.Current.EventsBroker.Publish<MultimediaErrorEvent> (
+						new MultimediaErrorEvent {
+							Sender = this,
+							Message = Catalog.GetString ("Invalid camera configuration")
+						}
+					);
 					FileSet = null;
 					return;
 				}
@@ -1198,7 +1232,11 @@ namespace VAS.Services
 				}
 				videoTS = currentTime;
 
-				App.Current.EventsBroker.EmitPlayerTick (currentTime);
+				App.Current.EventsBroker.Publish<PlayerTickEvent> (
+					new PlayerTickEvent {
+						Time = currentTime
+					}
+				);
 				return true;
 			}
 		}
@@ -1209,10 +1247,10 @@ namespace VAS.Services
 
 		/* These callbacks are triggered by the multimedia backend and need to
 		 * be deferred to the UI main thread */
-		protected virtual void HandleStateChange (object sender, bool playing)
+		protected virtual void HandleStateChange (PlaybackStateChangedEvent e)
 		{
 			App.Current.GUIToolkit.Invoke (delegate {
-				if (playing) {
+				if (e.Playing) {
 					ReconfigureTimeout (TIMEOUT_MS);
 				} else {
 					if (!StillImageLoaded) {
@@ -1220,7 +1258,7 @@ namespace VAS.Services
 					}
 				}
 				if (!StillImageLoaded) {
-					EmitPlaybackStateChanged (this, playing);
+					EmitPlaybackStateChanged (this, e.Playing);
 				}
 			});
 		}
@@ -1267,7 +1305,12 @@ namespace VAS.Services
 		protected virtual void HandleError (object sender, string message)
 		{
 			App.Current.GUIToolkit.Invoke (delegate {
-				App.Current.EventsBroker.EmitMultimediaError (sender, message);
+				App.Current.EventsBroker.Publish<MultimediaErrorEvent> (
+					new MultimediaErrorEvent {
+						Sender = sender,
+						Message = message
+					}
+				);
 			});
 		}
 

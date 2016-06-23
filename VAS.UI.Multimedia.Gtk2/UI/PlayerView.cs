@@ -26,6 +26,7 @@ using Pango;
 using VAS;
 using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Handlers;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
@@ -97,7 +98,8 @@ namespace VAS.UI
 			timescale.Adjustment.StepIncrement = 0.0001;
 			Helpers.Misc.SetFocus (vbox3, false);
 			videowindow.CanFocus = true;
-			detachbutton.Clicked += (sender, e) => App.Current.EventsBroker.EmitDetach ();
+			detachbutton.Clicked += (sender, e) => 
+				App.Current.EventsBroker.Publish<DetachEvent> (new DetachEvent ());
 			ratescale.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 8"));
 			controlsbox.HeightRequest = StyleConf.PlayerCapturerControlsHeight;
 
@@ -353,9 +355,9 @@ namespace VAS.UI
 			timescale.Sensitive = seekable;
 		}
 
-		protected virtual void HandlePlaybackStateChangedEvent (object sender, bool playing)
+		protected virtual void HandlePlaybackStateChangedEvent (PlaybackStateChangedEvent e)
 		{
-			if (playing) {
+			if (e.Playing) {
 				playbutton.Hide ();
 				pausebutton.Show ();
 			} else {
@@ -503,7 +505,7 @@ namespace VAS.UI
 
 		protected virtual void HandleClosebuttonClicked (object sender, System.EventArgs e)
 		{
-			App.Current.EventsBroker.EmitLoadEvent (null);
+			App.Current.EventsBroker.Publish<LoadEventEvent> (new LoadEventEvent ());
 		}
 
 		protected virtual void HandlePrevbuttonClicked (object sender, System.EventArgs e)
@@ -542,7 +544,11 @@ namespace VAS.UI
 
 			if (!ignoreRate) {
 				Player.Rate = val;
-				App.Current.EventsBroker.EmitPlaybackRateChanged (val);
+				App.Current.EventsBroker.Publish<PlaybackRateChangedEvent> (
+					new PlaybackRateChangedEvent {
+						Value = val
+					}
+				);
 			}
 		}
 
@@ -577,7 +583,14 @@ namespace VAS.UI
 
 		protected virtual void HandleDrawButtonClicked (object sender, System.EventArgs e)
 		{
-			App.Current.EventsBroker.EmitDrawFrame (null, -1, CamerasConfig [0], true);
+			App.Current.EventsBroker.Publish<DrawFrameEvent> (
+				new DrawFrameEvent {
+					Play = null,
+					DrawingIndex = -1,
+					CamConfig = CamerasConfig [0],
+					Current = true
+				}
+			);
 		}
 
 		protected virtual void HandleJumpValueChanged (object sender, EventArgs e)

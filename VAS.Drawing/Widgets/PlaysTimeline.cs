@@ -18,6 +18,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using VAS.Core.Common;
+using VAS.Core.Events;
+using VAS.Core.Filters;
 using VAS.Core.Handlers;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
@@ -28,8 +30,6 @@ using VAS.Drawing.CanvasObjects;
 using VAS.Drawing.CanvasObjects.Timeline;
 using LMCommon = VAS.Core.Common;
 using VASDrawing = VAS.Drawing;
-using VAS.Core.Filters;
-using VAS.Core.Events;
 
 namespace VAS.Drawing.Widgets
 {
@@ -60,8 +60,8 @@ namespace VAS.Drawing.Widgets
 			currentTime = new Time (0);
 			Player = player;
 
-			App.Current.EventsAggregator.Subscribe<LoadVideoEvent> (HandleLoadVideoMessage, ThreadMethod.UIThread);
-			App.Current.EventsAggregator.Subscribe<CloseVideoEvent> (HandleCloseVideoEvent, ThreadMethod.UIThread);
+			App.Current.EventsBroker.Subscribe<LoadVideoEvent> (HandleLoadVideoMessage);
+			App.Current.EventsBroker.Subscribe<CloseVideoEvent> (HandleCloseVideoEvent);
 		}
 
 		public PlaysTimeline () : this (null, null)
@@ -296,7 +296,11 @@ namespace VAS.Drawing.Widgets
 					loadedEvent = ev;
 				}
 			}
-			App.Current.EventsBroker.EmitLoadEvent (ev);
+			App.Current.EventsBroker.Publish<LoadEventEvent> (
+				new LoadEventEvent { 
+					TimelineEvent = ev
+				}
+			);
 		}
 
 		protected override void StartMove (Selection sel)
@@ -309,7 +313,11 @@ namespace VAS.Drawing.Widgets
 			}
 			if (sel.Drawable is TimeNodeObject) {
 				movingTimeNode = true;
-				App.Current.EventsBroker.EmitTogglePlayEvent (false);
+				App.Current.EventsBroker.Publish<TogglePlayEvent> (
+					new TogglePlayEvent {
+						Playing = false
+					}
+				);
 			}
 		}
 
@@ -317,7 +325,11 @@ namespace VAS.Drawing.Widgets
 		{
 			widget.SetCursor (CursorType.Arrow);
 			if (movingTimeNode) {
-				App.Current.EventsBroker.EmitTogglePlayEvent (true);
+				App.Current.EventsBroker.Publish<TogglePlayEvent> (
+					new TogglePlayEvent {
+						Playing = true
+					}
+				);
 				movingTimeNode = false;
 			}
 		}
@@ -352,7 +364,12 @@ namespace VAS.Drawing.Widgets
 				} else {
 					moveTime = new Time (0);
 				}
-				App.Current.EventsBroker.EmitTimeNodeChanged (play, moveTime);
+				App.Current.EventsBroker.Publish<TimeNodeChangedEvent> (
+					new TimeNodeChangedEvent {
+						TimeNode = play,
+						Time = moveTime
+					}
+				);
 			} else if (co is TimeNodeObject) {
 				TimeNode to = (co as TimeNodeObject).TimeNode;
 				

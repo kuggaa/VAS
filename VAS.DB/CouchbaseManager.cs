@@ -22,6 +22,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Couchbase.Lite;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Interfaces;
 
 namespace VAS.DB
@@ -57,7 +58,11 @@ namespace VAS.DB
 			name = SanitizeDBName (name);
 			var storage = Add (name, false);
 			if (storage != null) {
-				App.Current.EventsBroker?.EmitDatabaseCreated (name);
+				App.Current.EventsBroker?.Publish<DatabaseCreatedEvent> (
+					new DatabaseCreatedEvent {
+						Name = name
+					}
+				);
 			}
 			return storage;
 		}

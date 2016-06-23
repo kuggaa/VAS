@@ -46,8 +46,8 @@ namespace VAS.UI
 			(playerview as Gtk.Widget).ShowAll ();
 			Player = playerview.Player;
 
-			App.Current.EventsAggregator.Subscribe<LoadVideoEvent> (HandleLoadVideoEvent, ThreadMethod.UIThread);
-			App.Current.EventsAggregator.Subscribe<CloseVideoEvent> (HandleCloseVideoEvent, ThreadMethod.UIThread);
+			App.Current.EventsBroker.Subscribe<LoadVideoEvent> (HandleLoadVideoEvent);
+			App.Current.EventsBroker.Subscribe<CloseVideoEvent> (HandleCloseVideoEvent);
 		}
 
 		protected override void OnDestroyed ()
@@ -111,7 +111,7 @@ namespace VAS.UI
 
 		protected virtual void HandleLoadVideoEvent (LoadVideoEvent loadVideoEvent)
 		{
-			App.Current.EventsAggregator.Publish<ChangeVideoMessageEvent> (
+			App.Current.EventsBroker.Publish<ChangeVideoMessageEvent> (
 				new ChangeVideoMessageEvent () {
 					message = null
 				});
@@ -127,7 +127,7 @@ namespace VAS.UI
 			if (Player is VAS.Services.PlayerController) {
 				(Player as VAS.Services.PlayerController).ResetCounter ();
 
-				App.Current.EventsAggregator.Publish<ChangeVideoMessageEvent> (
+				App.Current.EventsBroker.Publish<ChangeVideoMessageEvent> (
 					new ChangeVideoMessageEvent () {
 						message = Catalog.GetString ("No video loaded")
 					});

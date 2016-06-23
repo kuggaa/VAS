@@ -15,9 +15,10 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System.Threading;
 using ICSharpCode.SharpZipLib;
-using VAS;
 using NUnit.Framework;
+using VAS;
 using VAS.DB;
 
 namespace VAS.Tests
@@ -32,6 +33,8 @@ namespace VAS.Tests
 			VFS.SetCurrent (new FileSystem ());
 			App.Current = new AppDummy ();
 			App.Current.Config = new ConfigDummy ();
+			SynchronizationContext.SetSynchronizationContext (new MockSynchronizationContext ());
+			App.Current.EventsBroker = new VAS.Core.Events.EventsBroker ();
 		}
 	}
 
@@ -43,5 +46,25 @@ namespace VAS.Tests
 	public class ConfigDummy : Config
 	{
 		//Dummy class for VAS.Config
+	}
+
+	/// <summary>
+	/// Prism's UI thread option works by invoking Post on the current synchronization context.
+	/// When we do that, base.Post actually looses SynchronizationContext.Current
+	/// because the work has been delegated to ThreadPool.QueueUserWorkItem.
+	/// This implementation makes our async-intended call behave synchronously,
+	/// so we can preserve and verify sync contexts for callbacks during our unit tests.
+	/// </summary>
+	internal class MockSynchronizationContext : SynchronizationContext
+	{
+		public override void Post (SendOrPostCallback d, object state)
+		{
+			d (state);
+		}
+
+		public override void Send (SendOrPostCallback d, object state)
+		{
+			d (state);
+		}
 	}
 }

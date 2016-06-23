@@ -20,7 +20,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\EncodingQuality.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\EncodingSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Enums.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Common\EventsBroker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Exceptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\ExtensionMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Gettext.cs" />
@@ -98,7 +97,6 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\PropertyIndex.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\PropertyPreload.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Events\EventsAggregator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Events\EventTypes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Drawing\IWidget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Drawing\IDrawingToolkit.cs" />
@@ -128,6 +126,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Events\MultimediaEvents.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IProgressReport.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Events\Events.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Events\EventsBroker.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
