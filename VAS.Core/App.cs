@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using VAS.Core;
 using VAS.Core.Common;
@@ -25,10 +26,21 @@ namespace VAS
 		public string homeDirectory = ".";
 		public string baseDirectory = ".";
 		public string configDirectory = ".";
-		public string dataDir = ".";
 
 		/* State */
 		public EventsAggregator EventsAggregator;
+
+		public List<string> DataDir {
+			get {
+				if (dataDir == null) {
+					dataDir = new List<string> ();
+				}
+				return dataDir;
+			}
+			set {
+				dataDir = value;
+			}
+		}
 
 		protected StyleConf style;
 
@@ -36,6 +48,8 @@ namespace VAS
 			get;
 			set;
 		}
+
+		List<string> dataDir;
 
 		public static void Init (App appInit, string evUninstalled, string softwareName, string portableFile, string evHome)
 		{
@@ -55,7 +69,7 @@ namespace VAS
 
 			if (Environment.GetEnvironmentVariable (evUninstalled) != null) {
 				App.Current.baseDirectory = Path.GetFullPath (".");
-				App.Current.dataDir = "../data";
+				App.Current.DataDir.Add (App.Current.RelativeToPrefix ("../data"));
 			} else {
 				if (Utils.OS == OperatingSystemID.Android) {
 					App.Current.baseDirectory = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
@@ -69,7 +83,7 @@ namespace VAS
 				}
 				if (!Directory.Exists (Path.Combine (App.Current.baseDirectory, "share", softwareName)))
 					Log.Warning ("Prefix directory not found");
-				App.Current.dataDir = Path.Combine (App.Current.baseDirectory, "share", softwareName.ToLower ());
+				App.Current.DataDir.Add (App.Current.RelativeToPrefix (Path.Combine ("share", softwareName.ToLower ())));
 			}
 
 			if (Utils.OS == OperatingSystemID.Android) {

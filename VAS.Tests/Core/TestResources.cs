@@ -28,7 +28,8 @@ namespace VAS.Tests.Core
 		[TestFixtureSetUp ()]
 		public void Setup ()
 		{
-			App.Current.dataDir = "./data/";
+			//FIXME: RelativePrefix cannot be used
+			App.Current.DataDir.Add ("./data/");
 		}
 
 		[Test ()]
@@ -48,7 +49,7 @@ namespace VAS.Tests.Core
 		[Test ()]
 		public void TestLoadInvalidResource ()
 		{
-			Assert.Throws<GLib.GException> (
+			Assert.Throws<System.IO.FileNotFoundException> (
 				delegate {
 					var img = VAS.Core.Resources.LoadImage ("not-found.svg");
 				});
