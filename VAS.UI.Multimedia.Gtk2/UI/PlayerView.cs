@@ -53,6 +53,7 @@ namespace VAS.UI
 		protected Blackboard blackboard;
 		protected PlayerViewOperationMode mode;
 		protected Time duration;
+		List<double> rateList;
 
 		#region Constructors
 
@@ -89,6 +90,13 @@ namespace VAS.UI
 			jumpspinbutton.TooltipMarkup = Catalog.GetString ("Jump in seconds. Hold the Shift key with the direction keys to activate it.");
 			volumebutton.TooltipMarkup = Catalog.GetString ("Volume");
 			detachbutton.TooltipMarkup = Catalog.GetString ("Detach window");
+
+			//Set ratescale specific values
+			ratescale.Adjustment.Upper = App.Current.UpperRate;
+			ratescale.Adjustment.Lower = App.Current.LowerRate;
+			ratescale.Adjustment.PageIncrement = App.Current.RatePageIncrement;
+			ratescale.Adjustment.Value = App.Current.DefaultRate;
+			rateList = App.Current.RateList;
 
 			vwin = new VolumeWindow ();
 			ConnectSignals ();
@@ -157,7 +165,6 @@ namespace VAS.UI
 				if (player != null) {
 					player.ElementLoadedEvent -= HandleElementLoadedEvent;
 					player.LoadDrawingsEvent -= HandleLoadDrawingsEvent;
-					player.PlaybackRateChangedEvent -= HandlePlaybackRateChangedEvent;
 					player.PlaybackStateChangedEvent -= HandlePlaybackStateChangedEvent;
 					player.TimeChangedEvent -= HandleTimeChangedEvent;
 					player.VolumeChangedEvent -= HandleVolumeChangedEvent;
@@ -166,7 +173,6 @@ namespace VAS.UI
 				if (player != null) {
 					player.ElementLoadedEvent += HandleElementLoadedEvent;
 					player.LoadDrawingsEvent += HandleLoadDrawingsEvent;
-					player.PlaybackRateChangedEvent += HandlePlaybackRateChangedEvent;
 					player.PlaybackStateChangedEvent += HandlePlaybackStateChangedEvent;
 					player.TimeChangedEvent += HandleTimeChangedEvent;
 					player.VolumeChangedEvent += HandleVolumeChangedEvent;
@@ -302,13 +308,7 @@ namespace VAS.UI
 		protected virtual float GetRateFromScale ()
 		{
 			VScale scale = ratescale;
-			double val = scale.Value;
-
-			if (val > SCALE_FPS) {
-				val = val + 1 - SCALE_FPS;
-			} else if (val <= SCALE_FPS) {
-				val = val / SCALE_FPS;
-			}
+			double val = rateList [(int)scale.Value];
 			return (float)val;
 		}
 
@@ -364,22 +364,6 @@ namespace VAS.UI
 				playbutton.Show ();
 				pausebutton.Hide ();
 			}
-		}
-
-		protected virtual void HandlePlaybackRateChangedEvent (float rate)
-		{
-			ignoreRate = true;
-			double value;
-
-			if (rate > 1) {
-				value = rate - 1 + SCALE_FPS;
-			} else {
-				value = rate * SCALE_FPS;
-			}
-
-			ratescale.Value = Math.Round (value);
-
-			ignoreRate = false;
 		}
 
 		protected virtual void HandleLoadDrawingsEvent (FrameDrawing frameDrawing)
@@ -521,11 +505,8 @@ namespace VAS.UI
 		protected virtual void HandleRateFormatValue (object o, Gtk.FormatValueArgs args)
 		{
 			int val = (int)args.Value;
-			if (val >= SCALE_FPS) {
-				val = val + 1 - SCALE_FPS;
-				args.RetVal = val + "X";
-			} else if (val < SCALE_FPS) {
-				args.RetVal = val + "/" + SCALE_FPS + "X";
+			if (rateList != null && val < rateList.Count) {
+				args.RetVal = rateList [val] + "X";
 			}
 		}
 

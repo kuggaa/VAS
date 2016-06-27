@@ -1001,7 +1001,7 @@ namespace VAS.Services
 		/// </summary>
 		protected virtual void SetRate (float rate)
 		{
-			if (rate == 0)
+			if (rate < 0)
 				rate = 1;
 			player.Rate = rate;
 

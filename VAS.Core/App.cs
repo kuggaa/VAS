@@ -355,6 +355,31 @@ namespace VAS
 			set;
 		}
 
+		public double UpperRate {
+			get;
+			set;
+		}
+
+		public double LowerRate {
+			get;
+			set;
+		}
+
+		public double RatePageIncrement {
+			get;
+			set;
+		}
+
+		public List<double> RateList {
+			get;
+			set;
+		}
+
+		public double DefaultRate {
+			get;
+			set;
+		}
+
 		#endregion
 
 	}
