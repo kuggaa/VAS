@@ -8,8 +8,6 @@
     <RootNamespace>VAS.Multimedia</RootNamespace>
     <AssemblyName>VAS.Multimedia</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -82,5 +80,10 @@
       <Project>{513A86B7-13B9-4209-91C3-3840E68CF2F8}</Project>
       <Name>libvas</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="VAS.Multimedia.dll.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

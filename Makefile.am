@@ -23,6 +23,7 @@ SUBDIRS = \
 	VAS.Drawing.Cairo \
 	VAS.Multimedia \
 	VAS.Services \
+	libvas \
 	po
 
 
