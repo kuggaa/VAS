@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+vasdir=@libdir@/@USER_PACKAGE@
+
+Name: VAS.UI.Multimedia.Gtk2
+Description: VAS GTK# Multimedia UI framework for .NET
+Version: 1.0.2
+Requires: vas-core vas-drawing vas-drawing-cairo vas-ui-helpers-gtk2 vas-multimedia vas-services
+Libs: -r:${vasdir}/VAS.UI.Multimedia.Gtk2.dll

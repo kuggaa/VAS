@@ -118,6 +118,10 @@ case "$host" in
     ostype=Linux
     ;;
 esac
+dnl Disable multimedia tools
+AC_ARG_WITH([multimedia-tools],
+	AS_HELP_STRING([--without-multimedia-tools], [Disable multimedia tools]))
+AM_CONDITIONAL(WITH_MULTIMEDIA_TOOLS, test x$with_multimedia_tools != xno)
 AM_CONDITIONAL(OSTYPE_WINDOWS, test x$ostype = xWindows)
 AM_CONDITIONAL(OSTYPE_OS_X, test x$ostype = xOS_X)
 AM_CONDITIONAL(OSTYPE_LINUX, test x$ostype = xLinux)
@@ -132,6 +136,8 @@ AssemblyInfo/AssemblyInfo.cs
 build/m4/Makefile
 build/Makefile
 
+libvas/Makefile
+
 Makefile
 
 po/Makefile.in
@@ -142,6 +148,9 @@ VAS.UI.Helpers.Gtk2/Makefile
 VAS.Services/Makefile
 VAS.Multimedia/Makefile
 VAS.Drawing.Cairo/Makefile
+VAS.Drawing/Makefile
+VAS.UI.Gtk2/Makefile
+VAS.UI.Multimedia.Gtk2/Makefile
 Weavers/Makefile
 
 
@@ -152,6 +161,9 @@ pkgconfig/vas-ui-helpers-gtk2.pc
 pkgconfig/vas-services.pc
 pkgconfig/vas-multimedia.pc
 pkgconfig/vas-drawing-cairo.pc
+pkgconfig/vas-drawing.pc
+pkgconfig/vas-ui-gtk2.pc
+pkgconfig/vas-ui-multimedia-gtk2.pc
 ])
 
 AC_OUTPUT

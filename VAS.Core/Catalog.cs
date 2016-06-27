@@ -60,7 +60,7 @@ namespace VAS.Core
 				throw new Exception ();
 		}
 
-		[DllImport ("libglib-2.0.dll")]
+		[DllImport ("libglib-2.0-0.dll")]
 		static extern IntPtr g_dgettext (string domain, IntPtr instring);
 
 		public static String GetString (String s)
@@ -74,7 +74,7 @@ namespace VAS.Core
 			}
 		}
 
-		[DllImport ("libglib-2.0.dll")]
+		[DllImport ("libglib-2.0-0.dll")]
 		static extern IntPtr g_dngettext (string domain, IntPtr singular, IntPtr plural, Int32 n);
 
 		public static String GetPluralString (String s, String p, Int32 n)

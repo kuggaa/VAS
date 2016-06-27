@@ -3,8 +3,8 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 vasdir=@libdir@/@USER_PACKAGE@
 
-Name: VAS.DB
-Description: VAS Database framework for .NET
+Name: VAS.Drawing
+Description: VAS Drawing framework for .NET
 Version: @VERSION@
 Requires: vas-core
-Libs: -r:${vasdir}/VAS.DB.dll
+Libs: -r:${vasdir}/VAS.Drawing.dll
