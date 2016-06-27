@@ -1,4 +1,4 @@
-BUILD_DIR ?= $(top_builddir)/bin
+BUILD_DIR ?= $(top_builddir)/../bin
 ASSEMBLY_FILE ?= $(BUILD_DIR)/$(ASSEMBLY)
 OUTPUT_DIR ?= $(libdir)/@USER_PACKAGE@
 
