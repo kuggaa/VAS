@@ -26,6 +26,9 @@ SUBDIRS = \
 	libvas \
 	po
 
+if ENABLE_TESTS
+SUBDIRS += VAS.Tests
+endif
 
 DISTCLEANFILES = 	intltool-extract\
 			intltool-merge\

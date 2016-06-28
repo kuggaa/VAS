@@ -84,6 +84,9 @@ PKG_CHECK_EXISTS([mono >= 2.8],
 AC_SUBST(MCS, ["$MCS"])
 SHAMROCK_FIND_MONO_RUNTIME
 
+dnl NUnit (optional)
+SHAMROCK_CHECK_NUNIT
+
 dnl Check for xbuild
 AC_PATH_PROG(XBUILD, xbuild)
 
@@ -95,6 +98,12 @@ AM_CONDITIONAL(ENABLE_TESTS, test "x$do_tests" = "xyes")
 if test "x$do_tests" = "xno"; then
 	AC_MSG_WARN([Could not find moq: tests will not be available])
 fi
+
+dnl Covem (optional)
+AC_PATH_PROG(COVEM, covem, no)
+AC_PATH_PROG(COV_GTK, cov-gtk, no)
+AC_PATH_PROG(COV_HTML, cov-html, no)
+AM_CONDITIONAL(HAVE_COVEM, test x$COVEM != xno)
 
 dnl package checks for libcesarplayer
 PKG_CHECK_MODULES(CESARPLAYER, [gtk+-2.0 >= 2.8 gdk-2.0 gio-2.0 glib-2.0 gstreamer-0.10 gstreamer-audio-0.10 gstreamer-video-0.10 gstreamer-pbutils-0.10 gobject-2.0 gstreamer-interfaces-0.10 gstreamer-tag-0.10 gstreamer-app-0.10])
@@ -169,6 +178,8 @@ pkgconfig/vas-drawing-cairo.pc
 pkgconfig/vas-drawing.pc
 pkgconfig/vas-ui-gtk2.pc
 pkgconfig/vas-ui-multimedia-gtk2.pc
+
+VAS.Tests/Makefile
 ])
 
 AC_OUTPUT

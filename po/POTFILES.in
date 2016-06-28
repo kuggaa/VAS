@@ -14,3 +14,17 @@ VAS.Services/PlayerController.cs
 VAS.Services/PlaylistManager.cs
 VAS.UI.Helpers.Gtk2/MessagesHelpers.cs
 VAS.UI.Helpers.Gtk2/Misc.cs
+VAS.Drawing/CanvasObjects/Timeline/LabelObject.cs
+VAS.UI.Gtk2/UI/Component/Timeline.cs
+VAS.UI.Gtk2/UI/Menu/PlaysMenu.cs
+VAS.UI.Multimedia.Gtk2/MultimediaToolkit.cs
+VAS.UI.Multimedia.Gtk2/UI/CapturerBin.cs
+VAS.UI.Multimedia.Gtk2/UI/PlayerCapturerBin.cs
+VAS.UI.Multimedia.Gtk2/UI/PlayerView.cs
+VAS.UI.Multimedia.Gtk2/UI/Utils/Remuxer.cs
+VAS.UI.Multimedia.Gtk2/gtk-gui/VAS.UI.CapturerBin.cs
+VAS.UI.Multimedia.Gtk2/gtk-gui/VAS.UI.PlayerCapturerBin.cs
+VAS.UI.Multimedia.Gtk2/gtk-gui/VAS.UI.PlayerView.cs
+VAS.UI.Multimedia.Gtk2/gtk-gui/VAS.UI.VideoWindow.cs
+VAS.UI.Multimedia.Gtk2/gtk-gui/VAS.UIPlayerCapturerBin.cs
+libvas/lgm-video-player.c
