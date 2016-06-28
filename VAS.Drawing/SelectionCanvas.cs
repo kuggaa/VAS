@@ -21,7 +21,7 @@ namespace VAS.Drawing
 	public class SelectionCanvas: Canvas
 	{
 
-		Selection clickedSel;
+		protected Selection clickedSel;
 
 		public SelectionCanvas (IWidget widget) : base (widget)
 		{
