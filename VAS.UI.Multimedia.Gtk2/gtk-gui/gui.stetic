@@ -117,41 +117,6 @@
                 <property name="AutoSize">True</property>
               </packing>
             </child>
-            <child>
-              <widget class="Gtk.VBox" id="vbox5">
-                <property name="MemberName" />
-                <property name="Spacing">6</property>
-                <child>
-                  <widget class="Gtk.VScale" id="ratescale">
-                    <property name="MemberName" />
-                    <property name="WidthRequest">36</property>
-                    <property name="Sensitive">False</property>
-                    <property name="Tooltip" translatable="yes">Playback speed</property>
-                    <property name="UpdatePolicy">Discontinuous</property>
-                    <property name="Inverted">True</property>
-                    <property name="Lower">1</property>
-                    <property name="Upper">30</property>
-                    <property name="PageIncrement">3</property>
-                    <property name="PageSize">1</property>
-                    <property name="StepIncrement">1</property>
-                    <property name="Value">25</property>
-                    <property name="DrawValue">True</property>
-                    <property name="Digits">0</property>
-                    <property name="ValuePos">Bottom</property>
-                  </widget>
-                  <packing>
-                    <property name="Position">0</property>
-                    <property name="AutoSize">False</property>
-                  </packing>
-                </child>
-              </widget>
-              <packing>
-                <property name="Position">1</property>
-                <property name="AutoSize">True</property>
-                <property name="Expand">False</property>
-                <property name="Fill">False</property>
-              </packing>
-            </child>
           </widget>
           <packing>
             <property name="Position">0</property>
@@ -296,10 +261,31 @@
                       </widget>
                       <packing>
                         <property name="Position">0</property>
-                        <property name="AutoSize">False</property>
+                        <property name="AutoSize">True</property>
                         <property name="Expand">False</property>
                         <property name="Fill">False</property>
-                        <property name="Padding">30</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.HScale" id="ratescale">
+                        <property name="MemberName" />
+                        <property name="HeightRequest">36</property>
+                        <property name="Sensitive">False</property>
+                        <property name="Tooltip" translatable="yes">Playback speed</property>
+                        <property name="UpdatePolicy">Discontinuous</property>
+                        <property name="Lower">1</property>
+                        <property name="Upper">30</property>
+                        <property name="PageIncrement">3</property>
+                        <property name="PageSize">1</property>
+                        <property name="StepIncrement">1</property>
+                        <property name="Value">25</property>
+                        <property name="DrawValue">True</property>
+                        <property name="Digits">0</property>
+                        <property name="ValuePos">Bottom</property>
+                      </widget>
+                      <packing>
+                        <property name="Position">1</property>
+                        <property name="AutoSize">False</property>
                       </packing>
                     </child>
                     <child>
@@ -339,7 +325,7 @@
                         </child>
                       </widget>
                       <packing>
-                        <property name="Position">1</property>
+                        <property name="Position">2</property>
                         <property name="AutoSize">False</property>
                         <property name="Expand">False</property>
                         <property name="Fill">False</property>
@@ -389,7 +375,7 @@
                         </child>
                       </widget>
                       <packing>
-                        <property name="Position">2</property>
+                        <property name="Position">3</property>
                         <property name="AutoSize">True</property>
                       </packing>
                     </child>
@@ -406,7 +392,7 @@
                         </child>
                       </widget>
                       <packing>
-                        <property name="Position">3</property>
+                        <property name="Position">4</property>
                         <property name="AutoSize">True</property>
                         <property name="Expand">False</property>
                         <property name="Fill">False</property>
@@ -425,7 +411,7 @@
                         </child>
                       </widget>
                       <packing>
-                        <property name="Position">4</property>
+                        <property name="Position">5</property>
                         <property name="AutoSize">True</property>
                         <property name="Expand">False</property>
                         <property name="Fill">False</property>

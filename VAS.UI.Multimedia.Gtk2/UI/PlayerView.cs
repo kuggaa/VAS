@@ -307,7 +307,7 @@ namespace VAS.UI
 
 		protected virtual float GetRateFromScale ()
 		{
-			VScale scale = ratescale;
+			HScale scale = ratescale;
 			double val = rateList [(int)scale.Value];
 			return (float)val;
 		}
