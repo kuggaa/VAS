@@ -145,6 +145,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\Keyboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IKeyContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IWelcomeButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\StateController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IScreenState.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

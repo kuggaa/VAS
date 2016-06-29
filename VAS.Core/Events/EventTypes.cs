@@ -46,4 +46,11 @@ namespace VAS.Core.Events
 
 		public DashboardButton Button { get; set; }
 	}
+
+	public class KeyPressedEvent : Event
+	{
+		public HotKey Key;
+
+		public Gdk.ModifierType State;
+	}
 }

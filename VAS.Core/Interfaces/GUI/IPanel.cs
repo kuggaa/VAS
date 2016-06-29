@@ -23,15 +23,16 @@ namespace VAS.Core.Interfaces.GUI
 	{
 		event BackEventHandle BackEvent;
 
+		string PanelName { get; }
+
 		/// <summary>
 		/// Called when the IPanel is loaded and going to be presented on screen.
 		/// </summary>
-		void OnLoaded ();
+		void OnLoad ();
 
 		/// <summary>
 		/// Called when the IPanel is presented on the screen and is going to be removed.
 		/// </summary>
-		void OnUnloaded ();
+		void OnUnload ();
 	}
 }
-

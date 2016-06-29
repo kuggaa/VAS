@@ -34,25 +34,28 @@ namespace VAS.Core.Interfaces.GUI
 		/// <value>The welcome panel icon.</value>
 		IEnumerable<IWelcomeButton> WelcomePanelIconList { get; }
 
-		Dictionary<string, Type> UIFlow { get; }
+		Dictionary<string, Func<IScreenState>> UIFlow { get; }
 
 		/// <summary>
-		/// Gets the menubar label. If null, the tool is not accessible from the menu bar "tools" section.
+		/// OBSOLETE: Gets the menubar label. If null, the tool is not accessible from the menu bar "tools" section.
 		/// </summary>
 		/// <value>The menubar label.</value>
+		// FIXME: This has to desapear when Longomatch is adapted to use ITools.
 		[Obsolete]
 		string MenubarLabel { get; }
 
 		/// <summary>
-		/// Gets the menubar accelerator. If null, the menubar entry will not have an accelerator.
+		/// OBSOLETE; Gets the menubar accelerator. If null, the menubar entry will not have an accelerator.
 		/// </summary>
 		/// <value>The menubar label.</value>
+		// FIXME: This has to desapear when Longomatch is adapted to use ITools.
 		[Obsolete]
 		string MenubarAccelerator { get; }
 
 		/// <summary>
-		/// Bring up the Tool user interface using provided toolkit.
+		/// OBSOLETE: Bring up the Tool user interface using provided toolkit.
 		/// </summary>
+		// FIXME: This has to desapear when Longomatch is adapted to use ITools.
 		[Obsolete]
 		void Load (IGUIToolkit toolkit);
 
