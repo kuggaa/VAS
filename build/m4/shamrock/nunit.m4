@@ -10,7 +10,7 @@ AC_DEFUN([SHAMROCK_CHECK_NUNIT],
 		AM_CONDITIONAL(ENABLE_TESTS, false)
 	else
 		# Escape [ -> @<:@  and ] -> @:>@
-		NUNIT_VERSION=`sed -n 's/.*NUnit\.Runners.*version="\(@<:@^"@:>@*\).*/\1/p' Tests/packages.config`
+		NUNIT_VERSION=`sed -n 's/.*NUnit\.Runners.*version="\(@<:@^"@:>@*\).*/\1/p' VAS.Tests/packages.config`
 		NUNIT_CONSOLE_EXE='$(top_builddir)/packages/NUnit.Runners.${NUNIT_VERSION}/tools/nunit-console.exe'
 	fi
 	AC_SUBST(NUNIT_CONSOLE_EXE)
