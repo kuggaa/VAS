@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Handlers;
 using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Store;
@@ -128,7 +129,12 @@ namespace VAS.Multimedia.Player
 			
 			this.GlibStateChange += (o, args) => {
 				if (StateChange != null)
-					StateChange (this, args.Playing);
+					StateChange (
+						new PlaybackStateChangedEvent {
+							Sender = this, 
+							Playing = args.Playing
+						}
+					);
 			};
 			
 			this.GlibReadyToSeek += (sender, e) => {

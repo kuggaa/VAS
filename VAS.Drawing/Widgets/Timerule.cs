@@ -18,14 +18,15 @@
 using System;
 using System.Linq;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Handlers;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
 using VAS.Drawing;
-using VASDrawing = VAS.Drawing;
 using VAS.Drawing.CanvasObjects.Timeline;
+using VASDrawing = VAS.Drawing;
 
 namespace VAS.Drawing.Widgets
 {
@@ -214,7 +215,11 @@ namespace VAS.Drawing.Widgets
 		protected override void StartMove (Selection sel)
 		{
 			WasPlaying = PlayingState;
-			App.Current.EventsBroker.EmitTogglePlayEvent (false);
+			App.Current.EventsBroker.Publish<TogglePlayEvent> (
+				new TogglePlayEvent {
+					Playing = false
+				}
+			);
 		}
 
 		protected override void StopMove (bool moved)
@@ -225,7 +230,11 @@ namespace VAS.Drawing.Widgets
 						true);
 				}
 			}
-			App.Current.EventsBroker.EmitTogglePlayEvent (WasPlaying);
+			App.Current.EventsBroker.Publish<TogglePlayEvent> (
+				new TogglePlayEvent {
+					Playing = WasPlaying
+				}
+			);
 		}
 
 		protected override void SelectionMoved (Selection sel)
@@ -260,9 +269,9 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
-		void HandlePlaybackStateChanged (object sender, bool playing)
+		void HandlePlaybackStateChanged (PlaybackStateChangedEvent e)
 		{
-			PlayingState = playing;
+			PlayingState = e.Playing;
 		}
 
 		public override void Draw (IContext context, Area area)

@@ -20,10 +20,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Gtk;
 using VAS;
+using VAS.Core;
+using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
-using VAS.Core.Common;
-using VAS.Core;
 
 namespace VAS.UI.Menus
 {
@@ -114,17 +115,9 @@ namespace VAS.UI.Menus
 				foreach (Playlist pl in project.Playlists) {
 					item = new MenuItem (pl.Name);
 					plMenu.Append (item);
-					item.Activated += (sender, e) => {
-//						IEnumerable<IPlaylistElement> elements = events.Select (p => new PlaylistPlayElement (p));
-//						((LMCommon.EventsBroker)Config.EventsBroker).EmitAddPlaylistElement (pl, elements.ToList ());
-					};
 				}
 				item = new MenuItem (Catalog.GetString ("Create new playlist..."));
 				plMenu.Append (item);
-				item.Activated += (sender, e) => {
-//					IEnumerable<IPlaylistElement> elements = events.Select (p => new PlaylistPlayElement (p));
-//					((LMCommon.EventsBroker)Config.EventsBroker).EmitAddPlaylistElement (null, elements.ToList ());
-				};
 				plMenu.ShowAll ();
 				addToPlaylistMenu.Submenu = plMenu;
 			}
@@ -137,7 +130,13 @@ namespace VAS.UI.Menus
 			newPlay.Activated += HandleNewPlayActivated;
 
 			del = new MenuItem ("");
-			del.Activated += (sender, e) => App.Current.EventsBroker.EmitEventsDeleted (plays);
+			del.Activated += (sender, e) => {
+				App.Current.EventsBroker.Publish <EventsDeletedEvent> (
+					new EventsDeletedEvent {
+						TimelineEvents = plays
+					}
+				);
+			};
 			Add (del);
 
 			ShowAll ();
@@ -145,10 +144,14 @@ namespace VAS.UI.Menus
 
 		void HandleNewPlayActivated (object sender, EventArgs e)
 		{
-			App.Current.EventsBroker.EmitNewEvent (eventType,
-				eventTime: time,
-				start: time - new Time { TotalSeconds = 10 },
-				stop: time + new Time { TotalSeconds = 10 });
+			App.Current.EventsBroker.Publish<NewEventEvent> (
+				new NewEventEvent {
+					EventType = eventType,
+					EventTime = time,
+					Start = time - new Time { TotalSeconds = 10 },
+					Stop = time + new Time { TotalSeconds = 10 }
+				}
+			);
 		}
 
 		void EmitRenderPlaylist (List<TimelineEvent> plays)
@@ -157,7 +160,11 @@ namespace VAS.UI.Menus
 			foreach (TimelineEvent p in plays) {
 				pl.Elements.Add (new PlaylistPlayElement (p));
 			}
-			App.Current.EventsBroker.EmitRenderPlaylist (pl);
+			App.Current.EventsBroker.Publish<RenderPlaylistEvent> (
+				new RenderPlaylistEvent {
+					Playlist = pl
+				}
+			);
 		}
 	}
 }

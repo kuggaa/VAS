@@ -17,7 +17,6 @@ namespace VAS
 		public IGUIToolkit GUIToolkit;
 		public IMultimediaToolkit MultimediaToolkit;
 		public IDrawingToolkit DrawingToolkit;
-		public EventsBroker EventsBroker;
 
 		public IStorageManager DatabaseManager;
 		public IRenderingJobsManager RenderingJobsManger;
@@ -28,7 +27,7 @@ namespace VAS
 		public string configDirectory = ".";
 
 		/* State */
-		public EventsAggregator EventsAggregator;
+		public EventsBroker EventsBroker;
 
 		public List<string> DataDir {
 			get {

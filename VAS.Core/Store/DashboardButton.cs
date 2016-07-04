@@ -24,6 +24,7 @@ using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
+using VAS.Core.Events;
 
 namespace VAS.Core.Store
 {
@@ -267,7 +268,13 @@ namespace VAS.Core.Store
 
 			if (Timer != null) {
 				currentNode = Timer.Start (start);
-				App.Current.EventsBroker.EmitTimeNodeStartedEvent (currentNode, this, from);
+				App.Current.EventsBroker.Publish<TimeNodeStartedEvent> (
+					new TimeNodeStartedEvent {
+						TimeNode = currentNode,
+						TimerButton = this,
+						DashboardButtons = from
+					}
+				);
 			}
 		}
 
@@ -278,7 +285,13 @@ namespace VAS.Core.Store
 
 			if (Timer != null) {
 				Timer.Stop (stop);
-				App.Current.EventsBroker.EmitTimeNodeStoppedEvent (currentNode, this, from);
+				App.Current.EventsBroker.Publish<TimeNodeStoppedEvent> (
+					new TimeNodeStoppedEvent {
+						TimeNode = currentNode,
+						TimerButton = this,
+						DashboardButtons = from
+					}
+				);
 				currentNode = null;
 			}
 		}

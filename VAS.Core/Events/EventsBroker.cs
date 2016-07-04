@@ -35,13 +35,16 @@ namespace VAS.Core.Events
 		internal SubscriptionToken Token { get; set; }
 	}
 
-	public class EventsAggregator
+	public class EventsBroker
 	{
 		private static IEventAggregator _current;
 
 		public IEventAggregator Current {
 			get {
 				return _current ?? (_current = new EventAggregator ());
+			}
+			private set { 
+				_current = value;
 			}
 		}
 
@@ -74,12 +77,32 @@ namespace VAS.Core.Events
 
 		public void Unsubscribe<TEvent> (EventToken eventToken)
 		{
-			GetEvent<TEvent> ().Unsubscribe (eventToken.Token);
+			if (eventToken != null) {
+				GetEvent<TEvent> ().Unsubscribe (eventToken.Token);
+			}
 		}
 
 		public void Unsubscribe<TEvent> (Action<TEvent> subscriber)
 		{
-			GetEvent<TEvent> ().Unsubscribe (subscriber);
+			if (subscriber != null) {
+				GetEvent<TEvent> ().Unsubscribe (subscriber);
+			}
+		}
+
+		//wrapper function to avoid the use of a Prism reference in Tests for eventreset
+		protected void ResetEventsBroker ()
+		{
+			Current = null;
+		}
+			
+		//this method avoids refactoring return value in all calls
+		public bool EmitCloseOpenedProject (object sender)
+		{
+			CloseOpenedProjectEvent e = new CloseOpenedProjectEvent {
+				Sender = sender
+			};
+			App.Current.EventsBroker.Publish<CloseOpenedProjectEvent> (e);
+			return e.ReturnValue;
 		}
 	}
 }

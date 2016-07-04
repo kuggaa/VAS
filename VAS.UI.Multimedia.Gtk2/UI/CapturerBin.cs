@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using Gtk;
 using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Store;
@@ -96,7 +97,7 @@ namespace VAS.UI
 			Periods = new List<Period> ();
 			Reset ();
 			Mode = CapturerType.Live;
-			App.Current.EventsBroker.EventCreatedEvent += HandleEventCreated;
+			App.Current.EventsBroker.Subscribe<EventCreatedEvent> (HandleEventCreated);
 			lastlabel.ModifyFont (Pango.FontDescription.FromString (App.Current.Style.Font + " 8px"));
 			ReadyToCapture = false;
 		}
@@ -106,7 +107,7 @@ namespace VAS.UI
 			if (timeoutID != 0) {
 				GLib.Source.Remove (timeoutID);
 			}
-			App.Current.EventsBroker.EventCreatedEvent -= HandleEventCreated;
+			App.Current.EventsBroker.Unsubscribe<EventCreatedEvent> (HandleEventCreated);
 			base.OnDestroyed ();
 		}
 
@@ -318,7 +319,11 @@ namespace VAS.UI
 			hourlabel.Markup = ElapsedTime.Hours.ToString ("d2");
 			minuteslabel.Markup = ElapsedTime.Minutes.ToString ("d2");
 			secondslabel.Markup = ElapsedTime.Seconds.ToString ("d2");
-			App.Current.EventsBroker.EmitCapturerTick (CurrentCaptureTime);
+			App.Current.EventsBroker.Publish<CapturerTickEvent> (
+				new CapturerTickEvent {
+					Time = CurrentCaptureTime
+				}
+			);
 			return true;
 		}
 
@@ -326,7 +331,12 @@ namespace VAS.UI
 		{
 			string msg = Catalog.GetString ("Do you want to finish the current capture?");
 			if (MessagesHelpers.QuestionMessage (this, msg)) {
-				App.Current.EventsBroker.EmitCaptureFinished (false, true);
+				App.Current.EventsBroker.Publish<CaptureFinishedEvent> (
+					new CaptureFinishedEvent {
+						Cancel = false,
+						Reopen = true
+					}
+				);
 			}
 		}
 
@@ -334,7 +344,12 @@ namespace VAS.UI
 		{
 			string msg = Catalog.GetString ("Do you want to close and cancel the current capture?");
 			if (MessagesHelpers.QuestionMessage (this, msg)) {
-				App.Current.EventsBroker.EmitCaptureFinished (true, false);
+				App.Current.EventsBroker.Publish<CaptureFinishedEvent> (
+					new CaptureFinishedEvent {
+						Cancel = true,
+						Reopen = false
+					}
+				);
 			}
 		}
 
@@ -461,7 +476,12 @@ namespace VAS.UI
 		protected virtual void OnError (object sender, string message)
 		{
 			Application.Invoke (delegate {
-				App.Current.EventsBroker.EmitCaptureError (sender, message);
+				App.Current.EventsBroker.Publish<CaptureErrorEvent> (
+					new CaptureErrorEvent {
+						Sender = sender,
+						Message = message
+					}
+				);
 			});
 		}
 
@@ -479,25 +499,33 @@ namespace VAS.UI
 			}
 		}
 
-		protected virtual void HandleEventCreated (TimelineEvent evt)
+		protected virtual void HandleEventCreated (EventCreatedEvent e)
 		{
 			lasteventbox.Visible = true;
-			lastlabel.Text = evt.Name;
-			lastlabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (evt.Color));
-			lastevent = evt;
+			lastlabel.Text = e.TimelineEvent.Name;
+			lastlabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (e.TimelineEvent.Color));
+			lastevent = e.TimelineEvent;
 		}
 
 		protected virtual void HandlePlayLast (object sender, EventArgs e)
 		{
 			if (lastevent != null) {
-				App.Current.EventsBroker.EmitLoadEvent (lastevent);
+				App.Current.EventsBroker.Publish<LoadEventEvent> (
+					new LoadEventEvent {
+						TimelineEvent = lastevent
+					}
+				);
 			}
 		}
 
 		protected virtual void HandleDeleteLast (object sender, EventArgs e)
 		{
 			if (lastevent != null) {
-				App.Current.EventsBroker.EmitEventsDeleted (new List<TimelineEvent> { lastevent });
+				App.Current.EventsBroker.Publish <EventsDeletedEvent> (
+					new EventsDeletedEvent {
+						TimelineEvents = new List<TimelineEvent> { lastevent }
+					}
+				);
 				lastevent = null;
 				lasteventbox.Visible = false;
 			}

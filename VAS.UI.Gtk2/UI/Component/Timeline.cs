@@ -19,18 +19,16 @@
 using System;
 using System.Collections.Generic;
 using Gtk;
-
 using VAS;
 using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Filters;
 using VAS.Core.Interfaces;
 using VAS.Core.Store;
 using VAS.Drawing.Cairo;
 using VAS.Drawing.Widgets;
-
 using VAS.UI.Menus;
-
 using Helpers = VAS.UI.Helpers;
 using LMCommon = VAS.Core.Common;
 using VASDrawing = VAS.Drawing;
@@ -93,7 +91,7 @@ namespace VAS.UI.Component
 				int spacing = (int)scrolledwindow1.StyleGetProperty ("scrollbar-spacing");
 				zoomhbox.HeightRequest = args.Allocation.Height + spacing;
 			};
-			App.Current.EventsBroker.PlayerTick += HandlePlayerTick;
+			App.Current.EventsBroker.Subscribe<PlayerTickEvent> (HandlePlayerTick);
 		}
 
 		protected override void OnDestroyed ()
@@ -103,7 +101,7 @@ namespace VAS.UI.Component
 				timeoutID = 0;
 			}
 			// Unsubscribe events
-			App.Current.EventsBroker.PlayerTick -= HandlePlayerTick;
+			App.Current.EventsBroker.Unsubscribe<PlayerTickEvent> (HandlePlayerTick);
 			Player = null;
 
 			timerule.Dispose ();
@@ -336,13 +334,13 @@ namespace VAS.UI.Component
 
 		protected void HandleTimeruleSeek (Time pos, bool accurate, bool synchronous = false, bool throttled = false)
 		{
-			(App.Current.EventsBroker).EmitLoadEvent (null);
+			App.Current.EventsBroker.Publish<LoadEventEvent> (new LoadEventEvent ());
 			player.Seek (pos, accurate, synchronous, throttled);
 		}
 
-		void HandlePlayerTick (Time currentTime)
+		void HandlePlayerTick (PlayerTickEvent e)
 		{
-			CurrentTime = currentTime;
+			CurrentTime = e.Time;
 		}
 
 		/// <summary>

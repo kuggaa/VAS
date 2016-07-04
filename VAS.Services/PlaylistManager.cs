@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Filters;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
@@ -59,18 +60,17 @@ namespace VAS.Services
 			}
 		}
 
-		protected virtual void HandleOpenedProjectChanged (Project project, ProjectType projectType,
-		                                                   EventsFilter filter, IAnalysisWindowBase analysisWindow)
+		protected virtual void HandleOpenedProjectChanged (OpenedProjectEvent e)
 		{
-			var player = analysisWindow?.Player;
+			var player = e.AnalysisWindow?.Player;
 			if (player == null && Player == null) {
 				return;
 			} else if (player != null) {
 				Player = player;
 			}
 
-			OpenedProject = project;
-			OpenedProjectType = projectType;
+			OpenedProject = e.Project;
+			OpenedProjectType = e.ProjectType;
 			this.filter = filter;
 			Player.LoadedPlaylist = null;
 		}
@@ -81,100 +81,104 @@ namespace VAS.Services
 		/// </summary>
 		/// <param name="presentation">Presentation.</param>
 		/// <param name="player">Player.</param>
-		protected virtual void HandleOpenedPresentationChanged (Playlist presentation, IPlayerController player)
+		protected virtual void HandleOpenedPresentationChanged (OpenedPresentationChangedEvent e)
 		{
-			if (player == null && Player == null) {
+			if (e.Player == null && Player == null) {
 				return;
-			} else if (player != null) {
-				Player = player;
+			} else if (e.Player != null) {
+				Player = e.Player;
 			}
 
 			OpenedProject = null;
-			Player.Switch (null, presentation, null);
+			Player.Switch (null, e.Presentation, null);
 
 			OpenedProjectType = ProjectType.None;
 			filter = null;
 		}
 
-		protected virtual void HandleLoadPlaylistElement (Playlist playlist, IPlaylistElement element, bool playing = false)
+		protected virtual void HandleLoadPlaylistElement (LoadPlaylistElementEvent e)
 		{
-			if (element != null) {
-				playlist.SetActive (element);
+			if (e.Element != null) {
+				e.Playlist.SetActive (e.Element);
 			}
-			if (playlist.Elements.Count > 0 && Player != null)
-				Player.LoadPlaylistEvent (playlist, element, playing);
+			if (e.Playlist.Elements.Count > 0 && Player != null)
+				Player.LoadPlaylistEvent (e.Playlist, e.Element, e.Playing);
 		}
 
-		protected virtual void HandlePlayChanged (TimeNode tNode, Time time)
+		protected virtual void HandlePlayChanged (TimeNodeChangedEvent e)
 		{
-			if (tNode is TimelineEvent) {
-				LoadPlay (tNode as TimelineEvent, time, false);
+			if (e.TimeNode is TimelineEvent) {
+				LoadPlay (e.TimeNode as TimelineEvent, e.Time, false);
 				if (filter != null) {
 					filter.Update ();
 				}
 			}
 		}
 
-		protected virtual void HandleLoadPlayEvent (TimelineEvent play)
+		protected virtual void HandleLoadPlayEvent (LoadEventEvent e)
 		{
 			if (OpenedProject == null || OpenedProjectType == ProjectType.FakeCaptureProject) {
 				return;
 			}
 
-			if (play?.Duration.MSeconds == 0) {
+			if (e.TimelineEvent?.Duration.MSeconds == 0) {
 				// These events don't have duration, we start playing as if it was a seek
 				Player.Switch (null, null, null);
 				Player.UnloadCurrentEvent ();
-				Player.Seek (play.EventTime, true);
+				Player.Seek (e.TimelineEvent.EventTime, true);
 				Player.Play ();
 			} else {
-				if (play != null) {
-					LoadPlay (play, new Time (0), true);
+				if (e.TimelineEvent != null) {
+					LoadPlay (e.TimelineEvent, new Time (0), true);
 				} else if (Player != null) {
 					Player.UnloadCurrentEvent ();
 				}
 			}
 		}
 
-		protected virtual void HandleNext (Playlist playlist)
+		protected virtual void HandleNext (NextPlaylistElementEvent e)
 		{
 			Player.Next ();
 		}
 
-		protected virtual void HandlePrev (Playlist playlist)
+		protected virtual void HandlePrev (PreviousPlaylistElementEvent e)
 		{
 			Player.Previous ();
 		}
 
-		protected virtual void HandlePlaybackRateChanged (float rate)
+		protected virtual void HandlePlaybackRateChanged (PlaybackRateChangedEvent e)
 		{
 		}
 
-		protected virtual void HandleAddPlaylistElement (Playlist playlist, List<IPlaylistElement> element)
+		protected virtual void HandleAddPlaylistElement (AddPlaylistElementEvent e)
 		{
-			if (playlist == null) {
-				playlist = HandleNewPlaylist (OpenedProject);
-				if (playlist == null) {
+			if (e.Playlist == null) {
+				e.Playlist = HandleNewPlaylist (
+					new NewPlaylistEvent {
+						Project = OpenedProject
+					}
+				);
+				if (e.Playlist == null) {
 					return;
 				}
 			}
 
-			foreach (var item in element) {
-				playlist.Elements.Add (item);
+			foreach (var item in e.PlaylistElements) {
+				e.Playlist.Elements.Add (item);
 			}
 		}
 
-		protected virtual Playlist HandleNewPlaylist (Project project)
+		protected virtual Playlist HandleNewPlaylist (NewPlaylistEvent e)
 		{
 			string name = Catalog.GetString ("New playlist");
 			Playlist playlist = null;
 			bool done = false;
-			if (project != null) {
+			if (e.Project != null) {
 				while (name != null && !done) {
 					name = App.Current.GUIToolkit.QueryMessage (Catalog.GetString ("Playlist name:"), null, name).Result;
 					if (name != null) {
 						done = true;
-						if (project.Playlists.Any (p => p.Name == name)) {
+						if (e.Project.Playlists.Any (p => p.Name == name)) {
 							string msg = Catalog.GetString ("A playlist already exists with the same name");
 							App.Current.GUIToolkit.ErrorMessage (msg);
 							done = false;
@@ -183,25 +187,25 @@ namespace VAS.Services
 				}
 				if (name != null) {
 					playlist = new Playlist { Name = name };
-					project.Playlists.Add (playlist);
+					e.Project.Playlists.Add (playlist);
 				}
 			}
 			return playlist;
 		}
 
-		protected virtual void HandleRenderPlaylist (Playlist playlist)
+		protected virtual void HandleRenderPlaylist (RenderPlaylistEvent e)
 		{
-			List<EditionJob> jobs = App.Current.GUIToolkit.ConfigureRenderingJob (playlist);
+			List<EditionJob> jobs = App.Current.GUIToolkit.ConfigureRenderingJob (e.Playlist);
 			if (jobs == null)
 				return;
 			foreach (Job job in jobs)
 				App.Current.RenderingJobsManger.AddJob (job);
 		}
 
-		protected virtual void HandleTogglePlayEvent (bool playing)
+		protected virtual void HandleTogglePlayEvent (TogglePlayEvent e)
 		{
 			if (Player != null) {
-				if (playing) {
+				if (e.Playing) {
 					Player.Play ();
 				} else {
 					Player.Pause ();
@@ -225,40 +229,42 @@ namespace VAS.Services
 
 		public virtual bool Start ()
 		{
-			App.Current.EventsBroker.NewPlaylistEvent += HandleNewPlaylist;
-			App.Current.EventsBroker.AddPlaylistElementEvent += HandleAddPlaylistElement;
-			App.Current.EventsBroker.RenderPlaylist += HandleRenderPlaylist;
-			App.Current.EventsBroker.OpenedProjectChanged += HandleOpenedProjectChanged;
-			App.Current.EventsBroker.OpenedPresentationChanged += HandleOpenedPresentationChanged;
-			App.Current.EventsBroker.PreviousPlaylistElementEvent += HandlePrev;
-			App.Current.EventsBroker.NextPlaylistElementEvent += HandleNext;
-			App.Current.EventsBroker.LoadEventEvent += HandleLoadPlayEvent;
-			App.Current.EventsBroker.LoadPlaylistElementEvent += HandleLoadPlaylistElement;
-			App.Current.EventsBroker.PlaybackRateChanged += HandlePlaybackRateChanged;
-			App.Current.EventsBroker.TimeNodeChanged += HandlePlayChanged;
-			App.Current.EventsBroker.TogglePlayEvent += HandleTogglePlayEvent;
+			newPlaylistEventToken = App.Current.EventsBroker.Subscribe<NewPlaylistEvent> ((e) => HandleNewPlaylist (e));
+			App.Current.EventsBroker.Subscribe<AddPlaylistElementEvent> (HandleAddPlaylistElement);
+			App.Current.EventsBroker.Subscribe<RenderPlaylistEvent> (HandleRenderPlaylist);
+			App.Current.EventsBroker.Subscribe<OpenedProjectEvent> (HandleOpenedProjectChanged);
+			App.Current.EventsBroker.Subscribe<OpenedPresentationChangedEvent> (HandleOpenedPresentationChanged);
+			App.Current.EventsBroker.Subscribe<PreviousPlaylistElementEvent> (HandlePrev);
+			App.Current.EventsBroker.Subscribe<NextPlaylistElementEvent> (HandleNext);
+			App.Current.EventsBroker.Subscribe<LoadEventEvent> (HandleLoadPlayEvent);
+			App.Current.EventsBroker.Subscribe<LoadPlaylistElementEvent> (HandleLoadPlaylistElement);
+			App.Current.EventsBroker.Subscribe<PlaybackRateChangedEvent> (HandlePlaybackRateChanged);
+			App.Current.EventsBroker.Subscribe<TimeNodeChangedEvent> (HandlePlayChanged);
+			App.Current.EventsBroker.Subscribe<TogglePlayEvent> (HandleTogglePlayEvent);
 
 			return true;
 		}
 
 		public virtual bool Stop ()
 		{
-			App.Current.EventsBroker.NewPlaylistEvent -= HandleNewPlaylist;
-			App.Current.EventsBroker.AddPlaylistElementEvent -= HandleAddPlaylistElement;
-			App.Current.EventsBroker.RenderPlaylist -= HandleRenderPlaylist;
-			App.Current.EventsBroker.OpenedProjectChanged -= HandleOpenedProjectChanged;
-			App.Current.EventsBroker.OpenedPresentationChanged -= HandleOpenedPresentationChanged;
-			App.Current.EventsBroker.PreviousPlaylistElementEvent -= HandlePrev;
-			App.Current.EventsBroker.NextPlaylistElementEvent -= HandleNext;
-			App.Current.EventsBroker.LoadEventEvent -= HandleLoadPlayEvent;
-			App.Current.EventsBroker.LoadPlaylistElementEvent -= HandleLoadPlaylistElement;
-			App.Current.EventsBroker.PlaybackRateChanged -= HandlePlaybackRateChanged;
-			App.Current.EventsBroker.TimeNodeChanged -= HandlePlayChanged;
-			App.Current.EventsBroker.TogglePlayEvent -= HandleTogglePlayEvent;
+			App.Current.EventsBroker.Unsubscribe<NewPlaylistEvent> (newPlaylistEventToken);
+			App.Current.EventsBroker.Unsubscribe<AddPlaylistElementEvent> (HandleAddPlaylistElement);
+			App.Current.EventsBroker.Unsubscribe<RenderPlaylistEvent> (HandleRenderPlaylist);
+			App.Current.EventsBroker.Unsubscribe<OpenedProjectEvent> (HandleOpenedProjectChanged);
+			App.Current.EventsBroker.Unsubscribe<OpenedPresentationChangedEvent> (HandleOpenedPresentationChanged);
+			App.Current.EventsBroker.Unsubscribe<PreviousPlaylistElementEvent> (HandlePrev);
+			App.Current.EventsBroker.Unsubscribe<NextPlaylistElementEvent> (HandleNext);
+			App.Current.EventsBroker.Unsubscribe<LoadEventEvent> (HandleLoadPlayEvent);
+			App.Current.EventsBroker.Unsubscribe<LoadPlaylistElementEvent> (HandleLoadPlaylistElement);
+			App.Current.EventsBroker.Unsubscribe<PlaybackRateChangedEvent> (HandlePlaybackRateChanged);
+			App.Current.EventsBroker.Unsubscribe<TimeNodeChangedEvent> (HandlePlayChanged);
+			App.Current.EventsBroker.Unsubscribe<TogglePlayEvent> (HandleTogglePlayEvent);
 
 			return true;
 		}
 
 		#endregion
+
+		EventToken newPlaylistEventToken;
 	}
 }

@@ -73,7 +73,7 @@ namespace VAS.UI
 			MessageVisible = false;
 			messageLabel.Ellipsize = Pango.EllipsizeMode.End;
 
-			App.Current.EventsAggregator.Subscribe<ChangeVideoMessageEvent> (HandleChangeVideoMessage, ThreadMethod.UIThread);
+			App.Current.EventsBroker.Subscribe<ChangeVideoMessageEvent> (HandleChangeVideoMessage);
 		}
 
 		void HandleChangeVideoMessage (ChangeVideoMessageEvent changeVideoMessageEvent)

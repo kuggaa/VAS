@@ -17,6 +17,7 @@
 //
 using Gtk;
 using VAS.Core.Common;
+using VAS.Core.Events;
 
 namespace VAS.UI.Helpers
 {
@@ -32,7 +33,12 @@ namespace VAS.UI.Helpers
 			box = new EventBox ();
 			box.Name = "lightbackgroundeventbox";
 			box.KeyPressEvent += (o, args) => {
-				App.Current.EventsBroker.EmitKeyPressed (this, Keyboard.ParseEvent (args.Event));
+				App.Current.EventsBroker.Publish<KeyPressedEvent> (
+					new KeyPressedEvent {
+						Sender = this,
+						Key = Keyboard.ParseEvent (args.Event)
+					}
+				);
 			};
 			base.Add (box);
 			box.CanFocus = true;
