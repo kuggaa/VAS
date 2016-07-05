@@ -1,4 +1,4 @@
-//
+﻿//
 //  Copyright (C) 2014 Andoni Morales Alastruey
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -60,7 +60,7 @@ namespace VAS.Core.Common
 		public static HotKey ParseName (string name)
 		{
 			int key = 0, modifier = 0, i;
-			
+
 			if (name.Contains (">+")) {
 				i = name.IndexOf ('+');
 				modifier = (int)KeyvalFromName (name.Substring (1, i - 2));
@@ -82,4 +82,3 @@ namespace VAS.Core.Common
 		}
 	}
 }
-
