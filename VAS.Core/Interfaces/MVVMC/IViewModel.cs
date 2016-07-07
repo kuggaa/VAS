@@ -24,7 +24,7 @@ namespace VAS.Core.Interfaces.MVVMC
 	{
 	}
 
-	public interface IViewModel<T>: IViewModel
+	public interface IViewModel<T> : IViewModel
 	{
 		T Model { set; get; }
 	}
