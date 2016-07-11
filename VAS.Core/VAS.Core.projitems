@@ -129,6 +129,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)Events\Events.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Events\EventsBroker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\BindableBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\IController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\IView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\IViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\CollectionViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\ViewAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\ControllerAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\Scanner.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\ViewLocator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\ControllerLocator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
@@ -142,6 +152,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)Store\Templates\" />
     <Folder Include="$(MSBuildThisFileDirectory)Events\" />
     <Folder Include="$(MSBuildThisFileDirectory)Interfaces\Multimedia\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\" />
     <Folder Include="$(MSBuildThisFileDirectory)MVVMC\" />
   </ItemGroup>
   <ItemGroup>
