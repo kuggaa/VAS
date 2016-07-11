@@ -50,6 +50,12 @@ namespace VAS.UI
 			App.Current.EventsBroker.Subscribe<CloseVideoEvent> (HandleCloseVideoEvent);
 		}
 
+		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+		{
+			ShowPlayer ();
+			return base.OnExposeEvent (evnt);
+		}
+
 		protected override void OnDestroyed ()
 		{
 			(playerview as Gtk.Widget).Destroy ();
