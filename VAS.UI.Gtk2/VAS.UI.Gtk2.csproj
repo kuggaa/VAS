@@ -8,8 +8,6 @@
     <RootNamespace>VAS.UI</RootNamespace>
     <AssemblyName>VAS.UI</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -50,6 +48,7 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Mono.Posix" />
+    <Reference Include="Mono.Cairo" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -65,12 +64,15 @@
       <Link>AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="UI\Dialog\SplashScreen.cs" />
+    <Compile Include="UI\TreeView\CellRendererButton.cs" />
+    <Compile Include="UI\TreeView\CellRendererButtonImage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="UI\" />
     <Folder Include="UI\Component\" />
     <Folder Include="UI\Menu\" />
+    <Folder Include="UI\TreeView\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VAS.Core\VAS.Core.Net45.csproj">

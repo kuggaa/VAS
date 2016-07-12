@@ -59,5 +59,18 @@ namespace VAS.Core.MVVMC
 			}
 			return (IView)Activator.CreateInstance (elements [name]);
 		}
+
+		/// <summary>
+		/// Gets a View with the specified name. With constructor Params
+		/// </summary>
+		/// <param name="name">Name.</param>
+		/// <param name="args">View Constructor Param Arguments.</param>
+		public IView Retrieve (string name, params object[] args)
+		{
+			if (!elements.ContainsKey (name)) {
+				return null;
+			}
+			return (IView)Activator.CreateInstance (elements [name], args);
+		}
 	}
 }

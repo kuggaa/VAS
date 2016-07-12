@@ -25,8 +25,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 {
 	public class LabelObject : CanvasObject, ICanvasObject
 	{
-		const int DEFAULT_FONT_SIZE = 12;
-		const FontWeight DEFAULT_FONT_WEIGHT = FontWeight.Bold;
+		protected const int DEFAULT_FONT_SIZE = 12;
+		protected const FontWeight DEFAULT_FONT_WEIGHT = FontWeight.Bold;
 
 		public LabelObject (double width, double height, double offsetY)
 		{
