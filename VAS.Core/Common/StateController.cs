@@ -1,7 +1,7 @@
 ﻿using System;
-using VAS.Core.Interfaces.GUI;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using VAS.Core.Interfaces.GUI;
 
 namespace VAS.Core
 {
@@ -9,10 +9,12 @@ namespace VAS.Core
 	{
 		Dictionary<string, Func<IScreenState>> destination;
 		IScreenState current;
+		List<string> stateStack;
 
 		public StateController ()
 		{
 			destination = new Dictionary<string, Func<IScreenState>> ();
+			stateStack = new List<string> ();
 		}
 
 		public Task<bool> MoveTo (string transition)
@@ -29,6 +31,7 @@ namespace VAS.Core
 			if (ok) {
 				App.Current.GUIToolkit.LoadPanel (panel.Panel);
 				current = panel;
+				PushState (transition);
 			}
 			return Task.Factory.StartNew (() => ok);
 		}
@@ -42,6 +45,22 @@ namespace VAS.Core
 		{
 			// It should recover the previous one - a stack?
 			destination.Remove (transition);
+		}
+
+		public void PushState (string state)
+		{
+			stateStack.Add (state);
+		}
+
+		public void PopState (string state)
+		{
+			int position = stateStack.LastIndexOf (state);
+			stateStack.RemoveAt (position);
+		}
+
+		public void EmptyStateStack ()
+		{
+			stateStack.Clear ();
 		}
 	}
 }
