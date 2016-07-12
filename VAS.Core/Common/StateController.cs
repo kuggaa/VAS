@@ -1,6 +1,7 @@
 ﻿using System;
 using VAS.Core.Interfaces.GUI;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace VAS.Core
 {
@@ -14,21 +15,22 @@ namespace VAS.Core
 			destination = new Dictionary<string, Func<IScreenState>> ();
 		}
 
-		public bool MoveTo (string transition)
+		public Task<bool> MoveTo (string transition)
 		{
 			if (current != null) {
 				if (!current.PostTransition ()) {
-					return false;
+					return Task.Factory.StartNew (() => false);
 				}
 			}
 			Console.WriteLine ("Moving to " + transition);
 
 			IScreenState panel = destination [transition] ();
-			bool ok = panel.PreTransition () && App.Current.GUIToolkit.MainController.SetPanel (panel.Panel);// mainWindow.SetPanel (panel.Panel);
+			bool ok = panel.PreTransition ();
 			if (ok) {
+				App.Current.GUIToolkit.LoadPanel (panel.Panel);
 				current = panel;
 			}
-			return ok;
+			return Task.Factory.StartNew (() => ok);
 		}
 
 		public void Register (string transition, Func<IScreenState> panel)
