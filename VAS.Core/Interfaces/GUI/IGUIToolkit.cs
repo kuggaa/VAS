@@ -19,10 +19,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VAS.Core.Common;
+using VAS.Core.Events;
+using VAS.Core.Filters;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using Image = VAS.Core.Common.Image;
-using VAS.Core.Filters;
 
 namespace VAS.Core.Interfaces.GUI
 {
@@ -121,6 +122,10 @@ namespace VAS.Core.Interfaces.GUI
 		HotKey SelectHotkey (HotKey hotkey, object parent = null);
 
 		void Invoke (EventHandler handler);
+
+		Task<bool> CreateNewTemplate<T> (IList<T> availableTemplates, string defaultName,
+		                                 string countText, string emptyText,
+		                                 CreateEvent<T> evt) where T: ITemplate;
 	}
 }
 
