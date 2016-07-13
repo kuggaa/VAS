@@ -17,11 +17,11 @@
 // 
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using VAS.Core.Store.Templates;
+using System.ComponentModel;
 
 namespace VAS.Core.Interfaces
 {
-	public interface ITemplate: IStorable
+	public interface ITemplate: IStorable, INotifyPropertyChanged
 	{
 		string Name { get; set; }
 
