@@ -50,9 +50,8 @@ namespace VAS.Core.MVVMC
 
 		protected virtual void ForwardPropertyChanged (object sender, PropertyChangedEventArgs args)
 		{
-			RaisePropertyChanged (this, args);
+			RaisePropertyChanged (args);
 		}
-
 	}
 }
 

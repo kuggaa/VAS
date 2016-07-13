@@ -48,12 +48,25 @@ namespace VAS.Core.MVVMC
 		/// <summary>
 		/// Raises the property changed event.
 		/// </summary>
+		/// <param name="propertyName">Property name.</param>
+		/// <param name="sender">Sender of the event.</param>
+		protected void RaisePropertyChanged (string propertyName, object sender = null)
+		{
+			RaisePropertyChanged (new PropertyChangedEventArgs (propertyName), sender);
+		}
+
+		/// <summary>
+		/// Raises the property changed event.
+		/// </summary>
+		/// <param name="args">Event args</param>
 		/// <param name="sender">Sender of the event</param>
-		/// <param name="e">Event args</param>
-		protected void RaisePropertyChanged (object sender, PropertyChangedEventArgs e)
+		protected void RaisePropertyChanged (PropertyChangedEventArgs args, object sender = null)
 		{
 			if (PropertyChanged != null) {
-				PropertyChanged (sender, e);
+				if (sender == null) {
+					sender = this;
+				}
+				PropertyChanged (sender, args);
 			}
 			IsChanged = true;
 		}

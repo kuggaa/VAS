@@ -177,7 +177,7 @@ namespace VAS.Core.MVVMC
 
 		void HandleSelectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
-			RaisePropertyChanged (this, new PropertyChangedEventArgs ("Selection"));
+			RaisePropertyChanged ("Selection");
 		}
 	}
 }
