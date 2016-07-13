@@ -36,6 +36,9 @@
       <HintPath>$(SolutionDir)\packages\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Package>newtonsoft-json</Package>
     </Reference>
+    <Reference Include="PropertyChanged">
+      <HintPath>$(SolutionDir)\packages\PropertyChanged.Fody.1.50.3\Lib\portable-net4+sl4+wp8+win8+wpa81+MonoAndroid16+MonoTouch40\PropertyChanged.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="VAS.Services.projitems" Label="Shared" Condition="Exists('VAS.Services.projitems')" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -47,5 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="FodyWeavers.xml" />
   </ItemGroup>
 </Project>

@@ -14,7 +14,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)PlaylistManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CoreEventsManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)..\AssemblyInfo\AssemblyInfo.cs">
-    	<Link>AssemblyInfo.cs</Link>
+      <Link>AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TemplateManagerViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TemplateViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller\TemplatesController.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Controller\" />
   </ItemGroup>
 </Project>

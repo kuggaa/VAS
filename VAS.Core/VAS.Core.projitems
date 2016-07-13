@@ -139,6 +139,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\ViewLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\ControllerLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\ViewModelBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Events\TemplateEvents.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
