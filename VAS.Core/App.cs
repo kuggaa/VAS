@@ -8,6 +8,8 @@ using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
+using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.MVVMC;
 
 namespace VAS
 {
@@ -21,6 +23,8 @@ namespace VAS
 		public IStorageManager DatabaseManager;
 		public IRenderingJobsManager RenderingJobsManger;
 
+		public ViewLocator ViewLocator;
+		public ControllerLocator ControllerLocator;
 
 		public string homeDirectory = ".";
 		public string baseDirectory = ".";
@@ -128,6 +132,9 @@ namespace VAS
 					}
 				}
 			}
+
+			App.Current.ViewLocator = new ViewLocator ();
+			App.Current.ControllerLocator = new ControllerLocator ();
 		}
 
 		// copied from OneplayLongomMatch::CoreServices
