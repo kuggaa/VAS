@@ -1,5 +1,5 @@
-//
-//  Copyright (C) 2014 Andoni Morales Alastruey
+﻿//
+//  Copyright (C) 2016 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -16,51 +16,46 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using System.IO;
+using System.ComponentModel;
 using Newtonsoft.Json;
-using VAS.Core.Common;
 using VAS.Core.Interfaces;
-using VAS.Core.MVVMC;
 
-namespace VAS.Core.Store.Playlists
+namespace VAS.Core.MVVMC
 {
+	/// <summary>
+	/// Base class for bindable objects that implements INotifyPropertyChanged and uses Fody
+	/// to automatically raise property changed events.
+	/// </summary>
 	[Serializable]
 	[PropertyChanged.ImplementPropertyChanged]
-	public class PlaylistVideo: BindableBase, IPlaylistElement
+	public class BindableBase: INotifyPropertyChanged, IChanged
 	{
-		public PlaylistVideo (MediaFile file)
-		{
-			File = file;
-		}
+		// Don't serialize observers when cloning this object
+		[field:NonSerialized]
+		public event PropertyChangedEventHandler PropertyChanged;
 
-		public MediaFile File {
-			get;
-			set;
-		}
-
-		public string Description {
-			get {
-				return Path.GetFileName (File.FilePath);
-			}
-		}
-
-		public Image Miniature {
-			get {
-				return File.Preview;
-			}
-		}
+		#region IChanged implementation
 
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
-		public bool Selected {
+		public virtual bool IsChanged {
 			get;
 			set;
 		}
 
-		public Time Duration {
-			get {
-				return File.Duration;
+		#endregion
+
+		/// <summary>
+		/// Raises the property changed event.
+		/// </summary>
+		/// <param name="sender">Sender of the event</param>
+		/// <param name="e">Event args</param>
+		protected void RaisePropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (PropertyChanged != null) {
+				PropertyChanged (sender, e);
 			}
+			IsChanged = true;
 		}
 	}
 }

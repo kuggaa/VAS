@@ -18,12 +18,12 @@
 using System;
 using Newtonsoft.Json;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 
 namespace VAS.Core.Common
 {
 	[Serializable]
-	[PropertyChanged.ImplementPropertyChanged]
-	public class Area: IChanged
+	public class Area: BindableBase
 	{
 		public Area ()
 		{
@@ -44,13 +44,6 @@ namespace VAS.Core.Common
 			Start = start;
 			Width = width;
 			Height = height;
-		}
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool IsChanged {
-			get;
-			set;
 		}
 
 		[JsonIgnore]

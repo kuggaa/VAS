@@ -18,26 +18,19 @@
 using System;
 using Newtonsoft.Json;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 
 namespace VAS.Core.Common
 {
 	
 	[Serializable]
-	[PropertyChanged.ImplementPropertyChanged]
-	public class Point: IChanged
+	public class Point: BindableBase
 	{
 
 		public Point (double x, double y)
 		{
 			X = x;
 			Y = y;
-		}
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool IsChanged {
-			get;
-			set;
 		}
 
 		public double X {

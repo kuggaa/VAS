@@ -128,6 +128,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Events\Events.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Events\EventsBroker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\BindableBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
@@ -141,6 +142,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)Store\Templates\" />
     <Folder Include="$(MSBuildThisFileDirectory)Events\" />
     <Folder Include="$(MSBuildThisFileDirectory)Interfaces\Multimedia\" />
+    <Folder Include="$(MSBuildThisFileDirectory)MVVMC\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)VAS.Core.dll.config">

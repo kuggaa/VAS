@@ -20,25 +20,19 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Newtonsoft.Json;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 
 namespace VAS.Core.Common
 {
 	[Serializable]
 	[PropertyChanged.ImplementPropertyChanged]
-	public class Coordinates: IChanged
+	public class Coordinates: BindableBase
 	{
 		ObservableCollection<Point> points;
 
 		public Coordinates ()
 		{
 			Points = new ObservableCollection<Point> ();
-		}
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool IsChanged {
-			get;
-			set;
 		}
 
 		public ObservableCollection<Point> Points {

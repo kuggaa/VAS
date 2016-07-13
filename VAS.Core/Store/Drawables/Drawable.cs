@@ -20,22 +20,15 @@ using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.MVVMC;
 
 namespace VAS.Core.Store.Drawables
 {
 	[Serializable]
-	[PropertyChanged.ImplementPropertyChanged]
-	public abstract class Drawable: IBlackboardObject, IChanged
+	public abstract class Drawable: BindableBase, IBlackboardObject
 	{
 		public Drawable ()
 		{
-		}
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool IsChanged {
-			get;
-			set;
 		}
 
 		public Color StrokeColor {

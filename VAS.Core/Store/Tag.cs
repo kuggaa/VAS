@@ -18,12 +18,12 @@
 using System;
 using Newtonsoft.Json;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 
 namespace VAS.Core.Store
 {
 	[Serializable]
-	[PropertyChanged.ImplementPropertyChanged]
-	public class Tag: IChanged
+	public class Tag: BindableBase
 	{
 		public Tag (string value, string grp = "Default")
 		{
@@ -31,13 +31,6 @@ namespace VAS.Core.Store
 			Value = value;
 			HotKey = new HotKey ();
 			HotKey.IsChanged = false;
-		}
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool IsChanged {
-			get;
-			set;
 		}
 
 		public string Group {

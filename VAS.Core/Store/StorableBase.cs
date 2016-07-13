@@ -17,15 +17,16 @@
 //
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 
 namespace VAS.Core.Store
 {
 	[Serializable]
-	[PropertyChanged.ImplementPropertyChanged]
-	public class StorableBase: IStorable
+	public class StorableBase: BindableBase, IStorable
 	{
 		[NonSerialized]
 		IStorage storage;
@@ -81,17 +82,6 @@ namespace VAS.Core.Store
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Guid ParentID {
-			get;
-			set;
-		}
-
-		#endregion
-
-		#region IChanged implementation
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool IsChanged {
 			get;
 			set;
 		}

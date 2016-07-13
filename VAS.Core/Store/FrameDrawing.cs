@@ -21,14 +21,14 @@ using System.Collections.Specialized;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 using VAS.Core.Store.Drawables;
 
 namespace VAS.Core.Store
 {
 
 	[Serializable]
-	[PropertyChanged.ImplementPropertyChanged]
-	public class FrameDrawing: IChanged
+	public class FrameDrawing: BindableBase
 	{
 		ObservableCollection<Drawable> drawables;
 		const int DEFAULT_PAUSE_TIME = 5000;
@@ -45,13 +45,6 @@ namespace VAS.Core.Store
 			Drawables = new ObservableCollection<Drawable> ();
 			CameraConfig = new CameraConfig (0);
 			RegionOfInterest = new Area ();
-		}
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool IsChanged {
-			get;
-			set;
 		}
 
 		public Image Miniature {

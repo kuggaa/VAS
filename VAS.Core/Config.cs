@@ -23,14 +23,14 @@ using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
+using VAS.Core.MVVMC;
 using VAS.Core.Serialization;
 
 namespace VAS
 {
 	[Serializable]
 	[JsonConverter (typeof(VASConverter))]
-	[PropertyChanged.ImplementPropertyChanged]
-	public abstract class Config : IChanged
+	public abstract class Config : BindableBase
 	{
 		public void Save ()
 		{
@@ -42,20 +42,17 @@ namespace VAS
 			}
 		}
 
-		#region IChanged implementation
-
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
-		public bool IsChanged {
+		public override bool IsChanged {
 			get {
-				throw new NotImplementedException ();
+				return base.IsChanged;
 			}
 			set {
+				base.IsChanged = value;
 				Save ();
 			}
 		}
-
-		#endregion
 
 		public string Lang {
 			get;

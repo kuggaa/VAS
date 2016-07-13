@@ -22,12 +22,12 @@ using System.Linq;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 
 namespace VAS.Core.Store.Playlists
 {
 	[Serializable]
-	[PropertyChanged.ImplementPropertyChanged]
-	public class PlaylistPlayElement: IPlaylistElement
+	public class PlaylistPlayElement: BindableBase, IPlaylistElement
 	{
 		ObservableCollection<CameraConfig> camerasConfig;
 
@@ -38,13 +38,6 @@ namespace VAS.Core.Store.Playlists
 			Rate = play.Rate;
 			CamerasLayout = play.CamerasLayout;
 			CamerasConfig = new ObservableCollection<CameraConfig> (play.CamerasConfig);
-		}
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool IsChanged {
-			get;
-			set;
 		}
 
 		/// <summary>

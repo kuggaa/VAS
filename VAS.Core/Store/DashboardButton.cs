@@ -25,12 +25,12 @@ using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.Events;
+using VAS.Core.MVVMC;
 
 namespace VAS.Core.Store
 {
 	[Serializable]
-	[PropertyChanged.ImplementPropertyChanged]
-	public class DashboardButton: IChanged
+	public class DashboardButton: BindableBase
 	{
 		ObservableCollection<ActionLink> actionLinks;
 
@@ -52,13 +52,6 @@ namespace VAS.Core.Store
 			ShowIcon = false;
 			ShowHotkey = false;
 			ShowSettingIcon = false;
-		}
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool IsChanged {
-			get;
-			set;
 		}
 
 		public virtual string Name {

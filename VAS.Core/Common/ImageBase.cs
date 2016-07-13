@@ -19,12 +19,12 @@ using System;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 
 namespace VAS.Core.Common
 {
 	[Serializable]
-	[PropertyChanged.ImplementPropertyChanged]
-	public abstract class BaseImage<T>: ISerializable, IChanged, IDisposable where T: IDisposable
+	public abstract class BaseImage<T>: BindableBase, ISerializable, IDisposable where T: IDisposable
 	{
 
 		protected const string BUF_PROPERTY = "pngbuf";
@@ -41,13 +41,6 @@ namespace VAS.Core.Common
 		public BaseImage (string filename)
 		{
 			Value = LoadFromFile (filename);
-		}
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool IsChanged {
-			get;
-			set;
 		}
 
 		public T Value {

@@ -20,6 +20,7 @@
 using System;
 using Newtonsoft.Json;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 
 namespace VAS.Core.Store
 {
@@ -28,8 +29,7 @@ namespace VAS.Core.Store
 	/// It's expressed in miliseconds and provide some helper methods for time conversion and representation
 	/// </summary>
 	[Serializable]
-	[PropertyChanged.ImplementPropertyChanged]
-	public class Time :  IComparable, IChanged
+	public class Time : BindableBase, IComparable
 	{
 		private const int MS = 1000000;
 		public const int SECONDS_TO_TIME = 1000;
@@ -49,13 +49,6 @@ namespace VAS.Core.Store
 		#endregion
 
 		#region Properties
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool IsChanged {
-			get;
-			set;
-		}
 
 		//// <summary>
 		/// Time in miliseconds
