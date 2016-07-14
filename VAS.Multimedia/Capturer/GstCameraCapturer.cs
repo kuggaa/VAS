@@ -85,6 +85,9 @@ namespace VAS.Multimedia.Capturer
 		[DllImport ("libcesarplayer.dll")]
 		static extern IntPtr gst_camera_capturer_unref_pixbuf (IntPtr raw);
 
+		[DllImport ("libcesarplayer.dll")]
+		static extern IntPtr gst_camera_capturer_ptz (IntPtr raw, PTZAction action);
+
 		public unsafe GstCameraCapturer (string filename) : base (IntPtr.Zero)
 		{
 			if (GetType () != typeof(GstCameraCapturer)) {
@@ -481,6 +484,11 @@ namespace VAS.Multimedia.Capturer
 		public void Close ()
 		{
 			gst_camera_capturer_close (Handle);
+		}
+
+		public void PTZ (PTZAction action)
+		{
+			gst_camera_capturer_ptz (Handle, action);
 		}
 
 		public void Expose ()

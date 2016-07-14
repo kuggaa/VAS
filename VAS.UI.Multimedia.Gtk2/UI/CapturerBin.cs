@@ -61,6 +61,12 @@ namespace VAS.UI
 			stopbutton.Clicked += (sender, e) => StopPeriod ();
 			pausebutton.Clicked += (sender, e) => PausePeriod ();
 			resumebutton.Clicked += (sender, e) => ResumePeriod ();
+			zoomInButton.Clicked += (sender, e) => PTZ (PTZAction.ZoomIn);
+			zoomOutButton.Clicked += (sender, e) => PTZ (PTZAction.ZoomOut);
+			panLeftButton.Clicked += (sender, e) => PTZ (PTZAction.PanLeft);
+			panRightButton.Clicked += (sender, e) => PTZ (PTZAction.PanRight);
+			tiltUpButton.Clicked += (sender, e) => PTZ (PTZAction.TiltUp);
+			tiltDownButton.Clicked += (sender, e) => PTZ (PTZAction.TiltDown);
 			savebutton.Clicked += HandleSaveClicked;
 			cancelbutton.Clicked += HandleCloseClicked;
 
@@ -74,6 +80,12 @@ namespace VAS.UI
 			cancelbutton.TooltipMarkup = Catalog.GetString ("Cancel capture");
 			deletelastbutton.TooltipMarkup = Catalog.GetString ("Delete event");
 			playlastbutton.TooltipMarkup = Catalog.GetString ("Replay event");
+			zoomInButton.TooltipMarkup = Catalog.GetString ("Zoom in");
+			zoomOutButton.TooltipMarkup = Catalog.GetString ("Zoom out");
+			panLeftButton.TooltipMarkup = Catalog.GetString ("Pan left");
+			panRightButton.TooltipMarkup = Catalog.GetString ("Pan right");
+			tiltUpButton.TooltipMarkup = Catalog.GetString ("Tilt up");
+			tiltDownButton.TooltipMarkup = Catalog.GetString ("Tilt down");
 
 			recimage.Pixbuf = Misc.LoadIcon ("longomatch-control-record",
 				StyleConf.PlayerCapturerIconSize);
@@ -548,7 +560,11 @@ namespace VAS.UI
 			ReadyToCapture = true;
 		}
 
-
-
+		public void PTZ (PTZAction action)
+		{
+			if (Capturer != null) {
+				Capturer.PTZ (action);
+			}
+		}
 	}
 }

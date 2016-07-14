@@ -136,6 +136,16 @@ typedef enum
   CAPTURE_SOURCE_TYPE_FILE = 4,
 } CaptureSourceType;
 
+typedef enum
+{
+  PTZ_ACTION_ZOOM_IN = 0,
+  PTZ_ACTION_ZOOM_OUT = 1,
+  PTZ_ACTION_PAN_LEFT = 2,
+  PTZ_ACTION_PAN_RIGHT = 3,
+  PTZ_ACTION_TILT_UP = 4,
+  PTZ_ACTION_TILT_DOWN = 5,
+} PTZAction;
+
 typedef enum {
   GST_AUTOPLUG_SELECT_TRY,
   GST_AUTOPLUG_SELECT_EXPOSE,

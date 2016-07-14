@@ -1716,6 +1716,12 @@ gst_camera_capturer_expose (GstCameraCapturer * gcc)
 }
 
 void
+gst_camera_capturer_ptz (GstCameraCapturer * gcc, PTZAction ptz)
+{
+  g_print("Hello world! %i\n", ptz);
+}
+
+void
 gst_camera_capturer_configure (GstCameraCapturer * gcc,
     const gchar * filename, CaptureSourceType source,
     const gchar * source_element, const gchar * device_id,

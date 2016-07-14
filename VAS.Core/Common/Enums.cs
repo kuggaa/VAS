@@ -491,5 +491,13 @@ namespace VAS.Core.Common
 		Invert = 2
 	}
 
-
+	public enum PTZAction
+	{
+		ZoomIn,
+		ZoomOut,
+		PanLeft,
+		PanRight,
+		TiltUp,
+		TiltDown,
+	}
 }

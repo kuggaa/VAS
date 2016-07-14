@@ -474,6 +474,144 @@
                 <property name="MemberName" />
                 <property name="Spacing">6</property>
                 <child>
+                  <widget class="Gtk.Button" id="zoomInButton">
+                    <property name="MemberName" />
+                    <property name="Tooltip" translatable="yes">Start recording period</property>
+                    <property name="CanFocus">True</property>
+                    <property name="Type">Custom</property>
+                    <property name="Relief">None</property>
+                    <child>
+                      <widget class="Gtk.Image" id="zoomInImage">
+                        <property name="MemberName" />
+                        <property name="Xpad">5</property>
+                        <property name="Ypad">5</property>
+                        <property name="Pixbuf">stock:gtk-zoom-in Menu</property>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Position">0</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Button" id="zoomOutButton">
+                    <property name="MemberName" />
+                    <property name="Tooltip" translatable="yes">Start recording period</property>
+                    <property name="CanFocus">True</property>
+                    <property name="Type">Custom</property>
+                    <property name="Relief">None</property>
+                    <child>
+                      <widget class="Gtk.Image" id="zoomOutImage">
+                        <property name="MemberName" />
+                        <property name="Xpad">5</property>
+                        <property name="Ypad">5</property>
+                        <property name="Pixbuf">stock:gtk-zoom-out Menu</property>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Position">1</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Button" id="panLeftButton">
+                    <property name="MemberName" />
+                    <property name="Tooltip" translatable="yes">Start recording period</property>
+                    <property name="CanFocus">True</property>
+                    <property name="Type">Custom</property>
+                    <property name="Relief">None</property>
+                    <child>
+                      <widget class="Gtk.Image" id="panLeftImage">
+                        <property name="MemberName" />
+                        <property name="Xpad">5</property>
+                        <property name="Ypad">5</property>
+                        <property name="Pixbuf">stock:gtk-go-back Menu</property>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Position">2</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Button" id="panRightButton">
+                    <property name="MemberName" />
+                    <property name="Tooltip" translatable="yes">Start recording period</property>
+                    <property name="CanFocus">True</property>
+                    <property name="Type">Custom</property>
+                    <property name="Relief">None</property>
+                    <child>
+                      <widget class="Gtk.Image" id="panRightImage">
+                        <property name="MemberName" />
+                        <property name="Xpad">5</property>
+                        <property name="Ypad">5</property>
+                        <property name="Pixbuf">stock:gtk-go-forward Menu</property>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Position">3</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Button" id="tiltUpButton">
+                    <property name="MemberName" />
+                    <property name="Tooltip" translatable="yes">Start recording period</property>
+                    <property name="CanFocus">True</property>
+                    <property name="Type">Custom</property>
+                    <property name="Relief">None</property>
+                    <child>
+                      <widget class="Gtk.Image" id="tiltUpImage">
+                        <property name="MemberName" />
+                        <property name="Xpad">5</property>
+                        <property name="Ypad">5</property>
+                        <property name="Pixbuf">stock:gtk-go-up Menu</property>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Position">4</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Button" id="tiltDownButton">
+                    <property name="MemberName" />
+                    <property name="Tooltip" translatable="yes">Start recording period</property>
+                    <property name="CanFocus">True</property>
+                    <property name="Type">Custom</property>
+                    <property name="Relief">None</property>
+                    <child>
+                      <widget class="Gtk.Image" id="tiltDownImage">
+                        <property name="MemberName" />
+                        <property name="Xpad">5</property>
+                        <property name="Ypad">5</property>
+                        <property name="Pixbuf">stock:gtk-go-down Menu</property>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Position">5</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
                   <widget class="Gtk.EventBox" id="hourseventbox">
                     <property name="MemberName" />
                     <child>
@@ -485,7 +623,7 @@
                     </child>
                   </widget>
                   <packing>
-                    <property name="Position">0</property>
+                    <property name="Position">6</property>
                     <property name="AutoSize">False</property>
                     <property name="Expand">False</property>
                   </packing>
@@ -497,7 +635,7 @@
                     <property name="UseMarkup">True</property>
                   </widget>
                   <packing>
-                    <property name="Position">1</property>
+                    <property name="Position">7</property>
                     <property name="AutoSize">True</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
@@ -515,7 +653,7 @@
                     </child>
                   </widget>
                   <packing>
-                    <property name="Position">2</property>
+                    <property name="Position">8</property>
                     <property name="AutoSize">True</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
@@ -528,7 +666,7 @@
                     <property name="UseMarkup">True</property>
                   </widget>
                   <packing>
-                    <property name="Position">3</property>
+                    <property name="Position">9</property>
                     <property name="AutoSize">True</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
@@ -546,7 +684,7 @@
                     </child>
                   </widget>
                   <packing>
-                    <property name="Position">4</property>
+                    <property name="Position">10</property>
                     <property name="AutoSize">True</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
@@ -558,7 +696,7 @@
                     <property name="Xpad">10</property>
                   </widget>
                   <packing>
-                    <property name="Position">5</property>
+                    <property name="Position">11</property>
                     <property name="AutoSize">True</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
@@ -569,7 +707,7 @@
                     <property name="MemberName" />
                   </widget>
                   <packing>
-                    <property name="Position">6</property>
+                    <property name="Position">12</property>
                     <property name="AutoSize">False</property>
                   </packing>
                 </child>
@@ -589,7 +727,7 @@
                     </child>
                   </widget>
                   <packing>
-                    <property name="Position">7</property>
+                    <property name="Position">13</property>
                     <property name="AutoSize">False</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
@@ -611,7 +749,7 @@
                     </child>
                   </widget>
                   <packing>
-                    <property name="Position">8</property>
+                    <property name="Position">14</property>
                     <property name="AutoSize">False</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
@@ -633,7 +771,7 @@
                     </child>
                   </widget>
                   <packing>
-                    <property name="Position">9</property>
+                    <property name="Position">15</property>
                     <property name="AutoSize">False</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
@@ -655,7 +793,7 @@
                     </child>
                   </widget>
                   <packing>
-                    <property name="Position">10</property>
+                    <property name="Position">16</property>
                     <property name="AutoSize">False</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
@@ -677,7 +815,7 @@
                     </child>
                   </widget>
                   <packing>
-                    <property name="Position">11</property>
+                    <property name="Position">17</property>
                     <property name="AutoSize">False</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
@@ -699,7 +837,7 @@
                     </child>
                   </widget>
                   <packing>
-                    <property name="Position">12</property>
+                    <property name="Position">18</property>
                     <property name="AutoSize">False</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
@@ -710,7 +848,7 @@
                     <property name="MemberName" />
                   </widget>
                   <packing>
-                    <property name="Position">13</property>
+                    <property name="Position">19</property>
                     <property name="AutoSize">False</property>
                   </packing>
                 </child>
@@ -777,7 +915,7 @@
                   </widget>
                   <packing>
                     <property name="PackType">End</property>
-                    <property name="Position">14</property>
+                    <property name="Position">20</property>
                     <property name="AutoSize">False</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>

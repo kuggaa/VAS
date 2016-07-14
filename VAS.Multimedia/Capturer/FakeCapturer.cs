@@ -81,6 +81,11 @@ namespace VAS.Multimedia.Capturer
 			timer.TogglePause ();
 		}
 
+		public void PTZ (PTZAction action)
+		{
+			throw new System.NotImplementedException ();
+		}
+
 		public uint OutputWidth {
 			get {
 				return 0;

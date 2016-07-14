@@ -12,6 +12,30 @@ namespace VAS.UI
 		
 		private global::Gtk.HBox controllerbox;
 		
+		private global::Gtk.Button zoomInButton;
+		
+		private global::Gtk.Image zoomInImage;
+		
+		private global::Gtk.Button zoomOutButton;
+		
+		private global::Gtk.Image zoomOutImage;
+		
+		private global::Gtk.Button panLeftButton;
+		
+		private global::Gtk.Image panLeftImage;
+		
+		private global::Gtk.Button panRightButton;
+		
+		private global::Gtk.Image panRightImage;
+		
+		private global::Gtk.Button tiltUpButton;
+		
+		private global::Gtk.Image tiltUpImage;
+		
+		private global::Gtk.Button tiltDownButton;
+		
+		private global::Gtk.Image tiltDownImage;
+		
 		private global::Gtk.EventBox hourseventbox;
 		
 		private global::Gtk.Label hourlabel;
@@ -97,6 +121,114 @@ namespace VAS.UI
 			this.controllerbox.Name = "controllerbox";
 			this.controllerbox.Spacing = 6;
 			// Container child controllerbox.Gtk.Box+BoxChild
+			this.zoomInButton = new global::Gtk.Button ();
+			this.zoomInButton.TooltipMarkup = "Start recording period";
+			this.zoomInButton.CanFocus = true;
+			this.zoomInButton.Name = "zoomInButton";
+			this.zoomInButton.Relief = ((global::Gtk.ReliefStyle)(2));
+			// Container child zoomInButton.Gtk.Container+ContainerChild
+			this.zoomInImage = new global::Gtk.Image ();
+			this.zoomInImage.Name = "zoomInImage";
+			this.zoomInImage.Xpad = 5;
+			this.zoomInImage.Ypad = 5;
+			this.zoomInImage.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-zoom-in", global::Gtk.IconSize.Menu);
+			this.zoomInButton.Add (this.zoomInImage);
+			this.controllerbox.Add (this.zoomInButton);
+			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.zoomInButton]));
+			w3.Position = 0;
+			w3.Expand = false;
+			w3.Fill = false;
+			// Container child controllerbox.Gtk.Box+BoxChild
+			this.zoomOutButton = new global::Gtk.Button ();
+			this.zoomOutButton.TooltipMarkup = "Start recording period";
+			this.zoomOutButton.CanFocus = true;
+			this.zoomOutButton.Name = "zoomOutButton";
+			this.zoomOutButton.Relief = ((global::Gtk.ReliefStyle)(2));
+			// Container child zoomOutButton.Gtk.Container+ContainerChild
+			this.zoomOutImage = new global::Gtk.Image ();
+			this.zoomOutImage.Name = "zoomOutImage";
+			this.zoomOutImage.Xpad = 5;
+			this.zoomOutImage.Ypad = 5;
+			this.zoomOutImage.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-zoom-out", global::Gtk.IconSize.Menu);
+			this.zoomOutButton.Add (this.zoomOutImage);
+			this.controllerbox.Add (this.zoomOutButton);
+			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.zoomOutButton]));
+			w5.Position = 1;
+			w5.Expand = false;
+			w5.Fill = false;
+			// Container child controllerbox.Gtk.Box+BoxChild
+			this.panLeftButton = new global::Gtk.Button ();
+			this.panLeftButton.TooltipMarkup = "Start recording period";
+			this.panLeftButton.CanFocus = true;
+			this.panLeftButton.Name = "panLeftButton";
+			this.panLeftButton.Relief = ((global::Gtk.ReliefStyle)(2));
+			// Container child panLeftButton.Gtk.Container+ContainerChild
+			this.panLeftImage = new global::Gtk.Image ();
+			this.panLeftImage.Name = "panLeftImage";
+			this.panLeftImage.Xpad = 5;
+			this.panLeftImage.Ypad = 5;
+			this.panLeftImage.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-go-back", global::Gtk.IconSize.Menu);
+			this.panLeftButton.Add (this.panLeftImage);
+			this.controllerbox.Add (this.panLeftButton);
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.panLeftButton]));
+			w7.Position = 2;
+			w7.Expand = false;
+			w7.Fill = false;
+			// Container child controllerbox.Gtk.Box+BoxChild
+			this.panRightButton = new global::Gtk.Button ();
+			this.panRightButton.TooltipMarkup = "Start recording period";
+			this.panRightButton.CanFocus = true;
+			this.panRightButton.Name = "panRightButton";
+			this.panRightButton.Relief = ((global::Gtk.ReliefStyle)(2));
+			// Container child panRightButton.Gtk.Container+ContainerChild
+			this.panRightImage = new global::Gtk.Image ();
+			this.panRightImage.Name = "panRightImage";
+			this.panRightImage.Xpad = 5;
+			this.panRightImage.Ypad = 5;
+			this.panRightImage.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-go-forward", global::Gtk.IconSize.Menu);
+			this.panRightButton.Add (this.panRightImage);
+			this.controllerbox.Add (this.panRightButton);
+			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.panRightButton]));
+			w9.Position = 3;
+			w9.Expand = false;
+			w9.Fill = false;
+			// Container child controllerbox.Gtk.Box+BoxChild
+			this.tiltUpButton = new global::Gtk.Button ();
+			this.tiltUpButton.TooltipMarkup = "Start recording period";
+			this.tiltUpButton.CanFocus = true;
+			this.tiltUpButton.Name = "tiltUpButton";
+			this.tiltUpButton.Relief = ((global::Gtk.ReliefStyle)(2));
+			// Container child tiltUpButton.Gtk.Container+ContainerChild
+			this.tiltUpImage = new global::Gtk.Image ();
+			this.tiltUpImage.Name = "tiltUpImage";
+			this.tiltUpImage.Xpad = 5;
+			this.tiltUpImage.Ypad = 5;
+			this.tiltUpImage.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-go-up", global::Gtk.IconSize.Menu);
+			this.tiltUpButton.Add (this.tiltUpImage);
+			this.controllerbox.Add (this.tiltUpButton);
+			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.tiltUpButton]));
+			w11.Position = 4;
+			w11.Expand = false;
+			w11.Fill = false;
+			// Container child controllerbox.Gtk.Box+BoxChild
+			this.tiltDownButton = new global::Gtk.Button ();
+			this.tiltDownButton.TooltipMarkup = "Start recording period";
+			this.tiltDownButton.CanFocus = true;
+			this.tiltDownButton.Name = "tiltDownButton";
+			this.tiltDownButton.Relief = ((global::Gtk.ReliefStyle)(2));
+			// Container child tiltDownButton.Gtk.Container+ContainerChild
+			this.tiltDownImage = new global::Gtk.Image ();
+			this.tiltDownImage.Name = "tiltDownImage";
+			this.tiltDownImage.Xpad = 5;
+			this.tiltDownImage.Ypad = 5;
+			this.tiltDownImage.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-go-down", global::Gtk.IconSize.Menu);
+			this.tiltDownButton.Add (this.tiltDownImage);
+			this.controllerbox.Add (this.tiltDownButton);
+			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.tiltDownButton]));
+			w13.Position = 5;
+			w13.Expand = false;
+			w13.Fill = false;
+			// Container child controllerbox.Gtk.Box+BoxChild
 			this.hourseventbox = new global::Gtk.EventBox ();
 			this.hourseventbox.Name = "hourseventbox";
 			// Container child hourseventbox.Gtk.Container+ContainerChild
@@ -106,19 +238,19 @@ namespace VAS.UI
 			this.hourlabel.UseMarkup = true;
 			this.hourseventbox.Add (this.hourlabel);
 			this.controllerbox.Add (this.hourseventbox);
-			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.hourseventbox]));
-			w3.Position = 0;
-			w3.Expand = false;
+			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.hourseventbox]));
+			w15.Position = 6;
+			w15.Expand = false;
 			// Container child controllerbox.Gtk.Box+BoxChild
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
 			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>:</b>");
 			this.label1.UseMarkup = true;
 			this.controllerbox.Add (this.label1);
-			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.label1]));
-			w4.Position = 1;
-			w4.Expand = false;
-			w4.Fill = false;
+			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.label1]));
+			w16.Position = 7;
+			w16.Expand = false;
+			w16.Fill = false;
 			// Container child controllerbox.Gtk.Box+BoxChild
 			this.minuteseventbox = new global::Gtk.EventBox ();
 			this.minuteseventbox.Name = "minuteseventbox";
@@ -129,20 +261,20 @@ namespace VAS.UI
 			this.minuteslabel.UseMarkup = true;
 			this.minuteseventbox.Add (this.minuteslabel);
 			this.controllerbox.Add (this.minuteseventbox);
-			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.minuteseventbox]));
-			w6.Position = 2;
-			w6.Expand = false;
-			w6.Fill = false;
+			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.minuteseventbox]));
+			w18.Position = 8;
+			w18.Expand = false;
+			w18.Fill = false;
 			// Container child controllerbox.Gtk.Box+BoxChild
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
 			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>:</b>");
 			this.label2.UseMarkup = true;
 			this.controllerbox.Add (this.label2);
-			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.label2]));
-			w7.Position = 3;
-			w7.Expand = false;
-			w7.Fill = false;
+			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.label2]));
+			w19.Position = 9;
+			w19.Expand = false;
+			w19.Fill = false;
 			// Container child controllerbox.Gtk.Box+BoxChild
 			this.secondseventbox = new global::Gtk.EventBox ();
 			this.secondseventbox.Name = "secondseventbox";
@@ -153,25 +285,25 @@ namespace VAS.UI
 			this.secondslabel.UseMarkup = true;
 			this.secondseventbox.Add (this.secondslabel);
 			this.controllerbox.Add (this.secondseventbox);
-			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.secondseventbox]));
-			w9.Position = 4;
-			w9.Expand = false;
-			w9.Fill = false;
+			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.secondseventbox]));
+			w21.Position = 10;
+			w21.Expand = false;
+			w21.Fill = false;
 			// Container child controllerbox.Gtk.Box+BoxChild
 			this.periodlabel = new global::Gtk.Label ();
 			this.periodlabel.Name = "periodlabel";
 			this.periodlabel.Xpad = 10;
 			this.controllerbox.Add (this.periodlabel);
-			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.periodlabel]));
-			w10.Position = 5;
-			w10.Expand = false;
-			w10.Fill = false;
+			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.periodlabel]));
+			w22.Position = 11;
+			w22.Expand = false;
+			w22.Fill = false;
 			// Container child controllerbox.Gtk.Box+BoxChild
 			this.vseparator1 = new global::Gtk.VSeparator ();
 			this.vseparator1.Name = "vseparator1";
 			this.controllerbox.Add (this.vseparator1);
-			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.vseparator1]));
-			w11.Position = 6;
+			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.vseparator1]));
+			w23.Position = 12;
 			// Container child controllerbox.Gtk.Box+BoxChild
 			this.recbutton = new global::Gtk.Button ();
 			this.recbutton.TooltipMarkup = "Start recording period";
@@ -185,10 +317,10 @@ namespace VAS.UI
 			this.recimage.Ypad = 5;
 			this.recbutton.Add (this.recimage);
 			this.controllerbox.Add (this.recbutton);
-			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.recbutton]));
-			w13.Position = 7;
-			w13.Expand = false;
-			w13.Fill = false;
+			global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.recbutton]));
+			w25.Position = 13;
+			w25.Expand = false;
+			w25.Fill = false;
 			// Container child controllerbox.Gtk.Box+BoxChild
 			this.stopbutton = new global::Gtk.Button ();
 			this.stopbutton.TooltipMarkup = "Stop recording period";
@@ -202,10 +334,10 @@ namespace VAS.UI
 			this.stopimage.Ypad = 5;
 			this.stopbutton.Add (this.stopimage);
 			this.controllerbox.Add (this.stopbutton);
-			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.stopbutton]));
-			w15.Position = 8;
-			w15.Expand = false;
-			w15.Fill = false;
+			global::Gtk.Box.BoxChild w27 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.stopbutton]));
+			w27.Position = 14;
+			w27.Expand = false;
+			w27.Fill = false;
 			// Container child controllerbox.Gtk.Box+BoxChild
 			this.pausebutton = new global::Gtk.Button ();
 			this.pausebutton.TooltipMarkup = "Pause clock";
@@ -219,10 +351,10 @@ namespace VAS.UI
 			this.pauseimage.Ypad = 5;
 			this.pausebutton.Add (this.pauseimage);
 			this.controllerbox.Add (this.pausebutton);
-			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.pausebutton]));
-			w17.Position = 9;
-			w17.Expand = false;
-			w17.Fill = false;
+			global::Gtk.Box.BoxChild w29 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.pausebutton]));
+			w29.Position = 15;
+			w29.Expand = false;
+			w29.Fill = false;
 			// Container child controllerbox.Gtk.Box+BoxChild
 			this.resumebutton = new global::Gtk.Button ();
 			this.resumebutton.TooltipMarkup = "Resume clock";
@@ -236,10 +368,10 @@ namespace VAS.UI
 			this.resumeimage.Ypad = 5;
 			this.resumebutton.Add (this.resumeimage);
 			this.controllerbox.Add (this.resumebutton);
-			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.resumebutton]));
-			w19.Position = 10;
-			w19.Expand = false;
-			w19.Fill = false;
+			global::Gtk.Box.BoxChild w31 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.resumebutton]));
+			w31.Position = 16;
+			w31.Expand = false;
+			w31.Fill = false;
 			// Container child controllerbox.Gtk.Box+BoxChild
 			this.savebutton = new global::Gtk.Button ();
 			this.savebutton.TooltipMarkup = "Save project";
@@ -253,10 +385,10 @@ namespace VAS.UI
 			this.saveimage.Ypad = 5;
 			this.savebutton.Add (this.saveimage);
 			this.controllerbox.Add (this.savebutton);
-			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.savebutton]));
-			w21.Position = 11;
-			w21.Expand = false;
-			w21.Fill = false;
+			global::Gtk.Box.BoxChild w33 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.savebutton]));
+			w33.Position = 17;
+			w33.Expand = false;
+			w33.Fill = false;
 			// Container child controllerbox.Gtk.Box+BoxChild
 			this.cancelbutton = new global::Gtk.Button ();
 			this.cancelbutton.TooltipMarkup = "Cancel capture";
@@ -270,16 +402,16 @@ namespace VAS.UI
 			this.cancelimage.Ypad = 5;
 			this.cancelbutton.Add (this.cancelimage);
 			this.controllerbox.Add (this.cancelbutton);
-			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.cancelbutton]));
-			w23.Position = 12;
-			w23.Expand = false;
-			w23.Fill = false;
+			global::Gtk.Box.BoxChild w35 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.cancelbutton]));
+			w35.Position = 18;
+			w35.Expand = false;
+			w35.Fill = false;
 			// Container child controllerbox.Gtk.Box+BoxChild
 			this.vseparator2 = new global::Gtk.VSeparator ();
 			this.vseparator2.Name = "vseparator2";
 			this.controllerbox.Add (this.vseparator2);
-			global::Gtk.Box.BoxChild w24 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.vseparator2]));
-			w24.Position = 13;
+			global::Gtk.Box.BoxChild w36 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.vseparator2]));
+			w36.Position = 19;
 			// Container child controllerbox.Gtk.Box+BoxChild
 			this.lasteventbox = new global::Gtk.HBox ();
 			this.lasteventbox.Name = "lasteventbox";
@@ -290,9 +422,9 @@ namespace VAS.UI
 			this.lastlabel.Ellipsize = ((global::Pango.EllipsizeMode)(3));
 			this.lastlabel.MaxWidthChars = 15;
 			this.lasteventbox.Add (this.lastlabel);
-			global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(this.lasteventbox [this.lastlabel]));
-			w25.Position = 0;
-			w25.Fill = false;
+			global::Gtk.Box.BoxChild w37 = ((global::Gtk.Box.BoxChild)(this.lasteventbox [this.lastlabel]));
+			w37.Position = 0;
+			w37.Fill = false;
 			// Container child lasteventbox.Gtk.Box+BoxChild
 			this.deletelastbutton = new global::Gtk.Button ();
 			this.deletelastbutton.TooltipMarkup = "Delete event";
@@ -306,10 +438,10 @@ namespace VAS.UI
 			this.deletelastimage.Ypad = 5;
 			this.deletelastbutton.Add (this.deletelastimage);
 			this.lasteventbox.Add (this.deletelastbutton);
-			global::Gtk.Box.BoxChild w27 = ((global::Gtk.Box.BoxChild)(this.lasteventbox [this.deletelastbutton]));
-			w27.Position = 1;
-			w27.Expand = false;
-			w27.Fill = false;
+			global::Gtk.Box.BoxChild w39 = ((global::Gtk.Box.BoxChild)(this.lasteventbox [this.deletelastbutton]));
+			w39.Position = 1;
+			w39.Expand = false;
+			w39.Fill = false;
 			// Container child lasteventbox.Gtk.Box+BoxChild
 			this.playlastbutton = new global::Gtk.Button ();
 			this.playlastbutton.TooltipMarkup = "Replay event";
@@ -323,21 +455,21 @@ namespace VAS.UI
 			this.playlastimage.Ypad = 5;
 			this.playlastbutton.Add (this.playlastimage);
 			this.lasteventbox.Add (this.playlastbutton);
-			global::Gtk.Box.BoxChild w29 = ((global::Gtk.Box.BoxChild)(this.lasteventbox [this.playlastbutton]));
-			w29.Position = 2;
-			w29.Expand = false;
-			w29.Fill = false;
+			global::Gtk.Box.BoxChild w41 = ((global::Gtk.Box.BoxChild)(this.lasteventbox [this.playlastbutton]));
+			w41.Position = 2;
+			w41.Expand = false;
+			w41.Fill = false;
 			this.controllerbox.Add (this.lasteventbox);
-			global::Gtk.Box.BoxChild w30 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.lasteventbox]));
-			w30.PackType = ((global::Gtk.PackType)(1));
-			w30.Position = 14;
-			w30.Expand = false;
-			w30.Fill = false;
+			global::Gtk.Box.BoxChild w42 = ((global::Gtk.Box.BoxChild)(this.controllerbox [this.lasteventbox]));
+			w42.PackType = ((global::Gtk.PackType)(1));
+			w42.Position = 20;
+			w42.Expand = false;
+			w42.Fill = false;
 			this.alignment1.Add (this.controllerbox);
 			this.vbox1.Add (this.alignment1);
-			global::Gtk.Box.BoxChild w32 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.alignment1]));
-			w32.Position = 1;
-			w32.Expand = false;
+			global::Gtk.Box.BoxChild w44 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.alignment1]));
+			w44.Position = 1;
+			w44.Expand = false;
 			this.Add (this.vbox1);
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();

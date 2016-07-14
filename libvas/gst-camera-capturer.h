@@ -100,6 +100,8 @@ EXPORT void gst_camera_capturer_stop                      (GstCameraCapturer * g
 
 EXPORT void gst_camera_capturer_expose                    (GstCameraCapturer * gcc);
 
+EXPORT void gst_camera_capturer_ptz                      (GstCameraCapturer * gcc, PTZAction ptz);
+
 EXPORT GList *gst_camera_capturer_enum_audio_devices      (const gchar *device);
 
 EXPORT GList *gst_camera_capturer_enum_video_devices      (const gchar *device);

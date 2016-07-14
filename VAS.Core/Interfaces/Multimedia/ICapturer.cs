@@ -55,5 +55,7 @@ namespace VAS.Core.Interfaces.Multimedia
 		void Dispose ();
 
 		void Expose ();
+
+		void PTZ (PTZAction action);
 	}
 }
