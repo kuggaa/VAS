@@ -109,6 +109,11 @@
     <Compile Include="Services\TestPlaylistManager.cs" />
     <Compile Include="Setup.cs" />
     <Compile Include="Events\TestEvents.cs" />
+    <Compile Include="MVVMC\TestCollectionViewModel.cs" />
+    <Compile Include="MVVMC\TestControllerLocator.cs" />
+    <Compile Include="MVVMC\TestViewLocator.cs" />
+    <Compile Include="MVVMC\TestViewModelBase.cs" />
+    <Compile Include="MVVMC\TestBindableBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -147,6 +152,7 @@
     <Folder Include="DB\" />
     <Folder Include="Services\" />
     <Folder Include="Events\" />
+    <Folder Include="MVVMC\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Core\dibujo.svg">

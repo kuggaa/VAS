@@ -55,8 +55,7 @@ namespace VAS.Core.MVVMC
 		public IView Retrieve (string name)
 		{
 			if (!elements.ContainsKey (name)) {
-				throw new Exception (String.Format ("The {0} with name {1} was not found",
-					locatorName, name));
+				return null;
 			}
 			return (IView)Activator.CreateInstance (elements [name]);
 		}

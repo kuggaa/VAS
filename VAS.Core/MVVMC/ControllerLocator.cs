@@ -83,6 +83,9 @@ namespace VAS.Core.MVVMC
 			var controllerElement = elements.Where (e => e.Name == name).
 				OrderByDescending (e => e.Priority).
 				FirstOrDefault ();
+			if (controllerElement.Type == null) {
+				return null;
+			}
 			return (IController)Activator.CreateInstance (controllerElement.Type);
 		}
 	}
