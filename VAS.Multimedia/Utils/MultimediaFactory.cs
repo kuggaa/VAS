@@ -100,6 +100,13 @@ namespace VAS.Multimedia
 			}
 		}
 
+
+		public List<ICameraDiscoverer> CameraDiscoverers {
+			get {
+				return registry.RetrieveAll<ICameraDiscoverer> ();
+			}
+		}
+
 		public bool FileNeedsRemux (MediaFile file)
 		{
 			return GStreamer.FileNeedsRemux (file);

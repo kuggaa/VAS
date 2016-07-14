@@ -128,6 +128,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Events\Events.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Events\EventsBroker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Multimedia\ICameraDiscoverer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

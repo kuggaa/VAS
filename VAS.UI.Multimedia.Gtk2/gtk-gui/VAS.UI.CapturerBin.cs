@@ -113,6 +113,8 @@ namespace VAS.UI
 			this.vbox1.Add (this.videowindow);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.videowindow]));
 			w1.Position = 0;
+			w1.Expand = false;
+			w1.Fill = false;
 			// Container child vbox1.Gtk.Box+BoxChild
 			this.alignment1 = new global::Gtk.Alignment (0.5F, 0.5F, 0F, 1F);
 			this.alignment1.Name = "alignment1";

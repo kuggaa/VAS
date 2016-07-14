@@ -66,5 +66,21 @@ namespace VAS.Core.Common
 			elementType = elements [interfac].OrderByDescending (e => e.priority).First ().type;
 			return (T)Activator.CreateInstance (elementType, args);
 		}
+
+		public List<T> RetrieveAll<T> (params object[] args)
+		{
+			List<T> results = new List<T> ();
+			Type interfac = typeof(T);
+
+			if (!elements.ContainsKey (interfac)) {
+				throw new Exception (String.Format ("No {0} available in the {0} registry",
+					interfac, name));
+			}
+
+			foreach (var element in elements[interfac]) {
+				results.Add ((T)Activator.CreateInstance (element.type, args));
+			}
+			return results;
+		}
 	}
 }

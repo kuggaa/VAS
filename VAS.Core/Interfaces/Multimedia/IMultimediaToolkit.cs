@@ -41,6 +41,8 @@ namespace VAS.Core.Interfaces.Multimedia
 
 		List<Device> VideoDevices { get; }
 
+		List<ICameraDiscoverer> CameraDiscoverers { get; }
+
 		bool FileNeedsRemux (MediaFile file);
 
 		string RemuxFile (MediaFile file, object parent);
