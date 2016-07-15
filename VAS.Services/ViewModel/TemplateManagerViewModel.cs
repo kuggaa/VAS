@@ -26,7 +26,8 @@ namespace VAS.Services.ViewModel
 	/// <summary>
 	/// Generic base class ViewModel for a templates manager View, like the Dashboards Manager or the Teams Manager
 	/// </summary>
-	public class TemplatesManagerViewModel<T, W>: CollectionViewModel<T, W> where T: ITemplate<T> where W:TemplateViewModel<T>, new()
+	public class TemplatesManagerViewModel<T, W>: CollectionViewModel<T, W>
+		where T: ITemplate<T> where W:TemplateViewModel<T>, new()
 	{
 		public TemplatesManagerViewModel ()
 		{

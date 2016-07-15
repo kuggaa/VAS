@@ -34,7 +34,8 @@ namespace VAS.Services.Controller
 	/// <summary>
 	/// Base Controller for working with <see cref="ITemplate"/> like dashboards and teams.
 	/// </summary>
-	public abstract class TemplatesController<T, W>: IController where T:BindableBase, ITemplate<T>, new()  where W:TemplateViewModel<T>, new()
+	public abstract class TemplatesController<T, W>: IController
+		where T:BindableBase, ITemplate<T>, new()  where W:TemplateViewModel<T>, new()
 	{
 		TemplatesManagerViewModel<T, W> viewModel;
 		ITemplateProvider<T> provider;
