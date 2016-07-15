@@ -19,12 +19,12 @@ using System;
 using System.Globalization;
 using Newtonsoft.Json;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 
 namespace VAS.Core.Common
 {
 	[Serializable]
-	[PropertyChanged.ImplementPropertyChanged]
-	public class Color: IChanged
+	public class Color: BindableBase
 	{
 		public Color (byte r, byte g, byte b, byte a = byte.MaxValue)
 		{
@@ -32,13 +32,6 @@ namespace VAS.Core.Common
 			G = g;
 			B = b;
 			A = a;
-		}
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool IsChanged {
-			get;
-			set;
 		}
 
 		public byte R {

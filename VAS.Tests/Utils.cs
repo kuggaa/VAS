@@ -24,12 +24,45 @@ using NUnit.Framework;
 using VAS.Core.Common;
 using VAS.Core.Filters;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 using VAS.Core.Serialization;
 using VAS.Core.Store;
 using VAS.Core.Store.Templates;
+using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Tests
 {
+
+	public class DummyView: IView
+	{
+		public void SetViewModel (object ViewModel)
+		{
+		}
+	}
+
+	public class DummyController: IController
+	{
+		public void Start ()
+		{
+		}
+
+		public void Stop ()
+		{
+		}
+
+		public void SetViewModel (IViewModel viewModel)
+		{
+		}
+	}
+
+	public class DummyBindable: BindableBase
+	{
+		public void Raise (string name)
+		{
+			RaisePropertyChanged (name);
+		}
+	}
+
 	public static class Utils
 	{
 		public class PlayerDummy : Player

@@ -19,6 +19,7 @@ using System;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 
 namespace VAS.Core.Store
 {
@@ -26,21 +27,13 @@ namespace VAS.Core.Store
 	/// Defines a configuration for a camera.
 	/// </summary>
 	[Serializable]
-	[PropertyChanged.ImplementPropertyChanged]
-	public class CameraConfig: IChanged
+	public class CameraConfig: BindableBase
 	{
 		public CameraConfig (int index)
 		{
 			Index = index;
 			RegionOfInterest = new Area (0, 0, 0, 0);
 			RegionOfInterest.IsChanged = false;
-		}
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool IsChanged {
-			get;
-			set;
 		}
 
 		/// <summary>

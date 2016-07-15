@@ -19,24 +19,17 @@ using System;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 
 namespace VAS.Core.Store.Playlists
 {
 	[Serializable]
-	[PropertyChanged.ImplementPropertyChanged]
-	public class PlaylistDrawing: IPlaylistElement
+	public class PlaylistDrawing: BindableBase, IPlaylistElement
 	{
 		public PlaylistDrawing (FrameDrawing drawing)
 		{
 			Duration = new Time (0);
 			Drawing = drawing;
-		}
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool IsChanged {
-			get;
-			set;
 		}
 
 		[JsonIgnore]

@@ -21,6 +21,7 @@ using System.Collections.Specialized;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 
 namespace VAS.Core.Store
 {
@@ -28,8 +29,7 @@ namespace VAS.Core.Store
 	/// Defines an action link between 2 buttons in a <see cref="LongoMatch.Core.Store.Templates.Dashboard"/>.
 	/// </summary>
 	[Serializable]
-	[PropertyChanged.ImplementPropertyChanged]
-	public class ActionLink: IChanged
+	public class ActionLink: BindableBase
 	{
 		ObservableCollection<Tag> sourceTags;
 		ObservableCollection<Tag> destinationTags;
@@ -41,13 +41,6 @@ namespace VAS.Core.Store
 			SourceTags = new ObservableCollection<Tag> ();
 			DestinationTags = new ObservableCollection<Tag> ();
 			TeamAction = TeamLinkAction.Keep;
-		}
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool IsChanged {
-			get;
-			set;
 		}
 
 		/// <summary>

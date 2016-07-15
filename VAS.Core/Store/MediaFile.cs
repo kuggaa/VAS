@@ -22,12 +22,12 @@ using System.IO;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 
 namespace VAS.Core.Store
 {
 	[Serializable]
-	[PropertyChanged.ImplementPropertyChanged]
-	public class MediaFile: IChanged
+	public class MediaFile: BindableBase
 	{
 		public MediaFile ()
 		{
@@ -62,13 +62,6 @@ namespace VAS.Core.Store
 			Par = par;
 			Offset = new Time (0);
 			Name = name;
-		}
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool IsChanged {
-			get;
-			set;
 		}
 
 		public string FilePath {

@@ -20,6 +20,7 @@
 using System;
 using Newtonsoft.Json;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 using VAS.Core.Serialization;
 
 namespace VAS.Core.Store
@@ -30,8 +31,7 @@ namespace VAS.Core.Store
 	/// It has a name that describe it and a start and stop <see cref="LongoMatch.Store.Time"/>
 	/// </summary>
 	[Serializable]
-	[PropertyChanged.ImplementPropertyChanged]
-	public class TimeNode: IChanged
+	public class TimeNode: BindableBase
 	{
 		Time start, stop, eventTime;
 
@@ -45,13 +45,6 @@ namespace VAS.Core.Store
 		#endregion
 
 		#region Properties
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool IsChanged {
-			get;
-			set;
-		}
 
 		/// <summary>
 		/// A short description of the time node

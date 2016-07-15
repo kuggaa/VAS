@@ -19,6 +19,7 @@ using System;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 
 #if HAVE_GTK
 using SImage = Gdk.Pixbuf;
@@ -28,7 +29,7 @@ namespace VAS.Core.Store.Playlists
 {
 	[Serializable]
 	[PropertyChanged.ImplementPropertyChanged]
-	public class PlaylistImage: IPlaylistElement
+	public class PlaylistImage: BindableBase, IPlaylistElement
 	{
 		public PlaylistImage (Image image, Time duration)
 		{
@@ -36,13 +37,6 @@ namespace VAS.Core.Store.Playlists
 			Miniature = image.Scale (Constants.MAX_THUMBNAIL_SIZE,
 				Constants.MAX_THUMBNAIL_SIZE);
 			Duration = duration;
-		}
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool IsChanged {
-			get;
-			set;
 		}
 
 		public Image Image {

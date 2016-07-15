@@ -4,13 +4,13 @@ using Mono.Cecil;
 
 public class AssemblyProcessor
 {
-	LoadedCheckerInjector freezeCheckerInjector;
+	MethodInjector loadedCheckerInjector;
 	ImplementsInterfaceFinder implementsInterfaceFinder;
 	Action<string> logInfo;
 
-	public AssemblyProcessor (LoadedCheckerInjector freezeCheckerInjector, ImplementsInterfaceFinder implementsInterfaceFinder, Action<string> logInfo)
+	public AssemblyProcessor (MethodInjector loadedCheckerInjector, ImplementsInterfaceFinder implementsInterfaceFinder, Action<string> logInfo)
 	{
-		this.freezeCheckerInjector = freezeCheckerInjector;
+		this.loadedCheckerInjector = loadedCheckerInjector;
 		this.implementsInterfaceFinder = implementsInterfaceFinder;
 		this.logInfo = logInfo;
 	}
@@ -18,14 +18,18 @@ public class AssemblyProcessor
 	public void Execute (List<TypeDefinition> classes)
 	{
 		foreach (var type in classes) {
-			var baseType = implementsInterfaceFinder.HierarchyImplementsIFreezable (type);
+		}
+
+		foreach (var type in classes) {
+			var baseType = implementsInterfaceFinder.HierarchyImplementsIStorable (type);
 			if (baseType == null) {
 				continue;
 			}
-			var checkMethod = freezeCheckerInjector.Execute (baseType);
+			var checkMethod = loadedCheckerInjector.Execute (baseType);
 
 			var typeProcessor = new TypeProcessor (logInfo, checkMethod, type);
 			typeProcessor.Execute ();
 		}
+
 	}
 }

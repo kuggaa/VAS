@@ -17,11 +17,11 @@
 // 
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using VAS.Core.Store.Templates;
+using System.ComponentModel;
 
 namespace VAS.Core.Interfaces
 {
-	public interface ITemplate: IStorable
+	public interface ITemplate: IStorable, INotifyPropertyChanged
 	{
 		string Name { get; set; }
 
@@ -40,7 +40,6 @@ namespace VAS.Core.Interfaces
 	{
 		bool Exists (string name);
 
-		void Create (string templateName, params object[] list);
 	}
 
 	public interface ITemplateProvider<T>: INotifyCollectionChanged, ITemplateProvider where T: ITemplate
@@ -85,9 +84,17 @@ namespace VAS.Core.Interfaces
 		/// <summary>
 		/// Create a new template copying an existing one with a different name.
 		/// </summary>
+		/// <returns>The copied template.</returns>
 		/// <param name="template">Template to copy.</param>
 		/// <param name="copy">Name of the copy.</param>
-		void Copy (T template, string copy);
+		T Copy (T template, string copy);
+
+		/// <summary>
+		/// Creates a new template.
+		/// </summary>
+		/// <param name="templateName">Template name.</param>
+		/// <param name="list">Constructor parameters.</param>
+		T Create (string templateName, params object[] list);
 	}
 }
 

@@ -22,6 +22,7 @@ using Newtonsoft.Json;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 
 namespace VAS.Core.Store
 {
@@ -32,7 +33,7 @@ namespace VAS.Core.Store
 	/// </summary>
 	[Serializable]
 	[PropertyChanged.ImplementPropertyChanged]
-	public class HotKey : IEquatable<HotKey>, IChanged
+	public class HotKey : BindableBase, IEquatable<HotKey>
 	{
 		#region Constructors
 
@@ -48,13 +49,6 @@ namespace VAS.Core.Store
 		#endregion
 
 		#region Properties
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool IsChanged {
-			get;
-			set;
-		}
 
 		/// <summary>
 		/// Gdk Key

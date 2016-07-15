@@ -24,7 +24,7 @@ namespace VAS.Core.Common
 {
 	public static class Cloner
 	{
-		public static T Clone<T> (this T source)
+		public static T Clone<T> (this T source, SerializationType type = SerializationType.Binary)
 		{
 			T retStorable;
 
@@ -36,9 +36,7 @@ namespace VAS.Core.Common
 			// Binary deserialization fails in mobile platforms because of
 			// https://bugzilla.xamarin.com/show_bug.cgi?id=37300
 			#if OSTYPE_ANDROID || OSTYPE_IOS
-			SerializationType type = SerializationType.Json;
-			#else
-			SerializationType type = SerializationType.Binary;
+			type = SerializationType.Json;
 			#endif
 
 			using (s) {

@@ -13,7 +13,7 @@ public class ImplementsInterfaceFinder
         typeReferencesImplementingInterface = new Dictionary<string, TypeDefinition>();
     }
 
-    public TypeDefinition HierarchyImplementsIFreezable(TypeReference typeReference)
+    public TypeDefinition HierarchyImplementsIStorable(TypeReference typeReference)
     {
         TypeDefinition baseType;
         var fullName = typeReference.FullName;
@@ -26,7 +26,7 @@ public class ImplementsInterfaceFinder
             }
             else if (!ShouldSkipBaseType(type))
             {
-                baseType = HierarchyImplementsIFreezable(type.BaseType);
+                baseType = HierarchyImplementsIStorable(type.BaseType);
             }
         }
 
