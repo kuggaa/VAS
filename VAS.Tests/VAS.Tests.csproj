@@ -31,6 +31,7 @@
     <Reference Include="System" />
     <Reference Include="nunit.framework">
       <HintPath>$(SolutionDir)\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+      <Package>nunit</Package>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>$(SolutionDir)\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -58,8 +59,11 @@
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="Moq">
       <HintPath>$(SolutionDir)\packages\Moq.4.2.1506.2016\lib\net40\Moq.dll</HintPath>
+      <Package>moq</Package>
     </Reference>
-    <Reference Include="Moq, Version=4.2.1308.2321, Culture=neutral, PublicKeyToken=69f491c39445e920" />
+    <Reference Include="Moq, Version=4.2.1308.2321, Culture=neutral, PublicKeyToken=69f491c39445e920">
+      <Package>moq</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Test.cs" />
@@ -114,6 +118,7 @@
     <Compile Include="MVVMC\TestViewLocator.cs" />
     <Compile Include="MVVMC\TestViewModelBase.cs" />
     <Compile Include="MVVMC\TestBindableBase.cs" />
+    <Compile Include="Core\Hotkeys\TestHotKeysContexts.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -153,6 +158,7 @@
     <Folder Include="Services\" />
     <Folder Include="Events\" />
     <Folder Include="MVVMC\" />
+    <Folder Include="Core\Hotkeys\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Core\dibujo.svg">

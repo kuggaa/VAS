@@ -4,6 +4,7 @@ using System.IO;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
+using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.GUI;
@@ -32,6 +33,12 @@ namespace VAS
 
 		/* State */
 		public EventsBroker EventsBroker;
+
+		public KeyContextManager KeyContextManager {
+			get {
+				return KeyContextManager.Instance;
+			}
+		}
 
 		public List<string> DataDir {
 			get {
