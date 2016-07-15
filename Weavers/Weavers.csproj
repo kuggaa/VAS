@@ -53,17 +53,20 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="..\.nuget\NuGet.targets" />
   <ItemGroup>
-    <Compile Include="AssemblyProcessor.cs" />
-    <Compile Include="ExceptionFinder.cs" />
-    <Compile Include="ImplementsInterfaceFinder.cs" />
-    <Compile Include="LoadedCheckerInjector.cs" />
-    <Compile Include="StorableTypeFinder.cs" />
-    <Compile Include="TypeProcessor.cs" />
-    <Compile Include="TypeResolver.cs" />
-    <Compile Include="WeavingException.cs" />
     <Compile Include="Loader.cs" />
+    <Compile Include="Helpers\ImplementsInterfaceFinder.cs" />
+    <Compile Include="Helpers\LoadedCheckerInjector.cs" />
+    <Compile Include="Helpers\PropertyChangedForwarderInjector.cs" />
+    <Compile Include="Helpers\StorableTypeFinder.cs" />
+    <Compile Include="Helpers\ExceptionFinder.cs" />
+    <Compile Include="Helpers\TypeProcessor.cs" />
+    <Compile Include="Helpers\TypeResolver.cs" />
+    <Compile Include="Helpers\WeavingException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Helpers\" />
   </ItemGroup>
 </Project>
