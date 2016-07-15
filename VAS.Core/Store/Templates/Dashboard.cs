@@ -46,8 +46,6 @@ namespace VAS.Core.Store.Templates
 		protected const int MIN_WIDTH = 320;
 		protected const int MIN_HEIGHT = 100;
 
-		ObservableCollection<DashboardButton> list;
-
 		public Dashboard ()
 		{
 			try {
@@ -100,18 +98,8 @@ namespace VAS.Core.Store.Templates
 		/// A list with all the buttons in this dashboard
 		/// </summary>
 		public ObservableCollection<DashboardButton> List {
-			get {
-				return list;
-			}
-			set {
-				if (list != null) {
-					list.CollectionChanged -= ListChanged;
-				}
-				list = value;
-				if (list != null) {
-					list.CollectionChanged += ListChanged;
-				}
-			}
+			get;
+			set;
 		}
 
 		/// <summary>
@@ -369,11 +357,6 @@ namespace VAS.Core.Store.Templates
 			foreach (ActionLink l in link.DestinationButton.ActionLinks) {
 				CheckLinks (l, traversed.ToList ());
 			}
-		}
-
-		void ListChanged (object sender, NotifyCollectionChangedEventArgs e)
-		{
-			IsChanged = true;
 		}
 	}
 }

@@ -16,7 +16,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using Newtonsoft.Json;
 using VAS.Core.Interfaces;
 
@@ -68,6 +71,97 @@ namespace VAS.Core.MVVMC
 				}
 				PropertyChanged (sender, args);
 			}
+			IsChanged = true;
+		}
+
+		/// <summary>
+		/// Connects to a child's <see cref="INotifyPropertyChanged.PropertyChanged"/> or
+		/// <see cref="INotifyCollectionChanged.CollectionChanged"/> events to keep track of changes and propagate
+		/// the event upstrem.
+		/// 
+		/// Project -> Timeline -> TimelineEvent -> Start.
+		/// 
+		/// A change in Start is propagated up to the Project setting the IsChanged flag in all the objects in the chain.
+		/// 
+		/// This function is automatically injected with Fody at the beginning of all property setters where the
+		/// type is a <see cref="BindableBase"/> or an <see cref="ObservableCollection/>.
+		///
+		/// </summary>
+		/// <param name="oldValue">Old value set.</param>
+		/// <param name="newValue">New value to set.</param>
+		protected void ConnectChild (object oldValue, object newValue)
+		{
+			// ObservableCollection also implements INotifyPropertyChanged so check first for INotifyCollectionChanged
+			if (oldValue is INotifyCollectionChanged || newValue is INotifyCollectionChanged) {
+				Connect (oldValue as INotifyCollectionChanged, newValue as INotifyCollectionChanged);
+			} else if (oldValue is INotifyPropertyChanged || newValue is INotifyPropertyChanged) {
+				Connect (oldValue as INotifyPropertyChanged, newValue as INotifyPropertyChanged);
+			} else if (oldValue != null && oldValue != null) {
+				// This should never happen since ConnectChild should only be called for properties setting a
+				// BindableBase or an ObaservableCollection<T>
+				throw new NotSupportedException ();
+			}
+		}
+
+		/// <summary>
+		/// Connect childs of type <see cref="BindableBase"/>.
+		/// </summary>
+		/// <param name="oldValue">Old value.</param>
+		/// <param name="newValue">New value.</param>
+		void Connect (INotifyPropertyChanged oldValue, INotifyPropertyChanged newValue)
+		{
+			// Disconnect the old value
+			if (oldValue != null) {
+				oldValue.PropertyChanged -= ForwardPropertyChanged;
+			}
+			// Connection the new value
+			if (newValue != null) {
+				newValue.PropertyChanged += ForwardPropertyChanged;
+			}
+		}
+
+		/// <summary>
+		/// Connect childs of type <see cref="ObservableCollection"/>
+		/// </summary>
+		/// <param name="oldValue">Old value.</param>
+		/// <param name="newValue">New value.</param>
+		void Connect (INotifyCollectionChanged oldValue, INotifyCollectionChanged newValue)
+		{
+			// Disconnect the old collection and all its children
+			if (oldValue != null) {
+				oldValue.CollectionChanged -= CollectionChanged;
+				foreach (var element in (oldValue as IEnumerable).OfType<INotifyPropertyChanged>()) {
+					element.PropertyChanged -= ForwardPropertyChanged;
+				}
+			}
+			// Connect the new collection and all its children
+			if (newValue != null) {
+				newValue.CollectionChanged += CollectionChanged;
+				foreach (var element in (newValue as IEnumerable).OfType<INotifyPropertyChanged>()) {
+					element.PropertyChanged += ForwardPropertyChanged;
+				}
+			}
+		}
+
+		protected virtual void CollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (e.OldItems != null) {
+				// Keep track to new items added to the collection and start observing them
+				foreach (var element in e.OldItems.OfType<INotifyPropertyChanged>()) {
+					element.PropertyChanged -= ForwardPropertyChanged;
+				}
+			} else if (e.NewItems != null) {
+				// Keep track to items removed from the collection and stop observing them
+				foreach (var element in e.NewItems.OfType<INotifyPropertyChanged>()) {
+					element.PropertyChanged += ForwardPropertyChanged;
+				}
+			}
+			RaisePropertyChanged ("Collection", this);
+		}
+
+		protected virtual void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			RaisePropertyChanged (e, sender);
 			IsChanged = true;
 		}
 	}

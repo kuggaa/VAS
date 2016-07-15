@@ -18,12 +18,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
-using VAS.Core.Interfaces;
 using VAS.Core.Events;
 using VAS.Core.MVVMC;
 
@@ -32,7 +30,6 @@ namespace VAS.Core.Store
 	[Serializable]
 	public class DashboardButton: BindableBase
 	{
-		ObservableCollection<ActionLink> actionLinks;
 
 		public DashboardButton ()
 		{
@@ -115,18 +112,8 @@ namespace VAS.Core.Store
 		/// A list with all the outgoing links of this button
 		/// </summary>
 		public ObservableCollection<ActionLink> ActionLinks {
-			get {
-				return actionLinks;
-			}
-			set {
-				if (actionLinks != null) {
-					actionLinks.CollectionChanged -= ListChanged;
-				}
-				actionLinks = value;
-				if (actionLinks != null) {
-					actionLinks.CollectionChanged += ListChanged;
-				}
-			}
+			get;
+			set;
 		}
 
 		[JsonIgnore]
@@ -155,11 +142,6 @@ namespace VAS.Core.Store
 		{
 			link.SourceButton = this;
 			ActionLinks.Add (link);
-		}
-
-		void ListChanged (object sender, NotifyCollectionChangedEventArgs e)
-		{
-			IsChanged = true;
 		}
 	}
 

@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq;
 using Newtonsoft.Json;
 using VAS.Core.Common;
@@ -39,12 +38,6 @@ namespace VAS.Core.Store
 	{
 		[NonSerialized]
 		IStorage storage;
-		ObservableCollection<FrameDrawing> drawings;
-		ObservableCollection<Tag> tags;
-		ObservableCollection<CameraConfig> camerasConfig;
-		ObservableCollection<Player> players;
-		ObservableCollection<Team> teams;
-
 
 		#region Constructors
 
@@ -223,18 +216,8 @@ namespace VAS.Core.Store
 		/// </summary>
 		[PropertyIndex (0)]
 		public ObservableCollection<Player> Players {
-			get {
-				return players;
-			}
-			set {
-				if (players != null) {
-					players.CollectionChanged -= ListChanged;
-				}
-				players = value;
-				if (players != null) {
-					players.CollectionChanged += ListChanged;
-				}
-			}
+			get;
+			set;
 		}
 
 		/// <summary>
@@ -242,36 +225,16 @@ namespace VAS.Core.Store
 		/// </summary>
 		[PropertyIndex (3)]
 		public ObservableCollection<Team> Teams {
-			get {
-				return teams;
-			}
-			set {
-				if (teams != null) {
-					teams.CollectionChanged -= ListChanged;
-				}
-				teams = value ?? new ObservableCollection<Team> ();
-				if (teams != null) {
-					teams.CollectionChanged += ListChanged;
-				}
-			}
+			get;
+			set;
 		}
 
 		/// <summary>
 		/// List of drawings for this event
 		/// </summary>
 		public ObservableCollection<FrameDrawing> Drawings {
-			get {
-				return drawings;
-			}
-			set {
-				if (drawings != null) {
-					drawings.CollectionChanged -= ListChanged;
-				}
-				drawings = value;
-				if (drawings != null) {
-					drawings.CollectionChanged += ListChanged;
-				}
-			}
+			get;
+			set;
 		}
 
 		/// <summary>
@@ -322,19 +285,8 @@ namespace VAS.Core.Store
 		/// A list of visible <see cref="CameraConfig"/> for this event.
 		/// </summary>
 		public ObservableCollection<CameraConfig> CamerasConfig {
-			get {
-				return camerasConfig;
-			}
-			set {
-				if (camerasConfig != null) {
-					camerasConfig.CollectionChanged -= ListChanged;
-				}
-				camerasConfig = value;
-				if (camerasConfig != null) {
-					camerasConfig.CollectionChanged += ListChanged;
-				}
-				ValidateCameras (camerasConfig);
-			}
+			get;
+			set;
 		}
 
 		/// <summary>
@@ -387,18 +339,8 @@ namespace VAS.Core.Store
 		/// </summary>
 		/// <value>The tags.</value>
 		public ObservableCollection<Tag> Tags {
-			get {
-				return tags;
-			}
-			set {
-				if (tags != null) {
-					tags.CollectionChanged -= ListChanged;
-				}
-				tags = value;
-				if (tags != null) {
-					tags.CollectionChanged += ListChanged;
-				}
-			}
+			get;
+			set;
 		}
 
 		public string TagsDescription ()
@@ -533,7 +475,7 @@ namespace VAS.Core.Store
 		#endregion
 
 		/// <summary>
-		/// check and fix null values using as camera index a value in the range that is not used 
+		/// check and fix null values using as camera index a value in the range that is not used
 		/// </summary>
 		/// <param name="cconfig">CameraConfig ObservableCollection to be checked and fixed if needed</param>
 		protected void ValidateCameras (ObservableCollection<CameraConfig> cconfig)
@@ -555,11 +497,6 @@ namespace VAS.Core.Store
 					k++;
 				}
 			}
-		}
-
-		protected void ListChanged (object sender, NotifyCollectionChangedEventArgs e)
-		{
-			IsChanged = true;
 		}
 	}
 }

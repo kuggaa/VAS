@@ -17,7 +17,6 @@
 //
 using System;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq;
 using Newtonsoft.Json;
 using VAS.Core.Common;
@@ -29,7 +28,6 @@ namespace VAS.Core.Store.Playlists
 	[Serializable]
 	public class PlaylistPlayElement: BindableBase, IPlaylistElement
 	{
-		ObservableCollection<CameraConfig> camerasConfig;
 
 		public PlaylistPlayElement (TimelineEvent play)
 		{
@@ -104,18 +102,8 @@ namespace VAS.Core.Store.Playlists
 		/// defined by the <see cref="TimelineEvent"/>
 		/// </summary>
 		public ObservableCollection<CameraConfig> CamerasConfig {
-			get {
-				return camerasConfig;
-			}
-			set {
-				if (camerasConfig != null) {
-					camerasConfig.CollectionChanged -= ListChanged;
-				}
-				camerasConfig = value;
-				if (camerasConfig != null) {
-					camerasConfig.CollectionChanged += ListChanged;
-				}
-			}
+			get;
+			set;
 		}
 
 
@@ -147,11 +135,6 @@ namespace VAS.Core.Store.Playlists
 					Play.Drawings.Count);
 			}
 
-		}
-
-		void ListChanged (object sender, NotifyCollectionChangedEventArgs e)
-		{
-			IsChanged = true;
 		}
 
 		string TagsDescription ()

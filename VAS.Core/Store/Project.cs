@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -42,15 +41,9 @@ namespace VAS.Core.Store
 	abstract public class Project : StorableBase, IComparable, IDisposable
 	{
 		public const int CURRENT_VERSION = 1;
-		ObservableCollection<TimelineEvent> timeline;
-		ObservableCollection<Period> periods;
-		ObservableCollection<Timer> timers;
-		ObservableCollection<Playlist> playlists;
-		ObservableCollection<EventType> eventTypes;
 		DateTime lastModified;
 
 		#region Constructors
-
 
 		public Project ()
 		{
@@ -103,34 +96,14 @@ namespace VAS.Core.Store
 		}
 
 		public ObservableCollection<TimelineEvent> Timeline {
-			get {
-				return timeline;
-			}
-			set {
-				if (timeline != null) {
-					timeline.CollectionChanged -= ListChanged;
-				}
-				timeline = value;
-				if (timeline != null) {
-					timeline.CollectionChanged += ListChanged;
-				}
-			}
+			get;
+			set;
 		}
 
 		[JsonProperty (Order = -7)]
 		public ObservableCollection<EventType> EventTypes {
-			get {
-				return eventTypes;
-			}
-			set {
-				if (eventTypes != null) {
-					eventTypes.CollectionChanged -= ListChanged;
-				}
-				eventTypes = value;
-				if (eventTypes != null) {
-					eventTypes.CollectionChanged += ListChanged;
-				}
-			}
+			get;
+			set;
 		}
 
 		/// <value>
@@ -143,48 +116,18 @@ namespace VAS.Core.Store
 		}
 
 		public ObservableCollection<Period> Periods {
-			get {
-				return periods;
-			}
-			set {
-				if (periods != null) {
-					periods.CollectionChanged -= ListChanged;
-				}
-				periods = value;
-				if (periods != null) {
-					periods.CollectionChanged += ListChanged;
-				}
-			}
+			get;
+			set;
 		}
 
 		public ObservableCollection<Timer> Timers {
-			get {
-				return timers;
-			}
-			set {
-				if (timers != null) {
-					timers.CollectionChanged -= ListChanged;
-				}
-				timers = value;
-				if (timers != null) {
-					timers.CollectionChanged += ListChanged;
-				}
-			}
+			get;
+			set;
 		}
 
 		public ObservableCollection<Playlist> Playlists {
-			get {
-				return playlists;
-			}
-			set {
-				if (playlists != null) {
-					playlists.CollectionChanged -= ListChanged;
-				}
-				playlists = value;
-				if (playlists != null) {
-					playlists.CollectionChanged += ListChanged;
-				}
-			}
+			get;
+			set;
 		}
 
 		/// <summary>
@@ -386,11 +329,6 @@ namespace VAS.Core.Store
 				"is not a valid project"));
 			}
 			return project;
-		}
-
-		void ListChanged (object sender, NotifyCollectionChangedEventArgs e)
-		{
-			IsChanged = true;
 		}
 
 		#endregion

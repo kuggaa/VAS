@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq;
 using Newtonsoft.Json;
 using VAS.Core.Common;
@@ -108,7 +107,6 @@ namespace VAS.Core.Store
 	[Serializable]
 	public class AnalysisEventType: EventType
 	{
-		ObservableCollection<Tag> tags;
 
 		public AnalysisEventType ()
 		{
@@ -116,18 +114,8 @@ namespace VAS.Core.Store
 		}
 
 		public ObservableCollection<Tag> Tags {
-			get {
-				return tags;
-			}
-			set {
-				if (tags != null) {
-					tags.CollectionChanged -= ListChanged;
-				}
-				tags = value;
-				if (tags != null) {
-					tags.CollectionChanged += ListChanged;
-				}
-			}
+			get;
+			set;
 		}
 
 		[JsonIgnore]
@@ -136,11 +124,6 @@ namespace VAS.Core.Store
 			get {
 				return Tags.GroupBy (t => t.Group).ToDictionary (g => g.Key, g => g.ToList ());
 			}
-		}
-
-		void ListChanged (object sender, NotifyCollectionChangedEventArgs e)
-		{
-			IsChanged = true;
 		}
 	}
 }

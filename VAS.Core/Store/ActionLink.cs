@@ -17,10 +17,7 @@
 //
 using System;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using Newtonsoft.Json;
 using VAS.Core.Common;
-using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
 
 namespace VAS.Core.Store
@@ -31,8 +28,6 @@ namespace VAS.Core.Store
 	[Serializable]
 	public class ActionLink: BindableBase
 	{
-		ObservableCollection<Tag> sourceTags;
-		ObservableCollection<Tag> destinationTags;
 
 		public ActionLink ()
 		{
@@ -72,18 +67,8 @@ namespace VAS.Core.Store
 		/// A list of tags that needs to match in the source
 		/// </summary>
 		public ObservableCollection<Tag> SourceTags {
-			get {
-				return sourceTags;
-			}
-			set {
-				if (sourceTags != null) {
-					sourceTags.CollectionChanged -= ListChanged;
-				}
-				sourceTags = value;
-				if (sourceTags != null) {
-					sourceTags.CollectionChanged += ListChanged;
-				}
-			}
+			get;
+			set;
 		}
 
 		/// <summary>
@@ -98,18 +83,8 @@ namespace VAS.Core.Store
 		/// A list of tags that needs to be set in the destination
 		/// </summary>
 		public ObservableCollection<Tag> DestinationTags {
-			get {
-				return destinationTags;
-			}
-			set {
-				if (destinationTags != null) {
-					destinationTags.CollectionChanged -= ListChanged;
-				}
-				destinationTags = value;
-				if (destinationTags != null) {
-					destinationTags.CollectionChanged += ListChanged;
-				}
-			}
+			get;
+			set;
 		}
 
 		/// <summary>
@@ -171,11 +146,6 @@ namespace VAS.Core.Store
 		public override string ToString ()
 		{
 			return string.Format ("{0} -> {1}", SourceButton.Name, DestinationButton.Name);
-		}
-
-		void ListChanged (object sender, NotifyCollectionChangedEventArgs e)
-		{
-			IsChanged = true;
 		}
 	}
 }

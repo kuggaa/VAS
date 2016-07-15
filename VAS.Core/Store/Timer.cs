@@ -17,7 +17,6 @@
 //
 using System;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq;
 using Newtonsoft.Json;
 
@@ -38,21 +37,9 @@ namespace VAS.Core.Store
 			set;
 		}
 
-		ObservableCollection<TimeNode> nodes;
-
 		public ObservableCollection<TimeNode> Nodes {
-			get {
-				return nodes;
-			}
-			set {
-				if (nodes != null) {
-					nodes.CollectionChanged -= ListChanged;
-				}
-				nodes = value;
-				if (nodes != null) {
-					nodes.CollectionChanged += ListChanged;
-				}
-			}
+			get;
+			set;
 		}
 
 		[JsonIgnore]
@@ -95,11 +82,6 @@ namespace VAS.Core.Store
 					Nodes.Remove (last);
 				}
 			}
-		}
-
-		void ListChanged (object sender, NotifyCollectionChangedEventArgs e)
-		{
-			IsChanged = true;
 		}
 	}
 }

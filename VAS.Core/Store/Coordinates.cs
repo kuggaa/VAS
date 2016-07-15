@@ -17,9 +17,6 @@
 // 
 using System;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using Newtonsoft.Json;
-using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
 
 namespace VAS.Core.Common
@@ -28,7 +25,6 @@ namespace VAS.Core.Common
 	[PropertyChanged.ImplementPropertyChanged]
 	public class Coordinates: BindableBase
 	{
-		ObservableCollection<Point> points;
 
 		public Coordinates ()
 		{
@@ -36,18 +32,8 @@ namespace VAS.Core.Common
 		}
 
 		public ObservableCollection<Point> Points {
-			get {
-				return points;
-			}
-			set {
-				if (points != null) {
-					points.CollectionChanged -= ListChanged;
-				}
-				points = value;
-				if (points != null) {
-					points.CollectionChanged += ListChanged;
-				}
-			}
+			get;
+			set;
 		}
 
 		public override bool Equals (object obj)
@@ -80,13 +66,5 @@ namespace VAS.Core.Common
 			
 			return int.Parse (s);
 		}
-
-		void ListChanged (object sender, NotifyCollectionChangedEventArgs e)
-		{
-			IsChanged = true;
-		}
 	}
-
-
 }
-

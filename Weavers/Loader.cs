@@ -31,7 +31,7 @@ public class Loader
 		var exceptionFinder = new ExceptionFinder (ModuleDefinition, AssemblyResolver);
 		exceptionFinder.Execute ();
 
-		var checkLoadedInjector = new MethodInjector (ModuleDefinition, CHECK_IS_LOADED, 0);
+		var checkLoadedInjector = new MethodFinder (ModuleDefinition, CHECK_IS_LOADED, 0);
 
 		var typeResolver = new TypeResolver ();
 		var implementsInterfaceFinder = new ImplementsInterfaceFinder (typeResolver);
