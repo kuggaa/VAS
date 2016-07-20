@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using VAS.Core.Interfaces.GUI;
 using System.Linq;
+using System.Threading.Tasks;
+using VAS.Core.Common;
+using VAS.Core.Interfaces.GUI;
 
 namespace VAS.Core
 {
@@ -11,9 +12,9 @@ namespace VAS.Core
 		Dictionary<string, Func<IScreenState>> destination;
 		IScreenState current;
 		List<string> stateStack;
-		List<TransitionStruct> transitionsStack;
+		List<Transition> overwrittenTransitions;
 
-		struct TransitionStruct
+		struct Transition
 		{
 			public string key;
 			public Func<IScreenState> value;
@@ -23,7 +24,7 @@ namespace VAS.Core
 		{
 			destination = new Dictionary<string, Func<IScreenState>> ();
 			stateStack = new List<string> ();
-			transitionsStack = new List<TransitionStruct> ();
+			overwrittenTransitions = new List<Transition> ();
 		}
 
 		public Task<bool> MoveTo (string transition)
@@ -33,7 +34,7 @@ namespace VAS.Core
 					return Task.Factory.StartNew (() => false);
 				}
 			}
-			Console.WriteLine ("Moving to " + transition);
+			Log.Debug ("Moving to " + transition);
 
 			IScreenState panel = destination [transition] ();
 			bool ok = panel.PreTransition ();
@@ -47,9 +48,11 @@ namespace VAS.Core
 
 		public void Register (string transition, Func<IScreenState> panel)
 		{
+			if (destination.Keys.Contains (transition)) {
+				overwrittenTransitions.Add (new Transition { key = transition, value = destination [transition] });
+			}
+
 			destination [transition] = panel;
-			var a = new TransitionStruct { key = transition, value = panel };
-			transitionsStack.Add (a);
 		}
 
 		public void UnRegister (string transition)
@@ -57,14 +60,11 @@ namespace VAS.Core
 			// Remove from transitions
 			destination.Remove (transition);
 
-			// Remove from transitions Stack
-			int position = transitionsStack.FindLastIndex (x => x.key == transition);
-			transitionsStack.RemoveAt (position);
-
-			// Recover the previous one if exist
-			if (transitionsStack.Any (x => x.key == transition)) {
-				TransitionStruct last = transitionsStack.FindLast (x => x.key == transition);
+			// Recover the previous one if exist, and remove from transitionsStack
+			if (overwrittenTransitions.Any (x => x.key == transition)) {
+				Transition last = overwrittenTransitions.FindLast (x => x.key == transition);
 				destination [transition] = last.value;
+				overwrittenTransitions.Remove (last);
 			}
 		}
 
@@ -82,7 +82,7 @@ namespace VAS.Core
 		public void EmptyStateStack ()
 		{
 			stateStack.Clear ();
-			transitionsStack.Clear ();
+			overwrittenTransitions.Clear ();
 		}
 	}
 }
