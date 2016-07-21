@@ -192,7 +192,7 @@ namespace VAS.Core.Store
 		/// </summary>
 		public virtual DateTime LastModified {
 			get {
-				return lastModified;
+				return lastModified.ToLocalTime ();
 			}
 			set {
 				lastModified = value.ToUniversalTime ();
