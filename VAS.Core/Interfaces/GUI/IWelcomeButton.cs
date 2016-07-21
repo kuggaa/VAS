@@ -15,42 +15,16 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using VAS.Core.Store;
-using VAS.Core.Store.Templates;
+using Image = VAS.Core.Common.Image;
 
-namespace VAS.Core.Events
+namespace VAS.Core.Interfaces.GUI
 {
-	public class Event
+	public interface IWelcomeButton
 	{
-		public object Sender { get; set; }
-	}
+		string Title { get; set; }
 
-	/* A new event has been created */
-	public class NewTagEvent : Event
-	{
-		public EventType EventType { get; set; }
+		Image Icon { get; set; }
 
-		public List<Player> Players { get; set; }
-
-		public ObservableCollection<Team> Teams { get; set; }
-
-		public List<Tag> Tags { get; set; }
-
-		public Time Start { get; set; }
-
-		public Time Stop { get; set; }
-
-		public Time EventTime { get; set; }
-
-		public DashboardButton Button { get; set; }
-	}
-
-	public class KeyPressedEvent : Event
-	{
-		public HotKey Key;
-
-		public Gdk.ModifierType State;
+		void Activate ();
 	}
 }

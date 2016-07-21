@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2013 Andoni Morales Alastruey
+//  Copyright (C) 2014 Andoni Morales Alastruey
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,17 +15,14 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
-using VAS.Core.Store;
+using Mono.Addins;
 
-namespace VAS.Core.Interfaces.GUI
+namespace VAS.Addins.ExtensionPoints
 {
-	public interface IMainController
+	public interface IPlugin
 	{
-		// FIXME: This has to disappear when Longomatch is adapted to use ITools.
-		[Obsolete]
-		void AddExportEntry (string name, string shortName, Action<Project, IGUIToolkit> exportAction);
+		string Name { get; }
 
-		bool SetPanel (IPanel newPanel);
+		string Description { get; }
 	}
 }

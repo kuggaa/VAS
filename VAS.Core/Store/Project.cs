@@ -47,6 +47,7 @@ namespace VAS.Core.Store
 		ObservableCollection<Timer> timers;
 		ObservableCollection<Playlist> playlists;
 		ObservableCollection<EventType> eventTypes;
+		DateTime lastModified;
 
 		#region Constructors
 
@@ -60,6 +61,7 @@ namespace VAS.Core.Store
 			Playlists = new ObservableCollection<Playlist> ();
 			EventTypes = new ObservableCollection<EventType> ();
 			Version = Constants.DB_VERSION;
+			lastModified = DateTime.Now;
 		}
 
 		[OnDeserialized ()]
@@ -182,6 +184,18 @@ namespace VAS.Core.Store
 				if (playlists != null) {
 					playlists.CollectionChanged += ListChanged;
 				}
+			}
+		}
+
+		/// <summary>
+		/// Date of project last modification
+		/// </summary>
+		public virtual DateTime LastModified {
+			get {
+				return lastModified.ToLocalTime ();
+			}
+			set {
+				lastModified = value.ToUniversalTime ();
 			}
 		}
 

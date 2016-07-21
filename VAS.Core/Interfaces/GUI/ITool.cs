@@ -15,7 +15,8 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using VAS.Core.Common;
+using System;
+using System.Collections.Generic;
 
 namespace VAS.Core.Interfaces.GUI
 {
@@ -28,27 +29,38 @@ namespace VAS.Core.Interfaces.GUI
 		string Name { get; }
 
 		/// <summary>
-		/// Gets the welcome panel icon. If null, the tool is not accessible from the welcome panel.
+		/// Gets the welcome panel icons. If null (or empty), the tool is not accessible from the welcome panel.
 		/// </summary>
 		/// <value>The welcome panel icon.</value>
-		Image WelcomePanelIcon { get; }
+		IEnumerable<IWelcomeButton> WelcomePanelIconList { get; }
+
+		Dictionary<string, Func<IScreenState>> UIFlow { get; }
 
 		/// <summary>
-		/// Gets the menubar label. If null, the tool is not accessible from the menu bar "tools" section.
+		/// OBSOLETE: Gets the menubar label. If null, the tool is not accessible from the menu bar "tools" section.
 		/// </summary>
 		/// <value>The menubar label.</value>
+		// FIXME: This has to desapear when Longomatch is adapted to use ITools.
+		[Obsolete]
 		string MenubarLabel { get; }
 
 		/// <summary>
-		/// Gets the menubar accelerator. If null, the menubar entry will not have an accelerator.
+		/// OBSOLETE; Gets the menubar accelerator. If null, the menubar entry will not have an accelerator.
 		/// </summary>
 		/// <value>The menubar label.</value>
+		// FIXME: This has to desapear when Longomatch is adapted to use ITools.
+		[Obsolete]
 		string MenubarAccelerator { get; }
 
 		/// <summary>
-		/// Bring up the Tool user interface using provided toolkit.
+		/// OBSOLETE: Bring up the Tool user interface using provided toolkit.
 		/// </summary>
+		// FIXME: This has to desapear when Longomatch is adapted to use ITools.
+		[Obsolete]
 		void Load (IGUIToolkit toolkit);
+
+		void Enable ();
+
+		void Disable ();
 	}
 }
-

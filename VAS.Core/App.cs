@@ -20,6 +20,8 @@ namespace VAS
 		public IGUIToolkit GUIToolkit;
 		public IMultimediaToolkit MultimediaToolkit;
 		public IDrawingToolkit DrawingToolkit;
+		public EventsBroker EventsBroker;
+		public StateController StateController;
 
 		public IStorageManager DatabaseManager;
 		public IRenderingJobsManager RenderingJobsManger;
@@ -30,9 +32,6 @@ namespace VAS
 		public string homeDirectory = ".";
 		public string baseDirectory = ".";
 		public string configDirectory = ".";
-
-		/* State */
-		public EventsBroker EventsBroker;
 
 		public KeyContextManager KeyContextManager {
 			get {
