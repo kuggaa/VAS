@@ -15,6 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using Gdk;
 using VAS.Core.Store;
 
 namespace VAS.Core.Common
@@ -44,12 +45,15 @@ namespace VAS.Core.Common
 		{
 			int modifier = 0;
 
-			if (evt.State == Gdk.ModifierType.ShiftMask) {
-				modifier = (int)KeyvalFromName ("Shift_L");
-			} else if (evt.State == Gdk.ModifierType.Mod1Mask || evt.State == Gdk.ModifierType.Mod5Mask) {
-				modifier = (int)KeyvalFromName ("Alt_L");
-			} else if (evt.State == Gdk.ModifierType.ControlMask) {
-				modifier = (int)KeyvalFromName ("Control_L");
+			if (((int)evt.State & (int)Gdk.ModifierType.ShiftMask) == (int)Gdk.ModifierType.ShiftMask) {
+				modifier += (int)ModifierType.ShiftMask;
+			} 
+			if ((((int)evt.State & (int)Gdk.ModifierType.Mod1Mask) == (int)Gdk.ModifierType.Mod1Mask) ||
+			    (((int)evt.State & (int)Gdk.ModifierType.Mod5Mask) == (int)Gdk.ModifierType.Mod5Mask)) {
+				modifier += (int)ModifierType.Mod1Mask;
+			} 
+			if (((int)evt.State & (int)Gdk.ModifierType.ControlMask) == (int)Gdk.ModifierType.ControlMask) {
+				modifier += (int)ModifierType.ControlMask;
 			}
 			return new HotKey { Key = (int)Gdk.Keyval.ToLower (evt.KeyValue),
 				Modifier = modifier
@@ -59,26 +63,52 @@ namespace VAS.Core.Common
 
 		public static HotKey ParseName (string name)
 		{
-			int key = 0, modifier = 0, i;
+			int key = 0, modifier = 0;
 
-			if (name.Contains (">+")) {
-				i = name.IndexOf ('+');
-				modifier = (int)KeyvalFromName (name.Substring (1, i - 2));
-				key = (int)KeyvalFromName (name.Substring (i + 1)); 
-			} else {
-				key = (int)KeyvalFromName (name);
+			string[] keyNames = name.Split ('+');
+			foreach (string keyName in keyNames) {
+				string kName = keyName.Trim ();
+				if (kName.StartsWith ("<") && kName.EndsWith (">")) {
+					switch (kName.Substring (1, kName.Length - 2)) {
+					case "Shift_L":
+						modifier += (int)ModifierType.ShiftMask;
+						break;
+					case "Alt_L":
+						modifier += (int)ModifierType.Mod1Mask;
+						break;
+					case "Control_L":
+						modifier += (int)ModifierType.ControlMask;
+						break;
+					}
+				} else {
+					key = (int)KeyvalFromName (kName);
+				}
 			}
 			return new HotKey { Key = key, Modifier = modifier };
 		}
 
 		public static string HotKeyName (HotKey hotkey)
 		{
-			if (hotkey.Modifier != -1 && hotkey.Modifier != 0) {
-				return string.Format ("<{0}>+{1}", NameFromKeyval ((uint)hotkey.Modifier),
-					NameFromKeyval ((uint)hotkey.Key));
-			} else {
-				return string.Format ("{0}", NameFromKeyval ((uint)hotkey.Key));
+			string name = "";
+			if ((hotkey.Modifier & (int)ModifierType.ShiftMask) == (int)ModifierType.ShiftMask) {
+				name += "<Shift_L>";
 			}
+			if ((hotkey.Modifier & (int)ModifierType.Mod1Mask) == (int)ModifierType.Mod1Mask) {
+				if (name != "") {						
+					name += "+";
+				}
+				name += "<Alt_L>";
+			}
+			if ((hotkey.Modifier & (int)ModifierType.ControlMask) == (int)ModifierType.ControlMask) {
+				if (name != "") {						
+					name += "+";
+				}
+				name += "<Control_L>";
+			}
+			if (name != "") {
+				name += "+";
+			}
+			return name + NameFromKeyval ((uint)hotkey.Key);
 		}
 	}
 }

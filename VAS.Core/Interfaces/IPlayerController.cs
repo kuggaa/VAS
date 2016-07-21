@@ -128,6 +128,16 @@ namespace VAS.Core.Interfaces
 		void FramerateDown ();
 
 		/// <summary>
+		/// Set maximum framerate
+		/// </summary>
+		void FramerateUpper ();
+
+		/// <summary>
+		/// Set default framerate
+		/// </summary>
+		void FramerateLower ();
+
+		/// <summary>
 		/// Step the amount in <see cref="Step"/> forward.
 		/// </summary>
 		void StepForward ();

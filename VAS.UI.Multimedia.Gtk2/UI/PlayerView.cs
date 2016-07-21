@@ -28,6 +28,7 @@ using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Handlers;
+using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Store;
@@ -35,7 +36,9 @@ using VAS.Core.Store.Playlists;
 using VAS.Drawing.Cairo;
 using VAS.Drawing.Widgets;
 using VAS.Services;
+using VAS.Core.Hotkeys;
 using Helpers = VAS.UI.Helpers;
+using VASCommon = VAS.Core.Common;
 
 
 namespace VAS.UI
@@ -54,6 +57,7 @@ namespace VAS.UI
 		protected PlayerViewOperationMode mode;
 		protected Time duration;
 		List<double> rateList;
+		KeyContext keycontext;
 
 		#region Constructors
 
@@ -165,6 +169,7 @@ namespace VAS.UI
 				if (player != null) {
 					player.ElementLoadedEvent -= HandleElementLoadedEvent;
 					player.LoadDrawingsEvent -= HandleLoadDrawingsEvent;
+					player.PlaybackRateChangedEvent -= HandlePlaybackRateChangedEvent;
 					player.PlaybackStateChangedEvent -= HandlePlaybackStateChangedEvent;
 					player.TimeChangedEvent -= HandleTimeChangedEvent;
 					player.VolumeChangedEvent -= HandleVolumeChangedEvent;
@@ -173,11 +178,11 @@ namespace VAS.UI
 				if (player != null) {
 					player.ElementLoadedEvent += HandleElementLoadedEvent;
 					player.LoadDrawingsEvent += HandleLoadDrawingsEvent;
+					player.PlaybackRateChangedEvent += HandlePlaybackRateChangedEvent;
 					player.PlaybackStateChangedEvent += HandlePlaybackStateChangedEvent;
 					player.TimeChangedEvent += HandleTimeChangedEvent;
 					player.VolumeChangedEvent += HandleVolumeChangedEvent;
 				}
-
 			}
 		}
 
@@ -305,10 +310,9 @@ namespace VAS.UI
 			blackboarddrawingarea.QueueDraw ();
 		}
 
-		protected virtual float GetRateFromScale ()
+		float GetRateFromScale ()
 		{
-			HScale scale = ratescale;
-			double val = rateList [(int)scale.Value];
+			double val = rateList [(int)ratescale.Value - (int)App.Current.LowerRate];
 			return (float)val;
 		}
 
@@ -364,6 +368,14 @@ namespace VAS.UI
 				playbutton.Show ();
 				pausebutton.Hide ();
 			}
+		}
+
+		protected virtual void HandlePlaybackRateChangedEvent (float rate)
+		{
+			ignoreRate = true;
+			int index = App.Current.RateList.FindIndex (p => (float)p == rate);
+			ratescale.Value = index + App.Current.LowerRate;				
+			ignoreRate = false;
 		}
 
 		protected virtual void HandleLoadDrawingsEvent (FrameDrawing frameDrawing)
@@ -472,7 +484,7 @@ namespace VAS.UI
 				SetVolumeIcon ("longomatch-control-volume-low");
 			} else if (prevLevel <= 0.5 && level > 0.5) {
 				SetVolumeIcon ("longomatch-control-volume-med");
-			} else if (prevLevel < 1 && level == 1) {
+			} else if (prevLevel < 1 && level == 1.0) {
 				SetVolumeIcon ("longomatch-control-volume-hi");
 			}
 			Player.Volume = level;
@@ -504,7 +516,7 @@ namespace VAS.UI
 
 		protected virtual void HandleRateFormatValue (object o, Gtk.FormatValueArgs args)
 		{
-			int val = (int)args.Value;
+			int val = (int)args.Value - (int)App.Current.LowerRate;
 			if (rateList != null && val < rateList.Count) {
 				args.RetVal = rateList [val] + "X";
 			}

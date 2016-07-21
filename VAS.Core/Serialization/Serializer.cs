@@ -238,7 +238,7 @@ namespace VAS.Core.Serialization
 					ret = Image.Deserialize (buf);
 				} else if (objectType == typeof(HotKey)) {
 					string[] hk = ((string)reader.Value).Split (' '); 
-					ret = new HotKey { Key = int.Parse (hk [0]), Modifier = int.Parse (hk [1]) };
+					ret = new HotKey { Key = int.Parse (hk [0]), Modifier = getModifierValue (hk [1]) };
 				} else if (objectType == typeof(Point)) {
 					string[] ps = ((string)reader.Value).Split (' '); 
 					ret = new Point (double.Parse (ps [0], NumberFormatInfo.InvariantInfo),
@@ -259,6 +259,21 @@ namespace VAS.Core.Serialization
 			    objectType == typeof(Point) ||
 			    objectType == typeof(HotKey) ||
 			    objectType == typeof(Image) && handleImages);
+		}
+
+		int getModifierValue (string serializedValue)
+		{
+			int value = int.Parse (serializedValue);
+
+			if (value == (int)Keyboard.KeyvalFromName ("Shift_L")) {
+				value = (int)Gdk.ModifierType.ShiftMask;
+			} else if (value == (int)Keyboard.KeyvalFromName ("Alt_L")) {
+				value = (int)Gdk.ModifierType.Mod1Mask;
+			} else if (value == (int)Keyboard.KeyvalFromName ("Control_L")) {
+				value = (int)Gdk.ModifierType.ControlMask;
+			}
+
+			return value;
 		}
 	}
 
