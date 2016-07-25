@@ -23,7 +23,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\Exceptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\ExtensionMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Gettext.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Common\Image.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\ImageBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Job.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Log.cs" />
