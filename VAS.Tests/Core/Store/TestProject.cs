@@ -17,6 +17,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using VAS.Core.Common;
@@ -28,6 +29,12 @@ namespace VAS.Tests.Core.Store
 	[TestFixture ()]
 	public class TestProject
 	{
+		[TestFixtureSetUp]
+		public void FixtureSetUp ()
+		{
+			App.Current.ProjectExtension = ".tmp";
+		}
+
 		Utils.ProjectDummy CreateProject (bool fill = true)
 		{
 			Utils.ProjectDummy p = new Utils.ProjectDummy ();
@@ -227,9 +234,31 @@ namespace VAS.Tests.Core.Store
 		}
 
 		[Test ()] 
-		[Ignore ("Not implemented")]
 		public void TestImport ()
 		{
+			// Arrange
+			string path = Path.GetTempFileName ();
+			string videopath = Path.GetTempFileName ();
+			string originalPath = Path.Combine ("non-existing-path", Path.GetFileName (videopath));
+
+			Project p = CreateProject ();
+			p.FileSet = new MediaFileSet{ new MediaFile{ FilePath = originalPath } };
+			Assert.IsFalse (p.FileSet.CheckFiles ());
+
+			Project.Export (p, path);
+
+			try {
+				// Act
+				Project imported = Project.Import (path);
+
+				// Assert
+				Assert.AreEqual (p, imported);
+				Assert.AreEqual (videopath, imported.FileSet.First ().FilePath);
+				Assert.IsTrue (imported.FileSet.CheckFiles ());
+			} finally {
+				File.Delete (path);
+				File.Delete (videopath);
+			}
 		}
 
 		[Test ()]
