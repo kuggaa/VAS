@@ -61,7 +61,7 @@ namespace VAS.Core.Store
 			Playlists = new ObservableCollection<Playlist> ();
 			EventTypes = new ObservableCollection<EventType> ();
 			Version = Constants.DB_VERSION;
-			lastModified = DateTime.Now;
+			LastModified = DateTime.Now;
 		}
 
 		[OnDeserialized ()]
@@ -72,7 +72,7 @@ namespace VAS.Core.Store
 			}
 		}
 
-		public void Dispose ()
+		public virtual void Dispose ()
 		{
 			Dashboard?.Dispose ();
 			foreach (TimelineEvent evt in Timeline) {
@@ -190,9 +190,10 @@ namespace VAS.Core.Store
 		/// <summary>
 		/// Date of project last modification
 		/// </summary>
+		[PropertyPreload]
 		public virtual DateTime LastModified {
 			get {
-				return lastModified.ToLocalTime ();
+				return lastModified;
 			}
 			set {
 				lastModified = value.ToUniversalTime ();

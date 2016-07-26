@@ -12,44 +12,54 @@ namespace VAS.Core
 		Dictionary<string, Func<IScreenState>> destination;
 		IScreenState current;
 		List<string> stateStack;
-		List<Transition> overwrittenTransitions;
-
-		struct Transition
-		{
-			public string key;
-			public Func<IScreenState> value;
-		}
+		Dictionary<string, Stack<Func<IScreenState>>> overwrittenTransitions;
 
 		public StateController ()
 		{
 			destination = new Dictionary<string, Func<IScreenState>> ();
 			stateStack = new List<string> ();
-			overwrittenTransitions = new List<Transition> ();
+			overwrittenTransitions = new Dictionary<string, Stack<Func<IScreenState>>> ();
 		}
 
-		public Task<bool> MoveTo (string transition)
+		public async Task<bool> MoveTo (string transition)
 		{
-			if (current != null) {
-				if (!current.PostTransition ()) {
-					return Task.Factory.StartNew (() => false);
-				}
-			}
 			Log.Debug ("Moving to " + transition);
 
+			if (!destination.ContainsKey (transition)) {
+				Log.Debug ("Moving failed because transition" + transition + " is not in destination dictionary.");
+
+				return await Task.Factory.StartNew (() => false);
+			}
+
+			if (current != null) {
+				bool postTransition = await current.PostTransition ();
+				if (!postTransition) {
+					Log.Debug ("Moving failed because panel " + current.Panel.PanelName + " cannot move.");
+
+					return await Task.Factory.StartNew (() => false);
+				}
+			}
+
 			IScreenState panel = destination [transition] ();
-			bool ok = panel.PreTransition ();
+			bool ok = await panel.PreTransition ();
 			if (ok) {
 				App.Current.GUIToolkit.LoadPanel (panel.Panel);
 				current = panel;
 				PushState (transition);
+			} else {
+				Log.Debug ("Moving failed because panel " + panel.Panel.PanelName + " cannot move.");
 			}
-			return Task.Factory.StartNew (() => ok);
+
+			return await Task.Factory.StartNew (() => ok);
 		}
 
 		public void Register (string transition, Func<IScreenState> panel)
 		{
 			if (destination.Keys.Contains (transition)) {
-				overwrittenTransitions.Add (new Transition { key = transition, value = destination [transition] });
+				if (!overwrittenTransitions.ContainsKey (transition)) {
+					overwrittenTransitions [transition] = new Stack<Func<IScreenState>> ();
+				}
+				overwrittenTransitions [transition].Push (panel);
 			}
 
 			destination [transition] = panel;
@@ -61,10 +71,8 @@ namespace VAS.Core
 			destination.Remove (transition);
 
 			// Recover the previous one if exist, and remove from transitionsStack
-			if (overwrittenTransitions.Any (x => x.key == transition)) {
-				Transition last = overwrittenTransitions.FindLast (x => x.key == transition);
-				destination [transition] = last.value;
-				overwrittenTransitions.Remove (last);
+			if (overwrittenTransitions.ContainsKey (transition) && overwrittenTransitions [transition].Any ()) {
+				destination [transition] = overwrittenTransitions [transition].Pop ();
 			}
 		}
 
@@ -86,4 +94,3 @@ namespace VAS.Core
 		}
 	}
 }
-

@@ -1,4 +1,5 @@
 ﻿using VAS.Core.Hotkeys;
+using System.Threading.Tasks;
 
 namespace VAS.Core.Interfaces.GUI
 {
@@ -8,9 +9,9 @@ namespace VAS.Core.Interfaces.GUI
 
 		KeyContext PanelKeyContext { get; set; }
 
-		bool PreTransition ();
+		Task<bool> PreTransition ();
 
-		bool PostTransition ();
+		Task<bool> PostTransition ();
 	}
 }
 
