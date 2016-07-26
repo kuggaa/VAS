@@ -18,6 +18,7 @@
 using Gtk;
 using VAS.Core.Common;
 using VAS.Core.Events;
+using VAS.Core.Interfaces.GUI;
 
 namespace VAS.UI.Helpers
 {

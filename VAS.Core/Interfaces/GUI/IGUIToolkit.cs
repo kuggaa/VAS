@@ -126,6 +126,8 @@ namespace VAS.Core.Interfaces.GUI
 		Task<bool> CreateNewTemplate<T> (IList<T> availableTemplates, string defaultName,
 		                                 string countText, string emptyText,
 		                                 CreateEvent<T> evt) where T: ITemplate;
+
+		void PopUpView (string viewAttribute, IViewModel viewModel, object parent);
 	}
 }
 
