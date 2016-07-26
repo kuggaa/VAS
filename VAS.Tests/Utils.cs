@@ -19,16 +19,18 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using VAS.Core.Common;
 using VAS.Core.Filters;
+using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Serialization;
 using VAS.Core.Store;
 using VAS.Core.Store.Templates;
-using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Tests
 {
@@ -52,6 +54,11 @@ namespace VAS.Tests
 
 		public void SetViewModel (IViewModel viewModel)
 		{
+		}
+
+		public IEnumerable<KeyAction> GetDefaultKeyActions ()
+		{
+			return Enumerable.Empty<KeyAction> ();
 		}
 	}
 

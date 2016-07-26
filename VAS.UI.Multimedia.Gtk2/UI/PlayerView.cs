@@ -29,14 +29,15 @@ using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Handlers;
 using VAS.Core.Hotkeys;
+using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
+using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Drawing.Cairo;
 using VAS.Drawing.Widgets;
 using VAS.Services;
-using VAS.Core.Hotkeys;
 using Helpers = VAS.UI.Helpers;
 using VASCommon = VAS.Core.Common;
 
@@ -128,7 +129,7 @@ namespace VAS.UI
 
 		protected override void OnUnrealized ()
 		{
-			player.Stop ();
+			((IPlayback)player).Stop ();
 			base.OnUnrealized ();
 		}
 

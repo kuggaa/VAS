@@ -16,12 +16,14 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
+using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
@@ -128,6 +130,11 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Unsubscribe<DeleteEvent<T>> (HandleDelete);
 			App.Current.EventsBroker.Unsubscribe<ChangeNameEvent<T>> (HandleChangeName);
 			started = false;
+		}
+
+		public IEnumerable<KeyAction> GetDefaultKeyActions ()
+		{
+			return Enumerable.Empty<KeyAction> ();
 		}
 
 		#endregion

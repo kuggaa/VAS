@@ -22,15 +22,16 @@ using System.Linq;
 using System.Threading;
 using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Handlers;
+using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
-
 using Timer = System.Threading.Timer;
-using VAS.Core.Events;
 
 namespace VAS.Services
 {
@@ -765,6 +766,51 @@ namespace VAS.Services
 					}
 				);
 			}
+		}
+
+		#endregion
+
+		#region IController
+
+		//FIXME: MVVMC to be implemented
+		void IController.Start ()
+		{
+		}
+
+		//FIXME: MVVMC to be implemented
+		void IController.Stop ()
+		{
+		}
+
+		//FIXME: MVVMC to be implemented
+		void IController.SetViewModel (IViewModel viewModel)
+		{
+		}
+
+		IEnumerable<KeyAction> IController.GetDefaultKeyActions ()
+		{
+			return new KeyAction[] {
+				new KeyAction (
+					"PLAYER_RATE_INCREMENT", 
+					Keyboard.ParseName ("<Shift_L>+<Alt_L>+Right"),
+					FramerateUp
+				),
+				new KeyAction (
+					"PLAYER_RATE_DECREMENT", 
+					Keyboard.ParseName ("<Shift_L>+<Alt_L>+Left"),
+					FramerateDown
+				),
+				new KeyAction (
+					"PLAYER_RATE_MAX", 
+					Keyboard.ParseName ("<Shift_L>+<Alt_L>+Up"),
+					FramerateUpper
+				),
+				new KeyAction (
+					"PLAYER_RATE_DEFAULT", 
+					Keyboard.ParseName ("<Shift_L>+<Alt_L>+Down"),
+					FramerateLower
+				)
+			};
 		}
 
 		#endregion

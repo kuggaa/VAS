@@ -19,7 +19,7 @@ using VAS.Core.Handlers;
 
 namespace VAS.Core.Interfaces.GUI
 {
-	public interface IPanel
+	public interface IPanel : IKeyContext
 	{
 		event BackEventHandle BackEvent;
 

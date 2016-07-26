@@ -16,6 +16,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
+using VAS.Core.Hotkeys;
 
 namespace VAS.Core.Interfaces.MVVMC
 {
@@ -39,6 +41,12 @@ namespace VAS.Core.Interfaces.MVVMC
 		/// </summary>
 		/// <param name="viewModel"> The ViewModel.</param>
 		void SetViewModel (IViewModel viewModel);
+
+		/// <summary>
+		/// Gets the default key actions to be added to IPanel in pre-transition.
+		/// </summary>
+		/// <returns>The default key actions.</returns>
+		IEnumerable<KeyAction> GetDefaultKeyActions ();
 	}
 }
 
