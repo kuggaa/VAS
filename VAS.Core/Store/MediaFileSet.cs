@@ -17,6 +17,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using VAS.Core.Common;
@@ -226,15 +227,28 @@ namespace VAS.Core.Store
 		/// <summary>
 		/// Checks that all files in the set are valid.
 		/// </summary>
+		/// <param name="searchPath">Path where the project file is (during import). 
+		/// If != null, try to find the mediaFile in this path</param>
 		/// <returns><c>true</c>, if files was checked, <c>false</c> otherwise.</returns>
-		public bool CheckFiles ()
+		public bool CheckFiles (string searchPath = null)
 		{
 			if (Count == 0) {
 				return false;
 			}
 			foreach (MediaFile f in this) {
 				if (!f.Exists ()) {
-					return false;
+					if (searchPath == null) {
+						return false;
+					}
+
+					// Try to find the mediafiles in the search path
+					string file = Path.GetFileName (f.FilePath);
+					string newPath = Path.Combine (searchPath, file);
+					if (File.Exists (newPath)) {
+						f.FilePath = newPath;
+					} else {
+						return false;
+					}
 				}
 			}
 			return true;
