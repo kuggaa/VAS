@@ -33,10 +33,6 @@
       <HintPath>$(SolutionDir)\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
       <Package>nunit</Package>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>$(SolutionDir)\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Package>newtonsoft-json</Package>
-    </Reference>
     <Reference Include="SQLitePCL.raw">
       <HintPath>$(SolutionDir)\packages\SQLitePCL.raw.0.8.3\lib\net45\SQLitePCL.raw.dll</HintPath>
       <Package>couchbase-lite</Package>
@@ -63,6 +59,9 @@
     </Reference>
     <Reference Include="Moq, Version=4.2.1308.2321, Culture=neutral, PublicKeyToken=69f491c39445e920">
       <Package>moq</Package>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

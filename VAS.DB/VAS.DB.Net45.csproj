@@ -32,10 +32,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>$(SolutionDir)\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Package>newtonsoft-json</Package>
-    </Reference>
     <Reference Include="SQLitePCL.raw">
       <HintPath>$(SolutionDir)\packages\SQLitePCL.raw.0.8.1\lib\net45\SQLitePCL.raw.dll</HintPath>
       <Package>couchbase-lite</Package>
@@ -49,6 +45,9 @@
     </Reference>
     <Reference Include="Stateless">
       <HintPath>$(SolutionDir)\packages\Stateless.2.5.21.0\lib\portable-net40+sl50+win+wp80\Stateless.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Couchbase.Lite">
       <HintPath>$(SolutionDir)\packages\Couchbase.Lite.LM.1.1.2.0\lib\net45\Couchbase.Lite.dll</HintPath>
