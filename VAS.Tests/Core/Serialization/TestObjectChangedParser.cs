@@ -16,12 +16,14 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using NUnit.Framework;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using NUnit.Framework;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.Serialization;
+using VAS.Core.Store;
+using System.IO;
 
 namespace VAS.Tests.Core.Serialization
 {
@@ -206,6 +208,25 @@ namespace VAS.Tests.Core.Serialization
 			Assert.IsTrue (parent.ParseTree (ref storables, ref changed));
 			Assert.AreEqual (4, changed.Count);
 			Assert.AreEqual (57, storables.Count);
+		}
+
+		[Test ()]
+		public void TestHotKeyModifierMigration ()
+		{
+			HotKey hotkey = new HotKey {
+				Key = (int)Keyboard.KeyvalFromName ("Up"),
+				Modifier = (int)Keyboard.KeyvalFromName ("Shift_L")
+			};
+			HotKey hotkey2;
+			using (MemoryStream ms = new MemoryStream ()) {
+				Serializer.Instance.Save<HotKey> (hotkey, ms);
+				ms.Seek (0, SeekOrigin.Begin);
+				hotkey2 = Serializer.Instance.Load<HotKey> (ms);
+			}
+			Assert.IsNotNull (hotkey2);
+			Assert.AreEqual (hotkey.Key, hotkey2.Key);
+			Assert.AreNotEqual (hotkey.Modifier, hotkey2.Modifier);
+			Assert.AreEqual (hotkey2.Modifier, (int)Gdk.ModifierType.ShiftMask);
 		}
 
 		TestObject1 CreateObject1 (List<object> objects)

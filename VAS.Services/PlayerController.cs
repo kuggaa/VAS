@@ -22,15 +22,16 @@ using System.Linq;
 using System.Threading;
 using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Handlers;
+using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
-
 using Timer = System.Threading.Timer;
-using VAS.Core.Events;
 
 namespace VAS.Services
 {
@@ -46,7 +47,6 @@ namespace VAS.Services
 		public event PrepareViewHandler PrepareViewEvent;
 
 		protected const int TIMEOUT_MS = 20;
-		protected const int SCALE_FPS = 25;
 
 		protected IPlayer player;
 		protected IMultiPlayer multiPlayer;
@@ -178,7 +178,8 @@ namespace VAS.Services
 
 		public virtual double Rate {
 			set {
-				SetRate ((float)value);
+				float newRate = (float)App.Current.RateList.OrderBy (n => Math.Abs (n - value)).First ();
+				SetRate (newRate); 
 				Log.Debug ("Rate set to " + value);
 			}
 			get {
@@ -515,35 +516,62 @@ namespace VAS.Services
 
 				EmitLoadDrawings (null);
 				rate = (float)Rate;
-				if (rate >= 5) {
+				if (rate >= (float)App.Current.RateList.Last ()) {
 					return;
 				}
 				Log.Debug ("Framerate up");
-				if (rate < 1) {
-					SetRate (rate + (float)1 / SCALE_FPS);
-				} else {
-					SetRate (rate + 1);
+				int index = App.Current.RateList.FindIndex (p => (float)p == rate);
+				if (index < App.Current.RateList.Count - 1) {
+					SetRate ((float)App.Current.RateList [index + 1]);
 				}
 			}
 		}
 
 		public virtual void FramerateDown ()
 		{
-
 			if (!StillImageLoaded) {
 				float rate;
 
 				EmitLoadDrawings (null);
 				rate = (float)Rate;
-				if (rate <= (float)1 / SCALE_FPS) {
+				if (rate == (float)App.Current.RateList.First ()) {
 					return;
 				}
 				Log.Debug ("Framerate down");
-				if (rate > 1) {
-					SetRate (rate - 1);
-				} else {
-					SetRate (rate - (float)1 / SCALE_FPS);
+				int index = App.Current.RateList.FindIndex (p => (float)p == rate);
+				if (index > 0) {
+					SetRate ((float)App.Current.RateList [index - 1]);
 				}
+			}
+		}
+
+		public virtual void FramerateUpper ()
+		{
+			if (!StillImageLoaded) {
+				float rate;
+
+				EmitLoadDrawings (null);
+				rate = (float)Rate;
+				if (rate >= (float)App.Current.RateList.Last ()) {
+					return;
+				}
+				Log.Debug ("Framerate upper");
+				SetRate ((float)App.Current.RateList.Last ());
+			}
+		}
+
+		public virtual void FramerateLower ()
+		{
+			if (!StillImageLoaded) {
+				float rate;
+
+				EmitLoadDrawings (null);
+				rate = (float)Rate;
+				if (rate == (float)App.Current.RateList [(int)App.Current.DefaultRate - (int)App.Current.LowerRate]) {
+					return;
+				}
+				Log.Debug ("Framerate lower");
+				SetRate ((float)App.Current.RateList [(int)App.Current.DefaultRate - (int)App.Current.LowerRate]);
 			}
 		}
 
@@ -738,6 +766,51 @@ namespace VAS.Services
 					}
 				);
 			}
+		}
+
+		#endregion
+
+		#region IController
+
+		//FIXME: MVVMC to be implemented
+		void IController.Start ()
+		{
+		}
+
+		//FIXME: MVVMC to be implemented
+		void IController.Stop ()
+		{
+		}
+
+		//FIXME: MVVMC to be implemented
+		void IController.SetViewModel (IViewModel viewModel)
+		{
+		}
+
+		IEnumerable<KeyAction> IController.GetDefaultKeyActions ()
+		{
+			return new KeyAction[] {
+				new KeyAction (
+					"PLAYER_RATE_INCREMENT", 
+					Keyboard.ParseName ("<Shift_L>+<Alt_L>+Right"),
+					FramerateUp
+				),
+				new KeyAction (
+					"PLAYER_RATE_DECREMENT", 
+					Keyboard.ParseName ("<Shift_L>+<Alt_L>+Left"),
+					FramerateDown
+				),
+				new KeyAction (
+					"PLAYER_RATE_MAX", 
+					Keyboard.ParseName ("<Shift_L>+<Alt_L>+Up"),
+					FramerateUpper
+				),
+				new KeyAction (
+					"PLAYER_RATE_DEFAULT", 
+					Keyboard.ParseName ("<Shift_L>+<Alt_L>+Down"),
+					FramerateLower
+				)
+			};
 		}
 
 		#endregion
@@ -1001,7 +1074,7 @@ namespace VAS.Services
 		/// </summary>
 		protected virtual void SetRate (float rate)
 		{
-			if (rate == 0)
+			if (rate < 0)
 				rate = 1;
 			player.Rate = rate;
 

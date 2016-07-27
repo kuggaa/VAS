@@ -22,12 +22,13 @@ using VAS.Core.Handlers;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 
 namespace VAS.Core.Interfaces
 {
-	public interface IPlayerController: IPlayback
+	public interface IPlayerController: IPlayback, IController
 	{
 		event TimeChangedHandler TimeChangedEvent;
 		event StateChangeHandler PlaybackStateChangedEvent;
@@ -126,6 +127,16 @@ namespace VAS.Core.Interfaces
 		/// Decreases the framerate.
 		/// </summary>
 		void FramerateDown ();
+
+		/// <summary>
+		/// Set maximum framerate
+		/// </summary>
+		void FramerateUpper ();
+
+		/// <summary>
+		/// Set default framerate
+		/// </summary>
+		void FramerateLower ();
 
 		/// <summary>
 		/// Step the amount in <see cref="Step"/> forward.
