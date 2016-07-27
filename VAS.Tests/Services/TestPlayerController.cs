@@ -1435,6 +1435,8 @@ namespace VAS.Tests.Services
 			player.Seek (new Time (5), true, false, false);
 			Assert.AreEqual (0, playlistElementLoaded);
 			playerMock.Verify (p => p.Seek (new Time (15), true, false), Times.Once ());
+
+			plMan.Stop ();
 		}
 
 		[Test ()]

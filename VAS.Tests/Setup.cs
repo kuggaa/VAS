@@ -15,10 +15,16 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using System.Threading;
+using System.Threading.Tasks;
 using ICSharpCode.SharpZipLib;
 using NUnit.Framework;
 using VAS;
+using VAS.Core.Handlers;
+using VAS.Core.Hotkeys;
+using VAS.Core.Interfaces;
+using VAS.Core.Interfaces.GUI;
 using VAS.DB;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;

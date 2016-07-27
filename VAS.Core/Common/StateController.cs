@@ -65,15 +65,17 @@ namespace VAS.Core
 			destination [transition] = panel;
 		}
 
-		public void UnRegister (string transition)
+		public bool UnRegister (string transition)
 		{
 			// Remove from transitions
-			destination.Remove (transition);
+			bool ok = destination.Remove (transition);
 
 			// Recover the previous one if exist, and remove from transitionsStack
 			if (overwrittenTransitions.ContainsKey (transition) && overwrittenTransitions [transition].Any ()) {
 				destination [transition] = overwrittenTransitions [transition].Pop ();
 			}
+
+			return ok;
 		}
 
 		public void PushState (string state)
