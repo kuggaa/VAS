@@ -22,6 +22,7 @@ namespace VAS
 		public IDrawingToolkit DrawingToolkit;
 		public EventsBroker EventsBroker;
 		public StateController StateController;
+		public Registry DependencyRegistry;
 
 		public IStorageManager DatabaseManager;
 		public IRenderingJobsManager RenderingJobsManger;

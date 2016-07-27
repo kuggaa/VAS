@@ -20,6 +20,8 @@ using ICSharpCode.SharpZipLib;
 using NUnit.Framework;
 using VAS;
 using VAS.DB;
+using VAS.Core.Common;
+using VAS.Core.Interfaces;
 
 namespace VAS.Tests
 {
@@ -35,6 +37,8 @@ namespace VAS.Tests
 			App.Current.Config = new ConfigDummy ();
 			SynchronizationContext.SetSynchronizationContext (new MockSynchronizationContext ());
 			App.Current.EventsBroker = new VAS.Core.Events.EventsBroker ();
+			App.Current.DependencyRegistry = new Registry ("Dependencies");
+			App.Current.DependencyRegistry.Register<IStorageManager, CouchbaseManager> (1);
 		}
 	}
 

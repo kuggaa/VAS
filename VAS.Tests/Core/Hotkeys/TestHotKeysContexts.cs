@@ -26,17 +26,21 @@ namespace VAS.Tests.Core.HotKeys
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
-			App.Current = new AppDummy ();
-			App.Current.EventsBroker = new VAS.Core.Events.EventsBroker ();
 			InitKeyActions ();
+			App.Current.KeyContextManager.GlobalKeyContext.KeyActions.Clear ();
 		}
 
 		[SetUp ()]
 		public void SetUp ()
 		{
 			countPlay = countForward = countFastForward = countGlobal = 0;
-			App.Current.KeyContextManager.GlobalKeyContext.KeyActions.Clear ();
 			App.Current.KeyContextManager.NewKeyContexts (new List<KeyContext> ());
+		}
+
+		[TearDown ()]
+		public void TearDown ()
+		{
+			App.Current.KeyContextManager.GlobalKeyContext.KeyActions.Clear ();
 		}
 
 		void InitKeyActions ()
