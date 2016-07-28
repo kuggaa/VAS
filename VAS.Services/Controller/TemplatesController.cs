@@ -116,6 +116,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Subscribe<CreateEvent<T>> (HandleNew);
 			App.Current.EventsBroker.Subscribe<DeleteEvent<T>> (HandleDelete);
 			App.Current.EventsBroker.Subscribe<ChangeNameEvent<T>> (HandleChangeName);
+			started = true;
 		}
 
 		public void Stop ()

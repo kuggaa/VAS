@@ -17,6 +17,7 @@
 //
 using System;
 using VAS.Core.Events;
+using System.Collections.Generic;
 
 namespace VAS.Core.Events
 {
