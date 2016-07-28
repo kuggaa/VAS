@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 using Cairo;
 using Gdk;
 using Pango;
@@ -35,16 +36,12 @@ namespace VAS.Drawing.Cairo
 	public class CairoBackend: IDrawingToolkit
 	{
 		IContext context;
-		Color savedStrokeColor, savedFillColor;
-		Style fSlant, savedFSlant;
-		Weight fWeight, savedFWeight;
-		Pango.Alignment fAlignment, savedAlignment;
-		int savedLineWidth, savedFontSize;
-		bool savedClear;
-		LineStyle savedLineStyle;
-		string savedFontFamily;
+		Style fSlant;
+		Weight fWeight;
+		Pango.Alignment fAlignment;
 		bool disableScalling;
 		Layout layout;
+		Stack<ContextStatus> contextStatus;
 
 		public CairoBackend ()
 		{
@@ -63,6 +60,7 @@ namespace VAS.Drawing.Cairo
 			}
 
 			ClearOperation = false;
+			contextStatus = new Stack<ContextStatus> ();
 		}
 
 		public IContext Context {
@@ -180,16 +178,18 @@ namespace VAS.Drawing.Cairo
 
 		public void Begin ()
 		{
-			savedStrokeColor = StrokeColor;
-			savedFillColor = FillColor;
-			savedFSlant = fSlant;
-			savedFWeight = fWeight;
-			savedAlignment = fAlignment;
-			savedLineWidth = LineWidth;
-			savedFontSize = FontSize;
-			savedFontFamily = FontFamily;
-			savedLineStyle = LineStyle;
-			savedClear = ClearOperation;
+			contextStatus.Push (new ContextStatus (
+				StrokeColor,
+				FillColor,
+				fSlant,
+				fWeight,
+				fAlignment,
+				LineWidth,
+				FontSize,
+				FontFamily,
+				LineStyle,
+				ClearOperation
+			));
 			CContext.Save ();
 		}
 
@@ -232,16 +232,17 @@ namespace VAS.Drawing.Cairo
 		public void End ()
 		{
 			CContext.Restore ();
-			ClearOperation = savedClear;
-			StrokeColor = savedStrokeColor;
-			FillColor = savedFillColor;
-			fSlant = savedFSlant;
-			fWeight = savedFWeight;
-			fAlignment = savedAlignment;
-			LineWidth = savedLineWidth;
-			FontSize = savedFontSize;
-			FontFamily = savedFontFamily;
-			LineStyle = savedLineStyle;
+			ContextStatus cstatus = contextStatus.Pop ();
+			ClearOperation = cstatus.Clear;
+			StrokeColor = cstatus.StrokeColor;
+			FillColor = cstatus.FillColor;
+			fSlant = cstatus.FSlant;
+			fWeight = cstatus.FWeight;
+			fAlignment = cstatus.Alignment;
+			LineWidth = cstatus.LineWidth;
+			FontSize = cstatus.FontSize;
+			FontFamily = cstatus.FontFamily;
+			LineStyle = cstatus.LineStyle;
 		}
 
 		public void DrawLine (Point start, Point stop)
@@ -625,6 +626,78 @@ namespace VAS.Drawing.Cairo
 				break;
 			}
 			return weight;
+		}
+	}
+
+	/// <summary>
+	/// Context Status class to save/retrieve intrernal properties
+	/// </summary>
+	class ContextStatus
+	{
+		public ContextStatus (Color strokeColor, Color fillColor, Style fSlant,
+		                      Weight fWeight, Pango.Alignment alignment, int lineWidth, int fontSize,
+		                      string fontFamily, LineStyle lineStyle, bool clear)
+		{
+			StrokeColor = strokeColor;
+			FillColor = fillColor;
+			FSlant = fSlant;
+			FWeight = fWeight;
+			Alignment = alignment;
+			LineWidth = lineWidth;
+			FontSize = fontSize;
+			FontFamily = fontFamily;
+			LineStyle = lineStyle;
+			Clear = clear;
+		}
+
+		public Color StrokeColor {
+			get;
+			set;
+		}
+
+		public Color FillColor {
+			get;
+			set;
+		}
+
+		public Style FSlant {
+			get;
+			set;
+		}
+
+		public Weight FWeight {
+			get;
+			set;
+		}
+
+		public Pango.Alignment Alignment {
+			get;
+			set;
+		}
+
+		public int LineWidth {
+			get;
+			set;
+		}
+
+		public int FontSize {
+			get;
+			set;
+		}
+
+		public bool Clear {
+			get;
+			set;
+		}
+
+		public LineStyle LineStyle {
+			get;
+			set;
+		}
+
+		public string FontFamily {
+			get;
+			set;
 		}
 	}
 }

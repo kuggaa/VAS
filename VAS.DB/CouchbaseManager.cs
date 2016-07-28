@@ -21,6 +21,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Couchbase.Lite;
+using Couchbase.Lite.Store;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
@@ -31,12 +32,22 @@ namespace VAS.DB
 	{
 		protected readonly Manager manager;
 		protected IStorage activeDB;
+		readonly DatabaseOptions options;
 
 		public CouchbaseManager (string dbDir)
 		{
 			manager = new Manager (new System.IO.DirectoryInfo (dbDir),
 				ManagerOptions.Default);
+			options = new DatabaseOptions ();
+			Options.Create = true;
+
 			Databases = new List<IStorage> ();
+		}
+
+		public DatabaseOptions Options {
+			get {
+				return options;
+			}
 		}
 
 		#region IDataBaseManager implementation
@@ -88,14 +99,35 @@ namespace VAS.DB
 			}
 		}
 
+		public Database OpenDatabase (string storageName)
+		{
+			try {
+				Options.Create = !manager.AllDatabaseNames.Contains (storageName);
+				return manager.OpenDatabase (storageName, Options);
+			} catch (CouchbaseLiteException ex) {
+				if (ex.CBLStatus.Code == StatusCode.Unauthorized) {
+					// probably trying to open a non-encrypted DB with SQLCipher, let's try without encryption.
+					// if it really is encrypted, it will throw again
+					Log.Warning ("Unauthorized access to database");
+					Log.Debug ("Retrying without encryption");
+					return manager.GetDatabase (storageName);
+				}
+				throw;
+			}
+		}
+
 		public IStorage ActiveDB {
 			get {
 				return activeDB;
 			}
 			set {
-				activeDB = value;
-				App.Current.Config.CurrentDatabase = value.Info.Name;
-				App.Current.Config.Save ();
+				if (value != null) {
+					activeDB = value;
+					App.Current.Config.CurrentDatabase = value.Info.Name;
+					App.Current.Config.Save ();
+				} else {
+					throw new ArgumentNullException ("ActiveDB");
+				}
 			}
 		}
 
@@ -116,7 +148,7 @@ namespace VAS.DB
 				IStorage db = CreateStorage (name);
 				Databases.Add (db);
 				return db;
-			} catch (Exception ex) {
+			} catch (CouchbaseLiteException ex) {
 				Log.Exception (ex);
 				return null;
 			}
@@ -124,7 +156,7 @@ namespace VAS.DB
 
 		protected virtual IStorage CreateStorage (string name)
 		{
-			return new CouchbaseStorage (manager, name);
+			return new CouchbaseStorage (this, name);
 		}
 
 		/// <summary>

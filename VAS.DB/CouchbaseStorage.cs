@@ -48,33 +48,32 @@ namespace VAS.DB
 			Init ();
 		}
 
-		public CouchbaseStorage (Manager manager, string storageName)
+		public CouchbaseStorage (CouchbaseManager manager, string storageName)
 		{
 			this.storageName = storageName;
-			db = manager.GetDatabase (storageName);
+			db = manager.OpenDatabase (storageName);
 			Init ();
 		}
 
 		public CouchbaseStorage (string dbDir, string storageName)
 		{
 			this.storageName = storageName;
-			Manager manager = new Manager (new System.IO.DirectoryInfo (dbDir),
-				                  ManagerOptions.Default);
-			db = manager.GetDatabase (storageName);
+			var manager = (CouchbaseManager)App.Current.DependencyRegistry.Retrieve<IStorageManager> (dbDir);
+			db = manager.OpenDatabase (storageName);
 			Init ();
 		}
 
 		void Init ()
 		{
+			views = new Dictionary<Type, object> ();
 			// Only keep one revision for each document until we support replication and can handle conflicts
-			db.MaxRevTreeDepth = 1;
+			db.SetMaxRevTreeDepth (1);
 			mutex = new object ();
 			FetchInfo ();
 			Compact ();
-			views = new Dictionary <Type, object> ();
-			VFS.SetCurrent (new FileSystem ());
 			InitializeViews ();
 			InitializeDocumentTypeMappings ();
+			VFS.SetCurrent (new FileSystem ());
 		}
 
 		#region IStorage implementation
@@ -113,12 +112,7 @@ namespace VAS.DB
 				using (FileStream fs = new FileStream (outputFilename, FileMode.Create, FileAccess.Write, FileShare.None)) {
 					using (Stream gzipStream = new GZipOutputStream (fs)) {
 						using (TarArchive tarArchive = TarArchive.CreateOutputTarArchive (gzipStream)) {
-							foreach (string n in new string[] {"", "-wal", "-shm"}) {
-								TarEntry tarEntry = TarEntry.CreateEntryFromFile (
-									                    Path.Combine (App.Current.DBDir, storageName + ".cblite" + n));
-								tarArchive.WriteEntry (tarEntry, true);
-							}
-							AddDirectoryFilesToTar (tarArchive, Path.Combine (App.Current.DBDir, storageName + " attachments"), true);
+							AddDirectoryFilesToTar (tarArchive, Path.Combine (App.Current.DBDir, storageName + ".cblite2"), true);
 						}
 					}
 				}
@@ -154,7 +148,7 @@ namespace VAS.DB
 					}
 				});
 				if (!success) {
-					throw new StorageException (Catalog.GetString ("Error filling object from the storage"));
+					throw new StorageException (Catalog.GetString ("Error deleting object from the storage"));
 				}
 			}
 		}
