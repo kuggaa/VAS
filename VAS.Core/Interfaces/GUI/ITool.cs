@@ -59,8 +59,14 @@ namespace VAS.Core.Interfaces.GUI
 		[Obsolete]
 		void Load (IGUIToolkit toolkit);
 
+		/// <summary>
+		/// Enable this instance. It does the logic for the tool set up.
+		/// </summary>
 		void Enable ();
 
+		/// <summary>
+		/// Disable this instance. It does the logic to erase the tool changes
+		/// </summary>
 		void Disable ();
 	}
 }

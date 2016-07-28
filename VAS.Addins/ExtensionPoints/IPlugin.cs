@@ -15,14 +15,21 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using Mono.Addins;
 
 namespace VAS.Addins.ExtensionPoints
 {
 	public interface IPlugin
 	{
+		/// <summary>
+		/// Gets the Plugins name.
+		/// </summary>
+		/// <value>The name.</value>
 		string Name { get; }
 
+		/// <summary>
+		/// Describes the plugin functionality.
+		/// </summary>
+		/// <value>The description.</value>
 		string Description { get; }
 	}
 }

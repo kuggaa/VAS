@@ -139,6 +139,11 @@ namespace VAS.Core.Events
 		public string Name { get; set; }
 	}
 
+	public class KeyPressedEvent : Event
+	{
+		public HotKey Key;
+	}
+
 	public class RenderPlaylistEvent : Event
 	{
 		public Playlist Playlist { get; set; }

@@ -118,6 +118,7 @@
     <Compile Include="MVVMC\TestViewModelBase.cs" />
     <Compile Include="MVVMC\TestBindableBase.cs" />
     <Compile Include="Core\Hotkeys\TestHotKeysContexts.cs" />
+    <Compile Include="Core\Common\TestStateController.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -141,6 +142,10 @@
     <ProjectReference Include="..\VAS.Services\VAS.Services.Net45.csproj">
       <Project>{153BFD3F-6E06-451B-AD79-6C207762BBBB}</Project>
       <Name>VAS.Services.Net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VAS.UI.Gtk2\VAS.UI.Gtk2.csproj">
+      <Project>{4F1F28AB-3D1F-4F3F-95A4-2E08B448317C}</Project>
+      <Name>VAS.UI.Gtk2</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
