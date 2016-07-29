@@ -279,6 +279,10 @@ namespace VAS.Core.Events
 		public IPlayerController Player { get; set; }
 	}
 
+	public class CreateProjectEvent : Event
+	{
+	}
+
 	public class SaveProjectEvent : Event
 	{
 		public Project Project { get; set; }

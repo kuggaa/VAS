@@ -23,7 +23,7 @@ namespace VAS.Core.MVVMC
 {
 	public class ViewModelBase<T>: BindableBase, IViewModel<T> where T: INotifyPropertyChanged
 	{
-		T model;
+		protected T model;
 
 		/// <summary>
 		/// Gets or sets the model used by this ViewModel.

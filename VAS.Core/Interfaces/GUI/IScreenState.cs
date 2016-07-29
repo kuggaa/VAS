@@ -1,5 +1,6 @@
-﻿using VAS.Core.Hotkeys;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using VAS.Core.Hotkeys;
+﻿using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.Interfaces.GUI
 {
@@ -9,7 +10,7 @@ namespace VAS.Core.Interfaces.GUI
 
 		KeyContext PanelKeyContext { get; set; }
 
-		Task<bool> PreTransition ();
+		Task<bool> PreTransition (object data);
 
 		Task<bool> PostTransition ();
 	}

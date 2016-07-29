@@ -35,7 +35,7 @@ namespace VAS.Tests.Core.Common
 		{
 			sc = new StateController ();
 			screenStateMock = new Mock<IScreenState> ();
-			screenStateMock.Setup (x => x.PreTransition ()).Returns (Task.Factory.StartNew (() => true));
+			screenStateMock.Setup (x => x.PreTransition (It.IsAny<object> ())).Returns (Task.Factory.StartNew (() => true));
 			screenStateMock.Setup (x => x.Panel).Returns (new Mock<IPanel> ().Object);
 		}
 
@@ -85,7 +85,7 @@ namespace VAS.Tests.Core.Common
 			sc.Register ("newTransition", getScreenStateDummy);
 
 			// Action
-			bool moveTransition = await sc.MoveTo ("newTransition");
+			bool moveTransition = await sc.MoveTo ("newTransition", null);
 
 			// Assert
 			Assert.IsTrue (moveTransition);

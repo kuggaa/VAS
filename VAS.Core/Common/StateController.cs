@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.GUI;
+using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core
 {
@@ -21,7 +22,7 @@ namespace VAS.Core
 			overwrittenTransitions = new Dictionary<string, Stack<Func<IScreenState>>> ();
 		}
 
-		public async Task<bool> MoveTo (string transition)
+		public async Task<bool> MoveTo (string transition, object data)
 		{
 			Log.Debug ("Moving to " + transition);
 
@@ -41,7 +42,7 @@ namespace VAS.Core
 			}
 
 			IScreenState panel = destination [transition] ();
-			bool ok = await panel.PreTransition ();
+			bool ok = await panel.PreTransition (data);
 			if (ok) {
 				App.Current.GUIToolkit.LoadPanel (panel.Panel);
 				current = panel;

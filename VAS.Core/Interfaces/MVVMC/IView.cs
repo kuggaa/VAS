@@ -28,7 +28,7 @@ namespace VAS.Core.Interfaces.MVVMC
 		/// Sets the ViewModel associated to this View.
 		/// </summary>
 		/// <param name="viewModel"> The ViewModel.</param>
-		void SetViewModel (object ViewModel);
+		void SetViewModel (object viewModel);
 	}
 
 	public interface IView<T>: IView where T:IViewModel

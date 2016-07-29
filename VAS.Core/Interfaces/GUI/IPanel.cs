@@ -16,10 +16,11 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using VAS.Core.Handlers;
+using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.Interfaces.GUI
 {
-	public interface IPanel : IKeyContext
+	public interface IPanel: IView, IKeyContext
 	{
 		event BackEventHandle BackEvent;
 
