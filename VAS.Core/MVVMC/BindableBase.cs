@@ -37,6 +37,8 @@ namespace VAS.Core.MVVMC
 		[field:NonSerialized]
 		public event PropertyChangedEventHandler PropertyChanged;
 
+		bool forwarding;
+
 		#region IChanged implementation
 
 		[JsonIgnore]
@@ -161,8 +163,14 @@ namespace VAS.Core.MVVMC
 
 		protected virtual void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
+			// Break potential infinite loop for objects with circular dependencies.
+			if (forwarding) {
+				return;
+			}
+			forwarding = true;
 			RaisePropertyChanged (e, sender);
 			IsChanged = true;
+			forwarding = false;
 		}
 	}
 }
