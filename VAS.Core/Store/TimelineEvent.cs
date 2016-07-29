@@ -38,6 +38,7 @@ namespace VAS.Core.Store
 	{
 		[NonSerialized]
 		IStorage storage;
+		ObservableCollection<CameraConfig> camerasConfig;
 
 		#region Constructors
 
@@ -285,8 +286,13 @@ namespace VAS.Core.Store
 		/// A list of visible <see cref="CameraConfig"/> for this event.
 		/// </summary>
 		public ObservableCollection<CameraConfig> CamerasConfig {
-			get;
-			set;
+			get {
+				return camerasConfig;
+			}
+			set {
+				camerasConfig = value;
+				ValidateCameras (camerasConfig);
+			}
 		}
 
 		/// <summary>
