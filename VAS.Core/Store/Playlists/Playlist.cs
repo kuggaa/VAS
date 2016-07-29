@@ -57,13 +57,7 @@ namespace VAS.Core.Store.Playlists
 				return elements;
 			}
 			set {
-				if (elements != null) {
-					elements.CollectionChanged -= ListChanged;
-				}
 				elements = value;
-				if (elements != null) {
-					elements.CollectionChanged += ListChanged;
-				}
 				UpdateDuration ();
 			}
 		}
@@ -220,9 +214,9 @@ namespace VAS.Core.Store.Playlists
 			}
 		}
 
-		void ListChanged (object sender, NotifyCollectionChangedEventArgs e)
+		protected override void CollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
-			IsChanged = true;
+			base.CollectionChanged (sender, e);
 			UpdateDuration ();
 		}
 	}

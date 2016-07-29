@@ -324,7 +324,7 @@ namespace VAS.Services.Controller
 			// Update controls visiblity
 			ViewModel.DeleteSensitive = loadedTemplate != null && ViewModel.LoadedTemplate.Editable;
 			ViewModel.ExportSensitive = loadedTemplate != null;
-			ViewModel.SaveSensitive = true;
+			ViewModel.SaveSensitive = false;
 		}
 
 		void HandleChangeName (ChangeNameEvent<T> evt)

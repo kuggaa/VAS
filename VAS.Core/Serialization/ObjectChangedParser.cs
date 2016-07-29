@@ -26,6 +26,10 @@ using VAS.Core.Interfaces;
 
 namespace VAS.Core.Serialization
 {
+	/// FIXME: With the new bindable objects and properties forwarder, the IsChanged flag is now
+	/// propagated from childs to parents and there is no need to parse the object child's tree to find changed objects.
+	/// This needs some more testing thouhg before removing completly the parser.
+	/// 
 	/// <summary>
 	/// Parses <see cref="IStorable"/> objects traversing all its children objects
 	/// looking for changes using the IsChanged property.

@@ -17,10 +17,7 @@
 //
 using System;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using Newtonsoft.Json;
 using VAS.Core.Common;
-using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
 using VAS.Core.Store.Drawables;
 
@@ -30,7 +27,6 @@ namespace VAS.Core.Store
 	[Serializable]
 	public class FrameDrawing: BindableBase
 	{
-		ObservableCollection<Drawable> drawables;
 		const int DEFAULT_PAUSE_TIME = 5000;
 
 		/// <summary>
@@ -61,18 +57,8 @@ namespace VAS.Core.Store
 		/// List of <see cref="Drawable"/> objects in the canvas
 		/// </summary>
 		public ObservableCollection<Drawable> Drawables {
-			get {
-				return drawables;
-			}
-			set {
-				if (drawables != null) {
-					drawables.CollectionChanged -= ListChanged;
-				}
-				drawables = value;
-				if (drawables != null) {
-					drawables.CollectionChanged += ListChanged;
-				}
-			}
+			get;
+			set;
 		}
 
 		/// <summary>
@@ -106,11 +92,6 @@ namespace VAS.Core.Store
 		public Area RegionOfInterest {
 			get;
 			set;
-		}
-
-		void ListChanged (object sender, NotifyCollectionChangedEventArgs e)
-		{
-			IsChanged = true;
 		}
 	}
 }

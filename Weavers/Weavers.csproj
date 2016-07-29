@@ -62,6 +62,7 @@
     <Compile Include="Helpers\TypeProcessor.cs" />
     <Compile Include="Helpers\TypeResolver.cs" />
     <Compile Include="Helpers\WeavingException.cs" />
+    <Compile Include="Forwarder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

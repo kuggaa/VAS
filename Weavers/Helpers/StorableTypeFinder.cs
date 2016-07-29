@@ -3,8 +3,6 @@ using Mono.Cecil;
 
 public class TypeFinder
 {
-	public TypeReference Type;
-	public MethodReference GetIsLoadedMethod;
 	IAssemblyResolver assemblyResolver;
 	ModuleDefinition moduleDefinition;
 	string typeName;
@@ -16,18 +14,19 @@ public class TypeFinder
 		this.typeName = typeName;
 	}
 
-	public void Execute ()
+	public TypeDefinition Execute ()
 	{
-		Type = moduleDefinition.Types.FirstOrDefault (x => x.Name == typeName);
-		if (Type != null) {
-			return;
+		var type = moduleDefinition.Types.FirstOrDefault (x => x.Name == typeName);
+		if (type != null) {
+			return type;
 		}
 		foreach (var reference in moduleDefinition.AssemblyReferences) {
 			var mainModule = assemblyResolver.Resolve (reference).MainModule;
-			Type = mainModule.Types.FirstOrDefault (x => x.Name == typeName);
-			if (Type != null) {
-				return;
+			type = mainModule.Types.FirstOrDefault (x => x.Name == typeName);
+			if (type != null) {
+				return type;
 			}
 		}
+		return null;
 	}
 }
