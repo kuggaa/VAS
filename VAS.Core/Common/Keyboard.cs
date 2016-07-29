@@ -52,9 +52,18 @@ namespace VAS.Core.Common
 			    (((int)evt.State & (int)Gdk.ModifierType.Mod5Mask) == (int)Gdk.ModifierType.Mod5Mask)) {
 				modifier += (int)ModifierType.Mod1Mask;
 			} 
-			if (((int)evt.State & (int)Gdk.ModifierType.ControlMask) == (int)Gdk.ModifierType.ControlMask) {
-				modifier += (int)ModifierType.ControlMask;
+			// Use comand instead of control if we are in OSX
+			if (Utils.OS == OperatingSystemID.OSX) {
+				if ((((int)evt.State & (int)(Gdk.ModifierType.Mod2Mask | Gdk.ModifierType.MetaMask)) ==
+				    (int)(Gdk.ModifierType.Mod2Mask | Gdk.ModifierType.MetaMask))) {
+					modifier += (int)ModifierType.ControlMask;
+				}
+			} else {
+				if (((int)evt.State & (int)Gdk.ModifierType.ControlMask) == (int)Gdk.ModifierType.ControlMask) {
+					modifier += (int)ModifierType.ControlMask;
+				}
 			}
+
 			return new HotKey { Key = (int)Gdk.Keyval.ToLower (evt.KeyValue),
 				Modifier = modifier
 			};
