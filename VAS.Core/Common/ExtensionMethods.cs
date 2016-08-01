@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using VAS.Core.Events;
+using System.Reflection;
 
 namespace VAS.Core.Common
 {
@@ -114,6 +115,72 @@ namespace VAS.Core.Common
 		{
 			evt.Sender = sender;
 			App.Current.EventsBroker.Publish (evt);
+		}
+
+		/// <summary>
+		/// Copies all the properties with same name from source to destination. 
+		/// Only do the copy if both Getter in source property and Setter in destination are public.
+		/// </summary>
+		/// <param name="destObject">Destination object.</param>
+		/// <param name="srcObject">Source object.</param>
+		public static void CopyPropertiesFrom (this object destObject, object srcObject)
+		{
+			Type srcType = srcObject.GetType ();
+			Type destType = destObject.GetType ();
+			foreach (var srcPropertyInfo in srcType.GetProperties ()) {
+				if (destType.GetProperties ().Any (d => d.Name == srcPropertyInfo.Name)) {
+					object srcValue = srcPropertyInfo.GetGetMethod ()?.Invoke (srcObject, null);
+					if (srcValue == null) {
+						continue;
+					}
+					PropertyInfo destProperty = destType.GetProperties ().First<PropertyInfo> (p => p.Name == srcPropertyInfo.Name);
+					if (destProperty == null) {
+						continue;
+					}
+					object srcConvertedVal = Convert.ChangeType (srcValue, destProperty.PropertyType);
+					if (srcConvertedVal == null) {
+						continue;
+					}
+					destProperty.GetSetMethod ()?.Invoke (
+						destObject, 
+						new[] { srcConvertedVal }
+					);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Copies specified propertie with same name from source to destination. 
+		/// Only do the copy if both Getter in source property and Setter in destination are public.
+		/// </summary>
+		/// <param name="destObject">Destination object.</param>
+		/// <param name="srcObject">Source object.</param>
+		/// <param name="propertyName">Property name.</param>
+		public static void CopyPropertyFrom (this object destObject, object srcObject, string propertyName)
+		{
+			Type srcType = srcObject.GetType ();
+			Type destType = destObject.GetType ();
+			var srcPropertyInfo = srcType.GetProperties ().First (p => p.Name == propertyName);
+			if (srcPropertyInfo != null) {
+				if (destType.GetProperties ().Any (d => d.Name == srcPropertyInfo.Name)) {
+					object srcValue = srcPropertyInfo.GetGetMethod ()?.Invoke (srcObject, null);
+					if (srcValue == null) {
+						return;
+					}
+					PropertyInfo destProperty = destType.GetProperties ().First<PropertyInfo> (p => p.Name == srcPropertyInfo.Name);
+					if (destProperty == null) {
+						return;
+					}
+					object srcConvertedVal = Convert.ChangeType (srcValue, destProperty.PropertyType);
+					if (srcConvertedVal == null) {
+						return;
+					}
+					destProperty.GetSetMethod ()?.Invoke (
+						destObject, 
+						new[] { srcConvertedVal }
+					);
+				}
+			}
 		}
 	}
 }
