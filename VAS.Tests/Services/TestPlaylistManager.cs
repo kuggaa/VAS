@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using VAS;
+using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
@@ -112,7 +113,7 @@ namespace VAS.Tests
 		{
 			string name = "name";
 			mockGuiToolkit.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (),
-				It.IsAny<string> (), It.IsAny<object> ())).Returns (Task.Factory.StartNew (() => name));
+				It.IsAny<string> (), It.IsAny<object> ())).Returns (AsyncHelpers.Return (name));
 
 			TestUtils.ProjectDummy project = new TestUtils.ProjectDummy ();
 			App.Current.EventsBroker.Publish<NewPlaylistEvent> (
@@ -205,7 +206,7 @@ namespace VAS.Tests
 		public void TestAddPlaylistElementNewPlaylist ()
 		{
 			mockGuiToolkit.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (),
-				It.IsAny<string> (), It.IsAny<object> ())).Returns (Task.Factory.StartNew (() => "name"));
+				It.IsAny<string> (), It.IsAny<object> ())).Returns (AsyncHelpers.Return ("name"));
 
 			var elementList = new List<IPlaylistElement> ();
 			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (

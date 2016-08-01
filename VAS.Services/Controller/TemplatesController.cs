@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
@@ -293,7 +294,7 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		async void HandleSelectionChanged (object sender, PropertyChangedEventArgs e)
+		void HandleSelectionChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName != "Selection") {
 				return;
