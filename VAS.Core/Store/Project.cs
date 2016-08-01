@@ -323,6 +323,7 @@ namespace VAS.Core.Store
 			Project project = null;
 			try {
 				project = Serializer.Instance.Load<Project> (file);
+				project.FileSet.CheckFiles (Path.GetDirectoryName (file));
 			} catch (Exception e) {
 				Log.Exception (e);
 				throw new Exception (Catalog.GetString ("The file you are trying to load " +

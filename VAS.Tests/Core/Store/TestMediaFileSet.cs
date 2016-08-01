@@ -149,6 +149,75 @@ namespace VAS.Tests.Core.Store
 		}
 
 		[Test ()]
+		public void TestCheckFilesNonExisting ()
+		{
+			// Arrange file with wrong path
+			string path = Path.GetTempFileName ();
+			MediaFileSet mf = new MediaFileSet ();
+			mf.Add (new MediaFile {
+				FilePath = Path.Combine ("non-existing-path", Path.GetFileName (path)),
+				Name = "Test asset"
+			});
+			try {
+				// Act & Assert
+				Assert.IsFalse (mf.CheckFiles ());
+			} finally {
+				File.Delete (path);
+			}
+		}
+
+		[Test ()]
+		public void TestCheckFilesFixPath ()
+		{
+			// Arrange file with wrong path
+			string path = Path.GetTempFileName ();
+			string originalPath = Path.Combine ("non-existing-path", Path.GetFileName (path));
+			MediaFileSet mf = new MediaFileSet ();
+			mf.Add (new MediaFile {
+				FilePath = originalPath,
+				Name = "Test asset"
+			});
+			try {
+				// Act
+				bool ret = mf.CheckFiles (Path.GetDirectoryName (path));
+
+				// Assert its path is fixed
+				Assert.IsTrue (ret);
+				Assert.AreEqual (path, mf.First ().FilePath);
+				Assert.AreNotEqual (originalPath, mf.First ().FilePath);
+			} finally {
+				File.Delete (path);
+			}
+		}
+
+		[Test ()]
+		public void TestCheckFilesPathNotFixed ()
+		{
+			// Arrange file with wrong path
+			string path = Path.GetTempFileName ();
+			string wrongDir = "other-non-existing-path";
+			string wrongFullPath = Path.Combine (wrongDir, Path.GetFileName (path));
+			string originalFullPath = Path.Combine ("non-existing-path", Path.GetFileName (path));
+
+			MediaFileSet mf = new MediaFileSet ();
+			mf.Add (new MediaFile {
+				FilePath = originalFullPath,
+				Name = "Test asset"
+			});
+			try {
+				// Act
+				bool ret = mf.CheckFiles (wrongDir);
+
+				// Assert path is not fixed
+				Assert.IsFalse (ret);
+				Assert.AreNotEqual (wrongFullPath, mf.First ().FilePath);
+				Assert.AreEqual (originalFullPath, mf.First ().FilePath);
+			} finally {
+				File.Delete (path);
+			}
+		}
+
+		[Test ()]
 		public void TestNotEquals ()
 		{
 			MediaFileSet mf = new MediaFileSet ();
