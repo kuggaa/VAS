@@ -23,6 +23,7 @@ using VAS;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
+using VAS.Core.Interfaces;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 
@@ -115,9 +116,27 @@ namespace VAS.UI.Menus
 				foreach (Playlist pl in project.Playlists) {
 					item = new MenuItem (pl.Name);
 					plMenu.Append (item);
+					item.Activated += (sender, e) => {
+						IEnumerable<IPlaylistElement> elements = events.Select (p => new PlaylistPlayElement (p));
+						App.Current.EventsBroker.Publish (
+							new AddPlaylistElementEvent {
+								Playlist = pl,
+								PlaylistElements = elements.ToList ()
+							}
+						);
+					};
 				}
 				item = new MenuItem (Catalog.GetString ("Create new playlist..."));
 				plMenu.Append (item);
+				item.Activated += (sender, e) => {
+					IEnumerable<IPlaylistElement> elements = events.Select (p => new PlaylistPlayElement (p));
+					App.Current.EventsBroker.Publish (
+						new AddPlaylistElementEvent {
+							Playlist = null,
+							PlaylistElements = elements.ToList ()
+						}
+					);
+				};
 				plMenu.ShowAll ();
 				addToPlaylistMenu.Submenu = plMenu;
 			}
