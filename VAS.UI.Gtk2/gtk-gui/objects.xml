@@ -48,4 +48,12 @@
     </itemgroups>
     <signals />
   </object>
+  <object type="VAS.UI.Common.TreeViewBase" palette-category="General" allow-children="false" base-type="Gtk.TreeView">
+    <itemgroups />
+    <signals />
+  </object>
+  <object type="VAS.UI.Common.ComboBoxViewBase" palette-category="General" allow-children="false" base-type="Gtk.ComboBox">
+    <itemgroups />
+    <signals />
+  </object>
 </objects>

@@ -74,6 +74,8 @@
     <Compile Include="gtk-gui\VAS.UI.Dialog.CalendarDialog.cs" />
     <Compile Include="Dialogs.cs" />
     <Compile Include="GUIToolkitBase.cs" />
+    <Compile Include="UI\Common\TreeViewBase.cs" />
+    <Compile Include="UI\Common\ComboBoxViewBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -81,6 +83,7 @@
     <Folder Include="UI\Component\" />
     <Folder Include="UI\Menu\" />
     <Folder Include="UI\TreeView\" />
+    <Folder Include="UI\Common\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VAS.Core\VAS.Core.Net45.csproj">
