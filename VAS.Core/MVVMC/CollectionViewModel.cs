@@ -25,6 +25,9 @@ using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.MVVMC
 {
+	// A delegate type for hooking up change notifications.
+	public delegate void ViewModelsChangedEventHandler ();
+
 	/// <summary>
 	/// Base class for ViewModel representing a collection of ViewModel, like for example a list
 	/// of <see cref="VAS.Core.Store.Templates.Dashboard"/>.
@@ -34,6 +37,8 @@ namespace VAS.Core.MVVMC
 	public class CollectionViewModel<TModel, TViewModel>:BindableBase, IViewModel<ObservableCollection<TModel>>
 		where TViewModel: IViewModel<TModel>, new()
 	{
+		public event ViewModelsChangedEventHandler ViewModelsChangedEvent;
+
 		bool editing;
 		ObservableCollection<TModel> model;
 		Dictionary<TModel, TViewModel> modelToViewModel;
@@ -131,6 +136,7 @@ namespace VAS.Core.MVVMC
 
 		void HandleViewModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
+			EmitViewModelsChangedEvent ();
 			if (editing) {
 				return;
 			}
@@ -179,6 +185,13 @@ namespace VAS.Core.MVVMC
 		void HandleSelectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
 			RaisePropertyChanged ("Selection");
+		}
+
+		void EmitViewModelsChangedEvent ()
+		{
+			if (ViewModelsChangedEvent != null) {
+				ViewModelsChangedEvent ();
+			}
 		}
 	}
 }
