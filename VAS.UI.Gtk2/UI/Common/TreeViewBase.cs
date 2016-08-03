@@ -1,13 +1,15 @@
 ﻿//
 //   Copyright (C) 2016 Fluendo S.A.
 //
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using Gtk;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace VAS.UI.Common
 {
