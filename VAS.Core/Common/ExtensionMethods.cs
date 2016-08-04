@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using VAS.Core.Events;
 
 namespace VAS.Core.Common
 {
@@ -107,6 +108,12 @@ namespace VAS.Core.Common
 			} else {
 				return val;
 			}
+		}
+
+		public static void PublishEvent<T> (this T sender, Event evt)
+		{
+			evt.Sender = sender;
+			App.Current.EventsBroker.Publish (evt);
 		}
 	}
 }
