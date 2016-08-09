@@ -43,7 +43,7 @@ namespace VAS.Core.Store
 		public HotKey ()
 		{
 			Key = -1;
-			Modifier = -1;
+			Modifier = 0;
 		}
 
 		#endregion
