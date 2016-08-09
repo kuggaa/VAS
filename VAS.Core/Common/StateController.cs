@@ -42,7 +42,7 @@ namespace VAS.Core
 			home = new Tuple<string, IScreenState> (transition, homeState);
 			bool ok = await home.Item2.PreTransition (data);
 			if (ok) {
-				ok = await App.Current.Navigation.LoadNavigationPanelAsync (home.Item2.Panel);
+				ok = await App.Current.Navigation.LoadNavigationPanel (home.Item2.Panel);
 			}
 			return ok;
 		}
@@ -184,7 +184,7 @@ namespace VAS.Core
 				//Check for modals to delete them.
 				await PopAllModalStates ();
 				navigationStateStack.Clear ();
-				await App.Current.Navigation.LoadNavigationPanelAsync (home.Item2.Panel);
+				await App.Current.Navigation.LoadNavigationPanel (home.Item2.Panel);
 				return true;
 			}
 		}
@@ -222,7 +222,11 @@ namespace VAS.Core
 
 			return ok;
 		}
-		//Empties the stacks
+
+		/// <summary>
+		/// Empties the state stack.
+		/// </summary>
+		/// <returns>The state stack.</returns>
 		public async Task EmptyStateStack ()
 		{
 			await PopAllModalStates ();
@@ -233,7 +237,7 @@ namespace VAS.Core
 		async Task PushNavigationState (string transition, IScreenState state)
 		{
 			navigationStateStack.Add (new Tuple<string, IScreenState> (transition, state));
-			await App.Current.Navigation.LoadNavigationPanelAsync (state.Panel);
+			await App.Current.Navigation.LoadNavigationPanel (state.Panel);
 		}
 
 		async Task PopNavigationState ()
@@ -241,7 +245,7 @@ namespace VAS.Core
 			navigationStateStack.RemoveAt (navigationStateStack.Count - 1);
 			IScreenState lastState = LastNavigationState ();
 			if (lastState != null) {
-				await App.Current.Navigation.LoadNavigationPanelAsync (lastState.Panel);
+				await App.Current.Navigation.LoadNavigationPanel (lastState.Panel);
 			}
 		}
 
@@ -254,13 +258,13 @@ namespace VAS.Core
 			for (int i = navigationStateStack.Count - 1; i > index; i--) {
 				navigationStateStack.RemoveAt (i);
 			}
-			await App.Current.Navigation.LoadNavigationPanelAsync (state.Panel);
+			await App.Current.Navigation.LoadNavigationPanel (state.Panel);
 		}
 
 		async Task PushModalState (string transition, IScreenState state, IScreenState current)
 		{
 			modalStateStack.Add (new Tuple<string, IScreenState> (transition, state));
-			await App.Current.Navigation.LoadModalPanelAsync (state.Panel, current.Panel);
+			await App.Current.Navigation.LoadModalPanel (state.Panel, current.Panel);
 		}
 
 		async Task PopModalState (IScreenState current)
