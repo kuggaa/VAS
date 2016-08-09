@@ -297,6 +297,8 @@ namespace VAS.UI
 			ratescale.FormatValue += HandleRateFormatValue;
 			ratescale.ValueChanged += HandleRateValueChanged;
 			jumpspinbutton.ValueChanged += HandleJumpValueChanged;
+			ratescale.ButtonPressEvent += HandleRatescaleButtonPress;
+			ratescale.ButtonReleaseEvent += HandleRatescaleButtonRelease;
 		}
 
 		protected virtual void LoadImage (VAS.Core.Common.Image image, FrameDrawing drawing)
@@ -543,6 +545,38 @@ namespace VAS.UI
 						Value = val
 					}
 				);
+			}
+		}
+
+		/// <summary>
+		/// Handles the ratescale button press.
+		/// Default button 1 action is used in button 2 and button 3 
+		/// </summary>
+		/// <param name="o">source</param>
+		/// <param name="args">Arguments.</param>
+		[GLib.ConnectBefore]
+		protected virtual void HandleRatescaleButtonPress (object o, Gtk.ButtonPressEventArgs args)
+		{			
+			if (args.Event.Button == 1) {
+				args.Event.SetButton (2);
+			} else {
+				args.Event.SetButton (1);
+			}
+		}
+
+		/// <summary>
+		/// Handles the ratescale button release.
+		/// Default button 1 action is used in button 2 and button 3 
+		/// </summary>
+		/// <param name="o">source</param>
+		/// <param name="args">Arguments.</param>
+		[GLib.ConnectBefore]
+		protected virtual void HandleRatescaleButtonRelease (object o, Gtk.ButtonReleaseEventArgs args)
+		{
+			if (args.Event.Button == 1) {
+				args.Event.SetButton (2);
+			} else {
+				args.Event.SetButton (1);
 			}
 		}
 
