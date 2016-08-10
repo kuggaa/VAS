@@ -6,7 +6,6 @@
     <ProjectGuid>{473E7B85-AF42-40E8-BE21-46FF6CCC34D0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>VAS</RootNamespace>
-    <ApplicationIcon>.</ApplicationIcon>
     <CodePage>65001</CodePage>
     <AssemblyName>VAS.UI.Multimedia.Gtk2</AssemblyName>
     <AssemblyOriginatorKeyFile>..\..\libvas</AssemblyOriginatorKeyFile>
