@@ -37,6 +37,9 @@ namespace VAS.Services
 {
 	public class PlayerController : IPlayerController
 	{
+		const int LONG_SEEK_SECONDS = 10;
+		const int SHORT_SEEK_SECONDS = 2;
+
 		public event TimeChangedHandler TimeChangedEvent;
 		public event StateChangeHandler PlaybackStateChangedEvent;
 		public event LoadDrawingsHandler LoadDrawingsEvent;
@@ -352,7 +355,7 @@ namespace VAS.Services
 				Play ();
 		}
 
-		public virtual bool Seek (Time time, bool accurate, bool synchronous = false, bool throttled = false)
+		public virtual bool Seek (Time time, bool accurate = false, bool synchronous = false, bool throttled = false)
 		{
 			Log.Debug (string.Format ("PlayerController::Seek (time: {0}, accurate: {1}, synchronous: {2}, throttled: {3}", time, accurate, synchronous, throttled));
 
@@ -809,6 +812,32 @@ namespace VAS.Services
 					"PLAYER_RATE_DEFAULT", 
 					Keyboard.ParseName ("<Shift_L>+<Alt_L>+Down"),
 					FramerateLower
+				),
+
+				new KeyAction (
+					"PLAYER_TOGGLE_PLAY", 
+					Keyboard.ParseName ("space"),
+					TogglePlay
+				),
+				new KeyAction (
+					"PLAYER_SEEK_LEFT_SHORT", 
+					Keyboard.ParseName ("Left"),
+					() => Seek (CurrentTime + new Time { TotalSeconds = -SHORT_SEEK_SECONDS })
+				),
+				new KeyAction (
+					"PLAYER_SEEK_LEFT_LONG", 
+					Keyboard.ParseName ("<Shift_L>+Left"),
+					() => Seek (CurrentTime + new Time { TotalSeconds = -LONG_SEEK_SECONDS })
+				),
+				new KeyAction (
+					"PLAYER_SEEK_RIGHT_SHORT", 
+					Keyboard.ParseName ("Right"),
+					() => Seek (CurrentTime + new Time { TotalSeconds = SHORT_SEEK_SECONDS })
+				),
+				new KeyAction (
+					"PLAYER_SEEK_RIGHT_LONG", 
+					Keyboard.ParseName ("<Shift_L>+Right"),
+					() => Seek (CurrentTime + new Time { TotalSeconds = LONG_SEEK_SECONDS })
 				)
 			};
 		}
