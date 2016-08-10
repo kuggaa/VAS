@@ -141,7 +141,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\KeyContextManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\KeyContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\KeyAction.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Common\Keyboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IKeyContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IWelcomeButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\StateController.cs" />

@@ -40,6 +40,15 @@ namespace VAS.Core.Serialization
 		{
 			TypesMappings = new Dictionary<string, Type> ();
 			NamespacesReplacements = new Dictionary<string, Tuple<string, string>> ();
+			OldKeyValuesToModifiers = new Dictionary<int, int> ();
+			//Modifiers defined in:
+			// https://github.com/mono/gtk-sharp/blob/c8ff12776434ea3eeac59c23608dcc62adef479e/gdk/gdk-api.raw
+			//Shift_L
+			OldKeyValuesToModifiers.Add (0xFFE1, 1 << 0);
+			//Alt_L
+			OldKeyValuesToModifiers.Add (0xFFE9, 1 << 3);
+			//Control_L
+			OldKeyValuesToModifiers.Add (0xFFE3, 1 << 2);
 		}
 
 		public static Serializer Instance {
@@ -62,6 +71,15 @@ namespace VAS.Core.Serialization
 		/// </summary>
 		/// <value>The types mappings.</value>
 		public static Dictionary<string, Tuple<string, string>> NamespacesReplacements {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the old key values to modifiers.
+		/// </summary>
+		/// <value>The old key values to modifiers.</value>
+		public static Dictionary<int, int> OldKeyValuesToModifiers {
 			get;
 			set;
 		}
@@ -238,7 +256,7 @@ namespace VAS.Core.Serialization
 					ret = Image.Deserialize (buf);
 				} else if (objectType == typeof(HotKey)) {
 					string[] hk = ((string)reader.Value).Split (' '); 
-					ret = new HotKey { Key = int.Parse (hk [0]), Modifier = getModifierValue (hk [1]) };
+					ret = new HotKey { Key = int.Parse (hk [0]), Modifier = GetModifierValue (hk [1]) };
 				} else if (objectType == typeof(Point)) {
 					string[] ps = ((string)reader.Value).Split (' '); 
 					ret = new Point (double.Parse (ps [0], NumberFormatInfo.InvariantInfo),
@@ -261,18 +279,13 @@ namespace VAS.Core.Serialization
 			    objectType == typeof(Image) && handleImages);
 		}
 
-		int getModifierValue (string serializedValue)
+		static int GetModifierValue (string serializedValue)
 		{
 			int value = int.Parse (serializedValue);
 
-			if (value == (int)Keyboard.KeyvalFromName ("Shift_L")) {
-				value = (int)Gdk.ModifierType.ShiftMask;
-			} else if (value == (int)Keyboard.KeyvalFromName ("Alt_L")) {
-				value = (int)Gdk.ModifierType.Mod1Mask;
-			} else if (value == (int)Keyboard.KeyvalFromName ("Control_L")) {
-				value = (int)Gdk.ModifierType.ControlMask;
+			if (Serializer.OldKeyValuesToModifiers.ContainsKey (value)) {
+				value = Serializer.OldKeyValuesToModifiers [value];
 			}
-
 			return value;
 		}
 	}
