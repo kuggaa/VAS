@@ -45,6 +45,7 @@ namespace VAS.Core.Events
 
 	public class ExportEvent<T>: CRUDEvent<T>
 	{
+		public string Format { get; set; }
 	}
 
 	public class ImportEvent<T>: CRUDEvent<T>
