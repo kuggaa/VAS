@@ -42,7 +42,7 @@ namespace VAS.Video
 				muxType = VideoMuxerType.Matroska;
 			}
 
-			string outputFile = App.Current.GUIToolkit.SaveFile (Catalog.GetString ("Output file"),
+			string outputFile = App.Current.Dialogs.SaveFile (Catalog.GetString ("Output file"),
 				                    Path.ChangeExtension (file.FilePath, ext),
 				                    Path.GetDirectoryName (file.FilePath),
 				                    ext_desc, new string[] { ext });

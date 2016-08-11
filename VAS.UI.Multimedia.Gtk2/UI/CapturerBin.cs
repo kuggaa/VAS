@@ -203,7 +203,7 @@ namespace VAS.UI
 			
 			if (currentPeriod != null) {
 				string msg = Catalog.GetString ("Period recording already started");
-				App.Current.GUIToolkit.WarningMessage (msg, this);
+				App.Current.Dialogs.WarningMessage (msg, this);
 				return;
 			}
 			recbutton.Visible = false;
@@ -237,7 +237,7 @@ namespace VAS.UI
 		{
 			if (currentPeriod == null) {
 				string msg = Catalog.GetString ("Period recording not started");
-				App.Current.GUIToolkit.WarningMessage (msg, this);
+				App.Current.Dialogs.WarningMessage (msg, this);
 				return;
 			}
 			
@@ -259,7 +259,7 @@ namespace VAS.UI
 		{
 			if (currentPeriod == null) {
 				string msg = Catalog.GetString ("Period recording not started");
-				App.Current.GUIToolkit.WarningMessage (msg, this);
+				App.Current.Dialogs.WarningMessage (msg, this);
 				return;
 			}
 			Log.Debug ("Pause period at currentTime=", CurrentCaptureTime.ToMSecondsString ());
@@ -274,7 +274,7 @@ namespace VAS.UI
 		{
 			if (currentPeriod == null) {
 				string msg = Catalog.GetString ("Period recording not started");
-				App.Current.GUIToolkit.WarningMessage (msg, this);
+				App.Current.Dialogs.WarningMessage (msg, this);
 				return;
 			}
 			Log.Debug ("Resume period at currentTime=", CurrentCaptureTime.ToMSecondsString ());

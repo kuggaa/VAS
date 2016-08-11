@@ -42,6 +42,7 @@ namespace VAS.Tests
 		Mock<IRenderingJobsManager> mockVideoRenderer;
 		Mock<IAnalysisWindowBase> mockAnalysisWindow;
 		Mock<IPlayerController> mockPlayerController;
+		Mock<IDialogs> mockDiaklogs;
 		MediaFileSet mfs;
 
 		bool playlistElementLoaded;
@@ -59,6 +60,7 @@ namespace VAS.Tests
 			mockPlayerController.SetupAllProperties ();
 			mockAnalysisWindow.SetupGet (m => m.Player).Returns (mockPlayerController.Object);
 			mockVideoRenderer = new Mock<IRenderingJobsManager> ();
+			mockDiaklogs = new Mock<IDialogs> ();
 
 			App.Current.LowerRate = 1;
 			App.Current.UpperRate = 30;
@@ -75,6 +77,8 @@ namespace VAS.Tests
 			mockGuiToolkit = new Mock<IGUIToolkit> ();
 			App.Current.GUIToolkit = mockGuiToolkit.Object;
 			App.Current.RenderingJobsManger = mockVideoRenderer.Object; 
+			mockDiaklogs = new Mock<IDialogs> ();
+			App.Current.Dialogs = mockDiaklogs.Object;
 
 			plmanager = new PlaylistManager ();
 			plmanager.Start ();
@@ -112,7 +116,7 @@ namespace VAS.Tests
 		public void TestNewPlaylist ()
 		{
 			string name = "name";
-			mockGuiToolkit.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (),
+			mockDiaklogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (),
 				It.IsAny<string> (), It.IsAny<object> ())).Returns (AsyncHelpers.Return (name));
 
 			TestUtils.ProjectDummy project = new TestUtils.ProjectDummy ();
@@ -122,7 +126,7 @@ namespace VAS.Tests
 				} 
 			);
 
-			mockGuiToolkit.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
+			mockDiaklogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
 				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Once ());
 
 			Assert.AreEqual (1, project.Playlists.Count);
@@ -141,7 +145,7 @@ namespace VAS.Tests
 				} 
 			);
 
-			mockGuiToolkit.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
+			mockDiaklogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
 				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Once ());
 
 			Assert.AreEqual (0, project.Playlists.Count);
@@ -153,7 +157,7 @@ namespace VAS.Tests
 			bool called = false;
 			string name = "name";
 			string differentName = "different name";
-			mockGuiToolkit.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (),
+			mockDiaklogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (),
 				It.IsAny<string> (), It.IsAny<object> ()))
 				.Returns (() => Task.Factory.StartNew (() => {
 				if (called) {
@@ -177,7 +181,7 @@ namespace VAS.Tests
 				} 
 			);
 
-			mockGuiToolkit.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
+			mockDiaklogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
 				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Exactly (3));
 
 			Assert.AreEqual (2, project.Playlists.Count);
@@ -205,7 +209,7 @@ namespace VAS.Tests
 		[Test ()]
 		public void TestAddPlaylistElementNewPlaylist ()
 		{
-			mockGuiToolkit.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (),
+			mockDiaklogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (),
 				It.IsAny<string> (), It.IsAny<object> ())).Returns (AsyncHelpers.Return ("name"));
 
 			var elementList = new List<IPlaylistElement> ();
@@ -215,7 +219,7 @@ namespace VAS.Tests
 					PlaylistElements = elementList
 				}
 			);
-			mockGuiToolkit.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
+			mockDiaklogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
 				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Once ());
 		}
 
@@ -231,7 +235,7 @@ namespace VAS.Tests
 					PlaylistElements = elementList
 				}
 			);
-			mockGuiToolkit.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
+			mockDiaklogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
 				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Once ());
 		}
 

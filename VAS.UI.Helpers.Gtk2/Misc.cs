@@ -54,7 +54,7 @@ namespace VAS.UI.Helpers
 			StreamReader file;
 			string filename;
 
-			filename = App.Current.GUIToolkit.OpenFile (Catalog.GetString ("Choose an image"),
+			filename = App.Current.Dialogs.OpenFile (Catalog.GetString ("Choose an image"),
 				null, null, "Images", new string[] { "*.png", "*.jpg", "*.jpeg", "*.svg" }); 
 			if (filename != null) {
 				// For Win32 compatibility we need to open the image file
@@ -66,7 +66,7 @@ namespace VAS.UI.Helpers
 					file.Close ();
 				} catch (Exception ex) {
 					Log.Exception (ex);
-					App.Current.GUIToolkit.ErrorMessage (Catalog.GetString ("Image file format not supported"), widget);
+					App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Image file format not supported"), widget);
 				}
 			}
 			return pimage;
@@ -285,7 +285,7 @@ namespace VAS.UI.Helpers
 
 			try {
 				Exception ex = null;
-				busy = App.Current.GUIToolkit.BusyDialog (Catalog.GetString ("Analyzing video file:") + "\n" +
+				busy = App.Current.Dialogs.BusyDialog (Catalog.GetString ("Analyzing video file:") + "\n" +
 				filename, parent);
 				System.Action action = () => {
 					try {
@@ -307,7 +307,7 @@ namespace VAS.UI.Helpers
 				}
 			} catch (Exception ex) {
 				busy.Destroy ();
-				App.Current.GUIToolkit.ErrorMessage (ex.Message, parent);
+				App.Current.Dialogs.ErrorMessage (ex.Message, parent);
 				return null;
 			}
 			return mediaFile;
@@ -320,7 +320,7 @@ namespace VAS.UI.Helpers
 			IMultimediaToolkit multimedia = App.Current.MultimediaToolkit;
 			string filename;
 			
-			filename = gui.OpenFile (Catalog.GetString ("Open file"), null, null);
+			filename = App.Current.Dialogs.OpenFile (Catalog.GetString ("Open file"), null, null);
 			if (filename == null)
 				return null;
 			
@@ -336,7 +336,7 @@ namespace VAS.UI.Helpers
 						} else {
 							string q = Catalog.GetString ("This file needs to be converted into a more suitable format." +
 							           "(This step will only take a few minutes)");
-							if (gui.QuestionMessage (q, null, parent).Result) {
+							if (App.Current.Dialogs.QuestionMessage (q, null, parent).Result) {
 								string newFilename = multimedia.RemuxFile (mediaFile, parent);
 								if (newFilename != null) {
 									mediaFile = multimedia.DiscoverFile (newFilename);
@@ -349,7 +349,7 @@ namespace VAS.UI.Helpers
 						}
 					}
 				} catch (Exception ex) {
-					gui.ErrorMessage (ex.Message, parent);
+					App.Current.Dialogs.ErrorMessage (ex.Message, parent);
 					mediaFile = null;
 				}
 			}

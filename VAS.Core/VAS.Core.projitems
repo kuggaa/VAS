@@ -150,6 +150,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\AsyncHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Events\ClickedArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Events\Events.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IDialogs.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

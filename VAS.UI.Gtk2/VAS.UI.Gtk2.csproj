@@ -72,6 +72,8 @@
     <Compile Include="gtk-gui\VAS.UI.Dialog.BusyDialog.cs" />
     <Compile Include="UI\Dialog\CalendarDialog.cs" />
     <Compile Include="gtk-gui\VAS.UI.Dialog.CalendarDialog.cs" />
+    <Compile Include="GUIToolkit.cs" />
+    <Compile Include="Dialogs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -96,6 +98,10 @@
     <ProjectReference Include="..\VAS.Drawing\VAS.Drawing.Net45.csproj">
       <Project>{F99F378C-8C75-4888-A173-C7B4EC2D37E0}</Project>
       <Name>VAS.Drawing.Net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VAS.UI.Multimedia.Gtk2\VAS.UI.Multimedia.Gtk2.csproj">
+      <Project>{473E7B85-AF42-40E8-BE21-46FF6CCC34D0}</Project>
+      <Name>VAS.UI.Multimedia.Gtk2</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

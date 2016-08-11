@@ -150,7 +150,7 @@ namespace VAS.Services.Controller
 			filterName = FilterText;
 			extensions = new [] { "*" + Extension };
 			/* Show a file chooser dialog to select the file to export */
-			fileName = App.Current.GUIToolkit.SaveFile (Catalog.GetString ("Export dashboard"),
+			fileName = App.Current.Dialogs.SaveFile (Catalog.GetString ("Export dashboard"),
 				System.IO.Path.ChangeExtension (template.Name, Extension),
 				App.Current.HomeDir, filterName, extensions);
 
@@ -159,13 +159,13 @@ namespace VAS.Services.Controller
 				fileName = System.IO.Path.ChangeExtension (fileName, Extension);
 				if (System.IO.File.Exists (fileName)) {
 					string msg = AlreadyExistsText + " " + OverwriteText;
-					succeeded = await App.Current.GUIToolkit.QuestionMessage (msg, null);
+					succeeded = await App.Current.Dialogs.QuestionMessage (msg, null);
 				}
 
 				if (succeeded) {
 					Serializer.Instance.Save (template, fileName);
 					string msg = ExportedCorrectlyText;
-					App.Current.GUIToolkit.InfoMessage (msg);
+					App.Current.Dialogs.InfoMessage (msg);
 				}
 			}
 		}
@@ -180,7 +180,7 @@ namespace VAS.Services.Controller
 			filterName = Catalog.GetString (FilterText);
 			extensions = new [] { "*" + Extension };
 			/* Show a file chooser dialog to select the file to import */
-			fileName = App.Current.GUIToolkit.OpenFile (ImportText, null, App.Current.HomeDir,
+			fileName = App.Current.Dialogs.OpenFile (ImportText, null, App.Current.HomeDir,
 				filterName, extensions);
 
 			if (fileName == null)
@@ -193,7 +193,7 @@ namespace VAS.Services.Controller
 					bool abort = false;
 
 					while (Provider.Exists (newTemplate.Name) && !abort) {
-						string name = await App.Current.GUIToolkit.QueryMessage (NameText,
+						string name = await App.Current.Dialogs.QueryMessage (NameText,
 							              Catalog.GetString ("Name conflict"), newTemplate.Name + "#");
 						if (name == null) {
 							abort = true;
@@ -208,7 +208,7 @@ namespace VAS.Services.Controller
 					}
 				}
 			} catch (Exception ex) {
-				App.Current.GUIToolkit.ErrorMessage (Catalog.GetString ("Error importing file:") +
+				App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Error importing file:") +
 				"\n" + ex.Message);
 				Log.Exception (ex);
 				return;
@@ -231,7 +231,7 @@ namespace VAS.Services.Controller
 			templateToDelete = Provider.Templates.FirstOrDefault (t => t.Name == evt.Name);
 			if (templateToDelete != null) {
 				var msg = AlreadyExistsText + " " + OverwriteText;
-				if (!await App.Current.GUIToolkit.QuestionMessage (msg, null, msg)) {
+				if (!await App.Current.Dialogs.QuestionMessage (msg, null, msg)) {
 					return;
 				}
 			}
@@ -240,13 +240,13 @@ namespace VAS.Services.Controller
 				try {
 					template = Provider.Copy (evt.Source, evt.Name);
 				} catch (InvalidTemplateFilenameException ex) {
-					App.Current.GUIToolkit.ErrorMessage (ex.Message, this);
+					App.Current.Dialogs.ErrorMessage (ex.Message, this);
 					return;
 				}
 			} else {
 				template = Provider.Create (evt.Name, evt.Count);
 				if (!SaveTemplate (template)) {
-					App.Current.GUIToolkit.ErrorMessage (ErrorSavingText);
+					App.Current.Dialogs.ErrorMessage (ErrorSavingText);
 					return;
 				}
 			}
@@ -262,7 +262,7 @@ namespace VAS.Services.Controller
 
 			if (template != null) {
 				string msg = ConfirmDeleteText + template.Name;
-				if (await App.Current.GUIToolkit.QuestionMessage (msg, null)) {
+				if (await App.Current.Dialogs.QuestionMessage (msg, null)) {
 					Provider.Delete (template);
 					viewModel.Select (viewModel.Model.FirstOrDefault ());
 				}
@@ -285,7 +285,7 @@ namespace VAS.Services.Controller
 				}
 			} else {
 				string msg = ConfirmSaveText;
-				if (force || await App.Current.GUIToolkit.QuestionMessage (msg, null, this)) {
+				if (force || await App.Current.Dialogs.QuestionMessage (msg, null, this)) {
 					SaveTemplate (template);
 					// Update the ViewModel with the model clone used for editting.
 					ViewModel.ViewModels.FirstOrDefault (vm => vm.Model.Equals (template)).Model = template;
@@ -316,7 +316,7 @@ namespace VAS.Services.Controller
 					loadedTemplate.IsChanged = false;
 				} catch (Exception ex) {
 					Log.Exception (ex);
-					App.Current.GUIToolkit.ErrorMessage (CouldNotLoadText);
+					App.Current.Dialogs.ErrorMessage (CouldNotLoadText);
 					return;
 				}
 			}
@@ -334,14 +334,14 @@ namespace VAS.Services.Controller
 			string newName = evt.NewName;
 
 			if (String.IsNullOrEmpty (newName)) {
-				App.Current.GUIToolkit.ErrorMessage (Catalog.GetString ("The name is empty."));
+				App.Current.Dialogs.ErrorMessage (Catalog.GetString ("The name is empty."));
 				return;
 			}
 			if (template.Name == newName) {
 				return;
 			}
 			if (Provider.Exists (newName)) {
-				App.Current.GUIToolkit.ErrorMessage (AlreadyExistsText, this);
+				App.Current.Dialogs.ErrorMessage (AlreadyExistsText, this);
 			} else {
 				template.Name = newName;
 				Provider.Save (template);
@@ -374,16 +374,16 @@ namespace VAS.Services.Controller
 		async void SaveStatic (T template)
 		{
 			string msg = NotEditableText;
-			if (await App.Current.GUIToolkit.QuestionMessage (msg, null, this)) {
+			if (await App.Current.Dialogs.QuestionMessage (msg, null, this)) {
 				string newName;
 				while (true) {
-					newName = await App.Current.GUIToolkit.QueryMessage (Catalog.GetString ("Name:"), null,
+					newName = await App.Current.Dialogs.QueryMessage (Catalog.GetString ("Name:"), null,
 						template.Name + "_copy", this);
 					if (newName == null)
 						break;
 					if (Provider.Exists (newName)) {
 						msg = AlreadyExistsText;
-						App.Current.GUIToolkit.ErrorMessage (msg, this);
+						App.Current.Dialogs.ErrorMessage (msg, this);
 					} else {
 						break;
 					}
@@ -403,7 +403,7 @@ namespace VAS.Services.Controller
 				Provider.Save (template);
 				return true;
 			} catch (InvalidTemplateFilenameException ex) {
-				App.Current.GUIToolkit.ErrorMessage (ex.Message, this);
+				App.Current.Dialogs.ErrorMessage (ex.Message, this);
 				return false;
 			}
 		}

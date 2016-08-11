@@ -21,6 +21,7 @@ namespace VAS
 		public INavigation Navigation;
 		public IMultimediaToolkit MultimediaToolkit;
 		public IDrawingToolkit DrawingToolkit;
+		public IDialogs Dialogs;
 		public EventsBroker EventsBroker;
 		public StateController StateController;
 		public Registry DependencyRegistry;

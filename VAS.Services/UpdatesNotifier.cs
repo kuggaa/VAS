@@ -95,7 +95,7 @@ namespace VAS.Services
 			}
 
 			App.Current.GUIToolkit.Invoke (async delegate {
-				bool ignore = await App.Current.GUIToolkit.NewVersionAvailable (currentVersion, latestVersion,
+				bool ignore = await App.Current.Dialogs.NewVersionAvailable (currentVersion, latestVersion,
 					              downloadURL, changeLog, null);
 				if (ignore) {
 					/* User requested to ignore this version */
