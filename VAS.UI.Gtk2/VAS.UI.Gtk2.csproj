@@ -72,8 +72,8 @@
     <Compile Include="gtk-gui\VAS.UI.Dialog.BusyDialog.cs" />
     <Compile Include="UI\Dialog\CalendarDialog.cs" />
     <Compile Include="gtk-gui\VAS.UI.Dialog.CalendarDialog.cs" />
-    <Compile Include="GUIToolkit.cs" />
     <Compile Include="Dialogs.cs" />
+    <Compile Include="GUIToolkitBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
