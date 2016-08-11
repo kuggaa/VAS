@@ -19,6 +19,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TemplateManagerViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TemplateViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\TemplatesController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller\ProjectsController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectsManagerVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />

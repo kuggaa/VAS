@@ -16,7 +16,6 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using VAS.Core.Events;
 
 namespace VAS.Core.Events
 {
@@ -45,6 +44,11 @@ namespace VAS.Core.Events
 
 	public class ExportEvent<T>: CRUDEvent<T>
 	{
+		/// <summary>
+		/// Gets or sets the format in which we want to export the object
+		/// </summary>
+		/// <value>The format.</value>
+		public string Format { get; set; }
 	}
 
 	public class ImportEvent<T>: CRUDEvent<T>
