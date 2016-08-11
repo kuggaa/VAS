@@ -1,9 +1,0 @@
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-libdir=@libdir@
-vasdir=@libdir@/@USER_PACKAGE@
-
-Name: VAS.Drawing.Cairo
-Description: Cairo backend for VAS Drawing framework for .NET
-Version: @VERSION@
-Libs: -r:${vasdir}/VAS.Drawing.Cairo.dll

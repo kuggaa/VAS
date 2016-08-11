@@ -168,18 +168,6 @@ VAS.UI.Gtk2/Makefile
 VAS.UI.Multimedia.Gtk2/Makefile
 Weavers/Makefile
 
-
-pkgconfig/Makefile
-pkgconfig/vas-db.pc
-pkgconfig/vas-core.pc
-pkgconfig/vas-ui-helpers-gtk2.pc
-pkgconfig/vas-services.pc
-pkgconfig/vas-multimedia.pc
-pkgconfig/vas-drawing-cairo.pc
-pkgconfig/vas-drawing.pc
-pkgconfig/vas-ui-gtk2.pc
-pkgconfig/vas-ui-multimedia-gtk2.pc
-
 VAS.Tests/Makefile
 ])
 
