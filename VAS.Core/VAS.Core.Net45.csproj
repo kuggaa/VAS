@@ -60,6 +60,7 @@
     <Compile Include="Catalog.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="DirectoryMonitor.cs" />
+    <Compile Include="Common\Keyboard.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

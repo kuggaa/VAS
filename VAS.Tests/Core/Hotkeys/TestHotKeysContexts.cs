@@ -16,10 +16,10 @@ namespace VAS.Tests.Core.HotKeys
 		const string FAST_FORWARD_ACTION = "FAST_FORWARD";
 		const string GLOBAL_ACTION = "GLOBAL";
 
-		HotKey spaceHotkey = Keyboard.ParseName ("space");
-		HotKey rightHotkey = Keyboard.ParseName ("Right");
-		HotKey shiftRightHotkey = Keyboard.ParseName ("<Shift_L>+Right");
-		HotKey globalHotkey = Keyboard.ParseName ("G");
+		HotKey spaceHotkey = App.Current.Keyboard.ParseName ("space");
+		HotKey rightHotkey = App.Current.Keyboard.ParseName ("Right");
+		HotKey shiftRightHotkey = App.Current.Keyboard.ParseName ("<Shift_L>+Right");
+		HotKey globalHotkey = App.Current.Keyboard.ParseName ("G");
 		int countPlay = 0, countForward = 0, countFastForward = 0, countGlobal = 0;
 		KeyAction play, forward, fastForward, globalAction;
 
@@ -51,9 +51,9 @@ namespace VAS.Tests.Core.HotKeys
 				() => countForward++);
 			fastForward = new KeyAction (FAST_FORWARD_ACTION, shiftRightHotkey,
 				() => countFastForward++);
-			globalAction = new KeyAction (GLOBAL_ACTION, globalHotkey, 
+			globalAction = new KeyAction (GLOBAL_ACTION, globalHotkey,
 				() => countGlobal++);
-			
+
 		}
 
 		[Test ()]
@@ -136,7 +136,7 @@ namespace VAS.Tests.Core.HotKeys
 			App.Current.KeyContextManager.NewKeyContexts (new List<KeyContext> { context });
 			App.Current.KeyContextManager.AddContext (tempContext);
 
-			Assert.AreEqual (tempContext, 
+			Assert.AreEqual (tempContext,
 				App.Current.KeyContextManager.CurrentKeyContexts [
 					App.Current.KeyContextManager.CurrentKeyContexts.Count - 1]);
 		}
@@ -154,7 +154,7 @@ namespace VAS.Tests.Core.HotKeys
 			App.Current.KeyContextManager.AddContext (tempContext);
 			App.Current.KeyContextManager.RemoveContext (tempContext);
 
-			Assert.AreEqual (context, 
+			Assert.AreEqual (context,
 				App.Current.KeyContextManager.CurrentKeyContexts [
 					App.Current.KeyContextManager.CurrentKeyContexts.Count - 1]);
 		}
@@ -190,8 +190,8 @@ namespace VAS.Tests.Core.HotKeys
 		{
 			int countPlay2 = 0;
 			KeyAction play2 = new KeyAction ("PLAY_2", spaceHotkey,
-				                  () => countPlay2++);
-			
+								  () => countPlay2++);
+
 			KeyContext context = new KeyContext ();
 			context.AddAction (play);
 			context.AddAction (forward);
