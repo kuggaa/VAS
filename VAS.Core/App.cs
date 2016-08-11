@@ -9,7 +9,6 @@ using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
-using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 
 namespace VAS
@@ -22,6 +21,7 @@ namespace VAS
 		public IMultimediaToolkit MultimediaToolkit;
 		public IDrawingToolkit DrawingToolkit;
 		public IDialogs Dialogs;
+		public IKeyboard Keyboard;
 		public EventsBroker EventsBroker;
 		public StateController StateController;
 		public Registry DependencyRegistry;
@@ -131,6 +131,7 @@ namespace VAS
 
 			App.Current.homeDirectory = Path.Combine (home, softwareName);
 			App.Current.configDirectory = App.Current.homeDirectory;
+			App.Current.Keyboard = new Keyboard ();
 
 			// Migrate old config directory the home directory so that OS X users can easilly find
 			// log files and config files without having to access hidden folders

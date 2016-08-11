@@ -792,25 +792,25 @@ namespace VAS.Services
 
 		IEnumerable<KeyAction> IController.GetDefaultKeyActions ()
 		{
-			return new KeyAction[] {
+			return new KeyAction [] {
 				new KeyAction (
-					"PLAYER_RATE_INCREMENT", 
-					Keyboard.ParseName ("<Shift_L>+<Alt_L>+Right"),
+					"PLAYER_RATE_INCREMENT",
+					App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Right"),
 					FramerateUp
 				),
 				new KeyAction (
-					"PLAYER_RATE_DECREMENT", 
-					Keyboard.ParseName ("<Shift_L>+<Alt_L>+Left"),
+					"PLAYER_RATE_DECREMENT",
+					App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Left"),
 					FramerateDown
 				),
 				new KeyAction (
-					"PLAYER_RATE_MAX", 
-					Keyboard.ParseName ("<Shift_L>+<Alt_L>+Up"),
+					"PLAYER_RATE_MAX",
+					App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Up"),
 					FramerateUpper
 				),
 				new KeyAction (
-					"PLAYER_RATE_DEFAULT", 
-					Keyboard.ParseName ("<Shift_L>+<Alt_L>+Down"),
+					"PLAYER_RATE_DEFAULT",
+					App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Down"),
 					FramerateLower
 				),
 
