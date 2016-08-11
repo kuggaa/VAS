@@ -61,9 +61,15 @@ namespace VAS.UI
 		//FIXME: for compatibility with LongoMatch
 		public virtual IRenderingStateBar RenderingStateBar { get; }
 
-		public virtual bool FullScreen { 
-			protected get;
-			set; 
+		public bool FullScreen { 
+			set {
+				if (MainWindow != null) {
+					if (value)
+						MainWindow.GdkWindow.Fullscreen ();
+					else
+						MainWindow.GdkWindow.Unfullscreen ();
+				}
+			} 
 		}
 
 		public virtual void Register <I, C> (int priority)
