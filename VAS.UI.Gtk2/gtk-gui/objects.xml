@@ -3,4 +3,8 @@
     <itemgroups />
     <signals />
   </object>
+  <object type="VAS.UI.Dialog.ChooseOptionDialog" palette-category="General" allow-children="false" base-type="Gtk.Dialog">
+    <itemgroups />
+    <signals />
+  </object>
 </objects>
