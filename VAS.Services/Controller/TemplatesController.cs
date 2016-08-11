@@ -117,6 +117,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Subscribe<CreateEvent<T>> (HandleNew);
 			App.Current.EventsBroker.Subscribe<DeleteEvent<T>> (HandleDelete);
 			App.Current.EventsBroker.Subscribe<ChangeNameEvent<T>> (HandleChangeName);
+			started = true;
 		}
 
 		public void Stop ()
@@ -314,6 +315,7 @@ namespace VAS.Services.Controller
 					// changes in a different model.
 					loadedTemplate = template.Clone (SerializationType.Json);
 					loadedTemplate.IsChanged = false;
+					loadedTemplate.Static = template.Static;
 				} catch (Exception ex) {
 					Log.Exception (ex);
 					App.Current.Dialogs.ErrorMessage (CouldNotLoadText);
