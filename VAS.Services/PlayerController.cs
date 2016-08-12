@@ -815,28 +815,28 @@ namespace VAS.Services
 				),
 
 				new KeyAction (
-					"PLAYER_TOGGLE_PLAY",
-					App.Current.Keyboard.ParseName ("space"),
+					"PLAYER_TOGGLE_PLAY", 
+					Keyboard.ParseName ("space"),
 					TogglePlay
 				),
 				new KeyAction (
-					"PLAYER_SEEK_LEFT_SHORT",
-					App.Current.Keyboard.ParseName ("Left"),
+					"PLAYER_SEEK_LEFT_SHORT", 
+					Keyboard.ParseName ("Left"),
 					() => Seek (CurrentTime + new Time { TotalSeconds = -SHORT_SEEK_SECONDS })
 				),
 				new KeyAction (
-					"PLAYER_SEEK_LEFT_LONG",
-					App.Current.Keyboard.ParseName ("<Shift_L>+Left"),
+					"PLAYER_SEEK_LEFT_LONG", 
+					Keyboard.ParseName ("<Shift_L>+Left"),
 					() => Seek (CurrentTime + new Time { TotalSeconds = -LONG_SEEK_SECONDS })
 				),
 				new KeyAction (
-					"PLAYER_SEEK_RIGHT_SHORT",
-					App.Current.Keyboard.ParseName ("Right"),
+					"PLAYER_SEEK_RIGHT_SHORT", 
+					Keyboard.ParseName ("Right"),
 					() => Seek (CurrentTime + new Time { TotalSeconds = SHORT_SEEK_SECONDS })
 				),
 				new KeyAction (
-					"PLAYER_SEEK_RIGHT_LONG",
-					App.Current.Keyboard.ParseName ("<Shift_L>+Right"),
+					"PLAYER_SEEK_RIGHT_LONG", 
+					Keyboard.ParseName ("<Shift_L>+Right"),
 					() => Seek (CurrentTime + new Time { TotalSeconds = LONG_SEEK_SECONDS })
 				)
 			};
