@@ -175,12 +175,12 @@ namespace VAS.Services
 			bool done = false;
 			if (e.Project != null) {
 				while (name != null && !done) {
-					name = App.Current.GUIToolkit.QueryMessage (Catalog.GetString ("Playlist name:"), null, name).Result;
+					name = App.Current.Dialogs.QueryMessage (Catalog.GetString ("Playlist name:"), null, name).Result;
 					if (name != null) {
 						done = true;
 						if (e.Project.Playlists.Any (p => p.Name == name)) {
 							string msg = Catalog.GetString ("A playlist already exists with the same name");
-							App.Current.GUIToolkit.ErrorMessage (msg);
+							App.Current.Dialogs.ErrorMessage (msg);
 							done = false;
 						}
 					}

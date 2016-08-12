@@ -8,8 +8,6 @@
     <RootNamespace>VAS.UI</RootNamespace>
     <AssemblyName>VAS.UI</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -50,6 +48,7 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Mono.Posix" />
+    <Reference Include="Mono.Cairo" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -65,12 +64,23 @@
       <Link>AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="UI\Dialog\SplashScreen.cs" />
+    <Compile Include="UI\TreeView\CellRendererButton.cs" />
+    <Compile Include="UI\TreeView\CellRendererButtonImage.cs" />
+    <Compile Include="UI\Dialog\ChooseOptionDialog.cs" />
+    <Compile Include="gtk-gui\VAS.UI.Dialog.ChooseOptionDialog.cs" />
+    <Compile Include="UI\Dialog\BusyDialog.cs" />
+    <Compile Include="gtk-gui\VAS.UI.Dialog.BusyDialog.cs" />
+    <Compile Include="UI\Dialog\CalendarDialog.cs" />
+    <Compile Include="gtk-gui\VAS.UI.Dialog.CalendarDialog.cs" />
+    <Compile Include="Dialogs.cs" />
+    <Compile Include="GUIToolkitBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="UI\" />
     <Folder Include="UI\Component\" />
     <Folder Include="UI\Menu\" />
+    <Folder Include="UI\TreeView\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VAS.Core\VAS.Core.Net45.csproj">
@@ -85,13 +95,13 @@
       <Project>{E75E30DC-C1CF-4683-9A36-65B91EF10095}</Project>
       <Name>VAS.UI.Helpers.Gtk2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Weavers\Weavers.csproj">
-      <Project>{A7BA3B58-76E6-461C-B842-3D4DC4995B42}</Project>
-      <Name>Weavers</Name>
-    </ProjectReference>
     <ProjectReference Include="..\VAS.Drawing\VAS.Drawing.Net45.csproj">
       <Project>{F99F378C-8C75-4888-A173-C7B4EC2D37E0}</Project>
       <Name>VAS.Drawing.Net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VAS.UI.Multimedia.Gtk2\VAS.UI.Multimedia.Gtk2.csproj">
+      <Project>{473E7B85-AF42-40E8-BE21-46FF6CCC34D0}</Project>
+      <Name>VAS.UI.Multimedia.Gtk2</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

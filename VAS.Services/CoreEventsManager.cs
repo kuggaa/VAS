@@ -171,7 +171,7 @@ namespace VAS.Services
 				pixbuf = player.CurrentFrame;
 			}
 			if (pixbuf == null) {
-				App.Current.GUIToolkit.ErrorMessage (Catalog.GetString ("Error capturing video frame"));
+				App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Error capturing video frame"));
 			} else {
 				App.Current.GUIToolkit.DrawingTool (pixbuf, e.Play, drawing, e.CamConfig, openedProject);
 			}
@@ -268,7 +268,7 @@ namespace VAS.Services
 			    projectType == ProjectType.URICaptureProject ||
 			    projectType == ProjectType.FakeCaptureProject) {
 				if (!capturer.Capturing) {
-					App.Current.GUIToolkit.WarningMessage (Catalog.GetString ("Video capture is stopped"));
+					App.Current.Dialogs.WarningMessage (Catalog.GetString ("Video capture is stopped"));
 					return;
 				}
 			}
@@ -351,7 +351,7 @@ namespace VAS.Services
 			           projectType == ProjectType.URICaptureProject ||
 			           projectType == ProjectType.FakeCaptureProject) {
 				if (!capturer.Capturing) {
-					App.Current.GUIToolkit.WarningMessage (Catalog.GetString ("Video capture is stopped"));
+					App.Current.Dialogs.WarningMessage (Catalog.GetString ("Video capture is stopped"));
 					return;
 				}
 			}

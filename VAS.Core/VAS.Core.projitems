@@ -125,7 +125,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Events\MultimediaEvents.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IProgressReport.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Events\Events.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Events\EventsBroker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\BindableBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\IController.cs" />
@@ -147,6 +146,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IWelcomeButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\StateController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IScreenState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\INavigation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\AsyncHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Events\ClickedArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Events\Events.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IDialogs.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

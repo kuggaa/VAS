@@ -177,6 +177,7 @@ namespace VAS.Core.Common
 		public const string LinkOutPrelight = "icons/hicolor/scalable/actions/longomatch-link-out-prelight" + IMAGE_EXT;
 
 		public const string ButtonAlert = "icons/hicolor/scalable/actions/longomatch-alert" + IMAGE_EXT;
+		public const string DownloadButton = "icons/hicolor/scalable/actions/longomatch-import" + IMAGE_EXT;
 
 		public const int FilterTreeViewToogleWidth = 30;
 		public const int FilterTreeViewOnlyRightOffset = 10;

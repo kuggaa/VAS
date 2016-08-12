@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Filters;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
@@ -32,11 +33,11 @@ using VAS.Core.Store.Templates;
 namespace VAS.Core.Handlers
 {
 	/* A new play needs to be created for a specific category at the current play time */
-	public delegate void NewEventHandler (EventType eventType,List<Player> players,ObservableCollection<Team> team,
-		List<Tag> tags,Time start,Time stop,Time EventTime,DashboardButton btn);
+	public delegate void NewEventHandler (EventType eventType, List<Player> players, ObservableCollection<Team> team,
+		List<Tag> tags, Time start, Time stop, Time EventTime, DashboardButton btn);
 
 	/* An event was edited */
-	public delegate void TimeNodeChangedHandler (TimeNode tNode,Time time);
+	public delegate void TimeNodeChangedHandler (TimeNode tNode, Time time);
 	/* Edit EventType properties */
 	public delegate void EditEventTypeHandler (EventType cat);
 
@@ -51,20 +52,23 @@ namespace VAS.Core.Handlers
 	public delegate void ActionLinkCreatedHandler (ActionLink actionLink);
 
 	/* Show dashboard menu */
-	public delegate void ShowDashboardMenuHandler (List<DashboardButton> selectedButtons,List<ActionLink> selectedLinks);
+	public delegate void ShowDashboardMenuHandler (List<DashboardButton> selectedButtons, List<ActionLink> selectedLinks);
 
 	/* The plays filter was updated */
 	public delegate void FilterUpdatedHandler ();
 
 	public delegate void ShowDrawToolMenuHandler (IBlackboardObject drawable);
-	public delegate void ConfigureDrawingObjectHandler (IBlackboardObject drawable,DrawTool tool);
+	public delegate void ConfigureDrawingObjectHandler (IBlackboardObject drawable, DrawTool tool);
 	public delegate void DrawableChangedHandler (IBlackboardObject drawable);
 	public delegate void BackEventHandle ();
 	/* Camera dragging */
-	public delegate void CameraDraggedHandler (MediaFile file,TimeNode timenode);
+	public delegate void CameraDraggedHandler (MediaFile file, TimeNode timenode);
 
 	/* Show project stats */
 	public delegate void ShowTimersMenuHandler (List<TimeNode> timenodes);
-	public delegate void ShowTimerMenuHandler (Timer timer,Time time);
-	public delegate void ShowTimelineMenuHandler (List<TimelineEvent> plays,EventType cat,Time time);
+	public delegate void ShowTimerMenuHandler (Timer timer, Time time);
+	public delegate void ShowTimelineMenuHandler (List<TimelineEvent> plays, EventType cat, Time time);
+
+	/* Button clicked */
+	public delegate void ClickedHandler (object sender, ClickedArgs args);
 }
