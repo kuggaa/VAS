@@ -43,7 +43,7 @@ namespace VAS.Core.Common
 			Value = LoadFromFile (filename);
 		}
 
-		public T Value {
+		public virtual T Value {
 			get;
 			protected set;
 		}
