@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
-using VAS.Core.Hotkeys;
-﻿using VAS.Core.Interfaces.MVVMC;
+﻿using System.Dynamic;
+using System.Threading.Tasks;
+﻿using VAS.Core.Hotkeys;
+using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.Interfaces.GUI
 {
@@ -10,7 +11,7 @@ namespace VAS.Core.Interfaces.GUI
 
 		KeyContext PanelKeyContext { get; set; }
 
-		Task<bool> PreTransition (object data);
+		Task<bool> PreTransition (dynamic data);
 
 		Task<bool> PostTransition ();
 	}
