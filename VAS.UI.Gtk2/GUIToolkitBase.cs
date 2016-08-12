@@ -16,7 +16,6 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Gtk;
@@ -37,15 +36,6 @@ namespace VAS.UI
 	/// </summary>
 	public abstract class GUIToolkitBase : IGUIToolkit
 	{
-		protected Gtk.Window MainWindow {
-			get {
-				return mainWindow; 
-			}
-			set {
-				mainWindow = value;
-			}
-		}
-
 		Gtk.Window mainWindow;
 		Registry registry;
 
@@ -55,6 +45,15 @@ namespace VAS.UI
 			Scanner.ScanViews (App.Current.ViewLocator);
 		}
 
+		protected Gtk.Window MainWindow {
+			get {
+				return mainWindow; 
+			}
+			set {
+				mainWindow = value;
+			}
+		}
+			
 		//FIXME: for compatibility with LongoMatch
 		public virtual IMainController MainController {	get; }
 

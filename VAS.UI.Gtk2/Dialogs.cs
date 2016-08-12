@@ -41,7 +41,7 @@ namespace VAS.UI
 
 		Gtk.Window MainWindow { 
 			get {
-				return ((GUIToolkitBase)App.Current.GUIToolkit).GetParentWidget (null) as Gtk.Window;
+				return GetParentWidget (null) as Gtk.Window;
 			}
 		}
 
@@ -49,35 +49,35 @@ namespace VAS.UI
 
 		public void InfoMessage (string message, object parent = null)
 		{
-			MessagesHelpers.InfoMessage (((GUIToolkitBase)App.Current.GUIToolkit).GetParentWidget (parent), message);
+			MessagesHelpers.InfoMessage (GetParentWidget (parent), message);
 		}
 
 		public void WarningMessage (string message, object parent = null)
 		{
-			MessagesHelpers.WarningMessage (((GUIToolkitBase)App.Current.GUIToolkit).GetParentWidget (parent), message);
+			MessagesHelpers.WarningMessage (GetParentWidget (parent), message);
 		}
 
 		public void ErrorMessage (string message, object parent = null)
 		{
-			MessagesHelpers.ErrorMessage (((GUIToolkitBase)App.Current.GUIToolkit).GetParentWidget (parent), message);
+			MessagesHelpers.ErrorMessage (GetParentWidget (parent), message);
 		}
 
 		public Task<bool> QuestionMessage (string question, string title, object parent = null)
 		{
-			bool res = MessagesHelpers.QuestionMessage (((GUIToolkitBase)App.Current.GUIToolkit).GetParentWidget (parent), question, title);
+			bool res = MessagesHelpers.QuestionMessage (GetParentWidget (parent), question, title);
 			return AsyncHelpers.Return (res);
 		}
 
 		public Task<string> QueryMessage (string key, string title = null, string value = "", object parent = null)
 		{
-			string res = MessagesHelpers.QueryMessage (((GUIToolkitBase)App.Current.GUIToolkit).GetParentWidget (parent), key, title, value);
+			string res = MessagesHelpers.QueryMessage (GetParentWidget (parent), key, title, value);
 			return AsyncHelpers.Return (res);
 		}
 
 		public Task<bool> NewVersionAvailable (Version currentVersion, Version latestVersion, string downloadURL, string changeLog, object parent = null)
 		{
 			bool res = MessagesHelpers.NewVersionAvailable (currentVersion, latestVersion, downloadURL,
-				           changeLog, ((GUIToolkitBase)App.Current.GUIToolkit).GetParentWidget (parent));
+				           changeLog, GetParentWidget (parent));
 			return AsyncHelpers.Return (res);
 		}
 
@@ -127,20 +127,17 @@ namespace VAS.UI
 
 		public string OpenFile (string title, string defaultName, string defaultFolder, string filterName = null, string[] extensionFilter = null)
 		{
-			return FileChooserHelper.OpenFile (MainWindow, title, defaultName,	
-				defaultFolder, filterName, extensionFilter);
+			return FileChooserHelper.OpenFile (MainWindow, title, defaultName, defaultFolder, filterName, extensionFilter);
 		}
 
 		public List<string> OpenFiles (string title, string defaultName, string defaultFolder, string filterName, string[] extensionFilter)
 		{
-			return FileChooserHelper.OpenFiles (MainWindow,	title, defaultName,	
-				defaultFolder, filterName, extensionFilter);
+			return FileChooserHelper.OpenFiles (MainWindow,	title, defaultName, defaultFolder, filterName, extensionFilter);
 		}
 
 		public string SelectFolder (string title, string defaultName, string defaultFolder, string filterName, string[] extensionFilter)
 		{
-			return FileChooserHelper.SelectFolder (MainWindow, title, defaultName,	
-				defaultFolder, filterName, extensionFilter);
+			return FileChooserHelper.SelectFolder (MainWindow, title, defaultName, defaultFolder, filterName, extensionFilter);
 		}
 
 		public Task<DateTime> SelectDate (DateTime date, object widget)
@@ -156,11 +153,15 @@ namespace VAS.UI
 
 		public int ButtonsMessage (string message, List<string> textButtons, int? focusIndex, object parent = null)
 		{
-			return MessagesHelpers.ButtonsMessage (((GUIToolkitBase)App.Current.GUIToolkit).GetParentWidget (parent), 
-				message, textButtons, focusIndex);
+			return MessagesHelpers.ButtonsMessage (GetParentWidget (parent), message, textButtons, focusIndex);
 		}
 
 		#endregion
+
+		Widget GetParentWidget (object parent = null)
+		{
+			return ((GUIToolkitBase)App.Current.GUIToolkit).GetParentWidget (parent);
+		}
 	}
 }
 
