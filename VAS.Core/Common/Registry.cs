@@ -54,7 +54,7 @@ namespace VAS.Core.Common
 			elements [interfac].Add (new RegistryElement (klass, priority));
 		}
 
-		public T Retrieve<T> (params object[] args)
+		public virtual T Retrieve<T> (params object [] args)
 		{
 			Type interfac = typeof(T);
 			Type elementType;
