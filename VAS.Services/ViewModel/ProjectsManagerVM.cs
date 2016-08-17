@@ -23,15 +23,17 @@ using VAS.Core.Events;
 
 namespace VAS.Services.ViewModel
 {
-	public class ProjectsManagerVM<T, W> : CollectionViewModel<T, W> where T : Project where W : ProjectVM<T>, new()
+	public class ProjectsManagerVM<TModel, TViewModel> : CollectionViewModel<TModel, TViewModel>
+		where TModel : Project
+		where TViewModel : ProjectVM<TModel>, new()
 	{
 		public ProjectsManagerVM ()
 		{
-			LoadedProject = new W ();
+			LoadedProject = new TViewModel ();
 		}
 
 		[PropertyChanged.DoNotNotify]
-		public W LoadedProject {
+		public TViewModel LoadedProject {
 			get;
 			private set;
 		}
@@ -68,9 +70,9 @@ namespace VAS.Services.ViewModel
 		/// </summary>
 		public void Export (string format = null)
 		{
-			T template = Selection.FirstOrDefault ()?.Model;
+			TModel template = Selection.FirstOrDefault ()?.Model;
 			if (template != null) {
-				App.Current.EventsBroker.Publish (new ExportEvent<T> { Object = template, Format = format });
+				App.Current.EventsBroker.Publish (new ExportEvent<TModel> { Object = template, Format = format });
 			}
 		}
 
@@ -79,7 +81,7 @@ namespace VAS.Services.ViewModel
 		/// </summary>
 		public void Import ()
 		{
-			App.Current.EventsBroker.Publish (new ImportEvent<T> ());
+			App.Current.EventsBroker.Publish (new ImportEvent<TModel> ());
 		}
 
 		/// <summary>
@@ -87,7 +89,7 @@ namespace VAS.Services.ViewModel
 		/// </summary>
 		public void New ()
 		{
-			App.Current.EventsBroker.Publish (new CreateEvent<T> { });
+			App.Current.EventsBroker.Publish (new CreateEvent<TModel> { });
 		}
 
 		/// <summary>
@@ -95,8 +97,8 @@ namespace VAS.Services.ViewModel
 		/// </summary>
 		public void Delete ()
 		{
-			foreach (T project in Selection.Select (vm => vm.Model)) {
-				App.Current.EventsBroker.Publish (new DeleteEvent<T> { Object = project });
+			foreach (TModel project in Selection.Select (vm => vm.Model)) {
+				App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = project });
 			}
 		}
 
@@ -106,9 +108,9 @@ namespace VAS.Services.ViewModel
 		/// <param name="force">If set to <c>true</c> does not prompt to save.</param>
 		public void Save (bool force)
 		{
-			T project = LoadedProject.Model;
+			TModel project = LoadedProject.Model;
 			if (project != null) {
-				App.Current.EventsBroker.Publish (new UpdateEvent<T> { Object = project, Force = force });
+				App.Current.EventsBroker.Publish (new UpdateEvent<TModel> { Object = project, Force = force });
 			}
 		}
 	}

@@ -32,12 +32,14 @@ using VAS.Services.ViewModel;
 
 namespace VAS.Services.Controller
 {
-	public class ProjectsController<T, W> : IController where T : Project where W : ProjectVM<T>, new()
+	public class ProjectsController<TModel, TViewModel> : IController
+		where TModel : Project
+		where TViewModel : ProjectVM<TModel>, new()
 	{
 		bool started;
-		ProjectsManagerVM<T, W> viewModel;
+		ProjectsManagerVM<TModel, TViewModel> viewModel;
 
-		ProjectsManagerVM<T, W> ViewModel {
+		ProjectsManagerVM<TModel, TViewModel> ViewModel {
 			get {
 				return viewModel;
 			}
@@ -52,7 +54,7 @@ namespace VAS.Services.Controller
 
 		public void SetViewModel (IViewModel viewModel)
 		{
-			ViewModel = (ProjectsManagerVM<T, W>)viewModel;
+			ViewModel = (ProjectsManagerVM<TModel, TViewModel>)viewModel;
 		}
 
 		public virtual void Start ()
@@ -60,11 +62,11 @@ namespace VAS.Services.Controller
 			if (started) {
 				throw new InvalidOperationException ("The controller is already running");
 			}
-			App.Current.EventsBroker.Subscribe<ExportEvent<T>> (HandleExport);
-			App.Current.EventsBroker.Subscribe<ImportEvent<T>> (HandleImport);
-			App.Current.EventsBroker.Subscribe<UpdateEvent<T>> (HandleSave);
-			App.Current.EventsBroker.Subscribe<CreateEvent<T>> (HandleNew);
-			App.Current.EventsBroker.Subscribe<DeleteEvent<T>> (HandleDelete);
+			App.Current.EventsBroker.Subscribe<ExportEvent<TModel>> (HandleExport);
+			App.Current.EventsBroker.Subscribe<ImportEvent<TModel>> (HandleImport);
+			App.Current.EventsBroker.Subscribe<UpdateEvent<TModel>> (HandleSave);
+			App.Current.EventsBroker.Subscribe<CreateEvent<TModel>> (HandleNew);
+			App.Current.EventsBroker.Subscribe<DeleteEvent<TModel>> (HandleDelete);
 			started = true;
 		}
 
@@ -73,11 +75,11 @@ namespace VAS.Services.Controller
 			if (!started) {
 				throw new InvalidOperationException ("The controller is already stopped");
 			}
-			App.Current.EventsBroker.Unsubscribe<ExportEvent<T>> (HandleExport);
-			App.Current.EventsBroker.Unsubscribe<ImportEvent<T>> (HandleImport);
-			App.Current.EventsBroker.Unsubscribe<UpdateEvent<T>> (HandleSave);
-			App.Current.EventsBroker.Unsubscribe<CreateEvent<T>> (HandleNew);
-			App.Current.EventsBroker.Unsubscribe<DeleteEvent<T>> (HandleDelete);
+			App.Current.EventsBroker.Unsubscribe<ExportEvent<TModel>> (HandleExport);
+			App.Current.EventsBroker.Unsubscribe<ImportEvent<TModel>> (HandleImport);
+			App.Current.EventsBroker.Unsubscribe<UpdateEvent<TModel>> (HandleSave);
+			App.Current.EventsBroker.Unsubscribe<CreateEvent<TModel>> (HandleNew);
+			App.Current.EventsBroker.Unsubscribe<DeleteEvent<TModel>> (HandleDelete);
 			started = false;
 		}
 
@@ -88,7 +90,7 @@ namespace VAS.Services.Controller
 
 		#endregion
 
-		void HandleExport (ExportEvent<T> evt)
+		void HandleExport (ExportEvent<TModel> evt)
 		{
 			// Only handle regular exports from here
 			if (evt.Format != null || evt.Object == null) {
@@ -108,17 +110,17 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		void HandleImport (ImportEvent<T> evt)
+		void HandleImport (ImportEvent<TModel> evt)
 		{
 		}
 
-		void HandleNew (CreateEvent<T> evt)
+		void HandleNew (CreateEvent<TModel> evt)
 		{
 		}
 
-		async void HandleDelete (DeleteEvent<T> evt)
+		async void HandleDelete (DeleteEvent<TModel> evt)
 		{
-			T project = evt.Object;
+			TModel project = evt.Object;
 
 			if (project == null) {
 				return;
@@ -129,7 +131,7 @@ namespace VAS.Services.Controller
 				IBusyDialog busy = App.Current.Dialogs.BusyDialog (Catalog.GetString ("Deleting project..."), null);
 				busy.ShowSync (() => {
 					try {
-						App.Current.DatabaseManager.ActiveDB.Delete<T> (project);
+						App.Current.DatabaseManager.ActiveDB.Delete<TModel> (project);
 						ViewModel.Model.Remove (project);
 						viewModel.Select (viewModel.Model.FirstOrDefault ());
 					} catch (StorageException ex) {
@@ -139,9 +141,9 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		async void HandleSave (UpdateEvent<T> evt)
+		async void HandleSave (UpdateEvent<TModel> evt)
 		{
-			T project = evt.Object;
+			TModel project = evt.Object;
 			if (project == null) {
 				return;
 			}
@@ -150,13 +152,13 @@ namespace VAS.Services.Controller
 
 		async void HandleSelectionChanged (object sender, PropertyChangedEventArgs e)
 		{
-			T loadedProject = null;
+			TModel loadedProject = null;
 
 			if (e.PropertyName != "Selection") {
 				return;
 			}
 
-			ProjectVM<T> projectVM = ViewModel.Selection.FirstOrDefault ();
+			ProjectVM<TModel> projectVM = ViewModel.Selection.FirstOrDefault ();
 
 			if (ViewModel.LoadedProject.Edited == true) {
 				await Save (ViewModel.LoadedProject.Model, false);
@@ -164,7 +166,7 @@ namespace VAS.Services.Controller
 
 			// Load the model, creating a copy of the Project to edit changes in a different model in case the user
 			// does not want to save them.
-			T project = projectVM.Model;
+			TModel project = projectVM.Model;
 			loadedProject = project.Clone (SerializationType.Json);
 			project.IsChanged = false;
 			ViewModel.LoadedProject.Model = loadedProject;
@@ -175,7 +177,7 @@ namespace VAS.Services.Controller
 			ViewModel.SaveSensitive = false;
 		}
 
-		async Task Save (T project, bool force)
+		async Task Save (TModel project, bool force)
 		{
 			if (!force && project.IsChanged) {
 				string msg = Catalog.GetString ("Do you want to save the current project?");
@@ -185,7 +187,7 @@ namespace VAS.Services.Controller
 			}
 			try {
 				IBusyDialog busy = App.Current.Dialogs.BusyDialog (Catalog.GetString ("Saving project..."), null);
-				busy.ShowSync (() => App.Current.DatabaseManager.ActiveDB.Store<T> (project));
+				busy.ShowSync (() => App.Current.DatabaseManager.ActiveDB.Store<TModel> (project));
 				// Update the ViewModel with the model clone used for editting.
 				ViewModel.ViewModels.FirstOrDefault (vm => vm.Model.Equals (project)).Model = project;
 				ViewModel.SaveSensitive = false;

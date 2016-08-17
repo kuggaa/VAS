@@ -31,16 +31,16 @@ namespace VAS.Core.MVVMC
 	/// The base class keeps in sync the ViewModel and the Model collection and provides support
 	/// for selecting items within the collection.
 	/// </summary>
-	public class CollectionViewModel<T, W>:BindableBase, IViewModel<ObservableCollection<T>>
-		where W: IViewModel<T>, new()
+	public class CollectionViewModel<TModel, TViewModel>:BindableBase, IViewModel<ObservableCollection<TModel>>
+		where TViewModel: IViewModel<TModel>, new()
 	{
 		bool editing;
-		ObservableCollection<T> model;
-		Dictionary<T, W> modelToViewModel;
+		ObservableCollection<TModel> model;
+		Dictionary<TModel, TViewModel> modelToViewModel;
 
 		public CollectionViewModel ()
 		{
-			Selection = new ObservableCollection<W> ();
+			Selection = new ObservableCollection<TViewModel> ();
 			Selection.CollectionChanged += HandleSelectionChanged;
 		}
 
@@ -48,7 +48,7 @@ namespace VAS.Core.MVVMC
 		/// Gets or sets the model used in this ViewModel.
 		/// </summary>
 		/// <value>The model.</value>
-		public ObservableCollection<T> Model {
+		public ObservableCollection<TModel> Model {
 			set {
 				if (ViewModels != null) {
 					ViewModels.CollectionChanged -= HandleViewModelsCollectionChanged;
@@ -56,10 +56,10 @@ namespace VAS.Core.MVVMC
 				if (Model != null) {
 					Model.CollectionChanged -= HandleModelsCollectionChanged;
 				}
-				ViewModels = new ObservableCollection<W> ();
-				modelToViewModel = new Dictionary<T, W> ();
+				ViewModels = new ObservableCollection<TViewModel> ();
+				modelToViewModel = new Dictionary<TModel, TViewModel> ();
 				model = value;
-				foreach (T element in model) {
+				foreach (TModel element in model) {
 					AddViewModel (element);
 				}
 				ViewModels.CollectionChanged += HandleViewModelsCollectionChanged;
@@ -74,7 +74,7 @@ namespace VAS.Core.MVVMC
 		/// Gets the collection of child ViewModel
 		/// </summary>
 		/// <value>The ViewModels collection.</value>
-		public ObservableCollection<W> ViewModels {
+		public ObservableCollection<TViewModel> ViewModels {
 			private set;
 			get;
 		}
@@ -83,7 +83,7 @@ namespace VAS.Core.MVVMC
 		/// Gets the current selection in the collection.
 		/// </summary>
 		/// <value>The selection.</value>
-		public ObservableCollection<W> Selection {
+		public ObservableCollection<TViewModel> Selection {
 			get;
 			private set;
 		}
@@ -92,7 +92,7 @@ namespace VAS.Core.MVVMC
 		/// Selects the specified item from the list.
 		/// </summary>
 		/// <param name="item">The item to select.</param>
-		public void Select (W viewModel)
+		public void Select (TViewModel viewModel)
 		{
 			if (viewModel == null) {
 				return;
@@ -112,7 +112,7 @@ namespace VAS.Core.MVVMC
 		/// Selects the specified item from the list.
 		/// </summary>
 		/// <param name="item">The item to select.</param>
-		public void Select (T item)
+		public void Select (TModel item)
 		{
 			if (item == null) {
 				return;
@@ -120,9 +120,9 @@ namespace VAS.Core.MVVMC
 			Select (ViewModels.First (vm => vm.Model.Equals (item)));
 		}
 
-		void AddViewModel (T model)
+		void AddViewModel (TModel model)
 		{
-			var viewModel = new W {
+			var viewModel = new TViewModel {
 				Model = model
 			};
 			ViewModels.Add (viewModel);
@@ -137,11 +137,11 @@ namespace VAS.Core.MVVMC
 			editing = true;
 			switch (e.Action) {
 			case NotifyCollectionChangedAction.Add:
-				foreach (W viewModel in e.NewItems)
+				foreach (TViewModel viewModel in e.NewItems)
 					model.Add (viewModel.Model);
 				break;
 			case NotifyCollectionChangedAction.Remove:
-				foreach (W viewModel in e.OldItems)
+				foreach (TViewModel viewModel in e.OldItems)
 					model.Remove (viewModel.Model);
 				break;
 			case NotifyCollectionChangedAction.Reset:
@@ -159,12 +159,12 @@ namespace VAS.Core.MVVMC
 			editing = true;
 			switch (e.Action) {
 			case NotifyCollectionChangedAction.Add:
-				foreach (T model in e.NewItems) {
+				foreach (TModel model in e.NewItems) {
 					AddViewModel (model); 
 				}
 				break;
 			case NotifyCollectionChangedAction.Remove:
-				foreach (T model in e.OldItems) {
+				foreach (TModel model in e.OldItems) {
 					ViewModels.Remove (modelToViewModel [model]);
 					modelToViewModel.Remove (model);
 				}

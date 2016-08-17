@@ -26,16 +26,17 @@ namespace VAS.Services.ViewModel
 	/// <summary>
 	/// Generic base class ViewModel for a templates manager View, like the Dashboards Manager or the Teams Manager
 	/// </summary>
-	public class TemplatesManagerViewModel<T, W>: CollectionViewModel<T, W>
-		where T: ITemplate<T> where W:TemplateViewModel<T>, new()
+	public class TemplatesManagerViewModel<TModel, TViewModel> : CollectionViewModel<TModel, TViewModel>
+		where TModel : ITemplate<TModel>
+		where TViewModel : TemplateViewModel<TModel>, new()
 	{
 		public TemplatesManagerViewModel ()
 		{
-			LoadedTemplate = new W ();
+			LoadedTemplate = new TViewModel ();
 		}
 
 		[PropertyChanged.DoNotNotify]
-		public W LoadedTemplate {
+		public TViewModel LoadedTemplate {
 			get;
 			set;
 		}
@@ -72,9 +73,9 @@ namespace VAS.Services.ViewModel
 		/// </summary>
 		public void Export ()
 		{
-			T template = Selection.FirstOrDefault ()?.Model;
+			TModel template = Selection.FirstOrDefault ()?.Model;
 			if (template != null) {
-				App.Current.EventsBroker.Publish (new ExportEvent<T> { Object = template });
+				App.Current.EventsBroker.Publish (new ExportEvent<TModel> { Object = template });
 			}
 		}
 
@@ -83,7 +84,7 @@ namespace VAS.Services.ViewModel
 		/// </summary>
 		public void Import ()
 		{
-			App.Current.EventsBroker.Publish (new ImportEvent<T> ());
+			App.Current.EventsBroker.Publish (new ImportEvent<TModel> ());
 		}
 
 		/// <summary>
@@ -91,7 +92,7 @@ namespace VAS.Services.ViewModel
 		/// </summary>
 		public void New ()
 		{
-			App.Current.EventsBroker.Publish (new CreateEvent<T> { });
+			App.Current.EventsBroker.Publish (new CreateEvent<TModel> { });
 		}
 
 		/// <summary>
@@ -99,9 +100,9 @@ namespace VAS.Services.ViewModel
 		/// </summary>
 		public void Delete ()
 		{
-			T template = Selection.FirstOrDefault ()?.Model;
+			TModel template = Selection.FirstOrDefault ()?.Model;
 			if (template != null) {
-				App.Current.EventsBroker.Publish (new DeleteEvent<T> { Object = template });
+				App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = template });
 			}
 		}
 
@@ -111,10 +112,10 @@ namespace VAS.Services.ViewModel
 		/// <param name="force">If set to <c>true</c> does not prompt to save.</param>
 		public void Save (bool force)
 		{
-			T template = LoadedTemplate.Model;
+			TModel template = LoadedTemplate.Model;
 			if (template != null) {
 				App.Current.EventsBroker.Publish (
-					new UpdateEvent<T> { Object = template, Force = force });
+					new UpdateEvent<TModel> { Object = template, Force = force });
 			}
 		}
 
@@ -123,9 +124,9 @@ namespace VAS.Services.ViewModel
 		/// </summary>
 		/// <param name="templateVM">The template ViewModel</param>
 		/// <param name="newName">The new name.</param>
-		public void ChangeName (W templateVM, string newName)
+		public void ChangeName (TViewModel templateVM, string newName)
 		{
-			App.Current.EventsBroker.Publish (new ChangeNameEvent<T> {
+			App.Current.EventsBroker.Publish (new ChangeNameEvent<TModel> {
 				Object = templateVM.Model,
 				NewName = newName
 			});
