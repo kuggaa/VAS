@@ -55,7 +55,7 @@ namespace VAS.Services.Controller
 			ViewModel = (ProjectsManagerVM<T, W>)viewModel;
 		}
 
-		public void Start ()
+		public virtual void Start ()
 		{
 			if (started) {
 				throw new InvalidOperationException ("The controller is already running");
@@ -68,7 +68,7 @@ namespace VAS.Services.Controller
 			started = true;
 		}
 
-		public void Stop ()
+		public virtual void Stop ()
 		{
 			if (!started) {
 				throw new InvalidOperationException ("The controller is already stopped");
@@ -81,7 +81,7 @@ namespace VAS.Services.Controller
 			started = false;
 		}
 
-		public IEnumerable<KeyAction> GetDefaultKeyActions ()
+		public virtual IEnumerable<KeyAction> GetDefaultKeyActions ()
 		{
 			return Enumerable.Empty<KeyAction> ();
 		}
