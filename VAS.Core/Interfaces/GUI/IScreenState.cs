@@ -1,6 +1,7 @@
-﻿using System.Dynamic;
+﻿using System.Collections.Generic;
+using System.Dynamic;
 using System.Threading.Tasks;
-﻿using VAS.Core.Hotkeys;
+using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.Interfaces.GUI
@@ -14,6 +15,8 @@ namespace VAS.Core.Interfaces.GUI
 		Task<bool> PreTransition (dynamic data);
 
 		Task<bool> PostTransition ();
+
+		List<IController> Controllers{ get; set; }
 	}
 }
 
