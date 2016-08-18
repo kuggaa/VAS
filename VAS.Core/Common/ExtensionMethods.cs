@@ -126,31 +126,13 @@ namespace VAS.Core.Common
 		public static void CopyPropertiesFrom (this object destObject, object srcObject)
 		{
 			Type srcType = srcObject.GetType ();
-			Type destType = destObject.GetType ();
 			foreach (var srcPropertyInfo in srcType.GetProperties ()) {
-				if (destType.GetProperties ().Any (d => d.Name == srcPropertyInfo.Name)) {
-					object srcValue = srcPropertyInfo.GetGetMethod ()?.Invoke (srcObject, null);
-					if (srcValue == null) {
-						continue;
-					}
-					PropertyInfo destProperty = destType.GetProperties ().First<PropertyInfo> (p => p.Name == srcPropertyInfo.Name);
-					if (destProperty == null) {
-						continue;
-					}
-					object srcConvertedVal = Convert.ChangeType (srcValue, destProperty.PropertyType);
-					if (srcConvertedVal == null) {
-						continue;
-					}
-					destProperty.GetSetMethod ()?.Invoke (
-						destObject, 
-						new[] { srcConvertedVal }
-					);
-				}
+				CopyProperty (destObject, srcObject, srcPropertyInfo);
 			}
 		}
 
 		/// <summary>
-		/// Copies specified propertie with same name from source to destination. 
+		/// Copies specified property with same name from source to destination.
 		/// Only do the copy if both Getter in source property and Setter in destination are public.
 		/// </summary>
 		/// <param name="destObject">Destination object.</param>
@@ -159,27 +141,32 @@ namespace VAS.Core.Common
 		public static void CopyPropertyFrom (this object destObject, object srcObject, string propertyName)
 		{
 			Type srcType = srcObject.GetType ();
-			Type destType = destObject.GetType ();
-			var srcPropertyInfo = srcType.GetProperties ().First (p => p.Name == propertyName);
+			var srcPropertyInfo = srcType.GetProperties ().FirstOrDefault (p => p.Name == propertyName);
 			if (srcPropertyInfo != null) {
-				if (destType.GetProperties ().Any (d => d.Name == srcPropertyInfo.Name)) {
-					object srcValue = srcPropertyInfo.GetGetMethod ()?.Invoke (srcObject, null);
-					if (srcValue == null) {
-						return;
-					}
-					PropertyInfo destProperty = destType.GetProperties ().First<PropertyInfo> (p => p.Name == srcPropertyInfo.Name);
-					if (destProperty == null) {
-						return;
-					}
-					object srcConvertedVal = Convert.ChangeType (srcValue, destProperty.PropertyType);
-					if (srcConvertedVal == null) {
-						return;
-					}
-					destProperty.GetSetMethod ()?.Invoke (
-						destObject, 
-						new[] { srcConvertedVal }
-					);
+				CopyProperty (destObject, srcObject, srcPropertyInfo);
+			}
+		}
+
+		static void CopyProperty (object destObject, object srcObject, PropertyInfo property)
+		{
+			Type destType = destObject.GetType ();
+			if (destType.GetProperties ().Any (d => d.Name == property.Name)) {
+				object srcValue = property.GetGetMethod ()?.Invoke (srcObject, null);
+				if (srcValue == null) {
+					return;
 				}
+				PropertyInfo destProperty = destType.GetProperties ().First<PropertyInfo> (p => p.Name == property.Name);
+				if (destProperty == null) {
+					return;
+				}
+				object srcConvertedVal = Convert.ChangeType (srcValue, destProperty.PropertyType);
+				if (srcConvertedVal == null) {
+					return;
+				}
+				destProperty.GetSetMethod ()?.Invoke (
+					destObject,
+					new[] { srcConvertedVal }
+				);
 			}
 		}
 	}
