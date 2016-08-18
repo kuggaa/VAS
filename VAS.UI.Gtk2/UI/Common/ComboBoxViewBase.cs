@@ -58,17 +58,11 @@ namespace VAS.UI.Common
 			}
 			set {
 				if (viewModel != null) {
-					RemoveAllItemsChangeListener (viewModel.ViewModels);
-					viewModel.ViewModels.CollectionChanged -= ViewModelCollectionChanged;
-					store.Clear ();
-					dictionaryStore.Clear ();
+					ClearSubViewModels ();
 				}
 				viewModel = value;
-				//AddAllItemsChangeListener (viewModel.ViewModels);
 				foreach (VM item in viewModel.ViewModels) {
-					AddItemChangeListener (item);
-					TreeIter iter = store.AppendValues (item);
-					dictionaryStore.Add (item, iter);
+					AddSubViewModel (item);
 				}
 				viewModel.ViewModels.CollectionChanged += ViewModelCollectionChanged;
 			}
@@ -97,24 +91,18 @@ namespace VAS.UI.Common
 			switch (e.Action) {
 			case NotifyCollectionChangedAction.Add:
 				foreach (VM item in e.NewItems) {
-					AddItemChangeListener (item);
-					TreeIter iter = store.AppendValues (item);
-					dictionaryStore.Add (item, iter);
+					AddSubViewModel (item);
 				}
 				break;
 
 			case NotifyCollectionChangedAction.Remove:
 				foreach (VM item in e.OldItems) {
-					RemoveItemChangeListener (item);
-					TreeIter iter = dictionaryStore [item];
-					if (store.Remove (ref iter)) {
-						dictionaryStore.Remove (item);
-					}
+					RemoveSubViewModel (item);
 				}
 				break;
 
 			case NotifyCollectionChangedAction.Reset:
-				RemoveAllItemsChangeListener (viewModel.ViewModels);
+				ClearSubViewModelListeners (viewModel.ViewModels);
 				store.Clear ();
 				dictionaryStore.Clear ();
 				break;
@@ -127,26 +115,38 @@ namespace VAS.UI.Common
 			}
 		}
 
-		void AddAllItemsChangeListener (ObservableCollection<VM> collection)
+		void AddSubViewModel (VM subViewModel)
+		{
+			subViewModel.PropertyChanged += PropertyChangedItem;
+			TreeIter iter = store.AppendValues (subViewModel);
+			dictionaryStore.Add (subViewModel, iter);
+		}
+
+		void ClearSubViewModels ()
+		{
+			ClearSubViewModelListeners (viewModel.ViewModels);
+			viewModel.ViewModels.CollectionChanged -= ViewModelCollectionChanged;
+			store.Clear ();
+			dictionaryStore.Clear ();
+		}
+
+		void ClearSubViewModelListeners (ObservableCollection<VM> collection)
 		{
 			foreach (VM item in collection) {
-				AddItemChangeListener (item);
+				RemoveSubViewModelListener (item);
 			}
 		}
 
-		void RemoveAllItemsChangeListener (ObservableCollection<VM> collection)
+		void RemoveSubViewModel (VM subViewModel)
 		{
-			foreach (VM item in collection) {
-				RemoveItemChangeListener (item);
+			RemoveSubViewModelListener (subViewModel);
+			TreeIter iter = dictionaryStore [subViewModel];
+			if (store.Remove (ref iter)) {
+				dictionaryStore.Remove (subViewModel);
 			}
 		}
 
-		void AddItemChangeListener (VM vm)
-		{
-			vm.PropertyChanged += PropertyChangedItem;
-		}
-
-		void RemoveItemChangeListener (VM vm)
+		void RemoveSubViewModelListener (VM vm)
 		{
 			vm.PropertyChanged -= PropertyChangedItem;
 		}
