@@ -17,17 +17,13 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 //
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using VAS.Core.Common;
 using VAS.Core.Events;
-using VAS.Core.Filters;
-using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
-using VAS.Core.Interfaces.GUI;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
-using VAS.Core.Store.Playlists;
 using VAS.Core.Store.Templates;
 
 namespace VAS.Core.Handlers
@@ -71,4 +67,7 @@ namespace VAS.Core.Handlers
 
 	/* Button clicked */
 	public delegate void ClickedHandler (object sender, ClickedArgs args);
+
+	/* Passing ViewModel */
+	public delegate void ViewModelHandler (object sender, IViewModel viewModel);
 }
