@@ -150,6 +150,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Events\Events.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IDialogs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IKeyboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Plugins\IPlugin.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Plugins\IProjectExporter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Addins\ConfigurablePlugin.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Addins\PreferencesAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
@@ -166,6 +170,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\" />
     <Folder Include="$(MSBuildThisFileDirectory)MVVMC\" />
     <Folder Include="$(MSBuildThisFileDirectory)Hotkeys\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Interfaces\Plugins\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)VAS.Core.dll.config">

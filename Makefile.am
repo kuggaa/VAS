@@ -13,7 +13,6 @@ SUBDIRS = \
 	build \
 	.nuget \
 	Weavers \
-	VAS.Addins \
 	VAS.Core \
 	VAS.DB \
 	VAS.Drawing \
