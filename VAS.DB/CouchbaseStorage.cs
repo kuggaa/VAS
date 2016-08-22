@@ -58,7 +58,7 @@ namespace VAS.DB
 		public CouchbaseStorage (string dbDir, string storageName)
 		{
 			this.storageName = storageName;
-			var manager = (CouchbaseManager)App.Current.DependencyRegistry.Retrieve<IStorageManager> (dbDir);
+			var manager = (CouchbaseManager)App.Current.DependencyRegistry.Retrieve<IStorageManager> (InstanceType.New, dbDir);
 			db = manager.OpenDatabase (storageName);
 			Init ();
 		}

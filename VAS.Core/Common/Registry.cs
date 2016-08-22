@@ -28,13 +28,25 @@ namespace VAS.Core.Common
 
 		internal class RegistryElement
 		{
-			public Type type;
-			public int priority;
-
 			public RegistryElement (Type type, int priority)
 			{
-				this.type = type;
-				this.priority = priority;
+				Type = type;
+				Priority = priority;
+			}
+
+			public Type Type {
+				get;
+				set;
+			}
+
+			public int Priority {
+				get;
+				set;
+			}
+
+			public object Instance {
+				get;
+				set;
 			}
 		}
 
@@ -44,27 +56,83 @@ namespace VAS.Core.Common
 			elements = new Dictionary<Type, List<RegistryElement>> ();
 		}
 
-		public void Register<I, C> (int priority)
+		/// <summary>
+		/// Register a new element type for a given interface with a priority.
+		/// </summary>
+		/// <param name="priority">Priority.</param>
+		/// <typeparam name="TInterface">The interface to register the element.</typeparam>
+		/// <typeparam name="TType">The type of the registered element.</typeparam>
+		public void Register<TInterface, TType> (int priority = 0)
 		{
-			Type interfac = typeof(I);
-			Type klass = typeof(C);
+			Register<TInterface> (typeof (TType), priority);
+		}
+
+		/// <summary>
+		/// Register a new element type for a given interface with a priority.
+		/// </summary>
+		/// <param name="type">The type of the registered element.</param>
+		/// <param name="priority">Priority.</param>
+		/// <typeparam name="TInterface">The interface to register the element.</typeparam>
+		public void Register<TInterface> (Type type, int priority = 0)
+		{
+			Type interfac = typeof (TInterface);
 			if (!elements.ContainsKey (interfac)) {
 				elements [interfac] = new List<RegistryElement> ();
 			}
-			elements [interfac].Add (new RegistryElement (klass, priority));
+			elements [interfac].Add (new RegistryElement (type, priority));
+			Log.Information (string.Format ("Registered {0} in {1} with priority {2}", type, interfac, priority));
 		}
 
-		public virtual T Retrieve<T> (params object [] args)
+		/// <summary>
+		/// Retrieve an instance of the element registered with the highest pripority.
+		/// </summary>
+		/// <param name="instanceType">Instance type.</param>
+		/// <param name="args">Arguments to create the instance.</param>
+		/// <typeparam name="TInterface">The interface to query.</typeparam>
+		public virtual TInterface Retrieve<TInterface> (InstanceType instanceType = InstanceType.New, params object [] args)
 		{
-			Type interfac = typeof(T);
-			Type elementType;
+			CheckInterfaceExists (typeof (TInterface));
 
+			RegistryElement element = elements [typeof (TInterface)].OrderByDescending (e => e.Priority).First ();
+			return GetInstance<TInterface> (element, instanceType, args);
+		}
+
+		/// <summary>
+		/// Retrieves all the elements registered for a given interface.
+		/// </summary>
+		/// <returns>The elements registered.</returns>
+		/// <param name="instanceType">Instance type.</param>
+		/// <param name="args">Arguments to create the instances.</param>
+		/// <typeparam name="TInterface">The interface to query.</typeparam>
+		public List<TInterface> RetrieveAll<TInterface> (InstanceType instanceType = InstanceType.New, params object [] args)
+		{
+			CheckInterfaceExists (typeof (TInterface));
+
+			return elements [typeof (TInterface)].Select (e => GetInstance<TInterface> (e, instanceType, args)).ToList ();
+		}
+
+		void CheckInterfaceExists (Type interfac)
+		{
 			if (!elements.ContainsKey (interfac)) {
 				throw new Exception (String.Format ("No {0} available in the {0} registry",
 					interfac, name));
 			}
-			elementType = elements [interfac].OrderByDescending (e => e.priority).First ().type;
-			return (T)Activator.CreateInstance (elementType, args);
+		}
+
+		T GetInstance<T> (RegistryElement element, InstanceType instanceType, params object [] args)
+		{
+			T instance;
+
+			if (instanceType == InstanceType.New ||
+				instanceType == InstanceType.Default && element.Instance == null) {
+				instance = (T)Activator.CreateInstance (element.Type, args);
+				if (instanceType == InstanceType.Default) {
+					element.Instance = instance;
+				}
+			} else {
+				instance = (T)element.Instance;
+			}
+			return instance;
 		}
 	}
 }

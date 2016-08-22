@@ -116,6 +116,7 @@
     <Compile Include="MVVMC\TestBindableBase.cs" />
     <Compile Include="Core\Hotkeys\TestHotKeysContexts.cs" />
     <Compile Include="Core\Common\TestStateController.cs" />
+    <Compile Include="Core\Common\TestRegistry.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
