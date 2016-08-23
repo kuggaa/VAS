@@ -26,7 +26,7 @@ using VAS.Core.Events;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
-using VAS.Core.Serialization;
+using VAS.Core.Interfaces.Plugins;
 using VAS.Core.Store;
 using VAS.Services.ViewModel;
 
@@ -90,24 +90,25 @@ namespace VAS.Services.Controller
 
 		#endregion
 
-		void HandleExport (ExportEvent<TModel> evt)
+		async void HandleExport (ExportEvent<TModel> evt)
 		{
-			// Only handle regular exports from here
-			if (evt.Format != null || evt.Object == null) {
+			Project project = evt.Object;
+			IProjectExporter exporter;
+
+			if (project == null) {
 				return;
 			}
-			Project project = evt.Object;
-			string projectExt = App.Current.ProjectExtension;
 
-			string filename = App.Current.Dialogs.SaveFile (
-				Catalog.GetString ("Export project"),
-				Utils.SanitizePath (project.ShortDescription + projectExt),
-				App.Current.HomeDir, projectExt,
-				new string [] { projectExt });
-			if (filename != null) {
-				filename = System.IO.Path.ChangeExtension (filename, projectExt);
-				Serializer.Instance.Save (project, filename);
+			try {
+				exporter = App.Current.DependencyRegistry.Retrieve<IProjectExporter> (InstanceType.Default);
+			} catch (Exception ex) {
+				Log.Exception (ex);
+				App.Current.Dialogs.ErrorMessage (string.Format (
+					Catalog.GetString ("No project exporter found for format {0}"), evt.Format));
+				return;
 			}
+
+			await exporter.Export (project);
 		}
 
 		void HandleImport (ImportEvent<TModel> evt)
