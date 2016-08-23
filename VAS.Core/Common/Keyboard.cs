@@ -45,21 +45,19 @@ namespace VAS.Core.Common
 		{
 			int modifier = 0;
 
-			if (((int)evt.State & (int)Gdk.ModifierType.ShiftMask) == (int)Gdk.ModifierType.ShiftMask) {
+			if (evt.State.HasFlag (Gdk.ModifierType.ShiftMask)) {
 				modifier += (int)ModifierType.ShiftMask;
-			} 
-			if ((((int)evt.State & (int)Gdk.ModifierType.Mod1Mask) == (int)Gdk.ModifierType.Mod1Mask) ||
-			    (((int)evt.State & (int)Gdk.ModifierType.Mod5Mask) == (int)Gdk.ModifierType.Mod5Mask)) {
+			}
+			if (evt.State.HasFlag (Gdk.ModifierType.Mod1Mask) || evt.State.HasFlag (Gdk.ModifierType.Mod5Mask)) {
 				modifier += (int)ModifierType.Mod1Mask;
 			} 
 			// Use comand instead of control if we are in OSX
 			if (Utils.OS == OperatingSystemID.OSX) {
-				if ((((int)evt.State & (int)(Gdk.ModifierType.Mod2Mask | Gdk.ModifierType.MetaMask)) ==
-				    (int)(Gdk.ModifierType.Mod2Mask | Gdk.ModifierType.MetaMask))) {
+				if (evt.State.HasFlag (Gdk.ModifierType.Mod2Mask | Gdk.ModifierType.MetaMask)) {
 					modifier += (int)ModifierType.ControlMask;
 				}
 			} else {
-				if (((int)evt.State & (int)Gdk.ModifierType.ControlMask) == (int)Gdk.ModifierType.ControlMask) {
+				if (evt.State.HasFlag (Gdk.ModifierType.ControlMask)) {
 					modifier += (int)ModifierType.ControlMask;
 				}
 			}
