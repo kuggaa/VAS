@@ -317,6 +317,18 @@ namespace VAS.Tests
 			}
 			return filePath;
 		}
+
+		public static string GetEmbeddedResourceTextFile (string resourceId)
+		{
+			string result = "";
+			var assembly = Assembly.GetCallingAssembly ();
+			using (Stream stream = assembly.GetManifestResourceStream (resourceId)) {
+				using (StreamReader reader = new StreamReader (stream)) {
+					result = reader.ReadToEnd ();
+				}
+			}
+			return result;
+		}
 	}
 }
 
