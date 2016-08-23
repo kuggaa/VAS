@@ -22,10 +22,6 @@ namespace VAS.Core.Interfaces.GUI
 {
 	public interface IMainController
 	{
-		// FIXME: This has to disappear when Longomatch is adapted to use ITools.
-		[Obsolete]
-		void AddExportEntry (string name, string shortName, Action<Project, IGUIToolkit> exportAction);
-
 		bool SetPanel (IPanel newPanel);
 	}
 }
