@@ -154,6 +154,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Plugins\IProjectExporter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Addins\ConfigurablePlugin.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Addins\PreferencesAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Addins\ProjectExporterBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
