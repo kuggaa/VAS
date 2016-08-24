@@ -31,7 +31,7 @@ namespace VAS.Core.Common
 		{
 		}
 
-		public VideoStandard (string name, uint height, uint width)
+		public VideoStandard (string name, uint width, uint height)
 		{
 			Name = name;
 			Height = height;
@@ -56,19 +56,19 @@ namespace VAS.Core.Common
 	public class VideoStandards
 	{
 		public static VideoStandard Original = new VideoStandard (Catalog.GetString ("Keep original size"), 0, 0);
-		public static VideoStandard P240 = new VideoStandard ("240p", 240, 320);
-		public static VideoStandard P480 = new VideoStandard ("480p", 480, 640);
-		public static VideoStandard P576 = new VideoStandard ("576p", 576, 720);
-		public static VideoStandard P720 = new VideoStandard ("720p", 720, 1280);
-		public static VideoStandard P1080 = new VideoStandard ("1080p", 1080, 1920);
-		public static VideoStandard P240_4_3 = new VideoStandard ("240p (4:3)", 240, 320);
-		public static VideoStandard P240_16_9 = new VideoStandard ("240p (16:9)", 240, 426);
-		public static VideoStandard P480_4_3 = new VideoStandard ("480p (4:3)", 480, 640);
-		public static VideoStandard P480_16_9 = new VideoStandard ("480p (16:9)", 480, 854);
-		public static VideoStandard P720_4_3 = new VideoStandard ("720p (4:3)", 720, 960);
-		public static VideoStandard P720_16_9 = new VideoStandard ("720p (16:9)", 720, 1280);
-		public static VideoStandard P1080_4_3 = new VideoStandard ("1080p (4:3)", 1080, 1440);
-		public static VideoStandard P1080_16_9 = new VideoStandard ("1080p (16:9)", 1080, 1920);
+		public static VideoStandard P240 = new VideoStandard ("240p", 320, 240);
+		public static VideoStandard P480 = new VideoStandard ("480p", 640, 480);
+		public static VideoStandard P576 = new VideoStandard ("576p", 720, 576);
+		public static VideoStandard P720 = new VideoStandard ("720p", 1280, 720);
+		public static VideoStandard P1080 = new VideoStandard ("1080p", 1920, 1080);
+		public static VideoStandard P240_4_3 = new VideoStandard ("240p (4:3)", 320, 240);
+		public static VideoStandard P240_16_9 = new VideoStandard ("240p (16:9)", 426, 240);
+		public static VideoStandard P480_4_3 = new VideoStandard ("480p (4:3)", 640, 480);
+		public static VideoStandard P480_16_9 = new VideoStandard ("480p (16:9)", 854, 480);
+		public static VideoStandard P720_4_3 = new VideoStandard ("720p (4:3)", 960, 720);
+		public static VideoStandard P720_16_9 = new VideoStandard ("720p (16:9)", 1280, 720);
+		public static VideoStandard P1080_4_3 = new VideoStandard ("1080p (4:3)", 1440, 1080);
+		public static VideoStandard P1080_16_9 = new VideoStandard ("1080p (16:9)", 1920, 1080);
 
 		public static List<VideoStandard> Rendering {
 			get {
