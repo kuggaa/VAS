@@ -491,5 +491,13 @@ namespace VAS.Core.Common
 		Invert = 2
 	}
 
+	/// <summary>
+	/// Specifies the type of instance used to retrieve an element from the <see cref="Registry"/>.
+	/// </summary>
+	public enum InstanceType
+	{
+		New,
+		Default,
+	}
 
 }

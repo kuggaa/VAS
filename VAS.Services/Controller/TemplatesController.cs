@@ -37,14 +37,15 @@ namespace VAS.Services.Controller
 	/// <summary>
 	/// Base Controller for working with <see cref="ITemplate"/> like dashboards and teams.
 	/// </summary>
-	public abstract class TemplatesController<T, W>: IController
-		where T:BindableBase, ITemplate<T>, new()  where W:TemplateViewModel<T>, new()
+	public abstract class TemplatesController<TModel, TViewModel> : IController
+		where TModel : BindableBase, ITemplate<TModel>, new()
+		where TViewModel : TemplateViewModel<TModel>, new()
 	{
-		TemplatesManagerViewModel<T, W> viewModel;
-		ITemplateProvider<T> provider;
+		TemplatesManagerViewModel<TModel, TViewModel> viewModel;
+		ITemplateProvider<TModel> provider;
 		bool started;
 
-		public TemplatesManagerViewModel<T, W> ViewModel {
+		public TemplatesManagerViewModel<TModel, TViewModel> ViewModel {
 			get {
 				return viewModel;
 			}
@@ -89,7 +90,7 @@ namespace VAS.Services.Controller
 
 		protected string Extension { get; set; }
 
-		protected ITemplateProvider<T> Provider {
+		protected ITemplateProvider<TModel> Provider {
 			get {
 				return provider;
 			}
@@ -103,7 +104,7 @@ namespace VAS.Services.Controller
 
 		public void SetViewModel (IViewModel viewModel)
 		{
-			ViewModel = (TemplatesManagerViewModel<T, W>)viewModel; 
+			ViewModel = (TemplatesManagerViewModel<TModel, TViewModel>)viewModel; 
 		}
 
 		public void Start ()
@@ -111,12 +112,13 @@ namespace VAS.Services.Controller
 			if (started) {
 				throw new InvalidOperationException ("The controller is already running");
 			}
-			App.Current.EventsBroker.Subscribe<ExportEvent<T>> (HandleExport);
-			App.Current.EventsBroker.Subscribe<ImportEvent<T>> (HandleImport);
-			App.Current.EventsBroker.Subscribe<UpdateEvent<T>> (HandleSave);
-			App.Current.EventsBroker.Subscribe<CreateEvent<T>> (HandleNew);
-			App.Current.EventsBroker.Subscribe<DeleteEvent<T>> (HandleDelete);
-			App.Current.EventsBroker.Subscribe<ChangeNameEvent<T>> (HandleChangeName);
+			App.Current.EventsBroker.Subscribe<ExportEvent<TModel>> (HandleExport);
+			App.Current.EventsBroker.Subscribe<ImportEvent<TModel>> (HandleImport);
+			App.Current.EventsBroker.Subscribe<UpdateEvent<TModel>> (HandleSave);
+			App.Current.EventsBroker.Subscribe<CreateEvent<TModel>> (HandleNew);
+			App.Current.EventsBroker.Subscribe<DeleteEvent<TModel>> (HandleDelete);
+			App.Current.EventsBroker.Subscribe<ChangeNameEvent<TModel>> (HandleChangeName);
+			started = true;
 		}
 
 		public void Stop ()
@@ -124,12 +126,12 @@ namespace VAS.Services.Controller
 			if (!started) {
 				throw new InvalidOperationException ("The controller is already stopped");
 			}
-			App.Current.EventsBroker.Unsubscribe<ExportEvent<T>> (HandleExport);
-			App.Current.EventsBroker.Unsubscribe<ImportEvent<T>> (HandleImport);
-			App.Current.EventsBroker.Unsubscribe<UpdateEvent<T>> (HandleSave);
-			App.Current.EventsBroker.Unsubscribe<CreateEvent<T>> (HandleNew);
-			App.Current.EventsBroker.Unsubscribe<DeleteEvent<T>> (HandleDelete);
-			App.Current.EventsBroker.Unsubscribe<ChangeNameEvent<T>> (HandleChangeName);
+			App.Current.EventsBroker.Unsubscribe<ExportEvent<TModel>> (HandleExport);
+			App.Current.EventsBroker.Unsubscribe<ImportEvent<TModel>> (HandleImport);
+			App.Current.EventsBroker.Unsubscribe<UpdateEvent<TModel>> (HandleSave);
+			App.Current.EventsBroker.Unsubscribe<CreateEvent<TModel>> (HandleNew);
+			App.Current.EventsBroker.Unsubscribe<DeleteEvent<TModel>> (HandleDelete);
+			App.Current.EventsBroker.Unsubscribe<ChangeNameEvent<TModel>> (HandleChangeName);
 			started = false;
 		}
 
@@ -140,12 +142,12 @@ namespace VAS.Services.Controller
 
 		#endregion
 
-		async void HandleExport (ExportEvent<T> evt)
+		async void HandleExport (ExportEvent<TModel> evt)
 		{
 			string fileName, filterName;
 			string[] extensions;
 
-			T template = evt.Object;
+			TModel template = evt.Object;
 			Log.Debug ("Exporting " + TemplateName);
 			filterName = FilterText;
 			extensions = new [] { "*" + Extension };
@@ -170,12 +172,12 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		async void HandleImport (ImportEvent<T> evt)
+		async void HandleImport (ImportEvent<TModel> evt)
 		{
 			string fileName, filterName;
 			string[] extensions;
 
-			T template = evt.Object;
+			TModel template = evt.Object;
 			Log.Debug ("Importing dashboard");
 			filterName = Catalog.GetString (FilterText);
 			extensions = new [] { "*" + Extension };
@@ -187,7 +189,7 @@ namespace VAS.Services.Controller
 				return;
 
 			try {
-				T newTemplate = Provider.LoadFile (fileName);
+				TModel newTemplate = Provider.LoadFile (fileName);
 
 				if (newTemplate != null) {
 					bool abort = false;
@@ -215,15 +217,15 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		async void HandleNew (CreateEvent<T> evt)
+		async void HandleNew (CreateEvent<TModel> evt)
 		{
-			T template, templateToDelete;
+			TModel template, templateToDelete;
 
 			if (ViewModel.LoadedTemplate.Edited) {
-				HandleSave (new UpdateEvent<T> { Force = false, Object = ViewModel.LoadedTemplate.Model }); 
+				HandleSave (new UpdateEvent<TModel> { Force = false, Object = ViewModel.LoadedTemplate.Model }); 
 			}
 
-			if (!await App.Current.GUIToolkit.CreateNewTemplate<T> (ViewModel.Model.ToList (),
+			if (!await App.Current.GUIToolkit.CreateNewTemplate<TModel> (ViewModel.Model.ToList (),
 				    NewText, CountText, Catalog.GetString ("The name is empty."), evt)) {
 				return;
 			} 
@@ -256,9 +258,9 @@ namespace VAS.Services.Controller
 			ViewModel.Select (template);
 		}
 
-		async void HandleDelete (DeleteEvent<T> evt)
+		async void HandleDelete (DeleteEvent<TModel> evt)
 		{
-			T template = evt.Object;
+			TModel template = evt.Object;
 
 			if (template != null) {
 				string msg = ConfirmDeleteText + template.Name;
@@ -269,9 +271,9 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		async void HandleSave (UpdateEvent<T> evt)
+		async void HandleSave (UpdateEvent<TModel> evt)
 		{
-			T template = evt.Object;
+			TModel template = evt.Object;
 			bool force = evt.Force;
 
 			if (template == null) {
@@ -300,20 +302,21 @@ namespace VAS.Services.Controller
 				return;
 			}
 
-			W selectedVM = ViewModel.Selection.FirstOrDefault ();
-			T loadedTemplate = default(T);
+			TViewModel selectedVM = ViewModel.Selection.FirstOrDefault ();
+			TModel loadedTemplate = default(TModel);
 
 			if (ViewModel.LoadedTemplate.Edited == true) {
-				HandleSave (new UpdateEvent<T> { Force = false, Object = ViewModel.LoadedTemplate.Model }); 
+				HandleSave (new UpdateEvent<TModel> { Force = false, Object = ViewModel.LoadedTemplate.Model }); 
 			}
 
 			if (selectedVM != null) {
-				T template = selectedVM.Model;
+				TModel template = selectedVM.Model;
 				try {
 					// Create a clone of the template and set it in the DashboardViewModel to edit
 					// changes in a different model.
 					loadedTemplate = template.Clone (SerializationType.Json);
 					loadedTemplate.IsChanged = false;
+					loadedTemplate.Static = template.Static;
 				} catch (Exception ex) {
 					Log.Exception (ex);
 					App.Current.Dialogs.ErrorMessage (CouldNotLoadText);
@@ -328,9 +331,9 @@ namespace VAS.Services.Controller
 			ViewModel.SaveSensitive = false;
 		}
 
-		void HandleChangeName (ChangeNameEvent<T> evt)
+		void HandleChangeName (ChangeNameEvent<TModel> evt)
 		{
-			T template = evt.Object;
+			TModel template = evt.Object;
 			string newName = evt.NewName;
 
 			if (String.IsNullOrEmpty (newName)) {
@@ -359,11 +362,11 @@ namespace VAS.Services.Controller
 		{
 			switch (e.Action) {
 			case NotifyCollectionChangedAction.Add:
-				foreach (T template in e.NewItems)
+				foreach (TModel template in e.NewItems)
 					ViewModel.Model.Add (template);
 				break;
 			case NotifyCollectionChangedAction.Remove:
-				foreach (T template in e.OldItems)
+				foreach (TModel template in e.OldItems)
 					ViewModel.Model.Remove (template);
 				break;
 			case NotifyCollectionChangedAction.Replace:
@@ -371,7 +374,7 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		async void SaveStatic (T template)
+		async void SaveStatic (TModel template)
 		{
 			string msg = NotEditableText;
 			if (await App.Current.Dialogs.QuestionMessage (msg, null, this)) {
@@ -391,13 +394,13 @@ namespace VAS.Services.Controller
 				if (newName == null) {
 					return;
 				}
-				T newtemplate = template.Copy (newName);
+				TModel newtemplate = template.Copy (newName);
 				newtemplate.Static = false;
 				SaveTemplate (newtemplate);
 			}
 		}
 
-		bool SaveTemplate (T template)
+		bool SaveTemplate (TModel template)
 		{
 			try {
 				Provider.Save (template);

@@ -17,28 +17,25 @@
 //
 using System;
 using System.Linq;
-using VAS.Core.Events;
-using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
+using VAS.Core.Store;
+using VAS.Core.Events;
 
 namespace VAS.Services.ViewModel
 {
-	/// <summary>
-	/// Generic base class ViewModel for a templates manager View, like the Dashboards Manager or the Teams Manager
-	/// </summary>
-	public class TemplatesManagerViewModel<TModel, TViewModel> : CollectionViewModel<TModel, TViewModel>
-		where TModel : ITemplate<TModel>
-		where TViewModel : TemplateViewModel<TModel>, new()
+	public class ProjectsManagerVM<TModel, TViewModel> : CollectionViewModel<TModel, TViewModel>
+		where TModel : Project
+		where TViewModel : ProjectVM<TModel>, new()
 	{
-		public TemplatesManagerViewModel ()
+		public ProjectsManagerVM ()
 		{
-			LoadedTemplate = new TViewModel ();
+			LoadedProject = new TViewModel ();
 		}
 
 		[PropertyChanged.DoNotNotify]
-		public TViewModel LoadedTemplate {
+		public TViewModel LoadedProject {
 			get;
-			set;
+			private set;
 		}
 
 		/// <summary>
@@ -69,18 +66,18 @@ namespace VAS.Services.ViewModel
 		}
 
 		/// <summary>
-		/// Command to export the currently loaded template.
+		/// Command to export the currently loaded project.
 		/// </summary>
-		public void Export ()
+		public void Export (string format = null)
 		{
 			TModel template = Selection.FirstOrDefault ()?.Model;
 			if (template != null) {
-				App.Current.EventsBroker.Publish (new ExportEvent<TModel> { Object = template });
+				App.Current.EventsBroker.Publish (new ExportEvent<TModel> { Object = template, Format = format });
 			}
 		}
 
 		/// <summary>
-		/// Command to import a template.
+		/// Command to import a project.
 		/// </summary>
 		public void Import ()
 		{
@@ -88,7 +85,7 @@ namespace VAS.Services.ViewModel
 		}
 
 		/// <summary>
-		/// Command to create a new a template.
+		/// Command to create a new project.
 		/// </summary>
 		public void New ()
 		{
@@ -96,40 +93,25 @@ namespace VAS.Services.ViewModel
 		}
 
 		/// <summary>
-		/// Command to delete the currently loaded template.
+		/// Command to delete the selected projects.
 		/// </summary>
 		public void Delete ()
 		{
-			TModel template = Selection.FirstOrDefault ()?.Model;
-			if (template != null) {
-				App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = template });
+			foreach (TModel project in Selection.Select (vm => vm.Model)) {
+				App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = project });
 			}
 		}
 
 		/// <summary>
-		/// Command to save the currently loaded template.
+		/// Command to save the currently loaded project.
 		/// </summary>
 		/// <param name="force">If set to <c>true</c> does not prompt to save.</param>
 		public void Save (bool force)
 		{
-			TModel template = LoadedTemplate.Model;
-			if (template != null) {
-				App.Current.EventsBroker.Publish (
-					new UpdateEvent<TModel> { Object = template, Force = force });
+			TModel project = LoadedProject.Model;
+			if (project != null) {
+				App.Current.EventsBroker.Publish (new UpdateEvent<TModel> { Object = project, Force = force });
 			}
-		}
-
-		/// <summary>
-		/// Command to change the name of a template
-		/// </summary>
-		/// <param name="templateVM">The template ViewModel</param>
-		/// <param name="newName">The new name.</param>
-		public void ChangeName (TViewModel templateVM, string newName)
-		{
-			App.Current.EventsBroker.Publish (new ChangeNameEvent<TModel> {
-				Object = templateVM.Model,
-				NewName = newName
-			});
 		}
 	}
 }

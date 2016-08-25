@@ -23,7 +23,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\Exceptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\ExtensionMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Gettext.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Common\Image.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\ImageBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Job.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Log.cs" />
@@ -141,7 +140,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\KeyContextManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\KeyContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\KeyAction.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Common\Keyboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IKeyContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IWelcomeButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\StateController.cs" />
@@ -151,6 +149,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Events\ClickedArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Events\Events.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IDialogs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IKeyboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Plugins\IPlugin.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Plugins\IProjectExporter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Addins\ConfigurablePlugin.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Addins\PreferencesAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Addins\ProjectExporterBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
@@ -167,6 +171,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\" />
     <Folder Include="$(MSBuildThisFileDirectory)MVVMC\" />
     <Folder Include="$(MSBuildThisFileDirectory)Hotkeys\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Interfaces\Plugins\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)VAS.Core.dll.config">

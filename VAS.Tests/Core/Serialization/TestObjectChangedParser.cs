@@ -214,8 +214,8 @@ namespace VAS.Tests.Core.Serialization
 		public void TestHotKeyModifierMigration ()
 		{
 			HotKey hotkey = new HotKey {
-				Key = (int)Keyboard.KeyvalFromName ("Up"),
-				Modifier = (int)Keyboard.KeyvalFromName ("Shift_L")
+				Key = (int)App.Current.Keyboard.KeyvalFromName ("Up"),
+				Modifier = (int)App.Current.Keyboard.KeyvalFromName ("Shift_L")
 			};
 			HotKey hotkey2;
 			using (MemoryStream ms = new MemoryStream ()) {

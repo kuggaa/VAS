@@ -22,30 +22,30 @@ using VAS.Core.Interfaces;
 
 namespace VAS.DB
 {
-	public abstract class ObjectsCache<T, W>
+	public abstract class ObjectsCache<TId, TObject>
 	{
-		protected readonly Dictionary<T, W> idToObjects;
-		protected readonly Dictionary<W, T> objectsToId;
+		protected readonly Dictionary<TId, TObject> idToObjects;
+		protected readonly Dictionary<TObject, TId> objectsToId;
 
 		public ObjectsCache ()
 		{
-			idToObjects = new Dictionary<T, W> ();
-			objectsToId = new Dictionary<W, T> ();
+			idToObjects = new Dictionary<TId, TObject> ();
+			objectsToId = new Dictionary<TObject, TId> ();
 		}
 
-		public bool IsCached (T id)
+		public bool IsCached (TId id)
 		{
 			return idToObjects.ContainsKey (id);
 		}
 
-		public bool IsCached (W obj)
+		public bool IsCached (TObject obj)
 		{
 			return objectsToId.ContainsKey (obj);
 		}
 
-		public W ResolveReference (T id)
+		public TObject ResolveReference (TId id)
 		{
-			W p;
+			TObject p;
 			idToObjects.TryGetValue (id, out p);
 			return p;
 		}
@@ -56,14 +56,14 @@ namespace VAS.DB
 			objectsToId.Clear ();
 		}
 
-		public abstract T GetReference (W obj);
+		public abstract TId GetReference (TObject obj);
 
-		public void AddReference (W value)
+		public void AddReference (TObject value)
 		{
 			if (value == null) {
 				return;
 			}
-			T id = GetReference (value);
+			TId id = GetReference (value);
 			idToObjects [id] = value;
 			objectsToId [value] = id;
 		}

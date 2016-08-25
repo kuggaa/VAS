@@ -37,7 +37,7 @@ namespace VAS.UI.Helpers
 				App.Current.EventsBroker.Publish<KeyPressedEvent> (
 					new KeyPressedEvent {
 						Sender = this,
-						Key = Keyboard.ParseEvent (args.Event)
+						Key = App.Current.Keyboard.ParseEvent (args.Event)
 					}
 				);
 			};

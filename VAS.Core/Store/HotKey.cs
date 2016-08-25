@@ -133,7 +133,7 @@ namespace VAS.Core.Store
 		{
 			if (!Defined)
 				return Catalog.GetString ("Not defined");
-			return Keyboard.HotKeyName (this);
+			return App.Current.Keyboard.HotKeyName (this);
 		}
 
 		#endregion

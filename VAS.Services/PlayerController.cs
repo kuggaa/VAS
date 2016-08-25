@@ -643,7 +643,7 @@ namespace VAS.Services
 			LoadedPlaylist.SetActive (element);
 			EmitElementLoaded (element, playlist.HasNext ());
 			App.Current.EventsBroker.Publish<PlaylistElementLoadedEvent> (
-				new PlaylistElementLoadedEvent { 
+				new PlaylistElementLoadedEvent {
 					Playlist = playlist,
 					Element = element
 				}
@@ -792,51 +792,51 @@ namespace VAS.Services
 
 		IEnumerable<KeyAction> IController.GetDefaultKeyActions ()
 		{
-			return new KeyAction[] {
+			return new KeyAction [] {
 				new KeyAction (
-					"PLAYER_RATE_INCREMENT", 
-					Keyboard.ParseName ("<Shift_L>+<Alt_L>+Right"),
+					"PLAYER_RATE_INCREMENT",
+					App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Right"),
 					FramerateUp
 				),
 				new KeyAction (
-					"PLAYER_RATE_DECREMENT", 
-					Keyboard.ParseName ("<Shift_L>+<Alt_L>+Left"),
+					"PLAYER_RATE_DECREMENT",
+					App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Left"),
 					FramerateDown
 				),
 				new KeyAction (
-					"PLAYER_RATE_MAX", 
-					Keyboard.ParseName ("<Shift_L>+<Alt_L>+Up"),
+					"PLAYER_RATE_MAX",
+					App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Up"),
 					FramerateUpper
 				),
 				new KeyAction (
-					"PLAYER_RATE_DEFAULT", 
-					Keyboard.ParseName ("<Shift_L>+<Alt_L>+Down"),
+					"PLAYER_RATE_DEFAULT",
+					App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Down"),
 					FramerateLower
 				),
 
 				new KeyAction (
-					"PLAYER_TOGGLE_PLAY", 
-					Keyboard.ParseName ("space"),
+					"PLAYER_TOGGLE_PLAY",
+					App.Current.Keyboard.ParseName ("space"),
 					TogglePlay
 				),
 				new KeyAction (
-					"PLAYER_SEEK_LEFT_SHORT", 
-					Keyboard.ParseName ("Left"),
+					"PLAYER_SEEK_LEFT_SHORT",
+					App.Current.Keyboard.ParseName ("Left"),
 					() => Seek (CurrentTime + new Time { TotalSeconds = -SHORT_SEEK_SECONDS })
 				),
 				new KeyAction (
-					"PLAYER_SEEK_LEFT_LONG", 
-					Keyboard.ParseName ("<Shift_L>+Left"),
+					"PLAYER_SEEK_LEFT_LONG",
+					App.Current.Keyboard.ParseName ("<Shift_L>+Left"),
 					() => Seek (CurrentTime + new Time { TotalSeconds = -LONG_SEEK_SECONDS })
 				),
 				new KeyAction (
-					"PLAYER_SEEK_RIGHT_SHORT", 
-					Keyboard.ParseName ("Right"),
+					"PLAYER_SEEK_RIGHT_SHORT",
+					App.Current.Keyboard.ParseName ("Right"),
 					() => Seek (CurrentTime + new Time { TotalSeconds = SHORT_SEEK_SECONDS })
 				),
 				new KeyAction (
-					"PLAYER_SEEK_RIGHT_LONG", 
-					Keyboard.ParseName ("<Shift_L>+Right"),
+					"PLAYER_SEEK_RIGHT_LONG",
+					App.Current.Keyboard.ParseName ("<Shift_L>+Right"),
 					() => Seek (CurrentTime + new Time { TotalSeconds = LONG_SEEK_SECONDS })
 				)
 			};

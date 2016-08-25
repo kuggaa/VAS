@@ -17,33 +17,26 @@
 //
 using Gdk;
 using VAS.Core.Store;
+using VAS.Core.Interfaces;
 
 namespace VAS.Core.Common
 {
-	public class Keyboard
+	public class Keyboard : IKeyboard
 	{
-		public static uint KeyvalFromName (string name)
+		public uint KeyvalFromName (string name)
 		{
-			#if ! OSTYPE_ANDROID && ! OSTYPE_IOS
-			return Gdk.Keyval.FromName (name);
-			#else
-			return 0;
-			#endif
+			return Keyval.FromName (name);
 		}
 
-		public static string NameFromKeyval (uint keyval)
+		public string NameFromKeyval (uint keyval)
 		{
-			#if !OSTYPE_ANDROID && !OSTYPE_IOS
-			return Gdk.Keyval.Name (keyval);
-			#else
-			return "";
-			#endif
+			return Keyval.Name (keyval);
 		}
 
-		#if !OSTYPE_ANDROID && !OSTYPE_IOS
-		public static HotKey ParseEvent (Gdk.EventKey evt)
+		public HotKey ParseEvent (object obj)
 		{
 			int modifier = 0;
+			EventKey evt = obj as EventKey;
 
 			if (evt.State.HasFlag (Gdk.ModifierType.ShiftMask)) {
 				modifier += (int)ModifierType.ShiftMask;
@@ -62,17 +55,17 @@ namespace VAS.Core.Common
 				}
 			}
 
-			return new HotKey { Key = (int)Gdk.Keyval.ToLower (evt.KeyValue),
+			return new HotKey {
+				Key = (int)Gdk.Keyval.ToLower (evt.KeyValue),
 				Modifier = modifier
 			};
 		}
-		#endif
 
-		public static HotKey ParseName (string name)
+		public HotKey ParseName (string name)
 		{
 			int key = 0, modifier = 0;
 
-			string[] keyNames = name.Split ('+');
+			string [] keyNames = name.Split ('+');
 			foreach (string keyName in keyNames) {
 				string kName = keyName.Trim ();
 				if (kName.StartsWith ("<") && kName.EndsWith (">")) {
@@ -94,20 +87,20 @@ namespace VAS.Core.Common
 			return new HotKey { Key = key, Modifier = modifier };
 		}
 
-		public static string HotKeyName (HotKey hotkey)
+		public string HotKeyName (HotKey hotkey)
 		{
 			string name = "";
 			if ((hotkey.Modifier & (int)ModifierType.ShiftMask) == (int)ModifierType.ShiftMask) {
 				name += "<Shift_L>";
 			}
 			if ((hotkey.Modifier & (int)ModifierType.Mod1Mask) == (int)ModifierType.Mod1Mask) {
-				if (name != "") {						
+				if (name != "") {
 					name += "+";
 				}
 				name += "<Alt_L>";
 			}
 			if ((hotkey.Modifier & (int)ModifierType.ControlMask) == (int)ModifierType.ControlMask) {
-				if (name != "") {						
+				if (name != "") {
 					name += "+";
 				}
 				name += "<Control_L>";

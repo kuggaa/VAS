@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2013 Andoni Morales Alastruey
+//  Copyright (C) 2014 Andoni Morales Alastruey
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -16,12 +16,17 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using VAS.Core.Store;
 
-namespace VAS.Core.Interfaces.GUI
+namespace VAS.Core.Addins
 {
-	public interface IMainController
+	public class PreferencesAttribute : Attribute
 	{
-		bool SetPanel (IPanel newPanel);
+		public readonly string description;
+
+		public PreferencesAttribute (string description)
+		{
+			this.description = description;
+		}
 	}
 }
+

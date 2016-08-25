@@ -171,6 +171,16 @@ namespace VAS.Core.Serialization
 
 	public class VASConverter : JsonConverter
 	{
+		/// The old key values to modifiers.
+		static Dictionary<int, int> oldKeyValuesToModifier = new Dictionary<int, int> {
+			//Shift_L
+			{0xFFE1, 1 << 0},
+			//Alt_L
+			{0xFFE9, 1 << 3},
+			//Control_L
+			{0xFFE3, 1 << 2},
+		};
+
 		bool handleImages;
 
 		public VASConverter () : this (true)
@@ -238,7 +248,7 @@ namespace VAS.Core.Serialization
 					ret = Image.Deserialize (buf);
 				} else if (objectType == typeof(HotKey)) {
 					string[] hk = ((string)reader.Value).Split (' '); 
-					ret = new HotKey { Key = int.Parse (hk [0]), Modifier = getModifierValue (hk [1]) };
+					ret = new HotKey { Key = int.Parse (hk [0]), Modifier = GetModifierValue (hk [1]) };
 				} else if (objectType == typeof(Point)) {
 					string[] ps = ((string)reader.Value).Split (' '); 
 					ret = new Point (double.Parse (ps [0], NumberFormatInfo.InvariantInfo),
@@ -261,16 +271,12 @@ namespace VAS.Core.Serialization
 			    objectType == typeof(Image) && handleImages);
 		}
 
-		int getModifierValue (string serializedValue)
+		int GetModifierValue (string serializedValue)
 		{
 			int value = int.Parse (serializedValue);
 
-			if (value == (int)Keyboard.KeyvalFromName ("Shift_L")) {
-				value = (int)Gdk.ModifierType.ShiftMask;
-			} else if (value == (int)Keyboard.KeyvalFromName ("Alt_L")) {
-				value = (int)Gdk.ModifierType.Mod1Mask;
-			} else if (value == (int)Keyboard.KeyvalFromName ("Control_L")) {
-				value = (int)Gdk.ModifierType.ControlMask;
+			if (oldKeyValuesToModifier.ContainsKey (value)) {
+				value = oldKeyValuesToModifier [value];
 			}
 
 			return value;

@@ -78,12 +78,12 @@ namespace VAS.Multimedia
 
 		public ICapturer GetCapturer ()
 		{
-			return registry.Retrieve<ICapturer> ("test.avi");
+			return registry.Retrieve<ICapturer> (InstanceType.New, "test.avi");
 		}
 
 		public IRemuxer GetRemuxer (MediaFile inputFile, string outputFile, VideoMuxerType muxer)
 		{
-			return registry.Retrieve<IRemuxer> (inputFile.FilePath, outputFile, muxer);
+			return registry.Retrieve<IRemuxer> (InstanceType.New, inputFile.FilePath, outputFile, muxer);
 		}
 
 		public MediaFile DiscoverFile (string file, bool takeScreenshot = true)
