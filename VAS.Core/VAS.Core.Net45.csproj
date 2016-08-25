@@ -49,6 +49,7 @@
     <Reference Include="Prism">
       <HintPath>$(SolutionDir)\packages\Prism.Core.6.1.0\lib\net45\Prism.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <Import Project="VAS.Core.projitems" Label="Shared" Condition="Exists('VAS.Core.projitems')" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

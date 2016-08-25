@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using VAS.Core.Common;
@@ -53,7 +54,7 @@ namespace VAS.Core
 		/// </summary>
 		/// <returns>True if the move could be performed. False otherwise</returns>
 		/// <param name="transition">Transition.</param>
-		public async Task<bool> MoveTo (string transition, object data)
+		public async Task<bool> MoveTo (string transition, dynamic data)
 		{
 			Log.Debug ("Moving to " + transition);
 

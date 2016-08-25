@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Dynamic;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
@@ -35,7 +36,7 @@ namespace VAS.Tests.Core.Common
 		{
 			sc = new StateController ();
 			screenStateMock = new Mock<IScreenState> ();
-			screenStateMock.Setup (x => x.PreTransition (It.IsAny<object> ())).Returns (AsyncHelpers.Return (true));
+			screenStateMock.Setup (x => x.PreTransition (It.IsAny<ExpandoObject> ())).Returns (AsyncHelpers.Return (true));
 			screenStateMock.Setup (x => x.PostTransition ()).Returns (AsyncHelpers.Return (true));
 			screenStateMock.Setup (x => x.Panel).Returns (new Mock<IPanel> ().Object);
 		}
