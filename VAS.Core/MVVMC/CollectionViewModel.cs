@@ -31,7 +31,7 @@ namespace VAS.Core.MVVMC
 	/// The base class keeps in sync the ViewModel and the Model collection and provides support
 	/// for selecting items within the collection.
 	/// </summary>
-	public class CollectionViewModel<TModel, TViewModel>:BindableBase, IViewModel<ObservableCollection<TModel>>
+	public class CollectionViewModel<TModel, TViewModel> : BindableBase, IViewModel<ObservableCollection<TModel>>
 		where TViewModel: IViewModel<TModel>, new()
 	{
 		bool editing;

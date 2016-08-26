@@ -151,7 +151,7 @@ namespace VAS
 			App.Current.ViewLocator = new ViewLocator ();
 			App.Current.ControllerLocator = new ControllerLocator ();
 
-			App.Current.Registry = new Registry ("App Registry");
+			App.Current.DependencyRegistry = new Registry ("App Registry");
 		}
 
 		// copied from OneplayLongomMatch::CoreServices
