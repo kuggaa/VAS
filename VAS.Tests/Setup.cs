@@ -41,6 +41,7 @@ namespace VAS.Tests
 			VFS.SetCurrent (new FileSystem ());
 			App.Current = new AppDummy ();
 			App.Current.Config = new ConfigDummy ();
+			App.Current.Keyboard = new KeyboardDummy ();
 			SynchronizationContext.SetSynchronizationContext (new MockSynchronizationContext ());
 			App.Current.EventsBroker = new VAS.Core.Events.EventsBroker ();
 			App.Current.DependencyRegistry = new Registry ("Dependencies");
@@ -56,6 +57,11 @@ namespace VAS.Tests
 	public class ConfigDummy : Config
 	{
 		//Dummy class for VAS.Config
+	}
+
+	public class KeyboardDummy : Keyboard
+	{
+		//Dummy class for VAS.Core.Common.Keyboard
 	}
 
 	/// <summary>
