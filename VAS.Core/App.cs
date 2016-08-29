@@ -63,11 +63,6 @@ namespace VAS
 
 		List<string> dataDir;
 
-		public Registry Registry {
-			get;
-			protected set;
-		}
-
 		public static void Init (App appInit, string evUninstalled, string softwareName, string portableFile, string evHome)
 		{
 			/* NOTE
