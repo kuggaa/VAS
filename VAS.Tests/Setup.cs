@@ -15,19 +15,14 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using System.Threading;
-using System.Threading.Tasks;
 using ICSharpCode.SharpZipLib;
 using NUnit.Framework;
 using VAS;
-using VAS.Core.Handlers;
-using VAS.Core.Hotkeys;
-using VAS.Core.Interfaces;
-using VAS.Core.Interfaces.GUI;
-using VAS.DB;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
+using VAS.DB;
 
 namespace VAS.Tests
 {
@@ -41,11 +36,12 @@ namespace VAS.Tests
 			VFS.SetCurrent (new FileSystem ());
 			App.Current = new AppDummy ();
 			App.Current.Config = new ConfigDummy ();
-			App.Current.Keyboard = new KeyboardDummy ();
+			App.Current.Keyboard = new Keyboard ();
 			SynchronizationContext.SetSynchronizationContext (new MockSynchronizationContext ());
 			App.Current.EventsBroker = new VAS.Core.Events.EventsBroker ();
 			App.Current.DependencyRegistry = new Registry ("Dependencies");
 			App.Current.DependencyRegistry.Register<IStorageManager, CouchbaseManager> (1);
+			App.Current.ControllerLocator = new ControllerLocator ();
 		}
 	}
 
@@ -57,11 +53,6 @@ namespace VAS.Tests
 	public class ConfigDummy : Config
 	{
 		//Dummy class for VAS.Config
-	}
-
-	public class KeyboardDummy : Keyboard
-	{
-		//Dummy class for VAS.Core.Common.Keyboard
 	}
 
 	/// <summary>
