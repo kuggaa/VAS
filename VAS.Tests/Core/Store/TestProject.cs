@@ -381,6 +381,26 @@ namespace VAS.Tests.Core.Store
 			p.IsChanged = false;
 		}
 
+		[Test ()]
+		public void TestWhenMediaFileIsChangedThenEmitsChanged ()
+		{
+			// Arrange
+			int eventCount = 0;
 
+			MediaFile originalMediaFileSet = new MediaFile { FilePath = Path.GetRandomFileName () };
+			MediaFile newMediaFileSet = new MediaFile { FilePath = Path.GetRandomFileName () };
+
+			Project p = CreateProject ();
+			p.FileSet = new MediaFileSet{ originalMediaFileSet };
+			p.IsChanged = false;
+			p.PropertyChanged += (sender, e) => eventCount++;
+
+			// Act
+			p.FileSet.Replace (originalMediaFileSet, newMediaFileSet);
+
+			// Assert
+			Assert.AreEqual (1, eventCount);
+			Assert.IsTrue (p.IsChanged);
+		}
 	}
 }
