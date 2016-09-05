@@ -66,6 +66,22 @@ namespace VAS.Tests.Core.Common
 		}
 
 		[Test ()]
+		public async void TestUnRegister_CheckDispose ()
+		{
+			// Arrange
+			string transitionName = "newTransition";
+			sc.Register (transitionName, getScreenStateDummy);
+			sc.MoveTo (transitionName, null);
+
+			// Action
+			bool obtained = sc.UnRegister (transitionName);
+
+			// Assert
+			bool moveTransition = await sc.MoveBack ();
+			Assert.IsFalse (moveTransition);
+		}
+
+		[Test ()]
 		public void TestUnRegister_WithOverwrittenTransitions ()
 		{
 			// Arrange
