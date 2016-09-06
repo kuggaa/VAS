@@ -81,11 +81,15 @@ namespace VAS.UI
 			return AsyncHelpers.Return (res);
 		}
 
-		public Task<object> ChooseOption (Dictionary<string, object> options, object parent = null)
+		public Task<object> ChooseOption (Dictionary<string, object> options, string title = null, object parent = null)
 		{
 			object res = null;
 			Window parentWindow;
-			ChooseOptionDialog dialog; 
+			ChooseOptionDialog dialog;
+
+			if (title == null) {
+				title = Catalog.GetString ("Choose option");
+			}
 
 			if (parent != null) {
 				parentWindow = (parent as Widget).Toplevel as Gtk.Window;
@@ -95,6 +99,7 @@ namespace VAS.UI
 
 			dialog = new ChooseOptionDialog (parentWindow);
 			dialog.Options = options;
+			dialog.Title = title;
 
 			if (dialog.Run () == (int)ResponseType.Ok) {
 				res = dialog.SelectedOption;
