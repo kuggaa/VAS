@@ -54,7 +54,7 @@ namespace VAS.Services.Controller
 		{
 		}
 
-		ProjectsManagerVM<TModel, TViewModel> ViewModel {
+		protected ProjectsManagerVM<TModel, TViewModel> ViewModel {
 			get {
 				return viewModel;
 			}
