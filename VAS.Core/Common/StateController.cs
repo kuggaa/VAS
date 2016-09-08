@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.GUI;
-using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core
 {
@@ -227,6 +225,7 @@ namespace VAS.Core
 		public async Task EmptyStateStack ()
 		{
 			await PopAllModalStates ();
+			navigationStateStack.ForEach (x => x.Item2.Panel.Dispose ());
 			navigationStateStack.Clear ();
 			overwrittenTransitions.Clear ();
 		}
