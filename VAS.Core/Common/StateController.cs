@@ -34,12 +34,12 @@ namespace VAS.Core
 		/// </summary>
 		/// <returns>True if the home transition could be executed. False otherwise</returns>
 		/// <param name="transition">Transition.</param>
-		public async Task<bool> SetHomeTransition (string transition, object data)
+		public async Task<bool> SetHomeTransition (string transition, dynamic properties)
 		{
 			Log.Debug ("Setting Home to " + transition);
 			IScreenState homeState = destination [transition] ();
 			home = new Tuple<string, IScreenState> (transition, homeState);
-			bool ok = await home.Item2.PreTransition (data);
+			bool ok = await home.Item2.PreTransition (properties);
 			if (ok) {
 				ok = await App.Current.Navigation.LoadNavigationPanel (home.Item2.Panel);
 			}
@@ -52,7 +52,7 @@ namespace VAS.Core
 		/// </summary>
 		/// <returns>True if the move could be performed. False otherwise</returns>
 		/// <param name="transition">Transition.</param>
-		public async Task<bool> MoveTo (string transition, dynamic data)
+		public async Task<bool> MoveTo (string transition, dynamic properties)
 		{
 			Log.Debug ("Moving to " + transition);
 
@@ -77,7 +77,7 @@ namespace VAS.Core
 			}
 
 			IScreenState state = destination [transition] ();
-			bool ok = await state.PreTransition (data);
+			bool ok = await state.PreTransition (properties);
 			if (ok) {
 				await PushNavigationState (transition, state);
 			} else {
@@ -91,7 +91,7 @@ namespace VAS.Core
 		/// </summary>
 		/// <returns>True if the Move could be performed. False otherwise</returns>
 		/// <param name="transition">Transition.</param>
-		public async Task<bool> MoveToModal (string transition, object data)
+		public async Task<bool> MoveToModal (string transition, dynamic properties)
 		{
 			Log.Debug ("Moving to " + transition + " in modal mode");
 
@@ -104,7 +104,7 @@ namespace VAS.Core
 
 			Log.Debug ("Moving to " + transition + " in modal mode");
 			IScreenState state = destination [transition] ();
-			bool ok = await state.PreTransition (data);
+			bool ok = await state.PreTransition (properties);
 			if (ok) {
 				await PushModalState (transition, state, current);
 			} else {
