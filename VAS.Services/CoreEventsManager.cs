@@ -159,13 +159,16 @@ namespace VAS.Services
 				if (e.CamConfig.Index > 0) {
 					IFramesCapturer auxFramesCapturer;
 					auxFramesCapturer = App.Current.MultimediaToolkit.GetFramesCapturer ();
-					auxFramesCapturer.Open (openedProject.FileSet [e.CamConfig.Index].FilePath);
+					MediaFile file = openedProject.FileSet [e.CamConfig.Index];
+					auxFramesCapturer.Open (file.FilePath);
 					Time offset = openedProject.FileSet [e.CamConfig.Index].Offset;
-					pixbuf = auxFramesCapturer.GetFrame (pos + offset, true, -1, -1);
+					pixbuf = auxFramesCapturer.GetFrame (pos + offset, true,
+					                                     (int) file.DisplayVideoWidth, (int) file.DisplayVideoHeight);
 					auxFramesCapturer.Dispose ();
 				} else {
-					Time offset = openedProject.FileSet.First ().Offset;
-					pixbuf = framesCapturer.GetFrame (pos + offset, true, -1, -1);
+					MediaFile file = openedProject.FileSet.First ();
+					pixbuf = framesCapturer.GetFrame (pos + file.Offset, true,
+					                                  (int) file.DisplayVideoWidth, (int) file.DisplayVideoHeight);
 				}
 			} else {
 				pixbuf = player.CurrentFrame;

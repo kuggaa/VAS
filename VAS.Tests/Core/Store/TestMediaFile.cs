@@ -78,6 +78,14 @@ namespace VAS.Tests.Core.Store
 			mf.FilePath = Constants.FAKE_PROJECT;
 			Assert.IsTrue (mf.IsFakeCapture);
 		}
+
+		[Test ()]
+		public void TestDisplayDimensions ()
+		{
+			MediaFile mf = new MediaFile {VideoWidth = 640, VideoHeight = 480, Par = 1.333};
+			Assert.AreEqual (480, mf.DisplayVideoHeight);
+			Assert.AreEqual (853, mf.DisplayVideoWidth);
+		}
 	}
 }
 

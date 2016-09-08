@@ -109,6 +109,26 @@ namespace VAS.Core.Store
 			set;
 		}
 
+		/// <summary>
+		/// Gets the display width of the video (with PAR correctiion).
+		/// </summary>
+		/// <value>The display width of the video.</value>
+		public uint DisplayVideoWidth {
+			get {
+				return (uint) (VideoWidth * Par);
+			}
+		}
+
+		/// <summary>
+		/// Gets the display height of the video (with PAR correction).
+		/// </summary>
+		/// <value>The display height of the video.</value>
+		public uint DisplayVideoHeight {
+			get {
+				return VideoHeight;
+			}
+		}
+
 		public ushort Fps {
 			get;
 			set;
