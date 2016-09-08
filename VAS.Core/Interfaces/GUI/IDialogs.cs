@@ -38,7 +38,7 @@ namespace VAS.Core
 		Task<bool> NewVersionAvailable (Version currentVersion, Version latestVersion,
 		                                string downloadURL, string changeLog, object parent = null);
 
-		Task<object> ChooseOption (Dictionary<string, object> options, object parent = null);
+		Task<object> ChooseOption (Dictionary<string, object> options, string title = null, object parent = null);
 
 		IBusyDialog BusyDialog (string message, object parent = null);
 
