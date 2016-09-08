@@ -71,6 +71,16 @@ namespace VAS.Core.Common
 		public const int ListTextOffset = ListRowSeparator * 3 + StyleConf.ListCountRadio * 2 + StyleConf.ListCountWidth;
 
 		public const int ListEyeIconOffset = 10;
+		public const string LimitArrowGreenL = "icons/hicolor/scalable/actions/vas-timeline-limit_arr-lg" + IMAGE_EXT;
+		public const string LimitArrowGreenR = "icons/hicolor/scalable/actions/vas-timeline-limit_arr-rg" + IMAGE_EXT;
+		public const string LimitArrowGreenSelectedL = "icons/hicolor/scalable/actions/vas-timeline-limit_arr_lg_selected" + IMAGE_EXT;
+		public const string LimitArrowGreenSelectedR = "icons/hicolor/scalable/actions/vas-timeline-limit_arr_rg_selected" + IMAGE_EXT;
+		public const string LimitArrowRedL = "icons/hicolor/scalable/actions/vas-timeline-limit_arr-lr" + IMAGE_EXT;
+		public const string LimitArrowRedR = "icons/hicolor/scalable/actions/vas-timeline-limit_arr-rr" + IMAGE_EXT;
+		public const string LimitArrowRedSelectedL = "icons/hicolor/scalable/actions/vas-timeline-limit_arr_lr_selected" + IMAGE_EXT;
+		public const string LimitArrowRedSelectedR = "icons/hicolor/scalable/actions/vas-timeline-limit_arr_rr_selected" + IMAGE_EXT;
+		public const string LimitArrowWhiteL = "icons/hicolor/scalable/actions/vas-timeline-limit_arr-lw" + IMAGE_EXT;
+		public const string LimitArrowWhiteR = "icons/hicolor/scalable/actions/vas-timeline-limit_arr-rw" + IMAGE_EXT;
 		public const string ListEyeIconPath = "icons/hicolor/scalable/actions/longomatch-eye" + IMAGE_EXT;
 		public const int ListEyeIconWidth = 36;
 		public const int ListEyeIconHeight = 36;
@@ -129,6 +139,9 @@ namespace VAS.Core.Common
 		public const string ApplyButton = "icons/hicolor/scalable/actions/longomatch-apply-button" + IMAGE_EXT;
 		public const string CancelButton = "icons/hicolor/scalable/actions/longomatch-mark" + IMAGE_EXT;
 		public const string RecordButton = "icons/hicolor/scalable/actions/longomatch-control-record" + IMAGE_EXT;
+		public const string StretchButton = "icons/hicolor/scalable/actions/vas-stretch" + IMAGE_EXT;
+		public const string StretchButtonSensitive = "icons/hicolor/scalable/actions/vas-stretch-sensitive" + IMAGE_EXT;
+		public const string StretchButtonInsensitive = "icons/hicolor/scalable/actions/vas-stretch-insensitive" + IMAGE_EXT;
 
 		public const int NotebookTabIconSize = 18;
 		public const int NotebookTabSize = NotebookTabIconSize + 14;
