@@ -16,10 +16,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
-using VAS.Core;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
@@ -196,12 +196,12 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 	public class VideoLabelObject : LabelObject
 	{
-		OpenButton openButton;
-		const int OPEN_BUTTON_MARGIN = 5;
-		const int OPEN_IMAGE_PADDING = 2;
+		TimelineButton openButton;
+		TimelineButton stretchButton;
+		const int TIMELINE_BUTTON_MARGIN = 5;
+		const int TIMELINE_IMAGE_PADDING = 2;
 
-
-		protected struct OpenButton
+		public struct TimelineButton
 		{
 			public Color BackgroundColor;
 			public Color BorderColor;
@@ -223,7 +223,14 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			openButton.BackgroundImage = Resources.LoadImage (StyleConf.OpenButton);
 			openButton.Width = (int)RectSize;
 			openButton.Height = (int)RectSize;
-			openButton.ImagePadding = OPEN_IMAGE_PADDING;
+			openButton.ImagePadding = TIMELINE_IMAGE_PADDING;
+
+			stretchButton.BackgroundColor = App.Current.Style.PaletteBackgroundLight;
+			stretchButton.BorderColor = App.Current.Style.PaletteBackgroundDark;
+			stretchButton.BackgroundImage = Resources.LoadImage (StyleConf.StretchButton);
+			stretchButton.Width = (int)RectSize;
+			stretchButton.Height = (int)RectSize;
+			stretchButton.ImagePadding = TIMELINE_IMAGE_PADDING;
 		}
 
 		public override void Draw (IDrawingToolkit tk, Area area)
@@ -260,19 +267,54 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			tk.FillColor = openButton.BackgroundColor;
 			tk.StrokeColor = openButton.BorderColor;
 			tk.DrawRoundedRectangle (openButton.Position, openButton.Width, openButton.Height, 2);
-			//setting pad for the image
+			// Setting pad for the image
 			Point imagePoint = openButton.Position + new Point (openButton.ImagePadding, openButton.ImagePadding);
 			int imageWidth = openButton.Width - (openButton.ImagePadding * 2);
 			int imageHeight = openButton.Height - (openButton.ImagePadding * 2);
 			tk.DrawImage (imagePoint, imageWidth, imageHeight, openButton.BackgroundImage, ScaleMode.AspectFit, false);
+
+			/* Draw Strech button */
+			SetStrechButtonProperties (Width);
+			tk.LineWidth = StyleConf.ButtonLineWidth;
+			tk.FillColor = stretchButton.BackgroundColor;
+			tk.StrokeColor = stretchButton.BorderColor;
+			tk.DrawRoundedRectangle (stretchButton.Position, stretchButton.Width, stretchButton.Height, 2);
+			// Setting pad for the image
+			imagePoint = stretchButton.Position + new Point (stretchButton.ImagePadding, stretchButton.ImagePadding);
+			imageWidth = stretchButton.Width - (stretchButton.ImagePadding * 2);
+			imageHeight = stretchButton.Height - (stretchButton.ImagePadding * 2);
+			tk.DrawImage (imagePoint, imageWidth, imageHeight, stretchButton.BackgroundImage, ScaleMode.AspectFit, false);
 
 			tk.End ();
 		}
 
 		void SetOpenButtonProperties (double startX)
 		{
-			openButton.Position = new Point (startX - RectSize - OPEN_BUTTON_MARGIN, OffsetY + OPEN_BUTTON_MARGIN);
+			openButton.Position = new Point (startX - RectSize - TIMELINE_BUTTON_MARGIN - RectSize - TIMELINE_BUTTON_MARGIN,
+				OffsetY + TIMELINE_BUTTON_MARGIN);
 			openButton.BackgroundColor = App.Current.Style.PaletteBackgroundLight;
+		}
+
+		void SetStrechButtonProperties (double startX)
+		{
+			stretchButton.Position = new Point (startX - RectSize - TIMELINE_BUTTON_MARGIN, OffsetY + TIMELINE_BUTTON_MARGIN);
+			stretchButton.BackgroundColor = App.Current.Style.PaletteBackgroundLight;
+		}
+
+		public bool ClickInsideStrechButton (Point p)
+		{
+			bool insideX = false;
+			bool insideY = false;
+
+
+			if (p.X >= stretchButton.Position.X && p.X <= stretchButton.Position.X + stretchButton.Width) {
+				insideX = true;
+			}
+			if (p.Y >= stretchButton.Position.Y && p.Y <= stretchButton.Position.Y + stretchButton.Height) {
+				insideY = true;
+			}
+
+			return insideX && insideY;
 		}
 
 		public bool ClickInsideOpenButton (Point p)
