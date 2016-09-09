@@ -59,5 +59,9 @@ namespace VAS.Core.Events
 	{
 		public string NewName { get; set; }
 	}
+
+	public class OpenEvent<T> : CRUDEvent<T>
+	{
+	}
 }
 

@@ -113,6 +113,14 @@ namespace VAS.Services.ViewModel
 				App.Current.EventsBroker.Publish (new UpdateEvent<TModel> { Object = project, Force = force });
 			}
 		}
+
+		/// <summary>
+		/// Command to Open a project
+		/// </summary>
+		public void Open (TViewModel viewModel)
+		{
+			App.Current.EventsBroker.Publish (new OpenEvent<TModel> { Object = viewModel.Model });
+		}
 	}
 }
 
