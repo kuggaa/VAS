@@ -57,33 +57,38 @@ namespace VAS.Core
 			Log.Debug ("Moving to " + transition);
 
 			if (!destination.ContainsKey (transition)) {
-				Log.Debug ("Moving failed because transition" + transition + " is not in destination dictionary.");
+				Log.Debug ("Moving failed because transition " + transition + " is not in destination dictionary.");
 
 				return false;
 			}
 
-			bool isModal = false;
-			IScreenState lastState = LastState (out isModal);
-			if (lastState != null) {
-				bool postTransition = await lastState.PostTransition ();
-				if (!postTransition) {
-					Log.Debug ("Moving failed because panel " + lastState.Panel.PanelName + " cannot move.");
-					return false;
+			try {
+				bool isModal = false;
+				IScreenState lastState = LastState (out isModal);
+				if (lastState != null) {
+					bool postTransition = await lastState.PostTransition ();
+					if (!postTransition) {
+						Log.Debug ("Moving failed because panel " + lastState.Panel.PanelName + " cannot move.");
+						return false;
+					}
 				}
-			}
 
-			if (isModal) {
-				await PopAllModalStates ();
-			}
+				if (isModal) {
+					await PopAllModalStates ();
+				}
 
-			IScreenState state = destination [transition] ();
-			bool ok = await state.PreTransition (data);
-			if (ok) {
-				await PushNavigationState (transition, state);
-			} else {
-				Log.Debug ("Moving failed because panel " + state.Panel.PanelName + " cannot move.");
+				IScreenState state = destination [transition] ();
+				bool ok = await state.PreTransition (data);
+				if (ok) {
+					await PushNavigationState (transition, state);
+				} else {
+					Log.Debug ("Moving failed because panel " + state.Panel.PanelName + " cannot move.");
+				}
+				return ok;
+			} catch (Exception ex) {
+				Log.Exception (ex);
+				return false;
 			}
-			return ok;
 		}
 
 		/// <summary>
@@ -100,17 +105,20 @@ namespace VAS.Core
 				return false;
 			}
 
-			IScreenState current = LastNavigationState ();
-
-			Log.Debug ("Moving to " + transition + " in modal mode");
-			IScreenState state = destination [transition] ();
-			bool ok = await state.PreTransition (data);
-			if (ok) {
-				await PushModalState (transition, state, current);
-			} else {
-				Log.Debug ("Moving failed because panel " + state.Panel.PanelName + " cannot move.");
+			try {
+				Log.Debug ("Moving to " + transition + " in modal mode");
+				IScreenState state = destination [transition] ();
+				bool ok = await state.PreTransition (data);
+				if (ok) {
+					await PushModalState (transition, state, current);
+				} else {
+					Log.Debug ("Moving failed because panel " + state.Panel.PanelName + " cannot move.");
+				}
+				return ok;
+			} catch (Exception ex) {
+				Log.Exception (ex);
+				return false;
 			}
-			return ok;
 		}
 
 		/// <summary>
@@ -124,22 +132,27 @@ namespace VAS.Core
 				return false;
 			}
 
-			bool isModal;
-			IScreenState current = LastState (out isModal);
-			if (current == null || !(await current.PostTransition ())) {
-				Log.Debug ("Moving failed because panel " + current.Panel.PanelName + " cannot move.");
+			try {
+				bool isModal;
+				IScreenState current = LastState (out isModal);
+				if (current == null || !(await current.PostTransition ())) {
+					Log.Debug ("Moving failed because panel " + current.Panel.PanelName + " cannot move.");
+					return false;
+				}
+
+				if (!isModal) {
+					await PopNavigationState ();
+				} else {
+					await PopModalState (current);
+				}
+
+				Log.Debug ("Moved Back");
+
+				return true;
+			} catch (Exception ex) {
+				Log.Exception (ex);
 				return false;
 			}
-
-			if (!isModal) {
-				await PopNavigationState ();
-			} else {
-				await PopModalState (current);
-			}
-
-			Log.Debug ("Moved Back");
-
-			return true;
 		}
 
 		/// <summary>
@@ -149,17 +162,24 @@ namespace VAS.Core
 		/// <param name="transition">Transition name</param>
 		public async Task<bool> MoveBackTo (string transition)
 		{
-			IScreenState state = GetLastScreenStateFromTransition (transition);
-			if (state == null) {
-				Log.Debug ("Moving failed because transition " + transition + " is not in history moves");
-				return false;
-			} else if (home != null && state == home.Item2) {
-				return await MoveToHome ();
-			} else {
+			try {
+				IScreenState state = GetLastScreenStateFromTransition (transition);
+				if (state == null) {
+					Log.Debug ("Moving failed because transition " + transition + " is not in history moves");
+					return false;
+				}
+
+				if (home != null && state == home.Item2) {
+					return await MoveToHome ();
+				}
+
 				//Check for modals to delete them.
 				await PopAllModalStates ();
 				await PopToNavigationState (state);
 				return true;
+			} catch (Exception ex) {
+				Log.Exception (ex);
+				return false;
 			}
 		}
 
@@ -172,12 +192,17 @@ namespace VAS.Core
 			if (home == null) {
 				Log.Debug ("Moving failed because transition to home doesn't exist");
 				return false;
-			} else {
+			}
+
+			try {
 				//Check for modals to delete them.
 				await PopAllModalStates ();
 				navigationStateStack.Clear ();
 				await App.Current.Navigation.LoadNavigationPanel (home.Item2.Panel);
 				return true;
+			} catch (Exception ex) {
+				Log.Exception (ex);
+				return false;
 			}
 		}
 
