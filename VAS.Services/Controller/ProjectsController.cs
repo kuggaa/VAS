@@ -176,21 +176,23 @@ namespace VAS.Services.Controller
 
 			ProjectVM<TModel> projectVM = ViewModel.Selection.FirstOrDefault ();
 
-			if (ViewModel.LoadedProject.Edited == true) {
-				await Save (ViewModel.LoadedProject.Model, false);
+			if (projectVM != null) {
+				if (ViewModel.LoadedProject.Edited == true) {
+					await Save (ViewModel.LoadedProject.Model, false);
+				}
+
+				// Load the model, creating a copy of the Project to edit changes in a different model in case the user
+				// does not want to save them.
+				TModel project = projectVM.Model;
+				loadedProject = project.Clone (SerializationType.Json);
+				project.IsChanged = false;
+				ViewModel.LoadedProject.Model = loadedProject;
+
+				// Update controls visiblity
+				ViewModel.DeleteSensitive = loadedProject != null;
+				ViewModel.ExportSensitive = loadedProject != null;
+				ViewModel.SaveSensitive = false;
 			}
-
-			// Load the model, creating a copy of the Project to edit changes in a different model in case the user
-			// does not want to save them.
-			TModel project = projectVM.Model;
-			loadedProject = project.Clone (SerializationType.Json);
-			project.IsChanged = false;
-			ViewModel.LoadedProject.Model = loadedProject;
-
-			// Update controls visiblity
-			ViewModel.DeleteSensitive = loadedProject != null;
-			ViewModel.ExportSensitive = loadedProject != null;
-			ViewModel.SaveSensitive = false;
 		}
 
 		async Task Save (TModel project, bool force)

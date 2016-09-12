@@ -37,7 +37,7 @@ namespace VAS.UI.Common
 	{
 		protected ListStore store;
 		T viewModel;
-		Dictionary<VM, TreeIter> dictionaryStore;
+		protected Dictionary<VM, TreeIter> dictionaryStore;
 
 		public TreeViewBase () : this (new Gtk.ListStore (typeof(VM)))
 		{
@@ -125,7 +125,7 @@ namespace VAS.UI.Common
 			}
 		}
 
-		void RemoveSubViewModel (VM subViewModel)
+		protected virtual void RemoveSubViewModel (VM subViewModel)
 		{
 			RemoveSubViewModelListener (subViewModel);
 			TreeIter iter = dictionaryStore [subViewModel];
@@ -145,7 +145,7 @@ namespace VAS.UI.Common
 				return;
 			}
 			TreeIter iter = dictionaryStore [(VM)sender];
-			Model.EmitRowChanged (Model.GetPath (iter), iter);
+			Model.EmitRowChanged (store.GetPath (iter), iter);
 		}
 	}
 }

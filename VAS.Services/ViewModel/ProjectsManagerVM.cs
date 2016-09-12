@@ -17,9 +17,9 @@
 //
 using System;
 using System.Linq;
+using VAS.Core.Events;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
-using VAS.Core.Events;
 
 namespace VAS.Services.ViewModel
 {
@@ -95,9 +95,9 @@ namespace VAS.Services.ViewModel
 		/// <summary>
 		/// Command to delete the selected projects.
 		/// </summary>
-		public void Delete ()
+		public virtual void Delete ()
 		{
-			foreach (TModel project in Selection.Select (vm => vm.Model)) {
+			foreach (TModel project in Selection.Select (vm => vm.Model).ToList()) {
 				App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = project });
 			}
 		}

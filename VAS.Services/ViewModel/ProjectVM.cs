@@ -16,9 +16,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using VAS.Core.Store;
-using VAS.Core.MVVMC;
 using VAS.Core.Events;
+using VAS.Core.MVVMC;
+using VAS.Core.Store;
 
 namespace VAS.Services.ViewModel
 {
