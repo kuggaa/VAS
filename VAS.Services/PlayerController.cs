@@ -54,6 +54,7 @@ namespace VAS.Services
 		protected IPlayer player;
 		protected IMultiPlayer multiPlayer;
 		protected TimelineEvent loadedEvent;
+		protected TimelineEvent cameraEvent;
 		protected IPlaylistElement loadedPlaylistElement;
 		protected List<IViewPort> viewPorts;
 		protected ObservableCollection<CameraConfig> camerasConfig;
@@ -692,6 +693,25 @@ namespace VAS.Services
 			);
 		}
 
+		public virtual void LoadCameraEvent (TimelineEvent evt, Time seekTime, bool playing)
+		{
+			MediaFileSet fileSet = evt.FileSet;
+			Log.Debug (string.Format ("Loading event \"{0}\" seek:{1} playing:{2}", evt.Name, seekTime, playing));
+
+			Switch (evt, null, null);
+
+			if (evt.Start != null && evt.Stop != null) {
+				LoadSegment (fileSet, evt.Start, evt.Stop, evt.Start + seekTime, evt.Rate,
+					evt.CamerasConfig, evt.CamerasLayout, playing);
+			} else if (evt.EventTime != null) {
+				AbsoluteSeek (evt.EventTime, true);
+			} else {
+				Log.Error ("Event does not have timing info: " + evt);
+			}
+
+			cameraEvent = evt;
+		}
+
 		public virtual void UnloadCurrentEvent ()
 		{
 			Log.Debug ("Unload current event");
@@ -703,6 +723,13 @@ namespace VAS.Services
 			} else {
 				CamerasConfig = defaultCamerasConfig;
 				EmitEventUnloaded ();
+			}
+
+			if (cameraEvent != null) {
+				Time seekTime = new Time (0);
+				bool playing = false;
+				LoadSegment (mediafileSet, cameraEvent.Start, cameraEvent.Stop, cameraEvent.Start + seekTime, cameraEvent.Rate,
+					cameraEvent.CamerasConfig, cameraEvent.CamerasLayout, playing);
 			}
 		}
 
@@ -1351,10 +1378,10 @@ namespace VAS.Services
 					EmitTimeChanged (relativeTime, duration);
 				}
 				videoTS = currentTime;
-
 				App.Current.EventsBroker.Publish<PlayerTickEvent> (
 					new PlayerTickEvent {
-						Time = currentTime
+						Time = currentTime,
+						RelativeTime = relativeTime
 					}
 				);
 				return true;

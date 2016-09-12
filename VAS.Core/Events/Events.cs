@@ -15,7 +15,6 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using VAS.Core.Common;
@@ -25,7 +24,6 @@ using VAS.Core.Interfaces.GUI;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Core.Store.Templates;
-
 
 namespace VAS.Core.Events
 {
@@ -37,6 +35,11 @@ namespace VAS.Core.Events
 	public class LoadEventEvent : Event
 	{
 		public TimelineEvent TimelineEvent { get; set; }
+	}
+
+	public class LoadCameraEvent : Event
+	{
+		public TimelineEvent CameraTlEvent { get; set; }
 	}
 
 	public class EventCreatedEvent : Event
@@ -190,6 +193,8 @@ namespace VAS.Core.Events
 	public class PlayerTickEvent : Event
 	{
 		public Time Time { get; set; }
+
+		public Time RelativeTime { get; set; }
 	}
 
 	public class CapturerTickEvent : Event
@@ -199,15 +204,11 @@ namespace VAS.Core.Events
 
 	public class MultimediaErrorEvent : Event
 	{
-		//public object Sender { get; set; }
-
 		public string Message { get; set; }
 	}
 
 	public class CaptureErrorEvent : Event
 	{
-		//public object Sender { get; set; }
-
 		public string Message { get; set; }
 	}
 
@@ -231,8 +232,6 @@ namespace VAS.Core.Events
 
 	public class PlaybackStateChangedEvent : Event
 	{
-		//public object Sender { get; set; }
-
 		public bool Playing { get; set; }
 	}
 

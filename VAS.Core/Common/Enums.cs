@@ -170,6 +170,34 @@ namespace VAS.Core.Common
 	}
 
 	/// <summary>
+	/// Video timeline mode.
+	/// </summary>
+	public enum VideoTimelineMode
+	{
+		/// <summary>
+		/// Video timeline shows all the length.
+		/// Is possible to change duration and borders are green.
+		/// </summary>
+		Default,
+		/// <summary>
+		/// Video timeline shows all the length, but some of it will not be when streched. 
+		/// Is possible to change duration and borders are red.
+		/// </summary>
+		Edit,
+		/// <summary>
+		/// Video timeline shows part of the length.
+		/// Is not possible to change duration and borders are white.
+		/// </summary>
+		Stretched,
+		/// <summary>
+		/// Video timeline shows part of the length.
+		/// User has tried to change Duration and
+		/// borders are red to indicate that is not possible.
+		/// </summary>
+		StretchedAndEditing
+	}
+
+	/// <summary>
 	/// Node selection mode.
 	/// </summary>
 	public enum NodeSelectionMode

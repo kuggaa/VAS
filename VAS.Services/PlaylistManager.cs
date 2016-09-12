@@ -60,6 +60,18 @@ namespace VAS.Services
 			}
 		}
 
+		protected virtual void LoadCameraPlay (TimelineEvent play, Time seekTime, bool playing)
+		{
+			if (play != null && Player != null) {
+				play.Selected = true;
+				(Player as PlayerController)?.LoadCameraEvent (
+					play, seekTime, playing);
+				if (playing) {
+					Player.Play ();
+				}
+			}
+		}
+
 		protected virtual void HandleOpenedProjectChanged (OpenedProjectEvent e)
 		{
 			var player = e.AnalysisWindow?.Player;
@@ -133,6 +145,19 @@ namespace VAS.Services
 				} else if (Player != null) {
 					Player.UnloadCurrentEvent ();
 				}
+			}
+		}
+
+		protected virtual void HandleLoadCameraEvent (LoadCameraEvent e)
+		{
+			if (OpenedProject == null || OpenedProjectType == ProjectType.FakeCaptureProject) {
+				return;
+			}
+
+			if (e.CameraTlEvent != null) {
+				LoadCameraPlay (e.CameraTlEvent, new Time (0), true);
+			} else if (Player != null) {
+				Player.UnloadCurrentEvent ();
 			}
 		}
 
@@ -237,6 +262,7 @@ namespace VAS.Services
 			App.Current.EventsBroker.Subscribe<PreviousPlaylistElementEvent> (HandlePrev);
 			App.Current.EventsBroker.Subscribe<NextPlaylistElementEvent> (HandleNext);
 			App.Current.EventsBroker.Subscribe<LoadEventEvent> (HandleLoadPlayEvent);
+			App.Current.EventsBroker.Subscribe<LoadCameraEvent> (HandleLoadCameraEvent);
 			App.Current.EventsBroker.Subscribe<LoadPlaylistElementEvent> (HandleLoadPlaylistElement);
 			App.Current.EventsBroker.Subscribe<PlaybackRateChangedEvent> (HandlePlaybackRateChanged);
 			App.Current.EventsBroker.Subscribe<TimeNodeChangedEvent> (HandlePlayChanged);
@@ -255,6 +281,7 @@ namespace VAS.Services
 			App.Current.EventsBroker.Unsubscribe<PreviousPlaylistElementEvent> (HandlePrev);
 			App.Current.EventsBroker.Unsubscribe<NextPlaylistElementEvent> (HandleNext);
 			App.Current.EventsBroker.Unsubscribe<LoadEventEvent> (HandleLoadPlayEvent);
+			App.Current.EventsBroker.Unsubscribe<LoadCameraEvent> (HandleLoadCameraEvent);
 			App.Current.EventsBroker.Unsubscribe<LoadPlaylistElementEvent> (HandleLoadPlaylistElement);
 			App.Current.EventsBroker.Unsubscribe<PlaybackRateChangedEvent> (HandlePlaybackRateChanged);
 			App.Current.EventsBroker.Unsubscribe<TimeNodeChangedEvent> (HandlePlayChanged);

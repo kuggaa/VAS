@@ -35,6 +35,9 @@ using VASDrawing = VAS.Drawing;
 
 namespace VAS.UI.Component
 {
+	/// <summary>
+	/// VAS Timeline.
+	/// </summary>
 	[System.ComponentModel.ToolboxItem (true)]
 	public partial class Timeline : Gtk.Bin
 	{
@@ -116,6 +119,10 @@ namespace VAS.UI.Component
 			base.Dispose ();
 		}
 
+		/// <summary>
+		/// Gets or sets the current time.
+		/// </summary>
+		/// <value>The current time.</value>
 		public virtual Time CurrentTime {
 			set {
 				nextCurrentTime = value;
@@ -125,6 +132,10 @@ namespace VAS.UI.Component
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the player.
+		/// </summary>
+		/// <value>The player.</value>
 		public virtual IPlayerController Player {
 			get {
 				return player;
@@ -133,6 +144,32 @@ namespace VAS.UI.Component
 				player = value;
 				timerule.Player = player;
 				timeline.Player = player;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the labels area.
+		/// </summary>
+		/// <value>The labels area.</value>
+		public virtual DrawingArea LabelsArea {
+			get {
+				return labelsarea;
+			}
+			set {
+				labelsarea = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the timeline area.
+		/// </summary>
+		/// <value>The timeline area.</value>
+		public virtual DrawingArea TimelineArea {
+			get {
+				return timelinearea;
+			}
+			set {
+				timelinearea = value;
 			}
 		}
 
@@ -154,37 +191,59 @@ namespace VAS.UI.Component
 			}
 		}
 
-		public virtual DrawingArea LabelsArea {
+		protected virtual DrawingArea TimeruleArea {
 			get {
-				return labelsarea;
+				return timerulearea;
 			}
 			set {
-				labelsarea = value;
+				timerulearea = value;
 			}
 		}
 
-		public virtual DrawingArea TimelineArea {
-			get {
-				return timelinearea;
-			}
-			set {
-				timelinearea = value;
-			}
-		}
-
+		/// <summary>
+		/// Fit this instance.
+		/// </summary>
 		public virtual void Fit ()
 		{
 			focusbutton.Click ();
 		}
 
+		/// <summary>
+		/// Zooms in.
+		/// </summary>
 		public virtual void ZoomIn ()
 		{
 			focusscale.Adjustment.Value -= focusscale.Adjustment.StepIncrement;
 		}
 
+		/// <summary>
+		/// Zooms out.
+		/// </summary>
 		public virtual void ZoomOut ()
 		{
 			focusscale.Adjustment.Value += focusscale.Adjustment.StepIncrement;
+		}
+
+		/// <summary>
+		/// Fits the zoom tot the Camera timeline width.
+		/// </summary>
+		public virtual void FitZoom ()
+		{
+			double width = timeline.GetCameraWidth ();
+			if (Math.Truncate ((double)(TimeruleArea.Allocation.Width)) < Math.Truncate (width)) {
+				while (Math.Truncate ((double)(TimeruleArea.Allocation.Width)) < Math.Truncate (width)
+				       && this.FocusScale.Adjustment.Value < 12) {
+					ZoomOut ();
+					width = timeline.GetCameraWidth ();
+				}
+			} else {
+				while (Math.Truncate ((double)(TimeruleArea.Allocation.Width)) > Math.Truncate (width)
+				       && this.FocusScale.Adjustment.Value > 0) {
+					ZoomIn ();
+					width = timeline.GetCameraWidth ();
+				}
+				ZoomOut ();
+			}
 		}
 
 		protected virtual PlaysTimeline createPlaysTimeline ()
@@ -198,6 +257,11 @@ namespace VAS.UI.Component
 		}
 
 
+		/// <summary>
+		/// Sets the project in the timeline.
+		/// </summary>
+		/// <param name="project">Project.</param>
+		/// <param name="filter">Filter.</param>
 		public virtual void SetProject (Project project, EventsFilter filter)
 		{
 			this.project = project;
@@ -223,23 +287,40 @@ namespace VAS.UI.Component
 			QueueDraw ();
 		}
 
+		/// <summary>
+		/// Loads the play.
+		/// </summary>
+		/// <param name="evt">Evt.</param>
 		public virtual void LoadPlay (TimelineEvent evt)
 		{
 			timeline.LoadPlay (evt);
 		}
 
+		/// <summary>
+		/// Adds the play.
+		/// </summary>
+		/// <param name="play">Play.</param>
 		public virtual void AddPlay (TimelineEvent play)
 		{
 			timeline.AddPlay (play);
 			QueueDraw ();
 		}
 
+		/// <summary>
+		/// Removes the plays.
+		/// </summary>
+		/// <param name="plays">Plays.</param>
 		public virtual void RemovePlays (List<TimelineEvent> plays)
 		{
 			timeline.RemovePlays (plays);
 			QueueDraw ();
 		}
 
+		/// <summary>
+		/// Adds the timer node.
+		/// </summary>
+		/// <param name="timer">Timer.</param>
+		/// <param name="tn">Tn.</param>
 		public virtual void AddTimerNode (Timer timer, TimeNode tn)
 		{
 			timeline.AddTimerNode (timer, tn);
@@ -342,7 +423,9 @@ namespace VAS.UI.Component
 
 		void HandlePlayerTick (PlayerTickEvent e)
 		{
-			CurrentTime = e.Time;
+			//CurrentTime = e.Time;
+			// TODO: Hay que vigilar, por que los events saldrían tb al principio
+			CurrentTime = e.RelativeTime;
 		}
 
 		/// <summary>

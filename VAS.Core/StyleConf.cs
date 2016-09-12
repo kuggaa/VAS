@@ -101,6 +101,7 @@ namespace VAS.Core.Common
 		public const int TimelineCameraHeight = 30;
 		public const int TimelineCameraMaxLines = 8;
 		public const int TimelineCameraFontSize = 14;
+		public const int TimelineCameraObjectLineWidth = 1;
 		public const int TimelineLabelsWidth = 200;
 		public const int TimelineLabelHSpacing = 10;
 		public const int TimelineLabelVSpacing = 2;

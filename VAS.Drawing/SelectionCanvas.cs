@@ -23,6 +23,7 @@ using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store.Drawables;
 using VAS.Drawing.CanvasObjects;
+using VAS.Drawing.CanvasObjects.Timeline;
 
 namespace VAS.Drawing
 {
@@ -247,10 +248,18 @@ namespace VAS.Drawing
 			foreach (Selection sel in Selections) {
 				ICanvasSelectableObject po = sel.Drawable as ICanvasSelectableObject;
 				po.Selected = false;
+				if (po.GetType () == typeof(CameraObject)) {
+					((CameraObject)po).selectedLeft = false;
+					((CameraObject)po).selectedRight = false;
+				}
 			}
 			if (Objects != null) {
 				foreach (ICanvasSelectableObject cso in Objects) {
 					cso.Selected = false;
+					if (cso.GetType () == typeof(CameraObject)) {
+						((CameraObject)cso).selectedLeft = false;
+						((CameraObject)cso).selectedRight = false;
+					}
 				}
 			}
 			Selections.Clear ();
@@ -295,9 +304,25 @@ namespace VAS.Drawing
 			
 			if (seldup != null) {
 				so.Selected = false;
+				if (so.GetType () == typeof(CameraObject)) {
+					((CameraObject)so).selectedLeft = false;
+					((CameraObject)so).selectedRight = false;
+				}
 				Selections.Remove (seldup);
 			} else {
 				so.Selected = true;
+				if (so.GetType () == typeof(CameraObject)) {
+					if (sel.Position == SelectionPosition.Left) {
+						((CameraObject)so).selectedLeft = true;
+					} else {
+						((CameraObject)so).selectedLeft = false;
+					}
+					if (sel.Position == SelectionPosition.Right) {
+						((CameraObject)so).selectedRight = true;
+					} else {
+						((CameraObject)so).selectedRight = false;
+					}
+				}
 				Selections.Add (sel);
 			}
 			if (notify) {

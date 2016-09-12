@@ -24,6 +24,9 @@ using VAS.Core.Store.Drawables;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
+	/// <summary>
+	/// Time node object.
+	/// </summary>
 	public class TimeNodeObject : CanvasObject, ICanvasSelectableObject
 	{
 		protected ISurface needle;
@@ -49,6 +52,10 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the time node.
+		/// </summary>
+		/// <value>The time node.</value>
 		public TimeNode TimeNode {
 			get;
 			set;
@@ -63,53 +70,93 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets the dragging mode.
+		/// </summary>
+		/// <value>The dragging mode.</value>
 		public NodeDraggingMode DraggingMode {
 			get;
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets the color of the line.
+		/// </summary>
+		/// <value>The color of the line.</value>
 		public Color LineColor {
 			get;
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating if Name should be showed
+		/// </summary>
+		/// <value><c>true</c> if show name; otherwise, <c>false</c>.</value>
 		public bool ShowName {
 			get;
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets the max time.
+		/// </summary>
+		/// <value>The max time.</value>
 		public Time MaxTime {
 			set;
 			protected get;
 		}
 
+		/// <summary>
+		/// Gets or sets the offset y.
+		/// </summary>
+		/// <value>The offset y.</value>
 		public double OffsetY {
 			get;
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets the height.
+		/// </summary>
+		/// <value>The height.</value>
 		public double Height {
 			get;
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets the seconds per pixel.
+		/// </summary>
+		/// <value>The seconds per pixel.</value>
 		public double SecondsPerPixel {
 			set;
 			protected get;
 		}
 
+		/// <summary>
+		/// Gets the start X position.
+		/// </summary>
+		/// <value>The start x.</value>
 		public double StartX {
 			get {
 				return Utils.TimeToPos (TimeNode.Start, SecondsPerPixel);
 			}
 		}
 
+		/// <summary>
+		/// Gets the stop X position.
+		/// </summary>
+		/// <value>The stop x.</value>
 		public double StopX {
 			get {
 				return Utils.TimeToPos (TimeNode.Stop, SecondsPerPixel);
 			}
 		}
 
+		/// <summary>
+		/// Gets the center X position.
+		/// </summary>
+		/// <value>The center x.</value>
 		public double CenterX {
 			get {
 				return Utils.TimeToPos (TimeNode.Start + TimeNode.Duration / 2,
@@ -117,6 +164,10 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the clipping mode.
+		/// </summary>
+		/// <value>The clipping mode.</value>
 		public NodeClippingMode ClippingMode {
 			get;
 			set;
@@ -130,6 +181,13 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 		}
 
+		/// <summary>
+		/// Gets the selection.
+		/// </summary>
+		/// <returns>The selection.</returns>
+		/// <param name="point">Point.</param>
+		/// <param name="precision">Precision.</param>
+		/// <param name="inMotion">If set to <c>true</c> in motion.</param>
 		public virtual Selection GetSelection (Point point, double precision, bool inMotion = false)
 		{
 			if (SelectionMode == NodeSelectionMode.Borders || SelectionMode == NodeSelectionMode.All) {
@@ -153,6 +211,13 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			return null;
 		}
 
+		/// <summary>
+		/// Move the TimeNodeObject with a given selection sel
+		/// from point start to point p.
+		/// </summary>
+		/// <param name="sel">Selection.</param>
+		/// <param name="p">Target point.</param>
+		/// <param name="start">Start point.</param>
 		public virtual void Move (Selection sel, Point p, Point start)
 		{
 			double diffX;
@@ -232,6 +297,11 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			movingPos = sel.Position;
 		}
 
+		/// <summary>
+		/// Draw the specified area with the specified Drawing toolkit tk.
+		/// </summary>
+		/// <param name="tk">IDrawingToolkit.</param>
+		/// <param name="area">Area.</param>
 		public override void Draw (IDrawingToolkit tk, Area area)
 		{
 			double linepos;
@@ -275,6 +345,24 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				tk.DrawText (new Point (StartX, OffsetY), StopX - StartX, Height / 2, TimeNode.Name);
 			}
 			tk.End ();
+		}
+
+		/// <summary>
+		/// Gets the maximum time expressed in position.
+		/// </summary>
+		/// <returns>The maximum time expressed in position.</returns>
+		public double GetMaxTimePosition ()
+		{
+			return Utils.TimeToPos (MaxTime, SecondsPerPixel);
+		}
+
+		/// <summary>
+		/// Gets the width position.
+		/// </summary>
+		/// <returns>The width position.</returns>
+		public double GetWidthPosition ()
+		{
+			return StopX - StartX;
 		}
 	}
 
