@@ -351,4 +351,17 @@ namespace VAS.Core.Events
 
 		public DashboardButton Button { get; set; }
 	}
+
+	/// <summary>
+	/// Event sent to notify about navigation in the application.
+	/// </summary>
+	public class NavigationEvent : Event
+	{
+		/// <summary>
+		/// Gets or sets the name of the transition.
+		/// </summary>
+		/// <value>The name.</value>
+		public string Name { get; set; }
+
+	}
 }
