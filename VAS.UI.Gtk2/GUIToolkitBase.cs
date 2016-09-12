@@ -27,6 +27,7 @@ using VAS.Core.Interfaces.GUI;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
+using VAS.UI.Helpers;
 using Image = VAS.Core.Common.Image;
 
 namespace VAS.UI
@@ -137,6 +138,38 @@ namespace VAS.UI
 				return MainWindow;
 			}
 			return null;
+		}
+
+
+		protected void ShowModalWindow (IPanel panel, IPanel parent)
+		{
+			ExternalWindow modalWindow = new ExternalWindow ();
+			modalWindow.DefaultWidth = (panel as Gtk.Bin).WidthRequest;
+			modalWindow.DefaultHeight = (panel as Gtk.Bin).HeightRequest;
+			modalWindow.Title = panel.Title;
+			modalWindow.Modal = true;
+			modalWindow.TransientFor = ((Bin)parent).Toplevel as Gtk.Window;
+			modalWindow.DeleteEvent += ModalWindowDeleteEvent;
+			Widget widget = panel as Gtk.Widget;
+			modalWindow.Add (widget);
+			modalWindow.SetPosition (WindowPosition.CenterOnParent);
+			modalWindow.ShowAll ();
+			panel.OnLoad ();
+		}
+
+		protected void ModalWindowDeleteEvent (object o, DeleteEventArgs args)
+		{
+			if (args.Event.Window != null) {
+				App.Current.StateController.MoveBack ();
+			}
+		}
+
+		protected void RemoveModalPanelAndWindow (IPanel panel)
+		{
+			panel.OnUnload ();
+			((Bin)panel).Toplevel.DeleteEvent -= ModalWindowDeleteEvent;
+			((Bin)panel).Toplevel.Destroy ();
+			System.GC.Collect ();
 		}
 	}
 }
