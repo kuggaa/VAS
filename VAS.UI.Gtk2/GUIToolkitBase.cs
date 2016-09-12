@@ -47,20 +47,20 @@ namespace VAS.UI
 
 		protected Gtk.Window MainWindow {
 			get {
-				return mainWindow; 
+				return mainWindow;
 			}
 			set {
 				mainWindow = value;
 			}
 		}
-			
+
 		//FIXME: for compatibility with LongoMatch
-		public virtual IMainController MainController {	get; }
+		public virtual IMainController MainController { get; }
 
 		//FIXME: for compatibility with LongoMatch
 		public virtual IRenderingStateBar RenderingStateBar { get; }
 
-		public bool FullScreen { 
+		public bool FullScreen {
 			set {
 				if (MainWindow != null) {
 					if (value)
@@ -68,10 +68,10 @@ namespace VAS.UI
 					else
 						MainWindow.GdkWindow.Unfullscreen ();
 				}
-			} 
+			}
 		}
 
-		public virtual void Register <I, C> (int priority)
+		public virtual void Register<I, C> (int priority)
 		{
 			registry.Register<I, C> (priority);
 		}
@@ -85,43 +85,27 @@ namespace VAS.UI
 
 		public abstract void ExportFrameSeries (Project openedProject, TimelineEvent play, string snapshotsDir);
 
-		public abstract Task EditPlay (TimelineEvent play, Project project, bool editTags, bool editPos, bool editPlayers, 
-		                               bool editNotes);
+		public abstract Task EditPlay (TimelineEvent play, Project project, bool editTags, bool editPos, bool editPlayers,
+									   bool editNotes);
 
 		public abstract void DrawingTool (Image image, TimelineEvent play, FrameDrawing drawing,
-		                                  CameraConfig camConfig, Project project);
+										  CameraConfig camConfig, Project project);
 
 		public abstract Project ChooseProject (List<Project> projects);
-
-		public abstract void SelectProject (List<Project> projects);
-
-		public abstract void OpenCategoriesTemplatesManager ();
-
-		public abstract void OpenTeamsTemplatesManager ();
-
-		public abstract void OpenProjectsManager (Project openedProject);
-
-		public abstract void OpenPreferencesEditor ();
 
 		public abstract void OpenDatabasesManager ();
 
 		public abstract void ManageJobs ();
 
-		public abstract void Welcome ();
-
 		public abstract void LoadPanel (IPanel panel);
-
-		public abstract void CreateNewProject (Project project = null);
 
 		public abstract void ShowProjectStats (Project project);
 
 		public abstract string RemuxFile (string inputFile, string outputFile, VideoMuxerType muxer);
 
-		public abstract void OpenProject (Project project, ProjectType projectType, 
-		                                  CaptureSettings props, EventsFilter filter,
-		                                  out IAnalysisWindowBase analysisWindow);
-
-		public abstract void CloseProject ();
+		public abstract void OpenProject (Project project, ProjectType projectType,
+										  CaptureSettings props, EventsFilter filter,
+										  out IAnalysisWindowBase analysisWindow);
 
 		public abstract EndCaptureResponse EndCapture (bool isCapturing);
 
@@ -141,8 +125,8 @@ namespace VAS.UI
 		}
 
 		public abstract Task<bool> CreateNewTemplate<T> (IList<T> availableTemplates, string defaultName,
-		                                                 string countText, string emptyText,
-		                                                 CreateEvent<T> evt) where T: ITemplate;
+														 string countText, string emptyText,
+														 CreateEvent<T> evt) where T : ITemplate;
 
 		public Widget GetParentWidget (object parent)
 		{

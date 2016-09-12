@@ -31,7 +31,7 @@ namespace VAS.Core.Interfaces.GUI
 	public interface IGUIToolkit
 	{
 		/* Plugable views */
-		void Register <I, C> (int priority);
+		void Register<I, C> (int priority);
 
 		IPlayerView GetPlayerView ();
 
@@ -48,33 +48,17 @@ namespace VAS.Core.Interfaces.GUI
 
 		void ExportFrameSeries (Project openenedProject, TimelineEvent play, string snapshotDir);
 
-		void OpenProject (Project project, ProjectType projectType, 
-		                  CaptureSettings props, EventsFilter filter,
-		                  out IAnalysisWindowBase analysisWindow);
-
-		void CloseProject ();
-
-		void SelectProject (List<Project> projects);
+		void OpenProject (Project project, ProjectType projectType,
+						  CaptureSettings props, EventsFilter filter,
+						  out IAnalysisWindowBase analysisWindow);
 
 		Project ChooseProject (List<Project> projects);
 
-		void Welcome ();
-
 		void LoadPanel (IPanel panel);
-
-		void CreateNewProject (Project project = null);
 
 		void ShowProjectStats (Project project);
 
-		void OpenProjectsManager (Project openedProject);
-
-		void OpenCategoriesTemplatesManager ();
-
-		void OpenTeamsTemplatesManager ();
-
 		void OpenDatabasesManager ();
-
-		void OpenPreferencesEditor ();
 
 		void ManageJobs ();
 
@@ -93,8 +77,8 @@ namespace VAS.Core.Interfaces.GUI
 		void Invoke (EventHandler handler);
 
 		Task<bool> CreateNewTemplate<T> (IList<T> availableTemplates, string defaultName,
-		                                 string countText, string emptyText,
-		                                 CreateEvent<T> evt) where T: ITemplate;
+										 string countText, string emptyText,
+										 CreateEvent<T> evt) where T : ITemplate;
 	}
 }
 
