@@ -22,7 +22,7 @@ namespace VAS.Core.Interfaces.MVVMC
 	/// <summary>
 	/// Interface the for the View components in the MVVMC framework.
 	/// </summary>
-	public interface IView
+	public interface IView : IDisposable
 	{
 		/// <summary>
 		/// Sets the ViewModel associated to this View.

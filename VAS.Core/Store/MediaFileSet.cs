@@ -17,6 +17,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
@@ -28,7 +29,7 @@ namespace VAS.Core.Store
 	[Serializable]
 	[PropertyChanged.ImplementPropertyChanged]
 	[JsonObject]
-	public class MediaFileSet : List<MediaFile>, IStorable
+	public class MediaFileSet : ObservableCollection<MediaFile>, IStorable
 	{
 		[NonSerialized]
 		IStorage storage;
@@ -103,18 +104,18 @@ namespace VAS.Core.Store
 
 		[JsonProperty]
 		[PropertyChanged.DoNotNotify]
-		List<MediaFile> MediaFiles {
+		ObservableCollection<MediaFile> MediaFiles {
 			get {
 				if (Count == 0) {
 					return null;
 				} else {
-					return new List<MediaFile> (this);
+					return new ObservableCollection<MediaFile> (this);
 				}
 			}
 			set {
 				this.Clear ();
 				if (value != null) {
-					AddRange (value);
+					this.AddRange (value);
 				}
 			}
 		}

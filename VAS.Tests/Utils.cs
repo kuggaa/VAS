@@ -37,6 +37,11 @@ namespace VAS.Tests
 
 	public class DummyView: IView
 	{
+		public void Dispose ()
+		{
+			throw new NotImplementedException ();
+		}
+
 		public void SetViewModel (object ViewModel)
 		{
 		}

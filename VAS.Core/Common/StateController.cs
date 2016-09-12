@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.GUI;
-using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core
 {
@@ -102,15 +100,8 @@ namespace VAS.Core
 				return false;
 			}
 
-			IScreenState current;
-			if ((current = LastModalState ()) != null ||
-			    (current = LastNavigationState ()) != null) {
-				bool postTransition = await current.PostTransition ();
-				if (!postTransition) {
-					Log.Debug ("Moving failed because panel " + current.Panel.PanelName + " cannot move.");
-					return false;
-				}
-			}
+			IScreenState current = LastNavigationState ();
+
 			Log.Debug ("Moving to " + transition + " in modal mode");
 			IScreenState state = destination [transition] ();
 			bool ok = await state.PreTransition (data);
@@ -213,6 +204,9 @@ namespace VAS.Core
 		/// <param name="transition">Transition.</param>
 		public bool UnRegister (string transition)
 		{
+			// Delete all existing instances
+			navigationStateStack.FirstOrDefault (x => x.Item1 == transition)?.Item2.Panel.Dispose ();
+
 			// Remove from transitions
 			bool ok = destination.Remove (transition);
 
@@ -231,6 +225,7 @@ namespace VAS.Core
 		public async Task EmptyStateStack ()
 		{
 			await PopAllModalStates ();
+			navigationStateStack.ForEach (x => x.Item2.Panel.Dispose ());
 			navigationStateStack.Clear ();
 			overwrittenTransitions.Clear ();
 		}
@@ -243,6 +238,7 @@ namespace VAS.Core
 
 		async Task PopNavigationState ()
 		{
+			navigationStateStack [navigationStateStack.Count - 1].Item2.Panel.Dispose ();
 			navigationStateStack.RemoveAt (navigationStateStack.Count - 1);
 			IScreenState lastState = LastNavigationState ();
 			if (lastState != null) {
@@ -257,6 +253,7 @@ namespace VAS.Core
 				return;
 			}
 			for (int i = navigationStateStack.Count - 1; i > index; i--) {
+				navigationStateStack [i].Item2.Panel.Dispose ();
 				navigationStateStack.RemoveAt (i);
 			}
 			await App.Current.Navigation.LoadNavigationPanel (state.Panel);
@@ -270,6 +267,7 @@ namespace VAS.Core
 
 		async Task PopModalState (IScreenState current)
 		{
+			modalStateStack [modalStateStack.Count - 1].Item2.Panel.Dispose ();
 			modalStateStack.RemoveAt (modalStateStack.Count - 1);
 			await App.Current.Navigation.RemoveModalWindow (current.Panel);
 		}

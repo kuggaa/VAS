@@ -69,16 +69,21 @@ namespace Weavers
 		public IAssemblyResolver AssemblyResolver { get; set; }
 
 		public const string BINDABLE_BASE = "BindableBase";
+		public const string OBSERVABLE_COLLECTION = "ObservableCollection`1";
 		public const string CONNECT = "ConnectChild";
 
 		MethodReference connectMethod;
 		TypeDefinition bindableBaseType;
+		TypeDefinition observableCollectionType;
 		HashSet<TypeDefinition> bindableTypes;
 
 		public void Execute ()
 		{
 			var bindableBaseTypeFinder = new TypeFinder (ModuleDefinition, AssemblyResolver, BINDABLE_BASE);
 			bindableBaseType = bindableBaseTypeFinder.Execute ();
+
+			var observableCollectionTypeFinder = new TypeFinder (ModuleDefinition, AssemblyResolver, OBSERVABLE_COLLECTION);
+			observableCollectionType = observableCollectionTypeFinder.Execute ();
 
 			var exceptionFinder = new ExceptionFinder (ModuleDefinition, AssemblyResolver);
 			exceptionFinder.Execute ();
@@ -91,7 +96,15 @@ namespace Weavers
 			bindableTypes = new HashSet<TypeDefinition> (
 				ModuleDefinition.GetTypes ().Where (x => x.IsClass && IsBindableBaseType (x)));
 
-			// Process BindableBase types to inject the ConnectChild () function
+			// Get a list of all the classes deriving from ObservableCollection
+			var observableTypes = new HashSet<TypeDefinition> (
+				                      ModuleDefinition.GetTypes ().Where (x => x.IsClass && IsObservableCollectionType (x)));
+
+			foreach (var type in observableTypes) {
+				bindableTypes.Add (type);
+			}
+
+			// Process BindableBase and ObservableCollection types to inject the ConnectChild () function
 			foreach (var type in bindableTypes) {
 				ProcessType (type);
 			}
@@ -110,10 +123,24 @@ namespace Weavers
 			}
 		}
 
+		bool IsObservableCollectionType (TypeDefinition type)
+		{
+			if (type == observableCollectionType) {
+				return true;
+			} else if (type.BaseType == observableCollectionType) {
+				return true;
+			} else if (type.BaseType != null) {
+				return IsObservableCollectionType (type.BaseType.Resolve ());
+			} else {
+				return false;
+			}
+		}
+
 		void ProcessType (TypeDefinition type)
 		{
 			LogInfo ("\t" + type.FullName);
 			foreach (var property in type.Properties) {
+
 				if (!bindableTypes.Contains (property.PropertyType.Resolve ()) &&
 				    !property.PropertyType.Name.StartsWith ("ObservableCollection")) {
 					continue;
