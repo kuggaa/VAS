@@ -276,7 +276,7 @@ namespace VAS.Services.Controller
 			TModel template = evt.Object;
 			bool force = evt.Force;
 
-			if (template == null) {
+			if (template == null || !template.IsChanged) {
 				return;
 			}
 
@@ -353,7 +353,6 @@ namespace VAS.Services.Controller
 
 		void HandleTemplateChanged (object sender, PropertyChangedEventArgs e)
 		{
-			// FIXME: Objects do not emit yet PropertyChanged for all its children.
 			ViewModel.SaveSensitive = true;
 		}
 
