@@ -145,7 +145,7 @@ namespace VAS
 
 			App.Current.ViewLocator = new ViewLocator ();
 			App.Current.ControllerLocator = new ControllerLocator ();
-
+			App.Current.StateController = new StateController ();
 			App.Current.DependencyRegistry = new Registry ("App Registry");
 		}
 
