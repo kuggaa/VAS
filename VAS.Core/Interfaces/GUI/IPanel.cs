@@ -24,7 +24,11 @@ namespace VAS.Core.Interfaces.GUI
 	{
 		event BackEventHandle BackEvent;
 
-		string PanelName { get; }
+		/// <summary>
+		/// Gets the title of the panel.
+		/// </summary>
+		/// <value>The title.</value>
+		string Title { get; }
 
 		/// <summary>
 		/// Called when the IPanel is loaded and going to be presented on screen.

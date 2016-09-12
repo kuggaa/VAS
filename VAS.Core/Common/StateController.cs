@@ -68,7 +68,7 @@ namespace VAS.Core
 				if (lastState != null) {
 					bool postTransition = await lastState.PostTransition ();
 					if (!postTransition) {
-						Log.Debug ("Moving failed because panel " + lastState.Panel.PanelName + " cannot move.");
+						Log.Debug ("Moving failed because panel " + lastState.Name + " cannot move.");
 						return false;
 					}
 				}
@@ -82,7 +82,7 @@ namespace VAS.Core
 				if (ok) {
 					await PushNavigationState (transition, state);
 				} else {
-					Log.Debug ("Moving failed because panel " + state.Panel.PanelName + " cannot move.");
+					Log.Debug ("Moving failed because panel " + state.Name + " cannot move.");
 				}
 				return ok;
 			} catch (Exception ex) {
@@ -112,7 +112,7 @@ namespace VAS.Core
 				if (ok) {
 					await PushModalState (transition, state, current);
 				} else {
-					Log.Debug ("Moving failed because panel " + state.Panel.PanelName + " cannot move.");
+					Log.Debug ("Moving failed because panel " + state.Name + " cannot move.");
 				}
 				return ok;
 			} catch (Exception ex) {
@@ -136,7 +136,7 @@ namespace VAS.Core
 				bool isModal;
 				IScreenState current = LastState (out isModal);
 				if (current == null || !(await current.PostTransition ())) {
-					Log.Debug ("Moving failed because panel " + current.Panel.PanelName + " cannot move.");
+					Log.Debug ("Moving failed because panel " + current.Name + " cannot move.");
 					return false;
 				}
 
