@@ -17,11 +17,11 @@
 //
 using System.Threading;
 using ICSharpCode.SharpZipLib;
+using Moq;
 using NUnit.Framework;
-using VAS;
-using VAS.Core.Common;
+using VAS.Core;
 using VAS.Core.Interfaces;
-using VAS.Core.MVVMC;
+using VAS.Core.Interfaces.GUI;
 using VAS.DB;
 
 namespace VAS.Tests
@@ -35,13 +35,16 @@ namespace VAS.Tests
 			// Initialize VAS.Core by using a type, this will call the module initialization
 			VFS.SetCurrent (new FileSystem ());
 			App.Current = new AppDummy ();
+			App.InitDependencies ();
 			App.Current.Config = new ConfigDummy ();
-			App.Current.Keyboard = new Keyboard ();
 			SynchronizationContext.SetSynchronizationContext (new MockSynchronizationContext ());
-			App.Current.EventsBroker = new VAS.Core.Events.EventsBroker ();
-			App.Current.DependencyRegistry = new Registry ("Dependencies");
 			App.Current.DependencyRegistry.Register<IStorageManager, CouchbaseManager> (1);
-			App.Current.ControllerLocator = new ControllerLocator ();
+			App.Current.Dialogs = new Mock<IDialogs> ().Object;
+			var navigation = new Mock<INavigation> ();
+			navigation.Setup (x => x.LoadNavigationPanel (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
+			navigation.Setup (x => x.LoadModalPanel (It.IsAny<IPanel> (), It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
+			navigation.Setup (x => x.RemoveModalWindow (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
+			App.Current.Navigation = navigation.Object;
 		}
 	}
 

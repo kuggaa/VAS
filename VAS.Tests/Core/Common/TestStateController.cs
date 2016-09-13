@@ -109,10 +109,6 @@ namespace VAS.Tests.Core.Common
 		public async void TestMoveTo ()
 		{
 			// Arrange
-			var mockGUIToolKit = new Mock<INavigation> ();
-			mockGUIToolKit.Setup (x => x.LoadNavigationPanel (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			App.Current.Navigation = mockGUIToolKit.Object;
-
 			sc.Register ("newTransition", () => GetScreenStateDummy ("newTransition"));
 
 			// Action
@@ -127,9 +123,6 @@ namespace VAS.Tests.Core.Common
 		public async void TestMoveToModal ()
 		{
 			// Arrange
-			var mockGUIToolKit = new Mock<INavigation> ();
-			mockGUIToolKit.Setup (x => x.LoadModalPanel (It.IsAny<IPanel> (), It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			App.Current.Navigation = mockGUIToolKit.Object;
 			sc.Register ("home", () => GetScreenStateDummy ("home"));
 			sc.Register ("newModalTransition", () => GetScreenStateDummy ("newTransition"));
 			await sc.SetHomeTransition ("home", null);
@@ -146,11 +139,6 @@ namespace VAS.Tests.Core.Common
 		{
 			bool moveTransition;
 			// Arrange
-			var mockGUIToolKit = new Mock<INavigation> ();
-			mockGUIToolKit.Setup (x => x.LoadNavigationPanel (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			mockGUIToolKit.Setup (x => x.LoadModalPanel (It.IsAny<IPanel> (), It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			mockGUIToolKit.Setup (x => x.RemoveModalWindow (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			App.Current.Navigation = mockGUIToolKit.Object;
 			sc.Register ("newTransition", () => GetScreenStateDummy ("newTransition"));
 			sc.Register ("newModalTransition", () => GetScreenStateDummy ("newModalTransition"));
 			moveTransition = await sc.MoveTo ("newTransition", null);
@@ -171,11 +159,6 @@ namespace VAS.Tests.Core.Common
 		{
 			bool moveTransition;
 			// Arrange
-			var mockGUIToolKit = new Mock<INavigation> ();
-			mockGUIToolKit.Setup (x => x.LoadNavigationPanel (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			mockGUIToolKit.Setup (x => x.LoadModalPanel (It.IsAny<IPanel> (), It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			mockGUIToolKit.Setup (x => x.RemoveModalWindow (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			App.Current.Navigation = mockGUIToolKit.Object;
 			sc.Register ("Transition1", () => GetScreenStateDummy ("Transition1"));
 			sc.Register ("Transition2", () => GetScreenStateDummy ("Transition2"));
 			sc.Register ("newModalTransition", () => GetScreenStateDummy ("newModalTransition"));
@@ -198,11 +181,6 @@ namespace VAS.Tests.Core.Common
 		{
 			bool moveTransition;
 			// Arrange
-			var mockGUIToolKit = new Mock<INavigation> ();
-			mockGUIToolKit.Setup (x => x.LoadNavigationPanel (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			mockGUIToolKit.Setup (x => x.LoadModalPanel (It.IsAny<IPanel> (), It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			mockGUIToolKit.Setup (x => x.RemoveModalWindow (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			App.Current.Navigation = mockGUIToolKit.Object;
 			sc.Register ("Home", () => GetScreenStateDummy ("Home"));
 			sc.Register ("Transition1", () => GetScreenStateDummy ("Transition1"));
 			sc.Register ("Transition2", () => GetScreenStateDummy ("Transition2"));
