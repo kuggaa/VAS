@@ -169,5 +169,15 @@ namespace VAS.Core.Common
 				);
 			}
 		}
+
+		/// <summary>
+		/// Publishes a new event with sender set.
+		/// </summary>
+		/// <param name="sourceObject">Source object. This is the Sender.</param>
+		/// <typeparam name="T">The Event type.</typeparam>
+		public static void PublishNewEvent<T> (this object sourceObject) where T : Event, new()
+		{
+			App.Current.EventsBroker.Publish<T> (new T { Sender = sourceObject });
+		}
 	}
 }
