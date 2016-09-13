@@ -159,7 +159,12 @@ namespace VAS.Core.Common
 				if (destProperty == null) {
 					return;
 				}
-				object srcConvertedVal = Convert.ChangeType (srcValue, destProperty.PropertyType);
+				object srcConvertedVal;
+				if (srcValue is DateTime && destProperty.PropertyType.IsAssignableFrom (typeof(long))) {
+					srcConvertedVal = ((DateTime)srcValue).ToUnixTime ();
+				} else {
+					srcConvertedVal = Convert.ChangeType (srcValue, destProperty.PropertyType);
+				}
 				if (srcConvertedVal == null) {
 					return;
 				}
@@ -178,6 +183,16 @@ namespace VAS.Core.Common
 		public static void PublishNewEvent<T> (this object sourceObject) where T : Event, new()
 		{
 			App.Current.EventsBroker.Publish<T> (new T { Sender = sourceObject });
+                }
+                
+		/// Convert datime to unix time.
+		/// </summary>
+		/// <returns>The unix time.</returns>
+		/// <param name="date">Date.</param>
+		public static long ToUnixTime (this DateTime date)
+		{
+			var epoch = new DateTime (1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+			return Convert.ToInt64 ((date.ToUniversalTime () - epoch).TotalSeconds);
 		}
 	}
 }
