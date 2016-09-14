@@ -237,7 +237,7 @@ namespace VAS.Core
 		public bool UnRegister (string transition)
 		{
 			// Delete all existing instances
-			navigationStateStack.FirstOrDefault (x => x.Name == transition)?.ScreenState.Panel.Dispose ();
+			navigationStateStack.FirstOrDefault (x => x.Name == transition)?.ScreenState.Dispose ();
 
 			// Remove from transitions
 			bool ok = destination.Remove (transition);
@@ -257,7 +257,7 @@ namespace VAS.Core
 		public async Task EmptyStateStack ()
 		{
 			await PopAllModalStates ();
-			navigationStateStack.ForEach (x => x.ScreenState.Panel.Dispose ());
+			navigationStateStack.ForEach (x => x.ScreenState.Dispose ());
 			navigationStateStack.Clear ();
 			overwrittenTransitions.Clear ();
 		}
@@ -271,7 +271,7 @@ namespace VAS.Core
 
 		Task<bool> PopNavigationState ()
 		{
-			navigationStateStack [navigationStateStack.Count - 1].ScreenState.Panel.Dispose ();
+			navigationStateStack [navigationStateStack.Count - 1].ScreenState.Dispose ();
 			navigationStateStack.RemoveAt (navigationStateStack.Count - 1);
 			NavigationState lastState = LastNavigationState ();
 			if (lastState != null) {
@@ -288,7 +288,7 @@ namespace VAS.Core
 				return AsyncHelpers.Return (false);
 			}
 			for (int i = navigationStateStack.Count - 1; i > index; i--) {
-				navigationStateStack [i].ScreenState.Panel.Dispose ();
+				navigationStateStack [i].ScreenState.Dispose ();
 				navigationStateStack.RemoveAt (i);
 			}
 			App.Current.EventsBroker.Publish (new NavigationEvent { Name = state.Name });
@@ -304,7 +304,7 @@ namespace VAS.Core
 
 		Task PopModalState (NavigationState current)
 		{
-			modalStateStack [modalStateStack.Count - 1].ScreenState.Panel.Dispose ();
+			modalStateStack [modalStateStack.Count - 1].ScreenState.Dispose ();
 			modalStateStack.RemoveAt (modalStateStack.Count - 1);
 			App.Current.EventsBroker.Publish (new NavigationEvent { Name = Current });
 			return App.Current.Navigation.RemoveModalWindow (current.ScreenState.Panel);

@@ -16,6 +16,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VAS.Core.Hotkeys;
@@ -26,7 +27,7 @@ namespace VAS.Core.Interfaces.GUI
 	/// <summary>
 	/// Interface for screen states. An IScreenState defines a location where the user can navigate too.
 	/// </summary>
-	public interface IScreenState
+	public interface IScreenState : IDisposable
 	{
 		/// <summary>
 		/// The name of the location. This name should be used when registering Views and Controllers to a given state.

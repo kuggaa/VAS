@@ -45,6 +45,22 @@ namespace VAS.Services.Controller
 		ITemplateProvider<TModel> provider;
 		bool started;
 
+
+		public void Dispose ()
+		{
+			Dispose (true);
+			GC.SuppressFinalize (this);
+		}
+
+		~TemplatesController ()
+		{
+			Dispose (false);
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+		}
+
 		public TemplatesManagerViewModel<TModel, TViewModel> ViewModel {
 			get {
 				return viewModel;

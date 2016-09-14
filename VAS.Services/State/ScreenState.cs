@@ -47,6 +47,25 @@ namespace VAS.Services.State
 			}
 		}
 
+		public void Dispose ()
+		{
+			Dispose (true);
+			GC.SuppressFinalize (this);
+		}
+
+		~ScreenState ()
+		{
+			Dispose (false);
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (disposing) {
+				Controllers?.ForEach ((c) => c.Dispose ());
+				Panel?.Dispose ();
+			}
+		}
+
 		public abstract string Name {
 			get;
 		}

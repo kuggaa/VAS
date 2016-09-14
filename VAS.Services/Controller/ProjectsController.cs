@@ -39,6 +39,21 @@ namespace VAS.Services.Controller
 		bool started;
 		ProjectsManagerVM<TModel, TViewModel> viewModel;
 
+		public void Dispose ()
+		{
+			Dispose (true);
+			GC.SuppressFinalize (this);
+		}
+
+		~ProjectsController ()
+		{
+			Dispose (false);
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+		}
+
 		ProjectsManagerVM<TModel, TViewModel> ViewModel {
 			get {
 				return viewModel;
