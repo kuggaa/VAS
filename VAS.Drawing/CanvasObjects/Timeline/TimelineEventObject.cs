@@ -57,9 +57,12 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 		}
 
-		Area Area {
+		protected Area Area {
 			get {
-				double ls = SelectionLeft.Width / 2;
+				double ls = 0;
+				if (SelectionLeft != null) {
+					ls = SelectionLeft.Width / 2;
+				}
 				return new Area (new Point (StartX - ls, OffsetY),
 					(StopX - StartX) + 2 * ls, Height);
 			}
