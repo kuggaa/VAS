@@ -67,7 +67,7 @@ namespace VAS.Services.Controller
 
 		#region IController implementation
 
-		public void SetViewModel (IViewModel viewModel)
+		public virtual void SetViewModel (IViewModel viewModel)
 		{
 			ViewModel = (ProjectsManagerVM<TModel, TViewModel>)viewModel;
 		}

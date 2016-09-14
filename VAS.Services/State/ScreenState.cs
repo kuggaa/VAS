@@ -100,7 +100,7 @@ namespace VAS.Services.State
 			return AsyncHelpers.Return (true);
 		}
 
-		public Task<bool> PreTransition (dynamic data)
+		public virtual Task<bool> PreTransition (dynamic data)
 		{
 			CreateViewModel (data);
 			Panel.SetViewModel (ViewModel);
