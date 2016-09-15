@@ -26,6 +26,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlaylistVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlaylistElementVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlaylistCollectionVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TimelineEventVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypeVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypeCollectionVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />

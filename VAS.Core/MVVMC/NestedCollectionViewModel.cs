@@ -16,30 +16,13 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
+using VAS.Core.Interfaces.MVVMC;
 
-namespace VAS.Core.Interfaces.MVVMC
+namespace VAS.Core.MVVMC
 {
-	public interface IViewModel: INotifyPropertyChanged
+	public class NestedCollectionViewModel<TModel, TViewModel, VMChilds> : CollectionViewModel<TModel, TViewModel>
+		where TViewModel: INestedViewModel<TModel, VMChilds>, new()
 	{
-	}
-
-	public interface IViewModel<T> : IViewModel
-	{
-		T Model { set; get; }
-	}
-
-	public interface INestedViewModel
-	{
-		INotifyCollectionChanged GetNotifyCollection ();
-	}
-
-	public interface INestedViewModel<T,VMChilds> : INestedViewModel, IViewModel <T>, IEnumerable <VMChilds>
-	{
-		ObservableCollection<VMChilds> ViewModels { set; get; }
 	}
 }
 

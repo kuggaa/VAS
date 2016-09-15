@@ -16,6 +16,8 @@
 //		Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -33,20 +35,22 @@ namespace VAS.UI.Common
 	/// </summary>
 	public class TreeViewBase<TCollectionViewModel, TModel, TViewModel> : Gtk.TreeView, IView<TCollectionViewModel>
 		where TCollectionViewModel : CollectionViewModel<TModel, TViewModel>
-		where TViewModel: IViewModel<TModel>, new()
+		where TViewModel : IViewModel<TModel>, new()
 	{
-		protected ListStore store;
+		protected TreeStore store;
 		TCollectionViewModel viewModel;
-		protected Dictionary<TViewModel, TreeIter> dictionaryStore;
+		protected Dictionary<IViewModel, TreeIter> dictionaryStore;
+		protected Dictionary<INotifyCollectionChanged, TreeIter> dictionaryNestedParent;
 
-		public TreeViewBase () : this (new Gtk.ListStore (typeof(TViewModel)))
+		public TreeViewBase () : this (new Gtk.TreeStore (typeof(TViewModel)))
 		{
 		}
 
-		public TreeViewBase (Gtk.ListStore listStore)
+		public TreeViewBase (Gtk.TreeStore listStore)
 		{
 			Model = store = listStore;
-			dictionaryStore = new Dictionary<TViewModel, TreeIter> ();
+			dictionaryStore = new Dictionary<IViewModel, TreeIter> ();
+			dictionaryNestedParent = new Dictionary<INotifyCollectionChanged, TreeIter> ();
 		}
 
 		#region IView implementation
@@ -66,7 +70,7 @@ namespace VAS.UI.Common
 				}
 				viewModel = value;
 				foreach (TViewModel item in viewModel.ViewModels) {
-					AddSubViewModel (item);
+					AddSubViewModel (item, TreeIter.Zero);
 				}
 				viewModel.ViewModels.CollectionChanged += ViewModelCollectionChanged;
 			}
@@ -76,15 +80,20 @@ namespace VAS.UI.Common
 
 		void ViewModelCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
+			TreeIter parent = TreeIter.Zero;
+			INotifyCollectionChanged sen = (sender as INotifyCollectionChanged);
+			if (dictionaryNestedParent.ContainsKey (sen)) {
+				parent = dictionaryNestedParent [sen];
+			}
 			switch (e.Action) {
 			case NotifyCollectionChangedAction.Add:
-				foreach (TViewModel item in e.NewItems) {
-					AddSubViewModel (item);
+				foreach (IViewModel item in e.NewItems) {
+					AddSubViewModel (item, parent);
 				}
 				break;
 
 			case NotifyCollectionChangedAction.Remove:
-				foreach (TViewModel item in e.OldItems) {
+				foreach (IViewModel item in e.OldItems) {
 					RemoveSubViewModel (item);
 				}
 				break;
@@ -103,11 +112,27 @@ namespace VAS.UI.Common
 			}
 		}
 
-		protected virtual void AddSubViewModel (TViewModel subViewModel)
+		protected virtual void AddSubViewModel (IViewModel subViewModel, TreeIter parent)
 		{
+			TreeIter iter;
 			subViewModel.PropertyChanged += PropertyChangedItem;
-			TreeIter iter = store.AppendValues (subViewModel);
-			dictionaryStore.Add (subViewModel, iter);
+			if (!parent.Equals (TreeIter.Zero)) {
+				iter = store.AppendValues (parent, subViewModel);
+				dictionaryStore.Add (subViewModel, iter);
+			} else {
+				iter = store.AppendValues (subViewModel);
+				dictionaryStore.Add (subViewModel, iter);
+			}
+			if (subViewModel is IEnumerable) {
+				foreach (var v in (subViewModel as IEnumerable)) {
+					AddSubViewModel (v as IViewModel, iter);
+				}
+				INotifyCollectionChanged notif = (subViewModel as INestedViewModel).GetNotifyCollection ();
+				if (!dictionaryNestedParent.ContainsKey (notif)) {
+					dictionaryNestedParent.Add (notif, iter);
+					notif.CollectionChanged += ViewModelCollectionChanged;
+				}
+			}
 		}
 
 		void ClearSubViewModels ()
@@ -116,35 +141,58 @@ namespace VAS.UI.Common
 			viewModel.ViewModels.CollectionChanged -= ViewModelCollectionChanged;
 			store.Clear ();
 			dictionaryStore.Clear ();
+			dictionaryNestedParent.Clear ();
 		}
 
 		void ClearSubViewModelListeners (IEnumerable<TViewModel> collection)
 		{
-			foreach (TViewModel item in collection) {
+			foreach (IViewModel item in collection) {
 				RemoveSubViewModelListener (item);
+				if (item is INestedViewModel) {
+					ClearAllNestedViewModels (item);
+				}
 			}
 		}
 
-		protected virtual void RemoveSubViewModel (TViewModel subViewModel)
+		void ClearAllNestedViewModels (IViewModel subViewModel)
 		{
-			RemoveSubViewModelListener (subViewModel);
+			if (subViewModel is IEnumerable) {
+				foreach (var v in (subViewModel as IEnumerable)) {
+					ClearAllNestedViewModels (v as IViewModel);
+				}
+				(subViewModel as INestedViewModel).GetNotifyCollection ().CollectionChanged -= ViewModelCollectionChanged;
+				dictionaryNestedParent.Remove ((subViewModel as INestedViewModel).GetNotifyCollection ());
+			}
+			subViewModel.PropertyChanged -= PropertyChangedItem;
 			TreeIter iter = dictionaryStore [subViewModel];
 			if (store.Remove (ref iter)) {
 				dictionaryStore.Remove (subViewModel);
 			}
 		}
 
-		void RemoveSubViewModelListener (TViewModel vm)
+		protected virtual void RemoveSubViewModel (IViewModel subViewModel)
+		{
+			RemoveSubViewModelListener (subViewModel);
+			TreeIter iter = dictionaryStore [subViewModel];
+			if (store.Remove (ref iter)) {
+				dictionaryStore.Remove (subViewModel);
+			}
+			if (subViewModel is INestedViewModel) {
+				ClearAllNestedViewModels (subViewModel);
+			}
+		}
+
+		void RemoveSubViewModelListener (IViewModel vm)
 		{
 			vm.PropertyChanged -= PropertyChangedItem;
 		}
 
 		void PropertyChangedItem (object sender, PropertyChangedEventArgs e)
 		{
-			if (!(sender is TViewModel)) {
+			if (!(sender is IViewModel)) {
 				return;
 			}
-			TreeIter iter = dictionaryStore [(TViewModel)sender];
+			TreeIter iter = dictionaryStore [(IViewModel)sender];
 			Model.EmitRowChanged (store.GetPath (iter), iter);
 		}
 	}

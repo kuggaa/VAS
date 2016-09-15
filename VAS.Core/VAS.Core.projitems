@@ -157,6 +157,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Addins\ProjectExporterBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Events\MobileEvents.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\RangeObservableCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\NestedViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\NestedCollectionViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
