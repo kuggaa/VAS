@@ -119,6 +119,12 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the relative time.
+		/// </summary>
+		/// <value>The relative time.</value>
+		public Time RelativeTime { get; set; }
+
 		public double SecondsPerPixel {
 			set {
 				secondsPerPixel = value;

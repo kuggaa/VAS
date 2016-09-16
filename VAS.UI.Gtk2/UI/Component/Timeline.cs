@@ -47,10 +47,11 @@ namespace VAS.UI.Component
 		protected TimelineLabels labels;
 		protected double secondsPerPixel;
 		protected uint timeoutID;
-		protected Time currentTime, nextCurrentTime;
+		protected Time currentTime, nextCurrentTime, relativeTime;
 		protected PlaysMenu menu;
 		protected Project project;
 		protected IPlayerController player;
+		protected bool isTimeLineEvent;
 
 		public Timeline ()
 		{
@@ -60,11 +61,11 @@ namespace VAS.UI.Component
 
 		void Initialization ()
 		{
-			this.timerule = new Timerule (new WidgetWrapper (timerulearea));
+			timerule = new Timerule (new WidgetWrapper (timerulearea));
 			timerule.CenterPlayheadClicked += HandleFocusClicked;
 			timerule.SeekEvent += HandleTimeruleSeek;
-			this.timeline = createPlaysTimeline ();
-			this.labels = createTimelineLabels ();
+			timeline = createPlaysTimeline ();
+			labels = createTimelineLabels ();
 
 			focusbuttonimage.Pixbuf = Helpers.Misc.LoadIcon ("longomatch-dash-center-view", Gtk.IconSize.Menu, 0);
 
@@ -95,6 +96,7 @@ namespace VAS.UI.Component
 				zoomhbox.HeightRequest = args.Allocation.Height + spacing;
 			};
 			App.Current.EventsBroker.Subscribe<PlayerTickEvent> (HandlePlayerTick);
+			App.Current.EventsBroker.Subscribe<LoadEventEvent> (HandleLoadPlayEvent);
 		}
 
 		protected override void OnDestroyed ()
@@ -105,6 +107,7 @@ namespace VAS.UI.Component
 			}
 			// Unsubscribe events
 			App.Current.EventsBroker.Unsubscribe<PlayerTickEvent> (HandlePlayerTick);
+			App.Current.EventsBroker.Unsubscribe<LoadEventEvent> (HandleLoadPlayEvent);
 			Player = null;
 
 			base.OnDestroyed ();
@@ -173,6 +176,10 @@ namespace VAS.UI.Component
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the focus scale.
+		/// </summary>
+		/// <value>The focus scale.</value>
 		protected HScale FocusScale {
 			get {
 				return focusscale;
@@ -182,6 +189,10 @@ namespace VAS.UI.Component
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the left box.
+		/// </summary>
+		/// <value>The left box.</value>
 		protected VBox LeftBox {
 			get {
 				return leftbox;
@@ -191,6 +202,10 @@ namespace VAS.UI.Component
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the timerule area.
+		/// </summary>
+		/// <value>The timerule area.</value>
 		protected virtual DrawingArea TimeruleArea {
 			get {
 				return timerulearea;
@@ -246,11 +261,19 @@ namespace VAS.UI.Component
 			}
 		}
 
+		/// <summary>
+		/// Creates a PlaysTimeline.
+		/// </summary>
+		/// <returns>The playsTimeline.</returns>
 		protected virtual PlaysTimeline createPlaysTimeline ()
 		{
 			return new PlaysTimeline (new WidgetWrapper (timelinearea), Player);
 		}
 
+		/// <summary>
+		/// Creates the timeline labels.
+		/// </summary>
+		/// <returns>The timeline labels.</returns>
 		protected virtual TimelineLabels createTimelineLabels ()
 		{
 			return new TimelineLabels (new WidgetWrapper (labelsarea));
@@ -330,10 +353,21 @@ namespace VAS.UI.Component
 		{
 			if (nextCurrentTime != currentTime) {
 				currentTime = nextCurrentTime;
-				timeline.CurrentTime = currentTime;
-				timerule.CurrentTime = currentTime;
+				if (isTimeLineEvent) {
+					timeline.CurrentTime = currentTime;
+					timerule.CurrentTime = currentTime;
+				} else {
+					timeline.CurrentTime = relativeTime;
+					timerule.CurrentTime = relativeTime;
+				}
+
 			}
 			return true;
+		}
+
+		protected virtual void HandleLoadPlayEvent (LoadEventEvent e)
+		{
+			isTimeLineEvent = e.TimelineEvent != null && e.TimelineEvent.Selected;
 		}
 
 		protected void HandleScrollEvent (object sender, System.EventArgs args)
@@ -423,9 +457,8 @@ namespace VAS.UI.Component
 
 		void HandlePlayerTick (PlayerTickEvent e)
 		{
-			//CurrentTime = e.Time;
-			// TODO: Hay que vigilar, por que los events saldrían tb al principio
-			CurrentTime = e.RelativeTime;
+			CurrentTime = e.Time;
+			relativeTime = e.RelativeTime;
 		}
 
 		/// <summary>

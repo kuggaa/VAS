@@ -365,6 +365,9 @@ namespace VAS.Drawing.Widgets
 				CanvasObject d = selections.Last ().Drawable as CanvasObject;
 				if (d is TimelineEventObjectBase) {
 					ev = (d as TimelineEventObjectBase).Event;
+					// If event is in selections list, must be selected but
+					// in the first time it is incorrectly marked as false
+					ev.Selected = true;
 					loadedEvent = ev;
 				}
 			}
