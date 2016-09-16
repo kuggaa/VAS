@@ -1057,7 +1057,7 @@ namespace VAS.Services
 			skipApplyCamerasConfig = false;
 
 			ShowMessageInViewPorts (null, false);
-			if (fileSet == null || fileSet.Count == 0) {
+			if (fileSet == null || !fileSet.Any ()) {
 				ShowMessageInViewPorts (Catalog.GetString ("No video available"), true);
 				FileSet = fileSet;
 				return;

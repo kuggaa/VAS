@@ -61,7 +61,7 @@ namespace VAS.Core.Interfaces.GUI
 		Task<bool> PreTransition (dynamic data);
 
 		/// <summary>
-		/// Performs steps before wuiting the transition, like de-initializating Controllers or checking ViewModel states.
+		/// Performs steps before waiting the transition, like de-initializating Controllers or checking ViewModel states.
 		/// </summary>
 		/// <returns><c>True</c> if the transition was successful, <c>False</c> otherwise.</returns>
 		Task<bool> PostTransition ();

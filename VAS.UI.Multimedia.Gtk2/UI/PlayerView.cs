@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Gdk;
 using Gtk;
 using Pango;
@@ -199,7 +200,7 @@ namespace VAS.UI
 
 		void HandleMediaFileSetLoadedEvent (MediaFileSet fileset, ObservableCollection<CameraConfig> camerasConfig = null)
 		{
-			if (fileset == null || fileset.Count == 0) {
+			if (fileset == null || !fileset.Any ()) {
 				controlsbox.Sensitive = false;
 			} else {
 				controlsbox.Sensitive = true;
