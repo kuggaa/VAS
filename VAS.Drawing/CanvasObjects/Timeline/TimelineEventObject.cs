@@ -57,7 +57,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 		}
 
-		protected Area Area {
+		public override Area Area {
 			get {
 				double ls = 0;
 				if (SelectionLeft != null) {
