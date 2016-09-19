@@ -269,16 +269,20 @@ namespace VAS.Core
 			return App.Current.Navigation.LoadNavigationPanel (state.Panel);
 		}
 
-		Task<bool> PopNavigationState ()
+		async Task<bool> PopNavigationState ()
 		{
-			navigationStateStack [navigationStateStack.Count - 1].ScreenState.Dispose ();
+			bool ret = true;
+			IScreenState screenToPop = navigationStateStack [navigationStateStack.Count - 1].ScreenState;
 			navigationStateStack.RemoveAt (navigationStateStack.Count - 1);
 			NavigationState lastState = LastNavigationState ();
 			if (lastState != null) {
 				App.Current.EventsBroker.Publish (new NavigationEvent { Name = lastState.Name });
-				return App.Current.Navigation.LoadNavigationPanel (lastState.ScreenState.Panel);
+				ret = await App.Current.Navigation.LoadNavigationPanel (lastState.ScreenState.Panel);
 			}
-			return AsyncHelpers.Return (true);
+			if (ret) {
+				screenToPop.Dispose ();
+			}
+			return ret;
 		}
 
 		Task<bool> PopToNavigationState (NavigationState state)
