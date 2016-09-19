@@ -122,7 +122,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			set;
 		}
 
-		Area Area {
+		public virtual Area Area {
 			get {
 				double ls = StyleConf.TimelineLineSize;
 				return new Area (new Point (StartX - ls, OffsetY),
@@ -130,7 +130,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 		}
 
-		public Selection GetSelection (Point point, double precision, bool inMotion = false)
+		public virtual Selection GetSelection (Point point, double precision, bool inMotion = false)
 		{
 			if (SelectionMode == NodeSelectionMode.Borders || SelectionMode == NodeSelectionMode.All) {
 				double accuracy;
