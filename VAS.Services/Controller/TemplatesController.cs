@@ -45,6 +45,22 @@ namespace VAS.Services.Controller
 		ITemplateProvider<TModel> provider;
 		bool started;
 
+
+		public void Dispose ()
+		{
+			Dispose (true);
+			GC.SuppressFinalize (this);
+		}
+
+		~TemplatesController ()
+		{
+			Dispose (false);
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+		}
+
 		public TemplatesManagerViewModel<TModel, TViewModel> ViewModel {
 			get {
 				return viewModel;
@@ -276,7 +292,7 @@ namespace VAS.Services.Controller
 			TModel template = evt.Object;
 			bool force = evt.Force;
 
-			if (template == null) {
+			if (template == null || !template.IsChanged) {
 				return;
 			}
 
@@ -353,7 +369,6 @@ namespace VAS.Services.Controller
 
 		void HandleTemplateChanged (object sender, PropertyChangedEventArgs e)
 		{
-			// FIXME: Objects do not emit yet PropertyChanged for all its children.
 			ViewModel.SaveSensitive = true;
 		}
 

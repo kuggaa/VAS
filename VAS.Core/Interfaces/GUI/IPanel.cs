@@ -15,16 +15,17 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using VAS.Core.Handlers;
 using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.Interfaces.GUI
 {
-	public interface IPanel: IView, IKeyContext
+	public interface IPanel : IView, IKeyContext
 	{
-		event BackEventHandle BackEvent;
-
-		string PanelName { get; }
+		/// <summary>
+		/// Gets the title of the panel.
+		/// </summary>
+		/// <value>The title.</value>
+		string Title { get; }
 
 		/// <summary>
 		/// Called when the IPanel is loaded and going to be presented on screen.
@@ -35,5 +36,9 @@ namespace VAS.Core.Interfaces.GUI
 		/// Called when the IPanel is presented on the screen and is going to be removed.
 		/// </summary>
 		void OnUnload ();
+	}
+
+	public interface IPanel<TViewModel> : IPanel, IView<TViewModel> where TViewModel : IViewModel
+	{
 	}
 }

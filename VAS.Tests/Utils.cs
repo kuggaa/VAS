@@ -47,8 +47,12 @@ namespace VAS.Tests
 		}
 	}
 
-	public class DummyController: IController
+	public class DummyController : IController
 	{
+		public void Dispose ()
+		{
+		}
+
 		public void Start ()
 		{
 		}

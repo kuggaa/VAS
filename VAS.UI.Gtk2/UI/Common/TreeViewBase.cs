@@ -37,17 +37,21 @@ namespace VAS.UI.Common
 	{
 		protected ListStore store;
 		T viewModel;
-		Dictionary<VM, TreeIter> dictionaryStore;
+		protected Dictionary<VM, TreeIter> dictionaryStore;
 
-		public TreeViewBase ()
+		public TreeViewBase () : this (new Gtk.ListStore (typeof(VM)))
 		{
-			Model = store = new Gtk.ListStore (typeof(VM));		
+		}
+
+		public TreeViewBase (Gtk.ListStore listStore)
+		{
+			Model = store = listStore;
 			dictionaryStore = new Dictionary<VM, TreeIter> ();
 		}
 
 		#region IView implementation
 
-		public void SetViewModel (object ViewModel)
+		public virtual void SetViewModel (object ViewModel)
 		{
 			this.ViewModel = ViewModel as T;
 		}
@@ -99,7 +103,7 @@ namespace VAS.UI.Common
 			}
 		}
 
-		void AddSubViewModel (VM subViewModel)
+		protected virtual void AddSubViewModel (VM subViewModel)
 		{
 			subViewModel.PropertyChanged += PropertyChangedItem;
 			TreeIter iter = store.AppendValues (subViewModel);
@@ -121,7 +125,7 @@ namespace VAS.UI.Common
 			}
 		}
 
-		void RemoveSubViewModel (VM subViewModel)
+		protected virtual void RemoveSubViewModel (VM subViewModel)
 		{
 			RemoveSubViewModelListener (subViewModel);
 			TreeIter iter = dictionaryStore [subViewModel];
@@ -141,7 +145,7 @@ namespace VAS.UI.Common
 				return;
 			}
 			TreeIter iter = dictionaryStore [(VM)sender];
-			Model.EmitRowChanged (Model.GetPath (iter), iter);
+			Model.EmitRowChanged (store.GetPath (iter), iter);
 		}
 	}
 }

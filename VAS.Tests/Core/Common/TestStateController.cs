@@ -15,48 +15,61 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using System.Dynamic;
-using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using VAS.Core;
+using VAS.Core.Events;
 using VAS.Core.Interfaces.GUI;
 
 namespace VAS.Tests.Core.Common
 {
-	[TestFixture ()]
+	[TestFixture]
 	public class TestStateController
 	{
 		StateController sc;
-		Mock<IScreenState> screenStateMock;
+		string lastTransition = null;
 
-		[SetUp ()]
+		[SetUp]
 		public void InitializeStateController ()
 		{
 			sc = new StateController ();
-			screenStateMock = new Mock<IScreenState> ();
+			App.Current.EventsBroker.Subscribe<NavigationEvent> (HandleTransitionEvent);
+			lastTransition = null;
+		}
+
+		[TearDown]
+		public void Deinitializer ()
+		{
+			App.Current.EventsBroker.Unsubscribe<NavigationEvent> (HandleTransitionEvent);
+		}
+
+		void HandleTransitionEvent (NavigationEvent evt)
+		{
+			lastTransition = evt.Name;
+		}
+
+		IScreenState GetScreenStateDummy (string transitionName)
+		{
+			var screenStateMock = new Mock<IScreenState> ();
 			screenStateMock.Setup (x => x.PreTransition (It.IsAny<ExpandoObject> ())).Returns (AsyncHelpers.Return (true));
 			screenStateMock.Setup (x => x.PostTransition ()).Returns (AsyncHelpers.Return (true));
 			screenStateMock.Setup (x => x.Panel).Returns (new Mock<IPanel> ().Object);
-		}
-
-		IScreenState getScreenStateDummy ()
-		{
+			screenStateMock.Setup (x => x.Name).Returns (transitionName);
 			return screenStateMock.Object;
 		}
 
-		[Test ()]
+		[Test]
 		public void TestRegister ()
 		{
-			Assert.DoesNotThrow (() => sc.Register ("newTransition", getScreenStateDummy));
+			Assert.DoesNotThrow (() => sc.Register ("newTransition", () => GetScreenStateDummy ("newTransition")));
 		}
 
-		[Test ()]
+		[Test]
 		public void TestUnRegister ()
 		{
 			// Arrange
-			sc.Register ("newTransition", getScreenStateDummy);
+			sc.Register ("newTransition", () => GetScreenStateDummy ("newTransition"));
 
 			// Action
 			bool obtained = sc.UnRegister ("newTransition");
@@ -65,135 +78,126 @@ namespace VAS.Tests.Core.Common
 			Assert.IsTrue (obtained);
 		}
 
-		[Test ()]
+		[Test]
 		public async void TestUnRegister_CheckDispose ()
 		{
 			// Arrange
 			string transitionName = "newTransition";
-			sc.Register (transitionName, getScreenStateDummy);
-			sc.MoveTo (transitionName, null);
+			sc.Register (transitionName, () => GetScreenStateDummy ("newTransition"));
+			await sc.MoveTo (transitionName, null);
 
 			// Action
-			bool obtained = sc.UnRegister (transitionName);
+			sc.UnRegister (transitionName);
 
 			// Assert
 			bool moveTransition = await sc.MoveBack ();
 			Assert.IsFalse (moveTransition);
 		}
 
-		[Test ()]
+		[Test]
 		public void TestUnRegister_WithOverwrittenTransitions ()
 		{
 			// Arrange
-			sc.Register ("newTransition", getScreenStateDummy);
-			sc.Register ("newTransition", getScreenStateDummy);
+			sc.Register ("newTransition", () => GetScreenStateDummy ("newTransition"));
+			sc.Register ("newTransition", () => GetScreenStateDummy ("newTransition"));
 
 			// Action & assert
 			Assert.DoesNotThrow (() => sc.UnRegister ("newTransition"));
 		}
 
-		[Test ()]
+		[Test]
 		public async void TestMoveTo ()
 		{
 			// Arrange
-			var mockGUIToolKit = new Mock<INavigation> ();
-			mockGUIToolKit.Setup (x => x.LoadNavigationPanel (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			App.Current.Navigation = mockGUIToolKit.Object;
-
-			sc.Register ("newTransition", getScreenStateDummy);
+			sc.Register ("newTransition", () => GetScreenStateDummy ("newTransition"));
 
 			// Action
 			bool moveTransition = await sc.MoveTo ("newTransition", null);
 
 			// Assert
 			Assert.IsTrue (moveTransition);
+			Assert.AreEqual ("newTransition", lastTransition);
 		}
 
-		[Test ()]
+		[Test]
 		public async void TestMoveToModal ()
 		{
 			// Arrange
-			var mockGUIToolKit = new Mock<INavigation> ();
-			mockGUIToolKit.Setup (x => x.LoadModalPanel (It.IsAny<IPanel> (), It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			App.Current.Navigation = mockGUIToolKit.Object;
-			sc.Register ("home", getScreenStateDummy);
-			sc.Register ("newModalTransition", getScreenStateDummy);
+			sc.Register ("home", () => GetScreenStateDummy ("home"));
+			sc.Register ("newModalTransition", () => GetScreenStateDummy ("newTransition"));
 			await sc.SetHomeTransition ("home", null);
 			// Action
 			bool moveTransition = await sc.MoveToModal ("newModalTransition", null);
 
 			// Assert
 			Assert.IsTrue (moveTransition);
+			Assert.AreEqual ("newModalTransition", lastTransition);
 		}
 
-		[Test ()]
+		[Test]
 		public async void TestMoveBack ()
 		{
 			bool moveTransition;
 			// Arrange
-			var mockGUIToolKit = new Mock<INavigation> ();
-			mockGUIToolKit.Setup (x => x.LoadNavigationPanel (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			mockGUIToolKit.Setup (x => x.LoadModalPanel (It.IsAny<IPanel> (), It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			mockGUIToolKit.Setup (x => x.RemoveModalWindow (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			App.Current.Navigation = mockGUIToolKit.Object;
-			sc.Register ("newTransition", getScreenStateDummy);
-			sc.Register ("newModalTransition", getScreenStateDummy);
+			sc.Register ("newTransition", () => GetScreenStateDummy ("newTransition"));
+			sc.Register ("newModalTransition", () => GetScreenStateDummy ("newModalTransition"));
 			moveTransition = await sc.MoveTo ("newTransition", null);
 			Assert.IsTrue (moveTransition);
+			Assert.AreEqual ("newTransition", lastTransition);
 			moveTransition = await sc.MoveToModal ("newModalTransition", null);
 			Assert.IsTrue (moveTransition);
+			Assert.AreEqual ("newModalTransition", lastTransition);
 			moveTransition = await sc.MoveBack ();
 			Assert.IsTrue (moveTransition);
+			Assert.AreEqual ("newTransition", lastTransition);
 			moveTransition = await sc.MoveBack ();
 			Assert.IsFalse (moveTransition);
 		}
 
-		[Test ()]
+		[Test]
 		public async void TestMoveBackTo ()
 		{
 			bool moveTransition;
 			// Arrange
-			var mockGUIToolKit = new Mock<INavigation> ();
-			mockGUIToolKit.Setup (x => x.LoadNavigationPanel (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			mockGUIToolKit.Setup (x => x.LoadModalPanel (It.IsAny<IPanel> (), It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			mockGUIToolKit.Setup (x => x.RemoveModalWindow (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			App.Current.Navigation = mockGUIToolKit.Object;
-			sc.Register ("Transition1", getScreenStateDummy);
-			sc.Register ("Transition2", getScreenStateDummy);
-			sc.Register ("newModalTransition", getScreenStateDummy);
+			sc.Register ("Transition1", () => GetScreenStateDummy ("Transition1"));
+			sc.Register ("Transition2", () => GetScreenStateDummy ("Transition2"));
+			sc.Register ("newModalTransition", () => GetScreenStateDummy ("newModalTransition"));
 			moveTransition = await sc.MoveTo ("Transition1", null);
 			Assert.IsTrue (moveTransition);
+			Assert.AreEqual ("Transition1", lastTransition);
 			moveTransition = await sc.MoveTo ("Transition2", null);
 			Assert.IsTrue (moveTransition);
+			Assert.AreEqual ("Transition2", lastTransition);
 			moveTransition = await sc.MoveToModal ("newModalTransition", null);
 			Assert.IsTrue (moveTransition);
+			Assert.AreEqual ("newModalTransition", lastTransition);
 			moveTransition = await sc.MoveBackTo ("Transition1");
 			Assert.IsTrue (moveTransition);
+			Assert.AreEqual ("Transition1", lastTransition);
 		}
 
-		[Test ()]
+		[Test]
 		public async void TestMoveToHome ()
 		{
 			bool moveTransition;
 			// Arrange
-			var mockGUIToolKit = new Mock<INavigation> ();
-			mockGUIToolKit.Setup (x => x.LoadNavigationPanel (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			mockGUIToolKit.Setup (x => x.LoadModalPanel (It.IsAny<IPanel> (), It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			mockGUIToolKit.Setup (x => x.RemoveModalWindow (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			App.Current.Navigation = mockGUIToolKit.Object;
-			sc.Register ("Home", getScreenStateDummy);
-			sc.Register ("Transition1", getScreenStateDummy);
-			sc.Register ("Transition2", getScreenStateDummy);
-			sc.Register ("newModalTransition", getScreenStateDummy);
+			sc.Register ("Home", () => GetScreenStateDummy ("Home"));
+			sc.Register ("Transition1", () => GetScreenStateDummy ("Transition1"));
+			sc.Register ("Transition2", () => GetScreenStateDummy ("Transition2"));
+			sc.Register ("newModalTransition", () => GetScreenStateDummy ("newModalTransition"));
 			await sc.SetHomeTransition ("Home", null);
 			moveTransition = await sc.MoveTo ("Transition1", null);
 			Assert.IsTrue (moveTransition);
+			Assert.AreEqual ("Transition1", lastTransition);
 			moveTransition = await sc.MoveTo ("Transition2", null);
 			Assert.IsTrue (moveTransition);
+			Assert.AreEqual ("Transition2", lastTransition);
 			moveTransition = await sc.MoveToModal ("newModalTransition", null);
 			Assert.IsTrue (moveTransition);
+			Assert.AreEqual ("newModalTransition", lastTransition);
 			moveTransition = await sc.MoveToHome ();
 			Assert.IsTrue (moveTransition);
+			Assert.AreEqual ("Home", lastTransition);
 		}
 	}
 }

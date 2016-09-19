@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 
 namespace VAS.Core.Events
 {
@@ -58,6 +59,10 @@ namespace VAS.Core.Events
 	public class ChangeNameEvent<T>: CRUDEvent<T>
 	{
 		public string NewName { get; set; }
+	}
+
+	public class OpenEvent<T> : CRUDEvent<T>
+	{
 	}
 }
 

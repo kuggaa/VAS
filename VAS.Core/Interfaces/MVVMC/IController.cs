@@ -24,7 +24,7 @@ namespace VAS.Core.Interfaces.MVVMC
 	/// <summary>
 	/// Interface the for the Controller components in the MVVMC framework.
 	/// </summary>
-	public interface IController
+	public interface IController : IDisposable
 	{
 		/// <summary>
 		/// Starts the Controller subscribing to the required events from the <see cref="EventsBroker"/>.

@@ -126,7 +126,6 @@ namespace VAS
 
 			App.Current.homeDirectory = Path.Combine (home, softwareName);
 			App.Current.configDirectory = App.Current.homeDirectory;
-			App.Current.Keyboard = new Keyboard ();
 
 			// Migrate old config directory the home directory so that OS X users can easilly find
 			// log files and config files without having to access hidden folders
@@ -143,10 +142,17 @@ namespace VAS
 				}
 			}
 
+			InitDependencies ();
+		}
+
+		internal static void InitDependencies ()
+		{
+			App.Current.Keyboard = new Keyboard ();
 			App.Current.ViewLocator = new ViewLocator ();
 			App.Current.ControllerLocator = new ControllerLocator ();
-
+			App.Current.StateController = new StateController ();
 			App.Current.DependencyRegistry = new Registry ("App Registry");
+			App.Current.EventsBroker = new EventsBroker ();
 		}
 
 		// copied from OneplayLongomMatch::CoreServices

@@ -162,6 +162,16 @@ namespace VAS.Services
 					} else {
 						multiPlayer.WindowHandles = value.Select (v => v.WindowHandle).ToList ();
 					}
+				} else {
+					if (multiPlayer == null) {
+						player.WindowHandle = IntPtr.Zero;
+					} else {
+						if (viewPorts != null) {
+							List<object> nullWindowHandles = new List<object> ();
+							viewPorts.ForEach ((vp) => nullWindowHandles.Add (IntPtr.Zero));
+							multiPlayer.WindowHandles = nullWindowHandles;
+						}
+					}
 				}
 				viewPorts = value;
 			}
@@ -1038,12 +1048,20 @@ namespace VAS.Services
 		protected virtual void InternalOpen (MediaFileSet fileSet, bool seek, bool force = false, bool play = false, bool defaultFile = false)
 		{
 			Reset ();
+
 			// This event gives a chance to the view to define camera visibility.
 			// As there might already be a configuration defined (loading an event for example), the view
 			// should adapt if needed.
 			skipApplyCamerasConfig = true;
 			EmitMediaFileSetLoaded (fileSet, camerasConfig);
 			skipApplyCamerasConfig = false;
+
+			ShowMessageInViewPorts (null, false);
+			if (fileSet == null || !fileSet.Any ()) {
+				ShowMessageInViewPorts (Catalog.GetString ("No video available"), true);
+				FileSet = fileSet;
+				return;
+			}
 
 			if (defaultFile) {
 				defaultFileSet = fileSet;
@@ -1459,5 +1477,15 @@ namespace VAS.Services
 		}
 
 		#endregion
+
+		void ShowMessageInViewPorts (string message, bool show)
+		{
+			if (ViewPorts != null) {
+				foreach (var viewPort in ViewPorts) {
+					viewPort.Message = message;
+					viewPort.MessageVisible = show;
+				}
+			}
+		}
 	}
 }

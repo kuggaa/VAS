@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Gdk;
 using Gtk;
 using Pango;
@@ -59,6 +60,7 @@ namespace VAS.UI
 		protected Time duration;
 		List<double> rateList;
 		KeyContext keycontext;
+		List<IViewPort> viewPortsBackup;
 
 		#region Constructors
 
@@ -129,8 +131,15 @@ namespace VAS.UI
 
 		protected override void OnUnrealized ()
 		{
+			player.ViewPorts = null;
 			((IPlayback)player).Stop ();
 			base.OnUnrealized ();
+		}
+
+		protected override void OnRealized ()
+		{
+			player.ViewPorts = viewPortsBackup;
+			base.OnRealized ();
 		}
 
 		protected override void OnDestroyed ()
@@ -174,6 +183,7 @@ namespace VAS.UI
 					player.PlaybackStateChangedEvent -= HandlePlaybackStateChangedEvent;
 					player.TimeChangedEvent -= HandleTimeChangedEvent;
 					player.VolumeChangedEvent -= HandleVolumeChangedEvent;
+					player.MediaFileSetLoadedEvent -= HandleMediaFileSetLoadedEvent;
 				}
 				player = value;
 				if (player != null) {
@@ -183,7 +193,17 @@ namespace VAS.UI
 					player.PlaybackStateChangedEvent += HandlePlaybackStateChangedEvent;
 					player.TimeChangedEvent += HandleTimeChangedEvent;
 					player.VolumeChangedEvent += HandleVolumeChangedEvent;
+					player.MediaFileSetLoadedEvent += HandleMediaFileSetLoadedEvent;
 				}
+			}
+		}
+
+		void HandleMediaFileSetLoadedEvent (MediaFileSet fileset, ObservableCollection<CameraConfig> camerasConfig = null)
+		{
+			if (fileset == null || !fileset.Any ()) {
+				controlsbox.Sensitive = false;
+			} else {
+				controlsbox.Sensitive = true;
 			}
 		}
 
@@ -628,7 +648,8 @@ namespace VAS.UI
 
 		protected virtual void HandleReady (object sender, EventArgs e)
 		{
-			Player.ViewPorts = new List<IViewPort> { videowindow };
+			viewPortsBackup = new List<IViewPort> { videowindow };
+			Player.ViewPorts = viewPortsBackup;
 			Player.Ready ();
 		}
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Interfaces.GUI;
 
 namespace VAS.Core
@@ -16,17 +17,23 @@ namespace VAS.Core
 	public class StateController
 	{
 		Dictionary<string, Func<IScreenState>> destination;
-		Tuple<string, IScreenState> home;
-		List<Tuple<string, IScreenState>> navigationStateStack;
-		List<Tuple<string, IScreenState>> modalStateStack;
+		NavigationState home;
+		List<NavigationState> navigationStateStack;
+		List<NavigationState> modalStateStack;
 		Dictionary<string, Stack<Func<IScreenState>>> overwrittenTransitions;
 
 		public StateController ()
 		{
 			destination = new Dictionary<string, Func<IScreenState>> ();
-			navigationStateStack = new List<Tuple<string, IScreenState>> ();
-			modalStateStack = new List<Tuple<string, IScreenState>> ();
+			navigationStateStack = new List<NavigationState> ();
+			modalStateStack = new List<NavigationState> ();
 			overwrittenTransitions = new Dictionary<string, Stack<Func<IScreenState>>> ();
+		}
+
+		public string Current {
+			get {
+				return LastState ()?.Name;
+			}
 		}
 
 		/// <summary>
@@ -38,10 +45,11 @@ namespace VAS.Core
 		{
 			Log.Debug ("Setting Home to " + transition);
 			IScreenState homeState = destination [transition] ();
-			home = new Tuple<string, IScreenState> (transition, homeState);
-			bool ok = await home.Item2.PreTransition (data);
+			home = new NavigationState (transition, homeState);
+			bool ok = await home.ScreenState.PreTransition (data);
 			if (ok) {
-				ok = await App.Current.Navigation.LoadNavigationPanel (home.Item2.Panel);
+				App.Current.EventsBroker.Publish (new NavigationEvent { Name = homeState.Name });
+				ok = await App.Current.Navigation.LoadNavigationPanel (home.ScreenState.Panel);
 			}
 			return ok;
 		}
@@ -57,33 +65,37 @@ namespace VAS.Core
 			Log.Debug ("Moving to " + transition);
 
 			if (!destination.ContainsKey (transition)) {
-				Log.Debug ("Moving failed because transition" + transition + " is not in destination dictionary.");
-
+				Log.Debug ("Moving failed because transition " + transition + " is not in destination dictionary.");
 				return false;
 			}
 
-			bool isModal = false;
-			IScreenState lastState = LastState (out isModal);
-			if (lastState != null) {
-				bool postTransition = await lastState.PostTransition ();
-				if (!postTransition) {
-					Log.Debug ("Moving failed because panel " + lastState.Panel.PanelName + " cannot move.");
-					return false;
+			try {
+				bool isModal = false;
+				NavigationState lastState = LastState (out isModal);
+				if (lastState != null) {
+					bool postTransition = await lastState.ScreenState.PostTransition ();
+					if (!postTransition) {
+						Log.Debug ("Moving failed because panel " + lastState.Name + " cannot move.");
+						return false;
+					}
 				}
-			}
 
-			if (isModal) {
-				await PopAllModalStates ();
-			}
+				if (isModal) {
+					await PopAllModalStates ();
+				}
 
-			IScreenState state = destination [transition] ();
-			bool ok = await state.PreTransition (data);
-			if (ok) {
-				await PushNavigationState (transition, state);
-			} else {
-				Log.Debug ("Moving failed because panel " + state.Panel.PanelName + " cannot move.");
+				IScreenState state = destination [transition] ();
+				bool ok = await state.PreTransition (data);
+				if (ok) {
+					await PushNavigationState (transition, state);
+				} else {
+					Log.Debug ("Moving failed because panel " + state.Name + " cannot move.");
+				}
+				return ok;
+			} catch (Exception ex) {
+				Log.Exception (ex);
+				return false;
 			}
-			return ok;
 		}
 
 		/// <summary>
@@ -96,21 +108,24 @@ namespace VAS.Core
 			Log.Debug ("Moving to " + transition + " in modal mode");
 
 			if (!destination.ContainsKey (transition)) {
-				Log.Debug ("Moving failed because transition" + transition + " is not in destination dictionary.");
+				Log.Debug ("Moving failed because transition " + transition + " is not in destination dictionary.");
 				return false;
 			}
 
-			IScreenState current = LastNavigationState ();
-
-			Log.Debug ("Moving to " + transition + " in modal mode");
-			IScreenState state = destination [transition] ();
-			bool ok = await state.PreTransition (data);
-			if (ok) {
-				await PushModalState (transition, state, current);
-			} else {
-				Log.Debug ("Moving failed because panel " + state.Panel.PanelName + " cannot move.");
+			try {
+				Log.Debug ("Moving to " + transition + " in modal mode");
+				IScreenState state = destination [transition] ();
+				bool ok = await state.PreTransition (data);
+				if (ok) {
+					await PushModalState (transition, state, LastState ()?.ScreenState);
+				} else {
+					Log.Debug ("Moving failed because panel " + state.Name + " cannot move.");
+				}
+				return ok;
+			} catch (Exception ex) {
+				Log.Exception (ex);
+				return false;
 			}
-			return ok;
 		}
 
 		/// <summary>
@@ -124,22 +139,27 @@ namespace VAS.Core
 				return false;
 			}
 
-			bool isModal;
-			IScreenState current = LastState (out isModal);
-			if (current == null || !(await current.PostTransition ())) {
-				Log.Debug ("Moving failed because panel " + current.Panel.PanelName + " cannot move.");
+			try {
+				bool isModal;
+				NavigationState current = LastState (out isModal);
+				if (current == null || !(await current.ScreenState.PostTransition ())) {
+					Log.Debug ("Moving failed because panel " + current.Name + " cannot move.");
+					return false;
+				}
+
+				if (!isModal) {
+					await PopNavigationState ();
+				} else {
+					await PopModalState (current);
+				}
+
+				Log.Debug ("Moved Back");
+
+				return true;
+			} catch (Exception ex) {
+				Log.Exception (ex);
 				return false;
 			}
-
-			if (!isModal) {
-				await PopNavigationState ();
-			} else {
-				await PopModalState (current);
-			}
-
-			Log.Debug ("Moved Back");
-
-			return true;
 		}
 
 		/// <summary>
@@ -149,17 +169,23 @@ namespace VAS.Core
 		/// <param name="transition">Transition name</param>
 		public async Task<bool> MoveBackTo (string transition)
 		{
-			IScreenState state = GetLastScreenStateFromTransition (transition);
-			if (state == null) {
-				Log.Debug ("Moving failed because transition " + transition + " is not in history moves");
-				return false;
-			} else if (home != null && state == home.Item2) {
-				return await MoveToHome ();
-			} else {
+			try {
+				NavigationState state = LastStateFromTransition (transition);
+				if (state == null) {
+					Log.Debug ("Moving failed because transition " + transition + " is not in history moves");
+					return false;
+				}
+
+				if (home != null && state == home) {
+					return await MoveToHome ();
+				}
+
 				//Check for modals to delete them.
 				await PopAllModalStates ();
-				await PopToNavigationState (state);
-				return true;
+				return await PopToNavigationState (state);
+			} catch (Exception ex) {
+				Log.Exception (ex);
+				return false;
 			}
 		}
 
@@ -172,12 +198,18 @@ namespace VAS.Core
 			if (home == null) {
 				Log.Debug ("Moving failed because transition to home doesn't exist");
 				return false;
-			} else {
+			}
+
+			try {
 				//Check for modals to delete them.
 				await PopAllModalStates ();
 				navigationStateStack.Clear ();
-				await App.Current.Navigation.LoadNavigationPanel (home.Item2.Panel);
+				App.Current.EventsBroker.Publish (new NavigationEvent { Name = home.Name });
+				await App.Current.Navigation.LoadNavigationPanel (home.ScreenState.Panel);
 				return true;
+			} catch (Exception ex) {
+				Log.Exception (ex);
+				return false;
 			}
 		}
 
@@ -205,7 +237,7 @@ namespace VAS.Core
 		public bool UnRegister (string transition)
 		{
 			// Delete all existing instances
-			navigationStateStack.FirstOrDefault (x => x.Item1 == transition)?.Item2.Panel.Dispose ();
+			navigationStateStack.FirstOrDefault (x => x.Name == transition)?.ScreenState.Dispose ();
 
 			// Remove from transitions
 			bool ok = destination.Remove (transition);
@@ -225,76 +257,92 @@ namespace VAS.Core
 		public async Task EmptyStateStack ()
 		{
 			await PopAllModalStates ();
-			navigationStateStack.ForEach (x => x.Item2.Panel.Dispose ());
+			navigationStateStack.ForEach (x => x.ScreenState.Dispose ());
 			navigationStateStack.Clear ();
 			overwrittenTransitions.Clear ();
 		}
 
-		async Task PushNavigationState (string transition, IScreenState state)
+		Task<bool> PushNavigationState (string transition, IScreenState state)
 		{
-			navigationStateStack.Add (new Tuple<string, IScreenState> (transition, state));
-			await App.Current.Navigation.LoadNavigationPanel (state.Panel);
+			navigationStateStack.Add (new NavigationState (transition, state));
+			App.Current.EventsBroker.Publish (new NavigationEvent { Name = transition });
+			return App.Current.Navigation.LoadNavigationPanel (state.Panel);
 		}
 
-		async Task PopNavigationState ()
+		async Task<bool> PopNavigationState ()
 		{
-			navigationStateStack [navigationStateStack.Count - 1].Item2.Panel.Dispose ();
+			bool ret = true;
+			IScreenState screenToPop = navigationStateStack [navigationStateStack.Count - 1].ScreenState;
 			navigationStateStack.RemoveAt (navigationStateStack.Count - 1);
-			IScreenState lastState = LastNavigationState ();
+			NavigationState lastState = LastNavigationState ();
 			if (lastState != null) {
-				await App.Current.Navigation.LoadNavigationPanel (lastState.Panel);
+				App.Current.EventsBroker.Publish (new NavigationEvent { Name = lastState.Name });
+				ret = await App.Current.Navigation.LoadNavigationPanel (lastState.ScreenState.Panel);
 			}
+			if (ret) {
+				screenToPop.Dispose ();
+			}
+			return ret;
 		}
 
-		async Task PopToNavigationState (IScreenState state)
+		Task<bool> PopToNavigationState (NavigationState state)
 		{
-			int index = navigationStateStack.FindIndex ((ns) => ns.Item2 == state);
+			int index = navigationStateStack.FindIndex ((ns) => ns == state);
 			if (index == -1) {
-				return;
+				return AsyncHelpers.Return (false);
 			}
 			for (int i = navigationStateStack.Count - 1; i > index; i--) {
-				navigationStateStack [i].Item2.Panel.Dispose ();
+				navigationStateStack [i].ScreenState.Dispose ();
 				navigationStateStack.RemoveAt (i);
 			}
-			await App.Current.Navigation.LoadNavigationPanel (state.Panel);
+			App.Current.EventsBroker.Publish (new NavigationEvent { Name = state.Name });
+			return App.Current.Navigation.LoadNavigationPanel (state.ScreenState.Panel);
 		}
 
-		async Task PushModalState (string transition, IScreenState state, IScreenState current)
+		Task PushModalState (string transition, IScreenState state, IScreenState current)
 		{
-			modalStateStack.Add (new Tuple<string, IScreenState> (transition, state));
-			await App.Current.Navigation.LoadModalPanel (state.Panel, current.Panel);
+			modalStateStack.Add (new NavigationState (transition, state));
+			App.Current.EventsBroker.Publish (new NavigationEvent { Name = transition });
+			return App.Current.Navigation.LoadModalPanel (state.Panel, current.Panel);
 		}
 
-		async Task PopModalState (IScreenState current)
+		Task PopModalState (NavigationState current)
 		{
-			modalStateStack [modalStateStack.Count - 1].Item2.Panel.Dispose ();
+			modalStateStack [modalStateStack.Count - 1].ScreenState.Dispose ();
 			modalStateStack.RemoveAt (modalStateStack.Count - 1);
-			await App.Current.Navigation.RemoveModalWindow (current.Panel);
+			App.Current.EventsBroker.Publish (new NavigationEvent { Name = Current });
+			return App.Current.Navigation.RemoveModalWindow (current.ScreenState.Panel);
 		}
 
 		async Task PopAllModalStates ()
 		{
-			IScreenState state;
+			NavigationState state;
 			while ((state = LastModalState ()) != null) {
 				await PopModalState (state);
 			}
 		}
 
-		IScreenState GetLastScreenStateFromTransition (string transition)
+		NavigationState LastStateFromTransition (string transition)
 		{
-			IScreenState retState = null;
-			var tuple = navigationStateStack.FindLast ((ns) => ns.Item1 == transition);
+			var tuple = navigationStateStack.FindLast ((ns) => ns.Name == transition);
 			if (tuple != null) {
-				retState = tuple.Item2;
-			} else if (home.Item1 == transition) {
-				retState = home.Item2;
+				return tuple;
 			}
-			return retState;
+			if (home.Name == transition) {
+				return home;
+			}
+			return null;
 		}
 
-		IScreenState LastState (out bool isModal)
+		NavigationState LastState ()
 		{
-			IScreenState state;
+			bool isModal;
+			return LastState (out isModal);
+		}
+
+		NavigationState LastState (out bool isModal)
+		{
+			NavigationState state;
 			isModal = false;
 			if ((state = LastModalState ()) != null) {
 				isModal = true;
@@ -304,24 +352,67 @@ namespace VAS.Core
 			return state;
 		}
 
-		IScreenState LastNavigationState ()
+		NavigationState LastNavigationState ()
 		{
 			if (navigationStateStack.Count > 0) {
-				return navigationStateStack [navigationStateStack.Count - 1].Item2;
-			} else if (home != null) {
-				return home.Item2;
-			} else {
-				return null;
+				return navigationStateStack [navigationStateStack.Count - 1];
 			}
+			if (home != null) {
+				return home;
+			}
+			return null;
 		}
 
-		IScreenState LastModalState ()
+		NavigationState LastModalState ()
 		{
 			if (modalStateStack.Count > 0) {
-				return modalStateStack [modalStateStack.Count - 1].Item2;
-			} else {
-				return null;
+				return modalStateStack [modalStateStack.Count - 1];
 			}
+			return null;
+		}
+
+	}
+
+	class NavigationState
+	{
+		public NavigationState (string name, IScreenState screenState)
+		{
+			Name = name;
+			ScreenState = screenState;
+		}
+
+		public string Name { get; set; }
+
+		public IScreenState ScreenState { get; set; }
+
+		public override bool Equals (object obj)
+		{
+			NavigationState navState = obj as NavigationState;
+
+			if (navState == null) {
+				return false;
+			}
+			return navState.Name == Name && navState.ScreenState == ScreenState;
+		}
+
+		public static bool operator == (NavigationState a, NavigationState b)
+		{
+			// If both are null, or both are same instance, return true.
+			if (ReferenceEquals (a, b)) {
+				return true;
+			}
+
+			// If one is null, but not both, return false.
+			if (((object)a == null) || ((object)b == null)) {
+				return false;
+			}
+
+			return a.Equals (b);
+		}
+
+		public static bool operator != (NavigationState a, NavigationState b)
+		{
+			return !(a == b);
 		}
 	}
 }

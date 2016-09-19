@@ -22,9 +22,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controller\ProjectsController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectsManagerVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)State\ScreenState.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />
     <Folder Include="$(MSBuildThisFileDirectory)Controller\" />
+    <Folder Include="$(MSBuildThisFileDirectory)State\" />
   </ItemGroup>
 </Project>
