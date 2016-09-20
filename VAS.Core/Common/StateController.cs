@@ -41,12 +41,12 @@ namespace VAS.Core
 		/// </summary>
 		/// <returns>True if the home transition could be executed. False otherwise</returns>
 		/// <param name="transition">Transition.</param>
-		public async Task<bool> SetHomeTransition (string transition, object data)
+		public async Task<bool> SetHomeTransition (string transition, dynamic properties)
 		{
 			Log.Debug ("Setting Home to " + transition);
 			IScreenState homeState = destination [transition] ();
 			home = new NavigationState (transition, homeState);
-			bool ok = await home.ScreenState.PreTransition (data);
+			bool ok = await home.ScreenState.PreTransition (properties);
 			if (ok) {
 				App.Current.EventsBroker.Publish (new NavigationEvent { Name = homeState.Name });
 				ok = await App.Current.Navigation.LoadNavigationPanel (home.ScreenState.Panel);
@@ -60,7 +60,7 @@ namespace VAS.Core
 		/// </summary>
 		/// <returns>True if the move could be performed. False otherwise</returns>
 		/// <param name="transition">Transition.</param>
-		public async Task<bool> MoveTo (string transition, dynamic data)
+		public async Task<bool> MoveTo (string transition, dynamic properties)
 		{
 			Log.Debug ("Moving to " + transition);
 
@@ -85,7 +85,7 @@ namespace VAS.Core
 				}
 
 				IScreenState state = destination [transition] ();
-				bool ok = await state.PreTransition (data);
+				bool ok = await state.PreTransition (properties);
 				if (ok) {
 					await PushNavigationState (transition, state);
 				} else {
@@ -103,7 +103,7 @@ namespace VAS.Core
 		/// </summary>
 		/// <returns>True if the Move could be performed. False otherwise</returns>
 		/// <param name="transition">Transition.</param>
-		public async Task<bool> MoveToModal (string transition, object data)
+		public async Task<bool> MoveToModal (string transition, dynamic properties)
 		{
 			Log.Debug ("Moving to " + transition + " in modal mode");
 
@@ -115,7 +115,7 @@ namespace VAS.Core
 			try {
 				Log.Debug ("Moving to " + transition + " in modal mode");
 				IScreenState state = destination [transition] ();
-				bool ok = await state.PreTransition (data);
+				bool ok = await state.PreTransition (properties);
 				if (ok) {
 					await PushModalState (transition, state, LastState ()?.ScreenState);
 				} else {

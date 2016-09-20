@@ -191,10 +191,6 @@ namespace VAS.UI.Component
 			return new TimelineLabels (new WidgetWrapper (labelsarea));
 		}
 
-		protected DrawingArea getTimelinearea ()
-		{
-			return TimelineArea;
-		}
 
 		public virtual void SetProject (Project project, EventsFilter filter)
 		{

@@ -205,15 +205,15 @@ namespace VAS.Drawing.Widgets
 			TimelineObject tl;
 			int i = 0;
 
-			FillCanvasForTimers (i);
-			FillCanvasForEventTypes (i);
+			FillCanvasForTimers (ref i);
+			FillCanvasForEventTypes (ref i);
 
 			UpdateVisibleCategories ();
 			Update ();
 			HeightRequest = Objects.Count * StyleConf.TimelineCategoryHeight;
 		}
 
-		protected virtual void FillCanvasForTimers (int line)
+		protected virtual void FillCanvasForTimers (ref int line)
 		{
 			TimelineObject tl;
 
@@ -225,7 +225,7 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
-		protected virtual void FillCanvasForEventTypes (int line)
+		protected virtual void FillCanvasForEventTypes (ref int line)
 		{
 			TimelineObject tl;
 

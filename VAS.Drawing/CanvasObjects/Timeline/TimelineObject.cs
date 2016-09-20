@@ -397,13 +397,12 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 	public class CameraTimeline: TimelineObject
 	{
 		public CameraTimeline (MediaFile mediaFile, bool showName, bool showLine,
-		                       Time maxTime, double offsetY, Color background, Color lineColor) :
-			base (maxTime, StyleConf.TimelineCameraHeight, offsetY, background)
+		                       Time maxTime, double offsetY, Color background, Color lineColor, int height = StyleConf.TimelineCameraHeight) :
+			base (maxTime, height, offsetY, background)
 		{
 			ShowName = showName;
 			ShowLine = showLine;
 			LineColor = lineColor;
-			Height = StyleConf.TimelineCameraHeight;
 
 			AddMediaFile (mediaFile);
 		}
