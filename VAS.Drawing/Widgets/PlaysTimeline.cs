@@ -140,6 +140,18 @@ namespace VAS.Drawing.Widgets
 			set;
 		}
 
+		protected CameraObject CameraNode {
+			get {
+				if (timelineToFilter.Any (x => x.Key.GetType () == typeof(CameraTimeline))) {
+
+					return ((CameraObject)timelineToFilter
+					.FirstOrDefault (x => x.Key.GetType () == typeof(CameraTimeline)).Key.GetNodeAtPosition (0));
+				} else {
+					return null;
+				}
+			}
+		}
+
 		/// <summary>
 		/// Loads the project.
 		/// </summary>
@@ -238,18 +250,20 @@ namespace VAS.Drawing.Widgets
 				return 0;
 			}
 
-			CameraObject node = ((CameraObject)timelineToFilter
-				.FirstOrDefault (x => x.Key.GetType () == typeof(CameraTimeline)).Key.GetNodeAtPosition (0));
-
-			if (node == null) {
+			if (CameraNode == null) {
 				return 0;
 			}
 
-			if (node.IsStretched ()) {
-				return node.GetWidthPosition ();
+			if (CameraNode.IsStretched ()) {
+				return CameraNode.GetWidthPosition ();
 			} else {
-				return node.GetMaxTimePosition ();
+				return CameraNode.GetMaxTimePosition ();
 			}
+		}
+
+		public bool IsStretched ()
+		{
+			return CameraNode != null ? CameraNode.IsStretched () : false;
 		}
 
 		protected void Update ()

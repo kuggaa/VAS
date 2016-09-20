@@ -217,6 +217,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		{
 			Name = Catalog.GetString ("Video");
 			Color = Color.Blue1;
+			IsStretched = false;
 
 			openButton.BackgroundColor = App.Current.Style.PaletteBackgroundLight;
 			openButton.BorderColor = App.Current.Style.PaletteBackgroundDark;
@@ -231,6 +232,15 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			stretchButton.Width = (int)RectSize;
 			stretchButton.Height = (int)RectSize;
 			stretchButton.ImagePadding = TIMELINE_IMAGE_PADDING;
+		}
+
+		/// <summary>
+		/// Gets or sets a value indicating if timeline is stretched.
+		/// </summary>
+		/// <value><c>true</c> if timeline is stretched; otherwise, <c>false</c>.</value>
+		public bool IsStretched {
+			get;
+			set;
 		}
 
 		public override void Draw (IDrawingToolkit tk, Area area)
@@ -298,7 +308,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		void SetStrechButtonProperties (double startX)
 		{
 			stretchButton.Position = new Point (startX - RectSize - TIMELINE_BUTTON_MARGIN, OffsetY + TIMELINE_BUTTON_MARGIN);
-			stretchButton.BackgroundColor = App.Current.Style.PaletteBackgroundLight;
+			stretchButton.BackgroundColor = IsStretched ? App.Current.Style.PaletteBackgroundDarkBright : App.Current.Style.PaletteBackgroundLight;
 		}
 
 		public bool ClickInsideStrechButton (Point p)
