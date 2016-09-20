@@ -73,9 +73,9 @@ namespace VAS.Services.ViewModel
 		/// </summary>
 		public void Export ()
 		{
-			TModel template = Selection.FirstOrDefault ()?.Model;
-			if (template != null) {
-				App.Current.EventsBroker.Publish (new ExportEvent<TModel> { Object = template });
+			TViewModel templateVM = Selection.FirstOrDefault ();
+			if (templateVM != null && templateVM.Model != null) {
+				App.Current.EventsBroker.Publish (new ExportEvent<TModel> { Object = templateVM.Model });
 			}
 		}
 
