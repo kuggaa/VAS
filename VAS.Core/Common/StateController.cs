@@ -257,7 +257,10 @@ namespace VAS.Core
 		public async Task EmptyStateStack ()
 		{
 			await PopAllModalStates ();
-			navigationStateStack.ForEach (x => x.ScreenState.Dispose ());
+			navigationStateStack.ForEach (async (x) => {
+				await x.ScreenState.PostTransition ();
+				x.ScreenState.Dispose ();
+			});
 			navigationStateStack.Clear ();
 			overwrittenTransitions.Clear ();
 		}
