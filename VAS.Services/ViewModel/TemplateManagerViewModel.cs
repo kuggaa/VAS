@@ -100,9 +100,9 @@ namespace VAS.Services.ViewModel
 		/// </summary>
 		public void Delete ()
 		{
-			TModel template = Selection.FirstOrDefault ()?.Model;
-			if (template != null) {
-				App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = template });
+			TViewModel templateVM = Selection.FirstOrDefault ();
+			if (templateVM != null && templateVM.Model != null) {
+				App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = templateVM.Model });
 			}
 		}
 
