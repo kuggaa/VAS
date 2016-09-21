@@ -309,12 +309,13 @@ namespace VAS.Core
 			return App.Current.Navigation.LoadModalPanel (state.Panel, current.Panel);
 		}
 
-		Task PopModalState (NavigationState current)
+		async Task PopModalState (NavigationState current)
 		{
-			modalStateStack [modalStateStack.Count - 1].ScreenState.Dispose ();
+			IScreenState screenToPop = modalStateStack [modalStateStack.Count - 1].ScreenState;
 			modalStateStack.RemoveAt (modalStateStack.Count - 1);
 			App.Current.EventsBroker.Publish (new NavigationEvent { Name = Current });
-			return App.Current.Navigation.RemoveModalWindow (current.ScreenState.Panel);
+			await App.Current.Navigation.RemoveModalWindow (current.ScreenState.Panel);
+			screenToPop.Dispose ();
 		}
 
 		async Task PopAllModalStates ()
