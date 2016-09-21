@@ -21,6 +21,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using VAS.Core.Common;
 using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.MVVMC
@@ -40,7 +41,7 @@ namespace VAS.Core.MVVMC
 
 		public CollectionViewModel ()
 		{
-			Selection = new ObservableCollection<TViewModel> ();
+			Selection = new RangeObservableCollection<TViewModel> ();
 			Selection.CollectionChanged += HandleSelectionChanged;
 		}
 
@@ -83,7 +84,7 @@ namespace VAS.Core.MVVMC
 		/// Gets the current selection in the collection.
 		/// </summary>
 		/// <value>The selection.</value>
-		public ObservableCollection<TViewModel> Selection {
+		public RangeObservableCollection<TViewModel> Selection {
 			get;
 			private set;
 		}

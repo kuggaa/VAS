@@ -104,10 +104,16 @@ namespace VAS.UI.Component
 			App.Current.EventsBroker.Unsubscribe<PlayerTickEvent> (HandlePlayerTick);
 			Player = null;
 
+			base.OnDestroyed ();
+		}
+
+		public override void Dispose ()
+		{
+			Destroy ();
 			timerule.Dispose ();
 			timeline.Dispose ();
 			labels.Dispose ();
-			base.OnDestroyed ();
+			base.Dispose ();
 		}
 
 		public virtual Time CurrentTime {

@@ -58,6 +58,8 @@ namespace VAS.UI
 
 		protected override void OnDestroyed ()
 		{
+			App.Current.EventsBroker.Unsubscribe<LoadVideoEvent> (HandleLoadVideoEvent);
+			App.Current.EventsBroker.Unsubscribe<CloseVideoEvent> (HandleCloseVideoEvent);
 			(playerview as Gtk.Widget).Destroy ();
 			capturerbin.Destroy ();
 			base.OnDestroyed ();
