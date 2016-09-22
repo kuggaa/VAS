@@ -112,7 +112,7 @@ namespace VAS.DB
 				using (FileStream fs = new FileStream (outputFilename, FileMode.Create, FileAccess.Write, FileShare.None)) {
 					using (Stream gzipStream = new GZipOutputStream (fs)) {
 						using (TarArchive tarArchive = TarArchive.CreateOutputTarArchive (gzipStream)) {
-							AddDirectoryFilesToTar (tarArchive, Path.Combine (App.Current.DBDir, storageName + ".cblite2"), true);
+							AddDirectoryFilesToTar (tarArchive, Path.Combine (db.Manager.Directory, storageName + ".cblite2"), true);
 						}
 					}
 				}
