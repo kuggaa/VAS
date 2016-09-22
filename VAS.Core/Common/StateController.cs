@@ -60,7 +60,7 @@ namespace VAS.Core
 		/// </summary>
 		/// <returns>True if the move could be performed. False otherwise</returns>
 		/// <param name="transition">Transition.</param>
-		public async Task<bool> MoveTo (string transition, dynamic properties)
+		public async Task<bool> MoveTo (string transition, dynamic properties, bool emptyStack = false)
 		{
 			Log.Debug ("Moving to " + transition);
 
@@ -80,7 +80,9 @@ namespace VAS.Core
 					}
 				}
 
-				if (isModal) {
+				if (emptyStack) {
+					await EmptyStateStack ();
+				} else if (isModal) {
 					await PopAllModalStates ();
 				}
 
@@ -253,7 +255,7 @@ namespace VAS.Core
 		/// Empties the state stack.
 		/// </summary>
 		/// <returns>The state stack.</returns>
-		public async Task<bool> EmptyStateStack ()
+		async Task EmptyStateStack ()
 		{
 			if (!await PopAllModalStates ()) {
 				return false;
