@@ -61,15 +61,15 @@ namespace VAS.UI.Menus
 		}
 
 		protected virtual void ShowMenu (Project project, IEnumerable<TimelineEvent> plays, EventType eventType, Time time,
-		                                 IList<EventType> eventTypes, bool editableName)
+										 IList<EventType> eventTypes, bool editableName)
 		{
 			bool isLineup = false, isSubstitution = false;
-		
+
 			this.plays = plays.ToList ();
 			this.eventType = eventType;
 			this.time = time;
 			this.project = project;
-		
+
 			if (eventType != null) {
 				string label = String.Format ("{0} in {1}", Catalog.GetString ("Add new event"), eventType.Name);
 				newPlay.SetLabel (label);
@@ -77,11 +77,11 @@ namespace VAS.UI.Menus
 			} else {
 				newPlay.Visible = false;
 			}
-		
+
 			if (plays == null) {
 				plays = new List<TimelineEvent> ();
 			}
-		
+
 
 			del.Visible = plays.Count () > 0;
 
@@ -93,55 +93,6 @@ namespace VAS.UI.Menus
 			Popup ();
 		}
 
-		/// <summary>
-		/// Fills the menu item "Add to playlist" with all the playlist options
-		/// </summary>
-		/// <param name="addToPlaylistMenu">Add to playlist menu.</param>
-		/// <param name="project">Project.</param>
-		/// <param name="events">Timeline events.</param>
-		static public void FillAddToPlaylistMenu (MenuItem addToPlaylistMenu, Project project, IList<TimelineEvent> events)
-		{
-			if (events.Count == 0) {
-				addToPlaylistMenu.Visible = false;
-				return;
-			}
-		
-			addToPlaylistMenu.Visible = true;
-			var label = String.Format ("{0} ({1})", Catalog.GetString ("Add to playlist"), events.Count);
-			addToPlaylistMenu.SetLabel (label);
-		
-			if (project.Playlists != null) {
-				Menu plMenu = new Menu ();
-				MenuItem item;
-				foreach (Playlist pl in project.Playlists) {
-					item = new MenuItem (pl.Name);
-					plMenu.Append (item);
-					item.Activated += (sender, e) => {
-						IEnumerable<IPlaylistElement> elements = events.Select (p => new PlaylistPlayElement (p));
-						App.Current.EventsBroker.Publish (
-							new AddPlaylistElementEvent {
-								Playlist = pl,
-								PlaylistElements = elements.ToList ()
-							}
-						);
-					};
-				}
-				item = new MenuItem (Catalog.GetString ("Create new playlist..."));
-				plMenu.Append (item);
-				item.Activated += (sender, e) => {
-					IEnumerable<IPlaylistElement> elements = events.Select (p => new PlaylistPlayElement (p));
-					App.Current.EventsBroker.Publish (
-						new AddPlaylistElementEvent {
-							Playlist = null,
-							PlaylistElements = elements.ToList ()
-						}
-					);
-				};
-				plMenu.ShowAll ();
-				addToPlaylistMenu.Submenu = plMenu;
-			}
-		}
-
 		void CreateMenu ()
 		{
 			newPlay = new MenuItem ("");
@@ -150,7 +101,7 @@ namespace VAS.UI.Menus
 
 			del = new MenuItem ("");
 			del.Activated += (sender, e) => {
-				App.Current.EventsBroker.Publish <EventsDeletedEvent> (
+				App.Current.EventsBroker.Publish<EventsDeletedEvent> (
 					new EventsDeletedEvent {
 						TimelineEvents = plays
 					}
