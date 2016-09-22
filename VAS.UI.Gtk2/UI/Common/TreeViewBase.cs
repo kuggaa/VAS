@@ -102,6 +102,7 @@ namespace VAS.UI.Common
 				ClearSubViewModelListeners (dictionaryStore.Keys);
 				store.Clear ();
 				dictionaryStore.Clear ();
+				dictionaryNestedParent.Clear ();
 				break;
 
 			case NotifyCollectionChangedAction.Move:

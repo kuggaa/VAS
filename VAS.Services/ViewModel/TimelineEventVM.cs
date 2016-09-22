@@ -21,7 +21,8 @@ using VAS.Core.Store;
 
 namespace VAS.Services.ViewModel
 {
-	public class TimelineEventVM : ViewModelBase<TimelineEvent>
+	public class TimelineEventVM<T> : ViewModelBase<T>
+		where T : TimelineEvent
 	{
 		public string Name {
 			get {
@@ -30,6 +31,23 @@ namespace VAS.Services.ViewModel
 			set {
 				Model.Name = value;
 			}
+		}
+
+		public string HasDrawings {
+			get {
+				return Model.HasDrawings ? "D" : "0";
+			}
+		}
+
+		public string HasFieldPosition {
+			get {
+				return (Model.FieldPosition != null) ? "X" : "0";
+			}
+		}
+
+		public bool Viewing {
+			get;
+			set;
 		}
 	}
 }

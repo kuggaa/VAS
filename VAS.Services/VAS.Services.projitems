@@ -29,6 +29,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TimelineEventVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypeVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypeCollectionVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller\EventsController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />

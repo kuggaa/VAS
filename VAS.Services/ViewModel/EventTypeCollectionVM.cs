@@ -16,12 +16,15 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
 namespace VAS.Services.ViewModel
 {
-	public class EventTypeCollectionVM: NestedCollectionViewModel<EventType, EventTypeVM, TimelineEventVM>
+	public class EventTypeCollectionVM<TViewModel, VMChild> : NestedCollectionViewModel<EventType, TViewModel, VMChild>
+		where VMChild : IViewModel
+		where TViewModel : INestedViewModel<EventType,VMChild>, new()
 	{
 		public EventTypeCollectionVM ()
 		{
