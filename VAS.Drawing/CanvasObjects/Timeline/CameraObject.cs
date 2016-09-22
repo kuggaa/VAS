@@ -331,14 +331,20 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 			if (selectedLeft) {
 				Time startTime = TimeNode.Start + e.Time;
-				if (startTime > new Time (0) || TimeNode.Start > TimeNode.Stop) {
-					TimeNode.Start = startTime;
+				if (startTime >= new Time (0)) {
+					// Almost 1s must be showed in the timeline
+					TimeNode.Start = startTime <= TimeNode.Stop - new Time (1000) ? startTime : TimeNode.Stop - new Time (1000);
+					e.player.Seek (TimeNode.Start);
 				}
 			}
 
 			if (selectedRight) {
 				Time stopTime = TimeNode.Stop + e.Time;
-				TimeNode.Stop = stopTime > MaxTime ? TimeNode.Stop : stopTime;
+				if (stopTime <= MaxTime) {
+					// Almost 1s must be showed in the timeline
+					TimeNode.Stop = stopTime >= TimeNode.Start + new Time (1000) ? stopTime : TimeNode.Start + new Time (1000);
+					e.player.Seek (TimeNode.Stop);
+				}
 			}
 
 			ReDraw ();
