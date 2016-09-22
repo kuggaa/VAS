@@ -80,13 +80,13 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		}
 
 		/// <summary>
-		/// Gets the area.
+		/// Gets the drawable area.
 		/// </summary>
 		/// <value>The area.</value>
 		Area Area {
 			get {
-				return new Area (new Point (StartX, OffsetY),
-					(StopX - StartX), Height);
+				return new Area (new Point (0, OffsetY),
+					StopX, Height);
 			}
 		}
 
@@ -99,6 +99,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			get;
 			set;
 		}
+
 
 		/// <summary>
 		/// Draw the specified area with the specified Drawing toolkit tk.
