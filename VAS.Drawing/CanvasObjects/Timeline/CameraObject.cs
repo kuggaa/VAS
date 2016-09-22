@@ -347,6 +347,9 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				}
 			}
 
+			videoTLmode = TimeNode.Start == new Time (0) && TimeNode.Stop == MaxTime ?
+				VideoTimelineMode.Default : VideoTimelineMode.Edit;
+
 			ReDraw ();
 		}
 
