@@ -375,6 +375,8 @@ namespace VAS.Drawing.Widgets
 		protected override void SelectionChanged (List<Selection> selections)
 		{
 			TimelineEvent ev = null;
+			CameraTimelineSelectedEvent ctse = null;
+			bool notififyCameraTimelineSelectedEvent = false;
 			if (selections.Count > 0) {
 				CanvasObject d = selections.Last ().Drawable as CanvasObject;
 				if (d is TimelineEventObjectBase) {
@@ -383,13 +385,21 @@ namespace VAS.Drawing.Widgets
 					// in the first time it is incorrectly marked as false
 					ev.Selected = true;
 					loadedEvent = ev;
+				} else if (d is CameraObject) {
+					notififyCameraTimelineSelectedEvent = true;
+					ctse = new CameraTimelineSelectedEvent ();
+					ctse.bordersAreSelected = ((CameraObject)d).selectedLeft || ((CameraObject)d).selectedRight;
 				}
 			}
 			App.Current.EventsBroker.Publish<LoadEventEvent> (
-				new LoadEventEvent { 
+				new LoadEventEvent {
 					TimelineEvent = ev
 				}
 			);
+
+			if (notififyCameraTimelineSelectedEvent) {
+				App.Current.EventsBroker.Publish<CameraTimelineSelectedEvent> (ctse);
+			}
 		}
 
 		protected override void StartMove (Selection sel)
