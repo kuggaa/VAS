@@ -100,7 +100,6 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			set;
 		}
 
-
 		/// <summary>
 		/// Draw the specified area with the specified Drawing toolkit tk.
 		/// </summary>

@@ -143,7 +143,6 @@ namespace VAS.Drawing.Widgets
 		protected CameraObject CameraNode {
 			get {
 				if (timelineToFilter.Any (x => x.Key.GetType () == typeof(CameraTimeline))) {
-
 					return ((CameraObject)timelineToFilter
 					.FirstOrDefault (x => x.Key.GetType () == typeof(CameraTimeline)).Key.GetNodeAtPosition (0));
 				} else {
@@ -264,6 +263,34 @@ namespace VAS.Drawing.Widgets
 		public bool IsStretched ()
 		{
 			return CameraNode != null ? CameraNode.IsStretched () : false;
+		}
+
+		/// <summary>
+		/// Sets the periods time line.
+		/// </summary>
+		public void SetPeriodsTimeLine ()
+		{
+			List<Timer> timers = new List<Timer> ();
+			timers.Add (new Timer ());
+			if (CameraNode.TimeNode.Start != new Time (0)) {
+				TimeNode nodeStart = new TimeNode () {
+					Start = new Time (0),
+					Stop = CameraNode.TimeNode.Start
+				};
+				timers.FirstOrDefault ().Nodes.Add (nodeStart);
+			}
+
+			timers.FirstOrDefault ().Nodes.Add (CameraNode.TimeNode);
+
+			if (CameraNode.TimeNode.Stop != CameraNode.MediaFile.Duration) {
+				TimeNode nodeEnd = new TimeNode () {
+					Start = CameraNode.TimeNode.Stop,
+					Stop = CameraNode.MediaFile.Duration
+				};
+				timers.FirstOrDefault ().Nodes.Add (nodeEnd);
+			}
+			PeriodsTimeline = new TimerTimeline (timers, false, NodeDraggingMode.Borders, false,
+				CameraNode.MediaFile.Duration, 0, Color.Blue1, Color.Blue1);
 		}
 
 		protected void Update ()

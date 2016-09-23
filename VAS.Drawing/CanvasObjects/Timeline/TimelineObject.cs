@@ -356,6 +356,12 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			ReDraw ();
 		}
 
+		public void RemoveAllTimers ()
+		{
+			timers.Clear ();
+			ReDraw ();
+		}
+
 		public void AddTimeNode (Timer t, TimeNode tn)
 		{
 			TimerTimeNodeObject to = new TimerTimeNodeObject (t, tn);
