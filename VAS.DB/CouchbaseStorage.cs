@@ -41,6 +41,7 @@ namespace VAS.DB
 		Dictionary<Type, object> views;
 		string storageName;
 		object mutex;
+		bool documentUpdated;
 
 		public CouchbaseStorage (Database db)
 		{
@@ -70,7 +71,7 @@ namespace VAS.DB
 			db.SetMaxRevTreeDepth (1);
 			mutex = new object ();
 			FetchInfo ();
-			Compact ();
+			BackupAndCompactIfNeeded ();
 			InitializeViews ();
 			InitializeDocumentTypeMappings ();
 			VFS.SetCurrent (new FileSystem ());
@@ -95,7 +96,6 @@ namespace VAS.DB
 			}
 			set {
 				Info.LastBackup = value;
-				Store (Info);
 			}
 		}
 
@@ -117,6 +117,7 @@ namespace VAS.DB
 					}
 				}
 				LastBackup = DateTime.UtcNow;
+				Store (Info);
 			} catch (Exception ex) {
 				Log.Exception (ex);
 				return false;
@@ -188,6 +189,7 @@ namespace VAS.DB
 		{
 			lock (mutex) {
 				bool success = db.RunInTransaction (() => {
+					documentUpdated = false;
 					try {
 						StorableNode node;
 						ObjectChangedParser parser = new ObjectChangedParser ();
@@ -195,8 +197,13 @@ namespace VAS.DB
 
 						if (!forceUpdate) {
 							Update (node);
-						} else {
+						} 
+						if (forceUpdate) {
 							DocumentsSerializer.SaveObject (t, db, saveChildren: true);
+						}
+						if (t.ID != Info.ID && (forceUpdate || documentUpdated)) {
+							Info.LastModified = DateTime.UtcNow;
+							DocumentsSerializer.SaveObject (Info, db);
 						}
 						foreach (IStorable storable in node.OrphanChildren) {
 							db.GetDocument (DocumentsSerializer.StringFromID (storable.ID, t.ID)).Delete ();
@@ -208,7 +215,7 @@ namespace VAS.DB
 					}
 				});
 				if (!success) {
-					throw new StorageException (Catalog.GetString ("Error deleting object from the storage"));
+					throw new StorageException (Catalog.GetString ("Error storing object from the storage"));
 				}
 			}
 		}
@@ -248,7 +255,10 @@ namespace VAS.DB
 						return false;
 					}
 				});
-				if (!success) {
+				if (success) {
+					Info.LastModified = DateTime.UtcNow;
+					DocumentsSerializer.SaveObject (Info, db, null, false);
+				} else {
 					throw new StorageException (Catalog.GetString ("Error deleting object from the storage"));
 				}
 			}
@@ -278,6 +288,7 @@ namespace VAS.DB
 				context.RootID = node.Storable.ID;
 			}
 			if (node.IsChanged) {
+				documentUpdated = true;
 				DocumentsSerializer.SaveObject (node.Storable, db, context, false);
 			}
 
@@ -308,6 +319,7 @@ namespace VAS.DB
 					LastBackup = DateTime.UtcNow,
 					LastCleanup = DateTime.UtcNow,
 					Version = new Version (Constants.DB_VERSION, 0),
+					LastModified = DateTime.UtcNow
 				};
 				Store (Info);
 			}
@@ -315,11 +327,9 @@ namespace VAS.DB
 
 		void Compact ()
 		{
-			if ((DateTime.UtcNow - Info.LastCleanup).Days > 2) {
-				db.Compact ();
-				Info.LastCleanup = DateTime.UtcNow;
-				Store (Info);
-			}
+			db.Compact ();
+			Info.LastCleanup = DateTime.UtcNow;
+			Store (Info);
 		}
 
 		protected virtual void InitializeViews ()
@@ -354,6 +364,19 @@ namespace VAS.DB
 			foreach (string filename in filenames) {
 				TarEntry tarEntry = TarEntry.CreateEntryFromFile (filename);
 				tarArchive.WriteEntry (tarEntry, true);
+			}
+		}
+
+		/// <summary>
+		/// Backup and Compact the database if needed.
+		/// </summary>
+		void BackupAndCompactIfNeeded ()
+		{
+			if ((Info.LastModified - Info.LastBackup).TotalDays > 2) {
+				Backup ();
+			}
+			if ((Info.LastModified - Info.LastCleanup).TotalDays > 2) {
+				Compact ();
 			}
 		}
 	}
