@@ -117,6 +117,7 @@
     <Compile Include="Core\Hotkeys\TestHotKeysContexts.cs" />
     <Compile Include="Core\Common\TestStateController.cs" />
     <Compile Include="Core\Common\TestRegistry.cs" />
+    <Compile Include="Services\TestCoreEventsManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

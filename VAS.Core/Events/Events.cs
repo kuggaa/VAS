@@ -68,7 +68,7 @@ namespace VAS.Core.Events
 
 	public class MoveToEventTypeEvent : Event
 	{
-		public TimelineEvent TimelineEvent { get; set; }
+		public IList<TimelineEvent> TimelineEvents { get; set; }
 
 		public EventType EventType { get; set; }
 	}

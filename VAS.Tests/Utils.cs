@@ -89,6 +89,15 @@ namespace VAS.Tests
 		public class DashboardDummy : Dashboard
 		{
 			//dummy class for abstract validation. Copied from LongoMatch and adapted to VAS.
+			public static DashboardDummy Default ()
+			{
+				var dashboard = new DashboardDummy ();
+				for (int i = 0; i < 5; i++) {
+					var evtType = dashboard.AddDefaultItem (i);
+					dashboard.AddDefaultTags (evtType.AnalysisEventType);
+				}
+				return dashboard;
+			}
 		}
 
 		public class EventsFilterDummy : EventsFilter
@@ -245,6 +254,7 @@ namespace VAS.Tests
 		{
 			TimelineEvent pl;
 			Project p = new ProjectDummy ();
+			p.Dashboard = DashboardDummy.Default ();
 			p.FileSet = new MediaFileSet ();
 			p.FileSet.Add (new MediaFile (Path.GetTempFileName (), 34000, 25, true, true, "mp4", "h264",
 				"aac", 320, 240, 1.3, null, "Test asset 1"));

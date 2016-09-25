@@ -55,7 +55,7 @@ namespace VAS.UI.Menus
 		/// <param name="events">Timeline events.</param>
 		static public void FillAddToPlaylistMenu (MenuItem addToPlaylistMenu, Project project, IEnumerable<TimelineEvent> events)
 		{
-			if (events.Count () == 0) {
+			if (!events.Any ()) {
 				addToPlaylistMenu.Visible = false;
 				return;
 			}
