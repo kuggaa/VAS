@@ -114,11 +114,11 @@ namespace VAS.UI
 
 		public virtual async Task<bool> Quit ()
 		{
-			if (!await App.Current.StateController.EmptyStateStack ()) {
+			if (!await App.Current.StateController.MoveToHome ()) {
 				return false;
 			}
 			Log.Information ("Quit application");
-			Gtk.Application.Quit ();
+			Application.Quit ();
 			return true;
 		}
 
@@ -126,7 +126,7 @@ namespace VAS.UI
 
 		public void Invoke (EventHandler handler)
 		{
-			Gtk.Application.Invoke (handler);
+			Application.Invoke (handler);
 		}
 
 		public abstract Task<bool> CreateNewTemplate<T> (IList<T> availableTemplates, string defaultName,
