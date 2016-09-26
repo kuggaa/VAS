@@ -1,189 +1,189 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4ECD63CF-7153-4BCF-83D4-66E543CF3E8F}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>VAS.Tests</RootNamespace>
-    <AssemblyName>VAS.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\..\bin</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\bin</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="ICSharpCode.SharpZipLib.Portable">
-      <HintPath>$(SolutionDir)\packages\SharpZipLib.Portable.0.86.0.0003\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid+Xamarin.iOS10\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
-    </Reference>
-    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="Moq">
-      <HintPath>$(SolutionDir)\packages\Moq.4.2.1506.2016\lib\net40\Moq.dll</HintPath>
-      <Package>moq</Package>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>$(SolutionDir)\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
-      <Package>nunit</Package>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>$(SolutionDir)\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Package>newtonsoft-json</Package>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Stateless">
-      <HintPath>$(SolutionDir)\packages\Stateless.2.5.61.0\lib\portable-net40+sl50+win+wp80+MonoAndroid10+xamarinios10+MonoTouch10\Stateless.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="SQLitePCL.raw">
-      <HintPath>$(SolutionDir)\packages\SQLitePCL.raw.0.9.1\lib\net45\SQLitePCL.raw.dll</HintPath>
-    </Reference>
-    <Reference Include="SQLitePCL.ugly">
-      <HintPath>$(SolutionDir)\packages\SQLitePCL.ugly.0.9.1\lib\net35\SQLitePCL.ugly.dll</HintPath>
-    </Reference>
-    <Reference Include="SQLitePCLPlugin_esqlite3">
-      <HintPath>$(SolutionDir)\packages\SQLitePCL.plugin.sqlite3.net45.0.9.1\lib\net45\SQLitePCLPlugin_esqlite3.dll</HintPath>
-    </Reference>
-    <Reference Include="Couchbase.Lite.Storage.SystemSQLite">
-      <HintPath>$(SolutionDir)\packages\Couchbase.Lite.Storage.SystemSQLite.LM.1.3.1.1\lib\net45\Couchbase.Lite.Storage.SystemSQLite.dll</HintPath>
-    </Reference>
-    <Reference Include="Couchbase.Lite">
-      <HintPath>$(SolutionDir)\packages\Couchbase.Lite.LM.1.3.1.1\lib\net45\Couchbase.Lite.dll</HintPath>
-    </Reference>
-    <Reference Include="websocket-sharp">
-      <HintPath>$(SolutionDir)\packages\Couchbase.Lite.LM.1.3.1.1\lib\net45\websocket-sharp.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Test.cs" />
-    <Compile Include="Core\TestResources.cs" />
-    <Compile Include="Core\Common\TestCloner.cs" />
-    <Compile Include="Core\Common\TestColor.cs" />
-    <Compile Include="Core\Common\TestDirectoryMonitor.cs" />
-    <Compile Include="Core\Common\TestExtensions.cs" />
-    <Compile Include="Core\Common\TestImage.cs" />
-    <Compile Include="DB\TestDatabaseManager.cs" />
-    <Compile Include="DB\TestStorage.cs" />
-    <Compile Include="DB\TestViews.cs" />
-    <Compile Include="Core\Filters\TestQueryFilter.cs" />
-    <Compile Include="Utils.cs" />
-    <Compile Include="Core\Serialization\TestObjectChangedParser.cs" />
-    <Compile Include="Core\Store\Drawables\TestAngle.cs" />
-    <Compile Include="Core\Store\Drawables\TestEllipse.cs" />
-    <Compile Include="Core\Store\Drawables\TestLine.cs" />
-    <Compile Include="Core\Store\Drawables\TestMultipoints.cs" />
-    <Compile Include="Core\Store\Drawables\TestQuadrilateral.cs" />
-    <Compile Include="Core\Store\Drawables\TestRectangle.cs" />
-    <Compile Include="Core\Store\Drawables\TestDrawable.cs" />
-    <Compile Include="Core\Store\Drawables\TestText.cs" />
-    <Compile Include="Core\Store\Drawables\TestCircle.cs" />
-    <Compile Include="Core\Store\Drawables\TestCross.cs" />
-    <Compile Include="Core\Store\Drawables\TestCounter.cs" />
-    <Compile Include="Core\Store\Playlists\TestPlaylist.cs" />
-    <Compile Include="Core\Store\Playlists\TestPlaylistPlayElement.cs" />
-    <Compile Include="Core\Store\Templates\TestDashboard.cs" />
-    <Compile Include="Core\Store\TestActionLink.cs" />
-    <Compile Include="Core\Store\TestCoordinates.cs" />
-    <Compile Include="Core\Store\TestDashboardButton.cs" />
-    <Compile Include="Core\Store\TestEventType.cs" />
-    <Compile Include="Core\Store\TestFrameDrawing.cs" />
-    <Compile Include="Core\Store\TestHotkey.cs" />
-    <Compile Include="Core\Store\TestMediaFile.cs" />
-    <Compile Include="Core\Store\TestMediaFileSet.cs" />
-    <Compile Include="Core\Store\TestPlayer.cs" />
-    <Compile Include="Core\Store\TestPoint.cs" />
-    <Compile Include="Core\Store\TestProject.cs" />
-    <Compile Include="Core\Store\TestTag.cs" />
-    <Compile Include="Core\Store\TestTime.cs" />
-    <Compile Include="Core\Store\TestTimelineEvent.cs" />
-    <Compile Include="Core\Store\TestTimeNode.cs" />
-    <Compile Include="Core\Store\TestTimer.cs" />
-    <Compile Include="Services\TestPlayerController.cs" />
-    <Compile Include="Services\TestPlaylistManager.cs" />
-    <Compile Include="Setup.cs" />
-    <Compile Include="Events\TestEvents.cs" />
-    <Compile Include="MVVMC\TestCollectionViewModel.cs" />
-    <Compile Include="MVVMC\TestControllerLocator.cs" />
-    <Compile Include="MVVMC\TestViewLocator.cs" />
-    <Compile Include="MVVMC\TestViewModelBase.cs" />
-    <Compile Include="MVVMC\TestBindableBase.cs" />
-    <Compile Include="Core\Hotkeys\TestHotKeysContexts.cs" />
-    <Compile Include="Core\Common\TestStateController.cs" />
-    <Compile Include="Core\Common\TestRegistry.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\packages\SQLitePCL.native.sqlite3.v110_xp.0.9.1\build\SQLitePCL.native.sqlite3.v110_xp.targets" Condition="Exists('$(SolutionDir)\packages\SQLitePCL.native.sqlite3.v110_xp.0.9.1\build\SQLitePCL.native.sqlite3.v110_xp.targets')" />
-  <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="data\longomatch-dark-bg.svg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\longomatch.svg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\VAS.DB\VAS.DB.Net45.csproj">
-      <Project>{EC395325-994F-47F6-8FC2-AC17EC452EDA}</Project>
-      <Name>VAS.DB.Net45</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VAS.Core\VAS.Core.Net45.csproj">
-      <Project>{08AE7734-B995-4E0D-AD8F-38F597E0D4DF}</Project>
-      <Name>VAS.Core.Net45</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VAS.Services\VAS.Services.Net45.csproj">
-      <Project>{153BFD3F-6E06-451B-AD79-6C207762BBBB}</Project>
-      <Name>VAS.Services.Net45</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VAS.UI.Gtk2\VAS.UI.Gtk2.csproj">
-      <Project>{4F1F28AB-3D1F-4F3F-95A4-2E08B448317C}</Project>
-      <Name>VAS.UI.Gtk2</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Core\" />
-    <Folder Include="data\" />
-    <Folder Include="Core\Common\" />
-    <Folder Include="Core\Filters\" />
-    <Folder Include="Core\Store\" />
-    <Folder Include="Core\Store\Drawables\" />
-    <Folder Include="Core\Serialization\" />
-    <Folder Include="Core\Store\Playlists\" />
-    <Folder Include="Core\Store\Templates\" />
-    <Folder Include="DB\" />
-    <Folder Include="Services\" />
-    <Folder Include="Events\" />
-    <Folder Include="MVVMC\" />
-    <Folder Include="Core\Hotkeys\" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Core\dibujo.svg">
-      <LogicalName>dibujo.svg</LogicalName>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ProjectExtensions>
-    <MonoDevelop>
-      <Properties>
-        <Policies>
-          <StandardHeader Text="&#xA; Copyright (C) ${Year} ${CopyrightHolder}&#xA;&#xA; This program is free software; you can redistribute it and/or modify&#xA; it under the terms of the GNU General Public License as published by&#xA; the Free Software Foundation; either version 2 of the License, or&#xA; (at your option) any later version.&#xA;&#xA; This program is distributed in the hope that it will be useful,&#xA; but WITHOUT ANY WARRANTY; without even the implied warranty of&#xA; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the&#xA; GNU General Public License for more details.&#xA; &#xA; You should have received a copy of the GNU General Public License&#xA; along with this program; if not, write to the Free Software&#xA; Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.&#xA;" IncludeInNewFiles="True" />
-        </Policies>
-      </Properties>
-    </MonoDevelop>
-  </ProjectExtensions>
+	<PropertyGroup>
+		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+		<ProjectGuid>{4ECD63CF-7153-4BCF-83D4-66E543CF3E8F}</ProjectGuid>
+		<OutputType>Library</OutputType>
+		<RootNamespace>VAS.Tests</RootNamespace>
+		<AssemblyName>VAS.Tests</AssemblyName>
+		<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>full</DebugType>
+		<Optimize>false</Optimize>
+		<OutputPath>..\..\bin</OutputPath>
+		<DefineConstants>DEBUG;</DefineConstants>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+		<ConsolePause>false</ConsolePause>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<DebugType>full</DebugType>
+		<Optimize>true</Optimize>
+		<OutputPath>..\..\bin</OutputPath>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+		<ConsolePause>false</ConsolePause>
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include="System" />
+		<Reference Include="ICSharpCode.SharpZipLib.Portable">
+			<HintPath>$(SolutionDir)\packages\SharpZipLib.Portable.0.86.0.0003\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid+Xamarin.iOS10\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
+		</Reference>
+		<Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+		<Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+		<Reference Include="Moq">
+			<HintPath>$(SolutionDir)\packages\Moq.4.2.1506.2016\lib\net40\Moq.dll</HintPath>
+			<Package>moq</Package>
+		</Reference>
+		<Reference Include="nunit.framework">
+			<HintPath>..\..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+			<Package>nunit</Package>
+		</Reference>
+		<Reference Include="Newtonsoft.Json">
+			<HintPath>$(SolutionDir)\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+			<Package>newtonsoft-json</Package>
+		</Reference>
+		<Reference Include="Microsoft.CSharp" />
+		<Reference Include="Stateless">
+			<HintPath>$(SolutionDir)\packages\Stateless.2.5.61.0\lib\portable-net40+sl50+win+wp80+MonoAndroid10+xamarinios10+MonoTouch10\Stateless.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="SQLitePCL.raw">
+			<HintPath>$(SolutionDir)\packages\SQLitePCL.raw.0.9.1\lib\net45\SQLitePCL.raw.dll</HintPath>
+		</Reference>
+		<Reference Include="SQLitePCL.ugly">
+			<HintPath>$(SolutionDir)\packages\SQLitePCL.ugly.0.9.1\lib\net35\SQLitePCL.ugly.dll</HintPath>
+		</Reference>
+		<Reference Include="SQLitePCLPlugin_esqlite3">
+			<HintPath>$(SolutionDir)\packages\SQLitePCL.plugin.sqlite3.net45.0.9.1\lib\net45\SQLitePCLPlugin_esqlite3.dll</HintPath>
+		</Reference>
+		<Reference Include="Couchbase.Lite.Storage.SystemSQLite">
+			<HintPath>$(SolutionDir)\packages\Couchbase.Lite.Storage.SystemSQLite.LM.1.3.1.1\lib\net45\Couchbase.Lite.Storage.SystemSQLite.dll</HintPath>
+		</Reference>
+		<Reference Include="Couchbase.Lite">
+			<HintPath>$(SolutionDir)\packages\Couchbase.Lite.LM.1.3.1.1\lib\net45\Couchbase.Lite.dll</HintPath>
+		</Reference>
+		<Reference Include="websocket-sharp">
+			<HintPath>$(SolutionDir)\packages\Couchbase.Lite.LM.1.3.1.1\lib\net45\websocket-sharp.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Include="Test.cs" />
+		<Compile Include="Core\TestResources.cs" />
+		<Compile Include="Core\Common\TestCloner.cs" />
+		<Compile Include="Core\Common\TestColor.cs" />
+		<Compile Include="Core\Common\TestDirectoryMonitor.cs" />
+		<Compile Include="Core\Common\TestExtensions.cs" />
+		<Compile Include="Core\Common\TestImage.cs" />
+		<Compile Include="DB\TestDatabaseManager.cs" />
+		<Compile Include="DB\TestStorage.cs" />
+		<Compile Include="DB\TestViews.cs" />
+		<Compile Include="Core\Filters\TestQueryFilter.cs" />
+		<Compile Include="Utils.cs" />
+		<Compile Include="Core\Serialization\TestObjectChangedParser.cs" />
+		<Compile Include="Core\Store\Drawables\TestAngle.cs" />
+		<Compile Include="Core\Store\Drawables\TestEllipse.cs" />
+		<Compile Include="Core\Store\Drawables\TestLine.cs" />
+		<Compile Include="Core\Store\Drawables\TestMultipoints.cs" />
+		<Compile Include="Core\Store\Drawables\TestQuadrilateral.cs" />
+		<Compile Include="Core\Store\Drawables\TestRectangle.cs" />
+		<Compile Include="Core\Store\Drawables\TestDrawable.cs" />
+		<Compile Include="Core\Store\Drawables\TestText.cs" />
+		<Compile Include="Core\Store\Drawables\TestCircle.cs" />
+		<Compile Include="Core\Store\Drawables\TestCross.cs" />
+		<Compile Include="Core\Store\Drawables\TestCounter.cs" />
+		<Compile Include="Core\Store\Playlists\TestPlaylist.cs" />
+		<Compile Include="Core\Store\Playlists\TestPlaylistPlayElement.cs" />
+		<Compile Include="Core\Store\Templates\TestDashboard.cs" />
+		<Compile Include="Core\Store\TestActionLink.cs" />
+		<Compile Include="Core\Store\TestCoordinates.cs" />
+		<Compile Include="Core\Store\TestDashboardButton.cs" />
+		<Compile Include="Core\Store\TestEventType.cs" />
+		<Compile Include="Core\Store\TestFrameDrawing.cs" />
+		<Compile Include="Core\Store\TestHotkey.cs" />
+		<Compile Include="Core\Store\TestMediaFile.cs" />
+		<Compile Include="Core\Store\TestMediaFileSet.cs" />
+		<Compile Include="Core\Store\TestPlayer.cs" />
+		<Compile Include="Core\Store\TestPoint.cs" />
+		<Compile Include="Core\Store\TestProject.cs" />
+		<Compile Include="Core\Store\TestTag.cs" />
+		<Compile Include="Core\Store\TestTime.cs" />
+		<Compile Include="Core\Store\TestTimelineEvent.cs" />
+		<Compile Include="Core\Store\TestTimeNode.cs" />
+		<Compile Include="Core\Store\TestTimer.cs" />
+		<Compile Include="Services\TestPlayerController.cs" />
+		<Compile Include="Services\TestPlaylistManager.cs" />
+		<Compile Include="Setup.cs" />
+		<Compile Include="Events\TestEvents.cs" />
+		<Compile Include="MVVMC\TestCollectionViewModel.cs" />
+		<Compile Include="MVVMC\TestControllerLocator.cs" />
+		<Compile Include="MVVMC\TestViewLocator.cs" />
+		<Compile Include="MVVMC\TestViewModelBase.cs" />
+		<Compile Include="MVVMC\TestBindableBase.cs" />
+		<Compile Include="Core\Hotkeys\TestHotKeysContexts.cs" />
+		<Compile Include="Core\Common\TestStateController.cs" />
+		<Compile Include="Core\Common\TestRegistry.cs" />
+	</ItemGroup>
+	<Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+	<Import Project="$(SolutionDir)\packages\SQLitePCL.native.sqlite3.v110_xp.0.9.1\build\SQLitePCL.native.sqlite3.v110_xp.targets" Condition="Exists('$(SolutionDir)\packages\SQLitePCL.native.sqlite3.v110_xp.0.9.1\build\SQLitePCL.native.sqlite3.v110_xp.targets')" />
+	<ItemGroup>
+		<None Include="packages.config" />
+		<None Include="data\longomatch-dark-bg.svg">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Include="data\longomatch.svg">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\VAS.DB\VAS.DB.Net45.csproj">
+			<Project>{EC395325-994F-47F6-8FC2-AC17EC452EDA}</Project>
+			<Name>VAS.DB.Net45</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\VAS.Core\VAS.Core.Net45.csproj">
+			<Project>{08AE7734-B995-4E0D-AD8F-38F597E0D4DF}</Project>
+			<Name>VAS.Core.Net45</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\VAS.Services\VAS.Services.Net45.csproj">
+			<Project>{153BFD3F-6E06-451B-AD79-6C207762BBBB}</Project>
+			<Name>VAS.Services.Net45</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\VAS.UI.Gtk2\VAS.UI.Gtk2.csproj">
+			<Project>{4F1F28AB-3D1F-4F3F-95A4-2E08B448317C}</Project>
+			<Name>VAS.UI.Gtk2</Name>
+		</ProjectReference>
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Core\" />
+		<Folder Include="data\" />
+		<Folder Include="Core\Common\" />
+		<Folder Include="Core\Filters\" />
+		<Folder Include="Core\Store\" />
+		<Folder Include="Core\Store\Drawables\" />
+		<Folder Include="Core\Serialization\" />
+		<Folder Include="Core\Store\Playlists\" />
+		<Folder Include="Core\Store\Templates\" />
+		<Folder Include="DB\" />
+		<Folder Include="Services\" />
+		<Folder Include="Events\" />
+		<Folder Include="MVVMC\" />
+		<Folder Include="Core\Hotkeys\" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Core\dibujo.svg">
+			<LogicalName>dibujo.svg</LogicalName>
+		</EmbeddedResource>
+	</ItemGroup>
+	<ProjectExtensions>
+		<MonoDevelop>
+			<Properties>
+				<Policies>
+					<StandardHeader Text="&#xA; Copyright (C) ${Year} ${CopyrightHolder}&#xA;&#xA; This program is free software; you can redistribute it and/or modify&#xA; it under the terms of the GNU General Public License as published by&#xA; the Free Software Foundation; either version 2 of the License, or&#xA; (at your option) any later version.&#xA;&#xA; This program is distributed in the hope that it will be useful,&#xA; but WITHOUT ANY WARRANTY; without even the implied warranty of&#xA; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the&#xA; GNU General Public License for more details.&#xA; &#xA; You should have received a copy of the GNU General Public License&#xA; along with this program; if not, write to the Free Software&#xA; Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.&#xA;" IncludeInNewFiles="True" />
+				</Policies>
+			</Properties>
+		</MonoDevelop>
+	</ProjectExtensions>
 </Project>
