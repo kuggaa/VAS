@@ -779,7 +779,6 @@ namespace VAS.Tests.Services
 			App.Current.EventsBroker.Unsubscribe<PlaylistElementLoadedEvent> (et);
 		}
 
-
 		[Test ()]
 		public void TestPrev4 ()
 		{
@@ -882,6 +881,23 @@ namespace VAS.Tests.Services
 			});
 			playerMock.Raise (p => p.Error += null, this, "error");
 			Assert.AreEqual ("error", msg);
+		}
+
+		[Test ()]
+		public void TestLoadCameraEvent ()
+		{
+			// Arrange
+			viewPortMock = new Mock <IViewPort> ();
+			viewPortMock.SetupAllProperties ();
+			player.ViewPorts = new List<IViewPort> { viewPortMock.Object };
+			Time seekTime = new Time (60000);
+
+			// Action
+			player.LoadCameraEvent (evt, seekTime, false);
+
+			// Assert
+			Assert.IsNull (player.CamerasLayout);
+			Assert.AreEqual (1, player.CamerasConfig.Count);
 		}
 
 		[Test ()]
