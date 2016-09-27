@@ -1,5 +1,5 @@
-//
-//  Copyright (C) 2014 Andoni Morales Alastruey
+﻿//
+//  Copyright (C) 2016 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,30 +15,18 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System.ComponentModel;
-using VAS.Core.Common;
-using VAS.Core.Interfaces;
-using VAS.Core.Store;
+//
+using System;
+using VAS.Core.MVVMC;
+using VAS.Core.Store.Playlists;
 
-namespace VAS.Core.Interfaces
+namespace VAS.Services.ViewModel
 {
-	public interface IPlaylistElement: IChanged, INotifyPropertyChanged
+	public class PlaylistCollectionVM : CollectionViewModel<Playlist, PlaylistVM>
 	{
-		string Description {
-			get;
-		}
-
-		Image Miniature {
-			get;
-		}
-
-		bool Selected {
-			get;
-			set;
-		}
-
-		Time Duration {
-			get;
+		public PlaylistCollectionVM ()
+		{
 		}
 	}
 }
+
