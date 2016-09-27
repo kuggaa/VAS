@@ -8,7 +8,7 @@ XBUILD_CMD = $(XBUILD) \
  /property:BuildProjectReferences=false \
  /property:Configuration=Release \
  /property:OutDir=$(BUILD_DIR)/ \
- /property:SolutionDir=$(top_builddir)/.. \
+ /property:SolutionDir=$(top_builddir) \
  $(PROJECT_FILE) $(XBUILD_EXTRA_FLAGS)
 
 OUTPUT_FILES ?= \
