@@ -16,10 +16,16 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using VAS.Core.Common;
+using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.Interfaces.GUI
 {
+
 	public interface IPlayerView
+	{
+	}
+
+	public interface IPlayerViewModel : IViewModel
 	{
 		IPlayerController Player { get; }
 
@@ -29,7 +35,7 @@ namespace VAS.Core.Interfaces.GUI
 
 		bool PlayerAttached { set; }
 
-		void ShowDetachButton (bool show);
+		bool ShowDetachButton { set; }
 	}
 }
 

@@ -31,6 +31,7 @@ using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
+using VAS.Services.ViewModel;
 using Timer = System.Threading.Timer;
 
 namespace VAS.Services
@@ -50,7 +51,7 @@ namespace VAS.Services
 		public event PrepareViewHandler PrepareViewEvent;
 
 		protected const int TIMEOUT_MS = 20;
-
+		PlayerVM playerVM;
 		protected IPlayer player;
 		protected IMultiPlayer multiPlayer;
 		protected TimelineEvent loadedEvent;
@@ -230,8 +231,12 @@ namespace VAS.Services
 		}
 
 		public virtual bool Playing {
-			get;
-			set;
+			get {
+				return playerVM.Playing;
+			}
+			set {
+				playerVM.Playing = value;
+			}
 		}
 
 		public virtual MediaFileSet FileSet {
@@ -825,6 +830,7 @@ namespace VAS.Services
 		//FIXME: MVVMC to be implemented
 		void IController.SetViewModel (IViewModel viewModel)
 		{
+			playerVM = (PlayerVM)viewModel;
 		}
 
 		IEnumerable<KeyAction> IController.GetDefaultKeyActions ()
@@ -892,8 +898,8 @@ namespace VAS.Services
 
 		protected virtual void EmitLoadDrawings (FrameDrawing drawing = null)
 		{
-			if (LoadDrawingsEvent != null && !disposed) {
-				LoadDrawingsEvent (drawing);
+			if (!disposed) {
+				playerVM.FrameDrawing = drawing;
 			}
 		}
 
@@ -902,6 +908,7 @@ namespace VAS.Services
 			if (PrepareViewEvent != null && !disposed) {
 				PrepareViewEvent ();
 			}
+			playerVM.PrepareView = true;
 		}
 
 		protected virtual void EmitElementLoaded (object element, bool hasNext)
@@ -909,6 +916,8 @@ namespace VAS.Services
 			if (ElementLoadedEvent != null && !disposed) {
 				ElementLoadedEvent (element, hasNext);
 			}
+			playerVM.HasNext = hasNext;
+			playerVM.PlayListElement = element as IPlaylistElement;
 		}
 
 		protected virtual void EmitEventUnloaded ()
@@ -917,13 +926,6 @@ namespace VAS.Services
 			App.Current.EventsBroker.Publish<EventLoadedEvent> (
 				new EventLoadedEvent ()
 			);
-		}
-
-		protected virtual void EmitRateChanged (float rate)
-		{
-			if (PlaybackRateChangedEvent != null && !disposed) {
-				PlaybackRateChangedEvent (rate);
-			}
 		}
 
 		protected virtual void EmitVolumeChanged (float volume)
@@ -935,8 +937,10 @@ namespace VAS.Services
 
 		protected virtual void EmitTimeChanged (Time currentTime, Time duration)
 		{
-			if (TimeChangedEvent != null && !disposed) {
-				TimeChangedEvent (currentTime, duration ?? currentTime, !StillImageLoaded);
+			if (!disposed) {
+				playerVM.Duration = duration ?? currentTime;
+				playerVM.CurrentTime = currentTime;
+				playerVM.Seekable = !StillImageLoaded;
 			}
 		}
 
@@ -947,7 +951,7 @@ namespace VAS.Services
 					Sender = sender, 
 					Playing = playing
 				};
-				PlaybackStateChangedEvent (playbackStateChangedEvent);
+				playerVM.Playing = playing;
 				App.Current.EventsBroker.Publish<PlaybackStateChangedEvent> (playbackStateChangedEvent);
 			}
 		}
@@ -957,6 +961,7 @@ namespace VAS.Services
 			if (MediaFileSetLoadedEvent != null && !disposed) {
 				MediaFileSetLoadedEvent (fileSet, camerasVisible);
 			}
+			playerVM.FileSet = fileSet;
 		}
 
 		#endregion
@@ -1153,7 +1158,7 @@ namespace VAS.Services
 			player.Rate = rate;
 
 			SetEventRate (rate);
-			EmitRateChanged (rate);
+			playerVM.Rate = rate;
 		}
 
 		/// <summary>

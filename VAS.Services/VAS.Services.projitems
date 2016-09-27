@@ -30,6 +30,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypeVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypeCollectionVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\EventsController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlayerVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />
