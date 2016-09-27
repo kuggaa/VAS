@@ -55,5 +55,10 @@ namespace VAS.Core.Interfaces.MVVMC
 
 		bool ShowDetachButton { set; }
 	}
+
+	public interface IAnalysisViewModel
+	{
+		IPlayerViewModel PlayerViewModel { get; }
+	}
 }
 

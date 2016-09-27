@@ -307,6 +307,33 @@ namespace VAS.Services.ViewModel
 				});
 		}
 
+		public void LoadEvent (TimelineEvent e)
+		{
+			if (e?.Duration.MSeconds == 0) {
+				// These events don't have duration, we start playing as if it was a seek
+				Player.Switch (null, null, null);
+				Player.UnloadCurrentEvent ();
+				Player.Seek (e.EventTime, true);
+				Player.Play ();
+			} else {
+				if (e != null) {
+					LoadPlay (e, new Time (0), true);
+				} else if (Player != null) {
+					Player.UnloadCurrentEvent ();
+				}
+			}
+		}
+
+		public void LoadPlay (TimelineEvent e, Time seekTime, bool playing)
+		{
+			e.Selected = true;
+			Player.LoadEvent (
+				e, seekTime, playing);
+			if (playing) {
+				Player.Play ();
+			}
+		}
+
 		#endregion
 	}
 }

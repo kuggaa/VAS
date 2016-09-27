@@ -46,8 +46,12 @@ namespace VAS.Services.ViewModel
 		}
 
 		public bool Viewing {
-			get;
-			set;
+			get {
+				return Model.Selected;
+			}
+			set {
+				Model.Selected = value;
+			}
 		}
 	}
 }
