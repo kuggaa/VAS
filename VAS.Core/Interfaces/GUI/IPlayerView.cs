@@ -20,22 +20,9 @@ using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.Interfaces.GUI
 {
-
+	//This is only used to in inject the corresponding PlayerView and use the interface
 	public interface IPlayerView
 	{
-	}
-
-	public interface IPlayerViewModel : IViewModel
-	{
-		IPlayerController Player { get; }
-
-		PlayerViewOperationMode Mode  { get; set; }
-
-		bool SupportsMultipleCameras { get; }
-
-		bool PlayerAttached { set; }
-
-		bool ShowDetachButton { set; }
 	}
 }
 

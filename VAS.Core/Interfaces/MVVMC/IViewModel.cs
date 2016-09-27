@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using VAS.Core.Common;
 
 namespace VAS.Core.Interfaces.MVVMC
 {
@@ -40,6 +41,19 @@ namespace VAS.Core.Interfaces.MVVMC
 	public interface INestedViewModel<T,VMChilds> : INestedViewModel, IViewModel <T>, IEnumerable <VMChilds>
 	{
 		ObservableCollection<VMChilds> ViewModels { set; get; }
+	}
+
+	public interface IPlayerViewModel : IViewModel
+	{
+		IPlayerController Player { get; }
+
+		PlayerViewOperationMode Mode  { get; set; }
+
+		bool SupportsMultipleCameras { get; }
+
+		bool PlayerAttached { set; }
+
+		bool ShowDetachButton { set; }
 	}
 }
 
