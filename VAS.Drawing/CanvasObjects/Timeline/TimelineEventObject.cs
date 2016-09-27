@@ -68,7 +68,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 		}
 
-		void DrawLine (IDrawingToolkit tk, double start, double stop, int lineWidth)
+		protected void DrawLine (IDrawingToolkit tk, double start, double stop, int lineWidth)
 		{
 			double y;
 			
