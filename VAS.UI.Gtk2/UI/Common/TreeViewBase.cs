@@ -31,32 +31,32 @@ namespace VAS.UI.Common
 	/// <summary>
 	/// Tree view base implementation for MVVM.
 	/// </summary>
-	public class TreeViewBase<T, M, VM> : Gtk.TreeView, IView<T> 
-		where T : CollectionViewModel<M, VM> 
-		where VM: IViewModel<M>, new()
+	public class TreeViewBase<TCollectionViewModel, TModel, TViewModel> : Gtk.TreeView, IView<TCollectionViewModel>
+		where TCollectionViewModel : CollectionViewModel<TModel, TViewModel>
+		where TViewModel: IViewModel<TModel>, new()
 	{
 		protected ListStore store;
-		T viewModel;
-		protected Dictionary<VM, TreeIter> dictionaryStore;
+		TCollectionViewModel viewModel;
+		protected Dictionary<TViewModel, TreeIter> dictionaryStore;
 
-		public TreeViewBase () : this (new Gtk.ListStore (typeof(VM)))
+		public TreeViewBase () : this (new Gtk.ListStore (typeof(TViewModel)))
 		{
 		}
 
 		public TreeViewBase (Gtk.ListStore listStore)
 		{
 			Model = store = listStore;
-			dictionaryStore = new Dictionary<VM, TreeIter> ();
+			dictionaryStore = new Dictionary<TViewModel, TreeIter> ();
 		}
 
 		#region IView implementation
 
 		public virtual void SetViewModel (object ViewModel)
 		{
-			this.ViewModel = ViewModel as T;
+			this.ViewModel = ViewModel as TCollectionViewModel;
 		}
 
-		public T ViewModel {
+		public TCollectionViewModel ViewModel {
 			get {
 				return viewModel;
 			}
@@ -65,7 +65,7 @@ namespace VAS.UI.Common
 					ClearSubViewModels ();
 				}
 				viewModel = value;
-				foreach (VM item in viewModel.ViewModels) {
+				foreach (TViewModel item in viewModel.ViewModels) {
 					AddSubViewModel (item);
 				}
 				viewModel.ViewModels.CollectionChanged += ViewModelCollectionChanged;
@@ -78,13 +78,13 @@ namespace VAS.UI.Common
 		{
 			switch (e.Action) {
 			case NotifyCollectionChangedAction.Add:
-				foreach (VM item in e.NewItems) {
+				foreach (TViewModel item in e.NewItems) {
 					AddSubViewModel (item);
 				}
 				break;
 
 			case NotifyCollectionChangedAction.Remove:
-				foreach (VM item in e.OldItems) {
+				foreach (TViewModel item in e.OldItems) {
 					RemoveSubViewModel (item);
 				}
 				break;
@@ -103,7 +103,7 @@ namespace VAS.UI.Common
 			}
 		}
 
-		protected virtual void AddSubViewModel (VM subViewModel)
+		protected virtual void AddSubViewModel (TViewModel subViewModel)
 		{
 			subViewModel.PropertyChanged += PropertyChangedItem;
 			TreeIter iter = store.AppendValues (subViewModel);
@@ -118,14 +118,14 @@ namespace VAS.UI.Common
 			dictionaryStore.Clear ();
 		}
 
-		void ClearSubViewModelListeners (IEnumerable<VM> collection)
+		void ClearSubViewModelListeners (IEnumerable<TViewModel> collection)
 		{
-			foreach (VM item in collection) {
+			foreach (TViewModel item in collection) {
 				RemoveSubViewModelListener (item);
 			}
 		}
 
-		protected virtual void RemoveSubViewModel (VM subViewModel)
+		protected virtual void RemoveSubViewModel (TViewModel subViewModel)
 		{
 			RemoveSubViewModelListener (subViewModel);
 			TreeIter iter = dictionaryStore [subViewModel];
@@ -134,17 +134,17 @@ namespace VAS.UI.Common
 			}
 		}
 
-		void RemoveSubViewModelListener (VM vm)
+		void RemoveSubViewModelListener (TViewModel vm)
 		{
 			vm.PropertyChanged -= PropertyChangedItem;
 		}
 
 		void PropertyChangedItem (object sender, PropertyChangedEventArgs e)
 		{
-			if (!(sender is VM)) {
+			if (!(sender is TViewModel)) {
 				return;
 			}
-			TreeIter iter = dictionaryStore [(VM)sender];
+			TreeIter iter = dictionaryStore [(TViewModel)sender];
 			Model.EmitRowChanged (store.GetPath (iter), iter);
 		}
 	}
