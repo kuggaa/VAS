@@ -44,6 +44,20 @@ namespace VAS.Services.ViewModel
 			get;
 			set;
 		}
+
+		public override int GetHashCode ()
+		{
+			return Name.GetHashCode ();
+		}
+
+		public override bool Equals (object obj)
+		{
+			EventTypeVM<VMChild> e = obj as EventTypeVM<VMChild>;
+			if (e == null) {
+				return false;
+			}
+			return Model.Name == e.Model.Name;
+		}
 	}
 }
 
