@@ -1,4 +1,5 @@
-﻿using VAS.Core.Interfaces;
+﻿using VAS.Core.Common;
+using VAS.Core.Interfaces;
 using VAS.Core.Store;
 
 namespace VAS.Core.Events
@@ -41,6 +42,18 @@ namespace VAS.Core.Events
 		/// </summary>
 		/// <value>The player.</value>
 		public IPlayerController player { get; set; }
+	}
+
+	/// <summary>
+	/// Events that indicates that video Timeline mode has changed
+	/// </summary>
+	public class VideoTimelineModeChangedEvent : Event
+	{
+		/// <summary>
+		/// Gets or sets the video timeline mode.
+		/// </summary>
+		/// <value>The video tl mode.</value>
+		public VideoTimelineMode videoTlMode { get; set; }
 	}
 
 	public class ChangeVideoMessageEvent : Event

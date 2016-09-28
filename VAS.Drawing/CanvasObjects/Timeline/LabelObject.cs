@@ -18,6 +18,7 @@
 using System;
 using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
 
@@ -226,6 +227,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			openButton.Width = (int)RectSize;
 			openButton.Height = (int)RectSize;
 			openButton.ImagePadding = TIMELINE_IMAGE_PADDING;
+			openButton.Enabled = true;
 
 			stretchButton.BackgroundColor = App.Current.Style.PaletteBackgroundLight;
 			stretchButton.BorderColor = App.Current.Style.PaletteBackgroundDark;
@@ -233,6 +235,14 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			stretchButton.Width = (int)RectSize;
 			stretchButton.Height = (int)RectSize;
 			stretchButton.ImagePadding = TIMELINE_IMAGE_PADDING;
+			stretchButton.Enabled = false;
+
+			App.Current.EventsBroker.Subscribe<VideoTimelineModeChangedEvent> (HandleVideoTimelineModeChangedEvent);
+		}
+
+		void Dispose ()
+		{
+			App.Current.EventsBroker.Unsubscribe<VideoTimelineModeChangedEvent> (HandleVideoTimelineModeChangedEvent);
 		}
 
 		/// <summary>
@@ -303,7 +313,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 			tk.End ();
 		}
-
+		
 		public bool ClickInsideButton (Point p, TimelineButton button)
 		{
 			if (!button.Enabled) {
@@ -321,6 +331,11 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 
 			return insideX && insideY;
+		}
+
+		void HandleVideoTimelineModeChangedEvent (VideoTimelineModeChangedEvent e)
+		{
+			stretchButton.Enabled = e.videoTlMode != VideoTimelineMode.Default;
 		}
 	}
 }

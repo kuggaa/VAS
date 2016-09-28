@@ -33,15 +33,27 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 	public class CameraObject: TimeNodeObject
 	{
 		MediaFile mediaFile;
-		VideoTimelineMode videoTLmode;
 		SysTimer stretchedAndEditingTimer;
+
+		VideoTimelineMode videoTlmode;
+
+		VideoTimelineMode VideoTLmode {
+			get { return videoTlmode; }
+			set {
+				videoTlmode = value;
+				if (!IsStretched ()) {
+					App.Current.EventsBroker.Publish<VideoTimelineModeChangedEvent> (
+						new VideoTimelineModeChangedEvent () { videoTlMode = videoTlmode });
+				}
+			}
+		}
 
 		public CameraObject (MediaFile mf) :
 			base (new TimeNode { Start = new Time (-mf.Offset.MSeconds),
 				Stop = mf.Duration - mf.Offset, Name = mf.Name
 			})
 		{
-			videoTLmode = VideoTimelineMode.Default;
+			VideoTLmode = VideoTimelineMode.Default;
 			mediaFile = mf;
 			DraggingMode = NodeDraggingMode.Borders;
 			SelectionMode = NodeSelectionMode.Borders;
@@ -107,7 +119,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		/// <param name="area">Area.</param>
 		public override void Draw (IDrawingToolkit tk, Area area)
 		{
-			if (!UpdateDrawArea (tk, area, Area) && videoTLmode != VideoTimelineMode.Edit &&
+			if (!UpdateDrawArea (tk, area, Area) && VideoTLmode != VideoTimelineMode.Edit &&
 			    !(area.Left <= StartX || area.Left >= StopX)) {
 				return;
 			}
@@ -126,16 +138,16 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				tk.DrawRoundedRectangle (new Point (0, OffsetY), StopX - StartX, Height, 5);
 
 				// Draw left arrow
-				limitArrowL = videoTLmode == VideoTimelineMode.StretchedAndEditing ?
+				limitArrowL = VideoTLmode == VideoTimelineMode.StretchedAndEditing ?
 					Resources.LoadImage (StyleConf.LimitArrowRedL) : Resources.LoadImage (StyleConf.LimitArrowWhiteL);
 				tk.DrawImage (new Point (0, OffsetY), limitArrowL.Width, Height, limitArrowL, ScaleMode.AspectFit);
 
 				// Draw right arrow
-				limitArrowR = videoTLmode == VideoTimelineMode.StretchedAndEditing ?
+				limitArrowR = VideoTLmode == VideoTimelineMode.StretchedAndEditing ?
 					Resources.LoadImage (StyleConf.LimitArrowRedR) : Resources.LoadImage (StyleConf.LimitArrowWhiteR);
 				tk.DrawImage (new Point (StopX - StartX - limitArrowR.Width, OffsetY), limitArrowR.Width, Height, limitArrowR, ScaleMode.AspectFit);
 
-				if (videoTLmode == VideoTimelineMode.StretchedAndEditing) {
+				if (VideoTLmode == VideoTimelineMode.StretchedAndEditing) {
 					stretchedAndEditingTimer.Enabled = true;
 				}
 			} else {
@@ -152,7 +164,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				tk.DrawRoundedRectangle (new Point (StartX, OffsetY), StopX - StartX, Height, 5);
 
 				// Draw left arrow
-				if (videoTLmode == VideoTimelineMode.Edit) {
+				if (VideoTLmode == VideoTimelineMode.Edit) {
 					limitArrowL = SelectedLeft ? Resources.LoadImage (StyleConf.LimitArrowGreenSelectedL) : Resources.LoadImage (StyleConf.LimitArrowGreenL);
 				} else {
 					limitArrowL = SelectedLeft ? Resources.LoadImage (StyleConf.LimitArrowRedSelectedL) : Resources.LoadImage (StyleConf.LimitArrowRedL);
@@ -160,7 +172,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				tk.DrawImage (new Point (StartX, OffsetY), limitArrowL.Width, Height, limitArrowL, ScaleMode.AspectFit);
 
 				// Draw right arrow
-				if (videoTLmode == VideoTimelineMode.Edit) {
+				if (VideoTLmode == VideoTimelineMode.Edit) {
 					limitArrowR = SelectedRight ? Resources.LoadImage (StyleConf.LimitArrowGreenSelectedR) : Resources.LoadImage (StyleConf.LimitArrowGreenR);
 				} else {
 					limitArrowR = SelectedRight ? Resources.LoadImage (StyleConf.LimitArrowRedSelectedR) : Resources.LoadImage (StyleConf.LimitArrowRedR);
@@ -200,7 +212,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		{
 			// If video is stretched, cannot move borders
 			if (IsStretched ()) {
-				videoTLmode = VideoTimelineMode.StretchedAndEditing;
+				VideoTLmode = VideoTimelineMode.StretchedAndEditing;
 				return;
 			}
 
@@ -284,7 +296,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			movingPos = sel.Position;
 
 			// Set current videoTLmode.
-			videoTLmode = (StartX == 0) && StopX == Utils.TimeToPos (this.MaxTime, SecondsPerPixel) ?
+			VideoTLmode = (StartX == 0) && StopX == Utils.TimeToPos (this.MaxTime, SecondsPerPixel) ?
 							 VideoTimelineMode.Default : VideoTimelineMode.Edit;
 		}
 
@@ -294,7 +306,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		/// <returns><c>true</c> if the videoTLmode is stretched ; otherwise, <c>false</c>.</returns>
 		public bool IsStretched ()
 		{
-			return (videoTLmode == VideoTimelineMode.Stretched || videoTLmode == VideoTimelineMode.StretchedAndEditing);
+			return (VideoTLmode == VideoTimelineMode.Stretched || VideoTLmode == VideoTimelineMode.StretchedAndEditing);
 		}
 
 		/// <summary>
@@ -305,11 +317,11 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		{
 			var ev = new TimelineEvent ();
 			if (IsStretched ()) {
-				videoTLmode = VideoTimelineMode.Edit;
+				VideoTLmode = VideoTimelineMode.Edit;
 				ev.Start = new Time (0);
 				ev.Stop = MaxTime;
 			} else {
-				videoTLmode = VideoTimelineMode.Stretched;
+				VideoTLmode = VideoTimelineMode.Stretched;
 				ev.Start = Utils.PosToTime (new Point (StartX, 0), SecondsPerPixel);
 				ev.Stop = Utils.PosToTime (new Point (StopX, 0), SecondsPerPixel);
 			}
@@ -347,7 +359,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				}
 			}
 
-			videoTLmode = TimeNode.Start == new Time (0) && TimeNode.Stop == MaxTime ?
+			VideoTLmode = TimeNode.Start == new Time (0) && TimeNode.Stop == MaxTime ?
 				VideoTimelineMode.Default : VideoTimelineMode.Edit;
 
 			ReDraw ();
@@ -355,7 +367,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 		protected virtual void HandleTimeOut (Object source, ElapsedEventArgs e)
 		{
-			videoTLmode = VideoTimelineMode.Stretched;
+			VideoTLmode = VideoTimelineMode.Stretched;
 			stretchedAndEditingTimer.Stop ();
 
 			ReDraw ();
