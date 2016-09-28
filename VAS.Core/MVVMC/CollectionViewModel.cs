@@ -41,6 +41,8 @@ namespace VAS.Core.MVVMC
 
 		public CollectionViewModel ()
 		{
+			Model = new ObservableCollection<TModel> ();
+			ViewModels = new ObservableCollection<TViewModel> ();
 			Selection = new RangeObservableCollection<TViewModel> ();
 			Selection.CollectionChanged += HandleSelectionChanged;
 		}
