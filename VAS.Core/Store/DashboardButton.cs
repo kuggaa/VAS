@@ -152,9 +152,13 @@ namespace VAS.Core.Store
 		{
 			TagMode = TagMode.Predefined;
 			Start = new Time { TotalSeconds = 10 };
-			Start.IsChanged = false;
+			if (Start != null) {
+				Start.IsChanged = false;
+			}
 			Stop = new Time { TotalSeconds = 10 };
-			Stop.IsChanged = false;
+			if (Stop != null) {
+				Stop.IsChanged = false;
+			}
 		}
 
 		public TagMode TagMode {
@@ -162,12 +166,12 @@ namespace VAS.Core.Store
 			set;
 		}
 
-		public Time Start {
+		public virtual Time Start {
 			get;
 			set;
 		}
 
-		public Time Stop {
+		public virtual Time Stop {
 			get;
 			set;
 		}
