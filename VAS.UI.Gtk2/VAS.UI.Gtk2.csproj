@@ -77,6 +77,7 @@
     <Compile Include="UI\Common\TreeViewBase.cs" />
     <Compile Include="UI\Common\ComboBoxViewBase.cs" />
     <Compile Include="UI\Menu\MenuHelpers.cs" />
+    <Compile Include="UI\Common\PlaylistTreeView.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -106,6 +107,10 @@
     <ProjectReference Include="..\VAS.UI.Multimedia.Gtk2\VAS.UI.Multimedia.Gtk2.csproj">
       <Project>{473E7B85-AF42-40E8-BE21-46FF6CCC34D0}</Project>
       <Name>VAS.UI.Multimedia.Gtk2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VAS.Services\VAS.Services.Net45.csproj">
+      <Project>{153BFD3F-6E06-451B-AD79-6C207762BBBB}</Project>
+      <Name>VAS.Services.Net45</Name>
     </ProjectReference>
   </ItemGroup>
   <ProjectExtensions>

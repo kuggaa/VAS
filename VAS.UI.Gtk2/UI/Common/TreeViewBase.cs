@@ -34,31 +34,39 @@ namespace VAS.UI.Common
 	/// <summary>
 	/// Tree view base implementation for MVVM.
 	/// </summary>
-	public class TreeViewBase<TCollectionViewModel, TModel, TViewModel> : Gtk.TreeView, IView<TCollectionViewModel>
+	public class TreeViewBase<TCollectionViewModel, TModel, TViewModel> : TreeView, IView<TCollectionViewModel>
 		where TCollectionViewModel : NestedViewModel<TViewModel>
-		where TViewModel : IViewModel<TModel>, new()
+		where TViewModel: class, IViewModel<TModel>, new()
 	{
+		protected const int COL_DATA = 0;
 		protected TreeStore store;
 		TCollectionViewModel viewModel;
 		protected Dictionary<IViewModel, TreeIter> dictionaryStore;
 		protected Dictionary<INotifyCollectionChanged, TreeIter> dictionaryNestedParent;
 
-		public TreeViewBase () : this (new Gtk.TreeStore (typeof(TViewModel)))
+		protected TreeModelFilter filter;
+		protected TreeModelSort sort;
+
+		protected TViewModel activatedViewModel;
+
+		public TreeViewBase () : this (new TreeStore (typeof(TViewModel)))
 		{
 		}
 
-		public TreeViewBase (Gtk.TreeStore treeStore)
+		public TreeViewBase (TreeStore treeStore)
 		{
 			Model = store = treeStore;
 			dictionaryStore = new Dictionary<IViewModel, TreeIter> ();
 			dictionaryNestedParent = new Dictionary<INotifyCollectionChanged, TreeIter> ();
+			Selection.Changed += HandleTreeviewSelectionChanged;
+			RowActivated += HandleTreeviewRowActivated;
 		}
 
 		#region IView implementation
 
-		public virtual void SetViewModel (object ViewModel)
+		public virtual void SetViewModel (object viewModel)
 		{
-			this.ViewModel = ViewModel as TCollectionViewModel;
+			this.ViewModel = viewModel as TCollectionViewModel;
 		}
 
 		public TCollectionViewModel ViewModel {
@@ -209,6 +217,76 @@ namespace VAS.UI.Common
 			Model.EmitRowChanged (store.GetPath (iter), iter);
 			this.QueueDraw ();
 		}
+
+		#region Virtual methods
+
+		protected virtual void CreateFilterAndSort ()
+		{
+			filter = new TreeModelFilter (store, null);
+			filter.VisibleFunc = new TreeModelFilterVisibleFunc (HandleFilter);
+			sort = new TreeModelSort (filter);
+			sort.SetSortFunc (COL_DATA, HandleSort);
+			sort.SetSortColumnId (COL_DATA, SortType.Ascending);
+			Model = sort;
+		}
+
+		protected virtual void HandleTreeviewRowActivated (object o, RowActivatedArgs args)
+		{
+			TreeIter iter;
+			Model.GetIter (out iter, args.Path);
+			activatedViewModel = Model.GetValue (iter, COL_DATA) as TViewModel;
+		}
+
+		protected virtual void HandleTreeviewSelectionChanged (object sender, EventArgs e)
+		{
+			TreeIter iter;
+			List<TViewModel> playlists = new List<TViewModel> ();
+
+			foreach (var path in Selection.GetSelectedRows()) {
+				Model.GetIterFromString (out iter, path.ToString ());
+				TViewModel selectedViewModel = Model.GetValue (iter, COL_DATA) as TViewModel;
+				if (selectedViewModel != null) {
+					playlists.Add (selectedViewModel);
+				}
+			}
+			ViewModel.Selection.Replace (playlists);
+		}
+
+		protected virtual void HandleViewModelPropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "SortType") {
+				/* Hack to make it actually resort */
+				sort.SetSortFunc (COL_DATA, HandleSort);
+			}
+
+			if (e.PropertyName == "FilterText") {
+				filter.Refilter ();
+			}
+
+			if (e.PropertyName == "Selection") {
+				//Sincronization of the first external selection
+				if (ViewModel.Selection.Count == 1 && Selection.CountSelectedRows () == 0) {
+					TreeIter externalSelected = dictionaryStore [ViewModel.Selection.FirstOrDefault ()];
+					externalSelected = filter.ConvertChildIterToIter (externalSelected);
+					externalSelected = sort.ConvertChildIterToIter (externalSelected);
+					Selection.SelectIter (externalSelected);
+				}
+			}
+		}
+
+		protected virtual int HandleSort (TreeModel model, TreeIter a, TreeIter b)
+		{
+			// FIXME: Implement a generic sort for all TViewModels
+			return 0;
+		}
+
+		protected virtual bool HandleFilter (TreeModel model, TreeIter iter)
+		{
+			// FIXME: Implement a generic filter for all TViewModels
+			return true;
+		}
+
+		#endregion
 	}
 }
 
