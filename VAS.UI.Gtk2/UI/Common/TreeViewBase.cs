@@ -90,7 +90,7 @@ namespace VAS.UI.Common
 				break;
 
 			case NotifyCollectionChangedAction.Reset:
-				ClearSubViewModelListeners (viewModel.ViewModels);
+				ClearSubViewModelListeners (dictionaryStore.Keys);
 				store.Clear ();
 				dictionaryStore.Clear ();
 				break;
@@ -118,7 +118,7 @@ namespace VAS.UI.Common
 			dictionaryStore.Clear ();
 		}
 
-		void ClearSubViewModelListeners (ObservableCollection<VM> collection)
+		void ClearSubViewModelListeners (IEnumerable<VM> collection)
 		{
 			foreach (VM item in collection) {
 				RemoveSubViewModelListener (item);
