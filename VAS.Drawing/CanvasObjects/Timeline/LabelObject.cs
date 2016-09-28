@@ -196,8 +196,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 	public class VideoLabelObject : LabelObject
 	{
-		TimelineButton openButton;
-		TimelineButton stretchButton;
+		public TimelineButton openButton;
+		public TimelineButton stretchButton;
 		const int TIMELINE_BUTTON_MARGIN = 5;
 		const int TIMELINE_IMAGE_PADDING = 2;
 
@@ -206,10 +206,11 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			public Color BackgroundColor;
 			public Color BorderColor;
 			public Image BackgroundImage;
+			public Point Position;
 			public int Width;
 			public int Height;
-			public Point Position;
 			public int ImagePadding;
+			public bool Enabled;
 		};
 
 		public VideoLabelObject (double width, double height, double offsetY) :
@@ -272,7 +273,9 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			tk.DrawText (new Point (TextOffset, y), Width - TextOffset, Height, Name);
 
 			/* Draw Open button */
-			SetOpenButtonProperties (Width);
+			openButton.Position = new Point (Width - RectSize - TIMELINE_BUTTON_MARGIN - RectSize - TIMELINE_BUTTON_MARGIN,
+				OffsetY + TIMELINE_BUTTON_MARGIN);
+			openButton.BackgroundColor = App.Current.Style.PaletteBackgroundLight;
 			tk.LineWidth = StyleConf.ButtonLineWidth;
 			tk.FillColor = openButton.BackgroundColor;
 			tk.StrokeColor = openButton.BorderColor;
@@ -284,7 +287,10 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			tk.DrawImage (imagePoint, imageWidth, imageHeight, openButton.BackgroundImage, ScaleMode.AspectFit, false);
 
 			/* Draw Strech button */
-			SetStrechButtonProperties (Width);
+			stretchButton.Position = new Point (Width - RectSize - TIMELINE_BUTTON_MARGIN,
+				OffsetY + TIMELINE_BUTTON_MARGIN);
+			stretchButton.BackgroundColor = IsStretched ?
+				App.Current.Style.PaletteBackgroundDarkBright : App.Current.Style.PaletteBackgroundLight;
 			tk.LineWidth = StyleConf.ButtonLineWidth;
 			tk.FillColor = stretchButton.BackgroundColor;
 			tk.StrokeColor = stretchButton.BorderColor;
@@ -298,45 +304,19 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			tk.End ();
 		}
 
-		void SetOpenButtonProperties (double startX)
+		public bool ClickInsideButton (Point p, TimelineButton button)
 		{
-			openButton.Position = new Point (startX - RectSize - TIMELINE_BUTTON_MARGIN - RectSize - TIMELINE_BUTTON_MARGIN,
-				OffsetY + TIMELINE_BUTTON_MARGIN);
-			openButton.BackgroundColor = App.Current.Style.PaletteBackgroundLight;
-		}
+			if (!button.Enabled) {
+				return false;
+			}
 
-		void SetStrechButtonProperties (double startX)
-		{
-			stretchButton.Position = new Point (startX - RectSize - TIMELINE_BUTTON_MARGIN, OffsetY + TIMELINE_BUTTON_MARGIN);
-			stretchButton.BackgroundColor = IsStretched ? App.Current.Style.PaletteBackgroundDarkBright : App.Current.Style.PaletteBackgroundLight;
-		}
-
-		public bool ClickInsideStrechButton (Point p)
-		{
 			bool insideX = false;
 			bool insideY = false;
 
-
-			if (p.X >= stretchButton.Position.X && p.X <= stretchButton.Position.X + stretchButton.Width) {
+			if (p.X >= button.Position.X && p.X <= button.Position.X + button.Width) {
 				insideX = true;
 			}
-			if (p.Y >= stretchButton.Position.Y && p.Y <= stretchButton.Position.Y + stretchButton.Height) {
-				insideY = true;
-			}
-
-			return insideX && insideY;
-		}
-
-		public bool ClickInsideOpenButton (Point p)
-		{
-			bool insideX = false;
-			bool insideY = false;
-
-
-			if (p.X >= openButton.Position.X && p.X <= openButton.Position.X + openButton.Width) {
-				insideX = true;
-			}
-			if (p.Y >= openButton.Position.Y && p.Y <= openButton.Position.Y + openButton.Height) {
+			if (p.Y >= button.Position.Y && p.Y <= button.Position.Y + button.Height) {
 				insideY = true;
 			}
 
