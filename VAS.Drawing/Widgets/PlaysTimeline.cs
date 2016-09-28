@@ -415,7 +415,7 @@ namespace VAS.Drawing.Widgets
 				} else if (d is CameraObject) {
 					notififyCameraTimelineSelectedEvent = true;
 					ctse = new CameraTimelineSelectedEvent ();
-					ctse.bordersAreSelected = ((CameraObject)d).selectedLeft || ((CameraObject)d).selectedRight;
+					ctse.bordersAreSelected = ((CameraObject)d).SelectedLeft || ((CameraObject)d).SelectedRight;
 				}
 			}
 			App.Current.EventsBroker.Publish<LoadEventEvent> (

@@ -90,12 +90,12 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 		}
 
-		public bool selectedLeft {
+		public bool SelectedLeft {
 			get;
 			set;
 		}
 
-		public bool selectedRight {
+		public bool SelectedRight {
 			get;
 			set;
 		}
@@ -153,17 +153,17 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 				// Draw left arrow
 				if (videoTLmode == VideoTimelineMode.Edit) {
-					limitArrowL = selectedLeft ? Resources.LoadImage (StyleConf.LimitArrowGreenSelectedL) : Resources.LoadImage (StyleConf.LimitArrowGreenL);
+					limitArrowL = SelectedLeft ? Resources.LoadImage (StyleConf.LimitArrowGreenSelectedL) : Resources.LoadImage (StyleConf.LimitArrowGreenL);
 				} else {
-					limitArrowL = selectedLeft ? Resources.LoadImage (StyleConf.LimitArrowRedSelectedL) : Resources.LoadImage (StyleConf.LimitArrowRedL);
+					limitArrowL = SelectedLeft ? Resources.LoadImage (StyleConf.LimitArrowRedSelectedL) : Resources.LoadImage (StyleConf.LimitArrowRedL);
 				}
 				tk.DrawImage (new Point (StartX, OffsetY), limitArrowL.Width, Height, limitArrowL, ScaleMode.AspectFit);
 
 				// Draw right arrow
 				if (videoTLmode == VideoTimelineMode.Edit) {
-					limitArrowR = selectedRight ? Resources.LoadImage (StyleConf.LimitArrowGreenSelectedR) : Resources.LoadImage (StyleConf.LimitArrowGreenR);
+					limitArrowR = SelectedRight ? Resources.LoadImage (StyleConf.LimitArrowGreenSelectedR) : Resources.LoadImage (StyleConf.LimitArrowGreenR);
 				} else {
-					limitArrowR = selectedRight ? Resources.LoadImage (StyleConf.LimitArrowRedSelectedR) : Resources.LoadImage (StyleConf.LimitArrowRedR);
+					limitArrowR = SelectedRight ? Resources.LoadImage (StyleConf.LimitArrowRedSelectedR) : Resources.LoadImage (StyleConf.LimitArrowRedR);
 				}
 				tk.DrawImage (new Point (StopX - limitArrowR.Width, OffsetY), limitArrowR.Width, Height + 2, limitArrowR, ScaleMode.AspectFit);
 
@@ -329,7 +329,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				return;
 			}
 
-			if (selectedLeft) {
+			if (SelectedLeft) {
 				Time startTime = TimeNode.Start + e.Time;
 				if (startTime >= new Time (0)) {
 					// Almost 1s must be showed in the timeline
@@ -338,7 +338,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				}
 			}
 
-			if (selectedRight) {
+			if (SelectedRight) {
 				Time stopTime = TimeNode.Stop + e.Time;
 				if (stopTime <= MaxTime) {
 					// Almost 1s must be showed in the timeline

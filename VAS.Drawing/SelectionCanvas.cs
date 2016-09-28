@@ -249,16 +249,16 @@ namespace VAS.Drawing
 				ICanvasSelectableObject po = sel.Drawable as ICanvasSelectableObject;
 				po.Selected = false;
 				if (po.GetType () == typeof(CameraObject)) {
-					((CameraObject)po).selectedLeft = false;
-					((CameraObject)po).selectedRight = false;
+					((CameraObject)po).SelectedLeft = false;
+					((CameraObject)po).SelectedRight = false;
 				}
 			}
 			if (Objects != null) {
 				foreach (ICanvasSelectableObject cso in Objects) {
 					cso.Selected = false;
 					if (cso.GetType () == typeof(CameraObject)) {
-						((CameraObject)cso).selectedLeft = false;
-						((CameraObject)cso).selectedRight = false;
+						((CameraObject)cso).SelectedLeft = false;
+						((CameraObject)cso).SelectedRight = false;
 					}
 				}
 			}
@@ -305,22 +305,22 @@ namespace VAS.Drawing
 			if (seldup != null) {
 				so.Selected = false;
 				if (so.GetType () == typeof(CameraObject)) {
-					((CameraObject)so).selectedLeft = false;
-					((CameraObject)so).selectedRight = false;
+					((CameraObject)so).SelectedLeft = false;
+					((CameraObject)so).SelectedRight = false;
 				}
 				Selections.Remove (seldup);
 			} else {
 				so.Selected = true;
 				if (so.GetType () == typeof(CameraObject)) {
 					if (sel.Position == SelectionPosition.Left) {
-						((CameraObject)so).selectedLeft = true;
+						((CameraObject)so).SelectedLeft = true;
 					} else {
-						((CameraObject)so).selectedLeft = false;
+						((CameraObject)so).SelectedLeft = false;
 					}
 					if (sel.Position == SelectionPosition.Right) {
-						((CameraObject)so).selectedRight = true;
+						((CameraObject)so).SelectedRight = true;
 					} else {
-						((CameraObject)so).selectedRight = false;
+						((CameraObject)so).SelectedRight = false;
 					}
 				}
 				Selections.Add (sel);
