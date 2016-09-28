@@ -25,6 +25,7 @@ using System.ComponentModel;
 using Gtk;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
+using System.Linq;
 
 namespace VAS.UI.Common
 {
@@ -99,7 +100,7 @@ namespace VAS.UI.Common
 				break;
 
 			case NotifyCollectionChangedAction.Reset:
-				ClearSubViewModelListeners (dictionaryStore.Keys);
+				ClearSubViewModelListeners (dictionaryStore.Keys.Where (ev => ev is VM));
 				store.Clear ();
 				dictionaryStore.Clear ();
 				dictionaryNestedParent.Clear ();
@@ -138,28 +139,38 @@ namespace VAS.UI.Common
 
 		void ClearSubViewModels ()
 		{
-			ClearSubViewModelListeners (viewModel.ViewModels);
+			ClearSubViewModelListeners (viewModel.ViewModels as IEnumerable<IViewModel>);
 			viewModel.ViewModels.CollectionChanged -= ViewModelCollectionChanged;
 			store.Clear ();
 			dictionaryStore.Clear ();
 			dictionaryNestedParent.Clear ();
 		}
 
-		void ClearSubViewModelListeners (IEnumerable<TViewModel> collection)
+		void ClearSubViewModelListeners (IEnumerable<IViewModel> collection)
 		{
 			foreach (IViewModel item in collection) {
 				RemoveSubViewModelListener (item);
 				if (item is INestedViewModel) {
-					ClearAllNestedViewModels (item);
+					ClearAllNestedViewModelsListeners (item);
 				}
 			}
 		}
 
-		void ClearAllNestedViewModels (IViewModel subViewModel)
+		void ClearAllNestedViewModelsListeners (IViewModel subViewModel)
 		{
 			if (subViewModel is IEnumerable) {
 				foreach (var v in (subViewModel as IEnumerable)) {
-					ClearAllNestedViewModels (v as IViewModel);
+					ClearAllNestedViewModelsListeners (v as IViewModel);
+				}
+				(subViewModel as INestedViewModel).GetNotifyCollection ().CollectionChanged -= ViewModelCollectionChanged;
+			}
+		}
+
+		void RemoveAllNestedSubViewModels (IViewModel subViewModel)
+		{
+			if (subViewModel is IEnumerable) {
+				foreach (var v in (subViewModel as IEnumerable)) {
+					RemoveAllNestedSubViewModels (v as IViewModel);
 				}
 				(subViewModel as INestedViewModel).GetNotifyCollection ().CollectionChanged -= ViewModelCollectionChanged;
 				dictionaryNestedParent.Remove ((subViewModel as INestedViewModel).GetNotifyCollection ());
@@ -179,7 +190,7 @@ namespace VAS.UI.Common
 				dictionaryStore.Remove (subViewModel);
 			}
 			if (subViewModel is INestedViewModel) {
-				ClearAllNestedViewModels (subViewModel);
+				RemoveAllNestedSubViewModels (subViewModel);
 			}
 		}
 
