@@ -32,7 +32,7 @@ namespace VAS.Core.MVVMC
 	/// The base class keeps in sync the ViewModel and the Model collection and provides support
 	/// for selecting items within the collection.
 	/// </summary>
-	public class CollectionViewModel<TModel, TViewModel> : BindableBase, IViewModel<ObservableCollection<TModel>>
+	public class CollectionViewModel<TModel, TViewModel> : NestedViewModel<TViewModel>
 		where TViewModel: IViewModel<TModel>, new()
 	{
 		bool editing;
@@ -71,15 +71,6 @@ namespace VAS.Core.MVVMC
 			get {
 				return model;
 			}
-		}
-
-		/// <summary>
-		/// Gets the collection of child ViewModel
-		/// </summary>
-		/// <value>The ViewModels collection.</value>
-		public ObservableCollection<TViewModel> ViewModels {
-			private set;
-			get;
 		}
 
 		/// <summary>

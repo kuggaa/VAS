@@ -38,9 +38,9 @@ namespace VAS.Core.Interfaces.MVVMC
 		INotifyCollectionChanged GetNotifyCollection ();
 	}
 
-	public interface INestedViewModel<T,VMChilds> : INestedViewModel, IViewModel <T>, IEnumerable <VMChilds>
+	public interface INestedViewModel<VMChilds> : INestedViewModel, IViewModel, IEnumerable <VMChilds>
 	{
-		ObservableCollection<VMChilds> ViewModels { set; get; }
+		ObservableCollection<VMChilds> ViewModels { get; }
 	}
 
 	public interface IPlayerViewModel : IViewModel

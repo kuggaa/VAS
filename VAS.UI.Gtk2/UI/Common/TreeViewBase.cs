@@ -34,7 +34,7 @@ namespace VAS.UI.Common
 	/// Tree view base implementation for MVVM.
 	/// </summary>
 	public class TreeViewBase<TCollectionViewModel, TModel, TViewModel> : Gtk.TreeView, IView<TCollectionViewModel>
-		where TCollectionViewModel : CollectionViewModel<TModel, TViewModel>
+		where TCollectionViewModel : NestedViewModel<TViewModel>
 		where TViewModel : IViewModel<TModel>, new()
 	{
 		protected TreeStore store;
@@ -195,6 +195,7 @@ namespace VAS.UI.Common
 			}
 			TreeIter iter = dictionaryStore [(IViewModel)sender];
 			Model.EmitRowChanged (store.GetPath (iter), iter);
+			this.QueueDraw ();
 		}
 	}
 }

@@ -25,17 +25,20 @@ using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.MVVMC
 {
-	public class NestedViewModel<T, VMChilds> : ViewModelBase<T>, INestedViewModel<T,VMChilds>
+	public class NestedViewModel<VMChilds> : BindableBase, INestedViewModel<VMChilds>
 		where VMChilds : IViewModel
-		where T : INotifyPropertyChanged
 	{
 		public NestedViewModel ()
 		{
 			ViewModels = new ObservableCollection<VMChilds> ();
 		}
 
+		/// <summary>
+		/// Gets the collection of child ViewModel
+		/// </summary>
+		/// <value>The ViewModels collection.</value>
 		public ObservableCollection<VMChilds> ViewModels {
-			set;
+			protected set;
 			get;
 		}
 

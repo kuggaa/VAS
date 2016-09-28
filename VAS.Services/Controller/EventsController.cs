@@ -16,8 +16,6 @@ namespace VAS.Services.Controller
 		where TModel : TimelineEvent
 		where TViewModel : TimelineEventVM<TModel>, new()
 	{
-
-		ProjectVM<Project> projectVM;
 		PlayerVM playerVM;
 
 		public EventsController ()
@@ -28,15 +26,11 @@ namespace VAS.Services.Controller
 
 		public virtual void Start ()
 		{
-			App.Current.EventsBroker.Subscribe<CreateEvent<TModel>> (HandleCreateEvent);
-			App.Current.EventsBroker.Subscribe<DeleteEvent<TModel>> (HandleDeleteEvent);
 			App.Current.EventsBroker.Subscribe<OpenEvent<TModel>> (HandleOpenEvent);
 		}
 
 		public virtual void Stop ()
 		{
-			App.Current.EventsBroker.Unsubscribe<CreateEvent<TModel>> (HandleCreateEvent);
-			App.Current.EventsBroker.Unsubscribe<DeleteEvent<TModel>> (HandleDeleteEvent);
 			App.Current.EventsBroker.Unsubscribe<OpenEvent<TModel>> (HandleOpenEvent);
 		}
 
@@ -44,7 +38,6 @@ namespace VAS.Services.Controller
 		{
 			if (viewModel is IAnalysisViewModel) {
 				playerVM = (PlayerVM)(viewModel as IAnalysisViewModel).PlayerViewModel;
-				//projectVM = (ProjectVM<Project>)(viewModel as IAnalysisViewModel).ProjectVM;
 			}
 		}
 
@@ -63,16 +56,6 @@ namespace VAS.Services.Controller
 		}
 
 		#endregion
-
-		void HandleCreateEvent (CreateEvent<TModel> e)
-		{
-			projectVM.Model.AddEvent (e.Object);
-		}
-
-		void HandleDeleteEvent (DeleteEvent<TModel> e)
-		{
-			projectVM.Model.Timeline.Remove (e.Object);
-		}
 
 		void HandleOpenEvent (OpenEvent<TModel> e)
 		{

@@ -22,13 +22,11 @@ using VAS.Core.Store;
 
 namespace VAS.Services.ViewModel
 {
-	public class EventTypeCollectionVM<TViewModel, VMChild> : NestedCollectionViewModel<EventType, TViewModel, VMChild>
-		where VMChild : IViewModel
-		where TViewModel : INestedViewModel<EventType,VMChild>, new()
+	public class EventTypeCollectionVM<TViewModel, VMChild> : NestedViewModel<TViewModel>
+		where TViewModel : INestedViewModel<VMChild>, new()
 	{
 		public EventTypeCollectionVM ()
 		{
-			base.Model = new System.Collections.ObjectModel.ObservableCollection<EventType> ();
 		}
 	}
 }

@@ -22,7 +22,7 @@ using VAS.Core.Store;
 
 namespace VAS.Services.ViewModel
 {
-	public class EventTypeVM<VMChild> : NestedViewModel<EventType, VMChild>
+	public class EventTypeVM<VMChild> : NestedViewModel<VMChild>, IViewModel<EventType>
 		where VMChild : IViewModel
 	{
 		public string Name {
@@ -38,6 +38,11 @@ namespace VAS.Services.ViewModel
 			get {
 				return ViewModels.Count;
 			}
+		}
+
+		public EventType Model {
+			get;
+			set;
 		}
 	}
 }
