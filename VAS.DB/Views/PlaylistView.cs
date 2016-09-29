@@ -16,15 +16,15 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 
-using VAS.Core.Store;
+using VAS.Core.Store.Playlists;
 
 namespace VAS.DB.Views
 {
-	public class EventTypeView:  GenericView <EventType>
+	public class PlaylistView:  GenericView <Playlist>
 	{
-		public EventTypeView (CouchbaseStorage storage) : base (storage)
+		public PlaylistView (CouchbaseStorage storage) : base (storage)
 		{
-			DocumentType = "EventType";
+			DocumentType = "Playlist";
 		}
 
 		protected override string ViewVersion {

@@ -29,6 +29,7 @@ using VAS.Core.Filters;
 using VAS.Core.Interfaces;
 using VAS.Core.Serialization;
 using VAS.Core.Store;
+using VAS.Core.Store.Playlists;
 using VAS.Core.Store.Templates;
 using VAS.DB;
 using VAS.DB.Views;
@@ -339,6 +340,7 @@ namespace VAS.DB
 			AddView (typeof(Player), new PlayersView (this));
 			AddView (typeof(TimelineEvent), new TimelineEventsView (this));
 			AddView (typeof(EventType), new EventTypeView (this));
+			AddView (typeof(Playlist), new PlaylistView (this));
 		}
 
 		protected virtual void InitializeDocumentTypeMappings ()
