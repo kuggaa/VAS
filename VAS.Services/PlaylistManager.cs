@@ -155,7 +155,20 @@ namespace VAS.Services
 			}
 
 			if (e.CameraTlEvent != null) {
-				LoadCameraPlay (e.CameraTlEvent, new Time (0), true);
+				Time seekTime = Player.CurrentTime - e.CameraTlEvent.Start;
+
+				if (e.CameraTlEvent.Start != new Time (0)) {
+					seekTime = seekTime <= e.CameraTlEvent.Start ? new Time (0) : seekTime;
+				}
+
+				if (e.CameraTlEvent.Stop != Player.FileSet.Duration) {
+					seekTime = seekTime >= e.CameraTlEvent.Stop ? e.CameraTlEvent.Stop : seekTime;
+					if (Player.Playing) {
+						Player.Stop ();
+					}
+				}
+
+				LoadCameraPlay (e.CameraTlEvent, seekTime, Player.Playing);
 			} else if (Player != null) {
 				Player.UnloadCurrentEvent ();
 			}
