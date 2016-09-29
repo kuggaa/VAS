@@ -299,8 +299,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			/* Draw Strech button */
 			stretchButton.Position = new Point (Width - RectSize - TIMELINE_BUTTON_MARGIN,
 				OffsetY + TIMELINE_BUTTON_MARGIN);
-			stretchButton.BackgroundColor = IsStretched ?
-				App.Current.Style.PaletteBackgroundDarkBright : App.Current.Style.PaletteBackgroundLight;
+			stretchButton.BackgroundColor = stretchButton.Enabled ?
+				App.Current.Style.PaletteBackgroundLight : App.Current.Style.PaletteBackgroundDarkBright;
 			tk.LineWidth = StyleConf.ButtonLineWidth;
 			tk.FillColor = stretchButton.BackgroundColor;
 			tk.StrokeColor = stretchButton.BorderColor;
@@ -335,7 +335,11 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 		void HandleVideoTimelineModeChangedEvent (VideoTimelineModeChangedEvent e)
 		{
+			bool previous = stretchButton.Enabled;
 			stretchButton.Enabled = e.videoTlMode != VideoTimelineMode.Default;
+			if (previous != stretchButton.Enabled) {
+				ReDraw ();
+			}
 		}
 	}
 }
