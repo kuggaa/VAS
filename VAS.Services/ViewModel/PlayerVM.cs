@@ -209,6 +209,13 @@ namespace VAS.Services.ViewModel
 			set;
 		}
 
+		[PropertyChanged.DoNotNotify]
+		public bool Opened {
+			get {
+				return playerController.Opened;
+			}
+		}
+
 		#region methods
 
 		public void Dispose ()
@@ -241,9 +248,14 @@ namespace VAS.Services.ViewModel
 			((IPlayback)playerController).Stop ();
 		}
 
-		public void Seek (double time)
+		public void Seek (double pos)
 		{
-			playerController.Seek (time);
+			playerController.Seek (pos);
+		}
+
+		public void Seek (Time time, bool accurate = false, bool synchronous = false, bool throttled = false)
+		{
+			playerController.Seek (time, accurate, synchronous, throttled);
 		}
 
 		public void Previous ()
