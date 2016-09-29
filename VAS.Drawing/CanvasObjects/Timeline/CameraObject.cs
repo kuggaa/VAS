@@ -58,7 +58,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			DraggingMode = NodeDraggingMode.Borders;
 			SelectionMode = NodeSelectionMode.Borders;
 			ClippingMode = NodeClippingMode.LeftStrict;
-			stretchedAndEditingTimer = new SysTimer (2000);
+			stretchedAndEditingTimer = new SysTimer (400);
 			stretchedAndEditingTimer.Elapsed += HandleTimeOut;
 			App.Current.EventsBroker.Subscribe<StretchVideoEvent> (HandleStrechVideoEvent);
 			App.Current.EventsBroker.Subscribe<ChangeVideoSizeEvent> (HandleChangeVideoSizeEvent);
@@ -147,9 +147,6 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 					Resources.LoadImage (StyleConf.LimitArrowRedR) : Resources.LoadImage (StyleConf.LimitArrowWhiteR);
 				tk.DrawImage (new Point (StopX - StartX - limitArrowR.Width, OffsetY), limitArrowR.Width, Height, limitArrowR, ScaleMode.AspectFit);
 
-				if (VideoTLmode == VideoTimelineMode.StretchedAndEditing) {
-					stretchedAndEditingTimer.Enabled = true;
-				}
 			} else {
 				Color lineColorA25 = new Color (LineColor.R, LineColor.G, LineColor.B, (byte)(LineColor.A * 0.25));
 
@@ -164,18 +161,18 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				tk.DrawRoundedRectangle (new Point (StartX, OffsetY), StopX - StartX, Height, 5);
 
 				// Draw left arrow
-				if (VideoTLmode == VideoTimelineMode.Edit) {
-					limitArrowL = SelectedLeft ? Resources.LoadImage (StyleConf.LimitArrowGreenSelectedL) : Resources.LoadImage (StyleConf.LimitArrowGreenL);
-				} else {
+				if (TimeNode.Start.TotalSeconds <= 0) {
 					limitArrowL = SelectedLeft ? Resources.LoadImage (StyleConf.LimitArrowRedSelectedL) : Resources.LoadImage (StyleConf.LimitArrowRedL);
+				} else {
+					limitArrowL = SelectedLeft ? Resources.LoadImage (StyleConf.LimitArrowGreenSelectedL) : Resources.LoadImage (StyleConf.LimitArrowGreenL);
 				}
 				tk.DrawImage (new Point (StartX, OffsetY), limitArrowL.Width, Height, limitArrowL, ScaleMode.AspectFit);
 
 				// Draw right arrow
-				if (VideoTLmode == VideoTimelineMode.Edit) {
-					limitArrowR = SelectedRight ? Resources.LoadImage (StyleConf.LimitArrowGreenSelectedR) : Resources.LoadImage (StyleConf.LimitArrowGreenR);
-				} else {
+				if (TimeNode.Stop.TotalSeconds >= MaxTime.TotalSeconds) {
 					limitArrowR = SelectedRight ? Resources.LoadImage (StyleConf.LimitArrowRedSelectedR) : Resources.LoadImage (StyleConf.LimitArrowRedR);
+				} else {
+					limitArrowR = SelectedRight ? Resources.LoadImage (StyleConf.LimitArrowGreenSelectedR) : Resources.LoadImage (StyleConf.LimitArrowGreenR);
 				}
 				tk.DrawImage (new Point (StopX - limitArrowR.Width, OffsetY), limitArrowR.Width, Height + 2, limitArrowR, ScaleMode.AspectFit);
 
@@ -213,6 +210,9 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			// If video is stretched, cannot move borders
 			if (IsStretched ()) {
 				VideoTLmode = VideoTimelineMode.StretchedAndEditing;
+				if (!stretchedAndEditingTimer.Enabled) {
+					stretchedAndEditingTimer.Enabled = true;
+				}
 				return;
 			}
 
@@ -296,8 +296,30 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			movingPos = sel.Position;
 
 			// Set current videoTLmode.
-			VideoTLmode = (StartX == 0) && StopX == Utils.TimeToPos (this.MaxTime, SecondsPerPixel) ?
-							 VideoTimelineMode.Default : VideoTimelineMode.Edit;
+			SetVideoTlMode ();
+		}
+
+		/// <summary>
+		/// Gets the selection.
+		/// </summary>
+		/// <returns>The selection.</returns>
+		/// <param name="point">Point.</param>
+		/// <param name="precision">Precision.</param>
+		/// <param name="inMotion">If set to <c>true</c> in motion.</param>
+		public override Selection GetSelection (Point point, double precision, bool inMotion = false)
+		{
+			if (point.Y >= OffsetY && point.Y < OffsetY + Height) {
+				double accuracy;
+				double start = IsStretched () ? 0 : StartX;
+				double stop = IsStretched () ? StopX - StartX : StopX;
+				if (Drawable.MatchAxis (point.X, start, precision, out accuracy)) {
+					return new Selection (this, SelectionPosition.Left, accuracy);
+				} else if (Drawable.MatchAxis (point.X, stop, precision, out accuracy)) {
+					return new Selection (this, SelectionPosition.Right, accuracy);
+				}
+			}
+
+			return null;
 		}
 
 		/// <summary>
@@ -307,6 +329,14 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		public bool IsStretched ()
 		{
 			return (VideoTLmode == VideoTimelineMode.Stretched || VideoTLmode == VideoTimelineMode.StretchedAndEditing);
+		}
+
+		void SetVideoTlMode ()
+		{
+			if (!IsStretched ()) {
+				VideoTLmode = TimeNode.Start.TotalSeconds <= 0 && TimeNode.Stop.TotalSeconds >= MaxTime.TotalSeconds ?
+					VideoTimelineMode.Default : VideoTimelineMode.Edit;
+			}
 		}
 
 		/// <summary>
@@ -359,8 +389,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				}
 			}
 
-			VideoTLmode = TimeNode.Start == new Time (0) && TimeNode.Stop == MaxTime ?
-				VideoTimelineMode.Default : VideoTimelineMode.Edit;
+			SetVideoTlMode ();
 
 			ReDraw ();
 		}
@@ -368,9 +397,10 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		protected virtual void HandleTimeOut (Object source, ElapsedEventArgs e)
 		{
 			VideoTLmode = VideoTimelineMode.Stretched;
-			stretchedAndEditingTimer.Stop ();
-
-			ReDraw ();
+			stretchedAndEditingTimer.Enabled = false;
+			App.Current.GUIToolkit.Invoke (delegate {
+				ReDraw ();
+			});
 		}
 	}
 }
