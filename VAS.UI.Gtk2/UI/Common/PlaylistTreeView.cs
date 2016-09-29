@@ -15,15 +15,9 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-//  Copyright (C) 2016 Fluendo S.A.
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Dynamic;
-using System.Linq;
+
 using Gtk;
 using VAS.Core.Interfaces.MVVMC;
-using VAS.Core.MVVMC;
 using VAS.Core.Store.Playlists;
 using VAS.Services.ViewModel;
 using VAS.UI.Common;
@@ -95,6 +89,17 @@ namespace VAS.UI.Common
 		protected override void HandleTreeviewRowActivated (object o, RowActivatedArgs args)
 		{
 			// TODO: Load the playlist to the player
+		}
+
+		protected override void ShowMenu ()
+		{
+//			menu = new Menu ();
+//			MenuItem item = new MenuItem ();
+//			menu.Add (item);
+//
+//			// TODO: Fill with the menu items needed
+//
+//			menu.Popup ();
 		}
 	}
 }

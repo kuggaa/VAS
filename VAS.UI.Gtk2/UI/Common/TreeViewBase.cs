@@ -48,6 +48,7 @@ namespace VAS.UI.Common
 		protected TreeModelSort sort;
 
 		protected TViewModel activatedViewModel;
+		protected Menu menu;
 
 		public TreeViewBase () : this (new TreeStore (typeof(TViewModel)))
 		{
@@ -218,7 +219,20 @@ namespace VAS.UI.Common
 			this.QueueDraw ();
 		}
 
+		protected override bool OnButtonPressEvent (Gdk.EventButton evnt)
+		{
+			bool ret = base.OnButtonPressEvent (evnt);
+			if (evnt.Button == 3) { /* right button */
+				ShowMenu ();
+			}
+			return ret;
+		}
+
 		#region Virtual methods
+
+		protected virtual void ShowMenu ()
+		{
+		}
 
 		protected virtual void CreateFilterAndSort ()
 		{
