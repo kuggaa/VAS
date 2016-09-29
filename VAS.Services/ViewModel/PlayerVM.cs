@@ -324,6 +324,19 @@ namespace VAS.Services.ViewModel
 			}
 		}
 
+		public void LoadEvents (List<TimelineEvent> events)
+		{
+			Playlist playlist = new Playlist ();
+
+			List<IPlaylistElement> list = events
+				.Select (evt => new PlaylistPlayElement (evt))
+				.OfType<IPlaylistElement> ()
+				.ToList ();
+			
+			playlist.Elements = new ObservableCollection<IPlaylistElement> (list);
+			playerController.LoadPlaylistEvent (playlist, list.FirstOrDefault (), true);			
+		}
+
 		public void LoadPlay (TimelineEvent e, Time seekTime, bool playing)
 		{
 			e.Selected = true;

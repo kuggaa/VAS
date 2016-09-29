@@ -206,7 +206,6 @@ namespace VAS.Core.Store
 		/// Whether this event is currently selected.
 		/// </summary>
 		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
 		public bool Selected {
 			get;
 			set;

@@ -45,7 +45,13 @@ namespace VAS.Services.ViewModel
 			}
 		}
 
-		public bool Viewing {
+		public string Notes {
+			get {
+				return (!string.IsNullOrEmpty (Model.Notes)) ? Model.Notes : "...";
+			}
+		}
+
+		public bool Playing {
 			get {
 				return Model.Selected;
 			}

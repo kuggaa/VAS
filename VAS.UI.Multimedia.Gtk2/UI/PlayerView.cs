@@ -205,10 +205,14 @@ namespace VAS.UI
 
 		protected virtual void ResetGui ()
 		{
-			//FIXME: Probably should go in PlayerVM
 			if (playerVM.Mode != PlayerViewOperationMode.LiveAnalysisReview) {
 				closebutton.Visible = false;
 			}
+
+			prevbutton.Visible = nextbutton.Visible = jumplabel.Visible =
+				jumpspinbutton.Visible = tlabel.Visible = timelabel.Visible =
+					detachbutton.Visible = ratescale.Visible = !playerVM.Compact;
+			
 			playerVM.ControlsSensitive = true;
 			DrawingsVisible = false;
 			timescale.Value = 0;
@@ -380,7 +384,7 @@ namespace VAS.UI
 
 		protected virtual void HandleClosebuttonClicked (object sender, System.EventArgs e)
 		{
-			App.Current.EventsBroker.Publish<LoadEventEvent> (new LoadEventEvent ());
+			playerVM.LoadEvent (null);
 		}
 
 		protected virtual void HandlePrevbuttonClicked (object sender, System.EventArgs e)

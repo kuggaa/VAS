@@ -27,11 +27,13 @@ namespace VAS.Services.Controller
 		public virtual void Start ()
 		{
 			App.Current.EventsBroker.Subscribe<OpenEvent<TModel>> (HandleOpenEvent);
+			App.Current.EventsBroker.Subscribe<OpenEvent<List<TModel>>> (HandleOpenListEvent);
 		}
 
 		public virtual void Stop ()
 		{
 			App.Current.EventsBroker.Unsubscribe<OpenEvent<TModel>> (HandleOpenEvent);
+			App.Current.EventsBroker.Unsubscribe<OpenEvent<List<TModel>>> (HandleOpenListEvent);
 		}
 
 		public virtual void SetViewModel (IViewModel viewModel)
@@ -60,6 +62,11 @@ namespace VAS.Services.Controller
 		void HandleOpenEvent (OpenEvent<TModel> e)
 		{
 			playerVM.LoadEvent (e.Object);
+		}
+
+		void HandleOpenListEvent (OpenEvent<List<TModel>> e)
+		{
+			playerVM.LoadEvents (e.Object.OfType<TimelineEvent> ().ToList ());
 		}
 	}
 }
