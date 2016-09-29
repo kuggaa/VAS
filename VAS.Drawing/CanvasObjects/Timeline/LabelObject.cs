@@ -231,11 +231,11 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 			stretchButton.BackgroundColor = App.Current.Style.PaletteBackgroundLight;
 			stretchButton.BorderColor = App.Current.Style.PaletteBackgroundDark;
-			stretchButton.BackgroundImage = Resources.LoadImage (StyleConf.StretchButton);
 			stretchButton.Width = (int)RectSize;
 			stretchButton.Height = (int)RectSize;
 			stretchButton.ImagePadding = TIMELINE_IMAGE_PADDING;
 			stretchButton.Enabled = false;
+			SetStretchButtonBackgroundImage ();
 
 			App.Current.EventsBroker.Subscribe<VideoTimelineModeChangedEvent> (HandleVideoTimelineModeChangedEvent);
 		}
@@ -301,6 +301,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				OffsetY + TIMELINE_BUTTON_MARGIN);
 			stretchButton.BackgroundColor = stretchButton.Enabled ?
 				App.Current.Style.PaletteBackgroundLight : App.Current.Style.PaletteBackgroundDarkBright;
+			SetStretchButtonBackgroundImage ();
 			tk.LineWidth = StyleConf.ButtonLineWidth;
 			tk.FillColor = stretchButton.BackgroundColor;
 			tk.StrokeColor = stretchButton.BorderColor;
@@ -331,6 +332,17 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 
 			return insideX && insideY;
+		}
+
+		void SetStretchButtonBackgroundImage ()
+		{
+			if (IsStretched) {
+				stretchButton.BackgroundImage = Resources.LoadImage (StyleConf.StretchButtonSensitive);
+			} else {
+				stretchButton.BackgroundImage = stretchButton.Enabled ?
+					Resources.LoadImage (StyleConf.StretchButton) :
+					Resources.LoadImage (StyleConf.StretchButtonInsensitive);
+			}
 		}
 
 		void HandleVideoTimelineModeChangedEvent (VideoTimelineModeChangedEvent e)
