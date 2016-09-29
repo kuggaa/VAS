@@ -22,6 +22,9 @@ using VAS.Core.Store;
 
 namespace VAS.Core.Interfaces
 {
+	/// <summary>
+	/// Each of the items in a playlist.
+	/// </summary>
 	public interface IPlaylistElement: IChanged, INotifyPropertyChanged
 	{
 		string Description {

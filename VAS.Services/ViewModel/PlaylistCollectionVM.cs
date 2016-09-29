@@ -16,12 +16,15 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 //
-using System;
+
 using VAS.Core.MVVMC;
 using VAS.Core.Store.Playlists;
 
 namespace VAS.Services.ViewModel
 {
+	/// <summary>
+	/// ViewModel for a collection of PlaylistVM, each with a Playlist as a Model.
+	/// </summary>
 	public class PlaylistCollectionVM : CollectionViewModel<Playlist, PlaylistVM>
 	{
 		public PlaylistCollectionVM ()

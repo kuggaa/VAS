@@ -17,21 +17,15 @@
 //
 //
 
-using System.Collections.Generic;
-using System.Linq;
-using VAS.Core.Common;
-using VAS.Core.Events;
-using VAS.Core.Interfaces.MVVMC;
+using System;
+using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
 using VAS.Core.Store.Playlists;
-using System;
-using System.Collections.ObjectModel;
-using VAS.Core.Interfaces;
 
 namespace VAS.Services.ViewModel
 {
 	/// <summary>
-	/// Playlist VM.
+	/// ViewModel for a Playlist. Contains a Collection of PlaylistElements
 	/// </summary>
 	public class PlaylistVM : ViewModelBase<Playlist> // FIXME: Implement INested... from RA-138
 	{

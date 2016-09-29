@@ -17,13 +17,16 @@
 //
 //
 
+using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
-using VAS.Core.Common;
 using VAS.Core.Store;
 
 namespace VAS.Services.ViewModel
 {
+	/// <summary>
+	/// ViewModel for PlaylistElements, with an IPlaylistElement as Model.
+	/// </summary>
 	public class PlaylistElementVM : ViewModelBase<IPlaylistElement>
 	{
 		public string Description {
@@ -38,12 +41,12 @@ namespace VAS.Services.ViewModel
 			}
 		}
 
-		bool Selected {
+		public bool Selected {
 			get;
 			set;
 		}
 
-		Time Duration {
+		public Time Duration {
 			get {
 				return Model.Duration;
 			}
