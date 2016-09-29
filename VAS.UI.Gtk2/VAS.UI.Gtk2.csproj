@@ -76,6 +76,7 @@
     <Compile Include="GUIToolkitBase.cs" />
     <Compile Include="UI\Common\TreeViewBase.cs" />
     <Compile Include="UI\Common\ComboBoxViewBase.cs" />
+    <Compile Include="UI\Menu\MenuHelpers.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

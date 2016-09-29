@@ -309,14 +309,23 @@ namespace VAS.Services
 
 		protected void HandleMoveToEventType (MoveToEventTypeEvent e)
 		{
-			var newplay = e.TimelineEvent.Clone ();
-			DeletePlays (new List<TimelineEvent> { e.TimelineEvent }, false);
-			openedProject.AddEvent (newplay);
-			App.Current.EventsBroker.Publish<EventCreatedEvent> (
-				new EventCreatedEvent {
-					TimelineEvent = newplay
-				}
-			);
+			// Only move the events where the event type changes for real
+			var newEvents = e.TimelineEvents.Where (ev => ev.EventType != e.EventType);
+
+			foreach (var evt in newEvents) {
+				var newEvent = Cloner.Clone (evt);
+				newEvent.ID = Guid.NewGuid ();
+				newEvent.EventType = e.EventType;
+				// Remove all tags from the previous event type but keep global tags
+				newEvent.Tags.RemoveAll (t => (evt.EventType as AnalysisEventType).Tags.Contains (t));
+				openedProject.AddEvent (newEvent);
+				App.Current.EventsBroker.Publish<EventCreatedEvent> (
+					new EventCreatedEvent {
+						TimelineEvent = newEvent
+					}
+				);
+			}
+			DeletePlays (newEvents.ToList (), false);
 			Save (openedProject);
 			filter.Update ();
 		}
