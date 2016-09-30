@@ -234,18 +234,18 @@ namespace VAS.Tests.DB
 			list.Images.Add (new StorableImageTest ());
 			list.Images.Add (new StorableImageTest ());
 			storage.Store (list);
-			Assert.AreEqual (3, db.DocumentCount);
+			Assert.AreEqual (4, db.DocumentCount);
 			storage.Delete (list);
-			Assert.AreEqual (0, db.DocumentCount);
+			Assert.AreEqual (1, db.DocumentCount);
 
 			StorableListNoChildrenTest list2 = new StorableListNoChildrenTest ();
 			list2.Images = new List<StorableImageTest> ();
 			list2.Images.Add (new StorableImageTest ());
 			list2.Images.Add (new StorableImageTest ());
 			storage.Store (list2);
-			Assert.AreEqual (3, db.DocumentCount);
+			Assert.AreEqual (4, db.DocumentCount);
 			storage.Delete (list2);
-			Assert.AreEqual (2, db.DocumentCount);
+			Assert.AreEqual (3, db.DocumentCount);
 		}
 
 		[Test ()]
@@ -256,11 +256,11 @@ namespace VAS.Tests.DB
 			list.Images.Add (new StorableImageTest ());
 			list.Images.Add (new StorableImageTest ());
 			storage.Store (list);
-			Assert.AreEqual (3, db.DocumentCount);
+			Assert.AreEqual (4, db.DocumentCount);
 			list = storage.Retrieve<StorableListTest> (list.ID);
 			list.Images.Remove (list.Images [0]);
 			storage.Delete (list);
-			Assert.AreEqual (0, db.DocumentCount);
+			Assert.AreEqual (1, db.DocumentCount);
 		}
 
 		[Test ()]
@@ -271,11 +271,11 @@ namespace VAS.Tests.DB
 			list.Images.Add (new StorableImageTest ());
 			list.Images.Add (new StorableImageTest ());
 			storage.Store (list);
-			Assert.AreEqual (3, db.DocumentCount);
+			Assert.AreEqual (4, db.DocumentCount);
 			list = storage.Retrieve<StorableListTest> (list.ID);
 			list.Images.Remove (list.Images [0]);
 			storage.Store (list);
-			Assert.AreEqual (2, db.DocumentCount);
+			Assert.AreEqual (3, db.DocumentCount);
 		}
 
 		[Test ()]
@@ -330,7 +330,7 @@ namespace VAS.Tests.DB
 				Image = img,
 			};
 			storage.Store (cont);
-			Assert.AreEqual (2, db.DocumentCount);
+			Assert.AreEqual (3, db.DocumentCount);
 			var cont2 = storage.Retrieve <StorableContainerTest> (cont.ID);
 			Assert.IsNotNull (cont2.Image);
 			Assert.AreEqual (img.ID, cont2.Image.ID);
@@ -345,7 +345,7 @@ namespace VAS.Tests.DB
 			list.Images.Add (new StorableImageTest2 ());
 
 			storage.Store (list);
-			Assert.AreEqual (3, db.DocumentCount);
+			Assert.AreEqual (4, db.DocumentCount);
 
 			StorableListTest list2 = storage.Retrieve<StorableListTest> (list.ID);
 			Assert.AreEqual (2, list2.Images.Count);
@@ -367,13 +367,13 @@ namespace VAS.Tests.DB
 			Assert.AreEqual (0, db.DocumentCount);
 			string newID = String.Format ("{0}&{1}", cont.ID, img.ID); 
 			storage.Store (cont);
-			Assert.AreEqual (2, db.DocumentCount);
+			Assert.AreEqual (3, db.DocumentCount);
 			Assert.IsNotNull (db.GetExistingDocument (cont.ID.ToString ()));
 			Assert.IsNotNull (db.GetExistingDocument (newID));
 			cont = storage.Retrieve<StorableContainerTest> (cont.ID);
 			Assert.AreEqual (img.ID, cont.Image.ID);
 			storage.Delete (cont);
-			Assert.AreEqual (0, db.DocumentCount);
+			Assert.AreEqual (1, db.DocumentCount);
 		}
 
 

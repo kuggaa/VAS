@@ -28,6 +28,7 @@ namespace VAS.Core.Store
 			ID = Guid.Empty;
 			LastBackup = DateTime.UtcNow;
 			LastCleanup = DateTime.UtcNow;
+			LastModified = DateTime.UtcNow;
 		}
 
 		/// <summary>
@@ -49,6 +50,11 @@ namespace VAS.Core.Store
 		/// Version of the storage.
 		/// </summary>
 		public Version Version { get; set; }
+
+		/// <summary>
+		/// Date of the last modification.
+		/// </summary>
+		public DateTime LastModified { get; set; }
 	}
 }
 
