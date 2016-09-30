@@ -64,7 +64,7 @@ namespace VAS.UI.Common
 		void CreateViews ()
 		{
 			CellRenderer descCell = new CellRendererText ();
-			AppendColumn (null, descCell, RenderProjectDescription);
+			AppendColumn (null, descCell, RenderPlaylistDescription);
 		}
 
 		static string FormatDesc (IViewModel playlist)
@@ -74,14 +74,20 @@ namespace VAS.UI.Common
 			return desc;
 		}
 
-		void RenderProjectDescription (TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+		void RenderPlaylistDescription (TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
 		{
 			string desc;
-			PlaylistVM projectVM = (PlaylistVM)model.GetValue (iter, COL_DATA);
-			if (projectVM == null) {
-				desc = "";
+			var obj = model.GetValue (iter, COL_DATA);
+			PlaylistVM playlistVM = obj as PlaylistVM;
+			if (playlistVM == null) {
+				PlaylistElementVM plElement = obj as PlaylistElementVM;
+				if (plElement == null) {
+					desc = "";
+				} else {
+					desc = plElement.Description;
+				}
 			} else {
-				desc = FormatDesc (projectVM);
+				desc = FormatDesc (playlistVM);
 			}
 			(cell as CellRendererText).Text = desc;
 		}

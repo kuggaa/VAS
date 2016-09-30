@@ -139,12 +139,12 @@ namespace VAS.Core.Store.Playlists
 
 		string TagsDescription ()
 		{
-			return String.Join ("-", Play.Tags.Select (t => t.Value));
+			return String.Join ("-", Play?.Tags?.Select (t => t.Value));
 		}
 
 		string TimesDesription ()
 		{
-			var desc = Play.Start.ToMSecondsString () + " - " + Play.Stop.ToMSecondsString ();
+			var desc = Play?.Start?.ToMSecondsString () + " - " + Play?.Stop?.ToMSecondsString ();
 			if (Rate != 1) {
 				desc += " (" + RateString + ")";
 			}
