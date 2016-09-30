@@ -17,6 +17,7 @@
 //
 using System;
 using System.IO;
+using System.Reflection;
 
 namespace VAS.Core.Common
 {
@@ -119,6 +120,12 @@ namespace VAS.Core.Common
 				throw new DirectoryNotFoundException ();
 			}
 			return result;
+		}
+
+		public static Stream GetEmbeddedResourceFileStream (string resourceId)
+		{
+			var assembly = Assembly.GetCallingAssembly ();
+			return assembly.GetManifestResourceStream (resourceId);
 		}
 	}
 }
