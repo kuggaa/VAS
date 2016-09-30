@@ -23,6 +23,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectsManagerVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)State\ScreenState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlaylistVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlaylistElementVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlaylistCollectionVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />

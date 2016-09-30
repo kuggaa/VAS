@@ -30,6 +30,7 @@ namespace VAS.Core.Store.Playlists
 	[Serializable]
 	public class Playlist: StorableBase
 	{
+		DateTime creationDate, lastModified;
 		int indexSelection = 0;
 		ObservableCollection<IPlaylistElement> elements;
 
@@ -37,8 +38,9 @@ namespace VAS.Core.Store.Playlists
 
 		public Playlist ()
 		{
-			ID = System.Guid.NewGuid ();
+			ID = Guid.NewGuid ();
 			Elements = new ObservableCollection <IPlaylistElement> ();
+			CreationDate = LastModified = DateTime.Now;
 		}
 
 		#endregion
@@ -91,6 +93,35 @@ namespace VAS.Core.Store.Playlists
 		public Time Duration {
 			get;
 			set;
+		}
+
+		/// <summary>
+		/// Gets the creation date. Set on creation to DateTime.Now.
+		/// </summary>
+		/// <value>The creation date.</value>
+		[PropertyPreload]
+		public DateTime CreationDate {
+			get {
+				return creationDate;
+			}
+			private set {
+				creationDate = value.ToUniversalTime ();
+			}
+		}
+
+
+		/// <summary>
+		/// Gets or sets the last modified.
+		/// </summary>
+		/// <value>The last modified.</value>
+		[PropertyPreload]
+		public DateTime LastModified {
+			get {
+				return lastModified;
+			}
+			set {
+				lastModified = value.ToUniversalTime ();
+			}
 		}
 
 		#endregion
