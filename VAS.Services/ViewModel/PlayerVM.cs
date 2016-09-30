@@ -25,7 +25,7 @@ namespace VAS.Services.ViewModel
 
 		public PlayerVM ()
 		{
-			playerController = new PlayerController (false);
+			playerController = new PlayerController (true);
 			playerController.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
 			playerController.SetViewModel (this);
 			playerController.Start ();
@@ -161,6 +161,9 @@ namespace VAS.Services.ViewModel
 				return playerController;
 			}
 			set {
+				if (playerController != null) {
+					playerController.Dispose ();
+				}
 				playerController = value;
 			}
 		}
@@ -190,14 +193,12 @@ namespace VAS.Services.ViewModel
 			}
 		}
 
-		[PropertyChanged.DoNotNotify]
 		public Time Step {
 			set {
 				playerController.Step = value;
 			}
 		}
 
-		[PropertyChanged.DoNotNotify]
 		public List<IViewPort> ViewPorts {
 			set {
 				playerController.ViewPorts = value;
@@ -209,10 +210,25 @@ namespace VAS.Services.ViewModel
 			set;
 		}
 
+		public ObservableCollection<CameraConfig> CamerasConfig {
+			get {
+				return playerController.CamerasConfig;
+			}
+			set {
+				playerController.CamerasConfig = value;
+			}
+		}
+
 		[PropertyChanged.DoNotNotify]
 		public bool Opened {
 			get {
 				return playerController.Opened;
+			}
+		}
+
+		public bool PresentationMode {
+			set {
+				playerController.PresentationMode = value;
 			}
 		}
 
@@ -317,6 +333,11 @@ namespace VAS.Services.ViewModel
 				new ChangeVideoMessageEvent () {
 					message = Catalog.GetString ("No video loaded")
 				});
+		}
+
+		public void ApplyROI (CameraConfig cameraConfig)
+		{
+			playerController.ApplyROI (cameraConfig);
 		}
 
 		public void LoadEvent (TimelineEvent e)

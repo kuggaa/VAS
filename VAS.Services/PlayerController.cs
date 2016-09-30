@@ -898,34 +898,44 @@ namespace VAS.Services
 
 		protected virtual void EmitLoadDrawings (FrameDrawing drawing = null)
 		{
-			if (!disposed) {
-				playerVM.FrameDrawing = drawing;
+			playerVM.FrameDrawing = drawing;
+			if (LoadDrawingsEvent != null && !disposed) {
+				LoadDrawingsEvent (drawing);
 			}
 		}
 
 		protected virtual void EmitPrepareViewEvent ()
 		{
+			playerVM.PrepareView = true;
 			if (PrepareViewEvent != null && !disposed) {
 				PrepareViewEvent ();
 			}
-			playerVM.PrepareView = true;
 		}
 
 		protected virtual void EmitElementLoaded (object element, bool hasNext)
 		{
+			playerVM.HasNext = hasNext;
+			playerVM.PlayListElement = element as IPlaylistElement;
 			if (ElementLoadedEvent != null && !disposed) {
 				ElementLoadedEvent (element, hasNext);
 			}
-			playerVM.HasNext = hasNext;
-			playerVM.PlayListElement = element as IPlaylistElement;
 		}
 
 		protected virtual void EmitEventUnloaded ()
 		{
+			playerVM.PlayListElement = null;
 			EmitElementLoaded (null, false);
 			App.Current.EventsBroker.Publish<EventLoadedEvent> (
 				new EventLoadedEvent ()
 			);
+		}
+
+		protected virtual void EmitRateChanged (float rate)
+		{
+			playerVM.Rate = rate;
+			if (PlaybackRateChangedEvent != null && !disposed) {
+				PlaybackRateChangedEvent (rate);
+			}
 		}
 
 		protected virtual void EmitVolumeChanged (float volume)
@@ -937,31 +947,35 @@ namespace VAS.Services
 
 		protected virtual void EmitTimeChanged (Time currentTime, Time duration)
 		{
-			if (!disposed) {
-				playerVM.Duration = duration ?? currentTime;
-				playerVM.CurrentTime = currentTime;
-				playerVM.Seekable = !StillImageLoaded;
+			playerVM.Duration = duration ?? currentTime;
+			playerVM.CurrentTime = currentTime;
+			playerVM.Seekable = !StillImageLoaded;
+
+			if (TimeChangedEvent != null && !disposed) {
+				TimeChangedEvent (currentTime, duration ?? currentTime, !StillImageLoaded);
 			}
 		}
 
 		protected virtual void EmitPlaybackStateChanged (object sender, bool playing)
 		{
+			playerVM.Playing = playing;
 			if (PlaybackStateChangedEvent != null && !disposed) {
 				PlaybackStateChangedEvent playbackStateChangedEvent = new PlaybackStateChangedEvent {
 					Sender = sender, 
 					Playing = playing
 				};
-				playerVM.Playing = playing;
+				PlaybackStateChangedEvent (playbackStateChangedEvent);
 				App.Current.EventsBroker.Publish<PlaybackStateChangedEvent> (playbackStateChangedEvent);
 			}
 		}
 
 		protected virtual void EmitMediaFileSetLoaded (MediaFileSet fileSet, ObservableCollection<CameraConfig> camerasVisible)
 		{
+			playerVM.FileSet = fileSet;
+			playerVM.CamerasConfig = camerasVisible;
 			if (MediaFileSetLoadedEvent != null && !disposed) {
 				MediaFileSetLoadedEvent (fileSet, camerasVisible);
 			}
-			playerVM.FileSet = fileSet;
 		}
 
 		#endregion
@@ -1158,7 +1172,7 @@ namespace VAS.Services
 			player.Rate = rate;
 
 			SetEventRate (rate);
-			playerVM.Rate = rate;
+			EmitRateChanged (rate);
 		}
 
 		/// <summary>
