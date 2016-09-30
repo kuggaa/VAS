@@ -32,6 +32,10 @@ namespace VAS.Services.ViewModel
 		public EventTypeCollectionVM ()
 		{
 		}
+
+		public PlaylistCollectionVM Playlists {
+			get;
+			set;
+		}
 	}
 }
-
