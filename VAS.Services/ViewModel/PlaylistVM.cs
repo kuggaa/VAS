@@ -26,6 +26,7 @@ using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store.Playlists;
+using VAS.Core.Common;
 
 namespace VAS.Services.ViewModel
 {
@@ -55,6 +56,16 @@ namespace VAS.Services.ViewModel
 			get {
 				return SubViewModel.ViewModels;
 			}
+		}
+
+		public RangeObservableCollection<PlaylistElementVM> Selection {
+			get;
+			private set;
+		}
+
+		public void SelectionReplace (IEnumerable<PlaylistElementVM> selection)
+		{
+			Selection.Replace (selection);
 		}
 
 		#endregion

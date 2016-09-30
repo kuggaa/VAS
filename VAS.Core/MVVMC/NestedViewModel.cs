@@ -15,12 +15,11 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
+using VAS.Core.Common;
 using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.MVVMC
@@ -35,6 +34,8 @@ namespace VAS.Core.MVVMC
 		public NestedViewModel ()
 		{
 			ViewModels = new ObservableCollection<VMChilds> ();
+			Selection = new RangeObservableCollection<VMChilds> ();
+			Selection.CollectionChanged += HandleSelectionChanged;
 		}
 
 		/// <summary>
@@ -44,6 +45,20 @@ namespace VAS.Core.MVVMC
 		public ObservableCollection<VMChilds> ViewModels {
 			protected set;
 			get;
+		}
+
+		/// <summary>
+		/// Gets the current selection in the collection.
+		/// </summary>
+		/// <value>The selection.</value>
+		public RangeObservableCollection<VMChilds> Selection {
+			get;
+			private set;
+		}
+
+		public void SelectionReplace (IEnumerable<VMChilds> selection)
+		{
+			Selection.Replace (selection);
 		}
 
 		/// <summary>
@@ -71,6 +86,11 @@ namespace VAS.Core.MVVMC
 		IEnumerator IEnumerable.GetEnumerator ()
 		{
 			return ViewModels.GetEnumerator ();
+		}
+
+		void HandleSelectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		{
+			RaisePropertyChanged ("Selection");
 		}
 	}
 }

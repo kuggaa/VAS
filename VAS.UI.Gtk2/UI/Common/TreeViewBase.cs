@@ -19,13 +19,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using Gtk;
 using VAS.Core.Interfaces.MVVMC;
-using VAS.Core.MVVMC;
 
 namespace VAS.UI.Common
 {
@@ -254,16 +252,16 @@ namespace VAS.UI.Common
 		protected virtual void HandleTreeviewSelectionChanged (object sender, EventArgs e)
 		{
 			TreeIter iter;
-			List<TViewModel> playlists = new List<TViewModel> ();
+			List<TViewModel> selected = new List<TViewModel> ();
 
 			foreach (var path in Selection.GetSelectedRows()) {
 				Model.GetIterFromString (out iter, path.ToString ());
 				TViewModel selectedViewModel = Model.GetValue (iter, COL_DATA) as TViewModel;
 				if (selectedViewModel != null) {
-					playlists.Add (selectedViewModel);
+					selected.Add (selectedViewModel);
 				}
 			}
-			ViewModel.Selection.Replace (playlists);
+			ViewModel.SelectionReplace (selected);
 		}
 
 		protected virtual void HandleViewModelPropertyChanged (object sender, PropertyChangedEventArgs e)
