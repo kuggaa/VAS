@@ -26,9 +26,11 @@ using VAS.Core.Events;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Services;
+using VAS.Services.ViewModel;
 
 namespace VAS.Tests.Services
 {
@@ -46,6 +48,7 @@ namespace VAS.Tests.Services
 		PlaylistImage plImage;
 		Playlist playlist;
 		PlaylistManager plMan;
+		PlayerVM playerVM;
 
 		int elementLoaded;
 
@@ -118,9 +121,11 @@ namespace VAS.Tests.Services
 			playlist.Elements.Add (new PlaylistPlayElement (evt));
 			playlist.Elements.Add (plImage);
 			currentTime = new Time (0);
-			playerMock.ResetCalls ();
-			player = new PlayerController ();
 
+			playerVM = new PlayerVM ();
+			player = new PlayerController ();
+			playerVM.Player = player;
+			(player as IController).SetViewModel (playerVM);
 			playlist.SetActive (playlist.Elements [0]);
 
 			plMan = new PlaylistManager ();
@@ -129,6 +134,7 @@ namespace VAS.Tests.Services
 
 			streamLength = new Time { TotalSeconds = 5000 };
 			elementLoaded = 0;
+			playerMock.ResetCalls ();
 		}
 
 		[TearDown ()]
@@ -1258,6 +1264,8 @@ namespace VAS.Tests.Services
 
 			mtkMock.Setup (m => m.GetMultiPlayer ()).Returns (multiplayerMock.Object);
 			player = new PlayerController (true);
+			//Should set again the ViewModel
+			(player as IController).SetViewModel (playerVM);
 			PreparePlayer ();
 
 			/* Only called internally in the openning */
@@ -1337,6 +1345,7 @@ namespace VAS.Tests.Services
 
 			mtkMock.Setup (m => m.GetMultiPlayer ()).Returns (multiplayerMock.Object);
 			player = new PlayerController (true);
+			(player as IController).SetViewModel (playerVM);
 			PreparePlayer ();
 
 			/* ROI should be empty */
