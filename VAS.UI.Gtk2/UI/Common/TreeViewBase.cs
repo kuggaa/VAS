@@ -35,7 +35,7 @@ namespace VAS.UI.Common
 	/// Tree view base implementation for MVVM.
 	/// </summary>
 	public class TreeViewBase<TCollectionViewModel, TModel, TViewModel> : TreeView, IView<TCollectionViewModel>
-		where TCollectionViewModel : NestedViewModel<TViewModel>
+		where TCollectionViewModel : class, INestedViewModel<TViewModel>
 		where TViewModel: class, IViewModel<TModel>, new()
 	{
 		protected const int COL_DATA = 0;

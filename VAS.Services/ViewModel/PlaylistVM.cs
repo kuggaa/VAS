@@ -18,7 +18,12 @@
 //
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using VAS.Core.Interfaces;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store.Playlists;
 
@@ -27,12 +32,32 @@ namespace VAS.Services.ViewModel
 	/// <summary>
 	/// ViewModel for a Playlist. Contains a Collection of PlaylistElements
 	/// </summary>
-	public class PlaylistVM : ViewModelBase<Playlist> // FIXME: Implement INested... from RA-138
+	public class PlaylistVM : ViewModelBase<Playlist>, INestedViewModel<PlaylistElementVM>
 	{
-		public CollectionViewModel<IPlaylistElement, PlaylistElementVM> ViewModels {
-			get;
-			set;
-		} = new CollectionViewModel<IPlaylistElement, PlaylistElementVM>();
+		#region INestedViewModel implementation
+
+		public IEnumerator<PlaylistElementVM> GetEnumerator ()
+		{
+			return SubViewModel.GetEnumerator ();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator ()
+		{
+			return SubViewModel.GetEnumerator ();
+		}
+
+		public INotifyCollectionChanged GetNotifyCollection ()
+		{
+			return SubViewModel.GetNotifyCollection ();
+		}
+
+		public ObservableCollection<PlaylistElementVM> ViewModels {
+			get {
+				return SubViewModel.ViewModels;
+			}
+		}
+
+		#endregion
 
 		public override Playlist Model {
 			get {
@@ -41,10 +66,15 @@ namespace VAS.Services.ViewModel
 			set {
 				base.Model = value;
 				if (value != null) {
-					ViewModels.Model = Model.Elements;
+					SubViewModel.Model = Model.Elements;
 				}
 			}
 		}
+
+		public CollectionViewModel<IPlaylistElement, PlaylistElementVM> SubViewModel {
+			get;
+			set;
+		} = new CollectionViewModel<IPlaylistElement, PlaylistElementVM>();
 
 		public string Name {
 			get {
