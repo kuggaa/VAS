@@ -58,6 +58,11 @@ namespace VAS.Tests
 			mockAnalysisWindow = new Mock<IAnalysisWindowBase> ();
 			mockPlayerController = new Mock<IPlayerController> ();
 			mockPlayerController.SetupAllProperties ();
+			mockPlayerController.SetupGet (x => x.CurrentTime).Returns (new Time (1000));
+			MediaFileSet mf = new MediaFileSet ();
+			mf.Add (new MediaFile ("path", 34000, 25, true, true, "mp4", "h264",
+				"aac", 320, 240, 1.3, null, "Test asset"));
+			mockPlayerController.SetupGet (m => m.FileSet).Returns (mf);
 			mockAnalysisWindow.SetupGet (m => m.Player).Returns (mockPlayerController.Object);
 			mockVideoRenderer = new Mock<IRenderingJobsManager> ();
 			mockDiaklogs = new Mock<IDialogs> ();
@@ -464,6 +469,47 @@ namespace VAS.Tests
 				}
 			);
 			mockPlayerController.Verify (p => p.LoadEvent (timelineEvent, new Time (5), false), Times.Once);
+		}
+
+		[Test ()]
+		public void TestLoadCameraPlay_CameraTlEventIsNull ()
+		{
+			// Arrange
+			LoadCameraEvent lce = new LoadCameraEvent () { CameraTlEvent = null };
+
+			// Action
+			App.Current.EventsBroker.Publish<LoadCameraEvent> (lce);
+
+			// Assert
+			mockPlayerController.Verify (player => player.UnloadCurrentEvent (), Times.Once ());
+			mockPlayerController.Verify (player => player.Seek (It.IsAny<double> ()), Times.Never ());
+		}
+
+		[Test ()]
+		public void TestLoadCameraPlay_WithCameraTlEvent ()
+		{
+			// Arrange
+			MediaFileSet mfs2 = new MediaFileSet ();
+			mfs2.Add (new MediaFile {
+				FilePath = "test1",
+				VideoWidth = 320,
+				VideoHeight = 240,
+				Par = 1,
+				Duration = new Time (100)
+			});
+			LoadCameraEvent lce = new LoadCameraEvent () { CameraTlEvent = new TimelineEvent () {
+					FileSet = mfs2,
+					Start = new Time (0),
+					Stop = mfs2.FirstOrDefault ().Duration
+				}
+			};
+
+			// Action
+			App.Current.EventsBroker.Publish<LoadCameraEvent> (lce);
+
+			// Assert
+			mockPlayerController.Verify (player => player.UnloadCurrentEvent (), Times.Never ());
+			mockPlayerController.Verify (player => player.Seek (It.IsAny<double> ()), Times.Never ());
 		}
 	}
 }

@@ -65,7 +65,7 @@ namespace VAS.Drawing.Widgets
 
 		protected virtual void AddLabel (LabelObject label, object obj)
 		{
-			Objects.Add (label);
+			AddObject (label);
 			labelToObject [label] = obj;
 		}
 

@@ -33,9 +33,11 @@ using VASDrawing = VAS.Drawing;
 
 namespace VAS.Drawing.Widgets
 {
+	/// <summary>
+	/// Plays timeline.
+	/// </summary>
 	public class PlaysTimeline : SelectionCanvas
 	{
-	
 		public event ShowTimelineMenuHandler ShowMenuEvent;
 		public event ShowTimersMenuHandler ShowTimersMenuEvent;
 		public event ShowTimerMenuHandler ShowTimerMenuEvent;
@@ -75,28 +77,23 @@ namespace VAS.Drawing.Widgets
 			foreach (CategoryTimeline ct in eventsTimelines.Values) {
 				ct.Dispose ();
 			}
+			CameraNode.Dispose ();
 			base.Dispose (disposing);
 		}
 
-		public void LoadProject (Project project, EventsFilter filter)
-		{
-			this.project = project;
-			ClearObjects ();
-			eventsTimelines.Clear ();
-			duration = project.FileSet.Duration;
-			playsFilter = filter;
-			FillCanvas ();
-			filter.FilterUpdated += UpdateVisibleCategories;
-			if (widget != null) {
-				widget.Height = Objects.Count * StyleConf.TimelineCategoryHeight;
-			}
-		}
-
+		/// <summary>
+		/// Gets or sets the player.
+		/// </summary>
+		/// <value>The player.</value>
 		public IPlayerController Player {
 			get;
 			set;
 		}
 
+		/// <summary>
+		/// Sets the current time.
+		/// </summary>
+		/// <value>The current time.</value>
 		public Time CurrentTime {
 			set {
 				Area area;
@@ -120,6 +117,10 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the seconds per pixel.
+		/// </summary>
+		/// <value>The seconds per pixel.</value>
 		public double SecondsPerPixel {
 			set {
 				secondsPerPixel = value;
@@ -130,11 +131,49 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the periods timeline.
+		/// </summary>
+		/// <value>The periods timeline.</value>
 		public TimerTimeline PeriodsTimeline {
 			get;
 			set;
 		}
 
+		protected CameraObject CameraNode {
+			get {
+				if (timelineToFilter.Any (x => x.Key.GetType () == typeof(CameraTimeline))) {
+					return ((CameraObject)timelineToFilter
+					.FirstOrDefault (x => x.Key.GetType () == typeof(CameraTimeline)).Key.GetNodeAtPosition (0));
+				} else {
+					return null;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Loads the project.
+		/// </summary>
+		/// <param name="project">Project.</param>
+		/// <param name="filter">Filter.</param>
+		public void LoadProject (Project project, EventsFilter filter)
+		{
+			this.project = project;
+			ClearObjects ();
+			eventsTimelines.Clear ();
+			duration = project.FileSet.Duration;
+			playsFilter = filter;
+			FillCanvas ();
+			filter.FilterUpdated += UpdateVisibleCategories;
+			if (widget != null) {
+				widget.Height = Objects.Count * StyleConf.TimelineCategoryHeight;
+			}
+		}
+
+		/// <summary>
+		/// Loads the play.
+		/// </summary>
+		/// <param name="play">Play.</param>
 		public void LoadPlay (TimelineEvent play)
 		{
 			if (play == this.loadedEvent) {
@@ -151,11 +190,19 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
+		/// <summary>
+		/// Adds the play.
+		/// </summary>
+		/// <param name="play">Play.</param>
 		public void AddPlay (TimelineEvent play)
 		{
 			eventsTimelines [play.EventType].AddPlay (play);
 		}
 
+		/// <summary>
+		/// Removes the timers.
+		/// </summary>
+		/// <param name="nodes">Nodes.</param>
 		public void RemoveTimers (List<TimeNode> nodes)
 		{
 			foreach (TimerTimeline tl in Objects.OfType<TimerTimeline>()) {
@@ -166,6 +213,11 @@ namespace VAS.Drawing.Widgets
 			widget?.ReDraw ();
 		}
 
+		/// <summary>
+		/// Adds the timer node.
+		/// </summary>
+		/// <param name="timer">Timer.</param>
+		/// <param name="tn">Tn.</param>
 		public void AddTimerNode (Timer timer, TimeNode tn)
 		{
 			TimerTimeline tl = Objects.OfType<TimerTimeline> ().FirstOrDefault (t => t.HasTimer (timer));
@@ -175,12 +227,70 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
+		/// <summary>
+		/// Removes the plays.
+		/// </summary>
+		/// <param name="plays">Plays.</param>
 		public void RemovePlays (List<TimelineEvent> plays)
 		{
 			foreach (TimelineEvent p in plays) {
 				eventsTimelines [p.EventType].RemoveNode (p);
 				Selections.RemoveAll (s => (s.Drawable as TimelineEventObjectBase).Event == p);
 			}
+		}
+
+		/// <summary>
+		/// Gets the width of the camera expressed in position.
+		/// </summary>
+		/// <returns>The camera width.</returns>
+		public double GetCameraWidth ()
+		{
+			if (!project.FileSet.Any ()) {
+				return 0;
+			}
+
+			if (CameraNode == null) {
+				return 0;
+			}
+
+			if (CameraNode.IsStretched ()) {
+				return CameraNode.GetWidthPosition ();
+			} else {
+				return CameraNode.GetMaxTimePosition ();
+			}
+		}
+
+		public bool IsStretched ()
+		{
+			return CameraNode != null ? CameraNode.IsStretched () : false;
+		}
+
+		/// <summary>
+		/// Sets the periods time line.
+		/// </summary>
+		public void SetPeriodsTimeLine ()
+		{
+			List<Timer> timers = new List<Timer> ();
+			timers.Add (new Timer ());
+			if (CameraNode.TimeNode.Start != new Time (0)) {
+				TimeNode nodeStart = new TimeNode () {
+					Start = new Time (0),
+					Stop = CameraNode.TimeNode.Start
+				};
+				timers.FirstOrDefault ().Nodes.Add (nodeStart);
+			}
+
+			timers.FirstOrDefault ().Nodes.Add (CameraNode.TimeNode);
+
+			if (CameraNode.TimeNode.Stop != CameraNode.MediaFile.Duration) {
+				TimeNode nodeEnd = new TimeNode () {
+					Start = CameraNode.TimeNode.Stop,
+					Stop = CameraNode.MediaFile.Duration
+				};
+				timers.FirstOrDefault ().Nodes.Add (nodeEnd);
+			}
+			PeriodsTimeline = new TimerTimeline (timers, false, NodeDraggingMode.Borders, false,
+				CameraNode.MediaFile.Duration, 0, Color.Blue1, Color.Blue1);
 		}
 
 		protected void Update ()
@@ -261,7 +371,8 @@ namespace VAS.Drawing.Widgets
 
 		protected void ShowTimersMenu (Point coords)
 		{
-			if (coords.Y >= PeriodsTimeline.OffsetY &&
+			if (PeriodsTimeline != null &&
+			    coords.Y >= PeriodsTimeline.OffsetY &&
 			    coords.Y < PeriodsTimeline.OffsetY + PeriodsTimeline.Height) {
 				Timer t = Selections.Select (p => (p.Drawable as TimerTimeNodeObject).Timer).FirstOrDefault ();
 				if (ShowTimerMenuEvent != null) {
@@ -291,18 +402,31 @@ namespace VAS.Drawing.Widgets
 		protected override void SelectionChanged (List<Selection> selections)
 		{
 			TimelineEvent ev = null;
+			CameraTimelineSelectedEvent ctse = null;
+			bool notififyCameraTimelineSelectedEvent = false;
 			if (selections.Count > 0) {
 				CanvasObject d = selections.Last ().Drawable as CanvasObject;
 				if (d is TimelineEventObjectBase) {
 					ev = (d as TimelineEventObjectBase).Event;
+					// If event is in selections list, must be selected but
+					// in the first time it is incorrectly marked as false
+					ev.Selected = true;
 					loadedEvent = ev;
+				} else if (d is CameraObject) {
+					notififyCameraTimelineSelectedEvent = true;
+					ctse = new CameraTimelineSelectedEvent ();
+					ctse.bordersAreSelected = ((CameraObject)d).SelectedLeft || ((CameraObject)d).SelectedRight;
 				}
 			}
 			App.Current.EventsBroker.Publish<LoadEventEvent> (
-				new LoadEventEvent { 
+				new LoadEventEvent {
 					TimelineEvent = ev
 				}
 			);
+
+			if (notififyCameraTimelineSelectedEvent) {
+				App.Current.EventsBroker.Publish<CameraTimelineSelectedEvent> (ctse);
+			}
 		}
 
 		protected override void StartMove (Selection sel)

@@ -16,10 +16,11 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
-using VAS.Core;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
@@ -196,20 +197,21 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 	public class VideoLabelObject : LabelObject
 	{
-		OpenButton openButton;
-		const int OPEN_BUTTON_MARGIN = 5;
-		const int OPEN_IMAGE_PADDING = 2;
+		public TimelineButton openButton;
+		public TimelineButton stretchButton;
+		const int TIMELINE_BUTTON_MARGIN = 5;
+		const int TIMELINE_IMAGE_PADDING = 2;
 
-
-		protected struct OpenButton
+		public struct TimelineButton
 		{
 			public Color BackgroundColor;
 			public Color BorderColor;
 			public Image BackgroundImage;
+			public Point Position;
 			public int Width;
 			public int Height;
-			public Point Position;
 			public int ImagePadding;
+			public bool Enabled;
 		};
 
 		public VideoLabelObject (double width, double height, double offsetY) :
@@ -217,13 +219,39 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		{
 			Name = Catalog.GetString ("Video");
 			Color = Color.Blue1;
+			IsStretched = false;
 
 			openButton.BackgroundColor = App.Current.Style.PaletteBackgroundLight;
 			openButton.BorderColor = App.Current.Style.PaletteBackgroundDark;
 			openButton.BackgroundImage = Resources.LoadImage (StyleConf.OpenButton);
 			openButton.Width = (int)RectSize;
 			openButton.Height = (int)RectSize;
-			openButton.ImagePadding = OPEN_IMAGE_PADDING;
+			openButton.ImagePadding = TIMELINE_IMAGE_PADDING;
+			openButton.Enabled = true;
+
+			stretchButton.BackgroundColor = App.Current.Style.PaletteBackgroundLight;
+			stretchButton.BorderColor = App.Current.Style.PaletteBackgroundDark;
+			stretchButton.Width = (int)RectSize;
+			stretchButton.Height = (int)RectSize;
+			stretchButton.ImagePadding = TIMELINE_IMAGE_PADDING;
+			stretchButton.Enabled = false;
+			SetStretchButtonBackgroundImage ();
+
+			App.Current.EventsBroker.Subscribe<VideoTimelineModeChangedEvent> (HandleVideoTimelineModeChangedEvent);
+		}
+
+		void Dispose ()
+		{
+			App.Current.EventsBroker.Unsubscribe<VideoTimelineModeChangedEvent> (HandleVideoTimelineModeChangedEvent);
+		}
+
+		/// <summary>
+		/// Gets or sets a value indicating if timeline is stretched.
+		/// </summary>
+		/// <value><c>true</c> if timeline is stretched; otherwise, <c>false</c>.</value>
+		public bool IsStretched {
+			get;
+			set;
 		}
 
 		public override void Draw (IDrawingToolkit tk, Area area)
@@ -255,40 +283,75 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			tk.DrawText (new Point (TextOffset, y), Width - TextOffset, Height, Name);
 
 			/* Draw Open button */
-			SetOpenButtonProperties (Width);
+			openButton.Position = new Point (Width - RectSize - TIMELINE_BUTTON_MARGIN - RectSize - TIMELINE_BUTTON_MARGIN,
+				OffsetY + TIMELINE_BUTTON_MARGIN);
+			openButton.BackgroundColor = App.Current.Style.PaletteBackgroundLight;
 			tk.LineWidth = StyleConf.ButtonLineWidth;
 			tk.FillColor = openButton.BackgroundColor;
 			tk.StrokeColor = openButton.BorderColor;
 			tk.DrawRoundedRectangle (openButton.Position, openButton.Width, openButton.Height, 2);
-			//setting pad for the image
+			// Setting pad for the image
 			Point imagePoint = openButton.Position + new Point (openButton.ImagePadding, openButton.ImagePadding);
 			int imageWidth = openButton.Width - (openButton.ImagePadding * 2);
 			int imageHeight = openButton.Height - (openButton.ImagePadding * 2);
 			tk.DrawImage (imagePoint, imageWidth, imageHeight, openButton.BackgroundImage, ScaleMode.AspectFit, false);
 
+			/* Draw Strech button */
+			stretchButton.Position = new Point (Width - RectSize - TIMELINE_BUTTON_MARGIN,
+				OffsetY + TIMELINE_BUTTON_MARGIN);
+			stretchButton.BackgroundColor = stretchButton.Enabled ?
+				App.Current.Style.PaletteBackgroundLight : App.Current.Style.PaletteBackgroundDarkBright;
+			SetStretchButtonBackgroundImage ();
+			tk.LineWidth = StyleConf.ButtonLineWidth;
+			tk.FillColor = stretchButton.BackgroundColor;
+			tk.StrokeColor = stretchButton.BorderColor;
+			tk.DrawRoundedRectangle (stretchButton.Position, stretchButton.Width, stretchButton.Height, 2);
+			// Setting pad for the image
+			imagePoint = stretchButton.Position + new Point (stretchButton.ImagePadding, stretchButton.ImagePadding);
+			imageWidth = stretchButton.Width - (stretchButton.ImagePadding * 2);
+			imageHeight = stretchButton.Height - (stretchButton.ImagePadding * 2);
+			tk.DrawImage (imagePoint, imageWidth, imageHeight, stretchButton.BackgroundImage, ScaleMode.AspectFit, false);
+
 			tk.End ();
 		}
-
-		void SetOpenButtonProperties (double startX)
+		
+		public bool ClickInsideButton (Point p, TimelineButton button)
 		{
-			openButton.Position = new Point (startX - RectSize - OPEN_BUTTON_MARGIN, OffsetY + OPEN_BUTTON_MARGIN);
-			openButton.BackgroundColor = App.Current.Style.PaletteBackgroundLight;
-		}
+			if (!button.Enabled) {
+				return false;
+			}
 
-		public bool ClickInsideOpenButton (Point p)
-		{
 			bool insideX = false;
 			bool insideY = false;
 
-
-			if (p.X >= openButton.Position.X && p.X <= openButton.Position.X + openButton.Width) {
+			if (p.X >= button.Position.X && p.X <= button.Position.X + button.Width) {
 				insideX = true;
 			}
-			if (p.Y >= openButton.Position.Y && p.Y <= openButton.Position.Y + openButton.Height) {
+			if (p.Y >= button.Position.Y && p.Y <= button.Position.Y + button.Height) {
 				insideY = true;
 			}
 
 			return insideX && insideY;
+		}
+
+		void SetStretchButtonBackgroundImage ()
+		{
+			if (IsStretched) {
+				stretchButton.BackgroundImage = Resources.LoadImage (StyleConf.StretchButtonSensitive);
+			} else {
+				stretchButton.BackgroundImage = stretchButton.Enabled ?
+					Resources.LoadImage (StyleConf.StretchButton) :
+					Resources.LoadImage (StyleConf.StretchButtonInsensitive);
+			}
+		}
+
+		void HandleVideoTimelineModeChangedEvent (VideoTimelineModeChangedEvent e)
+		{
+			bool previous = stretchButton.Enabled;
+			stretchButton.Enabled = e.videoTlMode != VideoTimelineMode.Default;
+			if (previous != stretchButton.Enabled) {
+				ReDraw ();
+			}
 		}
 	}
 }

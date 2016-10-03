@@ -174,7 +174,6 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				return;
 			}
 
-
 			tk.Begin ();
 			DrawBackground (tk, area);
 			foreach (TimeNodeObject p in nodes) {
@@ -357,6 +356,12 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			ReDraw ();
 		}
 
+		public void RemoveAllTimers ()
+		{
+			timers.Clear ();
+			ReDraw ();
+		}
+
 		public void AddTimeNode (Timer t, TimeNode tn)
 		{
 			TimerTimeNodeObject to = new TimerTimeNodeObject (t, tn);
@@ -428,7 +433,6 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			co.OffsetY = OffsetY;
 			co.Height = Height;
 			co.SecondsPerPixel = SecondsPerPixel;
-			co.DraggingMode = NodeDraggingMode.Segment;
 			co.MaxTime = maxTime;
 			co.ShowName = ShowName;
 			co.LineColor = LineColor;
