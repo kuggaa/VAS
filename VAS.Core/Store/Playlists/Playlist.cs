@@ -104,7 +104,7 @@ namespace VAS.Core.Store.Playlists
 			get {
 				return creationDate;
 			}
-			private set {
+			set {
 				creationDate = value.ToUniversalTime ();
 			}
 		}
