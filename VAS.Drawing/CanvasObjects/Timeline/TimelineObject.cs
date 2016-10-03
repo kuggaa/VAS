@@ -173,7 +173,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			if (!UpdateDrawArea (tk, area, new Area (new Point (0, OffsetY), Width, Height))) {
 				return;
 			}
-			;
+
 
 			tk.Begin ();
 			DrawBackground (tk, area);
@@ -266,7 +266,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			return filter.IsVisible ((tn as TimelineEventObjectBase).Event);
 		}
 
-		public void AddPlay (TimelineEvent play)
+		public virtual void AddPlay (TimelineEvent play)
 		{
 			TimelineEventObjectBase po = new TimelineEventObjectBase (play, project);
 			po.SelectionLeft = selectionBorderL; 
