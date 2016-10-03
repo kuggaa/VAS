@@ -25,6 +25,10 @@ using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.MVVMC
 {
+	/// <summary>
+	/// Base class of a nested ViewModel Type. This type of ViewModel contains an observableCollection of Child
+	/// ViewModels. It implements INotifyCollectionChanged and IEnumerable interfaces.
+	/// </summary>
 	public class NestedViewModel<VMChilds> : BindableBase, INestedViewModel<VMChilds>
 		where VMChilds : IViewModel
 	{
@@ -42,16 +46,28 @@ namespace VAS.Core.MVVMC
 			get;
 		}
 
+		/// <summary>
+		/// Gets the Interface INotifyCollectionChanged of the Child ViewModels
+		/// </summary>
+		/// <returns>The Collection as a INotifyCollectionChanged</returns>
 		public INotifyCollectionChanged GetNotifyCollection ()
 		{
 			return ViewModels;
 		}
 
+		/// <summary>
+		/// Gets the enumerator of the Child View Models Collection
+		/// </summary>
+		/// <returns>The enumerator.</returns>
 		public IEnumerator<VMChilds> GetEnumerator ()
 		{
 			return ViewModels.GetEnumerator ();
 		}
 
+		/// <summary>
+		/// Gets the enumerator of the Child View Models Collection
+		/// </summary>
+		/// <returns>The enumerator.</returns>
 		IEnumerator IEnumerable.GetEnumerator ()
 		{
 			return ViewModels.GetEnumerator ();

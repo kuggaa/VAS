@@ -21,9 +21,16 @@ using VAS.Core.Store;
 
 namespace VAS.Services.ViewModel
 {
+	/// <summary>
+	/// Timeline event ViewModel Generic Base class
+	/// </summary>
 	public class TimelineEventVM<T> : ViewModelBase<T>
 		where T : TimelineEvent
 	{
+		/// <summary>
+		/// Gets or sets the Name of the TimelineEvent.
+		/// </summary>
+		/// <value>The name.</value>
 		public string Name {
 			get {
 				return Model.Name;
@@ -33,24 +40,40 @@ namespace VAS.Services.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether this instance has drawings.
+		/// </summary>
+		/// <value><c>true</c> if this instance has drawings; otherwise, <c>false</c>.</value>
 		public string HasDrawings {
 			get {
 				return Model.HasDrawings ? "D" : "0";
 			}
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether this instance has field position.
+		/// </summary>
+		/// <value><c>true</c> if this instance has field position; otherwise, <c>false</c>.</value>
 		public string HasFieldPosition {
 			get {
 				return (Model.FieldPosition != null) ? "X" : "0";
 			}
 		}
 
+		/// <summary>
+		/// Gets the notes.
+		/// </summary>
+		/// <value>The notes.</value>
 		public string Notes {
 			get {
 				return (!string.IsNullOrEmpty (Model.Notes)) ? Model.Notes : "...";
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="VAS.Services.ViewModel.TimelineEventVM`1"/> is playing.
+		/// </summary>
+		/// <value><c>true</c> if playing; otherwise, <c>false</c>.</value>
 		public bool Playing {
 			get {
 				return Model.Selected;

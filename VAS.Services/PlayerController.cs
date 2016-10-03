@@ -726,7 +726,6 @@ namespace VAS.Services
 				EmitEventUnloaded ();
 				Open (defaultFileSet);
 			} else {
-				CamerasConfig = defaultCamerasConfig;
 				EmitEventUnloaded ();
 			}
 
@@ -915,7 +914,7 @@ namespace VAS.Services
 		protected virtual void EmitElementLoaded (object element, bool hasNext)
 		{
 			playerVM.HasNext = hasNext;
-			playerVM.PlayListElement = element as IPlaylistElement;
+			playerVM.PlayElement = element;
 			if (ElementLoadedEvent != null && !disposed) {
 				ElementLoadedEvent (element, hasNext);
 			}
@@ -923,7 +922,7 @@ namespace VAS.Services
 
 		protected virtual void EmitEventUnloaded ()
 		{
-			playerVM.PlayListElement = null;
+			playerVM.PlayElement = null;
 			EmitElementLoaded (null, false);
 			App.Current.EventsBroker.Publish<EventLoadedEvent> (
 				new EventLoadedEvent ()

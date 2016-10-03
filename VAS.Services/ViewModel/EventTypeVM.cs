@@ -22,9 +22,16 @@ using VAS.Core.Store;
 
 namespace VAS.Services.ViewModel
 {
+	/// <summary>
+	/// Event type ViewModel, is a NestedViewModels with a child observable collection
+	/// </summary>
 	public class EventTypeVM<VMChild> : NestedViewModel<VMChild>, IViewModel<EventType>
 		where VMChild : IViewModel
 	{
+		/// <summary>
+		/// Gets or sets the Name of the EventType.
+		/// </summary>
+		/// <value>The Name.</value>
 		public string Name {
 			get {
 				return Model.Name;
@@ -34,6 +41,10 @@ namespace VAS.Services.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets the total events inside this EventType
+		/// </summary>
+		/// <value>The total events.</value>
 		public int TotalEvents {
 			get {
 				return ViewModels.Count;

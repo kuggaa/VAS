@@ -100,7 +100,7 @@ namespace VAS.UI.Common
 				break;
 
 			case NotifyCollectionChangedAction.Reset:
-				ClearSubViewModelListeners (dictionaryStore.Keys.Where (ev => ev is VM));
+				ClearSubViewModelListeners (dictionaryStore.Keys.Where (ev => ev is TViewModel));
 				store.Clear ();
 				dictionaryStore.Clear ();
 				dictionaryNestedParent.Clear ();

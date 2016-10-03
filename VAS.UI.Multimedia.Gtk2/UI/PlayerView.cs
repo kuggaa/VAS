@@ -152,6 +152,7 @@ namespace VAS.UI
 		public void SetViewModel (object viewModel)
 		{
 			ViewModel = (PlayerVM)viewModel;
+			ViewModel.SupportsMultipleCameras = false;
 		}
 
 		public PlayerVM ViewModel {
@@ -562,19 +563,19 @@ namespace VAS.UI
 				} else {
 					DrawingsVisible = false;
 				}
-			} else if (e.PropertyName == "PlayListElement") {
-				if (playerVM.PlayListElement == null) {
+			} else if (e.PropertyName == "PlayElement") {
+				if (playerVM.PlayElement == null) {
 					DrawingsVisible = false;
 					if (playerVM.Mode != PlayerViewOperationMode.LiveAnalysisReview) {
 						playerVM.CloseButtonVisible = false;
 					}
 				} else {
 					playerVM.CloseButtonVisible = true;
-					if (playerVM.PlayListElement is PlaylistDrawing) {
-						PlaylistDrawing drawing = playerVM.PlayListElement as PlaylistDrawing;
+					if (playerVM.PlayElement is PlaylistDrawing) {
+						PlaylistDrawing drawing = playerVM.PlayElement as PlaylistDrawing;
 						LoadImage (null, drawing.Drawing);
-					} else if (playerVM.PlayListElement is PlaylistImage) {
-						PlaylistImage image = playerVM.PlayListElement as PlaylistImage;
+					} else if (playerVM.PlayElement is PlaylistImage) {
+						PlaylistImage image = playerVM.PlayElement as PlaylistImage;
 						LoadImage (image.Image, null);
 					}
 				}

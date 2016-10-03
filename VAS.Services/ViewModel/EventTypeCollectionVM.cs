@@ -22,6 +22,10 @@ using VAS.Core.Store;
 
 namespace VAS.Services.ViewModel
 {
+	/// <summary>
+	/// Event type collection View Models, is a Nested Collection that contains
+	/// a child observable collection of type NestedViewModel
+	/// </summary>
 	public class EventTypeCollectionVM<TViewModel, VMChild> : NestedViewModel<TViewModel>
 		where TViewModel : INestedViewModel<VMChild>, new()
 	{
