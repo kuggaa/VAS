@@ -76,10 +76,10 @@ namespace VAS.Services.ViewModel
 		/// <value><c>true</c> if playing; otherwise, <c>false</c>.</value>
 		public bool Playing {
 			get {
-				return Model.Selected;
+				return Model.Playing;
 			}
 			set {
-				Model.Selected = value;
+				Model.Playing = value;
 			}
 		}
 	}

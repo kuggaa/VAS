@@ -605,11 +605,11 @@ namespace VAS.Services
 				loadedPlaylistElement.Selected = false;
 				var playElement = (loadedPlaylistElement as PlaylistPlayElement);
 				if (playElement != null) {
-					playElement.Play.Selected = false;
+					playElement.Play.Playing = false;
 				}
 			}
 			if (loadedEvent != null) {
-				loadedEvent.Selected = false;
+				loadedEvent.Playing = false;
 			}
 
 			loadedEvent = play;
@@ -620,11 +620,11 @@ namespace VAS.Services
 				element.Selected = true;
 				var playElement = (element as PlaylistPlayElement);
 				if (playElement != null) {
-					playElement.Play.Selected = true;
+					playElement.Play.Playing = true;
 				}
 			}
 			if (play != null) {
-				play.Selected = true;
+				play.Playing = true;
 			}
 		}
 

@@ -203,10 +203,11 @@ namespace VAS.Core.Store
 		}
 
 		/// <summary>
-		/// Whether this event is currently selected.
+		/// Whether this event is currently playing.
 		/// </summary>
 		[JsonIgnore]
-		public bool Selected {
+		[PropertyChanged.DoNotNotify]
+		public bool Playing {
 			get;
 			set;
 		}

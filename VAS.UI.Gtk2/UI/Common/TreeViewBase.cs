@@ -22,10 +22,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using Gtk;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
-using System.Linq;
 
 namespace VAS.UI.Common
 {
@@ -47,9 +47,9 @@ namespace VAS.UI.Common
 		{
 		}
 
-		public TreeViewBase (Gtk.TreeStore listStore)
+		public TreeViewBase (Gtk.TreeStore treeStore)
 		{
-			Model = store = listStore;
+			Model = store = treeStore;
 			dictionaryStore = new Dictionary<IViewModel, TreeIter> ();
 			dictionaryNestedParent = new Dictionary<INotifyCollectionChanged, TreeIter> ();
 		}
@@ -117,7 +117,7 @@ namespace VAS.UI.Common
 		protected virtual void AddSubViewModel (IViewModel subViewModel, TreeIter parent)
 		{
 			TreeIter iter;
-			subViewModel.PropertyChanged += PropertyChangedItem;
+			(subViewModel as INotifyPropertyChanged).PropertyChanged += PropertyChangedItem;
 			if (!parent.Equals (TreeIter.Zero)) {
 				iter = store.AppendValues (parent, subViewModel);
 				dictionaryStore.Add (subViewModel, iter);

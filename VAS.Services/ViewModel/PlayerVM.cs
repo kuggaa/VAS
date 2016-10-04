@@ -32,6 +32,11 @@ using VAS.Core;
 
 namespace VAS.Services.ViewModel
 {
+	/// <summary>
+	/// Player View Model, Creates it's own instance of player controller.
+	/// Every view that needs to control the player should use this ViewModel instead of the
+	/// PlayerController.
+	/// </summary>
 	public class PlayerVM : BindableBase, IPlayerViewModel
 	{
 		IPlayerController playerController;
@@ -334,7 +339,6 @@ namespace VAS.Services.ViewModel
 
 		public void ResetCounter ()
 		{
-			//FIXME: Should be fixed?
 			(playerController as VAS.Services.PlayerController).ResetCounter ();
 			App.Current.EventsBroker.Publish<ChangeVideoMessageEvent> (
 				new ChangeVideoMessageEvent () {
@@ -379,9 +383,8 @@ namespace VAS.Services.ViewModel
 
 		public void LoadPlay (TimelineEvent e, Time seekTime, bool playing)
 		{
-			e.Selected = true;
-			Player.LoadEvent (
-				e, seekTime, playing);
+			e.Playing = true;
+			Player.LoadEvent (e, seekTime, playing);
 			if (playing) {
 				Player.Play ();
 			}

@@ -34,15 +34,15 @@ using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Drawing.Cairo;
 using VAS.Drawing.Widgets;
 using VAS.Services;
+using VAS.Services.ViewModel;
 using Helpers = VAS.UI.Helpers;
 using VASCommon = VAS.Core.Common;
-using VAS.Core.Interfaces.MVVMC;
-using VAS.Services.ViewModel;
 
 
 namespace VAS.UI
@@ -161,7 +161,7 @@ namespace VAS.UI
 			}
 			set {
 				if (playerVM != null) {
-					
+					playerVM.PropertyChanged -= PlayerVMPropertyChanged;
 				}
 				playerVM = value;
 				if (playerVM != null) {
@@ -360,7 +360,6 @@ namespace VAS.UI
 		protected virtual void OnVolumeChanged (double level)
 		{
 			double prevLevel;
-			//Think on this
 			prevLevel = playerVM.Volume;
 			if (prevLevel > 0 && level == 0) {
 				SetVolumeIcon ("longomatch-control-volume-off");
@@ -515,35 +514,19 @@ namespace VAS.UI
 		void PlayerVMPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == "ShowControls") {
-				controlsbox.Visible = playerVM.ShowControls;
-				ratescale.Visible = playerVM.ShowControls;
+				controlsbox.Visible = ratescale.Visible = playerVM.ShowControls;
 			} else if (e.PropertyName == "ControlsSensitive") {
-				controlsbox.Sensitive = playerVM.ControlsSensitive;
-				ratescale.Sensitive = playerVM.ControlsSensitive;
+				controlsbox.Sensitive = ratescale.Sensitive = playerVM.ControlsSensitive;
 			} else if (e.PropertyName == "Compact") {
 				prevbutton.Visible = nextbutton.Visible = jumplabel.Visible =
 					jumpspinbutton.Visible = tlabel.Visible = timelabel.Visible =
 						detachbutton.Visible = ratescale.Visible = !playerVM.Compact;
 			} else if (e.PropertyName == "PlayerAttached") {
-				if (playerVM.PlayerAttached) {
-					detachbuttonimage.Pixbuf = Helpers.Misc.LoadIcon ("longomatch-control-attach",
-						StyleConf.PlayerCapturerIconSize);
-					detachbutton.TooltipMarkup = Catalog.GetString ("Attach window");
-				} else {
-					detachbuttonimage.Pixbuf = Helpers.Misc.LoadIcon ("longomatch-control-detach",
-						StyleConf.PlayerCapturerIconSize);
-					detachbutton.TooltipMarkup = Catalog.GetString ("Detach window");
-				}
+				HandlePlayerAttachedChanged ();
 			} else if (e.PropertyName == "ShowDetachButton") {
 				detachbutton.Visible = playerVM.ShowDetachButton;
 			} else if (e.PropertyName == "Playing") {
-				if (playerVM.Playing) {
-					playbutton.Hide ();
-					pausebutton.Show ();
-				} else {
-					playbutton.Show ();
-					pausebutton.Hide ();
-				}
+				HandlePlayingChanged ();
 			} else if (e.PropertyName == "HasNext") {
 				nextbutton.Sensitive = playerVM.HasNext;
 			} else if (e.PropertyName == "CloseButtonVisible") {
@@ -564,20 +547,49 @@ namespace VAS.UI
 					DrawingsVisible = false;
 				}
 			} else if (e.PropertyName == "PlayElement") {
-				if (playerVM.PlayElement == null) {
-					DrawingsVisible = false;
-					if (playerVM.Mode != PlayerViewOperationMode.LiveAnalysisReview) {
-						playerVM.CloseButtonVisible = false;
-					}
-				} else {
-					playerVM.CloseButtonVisible = true;
-					if (playerVM.PlayElement is PlaylistDrawing) {
-						PlaylistDrawing drawing = playerVM.PlayElement as PlaylistDrawing;
-						LoadImage (null, drawing.Drawing);
-					} else if (playerVM.PlayElement is PlaylistImage) {
-						PlaylistImage image = playerVM.PlayElement as PlaylistImage;
-						LoadImage (image.Image, null);
-					}
+				HandlePlayElementChanged ();
+			}
+		}
+
+		void HandlePlayerAttachedChanged ()
+		{
+			if (playerVM.PlayerAttached) {
+				detachbuttonimage.Pixbuf = Helpers.Misc.LoadIcon ("longomatch-control-attach",
+					StyleConf.PlayerCapturerIconSize);
+				detachbutton.TooltipMarkup = Catalog.GetString ("Attach window");
+			} else {
+				detachbuttonimage.Pixbuf = Helpers.Misc.LoadIcon ("longomatch-control-detach",
+					StyleConf.PlayerCapturerIconSize);
+				detachbutton.TooltipMarkup = Catalog.GetString ("Detach window");
+			}
+		}
+
+		void HandlePlayingChanged ()
+		{
+			if (playerVM.Playing) {
+				playbutton.Hide ();
+				pausebutton.Show ();
+			} else {
+				playbutton.Show ();
+				pausebutton.Hide ();
+			}
+		}
+
+		void HandlePlayElementChanged ()
+		{
+			if (playerVM.PlayElement == null) {
+				DrawingsVisible = false;
+				if (playerVM.Mode != PlayerViewOperationMode.LiveAnalysisReview) {
+					playerVM.CloseButtonVisible = false;
+				}
+			} else {
+				playerVM.CloseButtonVisible = true;
+				if (playerVM.PlayElement is PlaylistDrawing) {
+					PlaylistDrawing drawing = playerVM.PlayElement as PlaylistDrawing;
+					LoadImage (null, drawing.Drawing);
+				} else if (playerVM.PlayElement is PlaylistImage) {
+					PlaylistImage image = playerVM.PlayElement as PlaylistImage;
+					LoadImage (image.Image, null);
 				}
 			}
 		}

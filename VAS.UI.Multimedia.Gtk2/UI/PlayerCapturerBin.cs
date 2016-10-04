@@ -66,7 +66,7 @@ namespace VAS.UI
 					playerVM.PropertyChanged -= HandlePlayerVMPropertyChanged;
 				}
 				(playerview as IView).SetViewModel (value);
-				//Get a copy
+				//Get a reference of PlayerVM for own use
 				playerVM = value;
 				if (playerVM != null) {
 					playerVM.PropertyChanged += HandlePlayerVMPropertyChanged;
@@ -103,7 +103,7 @@ namespace VAS.UI
 				} else {
 					ShowCapturer ();
 				}
-				playerVM.Mode = value;
+				ViewModel.Mode = value;
 				Log.Debug ("CapturerPlayer setting mode " + value);
 			}
 		}

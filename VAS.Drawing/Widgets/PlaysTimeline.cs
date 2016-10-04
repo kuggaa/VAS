@@ -410,7 +410,7 @@ namespace VAS.Drawing.Widgets
 					ev = (d as TimelineEventObjectBase).Event;
 					// If event is in selections list, must be selected but
 					// in the first time it is incorrectly marked as false
-					ev.Selected = true;
+					ev.Playing = true;
 					loadedEvent = ev;
 				} else if (d is CameraObject) {
 					notififyCameraTimelineSelectedEvent = true;
