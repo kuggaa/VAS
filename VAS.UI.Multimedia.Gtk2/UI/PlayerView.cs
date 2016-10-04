@@ -169,6 +169,7 @@ namespace VAS.UI
 					playerVM.Mode = PlayerViewOperationMode.Analysis;
 					playerVM.Step = new Time { TotalSeconds = jumpspinbutton.ValueAsInt };
 					playerVM.ViewPorts = viewPortsBackup;
+					playerVM.SetCamerasConfig (new ObservableCollection<CameraConfig> { new CameraConfig (0) });
 					ResetGui ();
 				}
 			}
@@ -548,6 +549,12 @@ namespace VAS.UI
 				}
 			} else if (e.PropertyName == "PlayElement") {
 				HandlePlayElementChanged ();
+			} else if (e.PropertyName == "FileSet") {
+				if (playerVM.FileSet == null || !playerVM.FileSet.Any ()) {
+					playerVM.ControlsSensitive = false;
+				} else {
+					playerVM.ControlsSensitive = true;
+				}
 			}
 		}
 

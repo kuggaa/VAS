@@ -47,7 +47,6 @@ namespace VAS.Services.ViewModel
 		public PlayerVM ()
 		{
 			playerController = new PlayerController (true);
-			playerController.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
 			playerController.SetViewModel (this);
 			playerController.Start ();
 		}
@@ -117,19 +116,9 @@ namespace VAS.Services.ViewModel
 			set;
 		}
 
-		[PropertyChanged.DoNotNotify]
 		public MediaFileSet FileSet {
-			get {
-				return fileset;
-			}
-			set {
-				fileset = value;
-				if (fileset == null || !fileset.Any ()) {
-					ControlsSensitive = false;
-				} else {
-					ControlsSensitive = true;
-				}
-			}
+			get;
+			set;
 		}
 
 		public FrameDrawing FrameDrawing {
@@ -222,13 +211,11 @@ namespace VAS.Services.ViewModel
 			set;
 		}
 
+		ObservableCollection<CameraConfig> camerasConfig;
+
 		public ObservableCollection<CameraConfig> CamerasConfig {
-			get {
-				return playerController.CamerasConfig;
-			}
-			set {
-				playerController.CamerasConfig = value;
-			}
+			get;
+			set;
 		}
 
 		[PropertyChanged.DoNotNotify]
@@ -349,6 +336,12 @@ namespace VAS.Services.ViewModel
 		public void ApplyROI (CameraConfig cameraConfig)
 		{
 			playerController.ApplyROI (cameraConfig);
+		}
+		//FIXME: This setter is strange, but we need it to corretly set the CamerasConfig
+		// to the PlayerController
+		public void SetCamerasConfig (ObservableCollection<CameraConfig> cameras)
+		{
+			playerController.CamerasConfig = cameras;
 		}
 
 		public void LoadEvent (TimelineEvent e, bool playing)

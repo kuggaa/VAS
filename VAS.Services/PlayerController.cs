@@ -726,6 +726,7 @@ namespace VAS.Services
 				EmitEventUnloaded ();
 				Open (defaultFileSet);
 			} else {
+				CamerasConfig = defaultCamerasConfig;
 				EmitEventUnloaded ();
 			}
 
