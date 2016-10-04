@@ -81,6 +81,7 @@ namespace VAS
 
 			if (Environment.GetEnvironmentVariable (evUninstalled) != null) {
 				App.Current.baseDirectory = Path.GetFullPath (".");
+				Console.WriteLine ("baseDir = " + App.Current.baseDirectory);
 				App.Current.DataDir.Add (App.Current.RelativeToPrefix ("../data"));
 			} else {
 				if (Utils.OS == OperatingSystemID.Android) {
@@ -93,6 +94,7 @@ namespace VAS
 						App.Current.baseDirectory = Path.Combine (App.Current.baseDirectory, "../");
 					}
 				}
+				Console.WriteLine ("baseDir = " + App.Current.baseDirectory);
 				if (!Directory.Exists (Path.Combine (App.Current.baseDirectory, "share", softwareName)))
 					Log.Warning ("Prefix directory not found");
 				App.Current.DataDir.Add (App.Current.RelativeToPrefix (Path.Combine ("share", softwareName.ToLower ())));
@@ -122,10 +124,14 @@ namespace VAS
 						home = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
 					}
 				}
+				Console.WriteLine ("baseDir = " + App.Current.baseDirectory);
+
 			}
 
 			App.Current.homeDirectory = Path.Combine (home, softwareName);
 			App.Current.configDirectory = App.Current.homeDirectory;
+			Console.WriteLine ("homeDir = " + App.Current.HomeDir);
+			Console.WriteLine ("configDir = " + App.Current.configDirectory);
 
 			// Migrate old config directory the home directory so that OS X users can easilly find
 			// log files and config files without having to access hidden folders
@@ -159,6 +165,7 @@ namespace VAS
 		static void InitTranslations (string softwareName)
 		{
 			string localesDir = App.Current.RelativeToPrefix ("share/locale");
+			Console.WriteLine ("localesDir = " + localesDir);
 
 			if (!Directory.Exists (localesDir)) {
 				var cerbero_prefix = Environment.GetEnvironmentVariable ("CERBERO_PREFIX");
