@@ -31,6 +31,7 @@ using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
+using VAS.Services.ViewModel;
 using Timer = System.Threading.Timer;
 
 namespace VAS.Services
@@ -50,7 +51,7 @@ namespace VAS.Services
 		public event PrepareViewHandler PrepareViewEvent;
 
 		protected const int TIMEOUT_MS = 20;
-
+		PlayerVM playerVM;
 		protected IPlayer player;
 		protected IMultiPlayer multiPlayer;
 		protected TimelineEvent loadedEvent;
@@ -230,8 +231,12 @@ namespace VAS.Services
 		}
 
 		public virtual bool Playing {
-			get;
-			set;
+			get {
+				return playerVM.Playing;
+			}
+			set {
+				playerVM.Playing = value;
+			}
 		}
 
 		public virtual MediaFileSet FileSet {
@@ -600,11 +605,11 @@ namespace VAS.Services
 				loadedPlaylistElement.Selected = false;
 				var playElement = (loadedPlaylistElement as PlaylistPlayElement);
 				if (playElement != null) {
-					playElement.Play.Selected = false;
+					playElement.Play.Playing = false;
 				}
 			}
 			if (loadedEvent != null) {
-				loadedEvent.Selected = false;
+				loadedEvent.Playing = false;
 			}
 
 			loadedEvent = play;
@@ -615,11 +620,11 @@ namespace VAS.Services
 				element.Selected = true;
 				var playElement = (element as PlaylistPlayElement);
 				if (playElement != null) {
-					playElement.Play.Selected = true;
+					playElement.Play.Playing = true;
 				}
 			}
 			if (play != null) {
-				play.Selected = true;
+				play.Playing = true;
 			}
 		}
 
@@ -825,6 +830,7 @@ namespace VAS.Services
 		//FIXME: MVVMC to be implemented
 		void IController.SetViewModel (IViewModel viewModel)
 		{
+			playerVM = (PlayerVM)viewModel;
 		}
 
 		IEnumerable<KeyAction> IController.GetDefaultKeyActions ()
@@ -892,6 +898,7 @@ namespace VAS.Services
 
 		protected virtual void EmitLoadDrawings (FrameDrawing drawing = null)
 		{
+			playerVM.FrameDrawing = drawing;
 			if (LoadDrawingsEvent != null && !disposed) {
 				LoadDrawingsEvent (drawing);
 			}
@@ -899,6 +906,7 @@ namespace VAS.Services
 
 		protected virtual void EmitPrepareViewEvent ()
 		{
+			playerVM.PrepareView = true;
 			if (PrepareViewEvent != null && !disposed) {
 				PrepareViewEvent ();
 			}
@@ -906,6 +914,8 @@ namespace VAS.Services
 
 		protected virtual void EmitElementLoaded (object element, bool hasNext)
 		{
+			playerVM.HasNext = hasNext;
+			playerVM.PlayElement = element;
 			if (ElementLoadedEvent != null && !disposed) {
 				ElementLoadedEvent (element, hasNext);
 			}
@@ -913,6 +923,7 @@ namespace VAS.Services
 
 		protected virtual void EmitEventUnloaded ()
 		{
+			playerVM.PlayElement = null;
 			EmitElementLoaded (null, false);
 			App.Current.EventsBroker.Publish<EventLoadedEvent> (
 				new EventLoadedEvent ()
@@ -921,6 +932,7 @@ namespace VAS.Services
 
 		protected virtual void EmitRateChanged (float rate)
 		{
+			playerVM.Rate = rate;
 			if (PlaybackRateChangedEvent != null && !disposed) {
 				PlaybackRateChangedEvent (rate);
 			}
@@ -935,6 +947,10 @@ namespace VAS.Services
 
 		protected virtual void EmitTimeChanged (Time currentTime, Time duration)
 		{
+			playerVM.Duration = duration ?? currentTime;
+			playerVM.CurrentTime = currentTime;
+			playerVM.Seekable = !StillImageLoaded;
+
 			if (TimeChangedEvent != null && !disposed) {
 				TimeChangedEvent (currentTime, duration ?? currentTime, !StillImageLoaded);
 			}
@@ -942,6 +958,7 @@ namespace VAS.Services
 
 		protected virtual void EmitPlaybackStateChanged (object sender, bool playing)
 		{
+			playerVM.Playing = playing;
 			if (PlaybackStateChangedEvent != null && !disposed) {
 				PlaybackStateChangedEvent playbackStateChangedEvent = new PlaybackStateChangedEvent {
 					Sender = sender, 
@@ -954,6 +971,8 @@ namespace VAS.Services
 
 		protected virtual void EmitMediaFileSetLoaded (MediaFileSet fileSet, ObservableCollection<CameraConfig> camerasVisible)
 		{
+			playerVM.FileSet = fileSet;
+			playerVM.CamerasConfig = camerasVisible;
 			if (MediaFileSetLoadedEvent != null && !disposed) {
 				MediaFileSetLoadedEvent (fileSet, camerasVisible);
 			}

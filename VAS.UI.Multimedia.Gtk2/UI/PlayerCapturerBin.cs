@@ -22,14 +22,17 @@ using VAS.Core.Interfaces.GUI;
 using VAS.Core.Store;
 using VAS.UI.Helpers;
 using VAS.Core;
+using VAS.Core.Interfaces.MVVMC;
+using VAS.Services.ViewModel;
 
 namespace VAS.UI
 {
 	[System.ComponentModel.Category ("VAS")]
 	[System.ComponentModel.ToolboxItem (true)]
-	public partial class PlayerCapturerBin : Gtk.Bin
+	public partial class PlayerCapturerBin : Gtk.Bin, IView<PlayerVM>
 	{
 		protected IPlayerView playerview;
+		protected PlayerVM playerVM;
 		protected PlayerViewOperationMode mode;
 
 		public PlayerCapturerBin ()
@@ -44,10 +47,30 @@ namespace VAS.UI
 			playerview = App.Current.GUIToolkit.GetPlayerView ();
 			playerbox.PackEnd (playerview as Gtk.Widget);
 			(playerview as Gtk.Widget).ShowAll ();
-			Player = playerview.Player;
 
 			App.Current.EventsBroker.Subscribe<LoadVideoEvent> (HandleLoadVideoEvent);
 			App.Current.EventsBroker.Subscribe<CloseVideoEvent> (HandleCloseVideoEvent);
+		}
+
+		public void SetViewModel (object viewModel)
+		{
+			ViewModel = (PlayerVM)viewModel;
+		}
+
+		public PlayerVM ViewModel {
+			get {
+				return playerVM;
+			}
+			set {
+				if (playerVM != null) {
+					playerVM.PropertyChanged -= HandlePlayerVMPropertyChanged;
+				}
+				(playerview as IView).SetViewModel (value);
+				playerVM = value;
+				if (playerVM != null) {
+					playerVM.PropertyChanged += HandlePlayerVMPropertyChanged;
+				}
+			}
 		}
 
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
@@ -65,17 +88,6 @@ namespace VAS.UI
 			base.OnDestroyed ();
 		}
 
-		public virtual IPlayerController Player {
-			private set {
-				Player.ElementLoadedEvent += HandleElementLoadedEvent;
-				Player.PrepareViewEvent += HandlePrepareViewEvent;
-			}
-
-			get {
-				return playerview.Player;
-			}
-		}
-
 		public virtual ICapturerBin Capturer {
 			get {
 				return capturerbin;
@@ -90,7 +102,7 @@ namespace VAS.UI
 				} else {
 					ShowCapturer ();
 				}
-				playerview.Mode = value;
+				ViewModel.Mode = value;
 				Log.Debug ("CapturerPlayer setting mode " + value);
 			}
 		}
@@ -99,7 +111,7 @@ namespace VAS.UI
 		{
 			playerbox.Visible = true;
 			replayhbox.Visible = false;
-			if (mode == PlayerViewOperationMode.LiveAnalysisReview && App.Current.Config.ReviewPlaysInSameWindow)
+			if (playerVM.Mode == PlayerViewOperationMode.LiveAnalysisReview && App.Current.Config.ReviewPlaysInSameWindow)
 				capturerbox.Visible = true;
 			else
 				capturerbox.Visible = false;
@@ -114,7 +126,7 @@ namespace VAS.UI
 
 		public virtual void AttachPlayer (bool attached)
 		{
-			playerview.PlayerAttached = attached;
+			playerVM.PlayerAttached = attached;
 		}
 
 		protected virtual void HandleLoadVideoEvent (LoadVideoEvent loadVideoEvent)
@@ -125,54 +137,25 @@ namespace VAS.UI
 				});
 
 			ShowDetachButtonInPlayer (false);
-			Player.IgnoreTicks = false;
-			Player.Open (loadVideoEvent.mfs);
-			Player.Play ();
+			playerVM.IgnoreTicks = false;
+			playerVM.OpenFileSet (loadVideoEvent.mfs);
+			playerVM.Play ();
 		}
 
 		protected virtual void HandleCloseVideoEvent (CloseVideoEvent closeVideoEvent)
 		{
-			if (Player is VAS.Services.PlayerController) {
-				(Player as VAS.Services.PlayerController).ResetCounter ();
-
-				App.Current.EventsBroker.Publish<ChangeVideoMessageEvent> (
-					new ChangeVideoMessageEvent () {
-						message = Catalog.GetString ("No video loaded")
-					});
-			}
-		}
-
-		protected virtual void HandlePrepareViewEvent ()
-		{
-			ShowPlayer ();
-		}
-
-		protected virtual void HandleElementLoadedEvent (object element, bool hasNext)
-		{
-			if (element == null) {
-				if (mode == PlayerViewOperationMode.Analysis) {
-					return;
-				}
-				livebox.Visible = replayhbox.Visible = false;
-				Player.Pause ();
-				ShowCapturer ();
-			} else {
-				if (element is TimelineEvent && mode == PlayerViewOperationMode.LiveAnalysisReview) {
-					ShowPlayer ();
-					livebox.Visible = replayhbox.Visible = true;
-				}
-			}
+			playerVM.ResetCounter ();
 		}
 
 		protected virtual void OnBacktolivebuttonClicked (object sender, System.EventArgs e)
 		{
-			Player.Pause ();
+			playerVM.Pause ();
 			ShowCapturer ();
 		}
 
 		public void ShowDetachButtonInPlayer (bool show)
 		{
-			playerview.ShowDetachButton (show);
+			playerVM.ShowDetachButton = show;
 		}
 
 
@@ -193,6 +176,34 @@ namespace VAS.UI
 
 			set {
 				replayhbox = value;
+			}
+		}
+
+		void HandlePlayerVMPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "PlayElement") {
+				if (playerVM.PlayElement == null) {
+					if (playerVM.Mode == PlayerViewOperationMode.Analysis) {
+						return;
+					}
+					livebox.Visible = replayhbox.Visible = false;
+					playerVM.Pause ();
+					ShowCapturer ();
+				} else {
+					if (playerVM.PlayElement is TimelineEvent && playerVM.Mode == PlayerViewOperationMode.LiveAnalysisReview) {
+						ShowPlayer ();
+						livebox.Visible = replayhbox.Visible = true;
+					}
+				}
+			} else if (e.PropertyName == "Mode") {
+				if (playerVM.Mode == PlayerViewOperationMode.Analysis) {
+					ShowPlayer ();
+				} else {
+					ShowCapturer ();
+				}
+				Log.Debug ("CapturerPlayer setting mode " + playerVM.Mode);
+			} else if (e.PropertyName == "PrepareView") {
+				ShowPlayer ();
 			}
 		}
 	}

@@ -31,7 +31,7 @@ namespace VAS.UI.Common
 	/// <summary>
 	/// Combo box view base implementation for MVVM.
 	/// </summary>
-	public class ComboBoxViewBase<T, M, VM> : ComboBox, IView<T> 
+	public class ComboBoxViewBase<T, M, VM> : ComboBox, IView<T>
 		where T : CollectionViewModel<M, VM> 
 		where VM: IViewModel<M>, new()
 	{

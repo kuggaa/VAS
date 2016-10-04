@@ -51,7 +51,7 @@ namespace VAS.Services
 		protected virtual void LoadPlay (TimelineEvent play, Time seekTime, bool playing)
 		{
 			if (play != null && Player != null) {
-				play.Selected = true;
+				play.Playing = true;
 				Player.LoadEvent (
 					play, seekTime, playing);
 				if (playing) {
@@ -63,7 +63,7 @@ namespace VAS.Services
 		protected virtual void LoadCameraPlay (TimelineEvent play, Time seekTime, bool playing)
 		{
 			if (play != null && Player != null) {
-				play.Selected = true;
+				play.Playing = true;
 				(Player as PlayerController)?.LoadCameraEvent (
 					play, seekTime, playing);
 				if (playing) {

@@ -16,7 +16,11 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using VAS.Core.Common;
 
 namespace VAS.Core.Interfaces.MVVMC
 {
@@ -27,6 +31,47 @@ namespace VAS.Core.Interfaces.MVVMC
 	public interface IViewModel<T> : IViewModel
 	{
 		T Model { set; get; }
+	}
+
+	/// <summary>
+	/// Interface to get the INotifyCollectionChanged Interface
+	/// </summary>
+	public interface INestedViewModel
+	{
+		INotifyCollectionChanged GetNotifyCollection ();
+	}
+
+	/// <summary>
+	/// Interface to get the Child View Models
+	/// </summary>
+	public interface INestedViewModel<VMChilds> : INestedViewModel, IViewModel, IEnumerable <VMChilds>
+	{
+		ObservableCollection<VMChilds> ViewModels { get; }
+	}
+
+	/// <summary>
+	/// Interface that the player View Model should use
+	/// </summary>
+	public interface IPlayerViewModel : IViewModel
+	{
+		IPlayerController Player { get; }
+
+		PlayerViewOperationMode Mode  { get; set; }
+
+		bool SupportsMultipleCameras { get; set; }
+
+		bool PlayerAttached { set; }
+
+		bool ShowDetachButton { set; }
+	}
+
+	/// <summary>
+	/// Interface that every panel related to analysis should implement, that is panels that 
+	/// has Players in it, and or Events Managers lists, etc.
+	/// </summary>
+	public interface IAnalysisViewModel
+	{
+		IPlayerViewModel PlayerViewModel { get; }
 	}
 }
 

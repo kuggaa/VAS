@@ -34,11 +34,13 @@ using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Drawing.Cairo;
 using VAS.Drawing.Widgets;
 using VAS.Services;
+using VAS.Services.ViewModel;
 using Helpers = VAS.UI.Helpers;
 using VASCommon = VAS.Core.Common;
 
@@ -48,19 +50,19 @@ namespace VAS.UI
 	[System.ComponentModel.Category ("VAS")]
 	[System.ComponentModel.ToolboxItem (true)]
 
-	public partial class PlayerView : Gtk.Bin, IPlayerView
+	public partial class PlayerView : Gtk.Bin, IView<PlayerVM>, IPlayerView
 	{
 		protected const int SCALE_FPS = 25;
 		protected IPlayerController player;
-		protected bool seeking, IsPlayingPrevState, muted, ignoreRate, ignoreVolume;
+		protected bool seeking, isPlayingPrevState, muted, ignoreRate, ignoreVolume;
 		protected double previousVLevel = 1;
 		protected VolumeWindow vwin;
 		protected Blackboard blackboard;
-		protected PlayerViewOperationMode mode;
 		protected Time duration;
 		List<double> rateList;
 		KeyContext keycontext;
 		List<IViewPort> viewPortsBackup;
+		PlayerVM playerVM;
 
 		#region Constructors
 
@@ -118,125 +120,64 @@ namespace VAS.UI
 			ratescale.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 8"));
 			controlsbox.HeightRequest = StyleConf.PlayerCapturerControlsHeight;
 
-			Player = new PlayerController ();
-			Player.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
-			Player.Step = new Time { TotalSeconds = jumpspinbutton.ValueAsInt };
-			Mode = PlayerViewOperationMode.Analysis;
 			TogglePlayOnClick = true;
 			CreateWindows ();
-			ResetGui ();
+
 		}
 
 		#endregion
 
 		protected override void OnUnrealized ()
 		{
-			player.ViewPorts = null;
-			((IPlayback)player).Stop ();
+			playerVM.ViewPorts = null;
+			playerVM.Stop ();
 			base.OnUnrealized ();
 		}
 
 		protected override void OnRealized ()
 		{
-			player.ViewPorts = viewPortsBackup;
+			if (playerVM != null) {
+				playerVM.ViewPorts = viewPortsBackup;
+			}
 			base.OnRealized ();
 		}
 
 		protected override void OnDestroyed ()
 		{
 			blackboard.Dispose ();
-			player.Dispose ();
+			playerVM.Dispose ();
 			base.OnDestroyed ();
 		}
 
-		#region Properties
-
-		public virtual bool SupportsMultipleCameras {
-			get {
-				return false;
-			}
-		}
-
-		public virtual bool PlayerAttached {
-			set {
-				if (value) {
-					detachbuttonimage.Pixbuf = Helpers.Misc.LoadIcon ("longomatch-control-attach",
-						StyleConf.PlayerCapturerIconSize);
-					detachbutton.TooltipMarkup = Catalog.GetString ("Attach window");
-				} else {
-					detachbuttonimage.Pixbuf = Helpers.Misc.LoadIcon ("longomatch-control-detach",
-						StyleConf.PlayerCapturerIconSize);
-					detachbutton.TooltipMarkup = Catalog.GetString ("Detach window");
-				}
-			}
-		}
-
-		public virtual IPlayerController Player {
-			get {
-				return player;
-			}
-			set {
-				if (player != null) {
-					player.ElementLoadedEvent -= HandleElementLoadedEvent;
-					player.LoadDrawingsEvent -= HandleLoadDrawingsEvent;
-					player.PlaybackRateChangedEvent -= HandlePlaybackRateChangedEvent;
-					player.PlaybackStateChangedEvent -= HandlePlaybackStateChangedEvent;
-					player.TimeChangedEvent -= HandleTimeChangedEvent;
-					player.VolumeChangedEvent -= HandleVolumeChangedEvent;
-					player.MediaFileSetLoadedEvent -= HandleMediaFileSetLoadedEvent;
-				}
-				player = value;
-				if (player != null) {
-					player.ElementLoadedEvent += HandleElementLoadedEvent;
-					player.LoadDrawingsEvent += HandleLoadDrawingsEvent;
-					player.PlaybackRateChangedEvent += HandlePlaybackRateChangedEvent;
-					player.PlaybackStateChangedEvent += HandlePlaybackStateChangedEvent;
-					player.TimeChangedEvent += HandleTimeChangedEvent;
-					player.VolumeChangedEvent += HandleVolumeChangedEvent;
-					player.MediaFileSetLoadedEvent += HandleMediaFileSetLoadedEvent;
-				}
-			}
-		}
-
-		void HandleMediaFileSetLoadedEvent (MediaFileSet fileset, ObservableCollection<CameraConfig> camerasConfig = null)
+		public void SetViewModel (object viewModel)
 		{
-			if (fileset == null || !fileset.Any ()) {
-				controlsbox.Sensitive = false;
-			} else {
-				controlsbox.Sensitive = true;
-			}
+			ViewModel = (PlayerVM)viewModel;
+			ViewModel.SupportsMultipleCameras = false;
 		}
 
-		public virtual PlayerViewOperationMode Mode {
+		public PlayerVM ViewModel {
+			get {
+				return playerVM;
+			}
 			set {
-				mode = value;
-				switch (mode) {
-				case PlayerViewOperationMode.Analysis:
-					Compact = false;
-					ShowControls = true;
-					break;
-				case PlayerViewOperationMode.LiveAnalysisReview:
-					Compact = true;
-					ShowControls = true;
-					break;
-				case PlayerViewOperationMode.Synchronization:
-					Compact = false;
-					ShowControls = false;
-					break;
+				if (playerVM != null) {
+					playerVM.PropertyChanged -= PlayerVMPropertyChanged;
+				}
+				playerVM = value;
+				if (playerVM != null) {
+					playerVM.PropertyChanged += PlayerVMPropertyChanged;
+					playerVM.Mode = PlayerViewOperationMode.Analysis;
+					playerVM.Step = new Time { TotalSeconds = jumpspinbutton.ValueAsInt };
+					playerVM.ViewPorts = viewPortsBackup;
+					playerVM.SetCamerasConfig (new ObservableCollection<CameraConfig> { new CameraConfig (0) });
+					ResetGui ();
 				}
 			}
-			get {
-				return mode;
-			}
 		}
 
-		public virtual object CamerasLayout {
-			get {
-				return 0;
-			}
-			set {
-			}
-		}
+
+
+		#region Properties
 
 		public virtual List<CameraConfig> CamerasConfig {
 			get {
@@ -255,27 +196,7 @@ namespace VAS.UI
 
 		#region Private methods
 
-		protected virtual bool ControlsSensitive {
-			set {
-				controlsbox.Sensitive = value;
-				ratescale.Sensitive = value;
-			}
-		}
 
-		protected virtual bool ShowControls {
-			set {
-				controlsbox.Visible = value;
-				ratescale.Visible = value;
-			}
-		}
-
-		protected virtual bool Compact {
-			set {
-				prevbutton.Visible = nextbutton.Visible = jumplabel.Visible =
-					jumpspinbutton.Visible = tlabel.Visible = timelabel.Visible =
-						detachbutton.Visible = ratescale.Visible = !value;
-			}
-		}
 
 		protected virtual bool DrawingsVisible {
 			set {
@@ -286,15 +207,20 @@ namespace VAS.UI
 
 		protected virtual void ResetGui ()
 		{
-			if (mode != PlayerViewOperationMode.LiveAnalysisReview) {
+			if (playerVM.Mode != PlayerViewOperationMode.LiveAnalysisReview) {
 				closebutton.Visible = false;
 			}
-			ControlsSensitive = true;
+
+			prevbutton.Visible = nextbutton.Visible = jumplabel.Visible =
+				jumpspinbutton.Visible = tlabel.Visible = timelabel.Visible =
+					detachbutton.Visible = ratescale.Visible = !playerVM.Compact;
+			
+			playerVM.ControlsSensitive = true;
 			DrawingsVisible = false;
 			timescale.Value = 0;
 			timelabel.Text = "";
 			seeking = false;
-			IsPlayingPrevState = false;
+			isPlayingPrevState = false;
 			muted = false;
 			ignoreRate = false;
 			ignoreVolume = false;
@@ -353,79 +279,14 @@ namespace VAS.UI
 			volumebuttonimage.Pixbuf = Helpers.Misc.LoadIcon (name, IconSize.Button, 0);
 		}
 
-		protected virtual void UpdateTime (Time currentTime, Time duration)
+		protected virtual void UpdateTime ()
 		{
-			timelabel.Text = currentTime.ToMSecondsString (true) + "/" + duration.ToMSecondsString ();
-			if (duration.MSeconds == 0) {
-				timescale.Value = 0;
-			} else {
-				timescale.Value = (double)currentTime.MSeconds / duration.MSeconds;
-			}
-		}
-
-		#endregion
-
-		#region ControllerCallbacks
-
-		protected virtual void HandleVolumeChangedEvent (double level)
-		{
-			/* Unused: volume is retrieved before launching the volume window */
-		}
-
-		protected virtual void HandleTimeChangedEvent (Time currentTime, Time duration, bool seekable)
-		{
-			if (seeking)
-				return;
-
-			this.duration = duration;
-			UpdateTime (currentTime, duration);
-			timescale.Sensitive = seekable;
-		}
-
-		protected virtual void HandlePlaybackStateChangedEvent (PlaybackStateChangedEvent e)
-		{
-			if (e.Playing) {
-				playbutton.Hide ();
-				pausebutton.Show ();
-			} else {
-				playbutton.Show ();
-				pausebutton.Hide ();
-			}
-		}
-
-		protected virtual void HandlePlaybackRateChangedEvent (float rate)
-		{
-			ignoreRate = true;
-			int index = App.Current.RateList.FindIndex (p => (float)p == rate);
-			ratescale.Value = index + App.Current.LowerRate;				
-			ignoreRate = false;
-		}
-
-		protected virtual void HandleLoadDrawingsEvent (FrameDrawing frameDrawing)
-		{
-			if (frameDrawing != null) {
-				LoadImage (Player.CurrentFrame, frameDrawing);
-			} else {
-				DrawingsVisible = false;
-			}
-		}
-
-		protected virtual void HandleElementLoadedEvent (object element, bool hasNext)
-		{
-			if (element == null) {
-				DrawingsVisible = false;
-				if (Mode != PlayerViewOperationMode.LiveAnalysisReview) {
-					closebutton.Visible = false;
-				}
-			} else {
-				nextbutton.Sensitive = hasNext;
-				closebutton.Visible = true;
-				if (element is PlaylistDrawing) {
-					PlaylistDrawing drawing = element as PlaylistDrawing;
-					LoadImage (null, drawing.Drawing);
-				} else if (element is PlaylistImage) {
-					PlaylistImage image = element as PlaylistImage;
-					LoadImage (image.Image, null);
+			if (playerVM.CurrentTime != null && playerVM.Duration != null) {
+				timelabel.Text = playerVM.CurrentTime.ToMSecondsString (true) + "/" + playerVM.Duration.ToMSecondsString ();
+				if (playerVM.Duration.MSeconds == 0) {
+					timescale.Value = 0;
+				} else {
+					timescale.Value = (double)playerVM.CurrentTime.MSeconds / playerVM.Duration.MSeconds;
 				}
 			}
 		}
@@ -436,7 +297,7 @@ namespace VAS.UI
 
 		protected virtual void HandleExposeEvent (object sender, ExposeEventArgs args)
 		{
-			Player.Expose ();
+			playerVM.Expose ();
 			/* The player draws over the eventbox when it's resized
 			 * so make sure that we queue a draw in the event box after
 			 * the expose */
@@ -454,9 +315,9 @@ namespace VAS.UI
 
 			if (!seeking) {
 				seeking = true;
-				IsPlayingPrevState = Player.Playing;
-				Player.IgnoreTicks = true;
-				Player.Pause ();
+				isPlayingPrevState = playerVM.Playing;
+				playerVM.IgnoreTicks = true;
+				playerVM.Pause ();
 			}
 		}
 
@@ -471,36 +332,36 @@ namespace VAS.UI
 
 			if (seeking) {
 				seeking = false;
-				Player.IgnoreTicks = false;
-				if (IsPlayingPrevState)
-					Player.Play ();
+				playerVM.IgnoreTicks = false;
+				if (isPlayingPrevState)
+					playerVM.Play ();
 			}
 		}
 
 		protected virtual void HandleTimescaleValueChanged (object sender, System.EventArgs e)
 		{
 			if (seeking) {
-				Player.Seek (timescale.Value);
-				UpdateTime (duration * timescale.Value, duration); 
+				playerVM.Seek (timescale.Value);
+				playerVM.CurrentTime = playerVM.Duration * timescale.Value;
+				UpdateTime (); 
 			}
 		}
 
 		protected virtual void HandlePlaybuttonClicked (object sender, System.EventArgs e)
 		{
-			Player.Play ();
+			playerVM.Play ();
 		}
 
 		protected virtual void HandleVolumebuttonClicked (object sender, System.EventArgs e)
 		{
-			vwin.SetLevel (Player.Volume);
+			vwin.SetLevel (playerVM.Volume);
 			vwin.Show ();
 		}
 
 		protected virtual void OnVolumeChanged (double level)
 		{
 			double prevLevel;
-
-			prevLevel = Player.Volume;
+			prevLevel = playerVM.Volume;
 			if (prevLevel > 0 && level == 0) {
 				SetVolumeIcon ("longomatch-control-volume-off");
 			} else if (prevLevel > 0.5 && level <= 0.5) {
@@ -510,7 +371,7 @@ namespace VAS.UI
 			} else if (prevLevel < 1 && level == 1.0) {
 				SetVolumeIcon ("longomatch-control-volume-hi");
 			}
-			Player.Volume = level;
+			playerVM.Volume = level;
 			if (level == 0)
 				muted = true;
 			else
@@ -519,22 +380,22 @@ namespace VAS.UI
 
 		protected virtual void HandlePausebuttonClicked (object sender, System.EventArgs e)
 		{
-			Player.Pause ();
+			playerVM.Pause ();
 		}
 
 		protected virtual void HandleClosebuttonClicked (object sender, System.EventArgs e)
 		{
-			App.Current.EventsBroker.Publish<LoadEventEvent> (new LoadEventEvent ());
+			playerVM.LoadEvent (null, playerVM.Playing);
 		}
 
 		protected virtual void HandlePrevbuttonClicked (object sender, System.EventArgs e)
 		{
-			Player.Previous ();
+			playerVM.Previous ();
 		}
 
 		protected virtual void HandleNextbuttonClicked (object sender, System.EventArgs e)
 		{
-			Player.Next ();
+			playerVM.Next ();
 		}
 
 		protected virtual void HandleRateFormatValue (object o, Gtk.FormatValueArgs args)
@@ -550,21 +411,17 @@ namespace VAS.UI
 			float val = GetRateFromScale ();
 
 			// Mute for rate != 1
-			if (val != 1 && Player.Volume != 0) {
-				previousVLevel = Player.Volume;
-				Player.Volume = 0;
+			if (val != 1 && playerVM.Volume != 0) {
+				previousVLevel = playerVM.Volume;
+				playerVM.Volume = 0;
 			} else if (val != 1 && muted)
 				previousVLevel = 0;
 			else if (val == 1)
-				Player.Volume = previousVLevel;
+				playerVM.Volume = previousVLevel;
 
 			if (!ignoreRate) {
-				Player.Rate = val;
-				App.Current.EventsBroker.Publish<PlaybackRateChangedEvent> (
-					new PlaybackRateChangedEvent {
-						Value = val
-					}
-				);
+				playerVM.SetRate (val);
+
 			}
 		}
 
@@ -607,7 +464,7 @@ namespace VAS.UI
 			 * triggering this callback. This should be fixed properly.*/
 			Pointer.Ungrab (Gtk.Global.CurrentEventTime);
 			if (TogglePlayOnClick) {
-				Player.TogglePlay ();
+				playerVM.TogglePlay ();
 			}
 		}
 
@@ -615,16 +472,16 @@ namespace VAS.UI
 		{
 			switch (args.Event.Direction) {
 			case ScrollDirection.Down:
-				Player.SeekToPreviousFrame ();
+				playerVM.SeekToPreviousFrame ();
 				break;
 			case ScrollDirection.Up:
-				Player.SeekToNextFrame ();
+				playerVM.SeekToNextFrame ();
 				break;
 			case ScrollDirection.Left:
-				Player.StepBackward ();
+				playerVM.StepBackward ();
 				break;
 			case ScrollDirection.Right:
-				Player.StepForward ();
+				playerVM.StepForward ();
 				break;
 			}
 		}
@@ -643,21 +500,105 @@ namespace VAS.UI
 
 		protected virtual void HandleJumpValueChanged (object sender, EventArgs e)
 		{
-			Player.Step = new Time (jumpspinbutton.ValueAsInt * 1000);
+			playerVM.Step = new Time (jumpspinbutton.ValueAsInt * 1000);
 		}
 
 		protected virtual void HandleReady (object sender, EventArgs e)
 		{
 			viewPortsBackup = new List<IViewPort> { videowindow };
-			Player.ViewPorts = viewPortsBackup;
-			Player.Ready ();
-		}
-
-		public virtual void ShowDetachButton (bool show)
-		{
-			this.detachbutton.Visible = show;
+			playerVM.ViewPorts = viewPortsBackup;
+			playerVM.Ready ();
 		}
 
 		#endregion
+
+		void PlayerVMPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "ShowControls") {
+				controlsbox.Visible = ratescale.Visible = playerVM.ShowControls;
+			} else if (e.PropertyName == "ControlsSensitive") {
+				controlsbox.Sensitive = ratescale.Sensitive = playerVM.ControlsSensitive;
+			} else if (e.PropertyName == "Compact") {
+				prevbutton.Visible = nextbutton.Visible = jumplabel.Visible =
+					jumpspinbutton.Visible = tlabel.Visible = timelabel.Visible =
+						detachbutton.Visible = ratescale.Visible = !playerVM.Compact;
+			} else if (e.PropertyName == "PlayerAttached") {
+				HandlePlayerAttachedChanged ();
+			} else if (e.PropertyName == "ShowDetachButton") {
+				detachbutton.Visible = playerVM.ShowDetachButton;
+			} else if (e.PropertyName == "Playing") {
+				HandlePlayingChanged ();
+			} else if (e.PropertyName == "HasNext") {
+				nextbutton.Sensitive = playerVM.HasNext;
+			} else if (e.PropertyName == "CloseButtonVisible") {
+				closebutton.Visible = playerVM.CloseButtonVisible;
+			} else if (e.PropertyName == "Rate") {
+				ignoreRate = true;
+				int index = App.Current.RateList.FindIndex (p => (float)p == playerVM.Rate);
+				ratescale.Value = index + App.Current.LowerRate;				
+				ignoreRate = false;
+			} else if (e.PropertyName == "Seekable") {
+				timescale.Sensitive = playerVM.Seekable;
+			} else if (e.PropertyName == "Duration" || e.PropertyName == "CurrentTime") {
+				UpdateTime ();
+			} else if (e.PropertyName == "FrameDrawing") {
+				if (playerVM.FrameDrawing != null) {
+					LoadImage (playerVM.CurrentFrame, playerVM.FrameDrawing);
+				} else {
+					DrawingsVisible = false;
+				}
+			} else if (e.PropertyName == "PlayElement") {
+				HandlePlayElementChanged ();
+			} else if (e.PropertyName == "FileSet") {
+				if (playerVM.FileSet == null || !playerVM.FileSet.Any ()) {
+					playerVM.ControlsSensitive = false;
+				} else {
+					playerVM.ControlsSensitive = true;
+				}
+			}
+		}
+
+		void HandlePlayerAttachedChanged ()
+		{
+			if (playerVM.PlayerAttached) {
+				detachbuttonimage.Pixbuf = Helpers.Misc.LoadIcon ("longomatch-control-attach",
+					StyleConf.PlayerCapturerIconSize);
+				detachbutton.TooltipMarkup = Catalog.GetString ("Attach window");
+			} else {
+				detachbuttonimage.Pixbuf = Helpers.Misc.LoadIcon ("longomatch-control-detach",
+					StyleConf.PlayerCapturerIconSize);
+				detachbutton.TooltipMarkup = Catalog.GetString ("Detach window");
+			}
+		}
+
+		void HandlePlayingChanged ()
+		{
+			if (playerVM.Playing) {
+				playbutton.Hide ();
+				pausebutton.Show ();
+			} else {
+				playbutton.Show ();
+				pausebutton.Hide ();
+			}
+		}
+
+		void HandlePlayElementChanged ()
+		{
+			if (playerVM.PlayElement == null) {
+				DrawingsVisible = false;
+				if (playerVM.Mode != PlayerViewOperationMode.LiveAnalysisReview) {
+					playerVM.CloseButtonVisible = false;
+				}
+			} else {
+				playerVM.CloseButtonVisible = true;
+				if (playerVM.PlayElement is PlaylistDrawing) {
+					PlaylistDrawing drawing = playerVM.PlayElement as PlaylistDrawing;
+					LoadImage (null, drawing.Drawing);
+				} else if (playerVM.PlayElement is PlaylistImage) {
+					PlaylistImage image = playerVM.PlayElement as PlaylistImage;
+					LoadImage (image.Image, null);
+				}
+			}
+		}
 	}
 }

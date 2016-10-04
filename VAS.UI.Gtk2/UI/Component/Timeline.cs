@@ -367,7 +367,7 @@ namespace VAS.UI.Component
 
 		protected virtual void HandleLoadPlayEvent (LoadEventEvent e)
 		{
-			isTimeLineEvent = e.TimelineEvent != null && e.TimelineEvent.Selected;
+			isTimeLineEvent = e.TimelineEvent != null && e.TimelineEvent.Playing;
 		}
 
 		protected void HandleScrollEvent (object sender, System.EventArgs args)
