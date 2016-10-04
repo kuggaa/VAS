@@ -75,7 +75,6 @@ namespace VAS
 			*/
 
 			Current = appInit;
-			InitTranslations (softwareName);
 
 			string home = null;
 
@@ -148,6 +147,7 @@ namespace VAS
 				}
 			}
 
+			InitTranslations (softwareName);
 			InitDependencies ();
 		}
 
