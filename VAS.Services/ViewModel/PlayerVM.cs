@@ -211,8 +211,11 @@ namespace VAS.Services.ViewModel
 			set;
 		}
 
-		ObservableCollection<CameraConfig> camerasConfig;
-
+		/// <summary>
+		/// Gets or sets the cameras config. Use this Call to update CameraConfig in Views that uses
+		/// this ViewModel
+		/// </summary>
+		/// <value>The cameras config.</value>
 		public ObservableCollection<CameraConfig> CamerasConfig {
 			get;
 			set;
@@ -337,8 +340,13 @@ namespace VAS.Services.ViewModel
 		{
 			playerController.ApplyROI (cameraConfig);
 		}
-		//FIXME: This setter is strange, but we need it to corretly set the CamerasConfig
+		//FIXME: This setter is strange, but we need it to correctly set the CamerasConfig
 		// to the PlayerController
+		/// <summary>
+		/// Sets the cameras config in PlayerController, use this call to set CameraConfig just in
+		/// PlayerController
+		/// </summary>
+		/// <param name="cameras">Cameras.</param>
 		public void SetCamerasConfig (ObservableCollection<CameraConfig> cameras)
 		{
 			playerController.CamerasConfig = cameras;
