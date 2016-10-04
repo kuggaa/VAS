@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 using Moq;
 using NUnit.Framework;
 using VAS.Core;
@@ -27,29 +28,32 @@ using VAS.Services.ViewModel;
 
 namespace VAS.Tests.Services
 {
-	public class TestPlayListController
+	public class TestPlaylistController
 	{
+		const string name = "name";
+
 		Mock<IGUIToolkit> mockGuiToolkit;
 		Mock<IPlayerController> mockPlayerController;
 		Mock<IDialogs> mockDiaklogs;
-		PlayListController controller;
+		PlaylistController controller;
 
 		[TestFixtureSetUp ()]
 		public void FixtureSetup ()
 		{
 			mockPlayerController = new Mock<IPlayerController> ();
 			mockDiaklogs = new Mock<IDialogs> ();
+			mockGuiToolkit = new Mock<IGUIToolkit> ();
 		}
 
 		[SetUp ()]
 		public void Setup ()
 		{
-			mockGuiToolkit = new Mock<IGUIToolkit> ();
 			App.Current.GUIToolkit = mockGuiToolkit.Object;
-			mockDiaklogs = new Mock<IDialogs> ();
 			App.Current.Dialogs = mockDiaklogs.Object;
-			controller = new PlayListController (mockPlayerController.Object);
+			controller = new PlaylistController (mockPlayerController.Object);
 			controller.Start ();
+			mockDiaklogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
+													 It.IsAny<object> ())).Returns (AsyncHelpers.Return (name));
 		}
 
 		[TearDown ()]
@@ -61,16 +65,13 @@ namespace VAS.Tests.Services
 		[Test ()]
 		public void TestNewPlaylist ()
 		{
-			string name = "name";
 			PlaylistCollectionVM playlistCollectionVM = new PlaylistCollectionVM ();
 			controller.SetViewModel (playlistCollectionVM);
 
-			mockDiaklogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (),
-				It.IsAny<string> (), It.IsAny<object> ())).Returns (AsyncHelpers.Return (name));
-
 			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
 				new AddPlaylistElementEvent {
-					PlaylistElements = new System.Collections.Generic.List<IPlaylistElement> ()
+					PlaylistElements = new List<IPlaylistElement> (),
+					Playlist = null
 				}
 			);
 
@@ -79,7 +80,18 @@ namespace VAS.Tests.Services
 
 			Assert.AreEqual (1, playlistCollectionVM.ViewModels.Count);
 			Assert.AreEqual (name, playlistCollectionVM.ViewModels [0].Name);
-		}
 
+			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
+				new AddPlaylistElementEvent {
+					PlaylistElements = new List<IPlaylistElement> (),
+					Playlist = playlistCollectionVM.ViewModels [0].Model
+				}
+			);
+
+			mockDiaklogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
+				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Once ());
+
+			Assert.AreEqual (1, playlistCollectionVM.ViewModels.Count);
+		}
 	}
 }

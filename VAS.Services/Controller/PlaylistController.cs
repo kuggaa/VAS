@@ -14,28 +14,20 @@ using VAS.Core.Store.Playlists;
 
 namespace VAS.Services.Controller
 {
-	public class PlayListController : IController
+	public class PlaylistController : IController
 	{
 		PlaylistCollectionVM viewModel;
 
-		public IPlayerController Player {
+		//FIXME: IPlayerController should be changed to PlayerVM
+		public IPlayerController PlayerVM {
 			get;
 			set;
 		}
 
-		public Project OpenedProject {
-			get;
-			set;
-		}
-
-		public ProjectType OpenedProjectType {
-			get;
-			set;
-		}
-
-		public PlayListController (IPlayerController player)
+		//FIXME: IPlayerController should be changed to PlayerVM
+		public PlaylistController (IPlayerController playerVM)
 		{
-			Player = player;
+			PlayerVM = playerVM;
 		}
 
 		#region IController implementation
@@ -72,6 +64,7 @@ namespace VAS.Services.Controller
 
 		protected virtual void HandleAddPlaylistElement (AddPlaylistElementEvent e)
 		{
+			//FIXME: should use PlaylistVM
 			if (e.Playlist == null) {
 				e.Playlist = HandleNewPlaylist (
 					new NewPlaylistEvent {

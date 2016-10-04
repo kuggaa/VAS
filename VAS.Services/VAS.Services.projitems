@@ -31,7 +31,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypeCollectionVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\EventsController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlayerVM.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Controller\PlayListController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller\PlaylistController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />
