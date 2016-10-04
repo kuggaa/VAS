@@ -41,13 +41,13 @@ namespace VAS.Tests.Services
 		public void FixtureSetup ()
 		{
 			mockPlayerController = new Mock<IPlayerController> ();
-			mockDiaklogs = new Mock<IDialogs> ();
 			mockGuiToolkit = new Mock<IGUIToolkit> ();
 		}
 
 		[SetUp ()]
 		public void Setup ()
 		{
+			mockDiaklogs = new Mock<IDialogs> ();
 			App.Current.GUIToolkit = mockGuiToolkit.Object;
 			App.Current.Dialogs = mockDiaklogs.Object;
 			controller = new PlaylistController (mockPlayerController.Object);
@@ -80,6 +80,26 @@ namespace VAS.Tests.Services
 
 			Assert.AreEqual (1, playlistCollectionVM.ViewModels.Count);
 			Assert.AreEqual (name, playlistCollectionVM.ViewModels [0].Name);
+		}
+
+		[Test ()]
+		public void TestAddSamePlaylist ()
+		{
+			PlaylistCollectionVM playlistCollectionVM = new PlaylistCollectionVM ();
+			controller.SetViewModel (playlistCollectionVM);
+
+			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
+				new AddPlaylistElementEvent {
+					PlaylistElements = new List<IPlaylistElement> (),
+					Playlist = null
+				}
+			);
+
+			mockDiaklogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
+				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Once ());
+
+			Assert.AreEqual (1, playlistCollectionVM.ViewModels.Count);
+			Assert.AreEqual (name, playlistCollectionVM.ViewModels [0].Name);
 
 			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
 				new AddPlaylistElementEvent {
@@ -93,5 +113,43 @@ namespace VAS.Tests.Services
 
 			Assert.AreEqual (1, playlistCollectionVM.ViewModels.Count);
 		}
+
+		[Test ()]
+		public void TestAddTwoPlaylist ()
+		{
+			PlaylistCollectionVM playlistCollectionVM = new PlaylistCollectionVM ();
+			controller.SetViewModel (playlistCollectionVM);
+
+			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
+				new AddPlaylistElementEvent {
+					PlaylistElements = new List<IPlaylistElement> (),
+					Playlist = null
+				}
+			);
+
+			mockDiaklogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
+				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Once ());
+
+			Assert.AreEqual (1, playlistCollectionVM.ViewModels.Count);
+			Assert.AreEqual (name, playlistCollectionVM.ViewModels [0].Name);
+
+			mockDiaklogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
+										 It.IsAny<object> ())).Returns (AsyncHelpers.Return (name + "2"));
+
+
+			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
+				new AddPlaylistElementEvent {
+					PlaylistElements = new List<IPlaylistElement> (),
+					Playlist = null
+				}
+			);
+
+			mockDiaklogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (), It.IsAny<string> (),
+																		It.IsAny<string> (), It.IsAny<object> ()), Times.Exactly (2));
+
+			Assert.AreEqual (2, playlistCollectionVM.ViewModels.Count);
+			Assert.AreEqual (name + "2", playlistCollectionVM.ViewModels [1].Name);
+		}
+
 	}
 }
