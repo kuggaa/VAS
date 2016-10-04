@@ -87,7 +87,9 @@ namespace VAS.Core
 				IScreenState state = destination [transition] ();
 				bool ok = await state.PreTransition (properties);
 				if (ok) {
+					Log.Debug ("PreTransition ok. Pushing state");
 					await PushNavigationState (transition, state);
+					Log.Debug ("State pushed");
 				} else {
 					Log.Debug ("Moving failed because panel " + state.Name + " cannot move.");
 				}
