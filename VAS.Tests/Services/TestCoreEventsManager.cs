@@ -50,6 +50,13 @@ namespace VAS.Tests.Services
 			});
 		}
 
+		[TearDown ()]
+		public void TearDown ()
+		{
+			controller.Stop ();
+			project.Dispose ();
+		}
+
 		[Test]
 		public void TestMoveToEventType ()
 		{
