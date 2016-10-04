@@ -351,7 +351,7 @@ namespace VAS.Services.ViewModel
 			playerController.ApplyROI (cameraConfig);
 		}
 
-		public void LoadEvent (TimelineEvent e)
+		public void LoadEvent (TimelineEvent e, bool playing)
 		{
 			if (e?.Duration.MSeconds == 0) {
 				// These events don't have duration, we start playing as if it was a seek
@@ -361,14 +361,14 @@ namespace VAS.Services.ViewModel
 				Player.Play ();
 			} else {
 				if (e != null) {
-					LoadPlay (e, new Time (0), true);
+					LoadPlay (e, new Time (0), playing);
 				} else if (Player != null) {
 					Player.UnloadCurrentEvent ();
 				}
 			}
 		}
 
-		public void LoadEvents (List<TimelineEvent> events)
+		public void LoadEvents (List<TimelineEvent> events, bool playing)
 		{
 			Playlist playlist = new Playlist ();
 
@@ -378,7 +378,7 @@ namespace VAS.Services.ViewModel
 				.ToList ();
 			
 			playlist.Elements = new ObservableCollection<IPlaylistElement> (list);
-			playerController.LoadPlaylistEvent (playlist, list.FirstOrDefault (), true);			
+			playerController.LoadPlaylistEvent (playlist, list.FirstOrDefault (), playing);			
 		}
 
 		public void LoadPlay (TimelineEvent e, Time seekTime, bool playing)

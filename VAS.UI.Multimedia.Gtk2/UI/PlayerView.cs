@@ -384,7 +384,7 @@ namespace VAS.UI
 
 		protected virtual void HandleClosebuttonClicked (object sender, System.EventArgs e)
 		{
-			playerVM.LoadEvent (null);
+			playerVM.LoadEvent (null, playerVM.Playing);
 		}
 
 		protected virtual void HandlePrevbuttonClicked (object sender, System.EventArgs e)

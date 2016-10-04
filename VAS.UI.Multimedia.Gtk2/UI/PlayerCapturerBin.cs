@@ -66,7 +66,6 @@ namespace VAS.UI
 					playerVM.PropertyChanged -= HandlePlayerVMPropertyChanged;
 				}
 				(playerview as IView).SetViewModel (value);
-				//Get a reference of PlayerVM for own use
 				playerVM = value;
 				if (playerVM != null) {
 					playerVM.PropertyChanged += HandlePlayerVMPropertyChanged;

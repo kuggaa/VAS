@@ -100,7 +100,7 @@ namespace VAS.UI.Common
 				break;
 
 			case NotifyCollectionChangedAction.Reset:
-				ClearSubViewModelListeners (dictionaryStore.Keys.Where (ev => ev is TViewModel));
+				ClearSubViewModelListeners (dictionaryStore.Keys.OfType<TViewModel> ());
 				store.Clear ();
 				dictionaryStore.Clear ();
 				dictionaryNestedParent.Clear ();
@@ -139,14 +139,14 @@ namespace VAS.UI.Common
 
 		void ClearSubViewModels ()
 		{
-			ClearSubViewModelListeners (viewModel.ViewModels as IEnumerable<IViewModel>);
+			ClearSubViewModelListeners (viewModel.ViewModels);
 			viewModel.ViewModels.CollectionChanged -= ViewModelCollectionChanged;
 			store.Clear ();
 			dictionaryStore.Clear ();
 			dictionaryNestedParent.Clear ();
 		}
 
-		void ClearSubViewModelListeners (IEnumerable<IViewModel> collection)
+		void ClearSubViewModelListeners (IEnumerable<TViewModel> collection)
 		{
 			foreach (IViewModel item in collection) {
 				RemoveSubViewModelListener (item);
