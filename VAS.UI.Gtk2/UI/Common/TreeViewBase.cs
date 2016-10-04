@@ -158,6 +158,7 @@ namespace VAS.UI.Common
 
 		void ClearAllNestedViewModelsListeners (IViewModel subViewModel)
 		{
+			RemoveSubViewModelListener (subViewModel);
 			if (subViewModel is IEnumerable) {
 				foreach (var v in (subViewModel as IEnumerable)) {
 					ClearAllNestedViewModelsListeners (v as IViewModel);

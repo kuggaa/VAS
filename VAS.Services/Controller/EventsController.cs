@@ -41,13 +41,13 @@ namespace VAS.Services.Controller
 		public virtual void Start ()
 		{
 			App.Current.EventsBroker.Subscribe<LoadTimelineEvent<TModel>> (HandleOpenEvent);
-			App.Current.EventsBroker.Subscribe<LoadTimelineEvent<List<TModel>>> (HandleOpenListEvent);
+			App.Current.EventsBroker.Subscribe<LoadTimelineEvent<IEnumerable<TModel>>> (HandleOpenListEvent);
 		}
 
 		public virtual void Stop ()
 		{
 			App.Current.EventsBroker.Unsubscribe<LoadTimelineEvent<TModel>> (HandleOpenEvent);
-			App.Current.EventsBroker.Unsubscribe<LoadTimelineEvent<List<TModel>>> (HandleOpenListEvent);
+			App.Current.EventsBroker.Unsubscribe<LoadTimelineEvent<IEnumerable<TModel>>> (HandleOpenListEvent);
 		}
 
 		public virtual void SetViewModel (IViewModel viewModel)
@@ -78,7 +78,7 @@ namespace VAS.Services.Controller
 			playerVM.LoadEvent (e.Object, e.Playing);
 		}
 
-		void HandleOpenListEvent (LoadTimelineEvent<List<TModel>> e)
+		void HandleOpenListEvent (LoadTimelineEvent<IEnumerable<TModel>> e)
 		{
 			playerVM.LoadEvents (e.Object.OfType<TimelineEvent> ().ToList (), e.Playing);
 		}
