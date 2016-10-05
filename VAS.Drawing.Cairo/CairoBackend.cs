@@ -500,9 +500,9 @@ namespace VAS.Drawing.Cairo
 
 			BaseImage<Pixbuf>.ScaleFactor (surface.Width, surface.Height, (int)width, (int)height, mode, out scaleX, out scaleY, out offset);
 			CContext.Save ();
-			CContext.Translate (offset.X, offset.Y);
+			CContext.Translate (offset.X + start.X, offset.Y + start.Y);
 			CContext.Scale (scaleX, scaleY);
-			DrawSurface (surface, start);
+			DrawSurface (surface, new Point (0, 0));
 			CContext.Restore ();
 		}
 

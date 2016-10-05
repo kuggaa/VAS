@@ -15,8 +15,9 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // 
-using System.Runtime.Serialization;
 using System;
+using System.IO;
+using System.Runtime.Serialization;
 using Gdk;
 using VAS.Core.Common;
 
@@ -38,6 +39,10 @@ namespace VAS.Core.Common
 		{
 		}
 
+		public Image (Stream stream) : base (stream)
+		{
+		}
+
 		// this constructor is automatically called during deserialization
 		public Image (SerializationInfo info, StreamingContext context)
 		{
@@ -51,6 +56,11 @@ namespace VAS.Core.Common
 		protected override Pixbuf LoadFromFile (string filepath)
 		{
 			return new Pixbuf (filepath);
+		}
+
+		protected override Pixbuf LoadFromStream (Stream stream)
+		{
+			return new Pixbuf (stream);
 		}
 
 		public override byte[] Serialize ()

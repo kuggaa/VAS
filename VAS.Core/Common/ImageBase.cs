@@ -16,9 +16,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.IO;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
 
 namespace VAS.Core.Common
@@ -41,6 +40,11 @@ namespace VAS.Core.Common
 		public BaseImage (string filename)
 		{
 			Value = LoadFromFile (filename);
+		}
+
+		public BaseImage (Stream stream)
+		{
+			Value = LoadFromStream (stream);
 		}
 
 		public virtual T Value {
@@ -144,6 +148,8 @@ namespace VAS.Core.Common
 		public abstract Image Composite (Image image2);
 
 		protected abstract T LoadFromFile (string filename);
+
+		protected abstract T LoadFromStream (Stream stream);
 
 		protected abstract T Scale (T pix, int maxWidth, int maxHeight);
 
