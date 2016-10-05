@@ -129,7 +129,6 @@ namespace VAS.UI
 
 		protected override void OnUnrealized ()
 		{
-			playerVM.ViewPorts = null;
 			playerVM.Stop ();
 			base.OnUnrealized ();
 		}
