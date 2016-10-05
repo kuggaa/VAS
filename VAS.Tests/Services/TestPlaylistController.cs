@@ -15,14 +15,16 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using Moq;
 using NUnit.Framework;
 using VAS.Core;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
+using VAS.Core.Store;
+using VAS.Core.Store.Playlists;
 using VAS.Services.Controller;
 using VAS.Services.ViewModel;
 
@@ -70,7 +72,7 @@ namespace VAS.Tests.Services
 
 			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
 				new AddPlaylistElementEvent {
-					PlaylistElements = new List<IPlaylistElement> (),
+					PlaylistElements = new List<IPlaylistElement> { new PlaylistPlayElement (new TimelineEvent ()) },
 					Playlist = null
 				}
 			);
@@ -80,6 +82,7 @@ namespace VAS.Tests.Services
 
 			Assert.AreEqual (1, playlistCollectionVM.ViewModels.Count);
 			Assert.AreEqual (name, playlistCollectionVM.ViewModels [0].Name);
+			Assert.AreEqual (1, playlistCollectionVM.ViewModels.First ().Model.Elements.Count);
 		}
 
 		[Test ()]
@@ -90,7 +93,7 @@ namespace VAS.Tests.Services
 
 			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
 				new AddPlaylistElementEvent {
-					PlaylistElements = new List<IPlaylistElement> (),
+					PlaylistElements = new List<IPlaylistElement> { new PlaylistPlayElement (new TimelineEvent ()) },
 					Playlist = null
 				}
 			);
@@ -100,10 +103,11 @@ namespace VAS.Tests.Services
 
 			Assert.AreEqual (1, playlistCollectionVM.ViewModels.Count);
 			Assert.AreEqual (name, playlistCollectionVM.ViewModels [0].Name);
+			Assert.AreEqual (1, playlistCollectionVM.ViewModels.First ().Model.Elements.Count);
 
 			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
 				new AddPlaylistElementEvent {
-					PlaylistElements = new List<IPlaylistElement> (),
+					PlaylistElements = new List<IPlaylistElement> { new PlaylistPlayElement (new TimelineEvent ()) },
 					Playlist = playlistCollectionVM.ViewModels [0].Model
 				}
 			);
@@ -112,6 +116,7 @@ namespace VAS.Tests.Services
 				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Once ());
 
 			Assert.AreEqual (1, playlistCollectionVM.ViewModels.Count);
+			Assert.AreEqual (2, playlistCollectionVM.ViewModels.First ().Model.Elements.Count);
 		}
 
 		[Test ()]
