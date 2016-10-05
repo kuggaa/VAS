@@ -202,10 +202,9 @@ namespace VAS.Core
 
 			try {
 				//Check for modals to delete them.
-				await PopAllModalStates ();
-				navigationStateStack.Clear ();
-				App.Current.EventsBroker.Publish (new NavigationEvent { Name = home.Name });
+				await EmptyStateStack ();
 				await App.Current.Navigation.LoadNavigationPanel (home.ScreenState.Panel);
+				App.Current.EventsBroker.Publish (new NavigationEvent { Name = home.Name });
 				return true;
 			} catch (Exception ex) {
 				Log.Exception (ex);
