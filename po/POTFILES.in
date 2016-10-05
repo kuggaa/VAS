@@ -15,6 +15,7 @@ VAS.Services/PlayerController.cs
 VAS.Services/PlaylistManager.cs
 VAS.Services/Controller/ProjectsController.cs
 VAS.Services/Controller/TemplatesController.cs
+VAS.Services/ViewModel/PlayerVM.cs
 VAS.UI.Helpers.Gtk2/MessagesHelpers.cs
 VAS.UI.Helpers.Gtk2/Misc.cs
 VAS.Drawing/CanvasObjects/Timeline/LabelObject.cs
