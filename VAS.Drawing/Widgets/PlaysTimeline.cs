@@ -58,7 +58,7 @@ namespace VAS.Drawing.Widgets
 			secondsPerPixel = 0.1;
 			Accuracy = Constants.TIMELINE_ACCURACY;
 			SelectionMode = MultiSelectionMode.MultipleWithModifier;
-			SingleSelectionObjects.Add (typeof(TimerTimeNodeObject));
+			SingleSelectionObjects.Add (typeof (TimerTimeNodeObject));
 			currentTime = new Time (0);
 			Player = player;
 
@@ -77,7 +77,7 @@ namespace VAS.Drawing.Widgets
 			foreach (CategoryTimeline ct in eventsTimelines.Values) {
 				ct.Dispose ();
 			}
-			CameraNode.Dispose ();
+			CameraNode?.Dispose ();
 			base.Dispose (disposing);
 		}
 
@@ -142,9 +142,9 @@ namespace VAS.Drawing.Widgets
 
 		protected CameraObject CameraNode {
 			get {
-				if (timelineToFilter.Any (x => x.Key.GetType () == typeof(CameraTimeline))) {
+				if (timelineToFilter.Any (x => x.Key.GetType () == typeof (CameraTimeline))) {
 					return ((CameraObject)timelineToFilter
-					.FirstOrDefault (x => x.Key.GetType () == typeof(CameraTimeline)).Key.GetNodeAtPosition (0));
+					.FirstOrDefault (x => x.Key.GetType () == typeof (CameraTimeline)).Key.GetNodeAtPosition (0));
 				} else {
 					return null;
 				}
@@ -205,7 +205,7 @@ namespace VAS.Drawing.Widgets
 		/// <param name="nodes">Nodes.</param>
 		public void RemoveTimers (List<TimeNode> nodes)
 		{
-			foreach (TimerTimeline tl in Objects.OfType<TimerTimeline>()) {
+			foreach (TimerTimeline tl in Objects.OfType<TimerTimeline> ()) {
 				foreach (TimeNode node in nodes) {
 					tl.RemoveNode (node);
 				}
@@ -309,7 +309,7 @@ namespace VAS.Drawing.Widgets
 			timelineToFilter [tl] = filter;
 			if (tl is CategoryTimeline) {
 				eventsTimelines [filter as EventType] = tl as CategoryTimeline;
-			} 
+			}
 		}
 
 		protected virtual void FillCanvas ()
@@ -372,8 +372,8 @@ namespace VAS.Drawing.Widgets
 		protected void ShowTimersMenu (Point coords)
 		{
 			if (PeriodsTimeline != null &&
-			    coords.Y >= PeriodsTimeline.OffsetY &&
-			    coords.Y < PeriodsTimeline.OffsetY + PeriodsTimeline.Height) {
+				coords.Y >= PeriodsTimeline.OffsetY &&
+				coords.Y < PeriodsTimeline.OffsetY + PeriodsTimeline.Height) {
 				Timer t = Selections.Select (p => (p.Drawable as TimerTimeNodeObject).Timer).FirstOrDefault ();
 				if (ShowTimerMenuEvent != null) {
 					ShowTimerMenuEvent (t, Utils.PosToTime (coords, SecondsPerPixel));
@@ -390,7 +390,7 @@ namespace VAS.Drawing.Widgets
 		{
 			EventType ev = null;
 			List<TimelineEvent> plays;
-			
+
 			plays = Selections.Select (p => (p.Drawable as TimelineEventObjectBase).Event).ToList ();
 
 			ev = eventsTimelines.GetKeyByValue (catTimeline);
@@ -463,9 +463,9 @@ namespace VAS.Drawing.Widgets
 		protected override void ShowMenu (Point coords)
 		{
 			CategoryTimeline catTimeline = eventsTimelines.Values.Where (
-				                               t => t.Visible &&
-				                               coords.Y >= t.OffsetY &&
-				                               coords.Y < t.OffsetY + t.Height).FirstOrDefault (); 
+											   t => t.Visible &&
+											   coords.Y >= t.OffsetY &&
+											   coords.Y < t.OffsetY + t.Height).FirstOrDefault ();
 
 			if (catTimeline != null) {
 				ShowPlaysMenu (coords, catTimeline);
@@ -479,12 +479,12 @@ namespace VAS.Drawing.Widgets
 			Time moveTime;
 			CanvasObject co;
 			TimelineEvent play;
-			
+
 			co = (sel.Drawable as CanvasObject);
-			
+
 			if (co is TimelineEventObjectBase) {
 				play = (co as TimelineEventObjectBase).Event;
-				
+
 				if (sel.Position == SelectionPosition.Right) {
 					moveTime = play.Duration;
 				} else {
@@ -498,7 +498,7 @@ namespace VAS.Drawing.Widgets
 				);
 			} else if (co is TimeNodeObject) {
 				TimeNode to = (co as TimeNodeObject).TimeNode;
-				
+
 				if (sel.Position == SelectionPosition.Right) {
 					moveTime = to.Stop;
 				} else {
