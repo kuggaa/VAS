@@ -23,6 +23,7 @@ using VAS.Core;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Services.Controller;
@@ -35,14 +36,14 @@ namespace VAS.Tests.Services
 		const string name = "name";
 
 		Mock<IGUIToolkit> mockGuiToolkit;
-		Mock<IPlayerController> mockPlayerController;
+		Mock<IPlayerViewModel> mockPlayerController;
 		Mock<IDialogs> mockDiaklogs;
 		PlaylistController controller;
 
 		[TestFixtureSetUp ()]
 		public void FixtureSetup ()
 		{
-			mockPlayerController = new Mock<IPlayerController> ();
+			mockPlayerController = new Mock<IPlayerViewModel> ();
 			mockGuiToolkit = new Mock<IGUIToolkit> ();
 		}
 
