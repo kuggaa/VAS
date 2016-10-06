@@ -15,13 +15,11 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
+
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
-using VAS.Core.Common;
 using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.MVVMC
@@ -43,8 +41,6 @@ namespace VAS.Core.MVVMC
 		{
 			Model = new ObservableCollection<TModel> ();
 			ViewModels = new ObservableCollection<TViewModel> ();
-			Selection = new RangeObservableCollection<TViewModel> ();
-			Selection.CollectionChanged += HandleSelectionChanged;
 		}
 
 		/// <summary>
@@ -71,15 +67,6 @@ namespace VAS.Core.MVVMC
 			get {
 				return model;
 			}
-		}
-
-		/// <summary>
-		/// Gets the current selection in the collection.
-		/// </summary>
-		/// <value>The selection.</value>
-		public RangeObservableCollection<TViewModel> Selection {
-			get;
-			private set;
 		}
 
 		/// <summary>
@@ -168,11 +155,6 @@ namespace VAS.Core.MVVMC
 				break;
 			}
 			editing = false;
-		}
-
-		void HandleSelectionChanged (object sender, NotifyCollectionChangedEventArgs e)
-		{
-			RaisePropertyChanged ("Selection");
 		}
 	}
 }

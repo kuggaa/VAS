@@ -56,4 +56,8 @@
     <itemgroups />
     <signals />
   </object>
+  <object type="VAS.UI.Common.PlaylistTreeView" palette-category="General" allow-children="false" base-type="Gtk.TreeView">
+    <itemgroups />
+    <signals />
+  </object>
 </objects>

@@ -51,9 +51,10 @@ namespace VAS.UI.Menus
 		/// Fills the menu item "Add to playlist" with all the playlist options
 		/// </summary>
 		/// <param name="addToPlaylistMenu">Add to playlist menu.</param>
-		/// <param name="project">Project.</param>
+		/// <param name = "playlistList">List of playlists to show in the menu</param>
 		/// <param name="events">Timeline events.</param>
-		static public void FillAddToPlaylistMenu (MenuItem addToPlaylistMenu, Project project, IEnumerable<TimelineEvent> events)
+		//FIXME: Convert this to ViewModels (both Playlist & TimelineEvent)
+		static public void FillAddToPlaylistMenu (MenuItem addToPlaylistMenu, IEnumerable<Playlist> playlistList, IEnumerable<TimelineEvent> events)
 		{
 			if (!events.Any ()) {
 				addToPlaylistMenu.Visible = false;
@@ -64,36 +65,34 @@ namespace VAS.UI.Menus
 			var label = String.Format ("{0} ({1})", Catalog.GetString ("Add to playlist"), events.Count ());
 			addToPlaylistMenu.SetLabel (label);
 
-			if (project.Playlists != null) {
-				Menu plMenu = new Menu ();
-				MenuItem item;
-				foreach (Playlist pl in project.Playlists) {
-					item = new MenuItem (pl.Name);
-					plMenu.Append (item);
-					item.Activated += (sender, e) => {
-						IEnumerable<IPlaylistElement> elements = events.Select (p => new PlaylistPlayElement (p));
-						App.Current.EventsBroker.Publish (
-							new AddPlaylistElementEvent {
-								Playlist = pl,
-								PlaylistElements = elements.ToList ()
-							}
-						);
-					};
-				}
-				item = new MenuItem (Catalog.GetString ("Create new playlist..."));
+			Menu plMenu = new Menu ();
+			MenuItem item;
+			foreach (Playlist pl in playlistList) {
+				item = new MenuItem (pl.Name);
 				plMenu.Append (item);
 				item.Activated += (sender, e) => {
 					IEnumerable<IPlaylistElement> elements = events.Select (p => new PlaylistPlayElement (p));
-					App.Current.EventsBroker.Publish (
+					item.PublishEvent (
 						new AddPlaylistElementEvent {
-							Playlist = null,
+							Playlist = pl,
 							PlaylistElements = elements.ToList ()
 						}
 					);
 				};
-				plMenu.ShowAll ();
-				addToPlaylistMenu.Submenu = plMenu;
 			}
+			item = new MenuItem (Catalog.GetString ("Create new playlist..."));
+			plMenu.Append (item);
+			item.Activated += (sender, e) => {
+				IEnumerable<IPlaylistElement> elements = events.Select (p => new PlaylistPlayElement (p));
+				item.PublishEvent (
+					new AddPlaylistElementEvent {
+						Playlist = null,
+						PlaylistElements = elements.ToList ()
+					}
+				);
+			};
+			plMenu.ShowAll ();
+			addToPlaylistMenu.Submenu = plMenu;
 		}
 
 		/// <summary>
@@ -104,7 +103,7 @@ namespace VAS.UI.Menus
 		/// <param name="events">Timeline events.</param>
 		static public void FillExportToVideoFileMenu (MenuItem exportMenu, Project project, IEnumerable<TimelineEvent> events)
 		{
-			exportMenu.Visible = events.Count () > 0 && project.ProjectType != ProjectType.FakeCaptureProject;
+			exportMenu.Visible = events.Any () && project.ProjectType != ProjectType.FakeCaptureProject;
 			var label = string.Format ("{0} ({1})", Catalog.GetString ("Export to video file"), events.Count ());
 			exportMenu.SetLabel (label);
 		}

@@ -47,6 +47,10 @@ namespace VAS.Core.Interfaces.MVVMC
 	public interface INestedViewModel<VMChilds> : INestedViewModel, IViewModel, IEnumerable <VMChilds>
 	{
 		ObservableCollection<VMChilds> ViewModels { get; }
+
+		RangeObservableCollection<VMChilds> Selection { get; }
+
+		void SelectionReplace (IEnumerable<VMChilds> selection);
 	}
 
 	/// <summary>

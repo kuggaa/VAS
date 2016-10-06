@@ -1,5 +1,5 @@
 ﻿//
-//  Copyright (C) 2016 Fluendo S.A.
+//  Copyright (C) 2015 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,27 +15,22 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
-using VAS.Core.Interfaces.MVVMC;
-using VAS.Core.MVVMC;
-using VAS.Core.Store;
 
-namespace VAS.Services.ViewModel
+using VAS.Core.Store.Playlists;
+
+namespace VAS.DB.Views
 {
-	/// <summary>
-	/// Event type collection View Models, is a Nested Collection that contains
-	/// a child observable collection of type NestedViewModel
-	/// </summary>
-	public class EventTypeCollectionVM<TViewModel, VMChild> : NestedViewModel<TViewModel>
-		where TViewModel : INestedViewModel<VMChild>, new()
+	public class PlaylistView:  GenericView <Playlist>
 	{
-		public EventTypeCollectionVM ()
+		public PlaylistView (CouchbaseStorage storage) : base (storage)
 		{
+			DocumentType = "Playlist";
 		}
 
-		public PlaylistCollectionVM Playlists {
-			get;
-			set;
+		protected override string ViewVersion {
+			get {
+				return "1";
+			}
 		}
 	}
 }
