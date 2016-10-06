@@ -102,6 +102,15 @@ namespace VAS.Services.ViewModel
 			get;
 			set;
 		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="VAS.Services.ViewModel.TimelineEventVM`1"/> is visible.
+		/// </summary>
+		/// <value><c>true</c> if visible; otherwise, <c>false</c>.</value>
+		public bool Visible {
+			get;
+			set;
+		}
 	}
 }
 
