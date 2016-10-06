@@ -111,7 +111,8 @@ namespace VAS.Core.Common
 			}
 		}
 
-		public static void PublishEvent<T> (this T sender, Event evt)
+		public static void PublishEvent<TEvent> (this object sender, TEvent evt)
+			where TEvent : Event
 		{
 			evt.Sender = sender;
 			App.Current.EventsBroker.Publish (evt);
