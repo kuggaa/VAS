@@ -117,6 +117,7 @@ namespace VAS.UI
 			if (!await App.Current.StateController.EmptyStateStack ()) {
 				return false;
 			}
+			App.CallStaticFinalizers ();
 			Log.Information ("Quit application");
 			Gtk.Application.Quit ();
 			return true;

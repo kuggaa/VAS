@@ -52,6 +52,7 @@ namespace VAS.UI.Component
 		protected Project project;
 		protected IPlayerController player;
 		protected bool isTimeLineEvent;
+		bool disposed = false;
 
 		public Timeline ()
 		{
@@ -115,11 +116,21 @@ namespace VAS.UI.Component
 
 		public override void Dispose ()
 		{
-			Destroy ();
-			timerule.Dispose ();
-			timeline.Dispose ();
-			labels.Dispose ();
-			base.Dispose ();
+			if (!disposed) {
+				disposed = true;
+				Destroy ();
+				base.Dispose ();
+			}
+		}
+
+		public override void Destroy ()
+		{
+			timerule?.Dispose ();
+			timeline?.Dispose ();
+			labels?.Dispose ();
+			menu?.Dispose ();
+			base.Destroy ();
+			Dispose ();
 		}
 
 		/// <summary>
@@ -247,13 +258,13 @@ namespace VAS.UI.Component
 			double width = timeline.GetCameraWidth ();
 			if (Math.Truncate ((double)(TimeruleArea.Allocation.Width)) < Math.Truncate (width)) {
 				while (Math.Truncate ((double)(TimeruleArea.Allocation.Width)) < Math.Truncate (width)
-				       && this.FocusScale.Adjustment.Value < 12) {
+					   && this.FocusScale.Adjustment.Value < 12) {
 					ZoomOut ();
 					width = timeline.GetCameraWidth ();
 				}
 			} else {
 				while (Math.Truncate ((double)(TimeruleArea.Allocation.Width)) > Math.Truncate (width)
-				       && this.FocusScale.Adjustment.Value > 0) {
+					   && this.FocusScale.Adjustment.Value > 0) {
 					ZoomIn ();
 					width = timeline.GetCameraWidth ();
 				}

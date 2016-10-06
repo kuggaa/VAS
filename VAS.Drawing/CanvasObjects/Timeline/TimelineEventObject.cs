@@ -30,6 +30,15 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			DraggingMode = NodeDraggingMode.Borders;
 		}
 
+		public override void Dispose ()
+		{
+			base.Dispose ();
+			SelectionLeft?.Dispose ();
+			SelectionRight?.Dispose ();
+			Project?.Dispose ();
+			Event?.Dispose ();
+		}
+
 		public ISurface SelectionLeft {
 			get;
 			set;
@@ -71,7 +80,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		protected void DrawLine (IDrawingToolkit tk, double start, double stop, int lineWidth)
 		{
 			double y;
-			
+
 			y = OffsetY + Height / 2;
 			tk.LineWidth = lineWidth;
 			tk.FillColor = Event.Color;
@@ -89,7 +98,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		{
 			Color color;
 			double y1, y2;
-		
+
 			tk.LineWidth = lineWidth;
 			y1 = OffsetY + 6;
 			y2 = OffsetY + Height - 6;
@@ -107,10 +116,10 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 
 			tk.Begin ();
-			
+
 			start = StartX;
 			stop = StopX;
-			
+
 			if (stop - start <= lineWidth) {
 				DrawBorders (tk, start, stop, lineWidth);
 				DrawLine (tk, start, stop, lineWidth);

@@ -54,7 +54,7 @@ namespace VAS.Core.Store
 			Teams = new ObservableCollection<Team> ();
 		}
 
-		public void Dispose ()
+		public virtual void Dispose ()
 		{
 			Miniature?.Dispose ();
 			foreach (var drawing in Drawings) {
@@ -307,7 +307,7 @@ namespace VAS.Core.Store
 		[PropertyChanged.DoNotNotify]
 		public virtual string Description {
 			get {
-				return 
+				return
 					(Name + "\n" +
 				TagsDescription () + "\n" +
 				TimesDesription ());
@@ -398,7 +398,7 @@ namespace VAS.Core.Store
 					}
 				}
 			}
-			
+
 			if (EventType.TagGoalPosition) {
 				if (GoalPosition == null) {
 					GoalPosition = new Coordinates ();
@@ -425,7 +425,7 @@ namespace VAS.Core.Store
 		{
 			Coordinates co = new Coordinates ();
 			co.Points = points;
-			
+
 			switch (pos) {
 			case FieldPositionType.Field:
 				FieldPosition = co;

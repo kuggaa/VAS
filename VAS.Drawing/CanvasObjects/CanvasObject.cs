@@ -23,7 +23,7 @@ using VAS.Core.Store.Drawables;
 
 namespace VAS.Drawing.CanvasObjects
 {
-	public abstract class CanvasObject: ICanvasObject
+	public abstract class CanvasObject : ICanvasObject
 	{
 		public event CanvasHandler ClickedEvent;
 		public event RedrawHandler RedrawEvent;
@@ -45,7 +45,7 @@ namespace VAS.Drawing.CanvasObjects
 			}
 		}
 
-		public void Dispose ()
+		public virtual void Dispose ()
 		{
 			Dispose (true);
 			GC.SuppressFinalize (this);
@@ -151,7 +151,7 @@ namespace VAS.Drawing.CanvasObjects
 	/// An object that has a fixed size, which does not depend of any parameter other than the Width and Height set
 	/// in its properties.
 	/// </summary>
-	public abstract class FixedSizeCanvasObject: CanvasObject
+	public abstract class FixedSizeCanvasObject : CanvasObject
 	{
 		/// <summary>
 		/// Gets or sets the position of the object.
@@ -195,7 +195,7 @@ namespace VAS.Drawing.CanvasObjects
 
 	}
 
-	public abstract class CanvasButtonObject: FixedSizeCanvasObject
+	public abstract class CanvasButtonObject : FixedSizeCanvasObject
 	{
 		bool active;
 
@@ -221,7 +221,7 @@ namespace VAS.Drawing.CanvasObjects
 		{
 			ClickPressed (new Point (Position.X + 1, Position.Y + 1),
 				ButtonModifier.None);
-			
+
 			ClickReleased ();
 		}
 
@@ -239,9 +239,9 @@ namespace VAS.Drawing.CanvasObjects
 		}
 	}
 
-	public abstract class CanvasDrawableObject<T>: CanvasObject, ICanvasDrawableObject where T: IBlackboardObject
+	public abstract class CanvasDrawableObject<T> : CanvasObject, ICanvasDrawableObject where T : IBlackboardObject
 	{
-		
+
 		int selectionSize = 3;
 
 		public IBlackboardObject IDrawableObject {
@@ -322,7 +322,7 @@ namespace VAS.Drawing.CanvasObjects
 		protected void DrawSelectionArea (IDrawingToolkit tk)
 		{
 			Area area;
-			
+
 			area = Drawable.Area;
 			if (!Selected || area == null) {
 				return;

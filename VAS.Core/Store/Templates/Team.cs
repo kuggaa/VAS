@@ -27,7 +27,7 @@ using VAS.Core.Serialization;
 namespace VAS.Core.Store.Templates
 {
 	[Serializable]
-	public class Team: StorableBase, IDisposable, ITemplate<Team>
+	public class Team : StorableBase, IDisposable, ITemplate<Team>
 	{
 		public const int CURRENT_VERSION = 1;
 		ObservableCollection<Player> list;
@@ -39,7 +39,7 @@ namespace VAS.Core.Store.Templates
 			Version = Constants.DB_VERSION;
 		}
 
-		public void Dispose ()
+		public virtual void Dispose ()
 		{
 			Shield?.Dispose ();
 			foreach (Player p in List) {

@@ -23,7 +23,7 @@ using VAS.Core.Interfaces.Drawing;
 namespace VAS.Drawing
 {
 
-	public abstract class BackgroundCanvas: SelectionCanvas
+	public abstract class BackgroundCanvas : SelectionCanvas
 	{
 		public event EventHandler RegionOfInterestChanged;
 
@@ -36,6 +36,11 @@ namespace VAS.Drawing
 
 		public BackgroundCanvas () : this (null)
 		{
+		}
+
+		protected override void Dispose (bool disposing)
+		{
+			base.Dispose (disposing);
 		}
 
 		/// <summary>
