@@ -13,6 +13,7 @@ VAS.Multimedia/Utils/GstDiscoverer.cs
 VAS.Services/CoreEventsManager.cs
 VAS.Services/PlayerController.cs
 VAS.Services/PlaylistManager.cs
+VAS.Services/Controller/PlaylistController.cs
 VAS.Services/Controller/ProjectsController.cs
 VAS.Services/Controller/TemplatesController.cs
 VAS.Services/ViewModel/PlayerVM.cs
