@@ -42,7 +42,7 @@ namespace VAS.Core.MVVMC
 		/// Gets the collection of child ViewModel
 		/// </summary>
 		/// <value>The ViewModels collection.</value>
-		public ObservableCollection<VMChilds> ViewModels {
+		public virtual ObservableCollection<VMChilds> ViewModels {
 			protected set;
 			get;
 		}
