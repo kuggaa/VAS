@@ -25,7 +25,7 @@ using VASDrawing = VAS.Drawing;
 
 namespace VAS.Drawing.CanvasObjects
 {
-	public class ButtonObject: CanvasButtonObject, IMovableObject
+	public class ButtonObject : CanvasButtonObject, IMovableObject
 	{
 		const int BORDER_SIZE = 8;
 		const int SELECTION_SIZE = 6;
@@ -43,6 +43,9 @@ namespace VAS.Drawing.CanvasObjects
 
 		protected override void Dispose (bool disposing)
 		{
+			if (Disposed)
+				return;
+
 			ResetBackbuffer ();
 			base.Dispose (disposing);
 		}
@@ -149,8 +152,8 @@ namespace VAS.Drawing.CanvasObjects
 			if (s != null) {
 				s.Drawable = this;
 				if (s.Position != SelectionPosition.BottomRight &&
-				    s.Position != SelectionPosition.Right &&
-				    s.Position != SelectionPosition.Bottom) {
+					s.Position != SelectionPosition.Right &&
+					s.Position != SelectionPosition.Bottom) {
 					s.Position = SelectionPosition.All;
 				}
 			}
@@ -210,7 +213,7 @@ namespace VAS.Drawing.CanvasObjects
 		protected void DrawButton (IDrawingToolkit tk)
 		{
 			Color front, back;
-			
+
 			if (Active) {
 				tk.LineWidth = StyleConf.ButtonLineWidth;
 				front = BackgroundColor;

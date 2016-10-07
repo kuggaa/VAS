@@ -70,21 +70,20 @@ namespace VAS.Drawing.Widgets
 		{
 		}
 
-		public override void Dispose ()
-		{
-			base.Dispose ();
-			foreach (CategoryTimeline ct in eventsTimelines.Values) {
-				ct.Dispose ();
-			}
-			CameraNode?.Dispose ();
-			loadedEvent?.Dispose ();
-		}
-
 		protected override void Dispose (bool disposing)
 		{
-			App.Current.EventsBroker.Unsubscribe<LoadVideoEvent> (HandleLoadVideoMessage);
-			App.Current.EventsBroker.Unsubscribe<CloseVideoEvent> (HandleCloseVideoEvent);
+			if (Disposed)
+				return;
+
 			base.Dispose (disposing);
+			if (disposing) {
+				App.Current.EventsBroker.Unsubscribe<LoadVideoEvent> (HandleLoadVideoMessage);
+				App.Current.EventsBroker.Unsubscribe<CloseVideoEvent> (HandleCloseVideoEvent);
+				foreach (CategoryTimeline ct in eventsTimelines.Values) {
+					ct.Dispose ();
+				}
+				CameraNode?.Dispose ();
+			}
 		}
 
 		/// <summary>

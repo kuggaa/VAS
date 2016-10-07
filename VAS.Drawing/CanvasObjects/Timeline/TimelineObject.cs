@@ -50,12 +50,17 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			Height = height;
 		}
 
-		public override void Dispose ()
+		protected override void Dispose (bool disposing)
 		{
-			base.Dispose ();
-			ClearObjects ();
-			selectionBorderL.Dispose ();
-			selectionBorderR.Dispose ();
+			if (Disposed)
+				return;
+
+			base.Dispose (disposing);
+			if (disposing) {
+				ClearObjects ();
+				selectionBorderL?.Dispose ();
+				selectionBorderR?.Dispose ();
+			}
 		}
 
 		public double SecondsPerPixel {
@@ -412,12 +417,17 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			AddMediaFile (mediaFile);
 		}
 
-		public override void Dispose ()
+		protected override void Dispose (bool disposing)
 		{
-			base.Dispose ();
-			ClearObjects ();
-			selectionBorderL?.Dispose ();
-			selectionBorderR?.Dispose ();
+			if (Disposed)
+				return;
+
+			base.Dispose (disposing);
+			if (disposing) {
+				ClearObjects ();
+				selectionBorderL?.Dispose ();
+				selectionBorderR?.Dispose ();
+			}
 		}
 
 		Color LineColor {

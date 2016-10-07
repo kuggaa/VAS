@@ -24,7 +24,7 @@ using VAS.Drawing.CanvasObjects;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
-	public class DashboardButtonObject: ButtonObject, ICanvasSelectableObject
+	public class DashboardButtonObject : ButtonObject, ICanvasSelectableObject
 	{
 		protected LinkAnchorObject anchor;
 
@@ -40,6 +40,9 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		protected override void Dispose (bool disposing)
 		{
+			if (Disposed)
+				return;
+
 			anchor.Dispose ();
 			base.Dispose (disposing);
 		}
@@ -195,7 +198,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		}
 	}
 
-	public class TimedTaggerObject: DashboardButtonObject
+	public class TimedTaggerObject : DashboardButtonObject
 	{
 		Time currentTime;
 

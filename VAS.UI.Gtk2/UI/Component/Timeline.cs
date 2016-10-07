@@ -52,12 +52,17 @@ namespace VAS.UI.Component
 		protected Project project;
 		protected IPlayerController player;
 		protected bool isTimeLineEvent;
-		bool disposed = false;
+		protected bool Disposed { get; private set; } = false;
 
 		public Timeline ()
 		{
 			this.Build ();
 			Initialization ();
+		}
+
+		~Timeline ()
+		{
+			Dispose (false);
 		}
 
 		void Initialization ()
@@ -116,11 +121,18 @@ namespace VAS.UI.Component
 
 		public override void Dispose ()
 		{
-			if (!disposed) {
-				disposed = true;
-				Destroy ();
-				base.Dispose ();
-			}
+			Dispose (true);
+			base.Dispose ();
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (Disposed)
+				return;
+
+			Destroy ();
+
+			Disposed = true;
 		}
 
 		public override void Destroy ()

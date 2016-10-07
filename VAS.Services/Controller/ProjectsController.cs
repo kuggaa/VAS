@@ -36,6 +36,7 @@ namespace VAS.Services.Controller
 		where TModel : Project
 		where TViewModel : ProjectVM<TModel>, new()
 	{
+		protected bool Disposed { get; private set; } = false;
 		bool started;
 		ProjectsManagerVM<TModel, TViewModel> viewModel;
 
@@ -52,6 +53,10 @@ namespace VAS.Services.Controller
 
 		protected virtual void Dispose (bool disposing)
 		{
+			if (Disposed)
+				return;
+
+			Disposed = true;
 		}
 
 		protected ProjectsManagerVM<TModel, TViewModel> ViewModel {

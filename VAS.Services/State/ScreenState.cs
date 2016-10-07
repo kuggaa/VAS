@@ -32,6 +32,7 @@ namespace VAS.Services.State
 	/// </summary>
 	public abstract class ScreenState<TViewModel> : IScreenState where TViewModel : IViewModel
 	{
+		protected bool Disposed { get; private set; } = false;
 
 		public ScreenState ()
 		{
@@ -60,10 +61,15 @@ namespace VAS.Services.State
 
 		protected virtual void Dispose (bool disposing)
 		{
+			if (Disposed)
+				return;
+
 			if (disposing) {
 				Controllers?.ForEach ((c) => c.Dispose ());
 				Panel?.Dispose ();
 			}
+
+			Disposed = true;
 		}
 
 		public abstract string Name {

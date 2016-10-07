@@ -258,8 +258,7 @@ namespace VAS.Core
 			if (!await PopAllModalStates ()) {
 				return false;
 			}
-			List<NavigationState> cloneStateStack = new List<NavigationState> (navigationStateStack);
-			foreach (var navigationState in cloneStateStack) {
+			foreach (var navigationState in navigationStateStack.ToList ()) {
 				if (!await navigationState.ScreenState.PostTransition ()) {
 					return false;
 				}

@@ -33,7 +33,7 @@ using VASDrawing = VAS.Core.Handlers.Drawing;
 
 namespace VAS.Drawing.Cairo
 {
-	public class WidgetWrapper: IWidget
+	public class WidgetWrapper : IWidget
 	{
 		public event DrawingHandler DrawEvent;
 		public event ButtonPressedHandler ButtonPressEvent;
@@ -41,6 +41,8 @@ namespace VAS.Drawing.Cairo
 		public event MotionHandler MotionEvent;
 		public event ShowTooltipHandler ShowTooltipEvent;
 		public event VASDrawing.SizeChangedHandler SizeChangedEvent;
+
+		protected bool Disposed { get; private set; } = false;
 
 		DrawingArea widget;
 		int currentWidth, currentHeight;
@@ -70,6 +72,9 @@ namespace VAS.Drawing.Cairo
 
 		protected virtual void Dispose (bool disposing)
 		{
+			if (Disposed)
+				return;
+
 			if (disposing) {
 				if (moveTimerID != 0) {
 					GLib.Source.Remove (moveTimerID);
@@ -77,10 +82,12 @@ namespace VAS.Drawing.Cairo
 				}
 				if (hoverTimerID != 0) {
 					GLib.Source.Remove (hoverTimerID);
-					
+
 					hoverTimerID = 0;
 				}
 			}
+
+			Disposed = true;
 		}
 
 		public uint MoveWaitMS {
@@ -167,7 +174,7 @@ namespace VAS.Drawing.Cairo
 			if (widget.GdkWindow == null) {
 				return;
 			}
-			
+
 			switch (tool) {
 			case DrawTool.Line:
 				cursorStr = "arrow";
@@ -245,7 +252,7 @@ namespace VAS.Drawing.Cairo
 		ButtonType ParseButtonType (uint button)
 		{
 			ButtonType bt;
-			
+
 			switch (button) {
 			case 1:
 				bt = ButtonType.Left;
@@ -266,7 +273,7 @@ namespace VAS.Drawing.Cairo
 		ButtonModifier ParseButtonModifier (ModifierType modifier)
 		{
 			ButtonModifier bm;
-			
+
 			switch (modifier) {
 #if OSTYPE_OS_X
 			case ModifierType.Mod2Mask:
@@ -332,7 +339,7 @@ namespace VAS.Drawing.Cairo
 			}
 			hoverTimerID = GLib.Timeout.Add (100, EmitShowTooltip);
 			widget.HasTooltip = false;
-			
+
 			lastX = args.Event.X;
 			lastY = args.Event.Y;
 
@@ -349,11 +356,11 @@ namespace VAS.Drawing.Cairo
 				GLib.Source.Remove (moveTimerID);
 				moveTimerID = 0;
 			}
-			
+
 			if (ButtonReleasedEvent != null) {
 				ButtonType bt;
 				ButtonModifier bm;
-				
+
 				bt = ParseButtonType (args.Event.Button);
 				bm = ParseButtonModifier (args.Event.State);
 				ButtonReleasedEvent (new Point (args.Event.X, args.Event.Y), bt, bm);
@@ -379,7 +386,7 @@ namespace VAS.Drawing.Cairo
 				ButtonModifier bm;
 				ButtonRepetition br;
 				uint time = args.Event.Time;
-				
+
 				bt = ParseButtonType (args.Event.Button);
 				bm = ParseButtonModifier (args.Event.State);
 				br = ParseButtonRepetition (args.Event.Type);
@@ -390,7 +397,7 @@ namespace VAS.Drawing.Cairo
 					try {
 						var nextEventButton = nextEvent as EventButton;
 						if (nextEventButton?.Time == time &&
-						    ParseButtonRepetition (nextEventButton.Type) != ButtonRepetition.Single) {
+							ParseButtonRepetition (nextEventButton.Type) != ButtonRepetition.Single) {
 							return;
 						}
 					} finally {
@@ -408,7 +415,7 @@ namespace VAS.Drawing.Cairo
 			Rectangle r;
 			Area a;
 			bool size_changed;
-			
+
 			size_changed = widget.Allocation.Height != currentHeight;
 			size_changed |= widget.Allocation.Width != currentWidth;
 			currentWidth = widget.Allocation.Width;
@@ -416,7 +423,7 @@ namespace VAS.Drawing.Cairo
 			if (size_changed && SizeChangedEvent != null) {
 				SizeChangedEvent ();
 			}
-			
+
 			r = args.Event.Area;
 			a = new Area (new Point (r.X, r.Y), r.Width, r.Height);
 			Draw (a);

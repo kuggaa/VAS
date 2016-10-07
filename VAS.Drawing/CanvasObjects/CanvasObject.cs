@@ -27,8 +27,7 @@ namespace VAS.Drawing.CanvasObjects
 	{
 		public event CanvasHandler ClickedEvent;
 		public event RedrawHandler RedrawEvent;
-
-		bool disposed;
+		protected bool Disposed { get; private set; } = false;
 		bool highlighted;
 		bool selected;
 
@@ -39,13 +38,13 @@ namespace VAS.Drawing.CanvasObjects
 
 		~CanvasObject ()
 		{
-			if (!disposed) {
+			if (!Disposed) {
 				Log.Error (String.Format ("Canvas object {0} not disposed correctly", this));
 				Dispose (true);
 			}
 		}
 
-		public virtual void Dispose ()
+		public void Dispose ()
 		{
 			Dispose (true);
 			GC.SuppressFinalize (this);
@@ -53,7 +52,10 @@ namespace VAS.Drawing.CanvasObjects
 
 		protected virtual void Dispose (bool disposing)
 		{
-			disposed = true;
+			if (Disposed)
+				return;
+
+			Disposed = true;
 		}
 
 		public virtual string Description {

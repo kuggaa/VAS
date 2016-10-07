@@ -27,7 +27,7 @@ using VAS.Core.Store.Drawables;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
-	public class CategoryObject: TimedTaggerObject
+	public class CategoryObject : TimedTaggerObject
 	{
 		public event ButtonSelectedHandler EditButtonTagsEvent;
 
@@ -36,8 +36,8 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		static Image editImage;
 		static Image cancelImage;
 		static Image applyImage;
-		Dictionary <Rectangle, object> rects, buttonsRects;
-		Dictionary <string, List<Tag>> tagsByGroup;
+		Dictionary<Rectangle, object> rects, buttonsRects;
+		Dictionary<string, List<Tag>> tagsByGroup;
 		bool emitEvent, delayEvent, editClicked;
 		bool cancelClicked, applyClicked, moved;
 		int nrows;
@@ -48,13 +48,13 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		object applyButton = new object ();
 		Rectangle editRect, cancelRect, applyRect;
 		double catWidth, heightPerRow;
-		Dictionary <Tag, LinkAnchorObject> subcatAnchors, cachedAnchors;
+		Dictionary<Tag, LinkAnchorObject> subcatAnchors, cachedAnchors;
 
 		public CategoryObject (AnalysisEventButton category) : base (category)
 		{
 			Button = category;
-			rects = new Dictionary <Rectangle, object> ();
-			buttonsRects = new Dictionary <Rectangle, object> ();
+			rects = new Dictionary<Rectangle, object> ();
+			buttonsRects = new Dictionary<Rectangle, object> ();
 			SelectedTags = new List<Tag> ();
 			cancelRect = new Rectangle (new Point (0, 0), 0, 0);
 			editRect = new Rectangle (new Point (0, 0), 0, 0);
@@ -84,11 +84,14 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		protected override void Dispose (bool disposing)
 		{
+			if (Disposed)
+				return;
+
 			if (timer != null) {
 				timer.Dispose ();
 				timer = null;
 			}
-			foreach (LinkAnchorObject anchor in subcatAnchors.Values.ToList()) {
+			foreach (LinkAnchorObject anchor in subcatAnchors.Values.ToList ()) {
 				RemoveAnchor (anchor);
 			}
 			base.Dispose (disposing);
@@ -149,7 +152,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		double HeaderTextWidth {
 			get {
 				if (Button.TagMode == TagMode.Free) {
-					return Width - HeaderTextOffset - StyleConf.ButtonRecWidth; 
+					return Width - HeaderTextOffset - StyleConf.ButtonRecWidth;
 				} else {
 					return Width - HeaderTextOffset;
 				}
@@ -275,7 +278,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		bool CheckRect (Point p, Rectangle rect, object obj)
 		{
 			Selection subsel;
-		
+
 			if (obj == null) {
 				return false;
 			}
@@ -402,7 +405,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 					if (i + tagsPerRow > tags.Count) {
 						tk.LineStyle = LineStyle.Dashed;
 						var st = new Point (pos.X + rowwidth * ((i + 1) % tagsPerRow), pos.Y);
-						tk.DrawLine (st, new Point (st.X, st.Y + heightPerRow)); 
+						tk.DrawLine (st, new Point (st.X, st.Y + heightPerRow));
 						tk.LineStyle = LineStyle.Normal;
 					}
 				}
@@ -552,7 +555,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				rects [applyRect] = null;
 				return;
 			}
-			
+
 			pos = new Point (Position.X + Width - StyleConf.ButtonRecWidth,
 				Position.Y);
 			width = StyleConf.ButtonRecWidth;
@@ -564,7 +567,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			tk.FillColor = Color.Green1;
 			tk.FontSize = 12;
 			applyRect.Update (pos, width, height);
-			buttonsRects [applyRect] = applyButton; 
+			buttonsRects [applyRect] = applyButton;
 			pos = new Point (pos.X, pos.Y + 5);
 			tk.DrawImage (pos, width, height - 10, applyImage, ScaleMode.AspectFit, true);
 		}
@@ -577,11 +580,11 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			if (Button.TagMode != TagMode.Free || ShowLinks) {
 				return;
 			}
-			
+
 			pos = new Point (Position.X + Width - StyleConf.ButtonRecWidth,
 				Position.Y);
 			bpos = new Point (pos.X, pos.Y + 5);
-			
+
 			width = StyleConf.ButtonRecWidth;
 			height = HeaderHeight;
 			tk.FontSize = StyleConf.ButtonButtonsFontSize;

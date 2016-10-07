@@ -30,6 +30,7 @@ namespace VAS.Core.Store.Templates
 	public class Team : StorableBase, IDisposable, ITemplate<Team>
 	{
 		public const int CURRENT_VERSION = 1;
+		protected bool Disposed { get; private set; } = false;
 		ObservableCollection<Player> list;
 
 		public Team ()
@@ -39,12 +40,30 @@ namespace VAS.Core.Store.Templates
 			Version = Constants.DB_VERSION;
 		}
 
-		public virtual void Dispose ()
+		~Team ()
 		{
-			Shield?.Dispose ();
-			foreach (Player p in List) {
-				p.Dispose ();
+			Dispose (false);
+		}
+
+		public void Dispose ()
+		{
+			Dispose (true);
+			GC.SuppressFinalize (this);
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (Disposed)
+				return;
+
+			if (disposing) {
+				Shield?.Dispose ();
+				foreach (Player p in List) {
+					p.Dispose ();
+				}
 			}
+
+			Disposed = true;
 		}
 
 		/// <summary>

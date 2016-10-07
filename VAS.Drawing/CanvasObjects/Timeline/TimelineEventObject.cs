@@ -30,13 +30,16 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			DraggingMode = NodeDraggingMode.Borders;
 		}
 
-		public override void Dispose ()
+		protected override void Dispose (bool disposing)
 		{
-			base.Dispose ();
-			SelectionLeft?.Dispose ();
-			SelectionRight?.Dispose ();
-			Project?.Dispose ();
-			Event?.Dispose ();
+			if (Disposed)
+				return;
+
+			base.Dispose (disposing);
+			if (disposing) {
+				SelectionLeft?.Dispose ();
+				SelectionRight?.Dispose ();
+			}
 		}
 
 		public ISurface SelectionLeft {

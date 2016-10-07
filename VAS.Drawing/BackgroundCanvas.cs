@@ -38,11 +38,6 @@ namespace VAS.Drawing
 		{
 		}
 
-		protected override void Dispose (bool disposing)
-		{
-			base.Dispose (disposing);
-		}
-
 		/// <summary>
 		/// Sets the background image of the canvas.
 		/// This property is not optional

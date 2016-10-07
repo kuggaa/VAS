@@ -31,7 +31,7 @@ namespace VAS.Drawing
 	{
 		protected IDrawingToolkit tk;
 		protected IWidget widget;
-		bool disposed;
+		protected bool Disposed { get; private set; } = false;
 		int widthRequest, heightRequest;
 
 		public Canvas (IWidget widget)
@@ -51,13 +51,13 @@ namespace VAS.Drawing
 
 		~Canvas ()
 		{
-			if (!disposed) {
+			if (!Disposed) {
 				Log.Error (String.Format ("Canvas {0} was not disposed correctly", this));
 				Dispose (true);
 			}
 		}
 
-		public virtual void Dispose ()
+		public void Dispose ()
 		{
 			Dispose (true);
 			GC.SuppressFinalize (this);
@@ -65,13 +65,17 @@ namespace VAS.Drawing
 
 		protected virtual void Dispose (bool disposing)
 		{
+			if (Disposed)
+				return;
+
 			IgnoreRedraws = true;
 			if (disposing) {
 				SetWidget (null);
 				ClearObjects ();
 				Objects = null;
-				disposed = true;
 			}
+
+			Disposed = true;
 		}
 
 		public virtual void SetWidget (IWidget newWidget)

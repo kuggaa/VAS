@@ -34,7 +34,6 @@ namespace VAS.Drawing
 	/// </summary>
 	public class SelectionCanvas : Canvas
 	{
-
 		protected Selection clickedSel;
 
 		public SelectionCanvas (IWidget widget) : base (widget)
@@ -52,9 +51,12 @@ namespace VAS.Drawing
 		{
 		}
 
-		public override void Dispose ()
+		protected override void Dispose (bool disposing)
 		{
-			base.Dispose ();
+			if (Disposed)
+				return;
+
+			base.Dispose (disposing);
 			HighlightedObject?.Dispose ();
 		}
 

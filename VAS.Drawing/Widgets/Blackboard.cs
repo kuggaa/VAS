@@ -30,9 +30,9 @@ namespace VAS.Drawing.Widgets
 	/// A canvas that can be used as a blackboard in which objects are drawn
 	/// over the image set in <see cref="BackgroundCanvas.Background"/>.
 	/// </summary>
-	public class Blackboard: BackgroundCanvas
+	public class Blackboard : BackgroundCanvas
 	{
-	
+
 		public event ShowDrawToolMenuHandler ShowMenuEvent;
 		public event ConfigureDrawingObjectHandler ConfigureObjectEvent;
 		public event DrawableChangedHandler DrawableChangedEvent;
@@ -67,6 +67,9 @@ namespace VAS.Drawing.Widgets
 
 		protected override void Dispose (bool disposing)
 		{
+			if (Disposed)
+				return;
+
 			if (disposing) {
 				if (backbuffer != null)
 					backbuffer.Dispose ();
@@ -258,7 +261,7 @@ namespace VAS.Drawing.Widgets
 			ClearSelection ();
 			area = RegionOfInterest;
 			if (area == null || area.Empty) {
-				area = new Area (0, 0, Background.Width, Background.Height); 
+				area = new Area (0, 0, Background.Width, Background.Height);
 			}
 			tk.Save (this, area, filename);
 		}
@@ -286,8 +289,8 @@ namespace VAS.Drawing.Widgets
 			height = Background.Height / zoom;
 
 			if (center == null) {
-				roi.Start.X = roi.Start.X + roi.Width / 2 - width / 2; 
-				roi.Start.Y = roi.Start.Y + roi.Height / 2 - height / 2; 
+				roi.Start.X = roi.Start.X + roi.Width / 2 - width / 2;
+				roi.Start.Y = roi.Start.Y + roi.Height / 2 - height / 2;
 			} else {
 				roi.Start.X = center.X - width / 2;
 				roi.Start.Y = center.Y - height / 2;
@@ -332,7 +335,7 @@ namespace VAS.Drawing.Widgets
 			if (sel != null) {
 				ClearSelection ();
 			}
-				
+
 			switch (Tool) {
 			case DrawTool.Line:
 				drawable = new Line (MoveStart, new Point (MoveStart.X + 1, MoveStart.Y + 1),
@@ -367,8 +370,7 @@ namespace VAS.Drawing.Widgets
 				resize = false;
 				break;
 			case DrawTool.Text:
-			case DrawTool.Player:
-				{
+			case DrawTool.Player: {
 					int width, heigth;
 					Text text = new Text (MoveStart, 1, 1, "");
 					if (ConfigureObjectEvent != null) {
@@ -388,12 +390,11 @@ namespace VAS.Drawing.Widgets
 					drawable = text;
 					break;
 				}
-			case DrawTool.Pen: 
-			case DrawTool.Eraser: 
+			case DrawTool.Pen:
+			case DrawTool.Eraser:
 				handdrawing = true;
 				break;
-			case DrawTool.Zoom:
-				{
+			case DrawTool.Zoom: {
 					double newZoom = currentZoom;
 
 					if (modifier == ButtonModifier.Shift) {
@@ -456,7 +457,7 @@ namespace VAS.Drawing.Widgets
 			if (sel != null && ShowMenuEvent != null) {
 				ShowMenuEvent ((sel.Drawable as ICanvasDrawableObject).IDrawableObject);
 			}
-			
+
 		}
 
 		protected override void SelectionChanged (System.Collections.Generic.List<Selection> sel)
@@ -479,9 +480,9 @@ namespace VAS.Drawing.Widgets
 		void UpdateCounters ()
 		{
 			int index = 1;
-			
+
 			foreach (IBlackboardObject bo in
-			         Objects.Select  (o => (o as ICanvasDrawableObject).IDrawableObject)) {
+					 Objects.Select (o => (o as ICanvasDrawableObject).IDrawableObject)) {
 				if (bo is Counter) {
 					(bo as Counter).Count = index;
 					index++;
@@ -532,7 +533,7 @@ namespace VAS.Drawing.Widgets
 			tk.Begin ();
 			tk.Clear (App.Current.Style.PaletteBackground);
 			tk.End ();
-			
+
 			base.Draw (context, area);
 			if (backbuffer != null) {
 				Begin (context);

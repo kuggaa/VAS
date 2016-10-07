@@ -15,8 +15,6 @@ namespace VAS
 {
 	public abstract class App
 	{
-		static List<Action> AppStaticFinalizers;
-
 		/* State */
 		public IGUIToolkit GUIToolkit;
 		public INavigation Navigation;
@@ -145,24 +143,6 @@ namespace VAS
 
 			InitTranslations (softwareName);
 			InitDependencies ();
-			AppStaticFinalizers = new List<Action> ();
-		}
-
-		/// <summary>
-		/// Calls the static finalizers.
-		/// </summary>
-		public static void CallStaticFinalizers ()
-		{
-			AppStaticFinalizers.ForEach (action => action ());
-		}
-
-		/// <summary>
-		/// Adds a static finalizer Action.
-		/// </summary>
-		/// <param name="action">Action.</param>
-		public static void AddStaticFinalizer (Action action)
-		{
-			AppStaticFinalizers.Add (action);
 		}
 
 		internal static void InitDependencies ()

@@ -23,7 +23,7 @@ using VAS.Core.Store.Drawables;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
-	public class NeedleObject: CanvasObject, ICanvasSelectableObject
+	public class NeedleObject : CanvasObject, ICanvasSelectableObject
 	{
 		static ISurface needle;
 		static bool surfacesInitialized = false;
@@ -38,6 +38,9 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 		protected override void Dispose (bool disposing)
 		{
+			if (Disposed)
+				return;
+
 			base.Dispose (disposing);
 		}
 
@@ -92,7 +95,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			if (!UpdateDrawArea (tk, area, Area)) {
 				return;
 			}
-			
+
 			tk.Begin ();
 			tk.DrawSurface (TopLeft, StyleConf.TimelineNeedleBigWidth, StyleConf.TimelineNeedleBigHeight, needle, ScaleMode.AspectFit);
 			tk.End ();
