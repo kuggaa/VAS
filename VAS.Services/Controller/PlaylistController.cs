@@ -18,14 +18,12 @@ namespace VAS.Services.Controller
 	{
 		PlaylistCollectionVM viewModel;
 
-		//FIXME: IPlayerController should be changed to PlayerVM
-		public IPlayerController PlayerVM {
+		public IPlayerViewModel PlayerVM {
 			get;
 			set;
 		}
 
-		//FIXME: IPlayerController should be changed to PlayerVM
-		public PlaylistController (IPlayerController playerVM)
+		public PlaylistController (IPlayerViewModel playerVM)
 		{
 			PlayerVM = playerVM;
 		}
