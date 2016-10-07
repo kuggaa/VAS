@@ -131,7 +131,7 @@ namespace VAS.Core
 				return ok;
 			} catch (Exception ex) {
 				Log.Exception (ex);
-				return false;
+				throw;
 			}
 		}
 
