@@ -130,6 +130,17 @@ namespace VAS.Core.Store
 		}
 
 		/// <summary>
+		/// String representation in hours and minutes
+		/// </summary>
+		/// <returns>
+		/// A <see cref="System.String"/>
+		/// </returns>
+		public  string ToHoursMinutesString ()
+		{
+			return String.Format ("{0}:{1}", Hours.ToString ("d2"), Minutes.ToString ("d2"));
+		}
+
+		/// <summary>
 		/// String representation including the milisenconds information
 		/// </summary>
 		/// <returns>

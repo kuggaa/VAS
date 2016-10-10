@@ -145,7 +145,8 @@ namespace VAS.Core.Common
 		static public Color Yellow = new Color (255, 255, 0);
 		static public Color Transparent = new Color (0, 0, 0, 0);
 		static public Color Purple = new Color (102, 51, 153);
-
+		static public Color Orange = new Color (255, 171, 0);
+		static public Color BlackTransparent = new Color (0, 0, 0, 110);
 	}
 
 
