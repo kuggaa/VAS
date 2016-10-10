@@ -53,8 +53,6 @@ namespace VAS.UI.Component
 		protected IPlayerController player;
 		protected bool isTimeLineEvent;
 
-		protected bool Disposed { get; private set; } = false;
-
 		public Timeline ()
 		{
 			this.Build ();
@@ -65,6 +63,48 @@ namespace VAS.UI.Component
 		{
 			Dispose (false);
 		}
+
+		protected override void OnDestroyed ()
+		{
+			if (Disposed)
+				return;
+
+			if (timeoutID != 0) {
+				GLib.Source.Remove (timeoutID);
+				timeoutID = 0;
+			}
+			// Unsubscribe events
+			App.Current.EventsBroker.Unsubscribe<PlayerTickEvent> (HandlePlayerTick);
+			App.Current.EventsBroker.Unsubscribe<LoadEventEvent> (HandleLoadPlayEvent);
+			Player = null;
+
+			timerule?.Dispose ();
+			timeline?.Dispose ();
+			labels?.Dispose ();
+			menu?.Dispose ();
+
+			base.OnDestroyed ();
+
+			Disposed = true;
+		}
+
+		public override void Dispose ()
+		{
+			Dispose (true);
+			base.Dispose ();
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (Disposed)
+				return;
+
+			Destroy ();
+
+			Disposed = true;
+		}
+
+		protected bool Disposed { get; private set; } = false;
 
 		void Initialization ()
 		{
@@ -104,46 +144,6 @@ namespace VAS.UI.Component
 			};
 			App.Current.EventsBroker.Subscribe<PlayerTickEvent> (HandlePlayerTick);
 			App.Current.EventsBroker.Subscribe<LoadEventEvent> (HandleLoadPlayEvent);
-		}
-
-		protected override void OnDestroyed ()
-		{
-			if (timeoutID != 0) {
-				GLib.Source.Remove (timeoutID);
-				timeoutID = 0;
-			}
-			// Unsubscribe events
-			App.Current.EventsBroker.Unsubscribe<PlayerTickEvent> (HandlePlayerTick);
-			App.Current.EventsBroker.Unsubscribe<LoadEventEvent> (HandleLoadPlayEvent);
-			Player = null;
-
-			base.OnDestroyed ();
-		}
-
-		public override void Dispose ()
-		{
-			Dispose (true);
-			base.Dispose ();
-		}
-
-		protected virtual void Dispose (bool disposing)
-		{
-			if (Disposed)
-				return;
-
-			Destroy ();
-
-			Disposed = true;
-		}
-
-		public override void Destroy ()
-		{
-			timerule?.Dispose ();
-			timeline?.Dispose ();
-			labels?.Dispose ();
-			menu?.Dispose ();
-			base.Destroy ();
-			Dispose ();
 		}
 
 		/// <summary>

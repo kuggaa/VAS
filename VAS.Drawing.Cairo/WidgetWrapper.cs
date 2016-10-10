@@ -48,8 +48,6 @@ namespace VAS.Drawing.Cairo
 		bool canMove, inButtonPress;
 		uint moveTimerID, hoverTimerID, lastButtonTime;
 
-		protected bool Disposed { get; private set; } = false;
-
 		public WidgetWrapper (DrawingArea widget)
 		{
 			this.widget = widget;
@@ -112,6 +110,8 @@ namespace VAS.Drawing.Cairo
 				widget.HeightRequest = (int)value;
 			}
 		}
+
+		protected bool Disposed { get; private set; } = false;
 
 		public void ReDraw (Area area = null)
 		{

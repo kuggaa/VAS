@@ -27,8 +27,6 @@ namespace VAS.Drawing.Cairo
 		ImageSurface surface;
 		bool warnOnDispose;
 
-		protected bool Disposed { get; private set; } = false;
-
 		public Surface (int width, int height, Image image, bool warnOnDispose = true)
 		{
 			this.warnOnDispose = warnOnDispose;
@@ -98,6 +96,8 @@ namespace VAS.Drawing.Cairo
 				return surface.Height;
 			}
 		}
+
+		protected bool Disposed { get; private set; } = false;
 
 		public Image Copy ()
 		{

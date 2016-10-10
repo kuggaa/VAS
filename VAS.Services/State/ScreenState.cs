@@ -32,8 +32,6 @@ namespace VAS.Services.State
 	/// </summary>
 	public abstract class ScreenState<TViewModel> : IScreenState where TViewModel : IViewModel
 	{
-		protected bool Disposed { get; private set; } = false;
-
 		public ScreenState ()
 		{
 			Panel = App.Current.ViewLocator.Retrieve (Name) as IPanel;
@@ -72,6 +70,7 @@ namespace VAS.Services.State
 			Disposed = true;
 		}
 
+
 		public abstract string Name {
 			get;
 		}
@@ -95,6 +94,8 @@ namespace VAS.Services.State
 			get;
 			protected set;
 		}
+
+		protected bool Disposed { get; private set; } = false;
 
 		public virtual Task<bool> PostTransition ()
 		{

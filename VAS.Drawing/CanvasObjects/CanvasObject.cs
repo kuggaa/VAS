@@ -30,8 +30,6 @@ namespace VAS.Drawing.CanvasObjects
 		bool highlighted;
 		bool selected;
 
-		protected bool Disposed { get; private set; } = false;
-
 		protected CanvasObject ()
 		{
 			Visible = true;
@@ -94,6 +92,8 @@ namespace VAS.Drawing.CanvasObjects
 				}
 			}
 		}
+
+		protected bool Disposed { get; private set; } = false;
 
 		public virtual void ResetDrawArea ()
 		{

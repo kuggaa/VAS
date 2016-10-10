@@ -32,8 +32,6 @@ namespace VAS.Core.Store.Templates
 		public const int CURRENT_VERSION = 1;
 		ObservableCollection<Player> list;
 
-		protected bool Disposed { get; private set; } = false;
-
 		public Team ()
 		{
 			ID = Guid.NewGuid ();
@@ -119,6 +117,8 @@ namespace VAS.Core.Store.Templates
 			get;
 			set;
 		}
+
+		protected bool Disposed { get; private set; } = false;
 
 		/// <summary>
 		/// Creates a deep copy of this team with new ID's for each player

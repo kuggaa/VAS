@@ -45,8 +45,6 @@ namespace VAS.Services.Controller
 		ITemplateProvider<TModel> provider;
 		bool started;
 
-		protected bool Disposed { get; private set; } = false;
-
 		public void Dispose ()
 		{
 			Dispose (true);
@@ -80,6 +78,8 @@ namespace VAS.Services.Controller
 				viewModel.Select (viewModel.Model.FirstOrDefault ());
 			}
 		}
+
+		protected bool Disposed { get; private set; } = false;
 
 		protected string FilterText { get; set; }
 

@@ -33,8 +33,6 @@ namespace VAS.Drawing
 		protected IWidget widget;
 		int widthRequest, heightRequest;
 
-		protected bool Disposed { get; private set; } = false;
-
 		public Canvas (IWidget widget)
 		{
 			tk = App.Current.DrawingToolkit;
@@ -78,6 +76,8 @@ namespace VAS.Drawing
 
 			Disposed = true;
 		}
+
+		protected bool Disposed { get; private set; } = false;
 
 		public virtual void SetWidget (IWidget newWidget)
 		{
