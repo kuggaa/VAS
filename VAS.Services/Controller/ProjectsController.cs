@@ -29,6 +29,7 @@ using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Interfaces.Plugins;
 using VAS.Core.Store;
 using VAS.Services.ViewModel;
+using System.Windows.Input;
 
 namespace VAS.Services.Controller
 {
@@ -82,6 +83,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Subscribe<UpdateEvent<TModel>> (HandleSave);
 			App.Current.EventsBroker.Subscribe<CreateEvent<TModel>> (HandleNew);
 			App.Current.EventsBroker.Subscribe<DeleteEvent<TModel>> (HandleDelete);
+			App.Current.EventsBroker.Subscribe<ResyncProjectEvent> (HandleResync);
 			started = true;
 		}
 
@@ -95,6 +97,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Unsubscribe<UpdateEvent<TModel>> (HandleSave);
 			App.Current.EventsBroker.Unsubscribe<CreateEvent<TModel>> (HandleNew);
 			App.Current.EventsBroker.Unsubscribe<DeleteEvent<TModel>> (HandleDelete);
+			App.Current.EventsBroker.Unsubscribe<ResyncProjectEvent> (HandleResync);
 			started = false;
 		}
 
@@ -105,7 +108,7 @@ namespace VAS.Services.Controller
 
 		#endregion
 
-		async void HandleExport (ExportEvent<TModel> evt)
+		async protected virtual void HandleExport (ExportEvent<TModel> evt)
 		{
 			Project project = evt.Object;
 			IProjectExporter exporter;
@@ -126,15 +129,28 @@ namespace VAS.Services.Controller
 			await exporter.Export (project);
 		}
 
-		void HandleImport (ImportEvent<TModel> evt)
+		protected virtual void HandleOpen (OpenEvent<TModel> evt)
+		{
+			TModel project = evt.Object;
+
+			if (project == null) {
+				return;
+			}
+
+			App.Current.EventsBroker.Publish<OpenEvent<TModel>> (
+				new OpenEvent<TModel> { Object = project }
+			);
+		}
+
+		protected virtual void HandleImport (ImportEvent<TModel> evt)
 		{
 		}
 
-		void HandleNew (CreateEvent<TModel> evt)
+		protected virtual void HandleNew (CreateEvent<TModel> evt)
 		{
 		}
 
-		async void HandleDelete (DeleteEvent<TModel> evt)
+		async protected virtual void HandleDelete (DeleteEvent<TModel> evt)
 		{
 			TModel project = evt.Object;
 
@@ -157,7 +173,11 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		async void HandleSave (UpdateEvent<TModel> evt)
+		async protected virtual void HandleResync (ResyncProjectEvent evt)
+		{
+		}
+
+		async protected virtual void HandleSave (UpdateEvent<TModel> evt)
 		{
 			TModel project = evt.Object;
 			if (project == null) {
@@ -166,7 +186,7 @@ namespace VAS.Services.Controller
 			await Save (project, true);
 		}
 
-		async void HandleSelectionChanged (object sender, PropertyChangedEventArgs e)
+		async protected virtual void HandleSelectionChanged (object sender, PropertyChangedEventArgs e)
 		{
 			TModel loadedProject = null;
 
@@ -189,13 +209,13 @@ namespace VAS.Services.Controller
 				ViewModel.LoadedProject.Model = loadedProject;
 
 				// Update controls visiblity
-				ViewModel.DeleteSensitive = loadedProject != null;
-				ViewModel.ExportSensitive = loadedProject != null;
-				ViewModel.SaveSensitive = false;
+				ViewModel.DeleteCommand.Executable = loadedProject != null;
+				ViewModel.ExportCommand.Executable = loadedProject != null;
+				ViewModel.SaveCommand.Executable = false;
 			}
 		}
 
-		async Task Save (TModel project, bool force)
+		async protected virtual Task Save (TModel project, bool force)
 		{
 			if (!force && project.IsChanged) {
 				string msg = Catalog.GetString ("Do you want to save the current project?");
@@ -208,7 +228,7 @@ namespace VAS.Services.Controller
 				busy.ShowSync (() => App.Current.DatabaseManager.ActiveDB.Store<TModel> (project));
 				// Update the ViewModel with the model clone used for editting.
 				ViewModel.ViewModels.FirstOrDefault (vm => vm.Model.Equals (project)).Model = project;
-				ViewModel.SaveSensitive = false;
+				ViewModel.SaveCommand.Executable = false;
 			} catch (Exception ex) {
 				Log.Exception (ex);
 				App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Error saving project:") + "\n" + ex.Message);

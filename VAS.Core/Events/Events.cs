@@ -105,7 +105,7 @@ namespace VAS.Core.Events
 				}
 				return dashboardButton;
 			}
-			set { 
+			set {
 				dashboardButton = value;
 			}
 		}
@@ -126,7 +126,7 @@ namespace VAS.Core.Events
 				}
 				return dashboardButton;
 			}
-			set { 
+			set {
 				dashboardButton = value;
 			}
 		}
@@ -160,9 +160,9 @@ namespace VAS.Core.Events
 	{
 		public Playlist Playlist { get; set; }
 
-		public IPlaylistElement Element  { get; set; }
+		public IPlaylistElement Element { get; set; }
 
-		public bool Playing  { get; set; }
+		public bool Playing { get; set; }
 	}
 
 	public class PlaylistElementLoadedEvent : Event
@@ -318,7 +318,7 @@ namespace VAS.Core.Events
 
 		public bool Edit { get; set; }
 
-		public List<DashboardButton> DashboardButtons { 
+		public List<DashboardButton> DashboardButtons {
 			get {
 				if (dashboardButtons == null) {
 					dashboardButtons = new List<DashboardButton> ();
@@ -362,6 +362,19 @@ namespace VAS.Core.Events
 		/// </summary>
 		/// <value>The name.</value>
 		public string Name { get; set; }
+
+	}
+
+	/// <summary>
+	/// Event to request a resynchronization of cameras or events in a project.
+	/// </summary>
+	public class ResyncProjectEvent : Event
+	{
+		/// <summary>
+		/// Gets or sets the project to resync.
+		/// </summary>
+		/// <value>The project.</value>
+		public Project Project { get; set; }
 
 	}
 }
