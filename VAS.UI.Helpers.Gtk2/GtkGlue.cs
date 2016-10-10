@@ -34,6 +34,9 @@ namespace VAS
 		[DllImport ("libcesarplayer.dll")]
 		static extern void lgm_gtk_glue_gdk_event_button_set_button (IntPtr evt, uint button);
 
+		[DllImport ("libpango-1.0.dll")]
+		static extern void pango_layout_set_height (IntPtr layout, int height);
+
 		public static void SetLabel (this MenuItem menu, string label)
 		{
 			gtk_menu_item_set_label (menu.Handle, GLib.Marshaller.StringToFilenamePtr (label));
@@ -50,6 +53,11 @@ namespace VAS
 		public static void SetButton (this EventButton ev, uint button)
 		{
 			lgm_gtk_glue_gdk_event_button_set_button (ev.Handle, button);
+		}
+
+		public static void SetPangoLayoutHeight (this Pango.Layout layout, int height)
+		{
+			pango_layout_set_height (layout.Handle, height);
 		}
 
 		/// <summary>
