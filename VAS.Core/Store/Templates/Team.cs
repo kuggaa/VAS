@@ -118,6 +118,8 @@ namespace VAS.Core.Store.Templates
 			set;
 		}
 
+		[JsonIgnore]
+		[PropertyChanged.DoNotNotify]
 		protected bool Disposed { get; private set; } = false;
 
 		/// <summary>
