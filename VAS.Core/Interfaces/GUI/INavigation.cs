@@ -24,27 +24,35 @@ namespace VAS.Core.Interfaces.GUI
 	public interface INavigation
 	{
 		/// <summary>
-		/// Loads the navigation panel. It just removes the last panel from the main window
-		/// and replaces it with the new IPanel provided as argument.
+		/// Loads a the navigation panel in the UI.
 		/// </summary>
 		/// <returns>The navigation panel.</returns>
 		/// <param name="panel">Panel.</param>
-		Task<bool> LoadNavigationPanel (IPanel panel);
+		Task<bool> Push (IPanel panel);
 
 		/// <summary>
-		/// Loads the modal panel. It creates a new ExternalWindow
+		/// Removes the latest navigation panel from the UI.
+		/// This API needs to consider the different UI toolkits implementation.
+		/// In GTK+ there is no stacking support, so the action of popping an IPanel is loading the previous IPanel
+		/// from the stack, and hence the <paramref name="newPanel"/> is needed.
+		/// Instead Xamrin.Forms already supports stacking so we only need to pop the latest IPanel.
 		/// </summary>
-		/// <returns>The modal panel.</returns>
-		/// <param name="panel">Panel.</param>
-		/// <param name="parent">Parent.</param>
-		Task LoadModalPanel (IPanel panel, IPanel parent);
+		/// <param name="newPanel">The panel loaded after popping.</param>
+		Task<bool> Pop (IPanel newPanel);
 
 		/// <summary>
-		/// Removes the modal window.
+		/// Loads a modal panel in the UI. The <paramref name="parentPanel"/> is needed to make the new window modal,
+		/// like in the GTK+ toolkit.
 		/// </summary>
-		/// <returns>The modal window.</returns>
-		/// <param name="panel">Panel.</param>
-		Task RemoveModalWindow (IPanel panel);
+		/// <param name="panel">The panel to load.</param>
+		/// <param name="parent">The parent panel.</param>
+		Task PushModal (IPanel panel, IPanel parent);
+
+		/// <summary>
+		/// Removes the latest modal panel.
+		/// </summary>
+		/// <param name="panel">The modal panel to remove.</param>
+		Task PopModal (IPanel panel);
 	}
 }
 
