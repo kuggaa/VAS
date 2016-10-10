@@ -40,8 +40,6 @@ namespace VAS.Core.Store
 		IStorage storage;
 		ObservableCollection<CameraConfig> camerasConfig;
 
-		protected bool Disposed { get; private set; } = false;
-
 		#region Constructors
 
 		public TimelineEvent ()
@@ -336,6 +334,8 @@ namespace VAS.Core.Store
 		}
 
 		#endregion
+
+		protected bool Disposed { get; private set; } = false;
 
 		#region Public methods
 
