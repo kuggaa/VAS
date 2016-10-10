@@ -128,7 +128,7 @@ namespace VAS.Services.Controller
 			ViewModel = (TemplatesManagerViewModel<TModel, TViewModel>)viewModel;
 		}
 
-		public void Start ()
+		public virtual void Start ()
 		{
 			if (started) {
 				throw new InvalidOperationException ("The controller is already running");
@@ -142,7 +142,7 @@ namespace VAS.Services.Controller
 			started = true;
 		}
 
-		public void Stop ()
+		public virtual void Stop ()
 		{
 			if (!started) {
 				throw new InvalidOperationException ("The controller is already stopped");

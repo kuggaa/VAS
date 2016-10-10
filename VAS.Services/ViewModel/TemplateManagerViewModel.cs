@@ -98,7 +98,7 @@ namespace VAS.Services.ViewModel
 		/// <summary>
 		/// Command to delete the currently loaded template.
 		/// </summary>
-		public void Delete ()
+		public virtual void Delete ()
 		{
 			TViewModel templateVM = Selection.FirstOrDefault ();
 			if (templateVM != null && templateVM.Model != null) {
