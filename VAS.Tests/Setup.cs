@@ -44,6 +44,7 @@ namespace VAS.Tests
 			navigation.Setup (x => x.Push (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
 			navigation.Setup (x => x.PushModal (It.IsAny<IPanel> (), It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
 			navigation.Setup (x => x.PopModal (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
+			navigation.Setup (x => x.Pop (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
 			App.Current.Navigation = navigation.Object;
 		}
 	}
