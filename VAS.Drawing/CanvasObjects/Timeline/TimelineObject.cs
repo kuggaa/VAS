@@ -52,10 +52,15 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 		protected override void Dispose (bool disposing)
 		{
-			ClearObjects ();
-			selectionBorderL.Dispose ();
-			selectionBorderR.Dispose ();
+			if (Disposed)
+				return;
+
 			base.Dispose (disposing);
+			if (disposing) {
+				ClearObjects ();
+				selectionBorderL?.Dispose ();
+				selectionBorderR?.Dispose ();
+			}
 		}
 
 		public double SecondsPerPixel {
@@ -111,7 +116,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		public void RemoveNode (TimeNode node)
 		{
 			TimeNodeObject to;
-			
+
 			to = nodes.FirstOrDefault (n => n.TimeNode == node);
 			if (to != null) {
 				RemoveObject (to, true);
@@ -154,7 +159,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			tk.FillColor = BackgroundColor;
 			tk.StrokeColor = BackgroundColor;
 			tk.LineWidth = 0;
-			
+
 			tk.DrawRectangle (new Point (area.Start.X, OffsetY), area.Width, Height);
 		}
 
@@ -167,7 +172,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		{
 			double position;
 			List<TimeNodeObject> selected;
-			
+
 			selected = new List<TimeNodeObject> ();
 
 			if (!UpdateDrawArea (tk, area, new Area (new Point (0, OffsetY), Width, Height))) {
@@ -197,7 +202,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			position = VASDrawing.Utils.TimeToPos (CurrentTime, secondsPerPixel);
 			tk.DrawLine (new Point (position, OffsetY),
 				new Point (position, OffsetY + Height));
-			
+
 			tk.End ();
 		}
 
@@ -245,7 +250,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		Project project;
 
 		public CategoryTimeline (Project project, List<TimelineEvent> plays, Time maxTime,
-		                         double offsetY, Color background, EventsFilter filter) :
+								 double offsetY, Color background, EventsFilter filter) :
 			base (maxTime, StyleConf.TimelineCategoryHeight, offsetY, background)
 		{
 			this.filter = filter;
@@ -268,8 +273,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		public virtual void AddPlay (TimelineEvent play)
 		{
 			TimelineEventObjectBase po = new TimelineEventObjectBase (play, project);
-			po.SelectionLeft = selectionBorderL; 
-			po.SelectionRight = selectionBorderR; 
+			po.SelectionLeft = selectionBorderL;
+			po.SelectionRight = selectionBorderR;
 			po.OffsetY = OffsetY;
 			po.Height = Height;
 			po.SecondsPerPixel = SecondsPerPixel;
@@ -278,13 +283,13 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		}
 	}
 
-	public class TimerTimeline: TimelineObject
+	public class TimerTimeline : TimelineObject
 	{
 
 		List<Timer> timers;
 
 		public TimerTimeline (List<Timer> timers, bool showName, NodeDraggingMode draggingMode, bool showLine,
-		                      Time maxTime, int height, double offsetY, Color background, Color lineColor) :
+							  Time maxTime, int height, double offsetY, Color background, Color lineColor) :
 			base (maxTime, height, offsetY, background)
 		{
 			this.timers = timers;
@@ -292,12 +297,12 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			DraggingMode = draggingMode;
 			ShowLine = showLine;
 			LineColor = lineColor;
-	
+
 			ReloadPeriods (timers);
 		}
 
 		public TimerTimeline (List<Timer> timers, bool showName, NodeDraggingMode draggingMode, bool showLine,
-		                      Time maxTime, double offsetY, Color background, Color lineColor) :
+							  Time maxTime, double offsetY, Color background, Color lineColor) :
 			this (timers, showName, draggingMode, showLine, maxTime, StyleConf.TimelineCategoryHeight, offsetY, background, lineColor)
 		{
 
@@ -399,10 +404,10 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		}
 	}
 
-	public class CameraTimeline: TimelineObject
+	public class CameraTimeline : TimelineObject
 	{
 		public CameraTimeline (MediaFile mediaFile, bool showName, bool showLine,
-		                       Time maxTime, double offsetY, Color background, Color lineColor, int height = StyleConf.TimelineCameraHeight) :
+							   Time maxTime, double offsetY, Color background, Color lineColor, int height = StyleConf.TimelineCameraHeight) :
 			base (maxTime, height, offsetY, background)
 		{
 			ShowName = showName;
@@ -410,6 +415,19 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			LineColor = lineColor;
 
 			AddMediaFile (mediaFile);
+		}
+
+		protected override void Dispose (bool disposing)
+		{
+			if (Disposed)
+				return;
+
+			base.Dispose (disposing);
+			if (disposing) {
+				ClearObjects ();
+				selectionBorderL?.Dispose ();
+				selectionBorderR?.Dispose ();
+			}
 		}
 
 		Color LineColor {

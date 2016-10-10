@@ -22,10 +22,10 @@ using VAS.Core.Interfaces.Drawing;
 
 namespace VAS.Drawing.Cairo
 {
-	public class Surface: ISurface
+	public class Surface : ISurface
 	{
 		ImageSurface surface;
-		bool disposed, warnOnDispose;
+		bool warnOnDispose;
 
 		public Surface (int width, int height, Image image, bool warnOnDispose = true)
 		{
@@ -41,7 +41,7 @@ namespace VAS.Drawing.Cairo
 
 		~Surface ()
 		{
-			if (!disposed && warnOnDispose) {
+			if (!Disposed && warnOnDispose) {
 				Log.Error (String.Format ("Surface {0} was not disposed correctly", this));
 				Dispose (true);
 			}
@@ -55,13 +55,17 @@ namespace VAS.Drawing.Cairo
 
 		protected virtual void Dispose (bool disposing)
 		{
+			if (Disposed)
+				return;
+
 			if (disposing) {
 				if (surface != null) {
 					surface.Dispose ();
 				}
 				surface = null;
-				disposed = true;
 			}
+
+			Disposed = true;
 		}
 
 		public Surface (string filename)
@@ -92,6 +96,8 @@ namespace VAS.Drawing.Cairo
 				return surface.Height;
 			}
 		}
+
+		protected bool Disposed { get; private set; } = false;
 
 		public Image Copy ()
 		{

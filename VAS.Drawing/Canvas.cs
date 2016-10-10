@@ -27,11 +27,10 @@ namespace VAS.Drawing
 	/// <summary>
 	/// A canvas stores <see cref="ICanvasObject"/>'s and draws them.
 	/// </summary>
-	public class Canvas: ICanvas
+	public class Canvas : ICanvas
 	{
 		protected IDrawingToolkit tk;
 		protected IWidget widget;
-		bool disposed;
 		int widthRequest, heightRequest;
 
 		public Canvas (IWidget widget)
@@ -49,9 +48,9 @@ namespace VAS.Drawing
 		{
 		}
 
-		~ Canvas ()
+		~Canvas ()
 		{
-			if (!disposed) {
+			if (!Disposed) {
 				Log.Error (String.Format ("Canvas {0} was not disposed correctly", this));
 				Dispose (true);
 			}
@@ -65,14 +64,20 @@ namespace VAS.Drawing
 
 		protected virtual void Dispose (bool disposing)
 		{
+			if (Disposed)
+				return;
+
 			IgnoreRedraws = true;
 			if (disposing) {
 				SetWidget (null);
 				ClearObjects ();
 				Objects = null;
-				disposed = true;
 			}
+
+			Disposed = true;
 		}
+
+		protected bool Disposed { get; private set; } = false;
 
 		public virtual void SetWidget (IWidget newWidget)
 		{
@@ -149,7 +154,7 @@ namespace VAS.Drawing
 		{
 			return new Point ((p.X - Translation.X) / ScaleX,
 				(p.Y - Translation.Y) / ScaleY);
-		
+
 		}
 
 		/// <summary>
@@ -301,7 +306,7 @@ namespace VAS.Drawing
 					co.Draw (tk, area);
 				}
 			}
-			foreach (ICanvasSelectableObject co in Objects.OfType<ICanvasSelectableObject>()) {
+			foreach (ICanvasSelectableObject co in Objects.OfType<ICanvasSelectableObject> ()) {
 				if (co.Selected && co.Visible) {
 					co.Draw (tk, area);
 				}

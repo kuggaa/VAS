@@ -27,7 +27,7 @@ using VAS.Core.Serialization;
 namespace VAS.Core.Store.Templates
 {
 	[Serializable]
-	public class Team: StorableBase, IDisposable, ITemplate<Team>
+	public class Team : StorableBase, IDisposable, ITemplate<Team>
 	{
 		public const int CURRENT_VERSION = 1;
 		ObservableCollection<Player> list;
@@ -39,12 +39,30 @@ namespace VAS.Core.Store.Templates
 			Version = Constants.DB_VERSION;
 		}
 
+		~Team ()
+		{
+			Dispose (false);
+		}
+
 		public void Dispose ()
 		{
-			Shield?.Dispose ();
-			foreach (Player p in List) {
-				p.Dispose ();
+			Dispose (true);
+			GC.SuppressFinalize (this);
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (Disposed)
+				return;
+
+			if (disposing) {
+				Shield?.Dispose ();
+				foreach (Player p in List) {
+					p.Dispose ();
+				}
 			}
+
+			Disposed = true;
 		}
 
 		/// <summary>
@@ -99,6 +117,8 @@ namespace VAS.Core.Store.Templates
 			get;
 			set;
 		}
+
+		protected bool Disposed { get; private set; } = false;
 
 		/// <summary>
 		/// Creates a deep copy of this team with new ID's for each player

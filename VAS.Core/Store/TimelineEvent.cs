@@ -56,10 +56,21 @@ namespace VAS.Core.Store
 
 		public void Dispose ()
 		{
+			Dispose (true);
+			GC.SuppressFinalize (this);
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (Disposed)
+				return;
+
 			Miniature?.Dispose ();
 			foreach (var drawing in Drawings) {
 				drawing.Miniature?.Dispose ();
 			}
+
+			Disposed = true;
 		}
 
 		#endregion
@@ -307,7 +318,7 @@ namespace VAS.Core.Store
 		[PropertyChanged.DoNotNotify]
 		public virtual string Description {
 			get {
-				return 
+				return
 					(Name + "\n" +
 				TagsDescription () + "\n" +
 				TimesDesription ());
@@ -323,6 +334,8 @@ namespace VAS.Core.Store
 		}
 
 		#endregion
+
+		protected bool Disposed { get; private set; } = false;
 
 		#region Public methods
 
@@ -398,7 +411,7 @@ namespace VAS.Core.Store
 					}
 				}
 			}
-			
+
 			if (EventType.TagGoalPosition) {
 				if (GoalPosition == null) {
 					GoalPosition = new Coordinates ();
@@ -425,7 +438,7 @@ namespace VAS.Core.Store
 		{
 			Coordinates co = new Coordinates ();
 			co.Points = points;
-			
+
 			switch (pos) {
 			case FieldPositionType.Field:
 				FieldPosition = co;

@@ -38,7 +38,7 @@ namespace VAS.Drawing.Widgets
 		const int MINIMUM_TIME_SPACING = 80;
 		int bigLineHeight = 15;
 		int smallLineHeight = 5;
-		readonly int[] MARKER = new int[] { 1, 2, 5, 10, 30, 60, 120, 300, 600, 1200 };
+		readonly int [] MARKER = new int [] { 1, 2, 5, 10, 30, 60, 120, 300, 600, 1200 };
 		NeedleObject needle;
 		double scroll;
 		double secondsPerPixel;
@@ -67,6 +67,9 @@ namespace VAS.Drawing.Widgets
 
 		protected override void Dispose (bool disposing)
 		{
+			if (Disposed)
+				return;
+
 			if (disposing) {
 				Player = null;
 			}

@@ -129,7 +129,7 @@ namespace VAS
 			// Migrate old config directory the home directory so that OS X users can easilly find
 			// log files and config files without having to access hidden folders
 			if (Environment.OSVersion.Platform != PlatformID.Win32NT) {
-				string oldHome = Path.Combine (home, "." + softwareName.ToLower ()); 
+				string oldHome = Path.Combine (home, "." + softwareName.ToLower ());
 				string configFilename = softwareName.ToLower () + "-1.0.config";
 				string configFilepath = Path.Combine (oldHome, configFilename);
 				if (File.Exists (configFilepath) && !File.Exists (App.Current.ConfigFile)) {

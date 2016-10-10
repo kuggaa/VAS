@@ -112,10 +112,14 @@ namespace VAS.UI
 
 		public abstract bool SelectMediaFiles (MediaFileSet fileSet);
 
-		public virtual void Quit ()
+		public virtual async Task<bool> Quit ()
 		{
+			if (!await App.Current.StateController.EmptyStateStack ()) {
+				return false;
+			}
 			Log.Information ("Quit application");
 			Gtk.Application.Quit ();
+			return true;
 		}
 
 		public abstract HotKey SelectHotkey (HotKey hotkey, object parent = null);

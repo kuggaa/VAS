@@ -32,9 +32,8 @@ namespace VAS.Drawing
 	/// A selection canvas supports selecting <see cref="ICanvasSelectableObject"/>
 	/// objects from the canvas and moving, resizing them.
 	/// </summary>
-	public class SelectionCanvas: Canvas
+	public class SelectionCanvas : Canvas
 	{
-
 		protected Selection clickedSel;
 
 		public SelectionCanvas (IWidget widget) : base (widget)
@@ -248,7 +247,7 @@ namespace VAS.Drawing
 			foreach (Selection sel in Selections) {
 				ICanvasSelectableObject po = sel.Drawable as ICanvasSelectableObject;
 				po.Selected = false;
-				if (po.GetType () == typeof(CameraObject)) {
+				if (po.GetType () == typeof (CameraObject)) {
 					((CameraObject)po).SelectedLeft = false;
 					((CameraObject)po).SelectedRight = false;
 				}
@@ -256,7 +255,7 @@ namespace VAS.Drawing
 			if (Objects != null) {
 				foreach (ICanvasSelectableObject cso in Objects) {
 					cso.Selected = false;
-					if (cso.GetType () == typeof(CameraObject)) {
+					if (cso.GetType () == typeof (CameraObject)) {
 						((CameraObject)cso).SelectedLeft = false;
 						((CameraObject)cso).SelectedRight = false;
 					}
@@ -291,27 +290,27 @@ namespace VAS.Drawing
 			if (so == null) {
 				return;
 			}
-				
+
 
 			if (Selections.Count > 0) {
 				if (SingleSelectionObjects.Contains (so.GetType ()) ||
-				    SingleSelectionObjects.Contains (Selections [0].Drawable.GetType ())) {
+					SingleSelectionObjects.Contains (Selections [0].Drawable.GetType ())) {
 					return;
 				}
 			}
 
 			seldup = Selections.FirstOrDefault (s => s.Drawable == sel.Drawable);
-			
+
 			if (seldup != null) {
 				so.Selected = false;
-				if (so.GetType () == typeof(CameraObject)) {
+				if (so.GetType () == typeof (CameraObject)) {
 					((CameraObject)so).SelectedLeft = false;
 					((CameraObject)so).SelectedRight = false;
 				}
 				Selections.Remove (seldup);
 			} else {
 				so.Selected = true;
-				if (so.GetType () == typeof(CameraObject)) {
+				if (so.GetType () == typeof (CameraObject)) {
 					if (sel.Position == SelectionPosition.Left) {
 						((CameraObject)so).SelectedLeft = true;
 					} else {
@@ -358,7 +357,7 @@ namespace VAS.Drawing
 
 		void HandleShowTooltipEvent (Point coords)
 		{
-			Selection sel = GetSelection (ToUserCoords (coords)); 
+			Selection sel = GetSelection (ToUserCoords (coords));
 			if (sel != null) {
 				ICanvasObject co = sel.Drawable as ICanvasObject;
 				if (co != null && co.Description != null) {
@@ -370,18 +369,18 @@ namespace VAS.Drawing
 		protected virtual void HandleLeftButton (Point coords, ButtonModifier modif)
 		{
 			Selection sel;
-			
+
 			sel = GetSelection (coords);
-			
+
 			clickedSel = sel;
 			if (sel != null) {
 				(sel.Drawable as ICanvasObject).ClickPressed (coords, modif);
 			}
 
 			if ((SelectionMode == MultiSelectionMode.Multiple) ||
-			    (SelectionMode == MultiSelectionMode.MultipleWithModifier &&
-			    (modif == ButtonModifier.Control ||
-			    modif == ButtonModifier.Shift))) {
+				(SelectionMode == MultiSelectionMode.MultipleWithModifier &&
+				(modif == ButtonModifier.Control ||
+				modif == ButtonModifier.Shift))) {
 				if (sel != null) {
 					sel.Position = SelectionPosition.All;
 					UpdateSelection (sel);
@@ -416,7 +415,7 @@ namespace VAS.Drawing
 			userCoords = ToUserCoords (coords);
 			if (Moving && Selections.Count != 0) {
 				sel = Selections [0];
-				sel.Drawable.Move (sel, userCoords, MoveStart);  
+				sel.Drawable.Move (sel, userCoords, MoveStart);
 				widget.ReDraw (sel.Drawable);
 				SelectionMoved (sel);
 				Moved = true;
@@ -431,7 +430,7 @@ namespace VAS.Drawing
 			if (IgnoreClicks) {
 				return;
 			}
-		
+
 			Moving = false;
 			if (clickedSel != null) {
 				(clickedSel.Drawable as ICanvasSelectableObject).ClickReleased ();
@@ -447,7 +446,7 @@ namespace VAS.Drawing
 				return;
 			}
 
-			coords = ToUserCoords (coords); 
+			coords = ToUserCoords (coords);
 			if (repetition == ButtonRepetition.Single) {
 				if (type == ButtonType.Left) {
 					/* For OS X CTRL+Left emulating right click */
@@ -463,5 +462,5 @@ namespace VAS.Drawing
 			}
 		}
 	}
-	
+
 }

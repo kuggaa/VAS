@@ -59,6 +59,53 @@ namespace VAS.UI.Component
 			Initialization ();
 		}
 
+		~Timeline ()
+		{
+			Dispose (false);
+		}
+
+		protected override void OnDestroyed ()
+		{
+			if (Disposed)
+				return;
+
+			if (timeoutID != 0) {
+				GLib.Source.Remove (timeoutID);
+				timeoutID = 0;
+			}
+			// Unsubscribe events
+			App.Current.EventsBroker.Unsubscribe<PlayerTickEvent> (HandlePlayerTick);
+			App.Current.EventsBroker.Unsubscribe<LoadEventEvent> (HandleLoadPlayEvent);
+			Player = null;
+
+			timerule?.Dispose ();
+			timeline?.Dispose ();
+			labels?.Dispose ();
+			menu?.Dispose ();
+
+			base.OnDestroyed ();
+
+			Disposed = true;
+		}
+
+		public override void Dispose ()
+		{
+			Dispose (true);
+			base.Dispose ();
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (Disposed)
+				return;
+
+			Destroy ();
+
+			Disposed = true;
+		}
+
+		protected bool Disposed { get; private set; } = false;
+
 		void Initialization ()
 		{
 			timerule = new Timerule (new WidgetWrapper (timerulearea));
@@ -97,29 +144,6 @@ namespace VAS.UI.Component
 			};
 			App.Current.EventsBroker.Subscribe<PlayerTickEvent> (HandlePlayerTick);
 			App.Current.EventsBroker.Subscribe<LoadEventEvent> (HandleLoadPlayEvent);
-		}
-
-		protected override void OnDestroyed ()
-		{
-			if (timeoutID != 0) {
-				GLib.Source.Remove (timeoutID);
-				timeoutID = 0;
-			}
-			// Unsubscribe events
-			App.Current.EventsBroker.Unsubscribe<PlayerTickEvent> (HandlePlayerTick);
-			App.Current.EventsBroker.Unsubscribe<LoadEventEvent> (HandleLoadPlayEvent);
-			Player = null;
-
-			base.OnDestroyed ();
-		}
-
-		public override void Dispose ()
-		{
-			Destroy ();
-			timerule.Dispose ();
-			timeline.Dispose ();
-			labels.Dispose ();
-			base.Dispose ();
 		}
 
 		/// <summary>
@@ -247,13 +271,13 @@ namespace VAS.UI.Component
 			double width = timeline.GetCameraWidth ();
 			if (Math.Truncate ((double)(TimeruleArea.Allocation.Width)) < Math.Truncate (width)) {
 				while (Math.Truncate ((double)(TimeruleArea.Allocation.Width)) < Math.Truncate (width)
-				       && this.FocusScale.Adjustment.Value < 12) {
+					   && this.FocusScale.Adjustment.Value < 12) {
 					ZoomOut ();
 					width = timeline.GetCameraWidth ();
 				}
 			} else {
 				while (Math.Truncate ((double)(TimeruleArea.Allocation.Width)) > Math.Truncate (width)
-				       && this.FocusScale.Adjustment.Value > 0) {
+					   && this.FocusScale.Adjustment.Value > 0) {
 					ZoomIn ();
 					width = timeline.GetCameraWidth ();
 				}

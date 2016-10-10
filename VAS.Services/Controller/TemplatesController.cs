@@ -45,7 +45,6 @@ namespace VAS.Services.Controller
 		ITemplateProvider<TModel> provider;
 		bool started;
 
-
 		public void Dispose ()
 		{
 			Dispose (true);
@@ -59,6 +58,10 @@ namespace VAS.Services.Controller
 
 		protected virtual void Dispose (bool disposing)
 		{
+			if (Disposed)
+				return;
+
+			Disposed = true;
 		}
 
 		public TemplatesManagerViewModel<TModel, TViewModel> ViewModel {
@@ -75,6 +78,8 @@ namespace VAS.Services.Controller
 				viewModel.Select (viewModel.Model.FirstOrDefault ());
 			}
 		}
+
+		protected bool Disposed { get; private set; } = false;
 
 		protected string FilterText { get; set; }
 
@@ -120,7 +125,7 @@ namespace VAS.Services.Controller
 
 		public void SetViewModel (IViewModel viewModel)
 		{
-			ViewModel = (TemplatesManagerViewModel<TModel, TViewModel>)viewModel; 
+			ViewModel = (TemplatesManagerViewModel<TModel, TViewModel>)viewModel;
 		}
 
 		public void Start ()
@@ -161,7 +166,7 @@ namespace VAS.Services.Controller
 		async void HandleExport (ExportEvent<TModel> evt)
 		{
 			string fileName, filterName;
-			string[] extensions;
+			string [] extensions;
 
 			TModel template = evt.Object;
 			Log.Debug ("Exporting " + TemplateName);
@@ -191,7 +196,7 @@ namespace VAS.Services.Controller
 		async void HandleImport (ImportEvent<TModel> evt)
 		{
 			string fileName, filterName;
-			string[] extensions;
+			string [] extensions;
 
 			TModel template = evt.Object;
 			Log.Debug ("Importing dashboard");
@@ -212,7 +217,7 @@ namespace VAS.Services.Controller
 
 					while (Provider.Exists (newTemplate.Name) && !abort) {
 						string name = await App.Current.Dialogs.QueryMessage (NameText,
-							              Catalog.GetString ("Name conflict"), newTemplate.Name + "#");
+										  Catalog.GetString ("Name conflict"), newTemplate.Name + "#");
 						if (name == null) {
 							abort = true;
 						} else {
@@ -238,13 +243,13 @@ namespace VAS.Services.Controller
 			TModel template, templateToDelete;
 
 			if (ViewModel.LoadedTemplate.Edited) {
-				HandleSave (new UpdateEvent<TModel> { Force = false, Object = ViewModel.LoadedTemplate.Model }); 
+				HandleSave (new UpdateEvent<TModel> { Force = false, Object = ViewModel.LoadedTemplate.Model });
 			}
 
 			if (!await App.Current.GUIToolkit.CreateNewTemplate<TModel> (ViewModel.Model.ToList (),
-				    NewText, CountText, Catalog.GetString ("The name is empty."), evt)) {
+					NewText, CountText, Catalog.GetString ("The name is empty."), evt)) {
 				return;
-			} 
+			}
 
 			templateToDelete = Provider.Templates.FirstOrDefault (t => t.Name == evt.Name);
 			if (templateToDelete != null) {
@@ -319,10 +324,10 @@ namespace VAS.Services.Controller
 			}
 
 			TViewModel selectedVM = ViewModel.Selection.FirstOrDefault ();
-			TModel loadedTemplate = default(TModel);
+			TModel loadedTemplate = default (TModel);
 
 			if (ViewModel.LoadedTemplate.Edited == true) {
-				HandleSave (new UpdateEvent<TModel> { Force = false, Object = ViewModel.LoadedTemplate.Model }); 
+				HandleSave (new UpdateEvent<TModel> { Force = false, Object = ViewModel.LoadedTemplate.Model });
 			}
 
 			if (selectedVM != null) {

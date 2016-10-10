@@ -45,10 +45,15 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 		protected override void Dispose (bool disposing)
 		{
+			if (Disposed)
+				return;
+
 			base.Dispose (disposing);
-			if (needle != null) {
-				needle.Dispose ();
-				needle = null;
+			if (disposing) {
+				if (needle != null) {
+					needle.Dispose ();
+					needle = null;
+				}
 			}
 		}
 
@@ -314,7 +319,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			if (needle == null) {
 				needle = tk.CreateSurfaceFromResource (StyleConf.TimelineNeedleUP);
 			}
-			
+
 			if (Selected) {
 				tk.FillColor = App.Current.Style.PaletteActive;
 				tk.StrokeColor = App.Current.Style.PaletteActive;
@@ -323,9 +328,9 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				tk.StrokeColor = LineColor;
 			}
 			tk.LineWidth = StyleConf.TimelineLineSize;
-			
+
 			linepos = OffsetY + Height / 2 + StyleConf.TimelineLineSize / 2;
-			
+
 			if (StopX - StartX <= needle.Width / 2) {
 				double c = movingPos == SelectionPosition.Left ? StopX : StartX;
 				tk.DrawSurface (new Point (c - needle.Width / 2, linepos - 9), StyleConf.TimelineNeedleUpWidth, StyleConf.TimelineNeedleUpHeight, needle, ScaleMode.AspectFit);
@@ -335,7 +340,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				tk.DrawSurface (new Point (StartX - needle.Width / 2, linepos - 9), StyleConf.TimelineNeedleUpWidth, StyleConf.TimelineNeedleUpHeight, needle, ScaleMode.AspectFit);
 				tk.DrawSurface (new Point (StopX - needle.Width / 2, linepos - 9), StyleConf.TimelineNeedleUpWidth, StyleConf.TimelineNeedleUpHeight, needle, ScaleMode.AspectFit);
 			}
-			
+
 
 			if (ShowName) {
 				tk.FontSize = StyleConf.TimelineFontSize;
@@ -366,7 +371,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		}
 	}
 
-	public class TimerTimeNodeObject: TimeNodeObject
+	public class TimerTimeNodeObject : TimeNodeObject
 	{
 		public TimerTimeNodeObject (Timer t, TimeNode tn) : base (tn)
 		{
