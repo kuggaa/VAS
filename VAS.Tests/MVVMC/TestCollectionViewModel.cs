@@ -25,13 +25,13 @@ namespace VAS.Tests.MVVMC
 	[TestFixture]
 	public class TestCollectionViewModel
 	{
-		CollectionViewModel<BindableBase, ViewModelBase<BindableBase>> viewModel;
+		CollectionViewModel<BindableBase, DummyViewModel<BindableBase>> viewModel;
 		ObservableCollection<BindableBase> model;
 
 		[SetUp]
 		public void SetUp ()
 		{
-			viewModel = new CollectionViewModel<BindableBase, ViewModelBase<BindableBase>> ();
+			viewModel = new CollectionViewModel<BindableBase, DummyViewModel<BindableBase>> ();
 			model = new ObservableCollection<BindableBase> { new BindableBase (), new BindableBase () };
 			viewModel.Model = model;
 		}
@@ -63,9 +63,9 @@ namespace VAS.Tests.MVVMC
 			Assert.AreEqual (1, viewModel.Model.Count);
 			viewModel.ViewModels.RemoveAt (0);
 			Assert.AreEqual (0, viewModel.Model.Count);
-			viewModel.ViewModels.Add (new ViewModelBase<BindableBase> ());
+			viewModel.ViewModels.Add (new DummyViewModel<BindableBase> ());
 			Assert.AreEqual (1, viewModel.Model.Count);
-			viewModel.ViewModels [0] = new ViewModelBase<BindableBase> ();
+			viewModel.ViewModels [0] = new DummyViewModel<BindableBase> ();
 			Assert.AreEqual (1, viewModel.Model.Count);
 		}
 

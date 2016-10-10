@@ -71,6 +71,16 @@ namespace VAS.Tests
 		}
 	}
 
+	public class DummyViewModel<T>: IViewModel<T>
+	{
+		public T Model {
+			get;
+			set;
+		}
+
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+	}
+
 	public class DummyBindable: BindableBase
 	{
 		public void Raise (string name)
