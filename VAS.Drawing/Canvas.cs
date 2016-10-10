@@ -31,8 +31,9 @@ namespace VAS.Drawing
 	{
 		protected IDrawingToolkit tk;
 		protected IWidget widget;
-		protected bool Disposed { get; private set; } = false;
 		int widthRequest, heightRequest;
+
+		protected bool Disposed { get; private set; } = false;
 
 		public Canvas (IWidget widget)
 		{

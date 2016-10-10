@@ -30,8 +30,9 @@ namespace VAS.Core.Store.Templates
 	public class Team : StorableBase, IDisposable, ITemplate<Team>
 	{
 		public const int CURRENT_VERSION = 1;
-		protected bool Disposed { get; private set; } = false;
 		ObservableCollection<Player> list;
+
+		protected bool Disposed { get; private set; } = false;
 
 		public Team ()
 		{

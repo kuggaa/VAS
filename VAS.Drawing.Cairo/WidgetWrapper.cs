@@ -42,13 +42,13 @@ namespace VAS.Drawing.Cairo
 		public event ShowTooltipHandler ShowTooltipEvent;
 		public event VASDrawing.SizeChangedHandler SizeChangedEvent;
 
-		protected bool Disposed { get; private set; } = false;
-
 		DrawingArea widget;
 		int currentWidth, currentHeight;
 		double lastX, lastY;
 		bool canMove, inButtonPress;
 		uint moveTimerID, hoverTimerID, lastButtonTime;
+
+		protected bool Disposed { get; private set; } = false;
 
 		public WidgetWrapper (DrawingArea widget)
 		{

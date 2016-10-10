@@ -51,15 +51,6 @@ namespace VAS.Drawing
 		{
 		}
 
-		protected override void Dispose (bool disposing)
-		{
-			if (Disposed)
-				return;
-
-			base.Dispose (disposing);
-			HighlightedObject?.Dispose ();
-		}
-
 		/// <summary>
 		/// Clears the objects.
 		/// </summary>

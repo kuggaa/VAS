@@ -27,9 +27,10 @@ namespace VAS.Drawing.CanvasObjects
 	{
 		public event CanvasHandler ClickedEvent;
 		public event RedrawHandler RedrawEvent;
-		protected bool Disposed { get; private set; } = false;
 		bool highlighted;
 		bool selected;
+
+		protected bool Disposed { get; private set; } = false;
 
 		protected CanvasObject ()
 		{

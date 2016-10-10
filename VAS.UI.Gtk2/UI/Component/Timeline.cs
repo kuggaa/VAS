@@ -52,6 +52,7 @@ namespace VAS.UI.Component
 		protected Project project;
 		protected IPlayerController player;
 		protected bool isTimeLineEvent;
+
 		protected bool Disposed { get; private set; } = false;
 
 		public Timeline ()

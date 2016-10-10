@@ -41,12 +41,11 @@ namespace VAS.Services.Controller
 		where TModel : BindableBase, ITemplate<TModel>, new()
 		where TViewModel : TemplateViewModel<TModel>, new()
 	{
-		protected bool Disposed { get; private set; } = false;
-
 		TemplatesManagerViewModel<TModel, TViewModel> viewModel;
 		ITemplateProvider<TModel> provider;
 		bool started;
 
+		protected bool Disposed { get; private set; } = false;
 
 		public void Dispose ()
 		{

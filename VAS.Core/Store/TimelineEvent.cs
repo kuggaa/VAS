@@ -40,6 +40,8 @@ namespace VAS.Core.Store
 		IStorage storage;
 		ObservableCollection<CameraConfig> camerasConfig;
 
+		protected bool Disposed { get; private set; } = false;
+
 		#region Constructors
 
 		public TimelineEvent ()
@@ -54,12 +56,23 @@ namespace VAS.Core.Store
 			Teams = new ObservableCollection<Team> ();
 		}
 
-		public virtual void Dispose ()
+		public void Dispose ()
 		{
+			Dispose (true);
+			GC.SuppressFinalize (this);
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (Disposed)
+				return;
+
 			Miniature?.Dispose ();
 			foreach (var drawing in Drawings) {
 				drawing.Miniature?.Dispose ();
 			}
+
+			Disposed = true;
 		}
 
 		#endregion

@@ -24,9 +24,10 @@ namespace VAS.Drawing.Cairo
 {
 	public class Surface : ISurface
 	{
-		protected bool Disposed { get; private set; } = false;
 		ImageSurface surface;
 		bool warnOnDispose;
+
+		protected bool Disposed { get; private set; } = false;
 
 		public Surface (int width, int height, Image image, bool warnOnDispose = true)
 		{
