@@ -56,6 +56,26 @@ namespace VAS.Core.MVVMC
 			private set;
 		}
 
+		/// <summary>
+		/// Selects the specified item from the list.
+		/// </summary>
+		/// <param name="item">The item to select.</param>
+		public void Select (VMChilds viewModel)
+		{
+			if (viewModel == null) {
+				return;
+			}
+
+			if (Selection.Count == 0) {
+				Selection.Add (viewModel);
+			} else if (Selection.Count == 1) {
+				Selection [0] = viewModel;
+			} else {
+				Selection.Clear ();
+				Selection.Add (viewModel);
+			}
+		}
+
 		public void SelectionReplace (IEnumerable<VMChilds> selection)
 		{
 			Selection.Replace (selection);
