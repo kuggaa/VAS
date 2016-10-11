@@ -159,6 +159,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\RangeObservableCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\NestedViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Plugins\IMultimediaBackend.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IDevice.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

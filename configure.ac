@@ -142,6 +142,7 @@ build/m4/Makefile
 build/Makefile
 
 libvas/Makefile
+system_uuid/Makefile
 
 Makefile
 

@@ -24,6 +24,7 @@ namespace VAS
 		public IDrawingToolkit DrawingToolkit;
 		public IDialogs Dialogs;
 		public IKeyboard Keyboard;
+		public IDevice Device;
 		public EventsBroker EventsBroker;
 		public StateController StateController;
 		public Registry DependencyRegistry;
