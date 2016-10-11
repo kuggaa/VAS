@@ -18,38 +18,40 @@
 using System;
 using System.Collections.Generic;
 using VAS.Core;
+using VAS.Core.Interfaces;
 using VAS.Core.Store;
+using VAS.Core.Store.Templates;
 
 namespace VAS.Core.Common
 {
-	public class DBLockedException: Exception
+	public class DBLockedException : Exception
 	{
 		public DBLockedException (Exception innerException) :
 			base (Catalog.GetString ("Database locked:" + innerException.Message),
-			      innerException)
+				  innerException)
 		{
 		}
 	}
 
-	public class UnknownDBErrorException: Exception
+	public class UnknownDBErrorException : Exception
 	{
 		public UnknownDBErrorException (Exception innerException) :
 			base (Catalog.GetString ("Unknown database error:" + innerException),
-			      innerException)
+				  innerException)
 		{
 		}
 	}
 
-	public class ProjectDeserializationException: Exception
+	public class ProjectDeserializationException : Exception
 	{
 		public ProjectDeserializationException (Exception innerException) :
 			base (Catalog.GetString ("Project loading failed:") + innerException,
-			      innerException)
+				  innerException)
 		{
 		}
 	}
 
-	public class ProjectNotFoundException: Exception
+	public class ProjectNotFoundException : Exception
 	{
 		public ProjectNotFoundException (string file) :
 			base (Catalog.GetString ("Project file not found:\n") + file)
@@ -57,7 +59,7 @@ namespace VAS.Core.Common
 		}
 	}
 
-	public class InvalidTemplateFilenameException: Exception
+	public class InvalidTemplateFilenameException : Exception
 	{
 		public InvalidTemplateFilenameException (List<char> invalidChars) :
 			base (Catalog.GetString ("The name contains invalid characters: ") + String.Join (" ", invalidChars))
@@ -65,7 +67,7 @@ namespace VAS.Core.Common
 		}
 	}
 
-	public class HotkeyAlreadyInUse: Exception
+	public class HotkeyAlreadyInUse : Exception
 	{
 		public HotkeyAlreadyInUse (HotKey hotkey) :
 			base (Catalog.GetString ("Hotkey already in use: ") + hotkey)
@@ -73,11 +75,11 @@ namespace VAS.Core.Common
 		}
 	}
 
-	public class TimerNotRunningException: Exception
+	public class TimerNotRunningException : Exception
 	{
 	}
 
-	public class AddinRequestShutdownException: Exception
+	public class AddinRequestShutdownException : Exception
 	{
 		public AddinRequestShutdownException (string reason) :
 			base (reason)
@@ -88,7 +90,7 @@ namespace VAS.Core.Common
 	/// <summary>
 	/// An exception thrown by an addin in its initialization if it can't be used for some reason
 	/// </summary>
-	public class AddinUnusableException: Exception
+	public class AddinUnusableException : Exception
 	{
 		public AddinUnusableException (string reason) :
 			base (reason)
@@ -96,28 +98,48 @@ namespace VAS.Core.Common
 		}
 	}
 
-	public class CircularDependencyException: Exception
+	public class CircularDependencyException : Exception
 	{
 	}
 
-	public class ImportException: Exception
+	public class ImportException : Exception
 	{
 		public ImportException (string reason) : base (reason)
 		{
 		}
 	}
 
-	public class InvalidQueryException: Exception
+	public class InvalidQueryException : Exception
 	{
 		public InvalidQueryException (string reason) : base (reason)
 		{
 		}
 	}
 
-	public class StorageException: Exception
+	public class StorageException : Exception
 	{
 		public StorageException (string reason) : base (reason)
 		{
+		}
+	}
+
+	public class TemplateNotFoundException<T> : Exception
+		where T : ITemplate
+	{
+		public TemplateNotFoundException (string name) :
+			base (GenerateMessage (name))
+		{
+		}
+
+		private static string GenerateMessage (string name)
+		{
+			if (typeof (T) == typeof (Team)) {
+				return Catalog.GetString ("Team not found:\n") + name;
+			} else if (typeof (T) == typeof (Dashboard)) {
+				return Catalog.GetString ("Dashboard not found:\n") + name;
+			} else {
+				return Catalog.GetString ("Template not found:\n") + name;
+			}
 		}
 	}
 }
