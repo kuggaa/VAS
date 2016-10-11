@@ -150,15 +150,19 @@ namespace VAS.Services.Controller
 			string msg = Catalog.GetString ("Do you really want to delete:") + "\n" + project.ShortDescription;
 			if (await App.Current.Dialogs.QuestionMessage (msg, null)) {
 				IBusyDialog busy = App.Current.Dialogs.BusyDialog (Catalog.GetString ("Deleting project..."), null);
+				bool success = true;
 				busy.ShowSync (() => {
 					try {
 						App.Current.DatabaseManager.ActiveDB.Delete<TModel> (project);
-						ViewModel.Model.Remove (project);
-						viewModel.Select (viewModel.Model.FirstOrDefault ());
 					} catch (StorageException ex) {
+						success = false;
 						App.Current.Dialogs.ErrorMessage (ex.Message);
 					}
 				});
+				if (success) {
+					ViewModel.Model.Remove (project);
+					viewModel.Select (viewModel.Model.FirstOrDefault ());
+				}
 			}
 		}
 
