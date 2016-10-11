@@ -24,6 +24,7 @@ using System.ComponentModel;
 using System.Linq;
 using Gtk;
 using VAS.Core.Interfaces.MVVMC;
+using Misc = VAS.UI.Helpers.Misc;
 
 namespace VAS.UI.Common
 {
@@ -219,9 +220,21 @@ namespace VAS.UI.Common
 
 		protected override bool OnButtonPressEvent (Gdk.EventButton evnt)
 		{
-			bool ret = base.OnButtonPressEvent (evnt);
-			if (evnt.Button == 3) { /* right button */
+			bool ret = true;
+			TreePath[] paths = Selection.GetSelectedRows ();
+
+			if (Misc.RightButtonClicked (evnt)) {
+				// We don't want to unselect the play when several
+				// plays are selected and we click the right button
+				// For multiedition
+				if (paths.Length <= 1) {
+					ret = base.OnButtonPressEvent (evnt);
+					paths = Selection.GetSelectedRows ();
+				}
+
 				ShowMenu ();
+			} else {
+				ret = base.OnButtonPressEvent (evnt);
 			}
 			return ret;
 		}
