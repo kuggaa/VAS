@@ -23,6 +23,7 @@ SUBDIRS = \
 	VAS.Multimedia \
 	VAS.Services \
 	libvas \
+	system_uuid \
 	po
 
 if ENABLE_TESTS
