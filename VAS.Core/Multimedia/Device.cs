@@ -1,49 +1,64 @@
-// 
-//  Copyright (C) 2011 Andoni Morales Alastruey
-// 
+//
+//  Copyright (C) 2010 Andoni Morales Alastruey
+//
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation; either version 2 of the License, or
 //  (at your option) any later version.
-// 
+//
 //  This program is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 //  GNU General Public License for more details.
-//  
+//
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
-// 
+//
+
+using System;
 using System.Collections.Generic;
-using VAS.Core.Multimedia;
-using VAS.Core.Store;
 
-namespace VAS.Core.Interfaces.Multimedia
+namespace VAS.Core.Multimedia
 {
-	public interface IMultimediaToolkit
+	public class Device
 	{
-		void Register <I, C> (int priority);
+		public Device ()
+		{
+			Formats = new List<VideoSourceFormat> ();
 
-		IPlayer GetPlayer ();
+		}
 
-		IMultiPlayer GetMultiPlayer ();
+		/// <summary>
+		/// Device id, can be a human friendly name (for DirectShow devices),
+		/// the de device name (/dev/video0) or the GUID (dv1394src)
+		/// </summary>
+		public string ID {
+			get;
+			set;
+		}
 
-		IVideoEditor GetVideoEditor ();
+		public CaptureSourceType DeviceType {
+			get;
+			set;
+		}
 
-		IFramesCapturer GetFramesCapturer ();
+		public string SourceElement {
+			get;
+			set;
+		}
 
-		IRemuxer GetRemuxer (MediaFile inputFile, string outputFile, VideoMuxerType muxer);
+		public List<VideoSourceFormat> Formats {
+			get;
+			set;
+		}
 
-		ICapturer GetCapturer ();
-
-		MediaFile DiscoverFile (string path, bool takeScreenshot = true);
-
-		List<Device> VideoDevices { get; }
-
-		bool FileNeedsRemux (MediaFile file);
-
-		string RemuxFile (MediaFile file, object parent);
+		public string Desc {
+			get {
+				return String.Format ("{0} ({1})", ID, SourceElement);
+			}
+		}
 	}
-}
 
+
+}

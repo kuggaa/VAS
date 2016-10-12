@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2010 Andoni Morales Alastruey
+//  Copyright (C) 2016 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -19,51 +19,10 @@
 using System;
 using System.Collections.Generic;
 
-namespace VAS.Core.Common
+namespace VAS.Core.Multimedia
 {
-	public class Device
-	{
-		public Device ()
-		{
-			Formats = new List<DeviceVideoFormat> ();
 
-		}
-
-		/// <summary>
-		/// Capture source type
-		/// </summary>
-		public CaptureSourceType DeviceType {
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// Device id, can be a human friendly name (for DirectShow devices),
-		/// the de device name (/dev/video0) or the GUID (dv1394src)
-		/// </summary>
-		public string ID {
-			get;
-			set;
-		}
-
-		public string SourceElement {
-			get;
-			set;
-		}
-
-		public List<DeviceVideoFormat> Formats {
-			get;
-			set;
-		}
-
-		public string Desc {
-			get {
-				return String.Format ("{0} ({1})", ID, SourceElement);
-			}
-		}
-	}
-
-	public struct DeviceVideoFormat
+	public struct VideoSourceFormat
 	{
 		public int width;
 		public int height;

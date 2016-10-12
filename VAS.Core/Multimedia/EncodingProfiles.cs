@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace VAS.Core.Common
+namespace VAS.Core.Multimedia
 {
 	[Serializable]
 	public class EncodingProfile
@@ -34,9 +34,9 @@ namespace VAS.Core.Common
 		}
 
 		public EncodingProfile (string name, string extension,
-		                        VideoEncoderType videoEncoder,
-		                        AudioEncoderType audioEncoder,
-		                        VideoMuxerType muxer)
+								VideoEncoderType videoEncoder,
+								AudioEncoderType audioEncoder,
+								VideoMuxerType muxer)
 		{
 			Name = name;
 			Extension = extension;
@@ -68,29 +68,29 @@ namespace VAS.Core.Common
 	public class EncodingProfiles
 	{
 		public static EncodingProfile WebM = new EncodingProfile ("WebM (VP8 + Vorbis)", "webm",
-			                                     VideoEncoderType.VP8,
-			                                     AudioEncoderType.Vorbis,
-			                                     VideoMuxerType.WebM);
-		                                                                     
+												 VideoEncoderType.VP8,
+												 AudioEncoderType.Vorbis,
+												 VideoMuxerType.WebM);
+
 		public static EncodingProfile Avi = new EncodingProfile ("AVI (Mpeg4 + MP3)", "avi",
-			                                    VideoEncoderType.Mpeg4,
-			                                    AudioEncoderType.Mp3,
-			                                    VideoMuxerType.Avi);
+												VideoEncoderType.Mpeg4,
+												AudioEncoderType.Mp3,
+												VideoMuxerType.Avi);
 
 		public static EncodingProfile MP4 = new EncodingProfile ("MP4 (H264 + AAC)", "mp4",
-			                                    VideoEncoderType.H264,
-			                                    AudioEncoderType.Aac,
-			                                    VideoMuxerType.Mp4);
-		                                                        
+												VideoEncoderType.H264,
+												AudioEncoderType.Aac,
+												VideoMuxerType.Mp4);
+
 		public static EncodingProfile MatroskaMpeg4 = new EncodingProfile ("Matroska (Mpeg4 + Vorbis)", "avi",
-			                                              VideoEncoderType.Mpeg4,
-			                                              AudioEncoderType.Vorbis,
-			                                              VideoMuxerType.Matroska);
+														  VideoEncoderType.Mpeg4,
+														  AudioEncoderType.Vorbis,
+														  VideoMuxerType.Matroska);
 
 		public static EncodingProfile MatroskaH264 = new EncodingProfile ("Matroska (H264 + AAC)", "mp4",
-			                                             VideoEncoderType.H264,
-			                                             AudioEncoderType.Aac,
-			                                             VideoMuxerType.Matroska);
+														 VideoEncoderType.H264,
+														 AudioEncoderType.Aac,
+														 VideoMuxerType.Matroska);
 
 		public static List<EncodingProfile> Capture {
 			get {

@@ -19,6 +19,7 @@
 //
 using VAS.Core.Common;
 using VAS.Core.Handlers;
+using VAS.Core.Multimedia;
 
 namespace VAS.Core.Interfaces.Multimedia
 {

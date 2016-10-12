@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Filters;
-using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.Multimedia;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using Image = VAS.Core.Common.Image;

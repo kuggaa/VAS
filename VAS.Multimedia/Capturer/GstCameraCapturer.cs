@@ -25,6 +25,7 @@ using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Handlers;
 using VAS.Multimedia.Capturer;
 using VAS.Multimedia.Common;
+using VAS.Core.Multimedia;
 
 namespace VAS.Multimedia.Capturer
 {

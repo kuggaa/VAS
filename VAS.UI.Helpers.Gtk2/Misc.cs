@@ -26,6 +26,7 @@ using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
+using VAS.Core.Multimedia;
 using VAS.Core.Store;
 using Color = Gdk.Color;
 using LColor = VAS.Core.Common.Color;

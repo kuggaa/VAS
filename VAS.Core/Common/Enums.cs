@@ -84,33 +84,6 @@ namespace VAS.Core.Common
 		Error,
 	}
 
-	public enum VideoEncoderType
-	{
-		Mpeg4,
-		Xvid,
-		Theora,
-		H264,
-		Mpeg2,
-		VP8,
-	}
-
-	public enum AudioEncoderType
-	{
-		Mp3,
-		Aac,
-		Vorbis,
-	}
-
-	public enum VideoMuxerType
-	{
-		Avi,
-		Mp4,
-		Matroska,
-		Ogg,
-		MpegPS,
-		WebM,
-	}
-
 	public enum DrawTool
 	{
 		None,
@@ -130,14 +103,6 @@ namespace VAS.Core.Common
 		Zoom,
 		CanMove,
 		Move,
-	}
-
-	public enum CaptureSourceType
-	{
-		None,
-		DV,
-		System,
-		URI,
 	}
 
 	public enum GameUnitEventType

@@ -21,6 +21,7 @@ using System;
 using System.Runtime.InteropServices;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Multimedia;
+using VAS.Core.Multimedia;
 using VAS.Multimedia.Common;
 using VASCore = VAS.Core.Handlers;
 

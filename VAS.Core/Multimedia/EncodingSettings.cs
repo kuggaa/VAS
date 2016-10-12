@@ -17,15 +17,15 @@
 // 
 using System;
 
-namespace VAS.Core.Common
+namespace VAS.Core.Multimedia
 {
 	[Serializable]
 	public struct EncodingSettings
 	{
 		public EncodingSettings (VideoStandard videoStandard, EncodingProfile encodingProfile,
-		                         EncodingQuality encodingQuality, uint fr_n, uint fr_d,
-		                         string outputFile, bool enableAudio, bool enableTitle,
-		                         uint titleSize)
+								 EncodingQuality encodingQuality, uint fr_n, uint fr_d,
+								 string outputFile, bool enableAudio, bool enableTitle,
+								 uint titleSize)
 		{
 			VideoStandard = videoStandard;
 			EncodingProfile = encodingProfile;
@@ -48,7 +48,7 @@ namespace VAS.Core.Common
 		public bool EnableAudio;
 		public bool EnableTitle;
 
-		
+
 		public static EncodingSettings DefaultRenderingSettings (string outputFilepath)
 		{
 			return new EncodingSettings (App.Current.Config.RenderVideoStandard,

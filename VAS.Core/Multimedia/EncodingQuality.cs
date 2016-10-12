@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace VAS.Core.Common
+namespace VAS.Core.Multimedia
 {
 	[Serializable]
 	public class EncodingQuality
@@ -43,7 +43,7 @@ namespace VAS.Core.Common
 			EncodingQuality q;
 			if (!(obj is EncodingQuality))
 				return false;
-			q = (EncodingQuality)obj;	
+			q = (EncodingQuality)obj;
 			return q.Name == Name &&
 			q.AudioQuality == AudioQuality &&
 			q.VideoQuality == VideoQuality;
@@ -76,9 +76,9 @@ namespace VAS.Core.Common
 			}
 		}
 
-		public static EncodingQuality[] Transcode {
+		public static EncodingQuality [] Transcode {
 			get {
-				return new EncodingQuality[] { Highest, High, Medium };
+				return new EncodingQuality [] { Highest, High, Medium };
 			}
 		}
 	}

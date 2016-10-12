@@ -18,6 +18,7 @@
 using System.Collections.Generic;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Multimedia;
+using VAS.Core.Multimedia;
 using VAS.Core.Store;
 
 namespace VAS.Core.Interfaces.GUI

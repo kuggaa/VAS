@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace VAS.Core.Common
+namespace VAS.Core.Multimedia
 {
 	[Serializable]
 	public class VideoStandard
@@ -91,9 +91,9 @@ namespace VAS.Core.Common
 			}
 		}
 
-		public static VideoStandard[] Transcode {
+		public static VideoStandard [] Transcode {
 			get {
-				return new VideoStandard[] {
+				return new VideoStandard [] {
 					VideoStandards.P1080,
 					VideoStandards.P720,
 					VideoStandards.P480,
@@ -101,6 +101,6 @@ namespace VAS.Core.Common
 			}
 		}
 	}
-	
+
 }
 

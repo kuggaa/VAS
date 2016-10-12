@@ -19,8 +19,8 @@
 //
 using System.IO;
 using VAS.Core;
-using VAS.Core.Common;
 using VAS.Core.Interfaces.Multimedia;
+using VAS.Core.Multimedia;
 using VAS.Core.Store;
 using VAS.Multimedia;
 using VAS.Multimedia.Utils;

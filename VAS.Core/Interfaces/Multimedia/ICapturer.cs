@@ -18,7 +18,7 @@
 //
 //
 using VAS.Core.Handlers;
-using VAS.Core.Common;
+using VAS.Core.Multimedia;
 using VAS.Core.Store;
 using Image = VAS.Core.Common.Image;
 

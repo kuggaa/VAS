@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using VAS.Core.Common;
+using VAS.Core.Multimedia;
 using VAS.Multimedia.Capturer;
 
 namespace VAS.Multimedia.Utils

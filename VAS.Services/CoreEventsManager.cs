@@ -29,6 +29,7 @@ using VAS.Core.Filters;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
+using VAS.Core.Multimedia;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Core.Store.Templates;

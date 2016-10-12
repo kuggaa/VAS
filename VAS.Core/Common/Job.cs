@@ -17,7 +17,7 @@
 // 
 using System;
 using System.Collections.Generic;
-using VAS.Core.Common;
+using VAS.Core.Multimedia;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 

@@ -15,10 +15,12 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Handlers;
 using VAS.Core.Interfaces.Multimedia;
+using VAS.Core.Multimedia;
 using VAS.Core.Store;
 using Image = VAS.Core.Common.Image;
 

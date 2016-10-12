@@ -1,5 +1,5 @@
-//
-//  Copyright (C) 2010 Andoni Morales Alastruey
+﻿//
+//  Copyright (C) 2016 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,14 +15,41 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-
-namespace VAS.Core.Common
+using System;
+namespace VAS.Core.Multimedia
 {
-	public struct CaptureSettings
+	public enum CaptureSourceType
 	{
-		public Device Device;
-		public DeviceVideoFormat Format;
-		public EncodingSettings EncodingSettings;
+		None,
+		DV,
+		System,
+		URI,
 	}
-	
+
+	public enum VideoEncoderType
+	{
+		Mpeg4,
+		Xvid,
+		Theora,
+		H264,
+		Mpeg2,
+		VP8,
+	}
+
+	public enum AudioEncoderType
+	{
+		Mp3,
+		Aac,
+		Vorbis,
+	}
+
+	public enum VideoMuxerType
+	{
+		Avi,
+		Mp4,
+		Matroska,
+		Ogg,
+		MpegPS,
+		WebM,
+	}
 }

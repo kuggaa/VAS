@@ -24,6 +24,7 @@ using VAS.Core.Events;
 using VAS.Core.Filters;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
+using VAS.Core.Multimedia;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;

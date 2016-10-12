@@ -10,15 +10,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Common\Area.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Common\CaptureSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Cloner.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Color.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\ConsoleCrayon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Constants.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Common\Device.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Common\EncodingProfiles.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Common\EncodingQuality.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Common\EncodingSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Enums.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Exceptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\ExtensionMethods.cs" />
@@ -29,7 +24,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\Registry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Seeker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Utils.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Common\VideoStandards.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Filters\QueryFilter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Handlers\Handlers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Handlers\Misc.cs" />
@@ -158,6 +152,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)Events\MobileEvents.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\RangeObservableCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\NestedViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Multimedia\VideoStandards.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Multimedia\Device.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Multimedia\EncodingProfiles.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Multimedia\EncodingQuality.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Multimedia\EncodingSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Multimedia\CaptureSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Multimedia\Enums.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Multimedia\VideoSourceFormat.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
@@ -175,6 +177,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)MVVMC\" />
     <Folder Include="$(MSBuildThisFileDirectory)Hotkeys\" />
     <Folder Include="$(MSBuildThisFileDirectory)Interfaces\Plugins\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Multimedia\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)VAS.Core.dll.config">
