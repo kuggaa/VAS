@@ -17,10 +17,10 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
@@ -97,6 +97,8 @@ namespace VAS.Services.Controller
 
 		protected string ConfirmDeleteText { get; set; }
 
+		protected string ConfirmDeleteListText { get; set; }
+
 		protected string CouldNotLoadText { get; set; }
 
 		protected string NotEditableText { get; set; }
@@ -139,6 +141,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Subscribe<CreateEvent<TModel>> (HandleNew);
 			App.Current.EventsBroker.Subscribe<DeleteEvent<TModel>> (HandleDelete);
 			App.Current.EventsBroker.Subscribe<ChangeNameEvent<TModel>> (HandleChangeName);
+			App.Current.EventsBroker.Subscribe<DeleteEvent<ObservableCollection<TModel>>> (HandleDeleteList);
 			started = true;
 		}
 
@@ -153,6 +156,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Unsubscribe<CreateEvent<TModel>> (HandleNew);
 			App.Current.EventsBroker.Unsubscribe<DeleteEvent<TModel>> (HandleDelete);
 			App.Current.EventsBroker.Unsubscribe<ChangeNameEvent<TModel>> (HandleChangeName);
+			App.Current.EventsBroker.Unsubscribe<DeleteEvent<ObservableCollection<TModel>>> (HandleDeleteList);
 			started = false;
 		}
 
@@ -284,9 +288,24 @@ namespace VAS.Services.Controller
 			TModel template = evt.Object;
 
 			if (template != null) {
-				string msg = ConfirmDeleteText + template.Name;
+				string msg = String.Format(ConfirmDeleteText, template.Name);
 				if (await App.Current.Dialogs.QuestionMessage (msg, null)) {
 					Provider.Delete (template);
+					viewModel.Select (viewModel.Model.FirstOrDefault ());
+				}
+			}
+		}
+
+		async void HandleDeleteList (DeleteEvent<ObservableCollection<TModel>> evt)
+		{
+			ObservableCollection<TModel> templates = evt.Object;
+
+			if (templates != null) {
+				string msg = ConfirmDeleteListText;
+				if (await App.Current.Dialogs.QuestionMessage (msg, null)) {
+					foreach (TModel template in templates) {
+						Provider.Delete (template);
+					}
 					viewModel.Select (viewModel.Model.FirstOrDefault ());
 				}
 			}
