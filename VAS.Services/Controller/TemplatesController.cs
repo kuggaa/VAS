@@ -283,7 +283,7 @@ namespace VAS.Services.Controller
 			ViewModel.Select (template);
 		}
 
-		async void HandleDelete (DeleteEvent<TModel> evt)
+		protected async virtual void HandleDelete (DeleteEvent<TModel> evt)
 		{
 			TModel template = evt.Object;
 
@@ -296,7 +296,7 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		async void HandleDeleteList (DeleteEvent<ObservableCollection<TModel>> evt)
+		protected async virtual void HandleDeleteList (DeleteEvent<ObservableCollection<TModel>> evt)
 		{
 			ObservableCollection<TModel> templates = evt.Object;
 
