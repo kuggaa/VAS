@@ -36,6 +36,9 @@ namespace VAS.Services.ViewModel
 			get {
 				return Model?.Name;
 			}
+			set {
+				Model.Name = value;
+			}
 		}
 
 		/// <summary>

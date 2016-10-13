@@ -238,7 +238,7 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		async void HandleNew (CreateEvent<TModel> evt)
+		protected async virtual void HandleNew (CreateEvent<TModel> evt)
 		{
 			TModel template, templateToDelete;
 
