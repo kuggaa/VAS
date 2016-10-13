@@ -23,7 +23,7 @@ namespace VAS.Core.Interfaces.Multimedia
 {
 	public interface IMultimediaToolkit
 	{
-		void Register <I, C> (int priority);
+		void Register<I, C> (int priority);
 
 		IPlayer GetPlayer ();
 

@@ -41,15 +41,15 @@ namespace VAS.Multimedia.Utils
 
 		[DllImport ("libcesarplayer.dll")]
 		static extern IntPtr lgm_device_video_format_get_info (IntPtr raw, out int width, out int height,
-		                                                       out int fps_n, out int fps_d);
+															   out int fps_n, out int fps_d);
 
-		static readonly string[] devices_osx = new string[2] { "avfvideosrc", "decklinkvideosrc" };
-		static readonly string[] devices_win = new string[2] { "ksvideosrc", "dshowvideosrc" };
-		static readonly string[] devices_lin = new string[2] { "v4l2src", "dv1394src" };
+		static readonly string [] devices_osx = new string [2] { "avfvideosrc", "decklinkvideosrc" };
+		static readonly string [] devices_win = new string [2] { "ksvideosrc", "dshowvideosrc" };
+		static readonly string [] devices_lin = new string [2] { "v4l2src", "dv1394src" };
 
 		static public List<Device> ListVideoDevices ()
 		{
-			string[] devices;
+			string [] devices;
 			if (VAS.Core.Common.Utils.OS == OperatingSystemID.OSX)
 				devices = devices_osx;
 			else if (VAS.Core.Common.Utils.OS == OperatingSystemID.Windows)
@@ -61,7 +61,7 @@ namespace VAS.Multimedia.Utils
 
 			foreach (string source in devices) {
 				GLib.List devices_raw = new GLib.List (lgm_device_enum_video_devices (source),
-					                        typeof(IntPtr), true, false);
+											typeof (IntPtr), true, false);
 
 				foreach (IntPtr device_raw in devices_raw) {
 					string deviceName = GLib.Marshaller.PtrToStringGFree (lgm_device_get_device_name (device_raw));
@@ -69,7 +69,7 @@ namespace VAS.Multimedia.Utils
 					 * BlackMagic DeckLink cards, so filter them out. They are also
 					 * available through the ksvideosrc element. */
 					if (source == "dshowvideosrc" &&
-					    Regex.Match (deviceName, ".*blackmagic.*|.*decklink.*", RegexOptions.IgnoreCase).Success) {
+						Regex.Match (deviceName, ".*blackmagic.*|.*decklink.*", RegexOptions.IgnoreCase).Success) {
 						continue;
 					}
 
@@ -79,9 +79,9 @@ namespace VAS.Multimedia.Utils
 					device.ID = deviceName;
 
 					GLib.List formats_raw = new GLib.List (lgm_device_get_formats (device_raw),
-						                        typeof(IntPtr), false, false);
+												typeof (IntPtr), false, false);
 					foreach (IntPtr format_raw in formats_raw) {
-						DeviceVideoFormat format = new DeviceVideoFormat ();
+						VideoSourceFormat format = new VideoSourceFormat ();
 						lgm_device_video_format_get_info (format_raw, out format.width, out format.height,
 							out format.fps_n, out format.fps_d);
 						device.Formats.Add (format);

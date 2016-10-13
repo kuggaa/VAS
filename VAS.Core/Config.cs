@@ -25,7 +25,7 @@ using VAS.Core.Serialization;
 namespace VAS
 {
 	[Serializable]
-	[JsonConverter (typeof(VASConverter))]
+	[JsonConverter (typeof (VASConverter))]
 	public abstract class Config : BindableBase
 	{
 		public void Save ()

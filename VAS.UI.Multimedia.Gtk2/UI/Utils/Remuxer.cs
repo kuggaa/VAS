@@ -40,11 +40,11 @@ namespace VAS.Video.Utils
 		protected Window parent;
 
 		public Remuxer (MediaFile inputFile, string outputFilepath = null,
-		                VideoMuxerType muxer = VideoMuxerType.Mp4)
+						VideoMuxerType muxer = VideoMuxerType.Mp4)
 		{
 			this.inputFile = inputFile;
 			this.muxer = muxer;
-			
+
 			if (outputFilepath != null) {
 				this.outputFilepath = outputFilepath;
 			} else {
@@ -64,15 +64,15 @@ namespace VAS.Video.Utils
 			VBox box;
 			Label label;
 			Button cancellButton;
-			
+
 			this.parent = parent;
-			
+
 			/* Create the dialog */
 			dialog = new Dialog (Catalog.GetString ("Remuxing file..."), parent, DialogFlags.Modal);
 			dialog.AllowGrow = false;
 			dialog.AllowShrink = false;
 			dialog.Deletable = false;
-			
+
 			/* Add label and progress bar */
 			box = new VBox ();
 			label = new Label (Catalog.GetString ("Remuxing file, this might take a while..."));
@@ -81,22 +81,22 @@ namespace VAS.Video.Utils
 			box.PackStart (pb);
 			box.ShowAll ();
 			dialog.VBox.Add (box);
-			
+
 			/* Add a button to cancell the task */
 			cancellButton = new Button ("gtk-cancel");
-			cancellButton.Clicked += (sender, e) => Cancel (); 
+			cancellButton.Clicked += (sender, e) => Cancel ();
 			cancellButton.Show ();
 			dialog.VBox.Add (cancellButton);
-			
-			/* Add a timeout to refresh the progress bar */ 
+
+			/* Add a timeout to refresh the progress bar */
 			pb.Pulse ();
 			timeout = GLib.Timeout.Add (1000, new GLib.TimeoutHandler (Update));
-			
+
 			remuxer = multimedia.GetRemuxer (inputFile, outputFilepath, muxer);
 			remuxer.Progress += HandleRemuxerProgress;
 			remuxer.Error += HandleRemuxerError;
 			remuxer.Start ();
-			
+
 			/* Wait until the thread call Destroy on the dialog */
 			dialog.Run ();
 			if (cancelled) {
@@ -112,8 +112,8 @@ namespace VAS.Video.Utils
 		protected virtual void Error (string error)
 		{
 			MessageDialog md = new MessageDialog (parent, DialogFlags.Modal, MessageType.Error,
-				                   ButtonsType.Ok,
-				                   Catalog.GetString ("Error remuxing file:" + "\n" + error));
+								   ButtonsType.Ok,
+								   Catalog.GetString ("Error remuxing file:" + "\n" + error));
 			md.Run ();
 			md.Destroy ();
 			Cancel ();
@@ -156,7 +156,7 @@ namespace VAS.Video.Utils
 
 		protected virtual bool Update ()
 		{
-			pb.Pulse ();			
+			pb.Pulse ();
 			return true;
 		}
 
@@ -176,14 +176,14 @@ namespace VAS.Video.Utils
 		{
 			bool ret;
 			MessageDialog md = new MessageDialog (parent, DialogFlags.Modal, MessageType.Question,
-				                   ButtonsType.YesNo,
-				                   Catalog.GetString ("The file you are trying to load is not properly " +
-				                   "supported. Would you like to convert it into a more suitable " +
-				                   "format?"));
+								   ButtonsType.YesNo,
+								   Catalog.GetString ("The file you are trying to load is not properly " +
+								   "supported. Would you like to convert it into a more suitable " +
+								   "format?"));
 			md.TransientFor = parent;
 			ret = md.Run () == (int)ResponseType.Yes;
 			md.Destroy ();
-			
+
 			return ret;
 		}
 	}

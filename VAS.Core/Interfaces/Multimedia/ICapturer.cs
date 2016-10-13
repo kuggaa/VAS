@@ -35,7 +35,7 @@ namespace VAS.Core.Interfaces.Multimedia
 		void Configure (CaptureSettings settings, object window_handle);
 
 		Time CurrentTime {
-			get ;
+			get;
 		}
 
 		Image CurrentFrame {

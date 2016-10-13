@@ -43,9 +43,9 @@ namespace VAS.Video
 			}
 
 			string outputFile = App.Current.Dialogs.SaveFile (Catalog.GetString ("Output file"),
-				                    Path.ChangeExtension (file.FilePath, ext),
-				                    Path.GetDirectoryName (file.FilePath),
-				                    ext_desc, new string[] { ext });
+									Path.ChangeExtension (file.FilePath, ext),
+									Path.GetDirectoryName (file.FilePath),
+									ext_desc, new string [] { ext });
 			outputFile = Path.ChangeExtension (outputFile, ext);
 			Utils.Remuxer remuxer = new Utils.Remuxer (file, outputFile, muxType);
 			return remuxer.Remux (window as Gtk.Window);

@@ -39,18 +39,18 @@ namespace VAS.Multimedia.Editor
 
 		public unsafe GstVideoSplitter () : base (IntPtr.Zero)
 		{
-			if (GetType () != typeof(GstVideoSplitter)) {
+			if (GetType () != typeof (GstVideoSplitter)) {
 				throw new InvalidOperationException ("Can't override this constructor.");
 			}
 			IntPtr error = IntPtr.Zero;
 			Raw = gst_video_editor_new (out error);
 			if (error != IntPtr.Zero)
 				throw new GLib.GException (error);
-			PercentCompleted += delegate(object o, PercentCompletedArgs args) {
+			PercentCompleted += delegate (object o, PercentCompletedArgs args) {
 				if (Progress != null)
 					Progress (args.Percent);
 			};
-			InternalError += delegate(object o, ErrorArgs args) {
+			InternalError += delegate (object o, ErrorArgs args) {
 				if (Error != null)
 					Error (this, args.Message);
 			};
@@ -58,9 +58,9 @@ namespace VAS.Multimedia.Editor
 
 		#region GSignals
 
-		#pragma warning disable 0169
+#pragma warning disable 0169
 		[GLib.CDeclCallback]
-		delegate void ErrorVMDelegate (IntPtr gvc,IntPtr message);
+		delegate void ErrorVMDelegate (IntPtr gvc, IntPtr message);
 
 		static ErrorVMDelegate ErrorVMCallback;
 
@@ -81,12 +81,12 @@ namespace VAS.Multimedia.Editor
 			OverrideVirtualMethod (gtype, "error", ErrorVMCallback);
 		}
 
-		[GLib.DefaultSignalHandler (Type = typeof(GstVideoSplitter), ConnectionMethod = "OverrideError")]
+		[GLib.DefaultSignalHandler (Type = typeof (GstVideoSplitter), ConnectionMethod = "OverrideError")]
 		protected virtual void OnError (string message)
 		{
 			GLib.Value ret = GLib.Value.Empty;
 			GLib.ValueArray inst_and_params = new GLib.ValueArray (2);
-			GLib.Value[] vals = new GLib.Value [2];
+			GLib.Value [] vals = new GLib.Value [2];
 			vals [0] = new GLib.Value (this);
 			inst_and_params.Append (vals [0]);
 			vals [1] = new GLib.Value (message);
@@ -99,17 +99,17 @@ namespace VAS.Multimedia.Editor
 		[GLib.Signal ("error")]
 		public event GlibErrorHandler InternalError {
 			add {
-				GLib.Signal sig = GLib.Signal.Lookup (this, "error", typeof(ErrorArgs));
+				GLib.Signal sig = GLib.Signal.Lookup (this, "error", typeof (ErrorArgs));
 				sig.AddDelegate (value);
 			}
 			remove {
-				GLib.Signal sig = GLib.Signal.Lookup (this, "error", typeof(ErrorArgs));
+				GLib.Signal sig = GLib.Signal.Lookup (this, "error", typeof (ErrorArgs));
 				sig.RemoveDelegate (value);
 			}
 		}
 
 		[UnmanagedFunctionPointer (CallingConvention.Cdecl)]
-		delegate void PercentCompletedVMDelegate (IntPtr gvc,float percent);
+		delegate void PercentCompletedVMDelegate (IntPtr gvc, float percent);
 
 		static PercentCompletedVMDelegate PercentCompletedVMCallback;
 
@@ -130,12 +130,12 @@ namespace VAS.Multimedia.Editor
 			OverrideVirtualMethod (gtype, "percent_completed", PercentCompletedVMCallback);
 		}
 
-		[GLib.DefaultSignalHandler (Type = typeof(GstVideoSplitter), ConnectionMethod = "OverridePercentCompleted")]
+		[GLib.DefaultSignalHandler (Type = typeof (GstVideoSplitter), ConnectionMethod = "OverridePercentCompleted")]
 		protected virtual void OnPercentCompleted (float percent)
 		{
 			GLib.Value ret = GLib.Value.Empty;
 			GLib.ValueArray inst_and_params = new GLib.ValueArray (2);
-			GLib.Value[] vals = new GLib.Value [2];
+			GLib.Value [] vals = new GLib.Value [2];
 			vals [0] = new GLib.Value (this);
 			inst_and_params.Append (vals [0]);
 			vals [1] = new GLib.Value (percent);
@@ -148,15 +148,15 @@ namespace VAS.Multimedia.Editor
 		[GLib.Signal ("percent_completed")]
 		public event GlibPercentCompletedHandler PercentCompleted {
 			add {
-				GLib.Signal sig = GLib.Signal.Lookup (this, "percent_completed", typeof(PercentCompletedArgs));
+				GLib.Signal sig = GLib.Signal.Lookup (this, "percent_completed", typeof (PercentCompletedArgs));
 				sig.AddDelegate (value);
 			}
 			remove {
-				GLib.Signal sig = GLib.Signal.Lookup (this, "percent_completed", typeof(PercentCompletedArgs));
+				GLib.Signal sig = GLib.Signal.Lookup (this, "percent_completed", typeof (PercentCompletedArgs));
 				sig.RemoveDelegate (value);
 			}
 		}
-		#pragma warning disable 0169
+#pragma warning disable 0169
 		#endregion
 
 		#region Public Methods
@@ -182,7 +182,7 @@ namespace VAS.Multimedia.Editor
 
 		[DllImport ("libcesarplayer.dll")]
 		static extern void gst_video_editor_add_segment (IntPtr raw, string file_path, long start, long duration, double rate, IntPtr title, bool hasAudio,
-		                                                 uint roi_x, uint roi_y, uint roi_w, uint roi_h);
+														 uint roi_x, uint roi_y, uint roi_w, uint roi_h);
 
 		public void AddSegment (string filePath, long start, long duration, double rate, string title, bool hasAudio, Area roi)
 		{
@@ -191,7 +191,7 @@ namespace VAS.Multimedia.Editor
 
 		[DllImport ("libcesarplayer.dll")]
 		static extern void gst_video_editor_add_image_segment (IntPtr raw, string file_path, long start, long duration, IntPtr title,
-		                                                       uint roi_x, uint roi_y, uint roi_w, uint roi_h);
+															   uint roi_x, uint roi_y, uint roi_w, uint roi_h);
 
 		public void AddImageSegment (string filePath, long start, long duration, string title, Area roi)
 		{
@@ -230,18 +230,18 @@ namespace VAS.Multimedia.Editor
 
 		[DllImport ("libcesarplayer.dll")]
 		static extern bool gst_video_editor_set_encoding_format (IntPtr raw,
-		                                                         string output_file,
-		                                                         VideoEncoderType video_codec,
-		                                                         AudioEncoderType audio_codec,
-		                                                         VideoMuxerType muxer,
-		                                                         uint video_quality,
-		                                                         uint audio_quality,
-		                                                         uint width,
-		                                                         uint height,
-		                                                         uint fps_n,
-		                                                         uint fps_d,
-		                                                         bool enable_audio,
-		                                                         bool enable_video);
+																 string output_file,
+																 VideoEncoderType video_codec,
+																 AudioEncoderType audio_codec,
+																 VideoMuxerType muxer,
+																 uint video_quality,
+																 uint audio_quality,
+																 uint width,
+																 uint height,
+																 uint fps_n,
+																 uint fps_d,
+																 bool enable_audio,
+																 bool enable_video);
 
 		public EncodingSettings EncodingSettings {
 			set {

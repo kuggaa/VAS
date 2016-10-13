@@ -47,7 +47,7 @@ namespace VAS.Multimedia
 			Register<IDiscoverer, GstDiscoverer> (0);
 		}
 
-		public void Register <I, C> (int priority)
+		public void Register<I, C> (int priority)
 		{
 			registry.Register<I, C> (priority);
 		}

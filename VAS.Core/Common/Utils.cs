@@ -26,7 +26,7 @@ namespace VAS.Core.Common
 		static Random randomGen;
 		static OperatingSystemID operatingSystem = OperatingSystemID.None;
 
-		public static string SanitizePath (string path, params char[] replaceChars)
+		public static string SanitizePath (string path, params char [] replaceChars)
 		{
 			path = path.Trim ();
 			foreach (char c in Path.GetInvalidFileNameChars ()) {
@@ -55,11 +55,11 @@ namespace VAS.Core.Common
 		public static OperatingSystemID OS {
 			get {
 				if (operatingSystem == OperatingSystemID.None) {
-					#if OSTYPE_ANDROID
+#if OSTYPE_ANDROID
 					operatingSystem = OperatingSystemID.Android;
-					#elif OSTYPE_IOS
+#elif OSTYPE_IOS
 					operatingSystem = OperatingSystemID.iOS;
-					#else
+#else
 					switch (Environment.OSVersion.Platform) {
 					case PlatformID.MacOSX:
 						operatingSystem = OperatingSystemID.OSX;
@@ -67,9 +67,9 @@ namespace VAS.Core.Common
 					case PlatformID.Unix:
 						// OS X is detetected as a Unix system and needs an extra check using the filesystem layout
 						if (Directory.Exists ("/Applications")
-						    & Directory.Exists ("/System")
-						    & Directory.Exists ("/Users")
-						    & Directory.Exists ("/Volumes")) {
+							& Directory.Exists ("/System")
+							& Directory.Exists ("/Users")
+							& Directory.Exists ("/Volumes")) {
 							operatingSystem = OperatingSystemID.OSX;
 						} else {
 							operatingSystem = OperatingSystemID.Linux;
@@ -81,7 +81,7 @@ namespace VAS.Core.Common
 					default:
 						throw new NotSupportedException ();
 					}
-					#endif
+#endif
 				}
 				return operatingSystem;
 			}

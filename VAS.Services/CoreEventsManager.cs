@@ -164,12 +164,12 @@ namespace VAS.Services
 					auxFramesCapturer.Open (file.FilePath);
 					Time offset = openedProject.FileSet [e.CamConfig.Index].Offset;
 					pixbuf = auxFramesCapturer.GetFrame (pos + offset, true,
-					                                     (int) file.DisplayVideoWidth, (int) file.DisplayVideoHeight);
+														 (int)file.DisplayVideoWidth, (int)file.DisplayVideoHeight);
 					auxFramesCapturer.Dispose ();
 				} else {
 					MediaFile file = openedProject.FileSet.First ();
 					pixbuf = framesCapturer.GetFrame (pos + file.Offset, true,
-					                                  (int) file.DisplayVideoWidth, (int) file.DisplayVideoHeight);
+													  (int)file.DisplayVideoWidth, (int)file.DisplayVideoHeight);
 				}
 			} else {
 				pixbuf = player.CurrentFrame;
@@ -189,7 +189,7 @@ namespace VAS.Services
 			string outputDir, outputProjectDir, outputFile;
 
 			if (App.Current.Config.AutoRenderDir == null ||
-			    !Directory.Exists (App.Current.Config.AutoRenderDir)) {
+				!Directory.Exists (App.Current.Config.AutoRenderDir)) {
 				outputDir = App.Current.VideosDir;
 			} else {
 				outputDir = App.Current.Config.AutoRenderDir;
@@ -221,7 +221,7 @@ namespace VAS.Services
 
 			/* Get the current frame and get a thumbnail from it */
 			if (projectType == ProjectType.CaptureProject ||
-			    projectType == ProjectType.URICaptureProject) {
+				projectType == ProjectType.URICaptureProject) {
 				frame = capturer.CurrentCaptureFrame;
 			} else if (projectType == ProjectType.FileProject) {
 				frame = framesCapturer.GetFrame (tagtime, true, Constants.MAX_THUMBNAIL_SIZE,
@@ -249,14 +249,14 @@ namespace VAS.Services
 					TimelineEvent = play
 				}
 			);
-			
+
 			if (projectType == ProjectType.FileProject) {
 				player.Play ();
 			}
 			Save (openedProject);
 
 			if (projectType == ProjectType.CaptureProject ||
-			    projectType == ProjectType.URICaptureProject) {
+				projectType == ProjectType.URICaptureProject) {
 				if (App.Current.Config.AutoRenderPlaysInLive) {
 					RenderPlay (openedProject, play);
 				}
@@ -269,8 +269,8 @@ namespace VAS.Services
 				return;
 
 			if (projectType == ProjectType.CaptureProject ||
-			    projectType == ProjectType.URICaptureProject ||
-			    projectType == ProjectType.FakeCaptureProject) {
+				projectType == ProjectType.URICaptureProject ||
+				projectType == ProjectType.FakeCaptureProject) {
 				if (!capturer.Capturing) {
 					App.Current.Dialogs.WarningMessage (Catalog.GetString ("Video capture is stopped"));
 					return;
@@ -361,8 +361,8 @@ namespace VAS.Services
 				Log.Error ("Player not set, new event will not be created");
 				return;
 			} else if (projectType == ProjectType.CaptureProject ||
-			           projectType == ProjectType.URICaptureProject ||
-			           projectType == ProjectType.FakeCaptureProject) {
+					   projectType == ProjectType.URICaptureProject ||
+					   projectType == ProjectType.FakeCaptureProject) {
 				if (!capturer.Capturing) {
 					App.Current.Dialogs.WarningMessage (Catalog.GetString ("Video capture is stopped"));
 					return;
@@ -416,7 +416,7 @@ namespace VAS.Services
 			App.Current.EventsBroker.Subscribe<DashboardEditedEvent> (HandleDashboardEditedEvent);
 
 			App.Current.EventsBroker.Subscribe<TagSubcategoriesChangedEvent> (HandleTagSubcategoriesChangedEvent);
-			App.Current.EventsBroker.Subscribe <DetachEvent> (HandleDetach);
+			App.Current.EventsBroker.Subscribe<DetachEvent> (HandleDetach);
 			App.Current.EventsBroker.Subscribe<ShowFullScreenEvent> (HandleShowFullScreenEvent);
 			return true;
 		}
@@ -439,7 +439,7 @@ namespace VAS.Services
 			App.Current.EventsBroker.Unsubscribe<DashboardEditedEvent> (HandleDashboardEditedEvent);
 
 			App.Current.EventsBroker.Unsubscribe<TagSubcategoriesChangedEvent> (HandleTagSubcategoriesChangedEvent);
-			App.Current.EventsBroker.Unsubscribe <DetachEvent> (HandleDetach);
+			App.Current.EventsBroker.Unsubscribe<DetachEvent> (HandleDetach);
 			App.Current.EventsBroker.Unsubscribe<ShowFullScreenEvent> (HandleShowFullScreenEvent);
 			return true;
 		}

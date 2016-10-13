@@ -39,7 +39,7 @@ namespace VAS.Multimedia.Capturer
 		public FakeCapturer ()
 		{
 			timer = new LiveSourceTimer ();
-			timer.ElapsedTime += delegate(Time ellapsedTime) {
+			timer.ElapsedTime += delegate (Time ellapsedTime) {
 				if (ElapsedTime != null)
 					ElapsedTime (ellapsedTime);
 			};
@@ -48,6 +48,12 @@ namespace VAS.Multimedia.Capturer
 		public Time CurrentTime {
 			get {
 				return new Time (timer.CurrentTime);
+			}
+		}
+
+		public Image CurrentFrame {
+			get {
+				return null;
 			}
 		}
 
@@ -81,74 +87,6 @@ namespace VAS.Multimedia.Capturer
 		public void TogglePause ()
 		{
 			timer.TogglePause ();
-		}
-
-		public uint OutputWidth {
-			get {
-				return 0;
-			}
-			set { }
-		}
-
-		public uint OutputHeight {
-			get {
-				return 0;
-			}
-			set { }
-		}
-
-		public string OutputFile {
-			get {
-				return Catalog.GetString ("Fake live source");
-			}
-			set { }
-		}
-
-		public uint VideoQuality {
-			get {
-				return 0;
-			}
-			set { }
-		}
-
-		public uint AudioQuality {
-			get {
-				return 0;
-			}
-			set { }
-		}
-
-		public Image CurrentFrame {
-			get {
-				return null;
-			}
-		}
-
-		public string DeviceID {
-			get {
-				return "";
-			}
-			set { }
-		}
-
-		public bool SetVideoEncoder (VideoEncoderType type)
-		{
-			return true;
-		}
-
-		public bool SetAudioEncoder (AudioEncoderType type)
-		{
-			return true;
-		}
-
-		public bool SetVideoMuxer (VideoMuxerType type)
-		{
-			return true;
-		}
-
-		public bool SetSource (CaptureSourceType type, string sourceElement)
-		{
-			return true;
 		}
 
 		public void Expose ()

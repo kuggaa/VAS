@@ -67,7 +67,7 @@ namespace VAS.Core.Common
 		}
 	}
 
-	public class EditionJob: Job
+	public class EditionJob : Job
 	{
 		public EditionJob (Playlist playlist, EncodingSettings encSettings) : base (encSettings)
 		{
@@ -80,7 +80,7 @@ namespace VAS.Core.Common
 		}
 	}
 
-	public class ConversionJob: Job
+	public class ConversionJob : Job
 	{
 		public ConversionJob (List<MediaFile> files, EncodingSettings encSettings) : base (encSettings)
 		{
