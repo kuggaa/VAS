@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using VAS.Core;
 using VAS.Core.Common;
@@ -180,7 +180,14 @@ namespace VAS
 		{
 			Assembly assembly = Assembly.GetExecutingAssembly ();
 			Current.Version = assembly.GetName ().Version;
-			Current.BuildVersion = FileVersionInfo.GetVersionInfo (assembly.Location).ProductVersion;
+			var attribute = Assembly.GetExecutingAssembly ().
+									GetCustomAttributes (typeof (AssemblyInformationalVersionAttribute), false).
+									FirstOrDefault ();
+			if (attribute != null) {
+				Current.BuildVersion = (attribute as AssemblyInformationalVersionAttribute).InformationalVersion;
+			} else {
+				Current.BuildVersion = Current.Version.ToString ();
+			}
 		}
 
 		public Config Config {
