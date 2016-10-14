@@ -15,8 +15,10 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
+
+using System.Linq;
 using VAS.Core.Common;
+using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
@@ -52,12 +54,12 @@ namespace VAS.Services.ViewModel
 		}
 
 		/// <summary>
-		/// Gets the total events inside this EventType
+		/// Gets the total visible events inside this EventType
 		/// </summary>
-		/// <value>The total events.</value>
-		public int TotalEvents {
+		/// <value>The visible events.</value>
+		public int VisibleEvents {
 			get {
-				return ViewModels.Count;
+				return ViewModels.OfType<IVisible> ().Count (vm => vm.Visible);
 			}
 		}
 
