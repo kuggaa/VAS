@@ -199,16 +199,7 @@ namespace VAS.Core
 			}
 
 			try {
-				if (!await EmptyStateStack ()) {
-					return false;
-				}
-				if (!await home.ScreenState.PreTransition (null)) {
-					return false;
-				}
-				if (!await App.Current.Navigation.Push (home.ScreenState.Panel)) {
-					return false;
-				}
-				App.Current.EventsBroker.Publish (new NavigationEvent { Name = home.Name });
+				await MoveTo (home.Name, null, true);
 				return true;
 			} catch (Exception ex) {
 				Log.Exception (ex);
