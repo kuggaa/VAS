@@ -169,6 +169,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\RegistryScanner.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IPredicate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Filters\Predicate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IVisible.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
