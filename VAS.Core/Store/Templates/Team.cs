@@ -118,7 +118,12 @@ namespace VAS.Core.Store.Templates
 			set;
 		}
 
-		protected bool Disposed { get; private set; } = false;
+		[JsonIgnore]
+		[PropertyChanged.DoNotNotify]
+		protected bool Disposed {
+			get;
+			private set;
+		}
 
 		/// <summary>
 		/// Creates a deep copy of this team with new ID's for each player
