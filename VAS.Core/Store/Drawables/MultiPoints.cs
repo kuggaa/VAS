@@ -97,7 +97,7 @@ namespace VAS.Core.Store.Drawables
 			}
 
 			px = Points.OrderBy (p => p.X).ToList ();
-			py = Points.OrderBy (p => p.X).ToList ();
+			py = Points.OrderBy (p => p.Y).ToList ();
 			xmin = px [0].X;
 			xmax = px [px.Count - 1].X;
 			ymin = py [0].Y;
