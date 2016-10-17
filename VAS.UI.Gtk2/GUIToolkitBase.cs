@@ -93,9 +93,6 @@ namespace VAS.UI
 		public abstract Task EditPlay (TimelineEvent play, Project project, bool editTags, bool editPos, bool editPlayers,
 									   bool editNotes);
 
-		public abstract void DrawingTool (Image image, TimelineEvent play, FrameDrawing drawing,
-										  CameraConfig camConfig, Project project);
-
 		public abstract Project ChooseProject (List<Project> projects);
 
 		public abstract void OpenDatabasesManager ();

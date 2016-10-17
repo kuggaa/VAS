@@ -63,8 +63,6 @@ namespace VAS.Core.Interfaces.GUI
 
 		Task EditPlay (TimelineEvent play, Project project, bool editTags, bool editPositions, bool editPlayers, bool editNotes);
 
-		void DrawingTool (Image pixbuf, TimelineEvent play, FrameDrawing drawing, CameraConfig config, Project project);
-
 		string RemuxFile (string filePath, string outputFile, VideoMuxerType muxer);
 
 		EndCaptureResponse EndCapture (bool isCapturing);
