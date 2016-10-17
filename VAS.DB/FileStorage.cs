@@ -8,7 +8,7 @@ using VAS.Core.Serialization;
 
 namespace VAS.DB
 {
-	public static class FileStorage
+	public class FileStorage
 	{
 		/// <summary>
 		/// Retrieves an object of type T from a file path
@@ -16,7 +16,7 @@ namespace VAS.DB
 		/// <returns>The object found.</returns>
 		/// <param name="from">The file path to retrieve the object from</param>
 		/// <typeparam name="T">The type of the object.</typeparam>
-		public static T RetrieveFrom<T> (string from) where T : IStorable
+		public T RetrieveFrom<T> (string from) where T : IStorable
 		{
 			Log.Information ("Loading " + from);
 			T storable = Serializer.Instance.LoadSafe<T> (from);
@@ -30,7 +30,7 @@ namespace VAS.DB
 		/// <returns>The object found.</returns>
 		/// <param name="from">The Stream to retrieve the object from</param>
 		/// <typeparam name="T">The type of the object.</typeparam>
-		public static T RetrieveFrom<T> (Stream from) where T : IStorable
+		public T RetrieveFrom<T> (Stream from) where T : IStorable
 		{
 			T storable = Serializer.Instance.Load<T> (from);
 			MigrateStorable (storable);
@@ -43,7 +43,7 @@ namespace VAS.DB
 		/// <param name="t">The object to store</param>
 		/// <param name="at">The filename to store the object</param>
 		/// <typeparam name="T">The type of the object.</typeparam>
-		public static void StoreAt<T> (T t, string at) where T : IStorable
+		public void StoreAt<T> (T t, string at) where T : IStorable
 		{
 			Log.Information ("Saving " + t.ID.ToString () + " to " + at);
 
@@ -59,7 +59,7 @@ namespace VAS.DB
 			Serializer.Instance.Save<T> ((T)t, at);
 		}
 
-		static void MigrateStorable (IStorable storable)
+		protected virtual void MigrateStorable (IStorable storable)
 		{
 			/* FIXME: to be implemented */
 		}

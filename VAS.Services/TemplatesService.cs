@@ -60,7 +60,8 @@ namespace VAS.Services
 		public T LoadFile (string filename)
 		{
 			Log.Information ("Loading template file " + filename);
-			T template = FileStorage.RetrieveFrom<T> (filename);
+			T template = App.Current.DependencyRegistry.
+							Retrieve<IFileStorage> (InstanceType.Default, null).RetrieveFrom<T> (filename);
 			return template;
 		}
 
