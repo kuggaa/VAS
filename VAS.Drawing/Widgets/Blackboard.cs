@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Handlers;
@@ -230,7 +231,6 @@ namespace VAS.Drawing.Widgets
 					tk.Clear (new Color (0, 0, 0, 0));
 					tk.Context = null;
 				}
-				;
 			}
 			widget?.ReDraw ();
 		}
@@ -513,7 +513,9 @@ namespace VAS.Drawing.Widgets
 					tk.DrawLine (MoveStart, coords);
 					tk.End ();
 				}
-				widget.ReDraw ();
+				Area area = new MultiPoints (new List<Point> { ToDeviceCoords (MoveStart), ToDeviceCoords (coords) }).Area;
+				widget.ReDraw (new Area (new Point (area.TopLeft.X - LineWidth, area.TopLeft.Y - LineWidth),
+													area.Width + LineWidth * 2, area.Height + LineWidth * 2));
 			} else {
 				base.CursorMoved (coords);
 				if (Tool == DrawTool.Selection) {
@@ -534,7 +536,9 @@ namespace VAS.Drawing.Widgets
 			tk.Clear (App.Current.Style.PaletteBackground);
 			tk.End ();
 
+
 			base.Draw (context, area);
+
 			if (backbuffer != null) {
 				Begin (context);
 				tk.DrawSurface (backbuffer);
