@@ -30,7 +30,7 @@ namespace VAS.Multimedia.Editor
 	public class GstVideoSplitter : GLib.Object, IVideoEditor
 	{
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern unsafe IntPtr gst_video_editor_new (out IntPtr err);
 
 		public event VASCore.ProgressHandler Progress;
@@ -160,7 +160,7 @@ namespace VAS.Multimedia.Editor
 
 		#region Public Methods
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern IntPtr gst_video_editor_get_type ();
 
 		public static new GLib.GType GType {
@@ -171,7 +171,7 @@ namespace VAS.Multimedia.Editor
 			}
 		}
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern void gst_video_editor_clear_segments_list (IntPtr raw);
 
 		public void ClearList ()
@@ -179,7 +179,7 @@ namespace VAS.Multimedia.Editor
 			gst_video_editor_clear_segments_list (Handle);
 		}
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern void gst_video_editor_add_segment (IntPtr raw, string file_path, long start, long duration, double rate, IntPtr title, bool hasAudio,
 		                                                 uint roi_x, uint roi_y, uint roi_w, uint roi_h);
 
@@ -188,7 +188,7 @@ namespace VAS.Multimedia.Editor
 			gst_video_editor_add_segment (Handle, filePath, start, duration, rate, GLib.Marshaller.StringToPtrGStrdup (title), true, (uint)roi.Start.X, (uint)roi.Start.Y, (uint)roi.Width, (uint)roi.Height);
 		}
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern void gst_video_editor_add_image_segment (IntPtr raw, string file_path, long start, long duration, IntPtr title,
 		                                                       uint roi_x, uint roi_y, uint roi_w, uint roi_h);
 
@@ -197,7 +197,7 @@ namespace VAS.Multimedia.Editor
 			gst_video_editor_add_image_segment (Handle, filePath, start, duration, GLib.Marshaller.StringToPtrGStrdup (title), (uint)roi.Start.X, (uint)roi.Start.Y, (uint)roi.Width, (uint)roi.Height);
 		}
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern void gst_video_editor_start (IntPtr raw);
 
 		public void Start ()
@@ -205,7 +205,7 @@ namespace VAS.Multimedia.Editor
 			gst_video_editor_start (Handle);
 		}
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern void gst_video_editor_cancel (IntPtr raw);
 
 		public void Cancel ()
@@ -217,7 +217,7 @@ namespace VAS.Multimedia.Editor
 			}
 		}
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern void gst_video_editor_init_backend (out int argc, IntPtr argv);
 
 		public static int InitBackend (string argv)
@@ -227,7 +227,7 @@ namespace VAS.Multimedia.Editor
 			return argc;
 		}
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern bool gst_video_editor_set_encoding_format (IntPtr raw,
 		                                                         string output_file,
 		                                                         VideoEncoderType video_codec,

@@ -31,7 +31,7 @@ namespace VAS
 		[DllImport ("libgtk-2.0.dll") /* willfully unmapped */]
 		static extern IntPtr gtk_message_dialog_get_message_area (IntPtr dialog);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern void lgm_gtk_glue_gdk_event_button_set_button (IntPtr evt, uint button);
 
 		[DllImport ("libpango-1.0.dll")]

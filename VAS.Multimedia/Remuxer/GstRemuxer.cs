@@ -31,7 +31,7 @@ namespace VAS.Multimedia.Remuxer
 		public event VASHandlers.ProgressHandler Progress;
 		public event VASHandlers.ErrorHandler Error;
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern unsafe IntPtr gst_remuxer_new (IntPtr input_file, IntPtr output_file, VideoMuxerType muxer, out IntPtr err);
 
 		public unsafe GstRemuxer (string inputFile, string outputFile, VideoMuxerType muxer) : base (IntPtr.Zero)
@@ -183,7 +183,7 @@ namespace VAS.Multimedia.Remuxer
 
 		#endregion
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern void gst_remuxer_cancel (IntPtr raw);
 
 		public void Cancel ()
@@ -191,7 +191,7 @@ namespace VAS.Multimedia.Remuxer
 			gst_remuxer_cancel (Handle);
 		}
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern void gst_remuxer_start (IntPtr raw);
 
 		public void Start ()

@@ -40,10 +40,10 @@ namespace VAS.Multimedia.Capturer
 
 		private LiveSourceTimer timer;
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern unsafe IntPtr gst_camera_capturer_new (out IntPtr err);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern unsafe IntPtr gst_camera_capturer_configure (
 			IntPtr raw, IntPtr output_file, int type, IntPtr source_element,
 			IntPtr device_id, int width, int height, int fps_n, int fps_d,
@@ -52,37 +52,37 @@ namespace VAS.Multimedia.Capturer
 			uint output_width, uint output_height, IntPtr window_handle,
 			out IntPtr err);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern void gst_camera_capturer_stop (IntPtr raw);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern void gst_camera_capturer_toggle_pause (IntPtr raw);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern void gst_camera_capturer_start (IntPtr raw);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern void gst_camera_capturer_run (IntPtr raw);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern void gst_camera_capturer_close (IntPtr raw);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern void gst_camera_capturer_expose (IntPtr raw);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern IntPtr gst_camera_capturer_get_type ();
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern IntPtr gst_camera_capturer_enum_audio_devices ();
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern IntPtr gst_camera_capturer_enum_video_devices (string devname);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern IntPtr gst_camera_capturer_get_current_frame (IntPtr raw);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern IntPtr gst_camera_capturer_unref_pixbuf (IntPtr raw);
 
 		public unsafe GstCameraCapturer (string filename) : base (IntPtr.Zero)

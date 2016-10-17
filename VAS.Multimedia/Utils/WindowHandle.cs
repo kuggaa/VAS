@@ -22,7 +22,7 @@ namespace VAS.Multimedia.Utils
 {
 	public static class WindowHandle
 	{
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern IntPtr lgm_get_window_handle (IntPtr window);
 
 		public static IntPtr GetWindowHandle (this Gdk.Window window)
