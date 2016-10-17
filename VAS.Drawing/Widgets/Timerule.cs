@@ -88,9 +88,11 @@ namespace VAS.Drawing.Widgets
 
 		public Time Duration {
 			set {
-				duration = value;
-				needle.ResetDrawArea ();
-				widget?.ReDraw ();
+				if (duration != value) {
+					duration = value;
+					needle.ResetDrawArea ();
+					widget?.ReDraw ();
+				}
 			}
 			protected get {
 				return duration;
