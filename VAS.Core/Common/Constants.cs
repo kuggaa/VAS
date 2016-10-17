@@ -21,6 +21,7 @@ namespace VAS.Core.Common
 	public class Constants
 	{
 		public const string FAKE_PROJECT = "@Fake Project@";
+		public const string EMPTY_OR_NULL = "$%&EMPTY$%&NULL$$%&";
 
 #if OSTYPE_ANDROID || OSTYPE_IOS
 				public const string IMAGE_EXT = ".png";

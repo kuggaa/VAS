@@ -81,15 +81,17 @@
     <Compile Include="UI\Component\DatePicker.cs" />
     <Compile Include="gtk-gui\VAS.UI.UI.Component.DatePicker.cs" />
     <Compile Include="UI\Dialog\DrawingTool.cs" />
-	<Compile Include="gtk-gui\VAS.UI.Dialog.DrawingTool.cs" />
-	<Compile Include="UI\Component\RenderingStateBarView.cs" />
-	<Compile Include="gtk-gui\VAS.UI.Component.RenderingStateBarView.cs" />
     <Compile Include="UI\Dialog\VideoEditionProperties.cs" />
     <Compile Include="gtk-gui\VAS.UI.Dialog.VideoEditionProperties.cs" />
     <Compile Include="UI\Component\MediaFileChooser.cs" />
     <Compile Include="gtk-gui\VAS.UI.Component.MediaFileChooser.cs" />
     <Compile Include="UI\Menu\EventsMenu.cs" />
     <Compile Include="UI\Menu\PlaylistMenu.cs" />
+  	<Compile Include="gtk-gui\VAS.UI.Dialog.DrawingTool.cs" />
+  	<Compile Include="UI\Component\RenderingStateBarView.cs" />
+  	<Compile Include="gtk-gui\VAS.UI.Component.RenderingStateBarView.cs" />
+    <Compile Include="UI\TreeView\FilterTreeViewBase.cs" />
+    <Compile Include="UI\TreeView\StringObject.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
