@@ -83,6 +83,7 @@ namespace VAS
 
 			if (Environment.GetEnvironmentVariable (evUninstalled) != null) {
 				App.Current.baseDirectory = Path.GetFullPath (".");
+				App.Current.DataDir.Add (App.Current.RelativeToPrefix ("../VAS/data"));
 				App.Current.DataDir.Add (App.Current.RelativeToPrefix ("../data"));
 			} else {
 				if (Utils.OS == OperatingSystemID.Android) {

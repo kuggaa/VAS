@@ -26,7 +26,10 @@ using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
+using VAS.Core.Store.Drawables;
 using VAS.Core.Store.Playlists;
+using VAS.Drawing;
+using VAS.Drawing.CanvasObjects.Blackboard;
 using VAS.UI.Helpers;
 using Image = VAS.Core.Common.Image;
 
@@ -44,6 +47,7 @@ namespace VAS.UI
 		{
 			registry = new Registry ("GUI backend");
 			Scanner.ScanViews (App.Current.ViewLocator);
+			RegistryCanvasFromDrawables ();
 		}
 
 		protected Gtk.Window MainWindow {
@@ -174,6 +178,17 @@ namespace VAS.UI
 			((Bin)panel).Toplevel.DeleteEvent -= ModalWindowDeleteEvent;
 			((Bin)panel).Toplevel.Destroy ();
 			System.GC.Collect ();
+		}
+
+		void RegistryCanvasFromDrawables ()
+		{
+			CanvasFromDrawableObjectRegistry.AddMapping (typeof (Counter), typeof (CounterObject), "VAS.Drawing");
+			CanvasFromDrawableObjectRegistry.AddMapping (typeof (Cross), typeof (CrossObject), "VAS.Drawing");
+			CanvasFromDrawableObjectRegistry.AddMapping (typeof (Ellipse), typeof (EllipseObject), "VAS.Drawing");
+			CanvasFromDrawableObjectRegistry.AddMapping (typeof (Line), typeof (LineObject), "VAS.Drawing");
+			CanvasFromDrawableObjectRegistry.AddMapping (typeof (Quadrilateral), typeof (QuadrilateralObject), "VAS.Drawing");
+			CanvasFromDrawableObjectRegistry.AddMapping (typeof (Rectangle), typeof (RectangleObject), "VAS.Drawing");
+			CanvasFromDrawableObjectRegistry.AddMapping (typeof (Text), typeof (TextObject), "VAS.Drawing");
 		}
 	}
 }

@@ -13,6 +13,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\" />
     <Folder Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\" />
     <Folder Include="$(MSBuildThisFileDirectory)CanvasObjects\Teams\" />
+    <Folder Include="$(MSBuildThisFileDirectory)CanvasObjects\Blackboard\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Widgets\Blackboard.cs" />
@@ -44,5 +45,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\TimerObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Widgets\DashboardCanvas.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Teams\PlayerObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Blackboard\CounterObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Blackboard\CrossObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Blackboard\EllipseObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Blackboard\LineObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Blackboard\QuadrilateralObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Blackboard\RectangleObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Blackboard\TextObject.cs" />
   </ItemGroup>
 </Project>

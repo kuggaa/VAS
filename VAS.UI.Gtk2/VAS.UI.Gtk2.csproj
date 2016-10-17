@@ -80,6 +80,8 @@
     <Compile Include="UI\Common\PlaylistTreeView.cs" />
     <Compile Include="UI\Component\DatePicker.cs" />
     <Compile Include="gtk-gui\VAS.UI.UI.Component.DatePicker.cs" />
+    <Compile Include="UI\Dialog\DrawingTool.cs" />
+	<Compile Include="gtk-gui\VAS.UI.Dialog.DrawingTool.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
