@@ -151,18 +151,24 @@ namespace VAS.UI
 
 		protected void ShowModalWindow (IPanel panel, IPanel parent)
 		{
-			ExternalWindow modalWindow = new ExternalWindow ();
-			modalWindow.DefaultWidth = (panel as Gtk.Bin).WidthRequest;
-			modalWindow.DefaultHeight = (panel as Gtk.Bin).HeightRequest;
-			modalWindow.Title = panel.Title;
-			modalWindow.Modal = true;
-			modalWindow.TransientFor = ((Bin)parent).Toplevel as Gtk.Window;
-			modalWindow.DeleteEvent += ModalWindowDeleteEvent;
-			Widget widget = panel as Gtk.Widget;
-			modalWindow.Add (widget);
-			modalWindow.SetPosition (WindowPosition.CenterOnParent);
-			modalWindow.ShowAll ();
-			panel.OnLoad ();
+			if (panel is Gtk.Dialog) {
+				(panel as Gtk.Dialog).TransientFor = ((Bin)parent).Toplevel as Gtk.Window;
+				(panel as Gtk.Dialog).DeleteEvent += ModalWindowDeleteEvent;
+				panel.OnLoad ();
+			} else {
+				ExternalWindow modalWindow = new ExternalWindow ();
+				modalWindow.DefaultWidth = (panel as Gtk.Bin).WidthRequest;
+				modalWindow.DefaultHeight = (panel as Gtk.Bin).HeightRequest;
+				modalWindow.Title = panel.Title;
+				modalWindow.Modal = true;
+				modalWindow.TransientFor = ((Bin)parent).Toplevel as Gtk.Window;
+				modalWindow.DeleteEvent += ModalWindowDeleteEvent;
+				Widget widget = panel as Gtk.Widget;
+				modalWindow.Add (widget);
+				modalWindow.SetPosition (WindowPosition.CenterOnParent);
+				modalWindow.ShowAll ();
+				panel.OnLoad ();
+			}
 		}
 
 		protected void ModalWindowDeleteEvent (object o, DeleteEventArgs args)

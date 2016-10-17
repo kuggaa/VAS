@@ -48,9 +48,9 @@ namespace VAS.UI.Dialog
 		Drawable selectedDrawable;
 		Gtk.Dialog playerDialog;
 		Text playerText;
-		Project project;
 		double scaleFactor;
 		bool ignoreChanges;
+		DrawingToolVM viewModel;
 
 		public DrawingTool ()
 		{
@@ -167,8 +167,19 @@ namespace VAS.UI.Dialog
 		}
 
 		public DrawingToolVM ViewModel {
-			get;
-			set;
+			get {
+				return viewModel;
+			}
+			set {
+				viewModel = value;
+				if (viewModel != null) {
+					if (viewModel.TimelineEvent != null) {
+						LoadPlay (viewModel.TimelineEvent, viewModel.Frame, viewModel.Drawing, viewModel.CameraConfig);
+					} else {
+						LoadFrame (viewModel.Frame);
+					}
+				}
+			}
 		}
 
 		public KeyContext GetKeyContext ()
@@ -192,11 +203,10 @@ namespace VAS.UI.Dialog
 		}
 
 		public void LoadPlay (TimelineEvent play, Image frame, FrameDrawing drawing,
-							  CameraConfig camConfig, Project project)
+							  CameraConfig camConfig)
 		{
 			this.play = play;
 			this.drawing = drawing;
-			this.project = project;
 			this.camConfig = camConfig;
 			scaleFactor = (double)frame.Width / 500;
 			blackboard.Background = frame;
@@ -207,9 +217,8 @@ namespace VAS.UI.Dialog
 			UpdateTextSize ();
 		}
 
-		public void LoadFrame (Image frame, Project project)
+		public void LoadFrame (Image frame)
 		{
-			this.project = project;
 			drawing = new FrameDrawing ();
 			scaleFactor = (double)frame.Width / 500;
 			blackboard.Background = frame;
@@ -474,7 +483,7 @@ namespace VAS.UI.Dialog
 			}
 		}
 
-		void OnSavebuttonClicked (object sender, System.EventArgs e)
+		async void OnSavebuttonClicked (object sender, System.EventArgs e)
 		{
 			string proposed_filename = String.Format ("{0}-{1}.png", App.Current.SoftwareName,
 										   DateTime.Now.ToShortDateString ().Replace ('/', '-'));
@@ -486,11 +495,11 @@ namespace VAS.UI.Dialog
 				System.IO.Path.ChangeExtension (filename, ".png");
 				blackboard.Save (filename);
 				drawing = null;
-				Respond (ResponseType.Accept);
+				await App.Current.StateController.MoveBack ();
 			}
 		}
 
-		void OnSavetoprojectbuttonClicked (object sender, System.EventArgs e)
+		async void OnSavetoprojectbuttonClicked (object sender, System.EventArgs e)
 		{
 			drawing.RegionOfInterest = blackboard.RegionOfInterest;
 			if (!play.Drawings.Contains (drawing)) {
@@ -501,7 +510,7 @@ namespace VAS.UI.Dialog
 				Constants.MAX_THUMBNAIL_SIZE);
 			play.UpdateMiniature ();
 			drawing = null;
-			Respond (ResponseType.Accept);
+			await App.Current.StateController.MoveBack ();
 		}
 
 		void HandleConfigureObjectEvent (IBlackboardObject drawable, DrawTool tool)
