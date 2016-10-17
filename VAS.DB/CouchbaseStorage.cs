@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Couchbase.Lite;
-using ICSharpCode.SharpZipLib;
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
 using VAS.Core;
@@ -31,12 +30,11 @@ using VAS.Core.Serialization;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Core.Store.Templates;
-using VAS.DB;
 using VAS.DB.Views;
 
 namespace VAS.DB
 {
-	public class CouchbaseStorage: IStorage
+	public class CouchbaseStorage : IStorage
 	{
 		Database db;
 		Dictionary<Type, object> views;
@@ -75,7 +73,6 @@ namespace VAS.DB
 			BackupAndCompactIfNeeded ();
 			InitializeViews ();
 			InitializeDocumentTypeMappings ();
-			VFS.SetCurrent (new FileSystem ());
 		}
 
 		#region IStorage implementation
