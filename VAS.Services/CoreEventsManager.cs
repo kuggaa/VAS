@@ -177,7 +177,6 @@ namespace VAS.Services
 			if (pixbuf == null) {
 				App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Error capturing video frame"));
 			} else {
-				//App.Current.GUIToolkit.DrawingTool (pixbuf, e.Play, drawing, e.CamConfig, openedProject);
 				dynamic properties = new ExpandoObject ();
 				properties.project = openedProject;
 				properties.timelineEvent = e.Play;

@@ -38,12 +38,11 @@ namespace VAS.Services.State
 		protected override void CreateViewModel (dynamic data)
 		{
 			ViewModel = new DrawingToolVM ();
-			ViewModel.Model = data.project;
+			ViewModel.Project = data.project;
 			ViewModel.TimelineEvent = data.timelineEvent;
 			ViewModel.Frame = data.frame;
 			ViewModel.Drawing = data.drawing;
 			ViewModel.CameraConfig = data.cameraconfig;
-			Panel.SetViewModel (ViewModel);
 		}
 	}
 }

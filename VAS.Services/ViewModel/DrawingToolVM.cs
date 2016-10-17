@@ -16,18 +16,19 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.ComponentModel;
 using VAS.Core.Common;
-using VAS.Core.MVVMC;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 
 namespace VAS.Services.ViewModel
 {
-	public class DrawingToolVM : ViewModelBase<Project>
+	public class DrawingToolVM : IViewModel
 	{
-		public DrawingToolVM ()
-		{
+		public Project Project {
+			get;
+			set;
 		}
-
 		public TimelineEvent TimelineEvent {
 			get;
 			set;
@@ -47,5 +48,7 @@ namespace VAS.Services.ViewModel
 			get;
 			set;
 		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
 	}
 }

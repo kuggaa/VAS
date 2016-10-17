@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Dynamic;
 using Gtk;
 using VAS.Core;
 using VAS.Core.Common;
@@ -39,15 +40,15 @@ using Misc = VAS.UI.Helpers.Misc;
 namespace VAS.UI.Dialog
 {
 	[ViewAttribute (DrawingToolState.NAME)]
-	public partial class DrawingTool : Gtk.Dialog, IPanel<DrawingToolVM>
+	public abstract partial class DrawingTool : Gtk.Dialog, IPanel<DrawingToolVM>
 	{
 		readonly Blackboard blackboard;
 		TimelineEvent play;
 		FrameDrawing drawing;
 		CameraConfig camConfig;
 		Drawable selectedDrawable;
-		Gtk.Dialog playerDialog;
-		Text playerText;
+		protected Gtk.Dialog playerDialog;
+		protected Text playerText;
 		double scaleFactor;
 		bool ignoreChanges;
 		DrawingToolVM viewModel;
@@ -312,38 +313,7 @@ namespace VAS.UI.Dialog
 			QueueDraw ();
 		}
 
-		void EditPlayer (Text text)
-		{
-			//playerText = text;
-			//if (playerDialog == null) {
-			//	Gtk.Dialog d = new Gtk.Dialog (Catalog.GetString ("Select player"),
-			//					   this, DialogFlags.Modal | DialogFlags.DestroyWithParent,
-			//					   Stock.Cancel, ResponseType.Cancel);
-			//	d.WidthRequest = 600;
-			//	d.HeightRequest = 400;
-
-			//	DrawingArea da = new DrawingArea ();
-			//	TeamTagger tagger = new TeamTagger (new WidgetWrapper (da));
-			//	tagger.ShowSubstitutionButtons = false;
-			//	tagger.LoadTeams (project.LocalTeamTemplate, project.VisitorTeamTemplate,
-			//		project.Dashboard.FieldBackground);
-			//	tagger.PlayersSelectionChangedEvent += players => {
-			//		if (players.Count == 1) {
-			//			Player p = players [0];
-			//			playerText.Value = p.ToString ();
-			//			d.Respond (ResponseType.Ok);
-			//		}
-			//		tagger.ResetSelection ();
-			//	};
-			//	d.VBox.PackStart (da, true, true, 0);
-			//	d.ShowAll ();
-			//	playerDialog = d;
-			//}
-			//if (playerDialog.Run () != (int)ResponseType.Ok) {
-			//	text.Value = null;
-			//}
-			//playerDialog.Hide ();
-		}
+		public abstract void EditPlayer (Text text);
 
 		void HandleLineStyleChanged (object sender, EventArgs e)
 		{

@@ -145,11 +145,10 @@ namespace VAS.UI
 			return null;
 		}
 
-
 		protected void ShowModalWindow (IPanel panel, IPanel parent)
 		{
 			if (panel is Gtk.Dialog) {
-				(panel as Gtk.Dialog).TransientFor = ((Bin)parent).Toplevel as Gtk.Window;
+				(panel as Gtk.Dialog).TransientFor = ((Bin)parent).Toplevel as Window;
 				(panel as Gtk.Dialog).DeleteEvent += ModalWindowDeleteEvent;
 				panel.OnLoad ();
 			} else {
@@ -158,7 +157,7 @@ namespace VAS.UI
 				modalWindow.DefaultHeight = (panel as Gtk.Bin).HeightRequest;
 				modalWindow.Title = panel.Title;
 				modalWindow.Modal = true;
-				modalWindow.TransientFor = ((Bin)parent).Toplevel as Gtk.Window;
+				modalWindow.TransientFor = ((Bin)parent).Toplevel as Window;
 				modalWindow.DeleteEvent += ModalWindowDeleteEvent;
 				Widget widget = panel as Gtk.Widget;
 				modalWindow.Add (widget);
