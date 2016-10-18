@@ -16,7 +16,6 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using System.Dynamic;
 using Gtk;
 using VAS.Core;
 using VAS.Core.Common;
@@ -33,7 +32,6 @@ using VAS.Services.ViewModel;
 using VAS.UI.Helpers;
 using Color = VAS.Core.Common.Color;
 using Drawable = VAS.Core.Store.Drawables.Drawable;
-using Helpers = VAS.UI.Helpers;
 using Image = VAS.Core.Common.Image;
 using Misc = VAS.UI.Helpers.Misc;
 
@@ -80,8 +78,8 @@ namespace VAS.UI.Dialog
 			numberbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-counter", 20);
 			anglebuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-angle", 20);
 			zoombuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-search", 20);
-			zoomoutimage.Pixbuf = Helpers.Misc.LoadIcon ("longomatch-zoom-out", 14);
-			zoominimage.Pixbuf = Helpers.Misc.LoadIcon ("longomatch-zoom-in", 14);
+			zoomoutimage.Pixbuf = Misc.LoadIcon ("longomatch-zoom-out", 14);
+			zoominimage.Pixbuf = Misc.LoadIcon ("longomatch-zoom-in", 14);
 
 			selectbutton.Toggled += HandleToolClicked;
 			eraserbutton.Toggled += HandleToolClicked;
@@ -190,12 +188,10 @@ namespace VAS.UI.Dialog
 
 		public void OnLoad ()
 		{
-			//throw new NotImplementedException ();
 		}
 
 		public void OnUnload ()
 		{
-			//throw new NotImplementedException ();
 		}
 
 		public void SetViewModel (object viewModel)

@@ -115,7 +115,7 @@ namespace VAS.UI
 			timescale.Adjustment.StepIncrement = 0.0001;
 			Helpers.Misc.SetFocus (vbox3, false);
 			videowindow.CanFocus = true;
-			detachbutton.Clicked += (sender, e) => 
+			detachbutton.Clicked += (sender, e) =>
 				App.Current.EventsBroker.Publish<DetachEvent> (new DetachEvent ());
 			ratescale.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 8"));
 			controlsbox.HeightRequest = StyleConf.PlayerCapturerControlsHeight;
@@ -213,8 +213,9 @@ namespace VAS.UI
 			prevbutton.Visible = nextbutton.Visible = jumplabel.Visible =
 				jumpspinbutton.Visible = tlabel.Visible = timelabel.Visible =
 					detachbutton.Visible = ratescale.Visible = !playerVM.Compact;
-			
+
 			playerVM.ControlsSensitive = true;
+			drawbutton.Visible = playerVM.ShowDrawingIcon;
 			DrawingsVisible = false;
 			timescale.Value = 0;
 			timelabel.Text = "";
@@ -342,7 +343,7 @@ namespace VAS.UI
 			if (seeking) {
 				playerVM.Seek (timescale.Value);
 				playerVM.CurrentTime = playerVM.Duration * timescale.Value;
-				UpdateTime (); 
+				UpdateTime ();
 			}
 		}
 
@@ -432,7 +433,7 @@ namespace VAS.UI
 		/// <param name="args">Arguments.</param>
 		[GLib.ConnectBefore]
 		protected virtual void HandleRatescaleButtonPress (object o, Gtk.ButtonPressEventArgs args)
-		{			
+		{
 			if (args.Event.Button == 1) {
 				args.Event.SetButton (2);
 			} else {
@@ -525,6 +526,8 @@ namespace VAS.UI
 				HandlePlayerAttachedChanged ();
 			} else if (e.PropertyName == "ShowDetachButton") {
 				detachbutton.Visible = playerVM.ShowDetachButton;
+			} else if (e.PropertyName == "ShowDrawingIcon") {
+				drawbutton.Visible = playerVM.ShowDrawingIcon;
 			} else if (e.PropertyName == "Playing") {
 				HandlePlayingChanged ();
 			} else if (e.PropertyName == "HasNext") {
@@ -534,7 +537,7 @@ namespace VAS.UI
 			} else if (e.PropertyName == "Rate") {
 				ignoreRate = true;
 				int index = App.Current.RateList.FindIndex (p => (float)p == playerVM.Rate);
-				ratescale.Value = index + App.Current.LowerRate;				
+				ratescale.Value = index + App.Current.LowerRate;
 				ignoreRate = false;
 			} else if (e.PropertyName == "Seekable") {
 				timescale.Sensitive = playerVM.Seekable;
