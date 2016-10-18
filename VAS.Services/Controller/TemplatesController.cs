@@ -133,7 +133,7 @@ namespace VAS.Services.Controller
 		public virtual void Start ()
 		{
 			if (started) {
-				throw new InvalidOperationException ("The controller is already running");
+				return;
 			}
 			App.Current.EventsBroker.Subscribe<ExportEvent<TModel>> (HandleExport);
 			App.Current.EventsBroker.Subscribe<ImportEvent<TModel>> (HandleImport);
@@ -148,7 +148,7 @@ namespace VAS.Services.Controller
 		public virtual void Stop ()
 		{
 			if (!started) {
-				throw new InvalidOperationException ("The controller is already stopped");
+				return;
 			}
 			App.Current.EventsBroker.Unsubscribe<ExportEvent<TModel>> (HandleExport);
 			App.Current.EventsBroker.Unsubscribe<ImportEvent<TModel>> (HandleImport);
@@ -288,7 +288,7 @@ namespace VAS.Services.Controller
 			TModel template = evt.Object;
 
 			if (template != null) {
-				string msg = String.Format(ConfirmDeleteText, template.Name);
+				string msg = String.Format (ConfirmDeleteText, template.Name);
 				if (await App.Current.Dialogs.QuestionMessage (msg, null)) {
 					Provider.Delete (template);
 					viewModel.Select (viewModel.Model.FirstOrDefault ());
