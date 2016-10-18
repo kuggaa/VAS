@@ -73,26 +73,6 @@ namespace VAS.Core.MVVMC
 		/// Selects the specified item from the list.
 		/// </summary>
 		/// <param name="item">The item to select.</param>
-		public void Select (TViewModel viewModel)
-		{
-			if (viewModel == null) {
-				return;
-			}
-
-			if (Selection.Count == 0) {
-				Selection.Add (viewModel);
-			} else if (Selection.Count == 1) {
-				Selection [0] = viewModel;
-			} else {
-				Selection.Clear ();
-				Selection.Add (viewModel);
-			}
-		}
-
-		/// <summary>
-		/// Selects the specified item from the list.
-		/// </summary>
-		/// <param name="item">The item to select.</param>
 		public void Select (TModel item)
 		{
 			if (item == null) {

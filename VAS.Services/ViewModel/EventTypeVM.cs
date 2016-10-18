@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using VAS.Core.Common;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
@@ -38,6 +39,15 @@ namespace VAS.Services.ViewModel
 			}
 			set {
 				Model.Name = value;
+			}
+		}
+
+		public Color Color {
+			get {
+				return Model.Color;
+			}
+			set {
+				Model.Color = value;
 			}
 		}
 

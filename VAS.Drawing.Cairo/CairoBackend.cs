@@ -394,6 +394,7 @@ namespace VAS.Drawing.Cairo
 			layout.FontDescription.Weight = fWeight;
 			layout.FontDescription.Style = fSlant;
 			layout.Width = Pango.Units.FromPixels ((int)width);
+			layout.SetPangoLayoutHeight ((int)height);
 			layout.Alignment = fAlignment;
 			layout.SetMarkup (GLib.Markup.EscapeText (text));
 			SetColor (StrokeColor);

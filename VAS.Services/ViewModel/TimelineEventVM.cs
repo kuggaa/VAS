@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using VAS.Core.Common;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
@@ -41,12 +42,22 @@ namespace VAS.Services.ViewModel
 		}
 
 		/// <summary>
+		/// Gets the color.
+		/// </summary>
+		/// <value>The color.</value>
+		public Color Color {
+			get {
+				return Model.Color;
+			}
+		}
+
+		/// <summary>
 		/// Gets a value indicating whether this instance has drawings.
 		/// </summary>
 		/// <value><c>true</c> if this instance has drawings; otherwise, <c>false</c>.</value>
-		public string HasDrawings {
+		public bool HasDrawings {
 			get {
-				return Model.HasDrawings ? "D" : "0";
+				return Model.HasDrawings;
 			}
 		}
 
@@ -54,9 +65,9 @@ namespace VAS.Services.ViewModel
 		/// Gets a value indicating whether this instance has field position.
 		/// </summary>
 		/// <value><c>true</c> if this instance has field position; otherwise, <c>false</c>.</value>
-		public string HasFieldPosition {
+		public bool HasFieldPosition {
 			get {
-				return (Model.FieldPosition != null) ? "X" : "0";
+				return (Model.FieldPosition != null);
 			}
 		}
 
@@ -66,7 +77,7 @@ namespace VAS.Services.ViewModel
 		/// <value>The notes.</value>
 		public string Notes {
 			get {
-				return (!string.IsNullOrEmpty (Model.Notes)) ? Model.Notes : "...";
+				return Model.Notes;
 			}
 		}
 
@@ -81,6 +92,15 @@ namespace VAS.Services.ViewModel
 			set {
 				Model.Playing = value;
 			}
+		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="VAS.Services.ViewModel.TimelineEventVM`1"/> is selected.
+		/// </summary>
+		/// <value><c>true</c> if selected; otherwise, <c>false</c>.</value>
+		public bool Selected {
+			get;
+			set;
 		}
 	}
 }
