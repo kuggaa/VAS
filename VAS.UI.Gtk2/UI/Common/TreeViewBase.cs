@@ -210,7 +210,7 @@ namespace VAS.UI.Common
 
 		void PropertyChangedItem (object sender, PropertyChangedEventArgs e)
 		{
-			if (!(sender is IViewModel)) {
+			if (!(sender is IViewModel) || Model == null) {
 				return;
 			}
 			TreeIter iter = dictionaryStore [(IViewModel)sender];
