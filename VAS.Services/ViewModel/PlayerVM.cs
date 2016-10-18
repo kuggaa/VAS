@@ -399,6 +399,21 @@ namespace VAS.Services.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Sends Event to draw in the Current Frame
+		/// </summary>
+		public void DrawFrame ()
+		{
+			App.Current.EventsBroker.Publish<DrawFrameEvent> (
+				new DrawFrameEvent {
+					Play = null,
+					DrawingIndex = -1,
+					CamConfig = CamerasConfig [0],
+					Current = true
+				}
+			);
+		}
+
 		#endregion
 	}
 }

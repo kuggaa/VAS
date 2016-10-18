@@ -488,14 +488,7 @@ namespace VAS.UI
 
 		protected virtual void HandleDrawButtonClicked (object sender, System.EventArgs e)
 		{
-			App.Current.EventsBroker.Publish<DrawFrameEvent> (
-				new DrawFrameEvent {
-					Play = null,
-					DrawingIndex = -1,
-					CamConfig = CamerasConfig [0],
-					Current = true
-				}
-			);
+			playerVM.DrawFrame ();
 		}
 
 		protected virtual void HandleJumpValueChanged (object sender, EventArgs e)
