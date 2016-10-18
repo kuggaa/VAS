@@ -22,9 +22,9 @@ using VAS.Core.Common;
 namespace VAS.Core.Store.Drawables
 {
 	[Serializable]
-	public class Ellipse: Drawable
+	public class Ellipse : Drawable
 	{
-		
+
 		public Ellipse ()
 		{
 		}
@@ -106,7 +106,7 @@ namespace VAS.Core.Store.Drawables
 		public override Selection GetSelection (Point p, double pr = 0.05, bool inMotion = false)
 		{
 			double d;
-			
+
 			if (Selected) {
 				return base.GetSelection (p, pr);
 			}
@@ -135,28 +135,24 @@ namespace VAS.Core.Store.Drawables
 		{
 			switch (sel.Position) {
 			case SelectionPosition.Top:
-			case SelectionPosition.Bottom:
-				{
+			case SelectionPosition.Bottom: {
 					AxisY = Math.Abs (p.Y - Center.Y);
 					break;
 				}
 			case SelectionPosition.Left:
-			case SelectionPosition.Right:
-				{
+			case SelectionPosition.Right: {
 					AxisX = Math.Abs (p.X - Center.X);
 					break;
 				}
 			case SelectionPosition.TopLeft:
 			case SelectionPosition.TopRight:
 			case SelectionPosition.BottomLeft:
-			case SelectionPosition.BottomRight:
-				{
+			case SelectionPosition.BottomRight: {
 					AxisX = Math.Abs (p.X - Center.X);
 					AxisY = Math.Abs (p.Y - Center.Y);
 					break;
 				}
-			case SelectionPosition.All:
-				{
+			case SelectionPosition.All: {
 					Center.X += p.X - moveStart.X;
 					Center.Y += p.Y - moveStart.Y;
 					break;
@@ -164,6 +160,11 @@ namespace VAS.Core.Store.Drawables
 			default:
 				throw new Exception ("Unsupported move for line:  " + sel.Position);
 			}
+		}
+
+		protected override void ForwardPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			base.ForwardPropertyChanged (sender, e);
 		}
 	}
 }

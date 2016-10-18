@@ -25,12 +25,17 @@ using VAS.Core.Common;
 namespace VAS.Core.Store.Drawables
 {
 	[Serializable]
-	public class MultiPoints: Rectangle
+	public class MultiPoints : Rectangle
 	{
 		ObservableCollection<Point> points;
 
 		public MultiPoints ()
 		{
+		}
+
+		public MultiPoints (params Point [] points)
+		{
+			Points = new ObservableCollection<Point> (points);
 		}
 
 		public MultiPoints (List<Point> points)
@@ -66,10 +71,9 @@ namespace VAS.Core.Store.Drawables
 		public override void Move (Selection sel, Point p, Point moveStart)
 		{
 			switch (sel.Position) {
-			case SelectionPosition.All:
-				{
+			case SelectionPosition.All: {
 					double xdiff, ydiff;
-				
+
 					xdiff = p.X - moveStart.X;
 					ydiff = p.Y - moveStart.Y;
 					foreach (Point point in Points) {

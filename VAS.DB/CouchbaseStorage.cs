@@ -155,7 +155,7 @@ namespace VAS.DB
 		public IEnumerable<T> RetrieveAll<T> () where T : IStorable
 		{
 			lock (mutex) {
-				IQueryView<T> qview = views [typeof(T)] as IQueryView <T>;
+				IQueryView<T> qview = views [typeof (T)] as IQueryView<T>;
 				return qview.Query (null);
 			}
 		}
@@ -163,14 +163,14 @@ namespace VAS.DB
 		public T Retrieve<T> (Guid id) where T : IStorable
 		{
 			lock (mutex) {
-				return (T)Retrieve (typeof(T), id);
+				return (T)Retrieve (typeof (T), id);
 			}
 		}
 
 		public IEnumerable<T> Retrieve<T> (QueryFilter filter) where T : IStorable
 		{
 			lock (mutex) {
-				IQueryView<T> qview = views [typeof(T)] as IQueryView <T>;
+				IQueryView<T> qview = views [typeof (T)] as IQueryView<T>;
 				return qview.Query (filter);
 			}
 		}
@@ -178,7 +178,7 @@ namespace VAS.DB
 		public IEnumerable<T> RetrieveFull<T> (QueryFilter filter, IStorableObjectsCache cache) where T : IStorable
 		{
 			lock (mutex) {
-				IQueryView<T> qview = views [typeof(T)] as IQueryView <T>;
+				IQueryView<T> qview = views [typeof (T)] as IQueryView<T>;
 				return qview.QueryFull (filter, cache);
 			}
 		}
@@ -195,7 +195,7 @@ namespace VAS.DB
 
 						if (!forceUpdate) {
 							Update (node);
-						} 
+						}
 						if (forceUpdate) {
 							DocumentsSerializer.SaveObject (t, db, saveChildren: true);
 						}
@@ -332,12 +332,12 @@ namespace VAS.DB
 
 		protected virtual void InitializeViews ()
 		{
-			AddView (typeof(Dashboard), new DashboardsView (this));
-			AddView (typeof(Project), new ProjectsView (this));
-			AddView (typeof(Player), new PlayersView (this));
-			AddView (typeof(TimelineEvent), new TimelineEventsView (this));
-			AddView (typeof(EventType), new EventTypeView (this));
-			AddView (typeof(Playlist), new PlaylistView (this));
+			AddView (typeof (Dashboard), new DashboardsView (this));
+			AddView (typeof (Project), new ProjectsView (this));
+			AddView (typeof (Player), new PlayersView (this));
+			AddView (typeof (TimelineEvent), new TimelineEventsView (this));
+			AddView (typeof (EventType), new EventTypeView (this));
+			AddView (typeof (Playlist), new PlaylistView (this));
 		}
 
 		protected virtual void InitializeDocumentTypeMappings ()
@@ -353,13 +353,13 @@ namespace VAS.DB
 		{
 			// Recursively add sub-folders
 			if (recurse) {
-				string[] directories = Directory.GetDirectories (sourceDirectory);
+				string [] directories = Directory.GetDirectories (sourceDirectory);
 				foreach (string directory in directories)
 					AddDirectoryFilesToTar (tarArchive, directory, recurse);
 			}
 
 			// Add files
-			string[] filenames = Directory.GetFiles (sourceDirectory);
+			string [] filenames = Directory.GetFiles (sourceDirectory);
 			foreach (string filename in filenames) {
 				TarEntry tarEntry = TarEntry.CreateEntryFromFile (filename);
 				tarArchive.WriteEntry (tarEntry, true);

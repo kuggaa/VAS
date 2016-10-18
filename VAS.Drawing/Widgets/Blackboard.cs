@@ -518,6 +518,7 @@ namespace VAS.Drawing.Widgets
 													area.Width + LineWidth * 2, area.Height + LineWidth * 2));
 			} else {
 				base.CursorMoved (coords);
+
 				if (Tool == DrawTool.Selection) {
 					DrawTool moveTool = currentZoom == 1 ? DrawTool.None : DrawTool.CanMove;
 					if (HighlightedObject == null) {
