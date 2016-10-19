@@ -41,11 +41,14 @@ namespace VAS.Core.Common
 		static public string SysInfo {
 			get {
 				return string.Format (
-					"Running LongoMatch {0} build:\"{1}\" OS:\"{2}\" OS Version:\"{3}\"",
+					"Running {0} {1} build:\"{2}\" OS:\"{3}\" OS Version:\"{4}\" Device ID:\"{5}\"",
+					App.Current.SoftwareName,
 					App.Current.Version,
 					App.Current.BuildVersion,
 					Utils.OS,
-					Environment.OSVersion.VersionString);
+					Environment.OSVersion.VersionString,
+					App.Current.Device.ID
+				);
 			}
 		}
 
