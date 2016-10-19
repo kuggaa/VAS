@@ -121,6 +121,25 @@ namespace VAS.Tests.MVVMC
 
 			Assert.AreEqual (0, evtCount);
 		}
+
+		[Test]
+		public void TestIgnoreEvents ()
+		{
+			// Arrange
+			int eventCount = 0;
+			var bindable = new DummyBindable ();
+			Assert.IsFalse (bindable.IsChanged);
+			bindable.PropertyChanged += (sender, e) => eventCount++;
+
+			// Act
+			bindable.IgnoreEvents = true;
+			bindable.Raise ("test");
+			bindable.IgnoreEvents = false;
+
+			// Assert
+			Assert.IsFalse (bindable.IsChanged);
+			Assert.AreEqual (0, eventCount);
+		}
 	}
 }
 
