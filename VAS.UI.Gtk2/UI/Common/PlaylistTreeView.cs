@@ -16,11 +16,16 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 
+using System.Linq;
 using Gtk;
+using VAS.Core;
+using VAS.Core.Events;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Services.ViewModel;
 using VAS.UI.Common;
+using VAS.UI.Menus;
 using Misc = VAS.UI.Helpers.Misc;
 
 namespace VAS.UI.Common
@@ -93,13 +98,21 @@ namespace VAS.UI.Common
 
 		protected override void ShowMenu ()
 		{
-//			menu = new Menu ();
-//			MenuItem item = new MenuItem ();
-//			menu.Add (item);
-//
-//			// TODO: Fill with the menu items needed
-//
-//			menu.Popup ();
+			if (ViewModel.Selection.Count > 0) {
+				Menu menu = new Menu ();
+
+				MenuItem renderItem = new MenuItem (Catalog.GetString ("Render"));
+
+				var elements = ViewModel.Selection [0].Model.Elements.OfType<PlaylistPlayElement> ().Select (e => e.Play);
+				MenuHelpers.FillAddToRenderMenu (
+					renderItem,
+					elements
+				);
+				menu.Append (renderItem);
+
+				menu.ShowAll ();
+				menu.Popup ();
+			}
 		}
 	}
 }
