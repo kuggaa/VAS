@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
@@ -141,6 +143,7 @@ namespace VAS
 				}
 			}
 
+			InitVersion ();
 			InitTranslations (softwareName);
 			InitDependencies ();
 		}
@@ -171,6 +174,20 @@ namespace VAS
 			}
 			/* Init internationalization support */
 			Catalog.SetDomain (softwareName.ToLower (), localesDir);
+		}
+
+		static void InitVersion ()
+		{
+			Assembly assembly = Assembly.GetExecutingAssembly ();
+			Current.Version = assembly.GetName ().Version;
+			var attribute = Assembly.GetExecutingAssembly ().
+									GetCustomAttributes (typeof (AssemblyInformationalVersionAttribute), false).
+									FirstOrDefault ();
+			if (attribute != null) {
+				Current.BuildVersion = (attribute as AssemblyInformationalVersionAttribute).InformationalVersion;
+			} else {
+				Current.BuildVersion = Current.Version.ToString ();
+			}
 		}
 
 		public Config Config {
