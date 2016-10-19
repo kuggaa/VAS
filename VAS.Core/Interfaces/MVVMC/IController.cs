@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using VAS.Core.Hotkeys;
+using VAS.Core.Services;
 
 namespace VAS.Core.Interfaces.MVVMC
 {
