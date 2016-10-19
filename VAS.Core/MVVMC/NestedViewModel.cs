@@ -49,8 +49,10 @@ namespace VAS.Core.MVVMC
 
 		/// <summary>
 		/// Gets the current selection in the collection.
+		/// This property is notified with PropertyChanged ("Selection").
 		/// </summary>
 		/// <value>The selection.</value>
+		[PropertyChanged.DoNotNotify]
 		public RangeObservableCollection<VMChilds> Selection {
 			get;
 			private set;

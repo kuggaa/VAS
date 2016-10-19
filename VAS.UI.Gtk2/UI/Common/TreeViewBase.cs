@@ -209,10 +209,11 @@ namespace VAS.UI.Common
 
 		void PropertyChangedItem (object sender, PropertyChangedEventArgs e)
 		{
-			if (!(sender is IViewModel) || Model == null) {
+			var senderVM = sender as IViewModel;
+			if (senderVM == null || Model == null || !dictionaryStore.ContainsKey (senderVM)) {
 				return;
 			}
-			TreeIter iter = dictionaryStore [(IViewModel)sender];
+			TreeIter iter = dictionaryStore [senderVM];
 			Model.EmitRowChanged (store.GetPath (iter), iter);
 			this.QueueDraw ();
 		}
