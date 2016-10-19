@@ -87,8 +87,13 @@ namespace VAS.Core
 						return false;
 					}
 				}
+				IScreenState state;
+				if (transition == home.Name) {
+					state = home.ScreenState;
+				} else {
+					state = destination [transition] ();
+				}
 
-				IScreenState state = destination [transition] ();
 				if (!await state.PreTransition (properties)) {
 					Log.Debug ("Moving failed because panel " + state.Name + " cannot move.");
 				}
