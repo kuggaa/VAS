@@ -156,16 +156,13 @@ namespace Weavers
 					continue;
 				}
 
-				if (setMethod.IsPrivate) {
-					continue;
-				}
 				if (setMethod.IsAbstract) {
 					continue;
 				}
 
 				if (property.CustomAttributes.FirstOrDefault (
 					    a => a.AttributeType.Name == "JsonIgnoreAttribute" ||
-					    a.AttributeType.Name == "DoNotNotify") != null) {
+					    a.AttributeType.Name == "DoNotNotifyAttribute") != null) {
 					continue;
 				}
 
