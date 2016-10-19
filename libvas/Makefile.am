@@ -4,7 +4,7 @@
 AM_CPPFLAGS = \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
-	$(CESARPLAYER_CFLAGS)
+	$(LIBVAS_CFLAGS)
 
 if OSTYPE_OS_X
 AM_CPPFLAGS += \
@@ -53,7 +53,7 @@ libvas_la_SOURCES = \
 	lgm-utils.h
 
 libvas_la_LDFLAGS = \
-	$(CESARPLAYER_LIBS)
+	$(LIBVAS_LIBS)
 
 if OSTYPE_WINDOWS
 libvas_la_LDFLAGS += -no-undefined
@@ -69,14 +69,14 @@ if WITH_MULTIMEDIA_TOOLS
 noinst_PROGRAMS = test-capturer test-discoverer test-remuxer test-editor
 
 test_capturer_SOURCES = test-capturer.c
-test_capturer_LDADD =  libvas.la $(CESARPLAYER_LIBS)
+test_capturer_LDADD =  libvas.la $(LIBVAS_LIBS)
 
 test_discoverer_SOURCES = test-discoverer.c
-test_discoverer_LDADD =  libvas.la $(CESARPLAYER_LIBS)
+test_discoverer_LDADD =  libvas.la $(LIBVAS_LIBS)
 
 test_remuxer_SOURCES = test-remuxer.c
-test_remuxer_LDADD =  libvas.la $(CESARPLAYER_LIBS)
+test_remuxer_LDADD =  libvas.la $(LIBVAS_LIBS)
 
 test_editor_SOURCES = test-editor.c
-test_editor_LDADD =  libvas.la $(CESARPLAYER_LIBS)
+test_editor_LDADD =  libvas.la $(LIBVAS_LIBS)
 endif
