@@ -119,7 +119,6 @@ namespace VAS.Services.Controller
 			}
 			set {
 				provider = value;
-				provider.CollectionChanged += HandleProviderCollectionChanged;
 			}
 		}
 
@@ -135,6 +134,7 @@ namespace VAS.Services.Controller
 			if (started) {
 				return;
 			}
+			provider.CollectionChanged += HandleProviderCollectionChanged;
 			App.Current.EventsBroker.Subscribe<ExportEvent<TModel>> (HandleExport);
 			App.Current.EventsBroker.Subscribe<ImportEvent<TModel>> (HandleImport);
 			App.Current.EventsBroker.Subscribe<UpdateEvent<TModel>> (HandleSave);
@@ -150,6 +150,7 @@ namespace VAS.Services.Controller
 			if (!started) {
 				return;
 			}
+			provider.CollectionChanged -= HandleProviderCollectionChanged;
 			App.Current.EventsBroker.Unsubscribe<ExportEvent<TModel>> (HandleExport);
 			App.Current.EventsBroker.Unsubscribe<ImportEvent<TModel>> (HandleImport);
 			App.Current.EventsBroker.Unsubscribe<UpdateEvent<TModel>> (HandleSave);
