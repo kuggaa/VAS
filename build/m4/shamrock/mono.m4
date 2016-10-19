@@ -62,7 +62,8 @@ AC_DEFUN([_SHAMROCK_CHECK_MONO_GAC_ASSEMBLIES],
 		AC_MSG_CHECKING([for Mono $2 GAC for $asm.dll])
 		if test \
 			-e "$($PKG_CONFIG --variable=libdir $1)/mono/$2/$asm.dll" -o \
-			-e "$($PKG_CONFIG --variable=prefix $1)/lib/mono/$2/$asm.dll"; \
+			-e "$($PKG_CONFIG --variable=prefix $1)/lib/mono/$2/$asm.dll" -o \
+			-e "$($PKG_CONFIG --variable=prefix $1)/lib/mono/$2-api/$asm.dll"; \
 			then \
 			AC_MSG_RESULT([found])
 		else
