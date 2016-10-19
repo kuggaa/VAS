@@ -536,7 +536,6 @@ namespace VAS.Drawing.Widgets
 			tk.Clear (App.Current.Style.PaletteBackground);
 			tk.End ();
 
-
 			base.Draw (context, area);
 
 			if (backbuffer != null) {
