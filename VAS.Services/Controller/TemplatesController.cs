@@ -70,7 +70,8 @@ namespace VAS.Services.Controller
 			}
 			set {
 				if (viewModel != null) {
-					throw new InvalidOperationException ("The ViewModel is already set");
+					viewModel.PropertyChanged -= HandleSelectionChanged;
+					viewModel.LoadedTemplate.PropertyChanged -= HandleTemplateChanged;
 				}
 				viewModel = value;
 				viewModel.PropertyChanged += HandleSelectionChanged;
