@@ -154,15 +154,15 @@ namespace VAS.UI.Dialog
 			}
 		}
 
+		public DrawingTool (Window parent) : this ()
+		{
+			TransientFor = parent;
+		}
+
 		public override void Destroy ()
 		{
 			blackboard.Dispose ();
 			base.Destroy ();
-		}
-
-		public DrawingTool (Window parent) : this ()
-		{
-			TransientFor = parent;
 		}
 
 		public DrawingToolVM ViewModel {
@@ -197,6 +197,15 @@ namespace VAS.UI.Dialog
 		public void SetViewModel (object viewModel)
 		{
 			ViewModel = (DrawingToolVM)viewModel;
+		}
+
+		protected bool PlayerButtonVisibility {
+			get {
+				return playerbutton.Visible;
+			}
+			set {
+				playerbutton.Visible = value;
+			}
 		}
 
 		public void LoadPlay (TimelineEvent play, Image frame, FrameDrawing drawing,
