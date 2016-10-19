@@ -158,6 +158,16 @@ namespace VAS.Drawing
 		}
 
 		/// <summary>
+		/// Converts a point in user coordinates to the device coordinates.
+		/// </summary>
+		/// <returns>Converted point.</returns>
+		/// <param name="p">Point to convert</param>
+		protected Point ToDeviceCoords (Point p)
+		{
+			return new Point (((p.X * ScaleX) + Translation.X), (p.Y * ScaleY) + Translation.Y);
+		}
+
+		/// <summary>
 		/// Defines a clip region, any drawing outside this region
 		/// will not be drawn.
 		/// </summary>

@@ -22,13 +22,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Couchbase.Lite;
 using Couchbase.Lite.Store;
+using ICSharpCode.SharpZipLib;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
 
 namespace VAS.DB
 {
-	public class CouchbaseManager: IStorageManager
+	public class CouchbaseManager : IStorageManager
 	{
 		protected readonly Manager manager;
 		protected IStorage activeDB;
@@ -36,6 +37,7 @@ namespace VAS.DB
 
 		public CouchbaseManager (string dbDir)
 		{
+			VFS.SetCurrent (new FileSystem ());
 			manager = new Manager (new System.IO.DirectoryInfo (dbDir),
 				ManagerOptions.Default);
 			options = new DatabaseOptions ();
