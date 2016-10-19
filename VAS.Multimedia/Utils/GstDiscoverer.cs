@@ -29,7 +29,7 @@ namespace VAS.Multimedia.Utils
 		const int THUMBNAIL_MAX_HEIGHT = 72;
 		const int THUMBNAIL_MAX_WIDTH = 96;
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern unsafe uint lgm_discover_uri (string uri, out long duration,
 		                                            out uint width, out uint height,
 		                                            out uint fps_n, out uint fps_d,

@@ -38,70 +38,70 @@ namespace VAS.Multimedia.Player
 		MediaFile file;
 		double rate;
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern IntPtr lgm_video_player_get_type ();
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern unsafe IntPtr lgm_video_player_new (int use_type, out IntPtr error);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern unsafe IntPtr lgm_video_player_set_window_handle (IntPtr raw, IntPtr window_handle);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern bool lgm_video_player_open (IntPtr raw, IntPtr uri, out IntPtr error);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern bool lgm_video_player_play (IntPtr raw, bool synchronous);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern bool lgm_video_player_is_playing (IntPtr raw);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern void lgm_video_player_pause (IntPtr raw, bool synchronous);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern void lgm_video_player_stop (IntPtr raw, bool synchronous);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern void lgm_video_player_close (IntPtr raw);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern bool lgm_video_player_seek (IntPtr raw, double position);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern bool lgm_video_player_seek_time (IntPtr raw, long time, bool accurate, bool synchronous);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern bool lgm_video_player_seek_to_next_frame (IntPtr raw);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern bool lgm_video_player_seek_to_previous_frame (IntPtr raw);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern double lgm_video_player_get_position (IntPtr raw);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern long lgm_video_player_get_current_time (IntPtr raw);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern long lgm_video_player_get_stream_length (IntPtr raw);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern bool lgm_video_player_set_rate (IntPtr raw, double rate);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern void lgm_video_player_set_volume (IntPtr raw, double volume);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern double lgm_video_player_get_volume (IntPtr raw);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern IntPtr lgm_video_player_get_current_frame (IntPtr raw);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern void lgm_video_player_unref_pixbuf (IntPtr pixbuf);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern void lgm_video_player_expose (IntPtr pixbuf);
 
 		public unsafe GstPlayer () : base (IntPtr.Zero)

@@ -32,7 +32,7 @@
     <SourceDirectory>.</SourceDirectory>
     <DefineSymbols>DEBUG MONODEVELOP OSTYPE_LINUX</DefineSymbols>
     <CompileTarget>SharedLibrary</CompileTarget>
-    <OutputName>libvas</OutputName>
+    <OutputName>libvas.dll</OutputName>
     <CodeGeneration>
       <CodeGeneration ctype="CCompilationParameters" />
     </CodeGeneration>
@@ -47,7 +47,7 @@
     <OutputPath>..\bin</OutputPath>
     <WarningLevel>None</WarningLevel>
     <CompileTarget>SharedLibrary</CompileTarget>
-    <OutputName>libcesarplayer.dll</OutputName>
+    <OutputName>libvas.dll</OutputName>
     <OptimizationLevel>3</OptimizationLevel>
     <DefineSymbols>MONODEVELOP OSTYPE_LINUX</DefineSymbols>
     <SourceDirectory>.</SourceDirectory>

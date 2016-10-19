@@ -97,9 +97,9 @@ AC_PATH_PROG(COV_HTML, cov-html, no)
 AM_CONDITIONAL(HAVE_COVEM, test x$COVEM != xno)
 
 dnl package checks for libcesarplayer
-PKG_CHECK_MODULES(CESARPLAYER, [gtk+-2.0 >= 2.8 gdk-2.0 gio-2.0 glib-2.0 gstreamer-0.10 gstreamer-audio-0.10 gstreamer-video-0.10 gstreamer-pbutils-0.10 gobject-2.0 gstreamer-interfaces-0.10 gstreamer-tag-0.10 gstreamer-app-0.10])
-AC_SUBST(CESARPLAYER_CFLAGS)
-AC_SUBST(CESARPLAYER_LIBS)
+PKG_CHECK_MODULES(LIBVAS, [gtk+-2.0 >= 2.8 gdk-2.0 gio-2.0 glib-2.0 gstreamer-0.10 gstreamer-audio-0.10 gstreamer-video-0.10 gstreamer-pbutils-0.10 gobject-2.0 gstreamer-interfaces-0.10 gstreamer-tag-0.10 gstreamer-app-0.10])
+AC_SUBST(LIBVAS_CFLAGS)
+AC_SUBST(LIBVAS_LIBS)
 
 AC_MSG_CHECKING([for the OS type])
 ostype=""

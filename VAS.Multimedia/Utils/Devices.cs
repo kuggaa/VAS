@@ -26,19 +26,19 @@ namespace VAS.Multimedia.Utils
 {
 	public class Devices
 	{
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern IntPtr lgm_device_enum_video_devices (string source);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern IntPtr lgm_device_get_formats (IntPtr raw);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern IntPtr lgm_device_get_device_name (IntPtr raw);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern void lgm_device_free (IntPtr raw);
 
-		[DllImport ("libcesarplayer.dll")]
+		[DllImport ("libvas.dll")]
 		static extern IntPtr lgm_device_video_format_get_info (IntPtr raw, out int width, out int height,
 		                                                       out int fps_n, out int fps_d);
 
