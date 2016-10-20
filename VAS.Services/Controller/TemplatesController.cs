@@ -326,7 +326,6 @@ namespace VAS.Services.Controller
 		{
 			TModel template = evt.Object;
 			bool force = evt.Force;
-
 			TViewModel templateViewmodel = ViewModel.ViewModels.FirstOrDefault (vm => vm.Model.Equals (template));
 			bool savedOk = false;
 

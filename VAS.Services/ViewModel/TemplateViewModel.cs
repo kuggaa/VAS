@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Threading.Tasks;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.MVVMC;
@@ -26,7 +27,7 @@ namespace VAS.Services.ViewModel
 	/// <summary>
 	/// Generic base class for <see cref="ITemplate"/> ViewModel.
 	/// </summary>
-	public abstract class TemplateViewModel<T>: ViewModelBase<T>, IViewModel<T> where T:ITemplate<T>
+	public abstract class TemplateViewModel<T> : ViewModelBase<T>, IViewModel<T> where T : ITemplate<T>
 	{
 		/// <summary>
 		/// Gets the name of the template.
@@ -68,6 +69,14 @@ namespace VAS.Services.ViewModel
 			get {
 				return Model?.IsChanged == true;
 			}
+		}
+
+		/// <summary>
+		/// Closes the window.
+		/// </summary>
+		public async Task<bool> CloseWindow ()
+		{
+			return await App.Current.StateController.MoveBack ();
 		}
 	}
 }
