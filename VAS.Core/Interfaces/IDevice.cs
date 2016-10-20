@@ -16,6 +16,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Threading.Tasks;
+
 namespace VAS.Core.Interfaces
 {
 	/// <summary>
@@ -29,5 +31,27 @@ namespace VAS.Core.Interfaces
 		/// </summary>
 		/// <value>The identifier.</value>
 		Guid ID { get; }
+
+		/// <summary>
+		/// Shares the files if sharing files is allowed in the platform.
+		/// </summary>
+		/// <param name="filePaths">File paths.</param>
+		/// <param name="emailEnabled">If set to <c>true</c> email enabled.</param>
+		void ShareFiles (string [] filePaths, bool emailEnabled);
+
+		/// <summary>
+		/// Return if camera and micro recording is allowed. 
+		/// If permissions are denied by default, tries to request for permissions.
+		/// </summary>
+		/// <returns>The capture permission allowed.</returns>
+		Task<bool> CheckCapturePermissions ();
+
+		/// <summary>
+		/// Return if external storage access is allowed. 
+		/// If permissions are denied by default, tries to request for permissions.
+		/// If the device doesn't support external storage, alwais returns false.
+		/// </summary>
+		/// <returns>The external storage permission allowed.</returns>
+		Task<bool> CheckExternalStoragePermission ();
 	}
 }

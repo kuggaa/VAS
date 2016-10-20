@@ -18,6 +18,8 @@
 using System;
 using VAS.Core.Interfaces;
 using VAS.Core.Common;
+using System.Threading.Tasks;
+
 namespace VAS.Core
 {
 	public class Device : IDevice
@@ -44,6 +46,21 @@ namespace VAS.Core
 				}
 				return deviceID;
 			}
+		}
+
+		public Task<bool> CheckCapturePermissions ()
+		{
+			return AsyncHelpers.Return (true);
+		}
+
+		public Task<bool> CheckExternalStoragePermission ()
+		{
+			return AsyncHelpers.Return (true);
+		}
+
+		public void ShareFiles (string [] filePaths, bool emailEnabled)
+		{
+			return;
 		}
 	}
 }
