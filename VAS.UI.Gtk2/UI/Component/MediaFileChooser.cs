@@ -58,8 +58,8 @@ namespace VAS.UI.Component
 
 			nameentry.TooltipText = Catalog.GetString ("Edit to change camera name");
 
-			ProposedFileName = String.Format ("{0}-{1}.mp4", App.Current.SOFTWARE_NAME, DateTime.Now.ToShortDateString ());
-			ProposedDirectoryName = String.Format ("{0}-{1}", App.Current.SOFTWARE_NAME, DateTime.Now.ToShortDateString ());
+			ProposedFileName = String.Format ("{0}-{1}.mp4", App.Current.SoftwareName, DateTime.Now.ToShortDateString ());
+			ProposedDirectoryName = String.Format ("{0}-{1}", App.Current.SoftwareName, DateTime.Now.ToShortDateString ());
 		}
 
 		public MediaFileChooser () : this (null)

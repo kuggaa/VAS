@@ -57,8 +57,6 @@ namespace VAS
 			}
 		}
 
-		public string SOFTWARE_NAME { get; private set; }
-
 		protected StyleConf style;
 
 		public static App Current {
@@ -82,7 +80,6 @@ namespace VAS
 			Current = appInit;
 
 			string home = null;
-			App.Current.SOFTWARE_NAME = softwareName;
 
 			if (Environment.GetEnvironmentVariable (evUninstalled) != null) {
 				App.Current.baseDirectory = Path.GetFullPath (".");
