@@ -8,7 +8,7 @@ using VAS.Core.Serialization;
 
 namespace VAS.DB
 {
-	public class FileStorage
+	public class FileStorage : IFileStorage
 	{
 		/// <summary>
 		/// Retrieves an object of type T from a file path
