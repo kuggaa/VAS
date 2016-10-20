@@ -22,7 +22,7 @@ using VAS.Core.Common;
 using VAS.Core.Store.Playlists;
 using VASMisc = VAS.UI.Helpers.Misc;
 
-namespace VAS.UI.UI.Dialog
+namespace VAS.UI.Dialog
 {
 	[System.ComponentModel.Category ("VAS")]
 	[System.ComponentModel.ToolboxItem (false)]

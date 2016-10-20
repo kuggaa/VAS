@@ -20,7 +20,7 @@ using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Store;
 
-namespace VAS.UI.UI.Component
+namespace VAS.UI.Component
 {
 	[System.ComponentModel.ToolboxItem (true)]
 	public partial class MediaFileChooser : Gtk.Bin
