@@ -119,6 +119,41 @@ namespace VAS.Tests.Core.Common
 			Assert.AreEqual ("newTransition", lastTransition);
 		}
 
+
+		[Test]
+		public async void TestMoveTo_TrueEmptyStack ()
+		{
+			// Arrange
+			sc.Register ("newTransition", () => GetScreenStateDummy ("newTransition"));
+			sc.Register ("newTransition2", () => GetScreenStateDummy ("newTransition2"));
+
+			await sc.MoveTo ("newTransition", null);
+			await sc.MoveTo ("newTransition2", null);
+
+			// Action
+			bool moveTransition = await sc.MoveTo ("newTransition", null, true);
+
+			// Assert
+			Assert.IsTrue (moveTransition);
+			Assert.AreEqual ("newTransition", lastTransition);
+			bool moveBack = await sc.MoveBack ();
+			Assert.IsFalse (moveBack);
+		}
+
+		[Test]
+		public async void TestSetHomeTransition ()
+		{
+			// Arrange
+			sc.Register ("newTransition", () => GetScreenStateDummy ("newTransition"));
+
+			// Action
+			bool moveTransition = await sc.SetHomeTransition ("newTransition", null);
+
+			// Assert
+			Assert.IsTrue (moveTransition);
+			Assert.AreEqual ("newTransition", lastTransition);
+		}
+
 		[Test]
 		public async void TestMoveToModal ()
 		{

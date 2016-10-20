@@ -87,12 +87,18 @@ namespace VAS.Core
 						return false;
 					}
 				}
+				IScreenState state;
+				bool isHome = transition == home?.Name;
+				if (isHome) {
+					state = home.ScreenState;
+				} else {
+					state = destination [transition] ();
+				}
 
-				IScreenState state = destination [transition] ();
 				if (!await state.PreTransition (properties)) {
 					Log.Debug ("Moving failed because panel " + state.Name + " cannot move.");
 				}
-				return await PushNavigationState (transition, state);
+				return await PushNavigationState (transition, state, isHome);
 			} catch (Exception ex) {
 				Log.Exception (ex);
 				return false;
@@ -263,9 +269,11 @@ namespace VAS.Core
 			return true;
 		}
 
-		Task<bool> PushNavigationState (string transition, IScreenState state)
+		Task<bool> PushNavigationState (string transition, IScreenState state, bool ishome)
 		{
-			navigationStateStack.Add (new NavigationState (transition, state));
+			if (!ishome) {
+				navigationStateStack.Add (new NavigationState (transition, state));
+			}
 			App.Current.EventsBroker.Publish (new NavigationEvent { Name = transition });
 			return App.Current.Navigation.Push (state.Panel);
 		}

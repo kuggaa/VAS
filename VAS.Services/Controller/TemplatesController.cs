@@ -17,10 +17,10 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
@@ -70,7 +70,8 @@ namespace VAS.Services.Controller
 			}
 			set {
 				if (viewModel != null) {
-					throw new InvalidOperationException ("The ViewModel is already set");
+					viewModel.PropertyChanged -= HandleSelectionChanged;
+					viewModel.LoadedTemplate.PropertyChanged -= HandleTemplateChanged;
 				}
 				viewModel = value;
 				viewModel.PropertyChanged += HandleSelectionChanged;
@@ -97,6 +98,8 @@ namespace VAS.Services.Controller
 
 		protected string ConfirmDeleteText { get; set; }
 
+		protected string ConfirmDeleteListText { get; set; }
+
 		protected string CouldNotLoadText { get; set; }
 
 		protected string NotEditableText { get; set; }
@@ -117,42 +120,45 @@ namespace VAS.Services.Controller
 			}
 			set {
 				provider = value;
-				provider.CollectionChanged += HandleProviderCollectionChanged;
 			}
 		}
 
 		#region IController implementation
 
-		public void SetViewModel (IViewModel viewModel)
+		public virtual void SetViewModel (IViewModel viewModel)
 		{
 			ViewModel = (TemplatesManagerViewModel<TModel, TViewModel>)viewModel;
 		}
 
-		public void Start ()
+		public virtual void Start ()
 		{
 			if (started) {
-				throw new InvalidOperationException ("The controller is already running");
+				return;
 			}
+			provider.CollectionChanged += HandleProviderCollectionChanged;
 			App.Current.EventsBroker.Subscribe<ExportEvent<TModel>> (HandleExport);
 			App.Current.EventsBroker.Subscribe<ImportEvent<TModel>> (HandleImport);
 			App.Current.EventsBroker.Subscribe<UpdateEvent<TModel>> (HandleSave);
 			App.Current.EventsBroker.Subscribe<CreateEvent<TModel>> (HandleNew);
 			App.Current.EventsBroker.Subscribe<DeleteEvent<TModel>> (HandleDelete);
 			App.Current.EventsBroker.Subscribe<ChangeNameEvent<TModel>> (HandleChangeName);
+			App.Current.EventsBroker.Subscribe<DeleteEvent<ObservableCollection<TModel>>> (HandleDeleteList);
 			started = true;
 		}
 
-		public void Stop ()
+		public virtual void Stop ()
 		{
 			if (!started) {
-				throw new InvalidOperationException ("The controller is already stopped");
+				return;
 			}
+			provider.CollectionChanged -= HandleProviderCollectionChanged;
 			App.Current.EventsBroker.Unsubscribe<ExportEvent<TModel>> (HandleExport);
 			App.Current.EventsBroker.Unsubscribe<ImportEvent<TModel>> (HandleImport);
 			App.Current.EventsBroker.Unsubscribe<UpdateEvent<TModel>> (HandleSave);
 			App.Current.EventsBroker.Unsubscribe<CreateEvent<TModel>> (HandleNew);
 			App.Current.EventsBroker.Unsubscribe<DeleteEvent<TModel>> (HandleDelete);
 			App.Current.EventsBroker.Unsubscribe<ChangeNameEvent<TModel>> (HandleChangeName);
+			App.Current.EventsBroker.Unsubscribe<DeleteEvent<ObservableCollection<TModel>>> (HandleDeleteList);
 			started = false;
 		}
 
@@ -238,7 +244,7 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		async void HandleNew (CreateEvent<TModel> evt)
+		protected async virtual void HandleNew (CreateEvent<TModel> evt)
 		{
 			TModel template, templateToDelete;
 
@@ -279,14 +285,29 @@ namespace VAS.Services.Controller
 			ViewModel.Select (template);
 		}
 
-		async void HandleDelete (DeleteEvent<TModel> evt)
+		protected async virtual void HandleDelete (DeleteEvent<TModel> evt)
 		{
 			TModel template = evt.Object;
 
 			if (template != null) {
-				string msg = ConfirmDeleteText + template.Name;
+				string msg = String.Format (ConfirmDeleteText, template.Name);
 				if (await App.Current.Dialogs.QuestionMessage (msg, null)) {
 					Provider.Delete (template);
+					viewModel.Select (viewModel.Model.FirstOrDefault ());
+				}
+			}
+		}
+
+		protected async virtual void HandleDeleteList (DeleteEvent<ObservableCollection<TModel>> evt)
+		{
+			ObservableCollection<TModel> templates = evt.Object;
+
+			if (templates != null) {
+				string msg = ConfirmDeleteListText;
+				if (await App.Current.Dialogs.QuestionMessage (msg, null)) {
+					foreach (TModel template in templates) {
+						Provider.Delete (template);
+					}
 					viewModel.Select (viewModel.Model.FirstOrDefault ());
 				}
 			}

@@ -186,20 +186,19 @@ namespace VAS.UI.Common
 			}
 			subViewModel.PropertyChanged -= PropertyChangedItem;
 			TreeIter iter = dictionaryStore [subViewModel];
-			if (store.Remove (ref iter)) {
-				dictionaryStore.Remove (subViewModel);
-			}
+			store.Remove (ref iter);
+			dictionaryStore.Remove (subViewModel);
 		}
 
 		protected virtual void RemoveSubViewModel (IViewModel subViewModel)
 		{
 			RemoveSubViewModelListener (subViewModel);
 			TreeIter iter = dictionaryStore [subViewModel];
-			if (store.Remove (ref iter)) {
-				dictionaryStore.Remove (subViewModel);
-			}
 			if (subViewModel is INestedViewModel) {
 				RemoveAllNestedSubViewModels (subViewModel);
+			} else {
+				store.Remove (ref iter);
+				dictionaryStore.Remove (subViewModel);
 			}
 		}
 
