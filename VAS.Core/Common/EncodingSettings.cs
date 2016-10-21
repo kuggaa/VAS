@@ -60,14 +60,22 @@ namespace VAS.Core.Common
 		}
 
 		/// <summary>
-		/// Return the video bitrate using EncodingQuality.VideoQuality in kbps as a multiplication factor
-		/// to retrieve the bitrate relative to the output video size.
+		/// Returns the video bitrate using the Kush Gauge equation in kbps.
 		/// </summary>
-		public int VideoBitrate {
+		public uint VideoBitrate {
 			get {
-				int pixels = (int)(VideoStandard.Width * VideoStandard.Height);
-				float xfactor = (float)EncodingQuality.VideoQuality / 1000;
-				return (int)(pixels * xfactor);
+				float fps = (float) Framerate_n / Framerate_d;
+				float motionFactor = EncodingQuality.VideoQuality / 1000;
+				return (uint) (VideoStandard.Width * VideoStandard.Height * fps * 0.07 * motionFactor / 1000);
+			}
+		}
+
+		/// <summary>
+		/// Returns the audio bitrate.
+		/// </summary>
+		public uint AudioBitrate {
+			get {
+				return EncodingQuality.AudioQuality;
 			}
 		}
 	}

@@ -425,20 +425,20 @@ namespace VAS.Multimedia.Capturer
 			EncodingProfile enc;
 			VideoStandard std;
 			IntPtr outFile, sourceElement, deviceID;
-			
+
 			enc = settings.EncodingSettings.EncodingProfile;
 			std = settings.EncodingSettings.VideoStandard;
-			
+
 			outFile = Marshaller.StringToPtrGStrdup (settings.EncodingSettings.OutputFile);
 			sourceElement = Marshaller.StringToPtrGStrdup (device.SourceElement);
 			deviceID = Marshaller.StringToPtrGStrdup (device.ID);
-			
+
 			gst_camera_capturer_configure (Handle, outFile, (int)settings.Device.DeviceType,
 				sourceElement, deviceID,
 				format.width, format.height, format.fps_n, format.fps_d,
-				(int)enc.VideoEncoder, (int)enc.AudioEncoder,
-				(int)enc.Muxer, qual.VideoQuality,
-				qual.AudioQuality,
+				(int)enc.VideoEncoder, (int)enc.AudioEncoder, (int)enc.Muxer,
+										   settings.EncodingSettings.VideoBitrate,
+										   settings.EncodingSettings.AudioBitrate,
 				settings.EncodingSettings.EnableAudio,
 				std.Width, std.Height, (IntPtr)window_handle,
 				out err);
