@@ -66,7 +66,7 @@ EXTRA_DIST = \
 
 
 if WITH_MULTIMEDIA_TOOLS
-noinst_PROGRAMS = test-capturer test-discoverer test-remuxer test-editor
+noinst_PROGRAMS = test-capturer test-discoverer test-remuxer test-editor test-converter
 
 test_capturer_SOURCES = test-capturer.c
 test_capturer_LDADD =  libvas.la $(LIBVAS_LIBS)
@@ -79,4 +79,7 @@ test_remuxer_LDADD =  libvas.la $(LIBVAS_LIBS)
 
 test_editor_SOURCES = test-editor.c
 test_editor_LDADD =  libvas.la $(LIBVAS_LIBS)
+
+test_converter_SOURCES = test-converter.c
+test_converter_LDADD =  libvas.la $(LIBVAS_LIBS)
 endif

@@ -1,6 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
 /*
- * Copyright (C) Fluendo S.A. 2016
+ * main.c
+ * Copyright (C) Andoni Morales Alastruey 2008 <ylatuya@gmail.com>
  * 
  * main.c is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -14,6 +15,10 @@
  * 
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* Compile with:
+ * gcc -o test-editor test-editor.c gst-video-editor.c `pkg-config --cflags --libs gstreamer-0.10 gtk+-2.0` -DOSTYPE_LINUX -O0 -g
  */
 
 #include <stdlib.h>
@@ -51,24 +56,21 @@ main (int argc, char *argv[])
   VideoEncoderType video_encoder;
   VideoMuxerType video_muxer;
   AudioEncoderType audio_encoder;
-  gchar *input_file, *output_file, *format;
+  gchar *output_file, *format;
   gchar *err = NULL;
   guint64 start, stop;
-  gboolean with_audio, with_title;
   gint i, bitrate;
 
   gst_video_editor_init_backend (&argc, &argv);
 
-  if (argc < 9) {
+  if (argc < 5) {
     g_print
-        ("Usage: test-remuxer output_file format bitrate with_audio with_title input_file start stop\n");
+        ("Usage: test-converter output_file format bitrate input_file\n");
     return 1;
   }
   output_file = argv[1];
   format = argv[2];
   bitrate = (gint) g_strtod (argv[3], NULL);
-  with_audio = (gboolean) g_strtod (argv[4], NULL);
-  with_title = (gboolean) g_strtod (argv[5], NULL);
 
   if (!g_strcmp0 (format, "mp4")) {
     video_encoder = VIDEO_ENCODER_H264;
@@ -85,24 +87,14 @@ main (int argc, char *argv[])
 
   editor = gst_video_editor_new (NULL);
   gst_video_editor_set_encoding_format (editor, output_file, video_encoder,
-      audio_encoder, video_muxer, bitrate, 128, 1280, 720, 25, 1, with_audio,
-      with_title);
+      audio_encoder, video_muxer, bitrate, 128, 1280, 720, 25, 1, TRUE,
+      FALSE);
 
-  for (i = 8; i <= argc; i = i + 3) {
-    gchar *title;
-    title = g_strdup_printf ("Title %d", i - 4);
-
-    input_file = argv[i - 2];
-    start = (guint64) g_strtod (argv[i - 1], NULL);
-    stop = (guint64) g_strtod (argv[i], NULL);
-    if (g_str_has_suffix (input_file, ".png")) {
-      gst_video_editor_add_image_segment (editor, input_file, start,
-          stop - start, title, 0, 0, 0, 0);
-    } else {
-      gst_video_editor_add_segment (editor, input_file, start, stop - start,
-          (gfloat) 1, title, TRUE, 0, 0, 0, 0);
+  for (i = 4; i <= argc; i++) {
+    if (argv[i] != NULL) {
+      gst_video_editor_add_segment (editor, argv[i], 0, GST_CLOCK_TIME_NONE,
+          (gfloat) 1, "", TRUE, 0, 0, 0, 0);
     }
-    g_free (title);
   }
 
   loop = g_main_loop_new (NULL, FALSE);
