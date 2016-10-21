@@ -79,6 +79,9 @@ namespace VAS
 
 			Current = appInit;
 
+			/* Initialize device */
+			Current.Device = new Core.Device ();
+
 			string home = null;
 
 			if (Environment.GetEnvironmentVariable (evUninstalled) != null) {
