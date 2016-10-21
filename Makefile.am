@@ -24,6 +24,7 @@ SUBDIRS = \
 	VAS.Services \
 	libvas \
 	system_uuid \
+	data \
 	po
 
 if ENABLE_TESTS

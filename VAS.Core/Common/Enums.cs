@@ -445,7 +445,7 @@ namespace VAS.Core.Common
 		Synchronization,
 		LiveAnalysisReview,
 		Analysis,
-		Presentation,
+		SimpleWithControls,
 	}
 
 	public enum DashboardMode

@@ -4,7 +4,7 @@ import os
 import subprocess
 
 TEMPLATE='''\
-%(dir)sdir = @datadir@/@PACKAGE@/%(dir)s
+%(dir)sdir = @datadir@/@USER_PACKAGE@/%(dir)s
 nobase_dist_%(dir)s_DATA = %(files)s
 '''
 
@@ -13,7 +13,7 @@ nobase_dist_%(dir)s_DATA = %(files)s
 def main():
     home = sys.argv[1]
 #    for d in ['icons', 'theme', 'images']:
-    for d in ['icons']:
+    for d in ['images']:
         di = os.path.join(home, 'data', d)
         files =  subprocess.check_output(["git", "ls-files", di])
         files = [x.replace(os.path.join('data', d) + '/', '') for x in files.split('\n')[:-1]]

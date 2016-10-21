@@ -143,7 +143,8 @@ build/Makefile
 
 libvas/Makefile
 system_uuid/Makefile
-
+data/Makefile
+data/images/Makefile
 Makefile
 
 po/Makefile.in

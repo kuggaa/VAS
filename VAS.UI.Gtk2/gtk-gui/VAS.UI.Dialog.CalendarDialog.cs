@@ -5,7 +5,7 @@ namespace VAS.UI.Dialog
 	public partial class CalendarDialog
 	{
 		private global::Gtk.Calendar calendar1;
-		
+
 		private global::Gtk.Button buttonOk;
 
 		protected virtual void Build ()

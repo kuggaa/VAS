@@ -22,9 +22,11 @@ VAS.UI.Helpers.Gtk2/Misc.cs
 VAS.Drawing/CanvasObjects/Timeline/LabelObject.cs
 VAS.UI.Gtk2/Dialogs.cs
 VAS.UI.Gtk2/UI/Component/Timeline.cs
+VAS.UI.Gtk2/UI/Dialog/DrawingTool.cs
 VAS.UI.Gtk2/UI/Menu/MenuHelpers.cs
 VAS.UI.Gtk2/UI/Menu/PlaysMenu.cs
 VAS.UI.Gtk2/gtk-gui/VAS.UI.Dialog.CalendarDialog.cs
+VAS.UI.Gtk2/gtk-gui/VAS.UI.Dialog.DrawingTool.cs
 VAS.UI.Multimedia.Gtk2/MultimediaToolkit.cs
 VAS.UI.Multimedia.Gtk2/UI/CapturerBin.cs
 VAS.UI.Multimedia.Gtk2/UI/PlayerCapturerBin.cs

@@ -66,10 +66,10 @@ namespace VAS.Services.ViewModel
 			set;
 		}
 
-		public bool DrawingsVisible {
+		public bool ShowDrawingIcon {
 			get;
 			set;
-		}
+		} = true;
 
 		[PropertyChanged.DoNotNotify]
 		public double Volume {
@@ -108,7 +108,7 @@ namespace VAS.Services.ViewModel
 
 		public Time Duration {
 			get;
-			set;	
+			set;
 		}
 
 		public bool Seekable {
@@ -145,14 +145,22 @@ namespace VAS.Services.ViewModel
 				case PlayerViewOperationMode.Analysis:
 					Compact = false;
 					ShowControls = true;
+					ShowDrawingIcon = true;
 					break;
 				case PlayerViewOperationMode.LiveAnalysisReview:
 					Compact = true;
 					ShowControls = true;
+					ShowDrawingIcon = true;
 					break;
 				case PlayerViewOperationMode.Synchronization:
 					Compact = false;
 					ShowControls = false;
+					ShowDrawingIcon = false;
+					break;
+				case PlayerViewOperationMode.SimpleWithControls:
+					Compact = false;
+					ShowControls = true;
+					ShowDrawingIcon = false;
 					break;
 				}
 			}
@@ -161,7 +169,7 @@ namespace VAS.Services.ViewModel
 			}
 		}
 
-		public bool SupportsMultipleCameras { 
+		public bool SupportsMultipleCameras {
 			get;
 			set;
 		}
@@ -377,9 +385,9 @@ namespace VAS.Services.ViewModel
 				.Select (evt => new PlaylistPlayElement (evt))
 				.OfType<IPlaylistElement> ()
 				.ToList ();
-			
+
 			playlist.Elements = new ObservableCollection<IPlaylistElement> (list);
-			playerController.LoadPlaylistEvent (playlist, list.FirstOrDefault (), playing);			
+			playerController.LoadPlaylistEvent (playlist, list.FirstOrDefault (), playing);
 		}
 
 		public void LoadPlay (TimelineEvent e, Time seekTime, bool playing)
@@ -389,6 +397,21 @@ namespace VAS.Services.ViewModel
 			if (playing) {
 				Player.Play ();
 			}
+		}
+
+		/// <summary>
+		/// Sends Event to draw in the Current Frame
+		/// </summary>
+		public void DrawFrame ()
+		{
+			App.Current.EventsBroker.Publish<DrawFrameEvent> (
+				new DrawFrameEvent {
+					Play = null,
+					DrawingIndex = -1,
+					CamConfig = CamerasConfig [0],
+					Current = true
+				}
+			);
 		}
 
 		#endregion
