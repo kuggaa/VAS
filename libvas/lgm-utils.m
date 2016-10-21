@@ -247,8 +247,8 @@ lgm_create_video_encoder (VideoEncoderType type, guint quality,
       encoder = gst_element_factory_make ("fluvah264enc", "video-encoder");
       if (encoder != NULL) {
         g_object_set (encoder, "bitrate", quality, "keyframe-period", 1000,
-            "rate-control", 1, "entropy-mode", 0, "allow-b-frames", FALSE,
-            "profile", 1, NULL);
+            "rate-control", 1, "entropy-mode", 1, "allow-b-frames", TRUE,
+            "profile", 2, NULL);
         if (realtime) {
             g_object_set (encoder, "realtime", TRUE, NULL);
         }
