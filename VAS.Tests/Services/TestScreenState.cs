@@ -16,15 +16,16 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 
-using Moq;
-using NUnit.Framework;
-using VAS.Core.Interfaces.MVVMC;
-using VAS.Services.State;
-using VAS.Core.Interfaces.GUI;
-using VAS.Core.Hotkeys;
-using System.Dynamic;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
+using Moq;
+using NUnit.Framework;
+using VAS.Core.Hotkeys;
+using VAS.Core.Interfaces.GUI;
+using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.MVVMC;
+using VAS.Services.State;
 
 namespace VAS.Tests.Services
 {
@@ -78,6 +79,13 @@ namespace VAS.Tests.Services
 		Mock<IController> mockController;
 		Mock<IController> mockRootController;
 		Mock<IPanel> mockPanel;
+
+		[TestFixtureSetUp]
+		public void FixtureSetup ()
+		{
+			App.Current.ViewLocator = new ViewLocator ();
+			App.Current.ControllerLocator = new ControllerLocator ();
+		}
 
 		[SetUp]
 		public void SetUp ()

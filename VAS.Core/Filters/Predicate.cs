@@ -20,8 +20,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq;
+using System.Linq.Expressions;
 using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
 
@@ -32,19 +32,32 @@ namespace VAS.Core.Filters
 	/// Contains a settable function that receives a T object, and returns a boolean.
 	/// If it is not set, it will return true.
 	/// </summary>
-	public class Predicate<T> : IPredicate <T>
+	public class Predicate<T> : IPredicate<T>
 	{
+		Func<T, bool> compiledExpression;
+		Expression<Func<T, bool>> expression = (a) => true;
+
 		#region IPredicate implementation
+
+		Func<T, bool> compiledExpression;
 
 		public string Name {
 			get;
 			set;
 		}
 
-		public Func<T, bool> Filter {
-			get;
-			set;
-		} = _ => true;
+		public Expression<Func<T, bool>> Expression {
+			get { return expression; }
+			set {
+				expression = value;
+				compiledExpression = expression.Compile ();
+			}
+		}
+
+		public bool Filter (T ev)
+		{
+			return compiledExpression.Invoke (ev);
+		}
 
 		#endregion
 	}
@@ -54,23 +67,50 @@ namespace VAS.Core.Filters
 	/// </summary>
 	public abstract class CompositePredicate<T> : BindableBase, IPredicate<T>, IList<IPredicate<T>>
 	{
+		protected Expression<Func<T, bool>> expression;
+		Func<T, bool> compiledExpression;
+
 		public CompositePredicate ()
 		{
+			this.PropertyChanged += (sender, e) => {
+				if (e.PropertyName == "Elements" || e.PropertyName == "Collection") {
+					UpdatePredicate ();
+				}
+			};
 			Elements.CollectionChanged += (sender, e) => {
 				CollectionChanged (sender, e);
 			};
 		}
 
-		public ObservableCollection<IPredicate<T>> Elements{ get; set; } =  new ObservableCollection<IPredicate<T>>();
+		public ObservableCollection<IPredicate<T>> Elements { get; set; } = new ObservableCollection<IPredicate<T>> ();
+
 
 		#region IPredicate implementation
+
+		public Expression<Func<T, bool>> Expression {
+			get {
+				return expression;
+			}
+		}
 
 		public string Name {
 			get;
 			set;
 		}
 
-		public abstract Func<T, bool> Filter{ get; }
+		public bool Filter (T obj)
+		{
+			if (compiledExpression == null) {
+				UpdatePredicate ();
+			}
+			return compiledExpression.Invoke (obj);
+		}
+
+
+		public virtual void UpdatePredicate ()
+		{
+			compiledExpression = Expression.Compile ();
+		}
 
 		#endregion
 
@@ -115,7 +155,7 @@ namespace VAS.Core.Filters
 			return Elements.Contains (item);
 		}
 
-		public void CopyTo (IPredicate<T>[] array, int arrayIndex)
+		public void CopyTo (IPredicate<T> [] array, int arrayIndex)
 		{
 			Elements.CopyTo (array, arrayIndex);
 		}
@@ -156,12 +196,21 @@ namespace VAS.Core.Filters
 	/// </summary>
 	public class OrPredicate<T> : CompositePredicate<T>
 	{
-		public override Func<T, bool> Filter {
-			get {
-				return (evt) => Elements.Any (f => f.Filter (evt));
-			}
+
+		public OrPredicate ()
+		{
+			expression = PredicateBuilder.False<T> ();
 		}
 
+		public override void UpdatePredicate ()
+		{
+			// We initialize this with a false, as it's the neutral element for the Or
+			expression = PredicateBuilder.False<T> ();
+			foreach (var el in Elements) {
+				expression = expression.Or (el.Expression);
+			}
+			base.UpdatePredicate ();
+		}
 	}
 
 	/// <summary>
@@ -170,10 +219,42 @@ namespace VAS.Core.Filters
 	/// </summary>
 	public class AndPredicate<T> : CompositePredicate<T>
 	{
-		public override Func<T, bool> Filter {
-			get {
-				return (evt) => Elements.All (f => f.Filter (evt));
+
+		public AndPredicate ()
+		{
+			expression = PredicateBuilder.True<T> ();
+		}
+
+		public override void UpdatePredicate ()
+		{
+			// We initialize this with a true, as it's the neutral element for the And
+			expression = PredicateBuilder.True<T> ();
+			foreach (var el in Elements) {
+				expression = expression.And (el.Expression);
 			}
+			base.UpdatePredicate ();
+		}
+	}
+
+	public static class PredicateBuilder
+	{
+		public static Expression<Func<T, bool>> True<T> () { return f => true; }
+		public static Expression<Func<T, bool>> False<T> () { return f => false; }
+
+		public static Expression<Func<T, bool>> Or<T> (this Expression<Func<T, bool>> expr1,
+															Expression<Func<T, bool>> expr2)
+		{
+			var invokedExpr = Expression.Invoke (expr2, expr1.Parameters.Cast<Expression> ());
+			return Expression.Lambda<Func<T, bool>>
+				  (Expression.OrElse (expr1.Body, invokedExpr), expr1.Parameters);
+		}
+
+		public static Expression<Func<T, bool>> And<T> (this Expression<Func<T, bool>> expr1,
+															 Expression<Func<T, bool>> expr2)
+		{
+			var invokedExpr = Expression.Invoke (expr2, expr1.Parameters.Cast<Expression> ());
+			return Expression.Lambda<Func<T, bool>>
+				  (Expression.AndAlso (expr1.Body, invokedExpr), expr1.Parameters);
 		}
 	}
 }

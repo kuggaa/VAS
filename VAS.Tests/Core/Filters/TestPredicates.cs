@@ -31,8 +31,8 @@ namespace VAS.Tests.Core.Filters
 		public void TestOr ()
 		{
 			var filter = new OrPredicate<string> {
-				new Predicate<string> { Filter = (ev) => true },
-				new Predicate<string> { Filter = (ev) => false },
+				new Predicate<string> { Expression = (ev) => true },
+				new Predicate<string> { Expression = (ev) => false },
 			};
 
 			Assert.IsTrue (filter.Filter (""));
@@ -42,8 +42,8 @@ namespace VAS.Tests.Core.Filters
 		public void TestOrFalse ()
 		{
 			var filter = new OrPredicate<string> {
-				new Predicate<string> { Filter = (ev) => false },
-				new Predicate<string> { Filter = (ev) => false },
+				new Predicate<string> { Expression = (ev) => false },
+				new Predicate<string> { Expression = (ev) => false },
 			};
 
 			Assert.IsFalse (filter.Filter (""));
@@ -53,8 +53,8 @@ namespace VAS.Tests.Core.Filters
 		public void TestAnd ()
 		{
 			var filter = new AndPredicate<string> {
-				new Predicate<string> { Filter = (ev) => true },
-				new Predicate<string> { Filter = (ev) => true },
+				new Predicate<string> { Expression = (ev) => true },
+				new Predicate<string> { Expression = (ev) => true },
 			};
 
 			Assert.IsTrue (filter.Filter (""));
@@ -64,8 +64,8 @@ namespace VAS.Tests.Core.Filters
 		public void TestAndFalse ()
 		{
 			var filter = new AndPredicate<string> {
-				new Predicate<string> { Filter = (ev) => true },
-				new Predicate<string> { Filter = (ev) => false },
+				new Predicate<string> { Expression = (ev) => true },
+				new Predicate<string> { Expression = (ev) => false },
 			};
 
 			Assert.IsFalse (filter.Filter (""));
@@ -75,13 +75,13 @@ namespace VAS.Tests.Core.Filters
 		public void TestAndContainingOr ()
 		{
 			var filter = new OrPredicate<string> {
-				new Predicate<string> { Filter = (ev) => true },
-				new Predicate<string> { Filter = (ev) => false },
+				new Predicate<string> { Expression = (ev) => true },
+				new Predicate<string> { Expression = (ev) => false },
 			};
 
 			var filter2 = new OrPredicate<string> {
-				new Predicate<string> { Filter = (ev) => true },
-				new Predicate<string> { Filter = (ev) => false },
+				new Predicate<string> { Expression = (ev) => true },
+				new Predicate<string> { Expression = (ev) => false },
 			};
 
 			var container = new AndPredicate<string> ();
@@ -95,11 +95,11 @@ namespace VAS.Tests.Core.Filters
 		public void TestAndContainingOrFalse ()
 		{
 			var filter = new OrPredicate<string> {
-				new Predicate<string> { Filter = (ev) => true },
-				new Predicate<string> { Filter = (ev) => false },
+				new Predicate<string> { Expression = (ev) => true },
+				new Predicate<string> { Expression = (ev) => false },
 			};
 
-			var filter2 = new Predicate<string> { Filter = (ev) => false };
+			var filter2 = new Predicate<string> { Expression = (ev) => false };
 
 			var container = new AndPredicate<string> ();
 			container.Add (filter);
@@ -112,13 +112,13 @@ namespace VAS.Tests.Core.Filters
 		public void TestOrContainingAnd ()
 		{
 			var filter = new AndPredicate<string> {
-				new Predicate<string> { Filter = (ev) => true },
-				new Predicate<string> { Filter = (ev) => false },
+				new Predicate<string> { Expression = (ev) => true },
+				new Predicate<string> { Expression = (ev) => false },
 			};
 
 			var filter2 = new AndPredicate<string> {
-				new Predicate<string> { Filter = (ev) => true },
-				new Predicate<string> { Filter = (ev) => true },
+				new Predicate<string> { Expression = (ev) => true },
+				new Predicate<string> { Expression = (ev) => true },
 			};
 
 			var container = new OrPredicate<string> ();
@@ -132,11 +132,11 @@ namespace VAS.Tests.Core.Filters
 		public void TestOrContainingAndFalse ()
 		{
 			var filter = new AndPredicate<string> {
-				new Predicate<string> { Filter = (ev) => true },
-				new Predicate<string> { Filter = (ev) => false },
+				new Predicate<string> { Expression = (ev) => true },
+				new Predicate<string> { Expression = (ev) => false },
 			};
 
-			var filter2 = new Predicate<string> { Filter = (ev) => false };
+			var filter2 = new Predicate<string> { Expression = (ev) => false };
 
 			var container = new OrPredicate<string> ();
 			container.Add (filter);
@@ -149,7 +149,7 @@ namespace VAS.Tests.Core.Filters
 		public void TestAndContainingEmptyOr ()
 		{
 			var filter = new OrPredicate<string> {
-				new Predicate<string> { Filter = (ev) => true },
+				new Predicate<string> { Expression = PredicateBuilder.True<string>() },
 			};
 
 			var filter2 = new OrPredicate<string> ();
@@ -165,7 +165,7 @@ namespace VAS.Tests.Core.Filters
 		public void TestOrContainingEmptyAnd ()
 		{
 			var filter = new AndPredicate<string> {
-				new Predicate<string> { Filter = (ev) => true },
+				new Predicate<string> { Expression = (ev) => true },
 			};
 
 			var filter2 = new AndPredicate<string> ();
@@ -190,7 +190,7 @@ namespace VAS.Tests.Core.Filters
 			};
 
 			// Act
-			filter.Add (new Predicate<string> { Filter = (ev) => true });
+			filter.Add (new Predicate<string> { Expression = (ev) => true });
 
 			//Assert
 			Assert.AreEqual ("Collection", property);
@@ -210,7 +210,7 @@ namespace VAS.Tests.Core.Filters
 			};
 
 			// Act
-			filter.Add (new Predicate<string> { Filter = (ev) => true });
+			filter.Add (new Predicate<string> { Expression = (ev) => true });
 
 			//Assert
 			Assert.AreEqual ("Collection", property);
