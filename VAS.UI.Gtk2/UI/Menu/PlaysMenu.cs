@@ -93,7 +93,13 @@ namespace VAS.UI.Menus
 			Popup ();
 		}
 
-		void CreateMenu ()
+		protected void EmitEditPlayEvent (object source, EventArgs eventArgs)
+		{
+			if (EditPlayEvent != null)
+				EditPlayEvent (source, eventArgs);
+		}
+
+		protected virtual void CreateMenu (bool calledFromChild = false)
 		{
 			newPlay = new MenuItem ("");
 			Add (newPlay);
@@ -108,8 +114,8 @@ namespace VAS.UI.Menus
 				);
 			};
 			Add (del);
-
-			ShowAll ();
+			if (!calledFromChild)
+				ShowAll ();
 		}
 
 		void HandleNewPlayActivated (object sender, EventArgs e)
