@@ -30,17 +30,17 @@ namespace VAS.Core.Services.ViewModel
 
 		public string StateIconName {
 			get {
-				return Model.StateIconName;
+				return Model?.StateIconName;
 			}
 		}
 
-		public JobState State {
+		public JobState? State {
 			get {
-				return Model.State;
+				return Model?.State;
 			}
 			set {
 				if (Model != null) {
-					Model.State = value;
+					Model.State = value.GetValueOrDefault ();
 				}
 			}
 		}

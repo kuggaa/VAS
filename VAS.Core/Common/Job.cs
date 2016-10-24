@@ -17,13 +17,12 @@
 // 
 using System;
 using System.Collections.Generic;
-using VAS.Core.Common;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 
 namespace VAS.Core.Common
 {
-	//[Serializable]
+	[Serializable]
 	public class Job : StorableBase
 	{
 		public Job (EncodingSettings encSettings)

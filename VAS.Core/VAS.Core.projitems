@@ -164,7 +164,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\ViewModels\JobVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ViewModels\JobCollectionVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IRenderingJobsController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Services\ControllerStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Events\JobEvents.cs" />
   </ItemGroup>
   <ItemGroup>
