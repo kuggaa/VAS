@@ -165,6 +165,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\ViewModels\JobCollectionVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IRenderingJobsController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Events\JobEvents.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\RegistryAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\RegistryScanner.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
