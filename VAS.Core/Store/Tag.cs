@@ -23,8 +23,10 @@ using VAS.Core.MVVMC;
 namespace VAS.Core.Store
 {
 	[Serializable]
-	public class Tag: BindableBase
+	public class Tag : BindableBase
 	{
+		public static Tag EmptyTag = new Tag (Catalog.GetString ("Empty"));
+
 		public Tag (string value, string grp = "Default")
 		{
 			Group = grp;
