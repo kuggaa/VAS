@@ -17,14 +17,13 @@
 // 
 using System;
 using System.Collections.Generic;
-using VAS.Core.Common;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 
 namespace VAS.Core.Common
 {
 	[Serializable]
-	public class Job
+	public class Job : StorableBase
 	{
 		public Job (EncodingSettings encSettings)
 		{
@@ -67,7 +66,7 @@ namespace VAS.Core.Common
 		}
 	}
 
-	public class EditionJob: Job
+	public class EditionJob : Job
 	{
 		public EditionJob (Playlist playlist, EncodingSettings encSettings) : base (encSettings)
 		{
@@ -80,7 +79,7 @@ namespace VAS.Core.Common
 		}
 	}
 
-	public class ConversionJob: Job
+	public class ConversionJob : Job
 	{
 		public ConversionJob (List<MediaFile> files, EncodingSettings encSettings) : base (encSettings)
 		{

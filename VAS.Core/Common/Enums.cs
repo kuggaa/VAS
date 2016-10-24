@@ -528,4 +528,18 @@ namespace VAS.Core.Common
 		Default,
 	}
 
+	/// <summary>
+	/// Controller status enum.
+	/// </summary>
+	public enum ControllerStatus
+	{
+		/// <summary>
+		/// Controller is started
+		/// </summary>
+		Started,
+		/// <summary>
+		/// Controller is stopped.
+		/// </summary>
+		Stopped
+	}
 }

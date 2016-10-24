@@ -161,6 +161,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Plugins\IMultimediaBackend.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IDevice.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ITeamTemplatesProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\ViewModels\JobVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\ViewModels\JobCollectionVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IRenderingJobsController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Events\JobEvents.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
@@ -178,6 +182,8 @@
     <Folder Include="$(MSBuildThisFileDirectory)MVVMC\" />
     <Folder Include="$(MSBuildThisFileDirectory)Hotkeys\" />
     <Folder Include="$(MSBuildThisFileDirectory)Interfaces\Plugins\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Services\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Services\ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)VAS.Core.dll.config">
