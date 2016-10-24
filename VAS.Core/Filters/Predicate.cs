@@ -20,8 +20,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq;
+using System.Linq.Expressions;
 using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
 
@@ -32,7 +32,7 @@ namespace VAS.Core.Filters
 	/// Contains a settable function that receives a T object, and returns a boolean.
 	/// If it is not set, it will return true.
 	/// </summary>
-	public class Predicate<T> : IPredicate <T>
+	public class Predicate<T> : IPredicate<T>
 	{
 		#region IPredicate implementation
 
@@ -41,10 +41,16 @@ namespace VAS.Core.Filters
 			set;
 		}
 
-		public Func<T, bool> Filter {
+		public Expression<Func<T, bool>> Expression {
 			get;
 			set;
-		} = _ => true;
+		} = (a) => true;
+
+		public Func<T, bool> Filter {
+			get {
+				return Expression.Compile ();
+			}
+		}
 
 		#endregion
 	}
@@ -61,7 +67,7 @@ namespace VAS.Core.Filters
 			};
 		}
 
-		public ObservableCollection<IPredicate<T>> Elements{ get; set; } =  new ObservableCollection<IPredicate<T>>();
+		public ObservableCollection<IPredicate<T>> Elements { get; set; } = new ObservableCollection<IPredicate<T>> ();
 
 		#region IPredicate implementation
 
@@ -70,7 +76,13 @@ namespace VAS.Core.Filters
 			set;
 		}
 
-		public abstract Func<T, bool> Filter{ get; }
+		public Func<T, bool> Filter {
+			get {
+				return Expression.Compile ();
+			}
+		}
+
+		public abstract Expression<Func<T, bool>> Expression { get; }
 
 		#endregion
 
@@ -115,7 +127,7 @@ namespace VAS.Core.Filters
 			return Elements.Contains (item);
 		}
 
-		public void CopyTo (IPredicate<T>[] array, int arrayIndex)
+		public void CopyTo (IPredicate<T> [] array, int arrayIndex)
 		{
 			Elements.CopyTo (array, arrayIndex);
 		}
@@ -137,6 +149,11 @@ namespace VAS.Core.Filters
 			}
 		}
 
+		public bool IsVisible (T val)
+		{
+			return Filter.Invoke (val);
+		}
+
 		public IEnumerator<IPredicate<T>> GetEnumerator ()
 		{
 			return Elements.GetEnumerator ();
@@ -156,12 +173,16 @@ namespace VAS.Core.Filters
 	/// </summary>
 	public class OrPredicate<T> : CompositePredicate<T>
 	{
-		public override Func<T, bool> Filter {
+
+		public override Expression<Func<T, bool>> Expression {
 			get {
-				return (evt) => Elements.Any (f => f.Filter (evt));
+				Expression<Func<T, bool>> predicate = PredicateBuilder.True<T> ();
+				foreach (var el in Elements) {
+					predicate.Or (el.Expression);
+				}
+				return predicate;
 			}
 		}
-
 	}
 
 	/// <summary>
@@ -170,10 +191,36 @@ namespace VAS.Core.Filters
 	/// </summary>
 	public class AndPredicate<T> : CompositePredicate<T>
 	{
-		public override Func<T, bool> Filter {
+		public override Expression<Func<T, bool>> Expression {
 			get {
-				return (evt) => Elements.All (f => f.Filter (evt));
+				Expression<Func<T, bool>> predicate = PredicateBuilder.True<T> ();
+				foreach (var el in Elements) {
+					predicate.Or (el.Expression);
+				}
+				return predicate;
 			}
+		}
+	}
+
+	public static class PredicateBuilder
+	{
+		public static Expression<Func<T, bool>> True<T> () { return f => true; }
+		public static Expression<Func<T, bool>> False<T> () { return f => false; }
+
+		public static Expression<Func<T, bool>> Or<T> (this Expression<Func<T, bool>> expr1,
+															Expression<Func<T, bool>> expr2)
+		{
+			var invokedExpr = Expression.Invoke (expr2, expr1.Parameters.Cast<Expression> ());
+			return Expression.Lambda<Func<T, bool>>
+				  (Expression.OrElse (expr1.Body, invokedExpr), expr1.Parameters);
+		}
+
+		public static Expression<Func<T, bool>> And<T> (this Expression<Func<T, bool>> expr1,
+															 Expression<Func<T, bool>> expr2)
+		{
+			var invokedExpr = Expression.Invoke (expr2, expr1.Parameters.Cast<Expression> ());
+			return Expression.Lambda<Func<T, bool>>
+				  (Expression.AndAlso (expr1.Body, invokedExpr), expr1.Parameters);
 		}
 	}
 }
