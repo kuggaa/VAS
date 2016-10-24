@@ -88,6 +88,7 @@
     <Compile Include="gtk-gui\VAS.UI.Dialog.VideoEditionProperties.cs" />
     <Compile Include="UI\Component\MediaFileChooser.cs" />
     <Compile Include="gtk-gui\VAS.UI.Component.MediaFileChooser.cs" />
+    <Compile Include="UI\Menu\EventsMenu.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -33,12 +33,15 @@ namespace VAS.UI.Common
 	[System.ComponentModel.ToolboxItem (true)]
 	public class PlaylistTreeView : TreeViewBase<PlaylistCollectionVM, Playlist, PlaylistVM>
 	{
+		EventsMenu menu;
+
 		public PlaylistTreeView ()
 		{
 			HasFocus = false;
 			HeadersVisible = false;
 			Selection.Mode = SelectionMode.Multiple;
 			EnableGridLines = TreeViewGridLines.None;
+			menu = new EventsMenu ();
 			CreateViews ();
 		}
 
@@ -98,21 +101,8 @@ namespace VAS.UI.Common
 
 		protected override void ShowMenu ()
 		{
-			if (ViewModel.Selection.Count > 0) {
-				Menu menu = new Menu ();
-
-				MenuItem renderItem = new MenuItem (Catalog.GetString ("Render"));
-
-				var elements = ViewModel.Selection [0].Model.Elements.OfType<PlaylistPlayElement> ().Select (e => e.Play);
-				MenuHelpers.FillAddToRenderMenu (
-					renderItem,
-					elements
-				);
-				menu.Append (renderItem);
-
-				menu.ShowAll ();
-				menu.Popup ();
-			}
+			var elements = ViewModel.Selection [0].Model.Elements.OfType<PlaylistPlayElement> ().Select (e => e.Play);
+			menu.ShowMenu (null, elements.ToList ());
 		}
 	}
 }

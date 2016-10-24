@@ -102,40 +102,18 @@ namespace VAS.UI.Menus
 		/// <param name="exportMenu">Export menu.</param>
 		/// <param name="project">Project.</param>
 		/// <param name="events">Timeline events.</param>
-		static public void FillExportToVideoFileMenu (MenuItem exportMenu, Project project, IEnumerable<TimelineEvent> events)
+		static public void FillExportToVideoFileMenu (MenuItem exportMenu, Project project, IEnumerable<TimelineEvent> events,
+													 bool isRender = false)
 		{
-			exportMenu.Visible = events.Any () && project.ProjectType != ProjectType.FakeCaptureProject;
-			var label = string.Format ("{0} ({1})", Catalog.GetString ("Export to video file"), events.Count ());
-			exportMenu.SetLabel (label);
-		}
-
-		/// <summary>
-		/// Fills the menu item "Render" with all selected PlayLists and Events
-		/// </summary>
-		/// <param name="addToRenderMenu">Add to render menuItem.</param>
-		/// <param name="events">Timeline events to render.</param>
-		//FIXME: Convert this to ViewModels (both Playlist & TimelineEvent)
-		static public void FillAddToRenderMenu (MenuItem addToRenderMenu, IEnumerable<TimelineEvent> events)
-		{
-			if (!events.Any ()) {
-				addToRenderMenu.Visible = false;
-				return;
+			string label;
+			if (!isRender) {
+				exportMenu.Visible = events.Any () && project.ProjectType != ProjectType.FakeCaptureProject;
+				label = string.Format ("{0} ({1})", Catalog.GetString ("Export to video file"), events.Count ());
+			} else {
+				exportMenu.Visible = events.Any ();
+				label = String.Format ("{0} ({1})", Catalog.GetString ("Render"), events.Count ());
 			}
-
-			addToRenderMenu.Visible = true;
-			var label = String.Format ("{0} ({1})", Catalog.GetString ("Render"), events.Count ());
-			addToRenderMenu.SetLabel (label);
-
-			addToRenderMenu.Activated += (sender, e) => {
-				IEnumerable<IPlaylistElement> elements = events.Select (p => new PlaylistPlayElement (p));
-				Playlist pl = new Playlist ();
-				pl.Elements.AddRange (elements);
-				addToRenderMenu.PublishEvent<RenderPlaylistEvent> (
-					new RenderPlaylistEvent {
-						Playlist = pl
-					}
-				);
-			};
+			exportMenu.SetLabel (label);
 		}
 	}
 }
