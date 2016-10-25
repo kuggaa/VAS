@@ -39,27 +39,31 @@ namespace VAS.UI.Menus
 			ShowMenu (project, plays, null, null, null, false);
 		}
 
-		protected virtual void ShowMenu (Project project, IEnumerable<TimelineEvent> plays, EventType eventType, Time time,
-								 IList<EventType> eventTypes, bool editableName, bool calledFromChild = false)
+		protected void ShowMenu (Project project, IEnumerable<TimelineEvent> plays, EventType eventType, Time time,
+								 IList<EventType> eventTypes, bool editableName)
+		{
+
+			PrepareMenu (project, plays, eventType, time, eventTypes, editableName);
+			Popup ();
+		}
+
+		protected virtual void PrepareMenu (Project project, IEnumerable<TimelineEvent> plays, EventType eventType, Time time,
+						 IList<EventType> eventTypes, bool editableName)
 		{
 			this.plays = plays.ToList ();
 			if (plays == null) {
 				plays = new List<TimelineEvent> ();
 			}
 			MenuHelpers.FillExportToVideoFileMenu (render, null, plays, true);
-
-			if (!calledFromChild)
-				Popup ();
 		}
 
-		protected virtual void CreateMenu (bool calledFromChild = false)
+		protected virtual void CreateMenu ()
 		{
 			render = new MenuItem ("");
 			Add (render);
 			render.Activated += (sender, e) => MenuHelpers.EmitRenderPlaylist (plays);
 
-			if (!calledFromChild)
-				ShowAll ();
+			ShowAll ();
 		}
 	}
 }

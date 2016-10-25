@@ -35,7 +35,13 @@ namespace VAS.UI.Menus
 			CreateMenu ();
 		}
 
-		public virtual void ShowMenu (Project project, Playlist playlist, bool editableName)
+		public void ShowMenu (Project project, Playlist playlist, bool editableName)
+		{
+			PrepareMenu (project, playlist, editableName);
+			Popup ();
+		}
+
+		protected virtual void PrepareMenu (Project project, Playlist playlist, bool editableName)
 		{
 			if (playlist == null)
 				return;
@@ -43,7 +49,6 @@ namespace VAS.UI.Menus
 			this.playlist = playlist;
 			this.project = project;
 			delete.Visible = (project != null);
-			Popup ();
 		}
 
 		void CreateMenu ()
