@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Gtk;
+using VAS.Core;
 using VAS.Core.Store;
 using VAS.UI.Menus;
 
@@ -54,7 +55,7 @@ namespace VAS.UI.Menus
 			if (plays == null) {
 				plays = new List<TimelineEvent> ();
 			}
-			MenuHelpers.FillExportToVideoFileMenu (render, null, plays, true);
+			MenuHelpers.FillExportToVideoFileMenu (render, null, plays, Catalog.GetString ("Render"));
 		}
 
 		protected virtual void CreateMenu ()

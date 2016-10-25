@@ -29,6 +29,7 @@ VAS.UI.Gtk2/UI/Component/MediaFileChooser.cs
 VAS.UI.Gtk2/UI/Component/Timeline.cs
 VAS.UI.Gtk2/UI/Dialog/DrawingTool.cs
 VAS.UI.Gtk2/UI/Dialog/VideoEditionProperties.cs
+VAS.UI.Gtk2/UI/Menu/EventsMenu.cs
 VAS.UI.Gtk2/UI/Menu/MenuHelpers.cs
 VAS.UI.Gtk2/UI/Menu/PlaylistMenu.cs
 VAS.UI.Gtk2/UI/Menu/PlaysMenu.cs

@@ -103,16 +103,12 @@ namespace VAS.UI.Menus
 		/// <param name="project">Project.</param>
 		/// <param name="events">Timeline events.</param>
 		static public void FillExportToVideoFileMenu (MenuItem exportMenu, Project project, IEnumerable<TimelineEvent> events,
-													 bool isRender = false)
+													 string exportLabel)
 		{
 			string label;
-			if (!isRender) {
-				exportMenu.Visible = events.Any () && project.ProjectType != ProjectType.FakeCaptureProject;
-				label = string.Format ("{0} ({1})", Catalog.GetString ("Export to video file"), events.Count ());
-			} else {
-				exportMenu.Visible = events.Any ();
-				label = String.Format ("{0} ({1})", Catalog.GetString ("Render"), events.Count ());
-			}
+			exportMenu.Visible = events.Any () && 
+				((project == null) || ((project != null) && (project.ProjectType != ProjectType.FakeCaptureProject)));
+			label = string.Format ("{0} ({1})", exportLabel, events.Count ());
 			exportMenu.SetLabel (label);
 		}
 	}
