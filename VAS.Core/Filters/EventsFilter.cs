@@ -38,7 +38,7 @@ namespace VAS.Core.Filters
 		{
 			this.project = project;
 			eventsFilter = new Dictionary<EventType, List<Tag>> ();
-			playersFilter = new List<Player> (); 
+			playersFilter = new List<Player> ();
 			periodsFilter = new List<Period> ();
 			tagsFilter = new List<Tag> ();
 			timersFilter = new List<Timer> ();
@@ -202,7 +202,7 @@ namespace VAS.Core.Filters
 
 			foreach (TimelineEvent play in project.Timeline) {
 				if (IsVisibleByPlayer (play) && IsVisibleByCategory (play) && IsVisibleByPeriod (play) &&
-				    IsVisibleByTag (play) && IsVisibleByTimer (play)) {
+					IsVisibleByTag (play) && IsVisibleByTimer (play)) {
 					VisiblePlays.Add (play);
 				}
 			}
@@ -222,7 +222,8 @@ namespace VAS.Core.Filters
 				return true;
 
 			List<Tag> tags = eventsFilter [play.EventType];
-			if (tags.Count == 0 || tags.Intersect (play.Tags).Any ()) {
+			if (tags.Count == 0 || tags.Intersect (play.Tags).Any () ||
+				(!play.Tags.Any () && tags.Contains (Tag.EmptyTag))) {
 				return true;
 			} else {
 				return false;
