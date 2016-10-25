@@ -30,6 +30,7 @@ VAS.UI.Gtk2/UI/Component/Timeline.cs
 VAS.UI.Gtk2/UI/Dialog/DrawingTool.cs
 VAS.UI.Gtk2/UI/Dialog/VideoEditionProperties.cs
 VAS.UI.Gtk2/UI/Menu/MenuHelpers.cs
+VAS.UI.Gtk2/UI/Menu/PlaylistMenu.cs
 VAS.UI.Gtk2/UI/Menu/PlaysMenu.cs
 VAS.UI.Gtk2/gtk-gui/VAS.UI.Dialog.CalendarDialog.cs
 VAS.UI.Gtk2/gtk-gui/VAS.UI.Dialog.DrawingTool.cs

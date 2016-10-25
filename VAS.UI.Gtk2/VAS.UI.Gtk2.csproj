@@ -89,6 +89,7 @@
     <Compile Include="UI\Component\MediaFileChooser.cs" />
     <Compile Include="gtk-gui\VAS.UI.Component.MediaFileChooser.cs" />
     <Compile Include="UI\Menu\EventsMenu.cs" />
+    <Compile Include="UI\Menu\PlaylistMenu.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
