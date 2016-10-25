@@ -24,9 +24,16 @@ namespace VAS.Core.Interfaces
 		string Name { get; set; }
 
 		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.Interfaces.IPredicate`1"/> is active.
+		/// </summary>
+		/// <value><c>true</c> if active; otherwise, <c>false</c>.</value>
+		bool Active { get; set; }
+
+		/// <summary>
 		/// Filter is a function that receives an object of type T and returns a boolean.
 		/// </summary>
 		bool Filter (T obj);
+
 	}
 }
 

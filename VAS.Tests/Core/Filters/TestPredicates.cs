@@ -152,13 +152,14 @@ namespace VAS.Tests.Core.Filters
 				new Predicate<string> { Expression = PredicateBuilder.True<string>() },
 			};
 
+			// This OR doesn't have any active Predicate, thus it's ignored
 			var filter2 = new OrPredicate<string> ();
 
 			var container = new AndPredicate<string> ();
 			container.Add (filter);
 			container.Add (filter2);
 
-			Assert.IsFalse (container.Filter (""));
+			Assert.IsTrue (container.Filter (""));
 		}
 
 		[Test ()]
@@ -214,6 +215,110 @@ namespace VAS.Tests.Core.Filters
 
 			//Assert
 			Assert.AreEqual ("Collection", property);
+			Assert.AreEqual (1, count);
+		}
+
+		[Test ()]
+		public void TestAndContainingOrInactive ()
+		{
+			var filter = new OrPredicate<string> {
+				new Predicate<string> { Expression = (ev) => true, Active = false },
+				new Predicate<string> { Expression = (ev) => false },
+			};
+
+			var filter2 = new OrPredicate<string> {
+				new Predicate<string> { Expression = (ev) => true },
+				new Predicate<string> { Expression = (ev) => false },
+			};
+
+			var container = new AndPredicate<string> ();
+			container.Add (filter);
+			container.Add (filter2);
+
+			Assert.IsFalse (filter.Filter (""));
+			Assert.IsTrue (filter2.Filter (""));
+			Assert.IsFalse (container.Filter (""));
+		}
+
+		[Test ()]
+		public void TestAndContainingInactiveOr ()
+		{
+			var filter = new OrPredicate<string> {
+				new Predicate<string> { Expression = (ev) => true  },
+				new Predicate<string> { Expression = (ev) => false },
+			};
+			filter.Active = false;
+
+			var filter2 = new OrPredicate<string> {
+				new Predicate<string> { Expression = (ev) => true },
+				new Predicate<string> { Expression = (ev) => false },
+			};
+
+			var container = new AndPredicate<string> ();
+			container.Add (filter);
+			container.Add (filter2);
+
+			Assert.IsFalse (filter.Elements [0].Active);
+			Assert.IsFalse (filter.Elements [1].Active);
+			Assert.IsFalse (filter.Filter (""));
+			Assert.IsTrue (filter2.Filter (""));
+			Assert.IsTrue (container.Filter (""));
+		}
+
+		[Test ()]
+		public void TestActiveEvents ()
+		{
+			// Arrange
+			string property = "";
+			int count = 0;
+			var filter = new OrPredicate<string> ();
+			var predicate = new Predicate<string> { Expression = (ev) => true };
+			filter.Add (predicate);
+			filter.PropertyChanged += (sender, e) => {
+				property = e.PropertyName;
+				count++;
+			};
+
+			// Act
+			predicate.Active = false;
+
+			//Assert
+			Assert.AreEqual ("Active", property);
+			Assert.AreEqual (1, count);
+		}
+
+		[Test ()]
+		public void TestElementsEvents ()
+		{
+			// Arrange
+			string property = "";
+			int count = 0;
+
+			var filter = new OrPredicate<string> {
+				new Predicate<string> { Expression = (ev) => true },
+				new Predicate<string> { Expression = (ev) => false },
+			};
+
+			var filter2 = new OrPredicate<string> {
+				new Predicate<string> { Expression = (ev) => true },
+				new Predicate<string> { Expression = (ev) => false },
+			};
+
+			var container = new AndPredicate<string> ();
+			container.PropertyChanged += (sender, e) => {
+				property = e.PropertyName;
+				count++;
+			};
+
+			// Act
+			container.Elements = new ObservableCollection<IPredicate<string>>
+			{
+				filter,
+				filter2,
+			};
+
+			//Assert
+			Assert.AreEqual ("Elements", property);
 			Assert.AreEqual (1, count);
 		}
 	}

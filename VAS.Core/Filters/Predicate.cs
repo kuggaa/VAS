@@ -32,14 +32,12 @@ namespace VAS.Core.Filters
 	/// Contains a settable function that receives a T object, and returns a boolean.
 	/// If it is not set, it will return true.
 	/// </summary>
-	public class Predicate<T> : IPredicate<T>
+	public class Predicate<T> : BindableBase, IPredicate<T>
 	{
 		Func<T, bool> compiledExpression;
 		Expression<Func<T, bool>> expression = (a) => true;
 
 		#region IPredicate implementation
-
-		Func<T, bool> compiledExpression;
 
 		public string Name {
 			get;
@@ -54,9 +52,11 @@ namespace VAS.Core.Filters
 			}
 		}
 
+		public bool Active { get; set; } = true;
+
 		public bool Filter (T ev)
 		{
-			return compiledExpression.Invoke (ev);
+			return Active && compiledExpression.Invoke (ev);
 		}
 
 		#endregion
@@ -73,7 +73,7 @@ namespace VAS.Core.Filters
 		public CompositePredicate ()
 		{
 			this.PropertyChanged += (sender, e) => {
-				if (e.PropertyName == "Elements" || e.PropertyName == "Collection") {
+				if (e.PropertyName == "Elements" || e.PropertyName == "Collection" || e.PropertyName == "Active") {
 					UpdatePredicate ();
 				}
 			};
@@ -98,14 +98,26 @@ namespace VAS.Core.Filters
 			set;
 		}
 
+		[PropertyChanged.DoNotNotify]
+		public bool Active {
+			get {
+				return Elements.Any (e => e.Active);
+			}
+
+			set {
+				foreach (var item in Elements) {
+					item.Active = value;
+				}
+			}
+		}
+
 		public bool Filter (T obj)
 		{
 			if (compiledExpression == null) {
 				UpdatePredicate ();
 			}
-			return compiledExpression.Invoke (obj);
+			return Active && compiledExpression.Invoke (obj);
 		}
-
 
 		public virtual void UpdatePredicate ()
 		{
@@ -131,6 +143,7 @@ namespace VAS.Core.Filters
 			Elements.RemoveAt (index);
 		}
 
+		[PropertyChanged.DoNotNotify]
 		public IPredicate<T> this [int index] {
 			get {
 				return Elements [index];
@@ -165,12 +178,14 @@ namespace VAS.Core.Filters
 			return Elements.Remove (item);
 		}
 
+		[PropertyChanged.DoNotNotify]
 		public int Count {
 			get {
 				return Elements.Count;
 			}
 		}
 
+		[PropertyChanged.DoNotNotify]
 		public bool IsReadOnly {
 			get {
 				return false;
@@ -206,7 +221,7 @@ namespace VAS.Core.Filters
 		{
 			// We initialize this with a false, as it's the neutral element for the Or
 			expression = PredicateBuilder.False<T> ();
-			foreach (var el in Elements) {
+			foreach (var el in Elements.Where (e => e.Active)) {
 				expression = expression.Or (el.Expression);
 			}
 			base.UpdatePredicate ();
@@ -229,7 +244,7 @@ namespace VAS.Core.Filters
 		{
 			// We initialize this with a true, as it's the neutral element for the And
 			expression = PredicateBuilder.True<T> ();
-			foreach (var el in Elements) {
+			foreach (var el in Elements.Where (e => e.Active)) {
 				expression = expression.And (el.Expression);
 			}
 			base.UpdatePredicate ();
