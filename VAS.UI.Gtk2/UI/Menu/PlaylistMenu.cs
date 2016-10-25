@@ -35,6 +35,17 @@ namespace VAS.UI.Menus
 			CreateMenu ();
 		}
 
+		public virtual void ShowMenu (Project project, Playlist playlist, bool editableName)
+		{
+			if (playlist == null)
+				return;
+
+			this.playlist = playlist;
+			this.project = project;
+			delete.Visible = (project != null);
+			Popup ();
+		}
+
 		void CreateMenu ()
 		{
 			edit = new MenuItem (Catalog.GetString ("Edit name"));
@@ -58,19 +69,8 @@ namespace VAS.UI.Menus
 			delete = new MenuItem (Catalog.GetString ("Delete"));
 			delete.Activated += (sender, e) => project.Playlists.Remove (playlist);
 			Append (delete);
-		}
-
-		protected virtual void ShowMenu (Project project, Playlist playlist, bool editableName)
-		{
-			if (playlist == null)
-				return;
-
-			this.playlist = playlist;
-			this.project = project;
-			delete.Visible = (project != null);
 
 			ShowAll ();
-			Popup ();
 		}
 	}
 }
