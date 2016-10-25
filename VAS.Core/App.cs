@@ -158,6 +158,7 @@ namespace VAS
 			App.Current.StateController = new StateController ();
 			App.Current.DependencyRegistry = new Registry ("App Registry");
 			App.Current.EventsBroker = new EventsBroker ();
+			App.Current.Device = new Core.Device ();
 		}
 
 		// copied from OneplayLongomMatch::CoreServices

@@ -76,6 +76,17 @@ namespace VAS.Core.Common
 		public void Register<TInterface> (Type type, int priority = 0)
 		{
 			Type interfac = typeof (TInterface);
+			Register (interfac, type, priority);
+		}
+
+		/// <summary>
+		/// Register the specified interfac, type and priority in runtime.
+		/// </summary>
+		/// <param name="interfac">Interfac.</param>
+		/// <param name="type">Type.</param>
+		/// <param name="priority">Priority.</param>
+		public void Register (Type interfac, Type type, int priority = 0)
+		{
 			if (!elements.ContainsKey (interfac)) {
 				elements [interfac] = new List<RegistryElement> ();
 			}
