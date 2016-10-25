@@ -73,12 +73,6 @@ namespace VAS.UI
 			}
 		}
 
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
-		{
-			ShowPlayer ();
-			return base.OnExposeEvent (evnt);
-		}
-
 		protected override void OnDestroyed ()
 		{
 			App.Current.EventsBroker.Unsubscribe<LoadVideoEvent> (HandleLoadVideoEvent);
