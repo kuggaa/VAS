@@ -60,11 +60,16 @@ namespace VAS.UI.Menus
 			ShowMenu (project, plays, eventType, time, null, false);
 		}
 
-		protected virtual void ShowMenu (Project project, IEnumerable<TimelineEvent> plays, EventType eventType, Time time,
+		protected void ShowMenu (Project project, IEnumerable<TimelineEvent> plays, EventType eventType, Time time,
 										 IList<EventType> eventTypes, bool editableName)
 		{
-			bool isLineup = false, isSubstitution = false;
+			PrepareMenu (project, plays, eventType, time, eventTypes, editableName);
+			Popup ();
+		}
 
+		protected virtual void PrepareMenu (Project project, IEnumerable<TimelineEvent> plays, EventType eventType, Time time,
+										 IList<EventType> eventTypes, bool editableName)
+		{
 			this.plays = plays.ToList ();
 			this.eventType = eventType;
 			this.time = time;
@@ -89,11 +94,15 @@ namespace VAS.UI.Menus
 				string label = String.Format ("{0} ({1})", Catalog.GetString ("Delete"), plays.Count ());
 				del.SetLabel (label);
 			}
-
-			Popup ();
 		}
 
-		void CreateMenu ()
+		protected void EmitEditPlayEvent (object source, EventArgs eventArgs)
+		{
+			if (EditPlayEvent != null)
+				EditPlayEvent (source, eventArgs);
+		}
+
+		protected virtual void CreateMenu ()
 		{
 			newPlay = new MenuItem ("");
 			Add (newPlay);

@@ -25,6 +25,7 @@ using VAS.Core.Events;
 using VAS.Core.Interfaces;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
+using VAS.Services.ViewModel;
 
 namespace VAS.UI.Menus
 {
@@ -101,10 +102,13 @@ namespace VAS.UI.Menus
 		/// <param name="exportMenu">Export menu.</param>
 		/// <param name="project">Project.</param>
 		/// <param name="events">Timeline events.</param>
-		static public void FillExportToVideoFileMenu (MenuItem exportMenu, Project project, IEnumerable<TimelineEvent> events)
+		static public void FillExportToVideoFileMenu (MenuItem exportMenu, Project project, IEnumerable<TimelineEvent> events,
+													 string exportLabel)
 		{
-			exportMenu.Visible = events.Any () && project.ProjectType != ProjectType.FakeCaptureProject;
-			var label = string.Format ("{0} ({1})", Catalog.GetString ("Export to video file"), events.Count ());
+			string label;
+			exportMenu.Visible = events.Any () && 
+				((project == null) || ((project != null) && (project.ProjectType != ProjectType.FakeCaptureProject)));
+			label = string.Format ("{0} ({1})", exportLabel, events.Count ());
 			exportMenu.SetLabel (label);
 		}
 	}
