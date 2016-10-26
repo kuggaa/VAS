@@ -109,6 +109,11 @@ namespace VAS.Services.State
 
 		public virtual Task<bool> PreTransition (dynamic data)
 		{
+			return Initialize (data);
+		}
+
+		protected Task<bool> Initialize (dynamic data)
+		{
 			CreateViewModel (data);
 			Panel.SetViewModel (ViewModel);
 			foreach (IController controller in Controllers) {
