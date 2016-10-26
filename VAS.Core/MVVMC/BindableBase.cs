@@ -86,7 +86,7 @@ namespace VAS.Core.MVVMC
 		/// A change in Start is propagated up to the Project setting the IsChanged flag in all the objects in the chain.
 		/// 
 		/// This function is automatically injected with Fody at the beginning of all property setters where the
-		/// type is a <see cref="BindableBase"/> or an <see cref="ObservableCollection/>.
+		/// type is a <see cref="BindableBase"/> or an <see cref="ObservableCollection"/>.
 		///
 		/// </summary>
 		/// <param name="oldValue">Old value set.</param>
