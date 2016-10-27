@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // 
 using System;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Events;
@@ -34,7 +35,8 @@ namespace VAS
 		public void Save ()
 		{
 			try {
-				Serializer.Instance.Save (this, App.Current.ConfigFile);
+				if (AutoSaveConfig)
+					Serializer.Instance.Save (this, App.Current.ConfigFile);
 			} catch (Exception ex) {
 				Log.Error ("Error saving config");
 				Log.Exception (ex);
@@ -162,6 +164,32 @@ namespace VAS
 		public string CurrentDatabase {
 			get;
 			set;
+		}
+
+		[JsonIgnore]
+		[PropertyChanged.DoNotNotify]
+		bool AutoSaveConfig {
+			get; set;
+		} = true;
+
+		/// <summary>
+		/// Handles the on deserializing. When deserialization starts, auto save is deactivated.
+		/// </summary>
+		/// <param name="context">Context.</param>
+		[OnDeserializing]
+		internal void HandleOnDeserializing (StreamingContext context)
+		{
+			AutoSaveConfig = false;
+		}
+
+		/// <summary>
+		/// Handles the on deserialized. When deserializations ends, auto save is activated.
+		/// </summary>
+		/// <param name="context">Context.</param>
+		[OnDeserialized ()]
+		internal void HandleOnDeserialized (StreamingContext context)
+		{
+			AutoSaveConfig = true;
 		}
 	}
 }

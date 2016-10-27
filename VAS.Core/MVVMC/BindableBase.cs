@@ -55,6 +55,7 @@ namespace VAS.Core.MVVMC
 		/// While IgnoreEvents is true, all PropertyChanged events will not be emited
 		/// </summary>
 		/// <value><c>true</c> if ignore events; otherwise, <c>false</c>.</value>
+		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public bool IgnoreEvents {
 			get;
