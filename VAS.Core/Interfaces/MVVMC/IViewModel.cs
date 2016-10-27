@@ -57,9 +57,9 @@ namespace VAS.Core.Interfaces.MVVMC
 	/// <summary>
 	/// Interface that the player View Model should use
 	/// </summary>
-	public interface IPlayerViewModel : IViewModel
+	public interface IVideoPlayerViewModel : IViewModel
 	{
-		IPlayerController Player { get; }
+		IVideoPlayerController Player { get; }
 
 		PlayerViewOperationMode Mode { get; set; }
 
@@ -78,7 +78,7 @@ namespace VAS.Core.Interfaces.MVVMC
 	/// </summary>
 	public interface IAnalysisViewModel
 	{
-		IPlayerViewModel PlayerViewModel { get; }
+		IVideoPlayerViewModel PlayerViewModel { get; }
 	}
 }
 

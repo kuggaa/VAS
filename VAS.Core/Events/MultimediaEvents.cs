@@ -47,7 +47,7 @@ namespace VAS.Core.Events
 		/// Gets or sets the player.
 		/// </summary>
 		/// <value>The player.</value>
-		public IPlayerController player { get; set; }
+		public IVideoPlayerController player { get; set; }
 	}
 
 	/// <summary>

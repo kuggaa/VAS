@@ -9,7 +9,7 @@
     <Import_RootNamespace>VAS.Services</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)PlayerController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)VideoPlayerController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UpdatesNotifier.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CoreEventsManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)..\AssemblyInfo\AssemblyInfo.cs">
@@ -29,7 +29,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypeVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypeCollectionVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\EventsController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlayerVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\VideoPlayerVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\PlaylistController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TemplatesService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)State\DrawingToolState.cs" />

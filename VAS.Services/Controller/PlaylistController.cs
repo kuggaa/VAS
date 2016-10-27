@@ -36,20 +36,20 @@ namespace VAS.Services.Controller
 	{
 		PlaylistCollectionVM viewModel;
 
-		public PlaylistController (IPlayerViewModel playerVM)
+		public PlaylistController (IVideoPlayerViewModel playerVM)
 		{
 			PlayerVM = playerVM;
+		}
+
+		public IVideoPlayerViewModel PlayerVM {
+			get;
+			set;
 		}
 
 		protected override void Dispose (bool disposing)
 		{
 			base.Dispose (disposing);
 			Stop ();
-		}
-
-		public IPlayerViewModel PlayerVM {
-			get;
-			set;
 		}
 
 		protected EventsFilter Filter { get; set; }

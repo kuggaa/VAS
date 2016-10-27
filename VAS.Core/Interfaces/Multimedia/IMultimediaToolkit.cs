@@ -25,9 +25,9 @@ namespace VAS.Core.Interfaces.Multimedia
 	{
 		void Register <I, C> (int priority);
 
-		IPlayer GetPlayer ();
+		IVideoPlayer GetPlayer ();
 
-		IMultiPlayer GetMultiPlayer ();
+		IMultiVideoPlayer GetMultiPlayer ();
 
 		IVideoEditor GetVideoEditor ();
 

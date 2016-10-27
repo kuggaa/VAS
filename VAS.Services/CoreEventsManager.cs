@@ -48,7 +48,7 @@ namespace VAS.Services
 		protected ProjectType projectType;
 		protected EventsFilter filter;
 		protected IAnalysisWindowBase analysisWindow;
-		protected IPlayerController player;
+		protected IVideoPlayerController player;
 		protected ICapturerBin capturer;
 		protected IFramesCapturer framesCapturer;
 

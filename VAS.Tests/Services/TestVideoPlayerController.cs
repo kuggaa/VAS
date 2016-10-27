@@ -36,13 +36,13 @@ using VAS.Services.ViewModel;
 namespace VAS.Tests.Services
 {
 	[TestFixture ()]
-	public class TestPlayerController
+	public class TestVideoPlayerController
 	{
-		Mock<IPlayer> playerMock;
+		Mock<IVideoPlayer> playerMock;
 		Mock<IViewPort> viewPortMock;
 		Mock<IMultimediaToolkit> mtkMock;
 		MediaFileSet mfs;
-		PlayerController player;
+		VideoPlayerController player;
 		Time currentTime, streamLength;
 		TimelineEvent evt;
 		TimelineEvent evt2;
@@ -51,13 +51,14 @@ namespace VAS.Tests.Services
 		PlaylistImage plImage;
 		Playlist playlist;
 		PlaylistController plController;
-		PlayerVM playerVM;
+		VideoPlayerVM playerVM;
+
 		int elementLoaded;
 
 		[TestFixtureSetUp ()]
 		public void FixtureSetup ()
 		{
-			playerMock = new Mock<IPlayer> ();
+			playerMock = new Mock<IVideoPlayer> ();
 			playerMock.SetupAllProperties ();
 			/* Mock properties without setter */
 			playerMock.Setup (p => p.CurrentTime).Returns (() => currentTime);
@@ -136,8 +137,8 @@ namespace VAS.Tests.Services
 			playlist.Elements.Add (plImage);
 			currentTime = new Time (0);
 
-			playerVM = new PlayerVM ();
-			player = new PlayerController ();
+			playerVM = new VideoPlayerVM ();
+			player = new VideoPlayerController ();
 			playerVM.Player = player;
 			(player as IController).SetViewModel (playerVM);
 			playlist.SetActive (playlist.Elements [0]);
@@ -1280,10 +1281,10 @@ namespace VAS.Tests.Services
 		{
 			TimelineEvent evt1;
 			ObservableCollection<CameraConfig> cams1, cams2;
-			Mock<IMultiPlayer> multiplayerMock = new Mock<IMultiPlayer> ();
+			Mock<IMultiVideoPlayer> multiplayerMock = new Mock<IMultiVideoPlayer> ();
 
 			mtkMock.Setup (m => m.GetMultiPlayer ()).Returns (multiplayerMock.Object);
-			player = new PlayerController (true);
+			player = new VideoPlayerController (true);
 			//Should set again the ViewModel
 			(player as IController).SetViewModel (playerVM);
 			PreparePlayer ();
@@ -1362,10 +1363,10 @@ namespace VAS.Tests.Services
 		{
 			TimelineEvent evt1;
 			ObservableCollection<CameraConfig> cams;
-			Mock<IMultiPlayer> multiplayerMock = new Mock<IMultiPlayer> ();
+			Mock<IMultiVideoPlayer> multiplayerMock = new Mock<IMultiVideoPlayer> ();
 
 			mtkMock.Setup (m => m.GetMultiPlayer ()).Returns (multiplayerMock.Object);
-			player = new PlayerController (true);
+			player = new VideoPlayerController (true);
 			(player as IController).SetViewModel (playerVM);
 			PreparePlayer ();
 

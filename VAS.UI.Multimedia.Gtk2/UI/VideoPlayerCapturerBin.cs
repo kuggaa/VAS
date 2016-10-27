@@ -29,13 +29,13 @@ namespace VAS.UI
 {
 	[System.ComponentModel.Category ("VAS")]
 	[System.ComponentModel.ToolboxItem (true)]
-	public partial class PlayerCapturerBin : Gtk.Bin, IView<PlayerVM>
+	public partial class VideoPlayerCapturerBin : Gtk.Bin, IView<VideoPlayerVM>
 	{
-		protected IPlayerView playerview;
-		protected PlayerVM playerVM;
+		protected IVideoPlayerView playerview;
+		protected VideoPlayerVM playerVM;
 		protected PlayerViewOperationMode mode;
 
-		public PlayerCapturerBin ()
+		public VideoPlayerCapturerBin ()
 		{
 			this.Build ();
 			replayhbox.HeightRequest = livebox.HeightRequest = StyleConf.PlayerCapturerControlsHeight;
@@ -51,10 +51,10 @@ namespace VAS.UI
 
 		public void SetViewModel (object viewModel)
 		{
-			ViewModel = (PlayerVM)viewModel;
+			ViewModel = (VideoPlayerVM)viewModel;
 		}
 
-		public PlayerVM ViewModel {
+		public VideoPlayerVM ViewModel {
 			get {
 				return playerVM;
 			}

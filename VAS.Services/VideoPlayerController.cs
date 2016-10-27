@@ -36,7 +36,7 @@ using Timer = System.Threading.Timer;
 
 namespace VAS.Services
 {
-	public class PlayerController : IPlayerController
+	public class VideoPlayerController : IVideoPlayerController
 	{
 		const int LONG_SEEK_SECONDS = 10;
 		const int SHORT_SEEK_SECONDS = 2;
@@ -51,9 +51,9 @@ namespace VAS.Services
 		public event PrepareViewHandler PrepareViewEvent;
 
 		protected const int TIMEOUT_MS = 20;
-		PlayerVM playerVM;
-		protected IPlayer player;
-		protected IMultiPlayer multiPlayer;
+		VideoPlayerVM playerVM;
+		protected IVideoPlayer player;
+		protected IMultiVideoPlayer multiPlayer;
 		protected TimelineEvent loadedEvent;
 		protected TimelineEvent cameraEvent;
 		protected IPlaylistElement loadedPlaylistElement;
@@ -95,7 +95,7 @@ namespace VAS.Services
 
 		#region Constructors
 
-		public PlayerController (bool supportMultipleCameras = false)
+		public VideoPlayerController (bool supportMultipleCameras = false)
 		{
 			seeker = new Seeker ();
 			seeker.SeekEvent += HandleSeekEvent;
@@ -844,7 +844,7 @@ namespace VAS.Services
 		//FIXME: MVVMC to be implemented
 		void IController.SetViewModel (IViewModel viewModel)
 		{
-			playerVM = (PlayerVM)viewModel;
+			playerVM = (VideoPlayerVM)viewModel;
 		}
 
 		IEnumerable<KeyAction> IController.GetDefaultKeyActions ()
@@ -1040,7 +1040,7 @@ namespace VAS.Services
 
 		/// <summary>
 		/// Updates the cameras configuration internally without applying the new
-		/// configuration in the <see cref="IMultiPlayer"/>.
+		/// configuration in the <see cref="IMultiVideoPlayer"/>.
 		/// </summary>
 		/// <param name="camerasConfig">The cameras configuration.</param>
 		/// <param name="layout">The cameras layout.</param>
