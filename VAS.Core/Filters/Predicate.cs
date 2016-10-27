@@ -72,6 +72,8 @@ namespace VAS.Core.Filters
 
 		public CompositePredicate ()
 		{
+			// FIXME: This should be done overriding RaisePropertyChanged from BindableBase (making it virtual)
+			// but for some reason it's not working properly.
 			this.PropertyChanged += (sender, e) => {
 				if (e.PropertyName == "Elements" || e.PropertyName == "Collection" || e.PropertyName == "Active") {
 					UpdatePredicate ();
