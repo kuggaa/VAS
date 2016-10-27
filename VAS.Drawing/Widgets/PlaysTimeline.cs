@@ -516,7 +516,7 @@ namespace VAS.Drawing.Widgets
 		protected void HandleLoadVideoMessage (LoadVideoEvent changeVideoMessageEvent)
 		{
 			if (this.project != null) {
-				this.project.FileSet = changeVideoMessageEvent.mfs;
+				timelineToFilter.Clear ();
 				ClearObjects ();
 				duration = changeVideoMessageEvent.mfs.Duration;
 				FillCanvas ();
@@ -526,7 +526,7 @@ namespace VAS.Drawing.Widgets
 		protected void HandleCloseVideoEvent (CloseVideoEvent closeVideoEvent)
 		{
 			if (this.project != null) {
-				this.project.FileSet.Clear ();
+				timelineToFilter.Clear ();
 				ClearObjects ();
 				duration = new Time (0);
 				FillCanvas ();
