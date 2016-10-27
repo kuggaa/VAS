@@ -329,18 +329,23 @@ namespace VAS.Services.ViewModel
 			playerController.StepForward ();
 		}
 
-		public void OpenFileSet (MediaFileSet fileset)
+		public void OpenFileSet (MediaFileSet fileset, bool play = false)
 		{
 			FileSet = fileset;
-			playerController.Open (fileset);
+			playerController.Open (fileset, play);
 		}
 
 		public void ResetCounter ()
 		{
 			(playerController as VAS.Services.PlayerController).ResetCounter ();
+			ShowMessage (Catalog.GetString ("No video loaded"));
+		}
+
+		public void ShowMessage (string message)
+		{
 			App.Current.EventsBroker.Publish<ChangeVideoMessageEvent> (
 				new ChangeVideoMessageEvent () {
-					message = Catalog.GetString ("No video loaded")
+					message = message
 				});
 		}
 

@@ -194,7 +194,7 @@ namespace VAS.Services
 		public virtual double Rate {
 			set {
 				float newRate = (float)App.Current.RateList.OrderBy (n => Math.Abs (n - value)).First ();
-				SetRate (newRate); 
+				SetRate (newRate);
 				Log.Debug ("Rate set to " + value);
 			}
 			get {
@@ -311,14 +311,14 @@ namespace VAS.Services
 			}
 		}
 
-		public virtual void Open (MediaFileSet fileSet)
+		public virtual void Open (MediaFileSet fileSet, bool play = false)
 		{
 			Log.Debug ("Openning file set");
 			if (ready) {
-				InternalOpen (fileSet, true, true, false, true);
+				InternalOpen (fileSet, true, true, play, true);
 			} else {
 				Log.Debug ("Player is not ready, delaying ...");
-				delayedOpen = () => InternalOpen (FileSet, true, true, false, true);
+				delayedOpen = () => InternalOpen (FileSet, true, true, play, true);
 				FileSet = fileSet;
 			}
 		}
@@ -961,7 +961,7 @@ namespace VAS.Services
 			playerVM.Playing = playing;
 			if (PlaybackStateChangedEvent != null && !disposed) {
 				PlaybackStateChangedEvent playbackStateChangedEvent = new PlaybackStateChangedEvent {
-					Sender = sender, 
+					Sender = sender,
 					Playing = playing
 				};
 				PlaybackStateChangedEvent (playbackStateChangedEvent);
@@ -1062,7 +1062,7 @@ namespace VAS.Services
 			if (FileSet != null && camerasConfig != null && camerasConfig.Max (c => c.Index) >= FileSet.Count) {
 				Log.Error ("Invalid cameras configuration, fixing list of cameras");
 				UpdateCamerasConfig (
-					new ObservableCollection<CameraConfig> (camerasConfig.Where (i => i.Index < FileSet.Count)), 
+					new ObservableCollection<CameraConfig> (camerasConfig.Where (i => i.Index < FileSet.Count)),
 					CamerasLayout);
 			}
 		}
@@ -1200,8 +1200,8 @@ namespace VAS.Services
 		/// <param name="camerasLayout">Cameras layout.</param>
 		/// <param name="playing">If set to <c>true</c> starts playing.</param>
 		protected virtual void LoadSegment (MediaFileSet fileSet, Time start, Time stop, Time seekTime,
-		                                    float rate, ObservableCollection<CameraConfig> camerasConfig, object camerasLayout,
-		                                    bool playing)
+											float rate, ObservableCollection<CameraConfig> camerasConfig, object camerasLayout,
+											bool playing)
 		{
 			Log.Debug (String.Format ("Update player segment {0} {1} {2}",
 				start, stop, rate));
@@ -1383,8 +1383,8 @@ namespace VAS.Services
 						if (drawings != null) {
 							/* Check if the event has drawings to display */
 							FrameDrawing fd = drawings.FirstOrDefault (f => f.Render > videoTS &&
-							                  f.Render <= currentTime &&
-							                  f.CameraConfig.Index == CamerasConfig [0].Index);
+											  f.Render <= currentTime &&
+											  f.CameraConfig.Index == CamerasConfig [0].Index);
 							if (fd != null) {
 								LoadPlayDrawing (fd);
 							}
