@@ -1,9 +1,25 @@
+﻿//
+//  Copyright (C) 2016 Fluendo S.A.
+//
+//  This program is free software; you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation; either version 2 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program; if not, write to the Free Software
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
+//
 using System;
 using System.Globalization;
 using System.Threading.Tasks;
 using VAS.Core;
 using Resources = Prism.Properties.Resources;
-
 
 namespace Prism.Events
 {
@@ -11,7 +27,7 @@ namespace Prism.Events
 	/// Provides a way to retrieve a <see cref="Delegate"/> to execute an action depending
 	/// on the value of a second filter predicate that returns true if the action should execute.
 	/// </summary>
-	internal class EventSubscription : IEventSubscription
+	internal class AsyncEventSubscription : IEventSubscription
 	{
 		private readonly IDelegateReference _actionReference;
 
@@ -21,7 +37,7 @@ namespace Prism.Events
 		///<param name="actionReference">A reference to a delegate of type <see cref="System.Action"/>.</param>
 		///<exception cref="ArgumentNullException">When <paramref name="actionReference"/> or <see paramref="filterReference"/> are <see langword="null" />.</exception>
 		///<exception cref="ArgumentException">When the target of <paramref name="actionReference"/> is not of type <see cref="System.Action"/>.</exception>
-		public EventSubscription (IDelegateReference actionReference)
+		public AsyncEventSubscription (IDelegateReference actionReference)
 		{
 			if (actionReference == null)
 				throw new ArgumentNullException (nameof (actionReference));
@@ -32,11 +48,11 @@ namespace Prism.Events
 		}
 
 		/// <summary>
-		/// Gets the target <see cref="System.Action"/> that is referenced by the <see cref="IDelegateReference"/>.
+		/// Gets the target <see cref="System.Threading.Tasks"/> that is referenced by the <see cref="IDelegateReference"/>.
 		/// </summary>
 		/// <value>An <see cref="System.Action"/> or <see langword="null" /> if the referenced target is not alive.</value>
-		public Action Action {
-			get { return (Action)_actionReference.Target; }
+		public Func<Task> Action {
+			get { return (Func<Task>)_actionReference.Target; }
 		}
 
 		public Delegate Delegate {
@@ -66,12 +82,9 @@ namespace Prism.Events
 		/// </remarks>
 		public virtual Func<object [], Task> GetExecutionStrategy ()
 		{
-			Action action = this.Action;
+			Func<Task> action = this.Action;
 			if (action != null) {
-				return arguments => {
-					InvokeAction (action);
-					return AsyncHelpers.Return ();
-				};
+				return (arg) => { return InvokeAction (action); };
 			}
 			return null;
 		}
@@ -81,11 +94,13 @@ namespace Prism.Events
 		/// </summary>
 		/// <param name="action">The action to execute.</param>
 		/// <exception cref="ArgumentNullException">An <see cref="ArgumentNullException"/> is thrown if <paramref name="action"/> is null.</exception>
-		public virtual void InvokeAction (Action action)
+		public virtual Task InvokeAction (Func<Task> action)
 		{
-			if (action == null) throw new ArgumentNullException (nameof (action));
+			if (action == null) {
+				throw new ArgumentNullException (nameof (action));
+			}
 
-			action ();
+			return action ();
 		}
 	}
 
@@ -94,7 +109,7 @@ namespace Prism.Events
 	/// on the value of a second filter predicate that returns true if the action should execute.
 	/// </summary>
 	/// <typeparam name="TPayload">The type to use for the generic <see cref="System.Action{TPayload}"/> and <see cref="Predicate{TPayload}"/> types.</typeparam>
-	internal class EventSubscription<TPayload> : IEventSubscription
+	internal class AsyncEventSubscription<TPayload> : IEventSubscription
 	{
 		private readonly IDelegateReference _actionReference;
 		private readonly IDelegateReference _filterReference;
@@ -107,17 +122,21 @@ namespace Prism.Events
 		///<exception cref="ArgumentNullException">When <paramref name="actionReference"/> or <see paramref="filterReference"/> are <see langword="null" />.</exception>
 		///<exception cref="ArgumentException">When the target of <paramref name="actionReference"/> is not of type <see cref="System.Action{TPayload}"/>,
 		///or the target of <paramref name="filterReference"/> is not of type <see cref="Predicate{TPayload}"/>.</exception>
-		public EventSubscription (IDelegateReference actionReference, IDelegateReference filterReference)
+		public AsyncEventSubscription (IDelegateReference actionReference, IDelegateReference filterReference)
 		{
-			if (actionReference == null)
+			if (actionReference == null) {
 				throw new ArgumentNullException (nameof (actionReference));
-			if (!(actionReference.Target is Action<TPayload>))
+			}
+			if (!(actionReference.Target is Func<TPayload, Task>)) {
 				throw new ArgumentException (string.Format (CultureInfo.CurrentCulture, Resources.InvalidDelegateRerefenceTypeException, typeof (Action<TPayload>).FullName), nameof (actionReference));
+			}
 
-			if (filterReference == null)
+			if (filterReference == null) {
 				throw new ArgumentNullException (nameof (filterReference));
-			if (!(filterReference.Target is Predicate<TPayload>))
+			}
+			if (!(filterReference.Target is Predicate<TPayload>)) {
 				throw new ArgumentException (string.Format (CultureInfo.CurrentCulture, Resources.InvalidDelegateRerefenceTypeException, typeof (Predicate<TPayload>).FullName), nameof (filterReference));
+			}
 
 			_actionReference = actionReference;
 			_filterReference = filterReference;
@@ -127,10 +146,14 @@ namespace Prism.Events
 		/// Gets the target <see cref="System.Action{T}"/> that is referenced by the <see cref="IDelegateReference"/>.
 		/// </summary>
 		/// <value>An <see cref="System.Action{T}"/> or <see langword="null" /> if the referenced target is not alive.</value>
-		public Action<TPayload> Action {
-			get { return (Action<TPayload>)_actionReference.Target; }
+		public Func<TPayload, Task> Action {
+			get { return (Func<TPayload, Task>)_actionReference.Target; }
 		}
 
+		/// <summary>
+		/// Gets the delegate of the action.
+		/// </summary>
+		/// <value>The delegate.</value>
 		public Delegate Delegate {
 			get {
 				return _actionReference.Target;
@@ -166,7 +189,7 @@ namespace Prism.Events
 		/// </remarks>
 		public virtual Func<object [], Task> GetExecutionStrategy ()
 		{
-			Action<TPayload> action = this.Action;
+			Func<TPayload, Task> action = this.Action;
 			Predicate<TPayload> filter = this.Filter;
 			if (action != null && filter != null) {
 				return arguments => {
@@ -175,7 +198,7 @@ namespace Prism.Events
 						argument = (TPayload)arguments [0];
 					}
 					if (filter (argument)) {
-						InvokeAction (action, argument);
+						return InvokeAction (action, argument);
 					}
 					return AsyncHelpers.Return ();
 				};
@@ -189,11 +212,13 @@ namespace Prism.Events
 		/// <param name="action">The action to execute.</param>
 		/// <param name="argument">The payload to pass <paramref name="action"/> while invoking it.</param>
 		/// <exception cref="ArgumentNullException">An <see cref="ArgumentNullException"/> is thrown if <paramref name="action"/> is null.</exception>
-		public virtual void InvokeAction (Action<TPayload> action, TPayload argument)
+		public virtual Task InvokeAction (Func<TPayload, Task> action, TPayload argument)
 		{
-			if (action == null) throw new ArgumentNullException (nameof (action));
+			if (action == null) {
+				throw new ArgumentNullException (nameof (action));
+			}
 
-			action (argument);
+			return action (argument);
 		}
 	}
 }

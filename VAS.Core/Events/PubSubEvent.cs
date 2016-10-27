@@ -1,15 +1,14 @@
 using System;
 using System.Linq;
-using System.Threading.Tasks;
+using Prism.Events;
 using Prism.Properties;
-using Resources = Prism.Properties.Resources;
 
-namespace Prism.Events
+namespace VAS.Core.Events
 {
 	/// <summary>
 	/// Defines a class that manages publication and subscription to events.
 	/// </summary>
-	internal class PubSubEvent : EventBase
+	public class AsyncPubSubEvent<TPayload> : PubSubEvent<TPayload>
 	{
 		/// <summary>
 		/// Subscribes a delegate to an event that will be published on the <see cref="ThreadOption.PublisherThread"/>.
@@ -21,11 +20,6 @@ namespace Prism.Events
 		/// The PubSubEvent collection is thread-safe.
 		/// </remarks>
 		public SubscriptionToken Subscribe (Action action)
-		{
-			return Subscribe (action, ThreadOption.PublisherThread);
-		}
-
-		public SubscriptionToken Subscribe (Func<Task> action)
 		{
 			return Subscribe (action, ThreadOption.PublisherThread);
 		}
@@ -45,11 +39,6 @@ namespace Prism.Events
 			return Subscribe (action, threadOption, false);
 		}
 
-		public SubscriptionToken Subscribe (Func<Task> action, ThreadOption threadOption)
-		{
-			return Subscribe (action, threadOption, false);
-		}
-
 		/// <summary>
 		/// Subscribes a delegate to an event that will be published on the <see cref="ThreadOption.PublisherThread"/>.
 		/// </summary>
@@ -63,11 +52,6 @@ namespace Prism.Events
 		/// The PubSubEvent collection is thread-safe.
 		/// </remarks>
 		public SubscriptionToken Subscribe (Action action, bool keepSubscriberReferenceAlive)
-		{
-			return Subscribe (action, ThreadOption.PublisherThread, keepSubscriberReferenceAlive);
-		}
-
-		public SubscriptionToken Subscribe (Func<Task> action, bool keepSubscriberReferenceAlive)
 		{
 			return Subscribe (action, ThreadOption.PublisherThread, keepSubscriberReferenceAlive);
 		}
@@ -109,36 +93,12 @@ namespace Prism.Events
 			return InternalSubscribe (subscription);
 		}
 
-		public virtual SubscriptionToken Subscribe (Func<Task> action, ThreadOption threadOption, bool keepSubscriberReferenceAlive)
-		{
-			IDelegateReference actionReference = new DelegateReference (action, keepSubscriberReferenceAlive);
-
-			AsyncEventSubscription subscription;
-			switch (threadOption) {
-			case ThreadOption.PublisherThread:
-				subscription = new AsyncEventSubscription (actionReference);
-				break;
-			case ThreadOption.BackgroundThread:
-				subscription = new AsyncBackgroundEventSubscription (actionReference);
-				break;
-			case ThreadOption.UIThread:
-				if (SynchronizationContext == null) throw new InvalidOperationException (Resources.EventAggregatorNotConstructedOnUIThread);
-				subscription = new AsyncDispatcherEventSubscription (actionReference, SynchronizationContext);
-				break;
-			default:
-				subscription = new AsyncEventSubscription (actionReference);
-				break;
-			}
-
-			return InternalSubscribe (subscription);
-		}
-
 		/// <summary>
 		/// Publishes the <see cref="PubSubEvent"/>.
 		/// </summary>
-		public virtual Task Publish ()
+		public virtual void Publish ()
 		{
-			return InternalPublish ();
+			InternalPublish ();
 		}
 
 		/// <summary>
@@ -174,7 +134,7 @@ namespace Prism.Events
 	/// Defines a class that manages publication and subscription to events.
 	/// </summary>
 	/// <typeparam name="TPayload">The type of message that will be passed to the subscribers.</typeparam>
-	internal class PubSubEvent<TPayload> : EventBase
+	public class PubSubEvent<TPayload> : EventBase
 	{
 		/// <summary>
 		/// Subscribes a delegate to an event that will be published on the <see cref="ThreadOption.PublisherThread"/>.
@@ -190,11 +150,6 @@ namespace Prism.Events
 			return Subscribe (action, ThreadOption.PublisherThread);
 		}
 
-		public SubscriptionToken Subscribe (Func<TPayload, Task> action)
-		{
-			return Subscribe (action, ThreadOption.PublisherThread);
-		}
-
 		/// <summary>
 		/// Subscribes a delegate to an event.
 		/// PubSubEvent will maintain a <see cref="WeakReference"/> to the Target of the supplied <paramref name="action"/> delegate.
@@ -206,11 +161,6 @@ namespace Prism.Events
 		/// The PubSubEvent collection is thread-safe.
 		/// </remarks>
 		public SubscriptionToken Subscribe (Action<TPayload> action, ThreadOption threadOption)
-		{
-			return Subscribe (action, threadOption, false);
-		}
-
-		public SubscriptionToken Subscribe (Func<TPayload, Task> action, ThreadOption threadOption)
 		{
 			return Subscribe (action, threadOption, false);
 		}
@@ -232,11 +182,6 @@ namespace Prism.Events
 			return Subscribe (action, ThreadOption.PublisherThread, keepSubscriberReferenceAlive);
 		}
 
-		public SubscriptionToken Subscribe (Func<TPayload, Task> action, bool keepSubscriberReferenceAlive)
-		{
-			return Subscribe (action, ThreadOption.PublisherThread, keepSubscriberReferenceAlive);
-		}
-
 		/// <summary>
 		/// Subscribes a delegate to an event.
 		/// </summary>
@@ -251,11 +196,6 @@ namespace Prism.Events
 		/// The PubSubEvent collection is thread-safe.
 		/// </remarks>
 		public SubscriptionToken Subscribe (Action<TPayload> action, ThreadOption threadOption, bool keepSubscriberReferenceAlive)
-		{
-			return Subscribe (action, threadOption, keepSubscriberReferenceAlive, null);
-		}
-
-		public SubscriptionToken Subscribe (Func<TPayload, Task> action, ThreadOption threadOption, bool keepSubscriberReferenceAlive)
 		{
 			return Subscribe (action, threadOption, keepSubscriberReferenceAlive, null);
 		}
@@ -303,52 +243,23 @@ namespace Prism.Events
 			return InternalSubscribe (subscription);
 		}
 
-		public virtual SubscriptionToken Subscribe (Func<TPayload, Task> action, ThreadOption threadOption, bool keepSubscriberReferenceAlive, Predicate<TPayload> filter)
-		{
-			IDelegateReference actionReference = new DelegateReference (action, keepSubscriberReferenceAlive);
-			IDelegateReference filterReference;
-			if (filter != null) {
-				filterReference = new DelegateReference (filter, keepSubscriberReferenceAlive);
-			} else {
-				filterReference = new DelegateReference (new Predicate<TPayload> (delegate { return true; }), true);
-			}
-			AsyncEventSubscription<TPayload> subscription;
-			switch (threadOption) {
-			case ThreadOption.PublisherThread:
-				subscription = new AsyncEventSubscription<TPayload> (actionReference, filterReference);
-				break;
-			case ThreadOption.BackgroundThread:
-				subscription = new AsyncBackgroundEventSubscription<TPayload> (actionReference, filterReference);
-				break;
-			case ThreadOption.UIThread:
-				if (SynchronizationContext == null) throw new InvalidOperationException (Resources.EventAggregatorNotConstructedOnUIThread);
-				subscription = new AsyncDispatcherEventSubscription<TPayload> (actionReference, filterReference, SynchronizationContext);
-				break;
-			default:
-				subscription = new AsyncEventSubscription<TPayload> (actionReference, filterReference);
-				break;
-			}
-
-			return InternalSubscribe (subscription);
-		}
-
 		/// <summary>
 		/// Publishes the <see cref="PubSubEvent{TPayload}"/>.
 		/// </summary>
 		/// <param name="payload">Message to pass to the subscribers.</param>
-		public virtual Task Publish (TPayload payload)
+		public virtual void Publish (TPayload payload)
 		{
-			return InternalPublish (payload);
+			InternalPublish (payload);
 		}
 
 		/// <summary>
 		/// Removes the first subscriber matching <see cref="Action{TPayload}"/> from the subscribers' list.
 		/// </summary>
 		/// <param name="subscriber">The <see cref="Action{TPayload}"/> used when subscribing to the event.</param>
-		public virtual void Unsubscribe (Delegate subscriber)
+		public virtual void Unsubscribe (Action<TPayload> subscriber)
 		{
 			lock (Subscriptions) {
-				IEventSubscription eventSubscription = Subscriptions.FirstOrDefault (evt => evt.Delegate == subscriber);
+				IEventSubscription eventSubscription = Subscriptions.Cast<EventSubscription<TPayload>> ().FirstOrDefault (evt => evt.Action == subscriber);
 				if (eventSubscription != null) {
 					Subscriptions.Remove (eventSubscription);
 				}
@@ -364,21 +275,7 @@ namespace Prism.Events
 		{
 			IEventSubscription eventSubscription;
 			lock (Subscriptions) {
-				eventSubscription = Subscriptions.OfType<EventSubscription<TPayload>> ().FirstOrDefault (evt => evt.Action == subscriber);
-			}
-			return eventSubscription != null;
-		}
-
-		/// <summary>
-		/// Returns <see langword="true"/> if there is a subscriber matching <see cref="Action{TPayload}"/>.
-		/// </summary>
-		/// <param name="subscriber">The <see cref="Action{TPayload}"/> used when subscribing to the event.</param>
-		/// <returns><see langword="true"/> if there is an <see cref="Action{TPayload}"/> that matches; otherwise <see langword="false"/>.</returns>
-		public virtual bool Contains (Func<TPayload, Task> subscriber)
-		{
-			IEventSubscription eventSubscription;
-			lock (Subscriptions) {
-				eventSubscription = Subscriptions.OfType<AsyncEventSubscription<TPayload>> ().FirstOrDefault (evt => evt.Action == subscriber);
+				eventSubscription = Subscriptions.Cast<EventSubscription<TPayload>> ().FirstOrDefault (evt => evt.Action == subscriber);
 			}
 			return eventSubscription != null;
 		}

@@ -171,6 +171,22 @@
     <Compile Include="$(MSBuildThisFileDirectory)Filters\Predicate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IVisible.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IKpiService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Prism\BackgroundEventSubscription.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Prism\DelegateReference.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Prism\DispatcherEventSubscription.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Prism\EventAggregator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Prism\EventBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Prism\EventSubscription.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Prism\IDelegateReference.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Prism\IEventAggregator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Prism\IEventSubscription.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Prism\PubSubEvent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Prism\SubscriptionToken.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Prism\ThreadOption.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Prism\AsyncEventSubscription.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Prism\AsyncBackgroundEventSubcription.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Prism\AsyncDispatcherEventSubscription.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Prism\Properties.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
@@ -190,6 +206,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)Interfaces\Plugins\" />
     <Folder Include="$(MSBuildThisFileDirectory)Services\" />
     <Folder Include="$(MSBuildThisFileDirectory)Services\ViewModels\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Prism\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)VAS.Core.dll.config">
