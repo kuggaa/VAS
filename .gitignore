@@ -80,3 +80,5 @@ oneplay-longomatch
 obj/
 .DS_Store
 packages/
+*.csproj.user
+

@@ -21,7 +21,11 @@
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="cp ${ProjectDir}/VAS.UI.Helpers.Gtk2.dll.config.mdp ${TargetDir}/VAS.UI.Helpers.Gtk2.dll.config" workingdir="${ProjectDir}" />
+        <Command>
+          <type>AfterBuild</type>
+          <command>cp ${ProjectDir}/VAS.UI.Helpers.Gtk2.dll.config.mdp ${TargetDir}/VAS.UI.Helpers.Gtk2.dll.config</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
