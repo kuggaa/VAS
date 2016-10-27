@@ -1059,7 +1059,7 @@ namespace VAS.Services
 		/// </summary>
 		protected virtual void ValidateVisibleCameras ()
 		{
-			if (FileSet != null && camerasConfig != null && camerasConfig.Max (c => c.Index) >= FileSet.Count) {
+			if (FileSet != null && camerasConfig != null && camerasConfig.Select (c => c.Index).DefaultIfEmpty ().Max () >= FileSet.Count) {
 				Log.Error ("Invalid cameras configuration, fixing list of cameras");
 				UpdateCamerasConfig (
 					new ObservableCollection<CameraConfig> (camerasConfig.Where (i => i.Index < FileSet.Count)),
