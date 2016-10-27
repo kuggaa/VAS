@@ -22,7 +22,6 @@ using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Services.ViewModel;
-using System.Collections.ObjectModel;
 using VAS.Core.Events;
 
 namespace VAS.Services.Controller
@@ -30,14 +29,25 @@ namespace VAS.Services.Controller
 	/// <summary>
 	/// Events controller, base class of the Events Controller.
 	/// </summary>
-	public class EventsController<TModel,TViewModel> : IController
+	public class EventsController<TModel, TViewModel> : IController
 		where TModel : TimelineEvent
 		where TViewModel : TimelineEventVM<TModel>, new()
 	{
+		PlayerVM playerVM;
 
 		public PlayerVM PlayerVM {
-			get;
-			set;
+			get {
+				return playerVM;
+			}
+			set {
+				if (playerVM != null) {
+					playerVM.PropertyChanged -= HandlePlayerVMPropertyChanged;
+				}
+				playerVM = value;
+				if (playerVM != null) {
+					playerVM.PropertyChanged += HandlePlayerVMPropertyChanged;
+				}
+			}
 		}
 
 		#region IController implementation
@@ -72,7 +82,7 @@ namespace VAS.Services.Controller
 
 		public void Dispose ()
 		{
-			
+
 		}
 
 		#endregion
@@ -85,6 +95,10 @@ namespace VAS.Services.Controller
 		void HandleOpenListEvent (LoadTimelineEvent<IEnumerable<TModel>> e)
 		{
 			PlayerVM.LoadEvents (e.Object.OfType<TimelineEvent> ().ToList (), e.Playing);
+		}
+
+		protected virtual void HandlePlayerVMPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
 		}
 	}
 }

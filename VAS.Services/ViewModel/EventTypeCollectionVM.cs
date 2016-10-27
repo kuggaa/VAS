@@ -37,5 +37,10 @@ namespace VAS.Services.ViewModel
 			get;
 			set;
 		}
+
+		public VMChild LoadedEvent {
+			get;
+			set;
+		}
 	}
 }
