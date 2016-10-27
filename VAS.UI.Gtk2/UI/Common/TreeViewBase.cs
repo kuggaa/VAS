@@ -121,6 +121,8 @@ namespace VAS.UI.Common
 			case NotifyCollectionChangedAction.Replace:
 				break;
 			}
+
+			filter.Refilter ();
 		}
 
 		protected virtual void AddSubViewModel (IViewModel subViewModel, TreeIter parent)
@@ -223,7 +225,7 @@ namespace VAS.UI.Common
 		protected override bool OnButtonPressEvent (Gdk.EventButton evnt)
 		{
 			bool ret = true;
-			TreePath[] paths = Selection.GetSelectedRows ();
+			TreePath [] paths = Selection.GetSelectedRows ();
 
 			if (Misc.RightButtonClicked (evnt)) {
 				// We don't want to unselect the play when several
