@@ -42,15 +42,17 @@ namespace VAS.Core.MVVMC
 		/// Gets the collection of child ViewModel
 		/// </summary>
 		/// <value>The ViewModels collection.</value>
-		public ObservableCollection<VMChilds> ViewModels {
+		public virtual ObservableCollection<VMChilds> ViewModels {
 			protected set;
 			get;
 		}
 
 		/// <summary>
 		/// Gets the current selection in the collection.
+		/// This property is notified with PropertyChanged ("Selection").
 		/// </summary>
 		/// <value>The selection.</value>
+		[PropertyChanged.DoNotNotify]
 		public RangeObservableCollection<VMChilds> Selection {
 			get;
 			private set;

@@ -51,6 +51,17 @@ namespace VAS.Core.MVVMC
 		#endregion
 
 		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="VAS.Core.MVVMC.BindableBase"/> ignore events.
+		/// While IgnoreEvents is true, all PropertyChanged events will not be emited
+		/// </summary>
+		/// <value><c>true</c> if ignore events; otherwise, <c>false</c>.</value>
+		[PropertyChanged.DoNotNotify]
+		public bool IgnoreEvents {
+			get;
+			set;
+		}
+
+		/// <summary>
 		/// Raises the property changed event.
 		/// </summary>
 		/// <param name="propertyName">Property name.</param>
@@ -67,6 +78,9 @@ namespace VAS.Core.MVVMC
 		/// <param name="sender">Sender of the event</param>
 		protected void RaisePropertyChanged (PropertyChangedEventArgs args, object sender = null)
 		{
+			if (IgnoreEvents) {
+				return;
+			}
 			if (PropertyChanged != null) {
 				if (sender == null) {
 					sender = this;

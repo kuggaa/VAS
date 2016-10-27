@@ -35,14 +35,15 @@ namespace VAS.Services.State
 		public ScreenState ()
 		{
 			Panel = App.Current.ViewLocator.Retrieve (Name) as IPanel;
-			Controllers = App.Current.ControllerLocator.RetrieveAll (Name);
+			RootControllers = App.Current.ControllerLocator.RetrieveAll (Name);
+			Controllers = new List<IController> (RootControllers);
 			KeyContext = new KeyContext ();
 			foreach (IController controller in Controllers) {
 				KeyContext.KeyActions.AddRange (controller.GetDefaultKeyActions ());
 			}
-			KeyContext panelKeyContext = Panel.GetKeyContext ();
+			KeyContext panelKeyContext = Panel?.GetKeyContext ();
 			if (panelKeyContext != null) {
-				KeyContext.KeyActions.AddRange (Panel.GetKeyContext ()?.KeyActions);
+				KeyContext.KeyActions.AddRange (Panel?.GetKeyContext ()?.KeyActions);
 			}
 		}
 
@@ -80,6 +81,11 @@ namespace VAS.Services.State
 			set;
 		}
 
+		public List<IController> RootControllers {
+			get;
+			set;
+		}
+
 		public IPanel Panel {
 			get;
 			set;
@@ -102,6 +108,8 @@ namespace VAS.Services.State
 			foreach (IController controller in Controllers) {
 				controller.Stop ();
 			}
+			RootControllers.Clear ();
+			Controllers.Clear ();
 			ViewModel = default (TViewModel);
 			App.Current.KeyContextManager.RemoveContext (KeyContext);
 			return AsyncHelpers.Return (true);
@@ -116,8 +124,11 @@ namespace VAS.Services.State
 		{
 			CreateViewModel (data);
 			Panel.SetViewModel (ViewModel);
-			foreach (IController controller in Controllers) {
+			foreach (IController controller in RootControllers) {
 				controller.SetViewModel (ViewModel);
+			}
+			CreateControllers (data);
+			foreach (IController controller in Controllers) {
 				controller.Start ();
 			}
 			App.Current.KeyContextManager.AddContext (KeyContext);
@@ -129,6 +140,15 @@ namespace VAS.Services.State
 		/// </summary>
 		/// <param name="data">Data.</param>
 		protected abstract void CreateViewModel (dynamic data);
+
+		/// <summary>
+		/// Creates secondary controllers. Controllers that aren't linked directly to the state view model.
+		/// This method should create this controllers, set their properties and add them to the Controllers list.
+		/// </summary>
+		/// <param name="data">Data.</param>
+		protected virtual void CreateControllers (dynamic data)
+		{
+		}
 	}
 }
 

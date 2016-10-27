@@ -17,6 +17,7 @@
 //
 using System;
 using VAS.Core.Common;
+using VAS.Core.Interfaces.GUI;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
@@ -25,7 +26,7 @@ namespace VAS.Services.ViewModel
 	/// <summary>
 	/// Timeline event ViewModel Generic Base class
 	/// </summary>
-	public class TimelineEventVM<T> : ViewModelBase<T>
+	public class TimelineEventVM<T> : ViewModelBase<T>, IVisible
 		where T : TimelineEvent
 	{
 		/// <summary>
@@ -102,6 +103,15 @@ namespace VAS.Services.ViewModel
 			get;
 			set;
 		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="VAS.Services.ViewModel.TimelineEventVM`1"/> is visible.
+		/// </summary>
+		/// <value><c>true</c> if visible; otherwise, <c>false</c>.</value>
+		public virtual bool Visible {
+			get;
+			set;
+		} = true;
 	}
 }
 
