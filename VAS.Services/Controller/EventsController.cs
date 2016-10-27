@@ -35,14 +35,13 @@ namespace VAS.Services.Controller
 		where TModel : TimelineEvent
 		where TViewModel : TimelineEventVM<TModel>, new()
 	{
-
 		protected override void Dispose (bool disposing)
 		{
 			base.Dispose (disposing);
 			Stop ();
 		}
 
-		public PlayerVM PlayerVM {
+		public VideoPlayerVM PlayerVM {
 			get;
 			set;
 		}
@@ -64,7 +63,7 @@ namespace VAS.Services.Controller
 		public virtual void SetViewModel (IViewModel viewModel)
 		{
 			if (viewModel is IAnalysisViewModel) {
-				PlayerVM = (PlayerVM)(viewModel as IAnalysisViewModel).PlayerViewModel;
+				PlayerVM = (VideoPlayerVM)(viewModel as IAnalysisViewModel).PlayerViewModel;
 			}
 		}
 

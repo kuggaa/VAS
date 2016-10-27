@@ -50,7 +50,7 @@ namespace VAS.UI.Component
 		protected Time currentTime, nextCurrentTime;
 		protected PlaysMenu menu;
 		protected Project project;
-		protected IPlayerController player;
+		protected IVideoPlayerController player;
 
 		public Timeline ()
 		{
@@ -160,7 +160,7 @@ namespace VAS.UI.Component
 		/// Gets or sets the player.
 		/// </summary>
 		/// <value>The player.</value>
-		public virtual IPlayerController Player {
+		public virtual IVideoPlayerController Player {
 			get {
 				return player;
 			}

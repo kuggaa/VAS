@@ -44,10 +44,10 @@ namespace VAS.UI
 	[System.ComponentModel.Category ("VAS")]
 	[System.ComponentModel.ToolboxItem (true)]
 
-	public partial class PlayerView : Gtk.Bin, IView<PlayerVM>, IPlayerView
+	public partial class VideoPlayerView : Gtk.Bin, IView<VideoPlayerVM>, IVideoPlayerView
 	{
 		protected const int SCALE_FPS = 25;
-		protected IPlayerController player;
+		protected IVideoPlayerController player;
 		protected bool inTimescaleSeek, isPlayingPrevState, muted, ignoreRate, ignoreVolume;
 		protected double previousVLevel = 1;
 		protected VolumeWindow vwin;
@@ -56,11 +56,11 @@ namespace VAS.UI
 		List<double> rateList;
 		KeyContext keycontext;
 		List<IViewPort> viewPortsBackup;
-		PlayerVM playerVM;
+		VideoPlayerVM playerVM;
 
 		#region Constructors
 
-		public PlayerView ()
+		public VideoPlayerView ()
 		{
 			this.Build ();
 
@@ -144,12 +144,12 @@ namespace VAS.UI
 
 		public void SetViewModel (object viewModel)
 		{
-			ViewModel = (PlayerVM)viewModel;
+			ViewModel = (VideoPlayerVM)viewModel;
 			ViewModel.SupportsMultipleCameras = false;
 			SyncVMValues ();
 		}
 
-		public PlayerVM ViewModel {
+		public VideoPlayerVM ViewModel {
 			get {
 				return playerVM;
 			}

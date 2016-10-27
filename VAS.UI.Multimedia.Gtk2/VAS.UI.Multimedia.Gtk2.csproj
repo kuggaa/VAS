@@ -1,113 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{473E7B85-AF42-40E8-BE21-46FF6CCC34D0}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>VAS</RootNamespace>
-    <CodePage>65001</CodePage>
-    <AssemblyName>VAS.UI.Multimedia.Gtk2</AssemblyName>
-    <AssemblyOriginatorKeyFile>..\..\libvas</AssemblyOriginatorKeyFile>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\bin</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Execution>
-      <Execution clr-version="Net_2_0" />
-    </Execution>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\bin</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Execution>
-      <Execution clr-version="Net_2_0" />
-    </Execution>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-  </PropertyGroup>
-  <ItemGroup>
-    <Folder Include="UI\" />
-    <Folder Include="UI\Utils\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="UI\CapturerBin.cs" />
-    <Compile Include="UI\VolumeWindow.cs" />
-    <Compile Include="gtk-gui\generated.cs" />
-    <Compile Include="gtk-gui\VAS.UI.CapturerBin.cs" />
-    <Compile Include="gtk-gui\VAS.UI.VolumeWindow.cs" />
-    <Compile Include="UI\PlayerCapturerBin.cs" />
-    <Compile Include="gtk-gui\VAS.UI.PlayerCapturerBin.cs" />
-    <Compile Include="UI\Utils\Remuxer.cs" />
-    <Compile Include="MultimediaToolkit.cs" />
-    <Compile Include="UI\Utils\FramesCapturer.cs" />
-    <Compile Include="UI\VideoWindow.cs" />
-    <Compile Include="gtk-gui\VAS.UI.VideoWindow.cs" />
-    <Compile Include="UI\PlayerView.cs" />
-    <Compile Include="gtk-gui\VAS.UI.PlayerView.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="gtk-gui\gui.stetic">
-      <LogicalName>gui.stetic</LogicalName>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="System" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="System.Core" />
-    <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="Mono.Posix" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ProjectExtensions>
-    <MonoDevelop>
-      <Properties>
-        <Policies>
-          <StandardHeader Text="&#xA; Copyright (C) ${Year} ${CopyrightHolder}&#xA;&#xA; This program is free software; you can redistribute it and/or modify&#xA; it under the terms of the GNU General Public License as published by&#xA; the Free Software Foundation; either version 2 of the License, or&#xA; (at your option) any later version.&#xA;&#xA; This program is distributed in the hope that it will be useful,&#xA; but WITHOUT ANY WARRANTY; without even the implied warranty of&#xA; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the&#xA; GNU General Public License for more details.&#xA; &#xA; You should have received a copy of the GNU General Public License&#xA; along with this program; if not, write to the Free Software&#xA; Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.&#xA;" IncludeInNewFiles="True" />
-        </Policies>
-        <Deployment.LinuxDeployData generatePcFile="False" />
-      </Properties>
-    </MonoDevelop>
-  </ProjectExtensions>
-  <ItemGroup>
-    <ProjectReference Include="..\VAS.Core\VAS.Core.Net45.csproj">
-      <Project>{08AE7734-B995-4E0D-AD8F-38F597E0D4DF}</Project>
-      <Name>VAS.Core.Net45</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VAS.UI.Helpers.Gtk2\VAS.UI.Helpers.Gtk2.csproj">
-      <Project>{E75E30DC-C1CF-4683-9A36-65B91EF10095}</Project>
-      <Name>VAS.UI.Helpers.Gtk2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VAS.Drawing.Cairo\VAS.Drawing.Cairo.csproj">
-      <Project>{AE98609B-353C-4CE4-A5B7-606BB4EE3576}</Project>
-      <Name>VAS.Drawing.Cairo</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VAS.Services\VAS.Services.Net45.csproj">
-      <Project>{153BFD3F-6E06-451B-AD79-6C207762BBBB}</Project>
-      <Name>VAS.Services.Net45</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VAS.Drawing\VAS.Drawing.Net45.csproj">
-      <Project>{F99F378C-8C75-4888-A173-C7B4EC2D37E0}</Project>
-      <Name>VAS.Drawing.Net45</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VAS.Multimedia\VAS.Multimedia.csproj">
-      <Project>{269608A7-5DBC-4A2C-B7AF-D094B6FA88AC}</Project>
-      <Name>VAS.Multimedia</Name>
-    </ProjectReference>
-  </ItemGroup>
+	<PropertyGroup>
+		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+		<ProjectGuid>{473E7B85-AF42-40E8-BE21-46FF6CCC34D0}</ProjectGuid>
+		<OutputType>Library</OutputType>
+		<RootNamespace>VAS</RootNamespace>
+		<CodePage>65001</CodePage>
+		<AssemblyName>VAS.UI.Multimedia.Gtk2</AssemblyName>
+		<AssemblyOriginatorKeyFile>..\..\libvas</AssemblyOriginatorKeyFile>
+		<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+		<ProductVersion>8.0.30703</ProductVersion>
+		<SchemaVersion>2.0</SchemaVersion>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<DebugSymbols>true</DebugSymbols>
+		<Optimize>true</Optimize>
+		<OutputPath>..\..\bin</OutputPath>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+		<Execution>
+			<Execution clr-version="Net_2_0" />
+		</Execution>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<DebugSymbols>true</DebugSymbols>
+		<Optimize>true</Optimize>
+		<OutputPath>..\..\bin</OutputPath>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+		<Execution>
+			<Execution clr-version="Net_2_0" />
+		</Execution>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+	</PropertyGroup>
+	<ItemGroup>
+		<Folder Include="UI\" />
+		<Folder Include="UI\Utils\" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Include="UI\CapturerBin.cs" />
+		<Compile Include="UI\VolumeWindow.cs" />
+		<Compile Include="gtk-gui\generated.cs" />
+		<Compile Include="gtk-gui\VAS.UI.CapturerBin.cs" />
+		<Compile Include="gtk-gui\VAS.UI.VolumeWindow.cs" />
+		<Compile Include="UI\VideoPlayerCapturerBin.cs" />
+		<Compile Include="gtk-gui\VAS.UI.VideoPlayerCapturerBin.cs" />
+		<Compile Include="UI\Utils\Remuxer.cs" />
+		<Compile Include="MultimediaToolkit.cs" />
+		<Compile Include="UI\Utils\FramesCapturer.cs" />
+		<Compile Include="UI\VideoWindow.cs" />
+		<Compile Include="gtk-gui\VAS.UI.VideoWindow.cs" />
+		<Compile Include="UI\VideoPlayerView.cs" />
+		<Compile Include="gtk-gui\VAS.UI.VideoPlayerView.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="gtk-gui\gui.stetic">
+			<LogicalName>gui.stetic</LogicalName>
+		</EmbeddedResource>
+	</ItemGroup>
+	<ItemGroup>
+		<Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+		<Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+		<Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+		<Reference Include="System" />
+		<Reference Include="System.Drawing" />
+		<Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+		<Reference Include="System.Core" />
+		<Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+		<Reference Include="Mono.Posix" />
+	</ItemGroup>
+	<Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+	<ProjectExtensions>
+		<MonoDevelop>
+			<Properties>
+				<Policies>
+					<StandardHeader Text="&#xA; Copyright (C) ${Year} ${CopyrightHolder}&#xA;&#xA; This program is free software; you can redistribute it and/or modify&#xA; it under the terms of the GNU General Public License as published by&#xA; the Free Software Foundation; either version 2 of the License, or&#xA; (at your option) any later version.&#xA;&#xA; This program is distributed in the hope that it will be useful,&#xA; but WITHOUT ANY WARRANTY; without even the implied warranty of&#xA; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the&#xA; GNU General Public License for more details.&#xA; &#xA; You should have received a copy of the GNU General Public License&#xA; along with this program; if not, write to the Free Software&#xA; Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.&#xA;" IncludeInNewFiles="True" />
+				</Policies>
+				<Deployment.LinuxDeployData generatePcFile="False" />
+			</Properties>
+		</MonoDevelop>
+	</ProjectExtensions>
+	<ItemGroup>
+		<ProjectReference Include="..\VAS.Core\VAS.Core.Net45.csproj">
+			<Project>{08AE7734-B995-4E0D-AD8F-38F597E0D4DF}</Project>
+			<Name>VAS.Core.Net45</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\VAS.UI.Helpers.Gtk2\VAS.UI.Helpers.Gtk2.csproj">
+			<Project>{E75E30DC-C1CF-4683-9A36-65B91EF10095}</Project>
+			<Name>VAS.UI.Helpers.Gtk2</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\VAS.Drawing.Cairo\VAS.Drawing.Cairo.csproj">
+			<Project>{AE98609B-353C-4CE4-A5B7-606BB4EE3576}</Project>
+			<Name>VAS.Drawing.Cairo</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\VAS.Services\VAS.Services.Net45.csproj">
+			<Project>{153BFD3F-6E06-451B-AD79-6C207762BBBB}</Project>
+			<Name>VAS.Services.Net45</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\VAS.Drawing\VAS.Drawing.Net45.csproj">
+			<Project>{F99F378C-8C75-4888-A173-C7B4EC2D37E0}</Project>
+			<Name>VAS.Drawing.Net45</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\VAS.Multimedia\VAS.Multimedia.csproj">
+			<Project>{269608A7-5DBC-4A2C-B7AF-D094B6FA88AC}</Project>
+			<Name>VAS.Multimedia</Name>
+		</ProjectReference>
+	</ItemGroup>
 </Project>

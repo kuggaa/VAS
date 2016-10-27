@@ -37,16 +37,15 @@ namespace VAS.Services.ViewModel
 	/// Every view that needs to control the player should use this ViewModel instead of the
 	/// PlayerController.
 	/// </summary>
-	public class PlayerVM : BindableBase, IPlayerViewModel
+	public class VideoPlayerVM : BindableBase, IVideoPlayerViewModel
 	{
-		IPlayerController playerController;
+		IVideoPlayerController playerController;
 		PlayerViewOperationMode mode;
 		MediaFileSet fileset;
 
-
-		public PlayerVM (bool supportMultipleCameras = true)
+		public VideoPlayerVM (bool supportMultipleCameras = true)
 		{
-			playerController = new PlayerController (supportMultipleCameras);
+			playerController = new VideoPlayerController (supportMultipleCameras);
 			playerController.SetViewModel (this);
 			playerController.Start ();
 		}
@@ -179,7 +178,7 @@ namespace VAS.Services.ViewModel
 			get;
 		}
 
-		public IPlayerController Player {
+		public IVideoPlayerController Player {
 			get {
 				return playerController;
 			}
@@ -337,7 +336,7 @@ namespace VAS.Services.ViewModel
 
 		public void ResetCounter ()
 		{
-			(playerController as VAS.Services.PlayerController).ResetCounter ();
+			(playerController as VAS.Services.VideoPlayerController).ResetCounter ();
 			ShowMessage (Catalog.GetString ("No video loaded"));
 		}
 

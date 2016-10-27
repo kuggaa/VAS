@@ -51,7 +51,7 @@ namespace VAS.Drawing.Widgets
 		protected Dictionary<TimelineObject, object> timelineToFilter;
 		protected Dictionary<EventType, CategoryTimeline> eventsTimelines;
 
-		public PlaysTimeline (IWidget widget, IPlayerController player) : base (widget)
+		public PlaysTimeline (IWidget widget, IVideoPlayerController player) : base (widget)
 		{
 			eventsTimelines = new Dictionary<EventType, CategoryTimeline> ();
 			timelineToFilter = new Dictionary<TimelineObject, object> ();
@@ -90,7 +90,7 @@ namespace VAS.Drawing.Widgets
 		/// Gets or sets the player.
 		/// </summary>
 		/// <value>The player.</value>
-		public IPlayerController Player {
+		public IVideoPlayerController Player {
 			get;
 			set;
 		}

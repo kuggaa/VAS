@@ -95,7 +95,7 @@ namespace VAS.Core.Interfaces.Multimedia
 		void Expose ();
 	}
 
-	public interface IPlayer: IPlayback
+	public interface IVideoPlayer: IPlayback
 	{
 		// Events
 		event ErrorHandler Error;
@@ -135,7 +135,7 @@ namespace VAS.Core.Interfaces.Multimedia
 		Image GetCurrentFrame (int width = -1, int height = -1);
 	}
 
-	public interface IMultiPlayer: IPlayer
+	public interface IMultiVideoPlayer : IVideoPlayer
 	{
 
 		event ScopeStateChangedHandler ScopeChangedEvent;

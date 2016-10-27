@@ -37,7 +37,7 @@ namespace VAS.Tests.Services
 		const string name = "name";
 
 		Mock<IGUIToolkit> mockGuiToolkit;
-		Mock<IPlayerViewModel> mockPlayerController;
+		Mock<IVideoPlayerViewModel> mockPlayerController;
 		Mock<IDialogs> mockDiaklogs;
 		Mock<IStorageManager> storageManagerMock;
 		Mock<IStorage> storageMock;
@@ -46,7 +46,7 @@ namespace VAS.Tests.Services
 		[TestFixtureSetUp ()]
 		public void FixtureSetup ()
 		{
-			mockPlayerController = new Mock<IPlayerViewModel> ();
+			mockPlayerController = new Mock<IVideoPlayerViewModel> ();
 			mockGuiToolkit = new Mock<IGUIToolkit> ();
 
 			storageManagerMock = new Mock<IStorageManager> ();

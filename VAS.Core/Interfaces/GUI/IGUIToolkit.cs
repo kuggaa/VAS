@@ -33,7 +33,7 @@ namespace VAS.Core.Interfaces.GUI
 		/* Plugable views */
 		void Register<I, C> (int priority);
 
-		IPlayerView GetPlayerView ();
+		IVideoPlayerView GetPlayerView ();
 
 		IMainController MainController { get; }
 

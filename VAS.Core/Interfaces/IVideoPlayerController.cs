@@ -28,7 +28,7 @@ using VAS.Core.Store.Playlists;
 
 namespace VAS.Core.Interfaces
 {
-	public interface IPlayerController : IPlayback, IController
+	public interface IVideoPlayerController : IPlayback, IController
 	{
 		event TimeChangedHandler TimeChangedEvent;
 		event StateChangeHandler PlaybackStateChangedEvent;
