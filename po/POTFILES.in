@@ -46,4 +46,5 @@ VAS.UI.Multimedia.Gtk2/gtk-gui/VAS.UI.PlayerCapturerBin.cs
 VAS.UI.Multimedia.Gtk2/gtk-gui/VAS.UI.PlayerView.cs
 VAS.UI.Multimedia.Gtk2/gtk-gui/VAS.UI.VideoWindow.cs
 VAS.UI.Multimedia.Gtk2/gtk-gui/VAS.UIPlayerCapturerBin.cs
+VAS.UI.Gtk2/UI/TreeView/FilterTreeViewBase.cs
 libvas/lgm-video-player.c
