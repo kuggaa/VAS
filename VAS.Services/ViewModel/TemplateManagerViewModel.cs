@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
@@ -96,13 +97,24 @@ namespace VAS.Services.ViewModel
 		}
 
 		/// <summary>
+		/// Send the event to open a template.
+		/// </summary>
+		public void Open (TModel model)
+		{
+			App.Current.EventsBroker.Publish (new OpenEvent<TModel> () { Object = model });
+		}
+
+		/// <summary>
 		/// Command to delete the currently loaded template.
 		/// </summary>
-		public virtual void Delete ()
+		public void Delete ()
 		{
-			TViewModel templateVM = Selection.FirstOrDefault ();
-			if (templateVM != null && templateVM.Model != null) {
-				App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = templateVM.Model });
+			if (Selection != null) {
+				ObservableCollection<TModel> objects = new ObservableCollection<TModel>
+					(Selection.Where (x => x.Model != null).Select (x => x.Model));
+				if (objects.Any ()) {
+					App.Current.EventsBroker.Publish (new DeleteEvent<ObservableCollection<TModel>> { Object = objects });
+				}
 			}
 		}
 
