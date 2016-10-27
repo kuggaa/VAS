@@ -47,9 +47,6 @@ namespace VAS.UI
 			playerview = App.Current.GUIToolkit.GetPlayerView ();
 			playerbox.PackEnd (playerview as Gtk.Widget);
 			(playerview as Gtk.Widget).ShowAll ();
-
-			App.Current.EventsBroker.Subscribe<LoadVideoEvent> (HandleLoadVideoEvent);
-			App.Current.EventsBroker.Subscribe<CloseVideoEvent> (HandleCloseVideoEvent);
 		}
 
 		public void SetViewModel (object viewModel)
@@ -75,8 +72,6 @@ namespace VAS.UI
 
 		protected override void OnDestroyed ()
 		{
-			App.Current.EventsBroker.Unsubscribe<LoadVideoEvent> (HandleLoadVideoEvent);
-			App.Current.EventsBroker.Unsubscribe<CloseVideoEvent> (HandleCloseVideoEvent);
 			(playerview as Gtk.Widget).Destroy ();
 			capturerbin.Destroy ();
 			base.OnDestroyed ();
@@ -123,35 +118,11 @@ namespace VAS.UI
 			playerVM.PlayerAttached = attached;
 		}
 
-		protected virtual void HandleLoadVideoEvent (LoadVideoEvent loadVideoEvent)
-		{
-			App.Current.EventsBroker.Publish<ChangeVideoMessageEvent> (
-				new ChangeVideoMessageEvent () {
-					message = null
-				});
-
-			ShowDetachButtonInPlayer (false);
-			playerVM.IgnoreTicks = false;
-			playerVM.OpenFileSet (loadVideoEvent.mfs);
-			playerVM.Play ();
-		}
-
-		protected virtual void HandleCloseVideoEvent (CloseVideoEvent closeVideoEvent)
-		{
-			playerVM.ResetCounter ();
-		}
-
 		protected virtual void OnBacktolivebuttonClicked (object sender, System.EventArgs e)
 		{
 			playerVM.Pause ();
 			ShowCapturer ();
 		}
-
-		public void ShowDetachButtonInPlayer (bool show)
-		{
-			playerVM.ShowDetachButton = show;
-		}
-
 
 		protected virtual Gtk.HBox Livebox {
 			get {
