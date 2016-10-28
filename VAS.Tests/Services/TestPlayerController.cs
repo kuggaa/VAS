@@ -1580,8 +1580,6 @@ namespace VAS.Tests.Services
 		public void TestLoadEventWithoutCamerasConfig ()
 		{
 			try {
-				player = new PlayerController (true);
-				(player as IController).SetViewModel (playerVM);
 				PreparePlayer ();
 				player.LoadEvent (evt3, new Time (0), true);
 			} catch {
