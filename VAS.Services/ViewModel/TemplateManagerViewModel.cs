@@ -18,9 +18,11 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
+using VAS.Core;
 
 namespace VAS.Services.ViewModel
 {
@@ -72,63 +74,67 @@ namespace VAS.Services.ViewModel
 		/// <summary>
 		/// Command to export the currently loaded template.
 		/// </summary>
-		public void Export ()
+		public Task<bool> Export ()
 		{
 			TViewModel templateVM = Selection.FirstOrDefault ();
 			if (templateVM != null && templateVM.Model != null) {
-				App.Current.EventsBroker.Publish (new ExportEvent<TModel> { Object = templateVM.Model });
+				return App.Current.EventsBroker.PublishWithReturn (new ExportEvent<TModel> { Object = templateVM.Model });
 			}
+			return AsyncHelpers.Return (false);
 		}
 
 		/// <summary>
 		/// Command to import a template.
 		/// </summary>
-		public void Import ()
+		public Task<bool> Import ()
 		{
-			App.Current.EventsBroker.Publish (new ImportEvent<TModel> ());
+			return App.Current.EventsBroker.PublishWithReturn (new ImportEvent<TModel> ());
 		}
 
 		/// <summary>
 		/// Command to create a new a template.
 		/// </summary>
-		public void New ()
+		public Task<bool> New ()
 		{
-			App.Current.EventsBroker.Publish (new CreateEvent<TModel> { });
+			return App.Current.EventsBroker.PublishWithReturn (new CreateEvent<TModel> ());
 		}
 
 		/// <summary>
 		/// Send the event to open a template.
 		/// </summary>
-		public void Open (TModel model)
+		public Task<bool> Open (TModel model)
 		{
-			App.Current.EventsBroker.Publish (new OpenEvent<TModel> () { Object = model });
+			return App.Current.EventsBroker.PublishWithReturn (new OpenEvent<TModel> () { Object = model });
 		}
 
 		/// <summary>
 		/// Command to delete the currently loaded template.
 		/// </summary>
-		public void Delete ()
+		public Task<bool> Delete ()
 		{
 			if (Selection != null) {
 				ObservableCollection<TModel> objects = new ObservableCollection<TModel>
 					(Selection.Where (x => x.Model != null).Select (x => x.Model));
 				if (objects.Any ()) {
-					App.Current.EventsBroker.Publish (new DeleteEvent<ObservableCollection<TModel>> { Object = objects });
+					return App.Current.EventsBroker.PublishWithReturn (
+						new DeleteEvent<ObservableCollection<TModel>> { Object = objects });
 				}
 			}
+			return AsyncHelpers.Return (false);
 		}
 
 		/// <summary>
 		/// Command to save the currently loaded template.
 		/// </summary>
 		/// <param name="force">If set to <c>true</c> does not prompt to save.</param>
-		public void Save (bool force)
+		public Task<bool> Save (bool force)
 		{
 			TModel template = LoadedTemplate.Model;
 			if (template != null) {
-				App.Current.EventsBroker.Publish (
+				return App.Current.EventsBroker.PublishWithReturn (
 					new UpdateEvent<TModel> { Object = template, Force = force });
 			}
+			return AsyncHelpers.Return (false);
 		}
 
 		/// <summary>
@@ -136,9 +142,9 @@ namespace VAS.Services.ViewModel
 		/// </summary>
 		/// <param name="templateVM">The template ViewModel</param>
 		/// <param name="newName">The new name.</param>
-		public void ChangeName (TViewModel templateVM, string newName)
+		public Task<bool> ChangeName (TViewModel templateVM, string newName)
 		{
-			App.Current.EventsBroker.Publish (new ChangeNameEvent<TModel> {
+			return App.Current.EventsBroker.PublishWithReturn (new ChangeNameEvent<TModel> {
 				Object = templateVM.Model,
 				NewName = newName
 			});

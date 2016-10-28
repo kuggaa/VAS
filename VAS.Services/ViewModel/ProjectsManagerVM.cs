@@ -15,8 +15,9 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using System.Linq;
+using System.Threading.Tasks;
+using VAS.Core;
 using VAS.Core.Events;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
@@ -68,58 +69,62 @@ namespace VAS.Services.ViewModel
 		/// <summary>
 		/// Command to export the currently loaded project.
 		/// </summary>
-		public void Export (string format = null)
+		public Task<bool> Export (string format = null)
 		{
 			TModel template = Selection.FirstOrDefault ()?.Model;
 			if (template != null) {
-				App.Current.EventsBroker.Publish (new ExportEvent<TModel> { Object = template, Format = format });
+				return App.Current.EventsBroker.PublishWithReturn (new ExportEvent<TModel> { Object = template, Format = format });
 			}
+			return AsyncHelpers.Return (false);
 		}
 
 		/// <summary>
 		/// Command to import a project.
 		/// </summary>
-		public void Import ()
+		public Task<bool> Import ()
 		{
-			App.Current.EventsBroker.Publish (new ImportEvent<TModel> ());
+			return App.Current.EventsBroker.PublishWithReturn (new ImportEvent<TModel> ());
 		}
 
 		/// <summary>
 		/// Command to create a new project.
 		/// </summary>
-		public void New ()
+		public Task<bool> New ()
 		{
-			App.Current.EventsBroker.Publish (new CreateEvent<TModel> { });
+			return App.Current.EventsBroker.PublishWithReturn (new CreateEvent<TModel> { });
 		}
 
 		/// <summary>
 		/// Command to delete the selected projects.
 		/// </summary>
-		public virtual void Delete ()
+		public async virtual Task<bool> Delete ()
 		{
-			foreach (TModel project in Selection.Select (vm => vm.Model).ToList()) {
-				App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = project });
+			bool ret = true;
+			foreach (TModel project in Selection.Select (vm => vm.Model).ToList ()) {
+				ret &= await App.Current.EventsBroker.PublishWithReturn (new DeleteEvent<TModel> { Object = project });
 			}
+			return ret;
 		}
 
 		/// <summary>
 		/// Command to save the currently loaded project.
 		/// </summary>
 		/// <param name="force">If set to <c>true</c> does not prompt to save.</param>
-		public void Save (bool force)
+		public Task<bool> Save (bool force)
 		{
 			TModel project = LoadedProject.Model;
 			if (project != null) {
-				App.Current.EventsBroker.Publish (new UpdateEvent<TModel> { Object = project, Force = force });
+				return App.Current.EventsBroker.PublishWithReturn (new UpdateEvent<TModel> { Object = project, Force = force });
 			}
+			return AsyncHelpers.Return (false);
 		}
 
 		/// <summary>
 		/// Command to Open a project
 		/// </summary>
-		public void Open (TViewModel viewModel)
+		public Task<bool> Open (TViewModel viewModel)
 		{
-			App.Current.EventsBroker.Publish (new OpenEvent<TModel> { Object = viewModel.Model });
+			return App.Current.EventsBroker.PublishWithReturn (new OpenEvent<TModel> { Object = viewModel.Model });
 		}
 	}
 }
