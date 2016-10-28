@@ -45,6 +45,7 @@ namespace VAS.Tests.Services
 		Time currentTime, streamLength;
 		TimelineEvent evt;
 		TimelineEvent evt2;
+		TimelineEvent evt3;
 		PlaylistImage plImage;
 		Playlist playlist;
 		PlaylistManager plMan;
@@ -114,6 +115,11 @@ namespace VAS.Tests.Services
 			};
 			evt2 = new TimelineEvent { Start = new Time (1000), Stop = new Time (10000),
 				CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) },
+				FileSet = mfs
+			};
+			evt3 = new TimelineEvent {
+				Start = new Time (100), Stop = new Time (200),
+				CamerasConfig = new ObservableCollection<CameraConfig> (),
 				FileSet = mfs
 			};
 			plImage = new PlaylistImage (Utils.LoadImageFromFile (), new Time (5000));
@@ -1568,6 +1574,17 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (player.FileSet [0].FilePath, evt.FileSet [0].FilePath);
 			Assert.IsFalse (player.FileSet.CheckMediaFilesModified (evt.FileSet));
 
+		}
+
+		[Test ()]
+		public void TestLoadEventWithoutCamerasConfig ()
+		{
+			try {
+				PreparePlayer ();
+				player.LoadEvent (evt3, new Time (0), true);
+			} catch {
+				Assert.Fail ("PlaylistController raised exception in LoadEvent");
+			}
 		}
 
 		void HandleElementLoadedEvent (object element, bool hasNext)
