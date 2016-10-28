@@ -82,11 +82,11 @@ namespace VAS.Services.Controller
 			if (started) {
 				throw new InvalidOperationException ("The controller is already running");
 			}
-			App.Current.EventsBroker.Subscribe<ExportEvent<TModel>> (HandleExport);
-			App.Current.EventsBroker.Subscribe<ImportEvent<TModel>> (HandleImport);
-			App.Current.EventsBroker.Subscribe<UpdateEvent<TModel>> (HandleSave);
-			App.Current.EventsBroker.Subscribe<CreateEvent<TModel>> (HandleNew);
-			App.Current.EventsBroker.Subscribe<DeleteEvent<TModel>> (HandleDelete);
+			App.Current.EventsBroker.SubscribeAsync<ExportEvent<TModel>> (HandleExport);
+			App.Current.EventsBroker.SubscribeAsync<ImportEvent<TModel>> (HandleImport);
+			App.Current.EventsBroker.SubscribeAsync<UpdateEvent<TModel>> (HandleSave);
+			App.Current.EventsBroker.SubscribeAsync<CreateEvent<TModel>> (HandleNew);
+			App.Current.EventsBroker.SubscribeAsync<DeleteEvent<TModel>> (HandleDelete);
 			started = true;
 		}
 
@@ -95,11 +95,11 @@ namespace VAS.Services.Controller
 			if (!started) {
 				throw new InvalidOperationException ("The controller is already stopped");
 			}
-			App.Current.EventsBroker.Unsubscribe<ExportEvent<TModel>> (HandleExport);
-			App.Current.EventsBroker.Unsubscribe<ImportEvent<TModel>> (HandleImport);
-			App.Current.EventsBroker.Unsubscribe<UpdateEvent<TModel>> (HandleSave);
-			App.Current.EventsBroker.Unsubscribe<CreateEvent<TModel>> (HandleNew);
-			App.Current.EventsBroker.Unsubscribe<DeleteEvent<TModel>> (HandleDelete);
+			App.Current.EventsBroker.UnsubscribeAsync<ExportEvent<TModel>> (HandleExport);
+			App.Current.EventsBroker.UnsubscribeAsync<ImportEvent<TModel>> (HandleImport);
+			App.Current.EventsBroker.UnsubscribeAsync<UpdateEvent<TModel>> (HandleSave);
+			App.Current.EventsBroker.UnsubscribeAsync<CreateEvent<TModel>> (HandleNew);
+			App.Current.EventsBroker.UnsubscribeAsync<DeleteEvent<TModel>> (HandleDelete);
 			started = false;
 		}
 
@@ -110,7 +110,7 @@ namespace VAS.Services.Controller
 
 		#endregion
 
-		async void HandleExport (ExportEvent<TModel> evt)
+		async Task HandleExport (ExportEvent<TModel> evt)
 		{
 			Project project = evt.Object;
 			IProjectExporter exporter;
@@ -131,15 +131,17 @@ namespace VAS.Services.Controller
 			await exporter.Export (project);
 		}
 
-		void HandleImport (ImportEvent<TModel> evt)
+		Task HandleImport (ImportEvent<TModel> evt)
 		{
+			return AsyncHelpers.Return ();
 		}
 
-		void HandleNew (CreateEvent<TModel> evt)
+		Task HandleNew (CreateEvent<TModel> evt)
 		{
+			return AsyncHelpers.Return ();
 		}
 
-		async void HandleDelete (DeleteEvent<TModel> evt)
+		async Task HandleDelete (DeleteEvent<TModel> evt)
 		{
 			TModel project = evt.Object;
 
@@ -166,7 +168,7 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		async void HandleSave (UpdateEvent<TModel> evt)
+		async Task HandleSave (UpdateEvent<TModel> evt)
 		{
 			TModel project = evt.Object;
 			if (project == null) {
