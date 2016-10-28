@@ -22,18 +22,25 @@ using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Services.ViewModel;
-using System.Collections.ObjectModel;
 using VAS.Core.Events;
+using VAS.Core.MVVMC;
 
 namespace VAS.Services.Controller
 {
 	/// <summary>
 	/// Events controller, base class of the Events Controller.
 	/// </summary>
-	public class EventsController<TModel,TViewModel> : IController
+	public class EventsController<TModel, TViewModel> : DisposableBase, IController
+
 		where TModel : TimelineEvent
 		where TViewModel : TimelineEventVM<TModel>, new()
 	{
+
+		protected override void Dispose (bool disposing)
+		{
+			base.Dispose (disposing);
+			Stop ();
+		}
 
 		public PlayerVM PlayerVM {
 			get;
@@ -64,15 +71,6 @@ namespace VAS.Services.Controller
 		public virtual IEnumerable<VAS.Core.Hotkeys.KeyAction> GetDefaultKeyActions ()
 		{
 			return Enumerable.Empty<KeyAction> ();
-		}
-
-		#endregion
-
-		#region IDisposable implementation
-
-		public void Dispose ()
-		{
-			
 		}
 
 		#endregion
