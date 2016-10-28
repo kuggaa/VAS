@@ -120,11 +120,13 @@ namespace VAS.Services.Controller
 
 		Task HandleImport (ImportEvent<TModel> evt)
 		{
+			evt.ReturnValue = false;
 			return AsyncHelpers.Return ();
 		}
 
 		Task HandleNew (CreateEvent<TModel> evt)
 		{
+			evt.ReturnValue = false;
 			return AsyncHelpers.Return ();
 		}
 
@@ -151,6 +153,7 @@ namespace VAS.Services.Controller
 				if (success) {
 					ViewModel.Model.Remove (project);
 					viewModel.Select (viewModel.Model.FirstOrDefault ());
+					evt.ReturnValue = true;
 				}
 			}
 		}
@@ -161,7 +164,7 @@ namespace VAS.Services.Controller
 			if (project == null) {
 				return;
 			}
-			await Save (project, true);
+			evt.ReturnValue = await Save (project, true);
 		}
 
 		async void HandleSelectionChanged (object sender, PropertyChangedEventArgs e)
@@ -193,12 +196,12 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		async Task Save (TModel project, bool force)
+		async Task<bool> Save (TModel project, bool force)
 		{
 			if (!force && project.IsChanged) {
 				string msg = Catalog.GetString ("Do you want to save the current project?");
 				if (!(await App.Current.Dialogs.QuestionMessage (msg, null, this))) {
-					return;
+					return false;
 				}
 			}
 			try {
@@ -207,10 +210,11 @@ namespace VAS.Services.Controller
 				// Update the ViewModel with the model clone used for editting.
 				ViewModel.ViewModels.FirstOrDefault (vm => vm.Model.Equals (project)).Model = project;
 				ViewModel.SaveSensitive = false;
+				return true;
 			} catch (Exception ex) {
 				Log.Exception (ex);
 				App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Error saving project:") + "\n" + ex.Message);
-				return;
+				return false;
 			}
 		}
 	}

@@ -114,6 +114,7 @@ namespace VAS.Services.Controller
 		async protected virtual Task HandleNewPlaylist (CreateEvent<Playlist> e)
 		{
 			e.Object = await CreateNewPlaylist ();
+			e.ReturnValue = e.Object != null;
 		}
 	}
 }

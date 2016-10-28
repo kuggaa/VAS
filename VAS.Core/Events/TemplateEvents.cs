@@ -16,11 +16,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using System.Collections.Generic;
 
 namespace VAS.Core.Events
 {
-	public class CRUDEvent<T>: Event
+	public class CRUDEvent<T> : ReturningValueEvent
 	{
 		public T Object { get; set; }
 	}
