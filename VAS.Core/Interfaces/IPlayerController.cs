@@ -28,7 +28,7 @@ using VAS.Core.Store.Playlists;
 
 namespace VAS.Core.Interfaces
 {
-	public interface IPlayerController: IPlayback, IController
+	public interface IPlayerController : IPlayback, IController
 	{
 		event TimeChangedHandler TimeChangedEvent;
 		event StateChangeHandler PlaybackStateChangedEvent;
@@ -95,7 +95,7 @@ namespace VAS.Core.Interfaces
 		/// Gets or sets the loaded playlist.
 		/// </summary>
 		/// <value>The loaded playlist.</value>
-		Playlist LoadedPlaylist{ get; set; }
+		Playlist LoadedPlaylist { get; set; }
 
 		/// <summary>
 		/// Flag indicating whether this <see cref="LongoMatch.Core.Interfaces.IPlayerController"/>
@@ -116,7 +116,7 @@ namespace VAS.Core.Interfaces
 		/// <summary>
 		/// Open the specified fileSet.
 		/// </summary>
-		void Open (MediaFileSet fileSet);
+		void Open (MediaFileSet fileSet, bool play = false);
 
 		/// <summary>
 		/// Increases the framerate.
