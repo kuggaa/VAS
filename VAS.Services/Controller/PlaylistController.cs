@@ -22,12 +22,13 @@ using VAS.Core;
 using VAS.Core.Events;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.MVVMC;
 using VAS.Core.Store.Playlists;
 using VAS.Services.ViewModel;
 
 namespace VAS.Services.Controller
 {
-	public class PlaylistController : IController
+	public class PlaylistController : DisposableBase, IController
 	{
 		PlaylistCollectionVM viewModel;
 
@@ -36,13 +37,11 @@ namespace VAS.Services.Controller
 			PlayerVM = playerVM;
 		}
 
-		#region IDisposable implementation
-
-		public void Dispose ()
+		protected override void Dispose (bool disposing)
 		{
+			base.Dispose (disposing);
+			Stop ();
 		}
-
-		#endregion
 
 		public IPlayerViewModel PlayerVM {
 			get;

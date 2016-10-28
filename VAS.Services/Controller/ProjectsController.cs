@@ -27,36 +27,23 @@ using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Interfaces.Plugins;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Services.ViewModel;
 
 namespace VAS.Services.Controller
 {
-	public class ProjectsController<TModel, TViewModel> : IController
+	public class ProjectsController<TModel, TViewModel> : DisposableBase, IController
 		where TModel : Project
 		where TViewModel : ProjectVM<TModel>, new()
 	{
-		protected bool Disposed { get; private set; } = false;
 		bool started;
 		ProjectsManagerVM<TModel, TViewModel> viewModel;
 
-		public void Dispose ()
+		protected override void Dispose (bool disposing)
 		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
-		}
-
-		~ProjectsController ()
-		{
-			Dispose (false);
-		}
-
-		protected virtual void Dispose (bool disposing)
-		{
-			if (Disposed)
-				return;
-
-			Disposed = true;
+			base.Dispose (disposing);
+			Stop ();
 		}
 
 		protected ProjectsManagerVM<TModel, TViewModel> ViewModel {
