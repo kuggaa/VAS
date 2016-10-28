@@ -31,6 +31,11 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -38,6 +43,11 @@
     <Compile Include="HockeyPlatformHelperMono.cs" />
     <Compile Include="Services\PlatformService.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Services\HttpClientTransmission.cs" />
+    <Compile Include="Services\StorageService.cs" />
+    <Compile Include="Services\ApplicationService.cs" />
+    <Compile Include="Services\DeviceService.cs" />
+    <Compile Include="Services\UnhandledExceptionTelemetryModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Services\" />
@@ -48,6 +58,17 @@
       <Project>{14123A8E-6D6B-4362-B001-35B8C2505EED}</Project>
       <Name>Kit.Core45</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VAS.Core\VAS.Core.Net45.csproj">
+      <Project>{08AE7734-B995-4E0D-AD8F-38F597E0D4DF}</Project>
+      <Name>VAS.Core.Net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VAS.DB\VAS.DB.Net45.csproj">
+      <Project>{EC395325-994F-47F6-8FC2-AC17EC452EDA}</Project>
+      <Name>VAS.DB.Net45</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

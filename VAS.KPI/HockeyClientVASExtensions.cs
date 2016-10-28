@@ -21,6 +21,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HockeyApp;
+using Microsoft.HockeyApp.Extensibility.Windows;
 using Microsoft.HockeyApp.Services;
 using VAS.KPI.Services;
 
@@ -42,14 +43,13 @@ namespace VAS.KPI
 
 			ServiceLocator.AddService<IPlatformService> (new PlatformService ());
 
-			//ServiceLocator.AddService<BaseStorageService> (new StorageService ());
-			//ServiceLocator.AddService<IApplicationService> (new ApplicationService ());
-			////ServiceLocator.AddService<IDeviceService>(new DeviceService());
-			//ServiceLocator.AddService<Services.IPlatformService> (new PlatformService ());
-			//ServiceLocator.AddService<IHttpService> (new HttpClientTransmission ());
-			//ServiceLocator.AddService<IUnhandledExceptionTelemetryModule> (new UnhandledExceptionTelemetryModule ());
+			ServiceLocator.AddService<BaseStorageService> (new StorageService ());
+			ServiceLocator.AddService<IApplicationService> (new ApplicationService ());
+			ServiceLocator.AddService<IDeviceService> (new DeviceService ());
+			ServiceLocator.AddService<IHttpService> (new HttpClientTransmission ());
+			ServiceLocator.AddService<IUnhandledExceptionTelemetryModule> (new UnhandledExceptionTelemetryModule ());
 
-			//WindowsAppInitializer.InitialiprogramzeAsync (identifier);
+			WindowsAppInitializer.InitializeAsync (identifier);
 			return (IHockeyClientConfigurable)@this;
 		}
 
