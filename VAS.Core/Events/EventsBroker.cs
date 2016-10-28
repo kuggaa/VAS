@@ -141,16 +141,6 @@ namespace VAS.Core.Events
 			}
 		}
 
-		//this method avoids refactoring return value in all calls
-		public bool EmitCloseOpenedProject (object sender)
-		{
-			CloseOpenedProjectEvent e = new CloseOpenedProjectEvent {
-				Sender = sender
-			};
-			App.Current.EventsBroker.Publish<CloseOpenedProjectEvent> (e);
-			return e.ReturnValue;
-		}
-
 		//wrapper function to avoid the use of a Prism reference in Tests for eventreset
 		protected void ResetEventsBroker ()
 		{
