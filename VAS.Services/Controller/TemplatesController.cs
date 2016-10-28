@@ -183,17 +183,15 @@ namespace VAS.Services.Controller
 				App.Current.HomeDir, filterName, extensions);
 
 			if (fileName != null) {
-				bool succeeded = true;
 				fileName = System.IO.Path.ChangeExtension (fileName, Extension);
 				if (System.IO.File.Exists (fileName)) {
 					string msg = AlreadyExistsText + " " + OverwriteText;
-					succeeded = await App.Current.Dialogs.QuestionMessage (msg, null);
+					evt.ReturnValue = await App.Current.Dialogs.QuestionMessage (msg, null);
 				}
 
-				if (succeeded) {
+				if (evt.ReturnValue) {
 					Serializer.Instance.Save (template, fileName);
-					string msg = ExportedCorrectlyText;
-					App.Current.Dialogs.InfoMessage (msg);
+					App.Current.Dialogs.InfoMessage (ExportedCorrectlyText);
 				}
 			}
 		}
@@ -233,6 +231,7 @@ namespace VAS.Services.Controller
 					if (!abort) {
 						Provider.Save (newTemplate);
 						ViewModel.Select (newTemplate);
+						evt.ReturnValue = true;
 					}
 				}
 			} catch (Exception ex) {
@@ -288,6 +287,7 @@ namespace VAS.Services.Controller
 				Provider.Delete (templateToDelete);
 			}
 			ViewModel.Select (template);
+			evt.ReturnValue = true;
 		}
 
 		async protected virtual Task HandleDelete (DeleteEvent<ObservableCollection<TModel>> evt)
@@ -302,6 +302,7 @@ namespace VAS.Services.Controller
 						Provider.Delete (template);
 					}
 					viewModel.Select (viewModel.Model.FirstOrDefault ());
+					evt.ReturnValue = true;
 				}
 			}
 		}
@@ -311,7 +312,6 @@ namespace VAS.Services.Controller
 			TModel template = evt.Object;
 			bool force = evt.Force;
 			TViewModel templateViewmodel = ViewModel.ViewModels.FirstOrDefault (vm => vm.Model.Equals (template));
-			bool savedOk = false;
 
 			if (template == null || !template.IsChanged || !SaveValidations (template)) {
 				return;
@@ -320,13 +320,13 @@ namespace VAS.Services.Controller
 			if (template.Static) {
 				/* prompt=false when we click the save button */
 				if (force) {
-					savedOk = await SaveStatic (template);
+					evt.ReturnValue = await SaveStatic (template);
 				}
 			} else {
 				string msg = ConfirmSaveText;
 				if (force || await App.Current.Dialogs.QuestionMessage (msg, null, this)) {
-					savedOk = SaveTemplate (template);
-					if (savedOk) {
+					evt.ReturnValue = SaveTemplate (template);
+					if (evt.ReturnValue) {
 						if (templateViewmodel == null) {
 							// When is a new template, we should get the VM again, because previously was null
 							templateViewmodel = ViewModel.ViewModels.FirstOrDefault (vm => vm.Model.Equals (template));
@@ -338,9 +338,8 @@ namespace VAS.Services.Controller
 					}
 				}
 			}
-
 			// FIXME: This should be managed in the VM when we can return a value in a event
-			if (savedOk && ShouldCloseOnSave) {
+			if (evt.ReturnValue && ShouldCloseOnSave) {
 				await templateViewmodel.CloseWindow ();
 			}
 		}
@@ -397,6 +396,7 @@ namespace VAS.Services.Controller
 			} else {
 				template.Name = newName;
 				Provider.Save (template);
+				evt.ReturnValue = true;
 			}
 			await AsyncHelpers.Return ();
 		}
