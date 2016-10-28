@@ -146,13 +146,13 @@ namespace VAS.Services.Controller
 				return;
 			}
 			provider.CollectionChanged += HandleProviderCollectionChanged;
-			App.Current.EventsBroker.Subscribe<ExportEvent<TModel>> (HandleExport);
-			App.Current.EventsBroker.Subscribe<ImportEvent<TModel>> (HandleImport);
-			App.Current.EventsBroker.Subscribe<UpdateEvent<TModel>> (HandleSave);
-			App.Current.EventsBroker.Subscribe<OpenEvent<TModel>> (HandleOpen);
-			App.Current.EventsBroker.Subscribe<CreateEvent<TModel>> (HandleNew);
-			App.Current.EventsBroker.Subscribe<ChangeNameEvent<TModel>> (HandleChangeName);
-			App.Current.EventsBroker.Subscribe<DeleteEvent<ObservableCollection<TModel>>> (HandleDelete);
+			App.Current.EventsBroker.SubscribeAsync<ExportEvent<TModel>> (HandleExport);
+			App.Current.EventsBroker.SubscribeAsync<ImportEvent<TModel>> (HandleImport);
+			App.Current.EventsBroker.SubscribeAsync<UpdateEvent<TModel>> (HandleSave);
+			App.Current.EventsBroker.SubscribeAsync<OpenEvent<TModel>> (HandleOpen);
+			App.Current.EventsBroker.SubscribeAsync<CreateEvent<TModel>> (HandleNew);
+			App.Current.EventsBroker.SubscribeAsync<ChangeNameEvent<TModel>> (HandleChangeName);
+			App.Current.EventsBroker.SubscribeAsync<DeleteEvent<ObservableCollection<TModel>>> (HandleDelete);
 			started = true;
 		}
 
@@ -162,13 +162,13 @@ namespace VAS.Services.Controller
 				return;
 			}
 			provider.CollectionChanged -= HandleProviderCollectionChanged;
-			App.Current.EventsBroker.Unsubscribe<ExportEvent<TModel>> (HandleExport);
-			App.Current.EventsBroker.Unsubscribe<ImportEvent<TModel>> (HandleImport);
-			App.Current.EventsBroker.Unsubscribe<UpdateEvent<TModel>> (HandleSave);
-			App.Current.EventsBroker.Unsubscribe<OpenEvent<TModel>> (HandleOpen);
-			App.Current.EventsBroker.Unsubscribe<CreateEvent<TModel>> (HandleNew);
-			App.Current.EventsBroker.Unsubscribe<ChangeNameEvent<TModel>> (HandleChangeName);
-			App.Current.EventsBroker.Unsubscribe<DeleteEvent<ObservableCollection<TModel>>> (HandleDelete);
+			App.Current.EventsBroker.UnsubscribeAsync<ExportEvent<TModel>> (HandleExport);
+			App.Current.EventsBroker.UnsubscribeAsync<ImportEvent<TModel>> (HandleImport);
+			App.Current.EventsBroker.UnsubscribeAsync<UpdateEvent<TModel>> (HandleSave);
+			App.Current.EventsBroker.UnsubscribeAsync<OpenEvent<TModel>> (HandleOpen);
+			App.Current.EventsBroker.UnsubscribeAsync<CreateEvent<TModel>> (HandleNew);
+			App.Current.EventsBroker.UnsubscribeAsync<ChangeNameEvent<TModel>> (HandleChangeName);
+			App.Current.EventsBroker.UnsubscribeAsync<DeleteEvent<ObservableCollection<TModel>>> (HandleDelete);
 			started = false;
 		}
 
@@ -182,9 +182,8 @@ namespace VAS.Services.Controller
 		protected abstract bool SaveValidations (TModel model);
 
 		#region Handle Events
-#pragma warning disable RECS0165 // Asynchronous methods should return a Task instead of void
 
-		async void HandleExport (ExportEvent<TModel> evt)
+		async Task HandleExport (ExportEvent<TModel> evt)
 		{
 			string fileName, filterName;
 			string [] extensions;
@@ -214,7 +213,7 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		async void HandleImport (ImportEvent<TModel> evt)
+		async Task HandleImport (ImportEvent<TModel> evt)
 		{
 			string fileName, filterName;
 			string [] extensions;
@@ -258,19 +257,19 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		protected async virtual void HandleOpen (OpenEvent<TModel> evt)
+		async protected virtual Task HandleOpen (OpenEvent<TModel> evt)
 		{
 			dynamic properties = new ExpandoObject ();
 			properties.Object = evt.Object.Clone ();
 			await App.Current.StateController.MoveToModal (OpenTransitionName, properties);
 		}
 
-		protected async virtual void HandleNew (CreateEvent<TModel> evt)
+		async protected virtual Task HandleNew (CreateEvent<TModel> evt)
 		{
 			TModel template, templateToDelete;
 
 			if (ViewModel.LoadedTemplate.Edited) {
-				HandleSave (new UpdateEvent<TModel> { Force = false, Object = ViewModel.LoadedTemplate.Model });
+				await HandleSave (new UpdateEvent<TModel> { Force = false, Object = ViewModel.LoadedTemplate.Model });
 			}
 
 			if (!await App.Current.GUIToolkit.CreateNewTemplate<TModel> (ViewModel.Model.ToList (),
@@ -306,7 +305,7 @@ namespace VAS.Services.Controller
 			ViewModel.Select (template);
 		}
 
-		protected async virtual void HandleDelete (DeleteEvent<ObservableCollection<TModel>> evt)
+		async protected virtual Task HandleDelete (DeleteEvent<ObservableCollection<TModel>> evt)
 		{
 			ObservableCollection<TModel> templates = evt.Object;
 
@@ -322,7 +321,7 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		async void HandleSave (UpdateEvent<TModel> evt)
+		async Task HandleSave (UpdateEvent<TModel> evt)
 		{
 			TModel template = evt.Object;
 			bool force = evt.Force;
@@ -361,7 +360,7 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		void HandleSelectionChanged (object sender, PropertyChangedEventArgs e)
+		async void HandleSelectionChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName != "Selection") {
 				return;
@@ -371,7 +370,7 @@ namespace VAS.Services.Controller
 			TModel loadedTemplate = default (TModel);
 
 			if (ViewModel.LoadedTemplate.Edited == true) {
-				HandleSave (new UpdateEvent<TModel> { Force = false, Object = ViewModel.LoadedTemplate.Model });
+				await HandleSave (new UpdateEvent<TModel> { Force = false, Object = ViewModel.LoadedTemplate.Model });
 			}
 
 			if (selectedVM != null) {
@@ -396,7 +395,7 @@ namespace VAS.Services.Controller
 			ViewModel.SaveSensitive = false;
 		}
 
-		void HandleChangeName (ChangeNameEvent<TModel> evt)
+		async Task HandleChangeName (ChangeNameEvent<TModel> evt)
 		{
 			TModel template = evt.Object;
 			string newName = evt.NewName;
@@ -414,6 +413,7 @@ namespace VAS.Services.Controller
 				template.Name = newName;
 				Provider.Save (template);
 			}
+			await AsyncHelpers.Return ();
 		}
 
 		void HandleTemplateChanged (object sender, PropertyChangedEventArgs e)
