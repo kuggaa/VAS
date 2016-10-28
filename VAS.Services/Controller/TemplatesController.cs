@@ -116,8 +116,6 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		protected abstract bool ShouldCloseOnSave { get; }
-
 		#region IController implementation
 
 		public virtual void SetViewModel (IViewModel viewModel)
@@ -337,10 +335,6 @@ namespace VAS.Services.Controller
 						ViewModel.SaveSensitive = false;
 					}
 				}
-			}
-			// FIXME: This should be managed in the VM when we can return a value in a event
-			if (evt.ReturnValue && ShouldCloseOnSave) {
-				await templateViewmodel.CloseWindow ();
 			}
 		}
 
