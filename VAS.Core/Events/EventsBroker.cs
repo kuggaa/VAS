@@ -38,16 +38,11 @@ namespace VAS.Core.Events
 
 	public class EventsBroker
 	{
-		private static IEventAggregator _current;
 
 		IEventAggregator Current {
-			get {
-				return _current ?? (_current = new EventAggregator ());
-			}
-			set {
-				_current = value;
-			}
-		}
+			get;
+			set;
+		} = new EventAggregator ();
 
 		/// <summary>
 		/// Publish a new empty event.
