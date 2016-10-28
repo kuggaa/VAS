@@ -18,43 +18,56 @@
 //
 
 using System;
-using System.Collections.Generic;
-using Microsoft.HockeyApp.Extensibility;
-using Microsoft.HockeyApp.Extensibility.Implementation.External;
+using System.Threading.Tasks;
 using Microsoft.HockeyApp.Services;
+using VAS.Core;
+using VAS.Core.Common;
+using VAS.Core.Interfaces;
 
 namespace VAS.KPI.Services
 {
-	class PlatformService : IPlatformService
+	public class DeviceService : IDeviceService
 	{
-		public IDebugOutput GetDebugOutput ()
+		IDevice device = new Core.Device ();
+
+		public string GetDeviceModel ()
 		{
-			throw new NotSupportedException ();
+			return "unknown";
 		}
 
-		public ExceptionDetails GetExceptionDetails (Exception exception, ExceptionDetails parentExceptionDetails)
+		public Task<string> GetDeviceType ()
 		{
-			throw new NotSupportedException ();
+			return AsyncHelpers.Return<string> ("unknown");
 		}
 
-		public IDictionary<string, object> GetLocalApplicationSettings ()
+		public string GetDeviceUniqueId ()
 		{
-			return new Dictionary<string, object> ();
+			return device.ID.ToString ();
 		}
 
-		public IDictionary<string, object> GetRoamingApplicationSettings ()
+		public string GetHostSystemLocale ()
 		{
-			return new Dictionary<string, object> ();
+			return "unknown";
 		}
 
-		public string ReadConfigurationXml ()
+		public int GetNetworkType ()
 		{
-			throw new NotSupportedException ();
+			return 0;
 		}
 
-		public string SdkName ()
+		public Task<string> GetOemName ()
 		{
-			return "HockeySDK.Mono";
+			return AsyncHelpers.Return<string> ("unknown");
+		}
+
+		public string GetOperatingSystemName ()
+		{
+			return Utils.OS.ToString ();
+		}
+
+		public Task<string> GetOperatingSystemVersionAsync ()
+		{
+			return AsyncHelpers.Return<string> (Environment.OSVersion.VersionString);
 		}
 	}
 }

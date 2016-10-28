@@ -18,13 +18,9 @@
 //
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.IsolatedStorage;
-using System.Linq;
 using System.Reflection;
-using System.Security;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.HockeyApp;
 
@@ -284,18 +280,6 @@ namespace VAS.KPI
 		/// </summary>
 		public string Manufacturer {
 			get {
-				//TODO System.Management referenzieren !?
-				/*
-                Type.GetType
-                ManagementClass mc = new ManagementClass("Win32_ComputerSystem");
-            //collection to store all management objects
-            ManagementObjectCollection moc = mc.GetInstances();
-            if (moc.Count != 0)
-            {
-                foreach (ManagementObject mo in mc.GetInstances())
-                {
-                 mo["Manufacturer"].ToString()
-                */
 				return null;
 			}
 		}
@@ -305,7 +289,6 @@ namespace VAS.KPI
 		/// </summary>
 		public string Model {
 			get {
-				//TODO siehe Manufacturer mit "Model"
 				return null;
 			}
 		}
