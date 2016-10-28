@@ -69,7 +69,7 @@ namespace VAS.Core.Events
 		/// <returns>The return value of the event.</returns>
 		/// <param name="event">Event.</param>
 		/// <typeparam name="TEvent">The type of the event.</typeparam>
-		public async Task<bool> CheckPublish<TEvent> (TEvent @event) where TEvent : ReturningValueEvent
+		public async Task<bool> PublishWithReturn<TEvent> (TEvent @event) where TEvent : ReturningValueEvent
 		{
 			await GetEvent<TEvent> ().Publish (@event);
 			return @event.ReturnValue;
