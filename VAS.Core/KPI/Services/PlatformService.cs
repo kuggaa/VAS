@@ -27,6 +27,13 @@ namespace VAS.KPI.Services
 {
 	class PlatformService : IPlatformService
 	{
+		IDictionary<string, object> AppSettings;
+		public PlatformService ()
+		{
+			AppSettings = new Dictionary<string, object> ();
+			AppSettings ["HockeyAppUserId"] = App.Current.Device.ID.ToString ();
+		}
+
 		public IDebugOutput GetDebugOutput ()
 		{
 			throw new NotSupportedException ();
@@ -39,12 +46,12 @@ namespace VAS.KPI.Services
 
 		public IDictionary<string, object> GetLocalApplicationSettings ()
 		{
-			return new Dictionary<string, object> ();
+			return AppSettings;
 		}
 
 		public IDictionary<string, object> GetRoamingApplicationSettings ()
 		{
-			return new Dictionary<string, object> ();
+			return AppSettings;
 		}
 
 		public string ReadConfigurationXml ()
