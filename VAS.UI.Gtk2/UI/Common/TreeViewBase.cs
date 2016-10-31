@@ -68,7 +68,6 @@ namespace VAS.UI.Common
 		public virtual void SetViewModel (object viewModel)
 		{
 			this.ViewModel = viewModel as TCollectionViewModel;
-			CreateFilterAndSort ();
 		}
 
 		public TCollectionViewModel ViewModel {
@@ -84,6 +83,7 @@ namespace VAS.UI.Common
 					AddSubViewModel (item, TreeIter.Zero);
 				}
 				viewModel.ViewModels.CollectionChanged += ViewModelCollectionChanged;
+				CreateFilterAndSort ();
 			}
 		}
 
