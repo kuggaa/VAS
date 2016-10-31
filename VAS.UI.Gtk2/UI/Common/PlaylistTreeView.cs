@@ -60,7 +60,6 @@ namespace VAS.UI.Common
 			}
 			base.SetViewModel (viewModel);
 			ViewModel.PropertyChanged += HandleViewModelPropertyChanged;
-			CreateFilterAndSort ();
 		}
 
 		void CreateViews ()
