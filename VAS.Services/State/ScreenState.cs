@@ -36,7 +36,7 @@ namespace VAS.Services.State
 		{
 			Panel = App.Current.ViewLocator.Retrieve (Name) as IPanel;
 			RootControllers = App.Current.ControllerLocator.RetrieveAll (Name);
-			Controllers = new List<IController> (RootControllers);
+			Controllers = new List<IController> ();
 			KeyContext = new KeyContext ();
 			foreach (IController controller in Controllers) {
 				KeyContext.KeyActions.AddRange (controller.GetDefaultKeyActions ());
@@ -105,10 +105,13 @@ namespace VAS.Services.State
 
 		public virtual Task<bool> PostTransition ()
 		{
-			foreach (IController controller in Controllers) {
+			foreach (IController controller in RootControllers) {
 				controller.Stop ();
 			}
-			RootControllers.Clear ();
+			foreach (IController controller in Controllers) {
+				controller.Stop ();
+				controller.Dispose ();
+			}
 			Controllers.Clear ();
 			ViewModel = default (TViewModel);
 			App.Current.KeyContextManager.RemoveContext (KeyContext);
@@ -126,6 +129,7 @@ namespace VAS.Services.State
 			Panel.SetViewModel (ViewModel);
 			foreach (IController controller in RootControllers) {
 				controller.SetViewModel (ViewModel);
+				controller.Start ();
 			}
 			CreateControllers (data);
 			foreach (IController controller in Controllers) {
