@@ -205,8 +205,7 @@ namespace VAS.Core
 			}
 
 			try {
-				await MoveTo (home.Name, null, true);
-				return true;
+				return await MoveTo (home.Name, null, true);
 			} catch (Exception ex) {
 				Log.Exception (ex);
 				return false;
