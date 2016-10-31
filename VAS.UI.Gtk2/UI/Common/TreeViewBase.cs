@@ -218,7 +218,7 @@ namespace VAS.UI.Common
 				return;
 			}
 			TreeIter iter = dictionaryStore [senderVM];
-			Model.EmitRowChanged (store.GetPath (iter), iter);
+			store.EmitRowChanged (store.GetPath (iter), iter);
 			filter?.Refilter ();
 			this.QueueDraw ();
 		}
