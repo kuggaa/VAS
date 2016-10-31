@@ -68,6 +68,7 @@ namespace VAS.UI.Common
 		public virtual void SetViewModel (object viewModel)
 		{
 			this.ViewModel = viewModel as TCollectionViewModel;
+			CreateFilterAndSort ();
 		}
 
 		public TCollectionViewModel ViewModel {
@@ -122,7 +123,7 @@ namespace VAS.UI.Common
 				break;
 			}
 
-			filter.Refilter ();
+			filter?.Refilter ();
 		}
 
 		protected virtual void AddSubViewModel (IViewModel subViewModel, TreeIter parent)
@@ -217,8 +218,8 @@ namespace VAS.UI.Common
 				return;
 			}
 			TreeIter iter = dictionaryStore [senderVM];
-			Model.EmitRowChanged (store.GetPath (iter), iter);
-			filter.Refilter ();
+			store.EmitRowChanged (store.GetPath (iter), iter);
+			filter?.Refilter ();
 			this.QueueDraw ();
 		}
 
@@ -279,7 +280,7 @@ namespace VAS.UI.Common
 				}
 			}
 			ViewModel.SelectionReplace (selected);
-			filter.Refilter ();
+			filter?.Refilter ();
 		}
 
 		protected virtual void HandleViewModelPropertyChanged (object sender, PropertyChangedEventArgs e)
@@ -290,7 +291,7 @@ namespace VAS.UI.Common
 			}
 
 			if (e.PropertyName == "FilterText") {
-				filter.Refilter ();
+				filter?.Refilter ();
 			}
 
 			if (e.PropertyName == "Selection") {
