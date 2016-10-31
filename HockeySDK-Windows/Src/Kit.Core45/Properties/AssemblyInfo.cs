@@ -9,7 +9,6 @@ using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo ("Microsoft.HockeyApp.Kit.UWP.Tests" + AssemblyInfo.PublicKey)]
 [assembly: InternalsVisibleTo ("Microsoft.HockeyApp.Kit" + AssemblyInfo.PublicKey)]
-[assembly: InternalsVisibleTo ("VAS.KPI")]
-[assembly: InternalsVisibleTo ("RiftAnalyst")]
+[assembly: InternalsVisibleTo ("VAS.Core")]
 
 [assembly: AssemblyFileVersion ("0.0.0.0")]
