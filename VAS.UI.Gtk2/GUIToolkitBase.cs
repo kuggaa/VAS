@@ -65,9 +65,6 @@ namespace VAS.UI
 		//FIXME: for compatibility with LongoMatch
 		public virtual IMainController MainController { get; }
 
-		//FIXME: for compatibility with LongoMatch
-		public virtual IRenderingStateBar RenderingStateBar { get; }
-
 		public bool FullScreen {
 			set {
 				if (MainWindow != null) {
@@ -155,8 +152,6 @@ namespace VAS.UI
 		public abstract Project ChooseProject (List<Project> projects);
 
 		public abstract void OpenDatabasesManager ();
-
-		public abstract void ManageJobs ();
 
 		public abstract void LoadPanel (IPanel panel);
 

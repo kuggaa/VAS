@@ -39,7 +39,7 @@ namespace VAS.Tests
 	{
 		PlaylistManager plmanager;
 		Mock<IGUIToolkit> mockGuiToolkit;
-		Mock<IRenderingJobsManager> mockVideoRenderer;
+		Mock<IJobsManager> mockVideoRenderer;
 		Mock<IAnalysisWindowBase> mockAnalysisWindow;
 		Mock<IPlayerController> mockPlayerController;
 		Mock<IDialogs> mockDiaklogs;
@@ -64,7 +64,7 @@ namespace VAS.Tests
 				"aac", 320, 240, 1.3, null, "Test asset"));
 			mockPlayerController.SetupGet (m => m.FileSet).Returns (mf);
 			mockAnalysisWindow.SetupGet (m => m.Player).Returns (mockPlayerController.Object);
-			mockVideoRenderer = new Mock<IRenderingJobsManager> ();
+			mockVideoRenderer = new Mock<IJobsManager> ();
 			mockDiaklogs = new Mock<IDialogs> ();
 
 			App.Current.LowerRate = 1;
@@ -81,7 +81,7 @@ namespace VAS.Tests
 		{
 			mockGuiToolkit = new Mock<IGUIToolkit> ();
 			App.Current.GUIToolkit = mockGuiToolkit.Object;
-			App.Current.RenderingJobsManger = mockVideoRenderer.Object; 
+			App.Current.JobsManager = mockVideoRenderer.Object;
 			mockDiaklogs = new Mock<IDialogs> ();
 			App.Current.Dialogs = mockDiaklogs.Object;
 

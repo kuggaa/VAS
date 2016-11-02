@@ -237,7 +237,7 @@ namespace VAS.Services
 			if (jobs == null)
 				return;
 			foreach (Job job in jobs)
-				App.Current.RenderingJobsManger.AddJob (job);
+				App.Current.JobsManager.Add (job);
 		}
 
 		protected virtual void HandleTogglePlayEvent (TogglePlayEvent e)

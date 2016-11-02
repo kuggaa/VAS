@@ -17,15 +17,18 @@
 //
 using System;
 using System.ComponentModel;
+using VAS.Core;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Services.ViewModel;
+using VAS.Core.Common;
+using VAS.Services.State;
 
 namespace VAS.UI.Component
 {
 	[System.ComponentModel.ToolboxItem (true)]
-	public partial class RenderingStateBarView : Gtk.Bin, IView<RenderingStateBarVM>
+	public partial class RenderingStateBarView : Gtk.Bin, IView<JobsManagerVM>
 	{
-		RenderingStateBarVM viewModel;
+		JobsManagerVM viewModel;
 
 		public RenderingStateBarView ()
 		{
@@ -34,20 +37,19 @@ namespace VAS.UI.Component
 			cancelbutton.CanFocus = false;
 			statebutton.CanFocus = false;
 
-			statebutton.Clicked += delegate (object sender, EventArgs e) {
-				viewModel?.CommandManageJob ();
+			statebutton.Clicked += async (s, e) => {
+				await App.Current.StateController.MoveToModal (JobsManagerState.NAME, null);
 			};
-			cancelbutton.Clicked += delegate (object sender, EventArgs e) {
-				viewModel?.CommandCancelJob ();
+			cancelbutton.Clicked += (s, e) => {
+				viewModel.Cancel ();
 			};
 			progressbar.Fraction = 0;
 		}
 
-		public RenderingStateBarVM ViewModel {
+		public JobsManagerVM ViewModel {
 			get {
 				return viewModel;
 			}
-
 			set {
 				if (viewModel != null) {
 					viewModel.PropertyChanged -= HandlePropertyChanged;
@@ -62,23 +64,33 @@ namespace VAS.UI.Component
 
 		public void SetViewModel (object viewModel)
 		{
-			ViewModel = viewModel as RenderingStateBarVM;
+			ViewModel = viewModel as JobsManagerVM;
 		}
 
 		void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			SyncVMValues ();
+			SyncVMValues (e.PropertyName);
 		}
 
-		void SyncVMValues ()
+		void SyncVMValues (string propertyName = null)
 		{
 			if (viewModel == null)
 				return;
 
-			Visible = viewModel.JobRunning;
-			statebutton.Label = viewModel.Text;
-			progressbar.Text = viewModel.ProgressText;
-			progressbar.Fraction = viewModel.Fraction;
+			if (propertyName == null || propertyName == "State") {
+				Visible = viewModel.CurrentJob.Model != null && viewModel.CurrentJob.State == JobState.Running;
+			}
+			if (propertyName == null || propertyName == "Collection") {
+				statebutton.Label = string.Format ("{0} ({1} {2})",
+												   Catalog.GetString ("Rendering queue"),
+												   ViewModel.PendingJobs.Count,
+												   Catalog.GetString ("Pending"));
+			}
+			if (propertyName == null || propertyName == "Progress") {
+				progressbar.Fraction = viewModel.CurrentJob.Progress;
+				progressbar.Text = string.Format ("{0}... {1:0.0}%",
+					Catalog.GetString ("Rendering"), viewModel.CurrentJob.Progress * 100);
+			}
 		}
 	}
 }

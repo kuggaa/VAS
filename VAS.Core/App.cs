@@ -29,11 +29,9 @@ namespace VAS
 		public EventsBroker EventsBroker;
 		public StateController StateController;
 		public Registry DependencyRegistry;
-
 		public IStorageManager DatabaseManager;
-		public IRenderingJobsManager RenderingJobsManger;
 		public IKpiService KPIService;
-
+		public IJobsManager JobsManager;
 		public ViewLocator ViewLocator;
 		public ControllerLocator ControllerLocator;
 

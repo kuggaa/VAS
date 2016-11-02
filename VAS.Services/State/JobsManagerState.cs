@@ -15,12 +15,24 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using VAS.Core.Common;
-using VAS.Core.MVVMC;
+using System;
+using VAS.Services.ViewModel;
 
-namespace VAS.Core.Services.ViewModel
+namespace VAS.Services.State
 {
-	public class JobCollectionVM : CollectionViewModel<Job, JobVM>
+	public class JobsManagerState:  ScreenState<JobsManagerVM>
 	{
+		public const string NAME = "JobsManager";
+
+		public override string Name {
+			get {
+				return NAME;
+			}
+		}
+
+		protected override void CreateViewModel (dynamic data)
+		{
+			ViewModel = App.Current.JobsManager as JobsManagerVM;
+		}
 	}
 }
