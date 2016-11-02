@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7CB80B49-38A2-408E-970A-877399C1B3D3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>HockeySDK.Net45</RootNamespace>
+    <AssemblyName>HockeySDK.Net45</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Runtime.Serialization" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Kit.Core45\_NamespaceDoc.cs">
+      <Link>_NamespaceDoc.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\ContextTagKeys.cs">
+      <Link>ContextTagKeys.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\GlobalSuppressions.cs">
+      <Link>GlobalSuppressions.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\HockeyClient.cs">
+      <Link>HockeyClient.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\HockeyClientConfiguration.cs">
+      <Link>HockeyClientConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\HockeyClientPCLExtensions.cs">
+      <Link>HockeyClientPCLExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\IAuthStatus.cs">
+      <Link>IAuthStatus.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\ICrashData.cs">
+      <Link>ICrashData.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\IHockeyClient.cs">
+      <Link>IHockeyClient.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\IHockeyClientInternal.cs">
+      <Link>IHockeyClientInternal.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\IHockeyPlatformHelper.cs">
+      <Link>IHockeyPlatformHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\InternalContextData.cs">
+      <Link>InternalContextData.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\InternalUnhandledExceptionEventArgs.cs">
+      <Link>InternalUnhandledExceptionEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\OperationContextData.cs">
+      <Link>OperationContextData.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\PerformanceCounterData.g.cs">
+      <Link>PerformanceCounterData.g.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Tags.cs">
+      <Link>Tags.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\TelemetryConfigurationFactory.cs">
+      <Link>TelemetryConfigurationFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\TimeSpanEx.cs">
+      <Link>TimeSpanEx.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Utils.cs">
+      <Link>Utils.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\WindowsAppInitializer.cs">
+      <Link>WindowsAppInitializer.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Application\ComponentContextData.cs">
+      <Link>Application\ComponentContextData.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Application\ComponentContextInitializer.cs">
+      <Link>Application\ComponentContextInitializer.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Application\IAppVersion.cs">
+      <Link>Application\IAppVersion.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Channels\InMemory\ITelemetry.cs">
+      <Link>Channels\InMemory\ITelemetry.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Channels\InMemory\ITelemetryChannel.cs">
+      <Link>Channels\InMemory\ITelemetryChannel.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Channels\InMemory\InMemoryChannel.cs">
+      <Link>Channels\InMemory\InMemoryChannel.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Channels\InMemory\InMemoryTransmitter.cs">
+      <Link>Channels\InMemory\InMemoryTransmitter.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Channels\InMemory\TelemetryBuffer.cs">
+      <Link>Channels\InMemory\TelemetryBuffer.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Channels\InMemory\Transmission.cs">
+      <Link>Channels\InMemory\Transmission.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Channels\Persistence\FlushManager.cs">
+      <Link>Channels\Persistence\FlushManager.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Channels\Persistence\PersistenceChannel.cs">
+      <Link>Channels\Persistence\PersistenceChannel.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Channels\Persistence\PersistenceTransmitter.cs">
+      <Link>Channels\Persistence\PersistenceTransmitter.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Channels\Persistence\Sender.cs">
+      <Link>Channels\Persistence\Sender.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Channels\Persistence\StorageTransmission.cs">
+      <Link>Channels\Persistence\StorageTransmission.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\Attachments.cs">
+      <Link>DataContracts\Attachments.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\CrashTelemetry.cs">
+      <Link>DataContracts\CrashTelemetry.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\CrashTelemetryBinary.cs">
+      <Link>DataContracts\CrashTelemetryBinary.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\CrashTelemetryHeader.cs">
+      <Link>DataContracts\CrashTelemetryHeader.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\CrashTelemetryThread.cs">
+      <Link>DataContracts\CrashTelemetryThread.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\CrashTelemetryThreadFrame.cs">
+      <Link>DataContracts\CrashTelemetryThreadFrame.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\DependencyKind.g.cs">
+      <Link>DataContracts\DependencyKind.g.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\DependencyTelemetry.cs">
+      <Link>DataContracts\DependencyTelemetry.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\EventTelemetry.cs">
+      <Link>DataContracts\EventTelemetry.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\ExceptionHandledAt.cs">
+      <Link>DataContracts\ExceptionHandledAt.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\ExceptionTelemetry.cs">
+      <Link>DataContracts\ExceptionTelemetry.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\IJsonSerializable.cs">
+      <Link>DataContracts\IJsonSerializable.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\IJsonWriter.cs">
+      <Link>DataContracts\IJsonWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\ISupportProperties.cs">
+      <Link>DataContracts\ISupportProperties.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\InnerExceptionCountExceededException.cs">
+      <Link>DataContracts\InnerExceptionCountExceededException.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\MetricTelemetry.cs">
+      <Link>DataContracts\MetricTelemetry.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\PageViewTelemetry.cs">
+      <Link>DataContracts\PageViewTelemetry.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\PerformanceCounterTelemetry.cs">
+      <Link>DataContracts\PerformanceCounterTelemetry.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\RequestTelemetry.cs">
+      <Link>DataContracts\RequestTelemetry.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\SessionState.cs">
+      <Link>DataContracts\SessionState.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\SessionStateTelemetry.cs">
+      <Link>DataContracts\SessionStateTelemetry.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\SeverityLevel.cs">
+      <Link>DataContracts\SeverityLevel.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\TelemetryContext.cs">
+      <Link>DataContracts\TelemetryContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\DataContracts\TraceTelemetry.cs">
+      <Link>DataContracts\TraceTelemetry.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Device\DeviceContextData.cs">
+      <Link>Device\DeviceContextData.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Device\DeviceContextInitializer.cs">
+      <Link>Device\DeviceContextInitializer.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Device\LocationContextData.cs">
+      <Link>Device\LocationContextData.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Exceptions\WebTransferException.cs">
+      <Link>Exceptions\WebTransferException.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\IContextInitializer.cs">
+      <Link>Extensibility\IContextInitializer.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\IDebugOutput.cs">
+      <Link>Extensibility\IDebugOutput.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\ITelemetryInitializer.cs">
+      <Link>Extensibility\ITelemetryInitializer.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\ITelemetryModule.cs">
+      <Link>Extensibility\ITelemetryModule.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\SdkVersionPropertyContextInitializer.cs">
+      <Link>Extensibility\SdkVersionPropertyContextInitializer.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\SequencePropertyInitializer.cs">
+      <Link>Extensibility\SequencePropertyInitializer.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\TelemetryConfiguration.cs">
+      <Link>Extensibility\TelemetryConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\TelemetryModules.cs">
+      <Link>Extensibility\TelemetryModules.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\TimestampPropertyInitializer.cs">
+      <Link>Extensibility\TimestampPropertyInitializer.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\WindowsCollectors.cs">
+      <Link>Extensibility\WindowsCollectors.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\AdapterList.cs">
+      <Link>Extensibility\Implementation\AdapterList.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\AppInsightsTypes.g.cs">
+      <Link>Extensibility\Implementation\AppInsightsTypes.g.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\Clock.cs">
+      <Link>Extensibility\Implementation\Clock.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\ComponentContext.cs">
+      <Link>Extensibility\Implementation\ComponentContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\DebugOutput.cs">
+      <Link>Extensibility\Implementation\DebugOutput.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\DeviceContext.cs">
+      <Link>Extensibility\Implementation\DeviceContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\ExceptionConverter.cs">
+      <Link>Extensibility\Implementation\ExceptionConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\FixedSizeQueue.cs">
+      <Link>Extensibility\Implementation\FixedSizeQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\IClock.cs">
+      <Link>Extensibility\Implementation\IClock.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\IPlatformDispatcher.cs">
+      <Link>Extensibility\Implementation\IPlatformDispatcher.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\IRandomNumberBatchGenerator.cs">
+      <Link>Extensibility\Implementation\IRandomNumberBatchGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\InternalContext.cs">
+      <Link>Extensibility\Implementation\InternalContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\JsonSerializer.cs">
+      <Link>Extensibility\Implementation\JsonSerializer.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\JsonWriter.cs">
+      <Link>Extensibility\Implementation\JsonWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\LocationContext.cs">
+      <Link>Extensibility\Implementation\LocationContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\OperationContext.cs">
+      <Link>Extensibility\Implementation\OperationContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\Property.cs">
+      <Link>Extensibility\Implementation\Property.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\SessionContext.cs">
+      <Link>Extensibility\Implementation\SessionContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\SnapshottingCollection.cs">
+      <Link>Extensibility\Implementation\SnapshottingCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\SnapshottingDictionary.cs">
+      <Link>Extensibility\Implementation\SnapshottingDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\SnapshottingList.cs">
+      <Link>Extensibility\Implementation\SnapshottingList.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\TaskTimer.cs">
+      <Link>Extensibility\Implementation\TaskTimer.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\Telemetry.cs">
+      <Link>Extensibility\Implementation\Telemetry.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\TelemetryContextExtensions.cs">
+      <Link>Extensibility\Implementation\TelemetryContextExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\TelemetryItemExtensions.cs">
+      <Link>Extensibility\Implementation\TelemetryItemExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\TypeExtensions.cs">
+      <Link>Extensibility\Implementation\TypeExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\UserContext.cs">
+      <Link>Extensibility\Implementation\UserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\WeakConcurrentRandom.cs">
+      <Link>Extensibility\Implementation\WeakConcurrentRandom.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\XorshiftRandomBatchGenerator.cs">
+      <Link>Extensibility\Implementation\XorshiftRandomBatchGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\External\AjaxCallData.cs">
+      <Link>Extensibility\Implementation\External\AjaxCallData.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\External\ContextTagKeys.g.cs">
+      <Link>Extensibility\Implementation\External\ContextTagKeys.g.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\External\CrashData.g.cs">
+      <Link>Extensibility\Implementation\External\CrashData.g.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\External\CrashDataBinary.g.cs">
+      <Link>Extensibility\Implementation\External\CrashDataBinary.g.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\External\CrashDataHeaders.g.cs">
+      <Link>Extensibility\Implementation\External\CrashDataHeaders.g.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\External\CrashDataThread.g.cs">
+      <Link>Extensibility\Implementation\External\CrashDataThread.g.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\External\CrashDataThreadFrame.g.cs">
+      <Link>Extensibility\Implementation\External\CrashDataThreadFrame.g.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\External\DataPoint.cs">
+      <Link>Extensibility\Implementation\External\DataPoint.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\External\EventData.cs">
+      <Link>Extensibility\Implementation\External\EventData.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\External\ExceptionData.cs">
+      <Link>Extensibility\Implementation\External\ExceptionData.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\External\ExceptionDetails.cs">
+      <Link>Extensibility\Implementation\External\ExceptionDetails.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\External\MessageData.cs">
+      <Link>Extensibility\Implementation\External\MessageData.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\External\MetricData.cs">
+      <Link>Extensibility\Implementation\External\MetricData.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\External\PageViewData.cs">
+      <Link>Extensibility\Implementation\External\PageViewData.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\External\PageViewPerfData.cs">
+      <Link>Extensibility\Implementation\External\PageViewPerfData.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\External\PerformanceCounterData.cs">
+      <Link>Extensibility\Implementation\External\PerformanceCounterData.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\External\RemoteDependencyData.cs">
+      <Link>Extensibility\Implementation\External\RemoteDependencyData.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\External\RequestData.cs">
+      <Link>Extensibility\Implementation\External\RequestData.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\External\SessionStateData.cs">
+      <Link>Extensibility\Implementation\External\SessionStateData.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\External\StackFrame.cs">
+      <Link>Extensibility\Implementation\External\StackFrame.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensibility\Implementation\Platform\PlatformSingleton.cs">
+      <Link>Extensibility\Implementation\Platform\PlatformSingleton.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensions\AsyncLock.cs">
+      <Link>Extensions\AsyncLock.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensions\ExceptionExtension.cs">
+      <Link>Extensions\ExceptionExtension.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensions\MD5.cs">
+      <Link>Extensions\MD5.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensions\PortableExtensions45.cs">
+      <Link>Extensions\PortableExtensions45.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensions\TaskEx.cs">
+      <Link>Extensions\TaskEx.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensions\UtilExtensions.cs">
+      <Link>Extensions\UtilExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Extensions\WebRequestExtension.cs">
+      <Link>Extensions\WebRequestExtension.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Feedback\IFeedbackAttachment.cs">
+      <Link>Feedback\IFeedbackAttachment.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Feedback\IFeedbackMessage.cs">
+      <Link>Feedback\IFeedbackMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Feedback\IFeedbackThread.cs">
+      <Link>Feedback\IFeedbackThread.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Model\AppVersion.cs">
+      <Link>Model\AppVersion.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Model\AuthStatus.cs">
+      <Link>Model\AuthStatus.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Model\CrashData.cs">
+      <Link>Model\CrashData.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Model\CrashLogInformation.cs">
+      <Link>Model\CrashLogInformation.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Model\FeedbackAttachment.cs">
+      <Link>Model\FeedbackAttachment.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Model\FeedbackMessage.cs">
+      <Link>Model\FeedbackMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Model\FeedbackResponseSingle.cs">
+      <Link>Model\FeedbackResponseSingle.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Model\FeedbackThread.cs">
+      <Link>Model\FeedbackThread.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Model\SDKConstants.cs">
+      <Link>Model\SDKConstants.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Model\_NamespaceDoc.cs">
+      <Link>Model\_NamespaceDoc.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Properties\AssemblyInfoCore.cs">
+      <Link>Properties\AssemblyInfoCore.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Services\BaseStorageService.cs">
+      <Link>Services\BaseStorageService.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Services\HttpService.cs">
+      <Link>Services\HttpService.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Services\IApplicationService.cs">
+      <Link>Services\IApplicationService.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Services\IDeviceService.cs">
+      <Link>Services\IDeviceService.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Services\IHttpService.cs">
+      <Link>Services\IHttpService.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Services\IPlatformService.cs">
+      <Link>Services\IPlatformService.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Services\IUnhandledExceptionTelemetryModule.cs">
+      <Link>Services\IUnhandledExceptionTelemetryModule.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Services\ServiceLocator.cs">
+      <Link>Services\ServiceLocator.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Tracing\CoreEventSource.cs">
+      <Link>Tracing\CoreEventSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\Tracing\Logging.cs">
+      <Link>Tracing\Logging.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\UserMetrics\SessionContextData.cs">
+      <Link>UserMetrics\SessionContextData.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\UserMetrics\SessionStateData.g.cs">
+      <Link>UserMetrics\SessionStateData.g.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\UserMetrics\SessionTelemetryModule.cs">
+      <Link>UserMetrics\SessionTelemetryModule.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\UserMetrics\UserContextData.cs">
+      <Link>UserMetrics\UserContextData.cs</Link>
+    </Compile>
+    <Compile Include="..\Kit.Core45\UserMetrics\UserContextInitializer.cs">
+      <Link>UserMetrics\UserContextInitializer.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Kit.Core45\packages.config">
+      <Link>packages.config</Link>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>
