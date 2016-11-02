@@ -92,7 +92,7 @@ namespace VAS.Tests
 			OpenProject (new TestUtils.ProjectDummy ());
 			playlistElementLoaded = false;
 
-			et = App.Current.EventsBroker.Subscribe<PlaylistElementLoadedEvent> ((e) => playlistElementLoaded = true); 
+			et = App.Current.EventsBroker.Subscribe<PlaylistElementLoadedEvent> ((e) => playlistElementLoaded = true);
 		}
 
 		[TearDown ()]
@@ -109,10 +109,10 @@ namespace VAS.Tests
 		{
 			App.Current.EventsBroker.Publish<OpenedProjectEvent> (
 				new OpenedProjectEvent {
-					Project = project, 
+					Project = project,
 					ProjectType = projectType,
-					Filter = new TestUtils.EventsFilterDummy (project), 
-					AnalysisWindow = mockAnalysisWindow.Object					
+					Filter = new TestUtils.EventsFilterDummy (project),
+					AnalysisWindow = mockAnalysisWindow.Object
 				}
 			);
 		}
@@ -126,9 +126,9 @@ namespace VAS.Tests
 
 			TestUtils.ProjectDummy project = new TestUtils.ProjectDummy ();
 			App.Current.EventsBroker.Publish<NewPlaylistEvent> (
-				new NewPlaylistEvent { 
-					Project = project 
-				} 
+				new NewPlaylistEvent {
+					Project = project
+				}
 			);
 
 			mockDiaklogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
@@ -145,9 +145,9 @@ namespace VAS.Tests
 			// We DON'T Setup the QueryMessage, it will return null, and continue without creating the playlist
 			TestUtils.ProjectDummy project = new TestUtils.ProjectDummy ();
 			App.Current.EventsBroker.Publish<NewPlaylistEvent> (
-				new NewPlaylistEvent { 
-					Project = project 
-				} 
+				new NewPlaylistEvent {
+					Project = project
+				}
 			);
 
 			mockDiaklogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
@@ -165,25 +165,25 @@ namespace VAS.Tests
 			mockDiaklogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (),
 				It.IsAny<string> (), It.IsAny<object> ()))
 				.Returns (() => Task.Factory.StartNew (() => {
-				if (called) {
-					return differentName;
-				} else {
-					called = true;
-					return name;
-				}
-			}));
+					if (called) {
+						return differentName;
+					} else {
+						called = true;
+						return name;
+					}
+				}));
 
 			TestUtils.ProjectDummy project = new TestUtils.ProjectDummy ();
 			App.Current.EventsBroker.Publish<NewPlaylistEvent> (
-				new NewPlaylistEvent { 
-					Project = project 
-				} 
+				new NewPlaylistEvent {
+					Project = project
+				}
 			);
 			called = false;
 			App.Current.EventsBroker.Publish<NewPlaylistEvent> (
-				new NewPlaylistEvent { 
-					Project = project 
-				} 
+				new NewPlaylistEvent {
+					Project = project
+				}
 			);
 
 			mockDiaklogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
@@ -464,7 +464,7 @@ namespace VAS.Tests
 			timelineEvent.Stop = new Time (20);
 			App.Current.EventsBroker.Publish<TimeNodeChangedEvent> (
 				new TimeNodeChangedEvent {
-					TimeNode = timelineEvent, 
+					TimeNode = timelineEvent,
 					Time = new Time (5)
 				}
 			);
@@ -497,7 +497,8 @@ namespace VAS.Tests
 				Par = 1,
 				Duration = new Time (100)
 			});
-			LoadCameraEvent lce = new LoadCameraEvent () { CameraTlEvent = new TimelineEvent () {
+			LoadCameraEvent lce = new LoadCameraEvent () {
+				CameraTlEvent = new TimelineEvent () {
 					FileSet = mfs2,
 					Start = new Time (0),
 					Stop = mfs2.FirstOrDefault ().Duration
