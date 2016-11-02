@@ -113,7 +113,7 @@ namespace VAS.Core.Events
 				}
 				return dashboardButton;
 			}
-			set { 
+			set {
 				dashboardButton = value;
 			}
 		}
@@ -134,7 +134,7 @@ namespace VAS.Core.Events
 				}
 				return dashboardButton;
 			}
-			set { 
+			set {
 				dashboardButton = value;
 			}
 		}
@@ -168,9 +168,9 @@ namespace VAS.Core.Events
 	{
 		public Playlist Playlist { get; set; }
 
-		public IPlaylistElement Element  { get; set; }
+		public IPlaylistElement Element { get; set; }
 
-		public bool Playing  { get; set; }
+		public bool Playing { get; set; }
 	}
 
 	public class PlaylistElementLoadedEvent : Event
@@ -315,7 +315,7 @@ namespace VAS.Core.Events
 
 		public bool Edit { get; set; }
 
-		public List<DashboardButton> DashboardButtons { 
+		public List<DashboardButton> DashboardButtons {
 			get {
 				if (dashboardButtons == null) {
 					dashboardButtons = new List<DashboardButton> ();

@@ -29,7 +29,7 @@ using Timer = System.Threading.Timer;
 
 namespace VAS.Services
 {
-	public class PlaylistManager: IService
+	public class PlaylistManager : IService
 	{
 		EventsFilter filter;
 
