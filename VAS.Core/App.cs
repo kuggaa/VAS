@@ -12,6 +12,7 @@ using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.MVVMC;
+using VAS.KPI;
 
 namespace VAS
 {
@@ -31,6 +32,7 @@ namespace VAS
 
 		public IStorageManager DatabaseManager;
 		public IRenderingJobsManager RenderingJobsManger;
+		public IKpiService KPIService;
 
 		public ViewLocator ViewLocator;
 		public ControllerLocator ControllerLocator;
@@ -159,6 +161,7 @@ namespace VAS
 			App.Current.DependencyRegistry = new Registry ("App Registry");
 			App.Current.EventsBroker = new EventsBroker ();
 			App.Current.Device = new Core.Device ();
+			App.Current.KPIService = new KpiService ();
 		}
 
 		// copied from OneplayLongomMatch::CoreServices
