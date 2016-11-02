@@ -90,9 +90,9 @@
       <Project>{A7BA3B58-76E6-461C-B842-3D4DC4995B42}</Project>
       <Name>Weavers</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HockeySDK-Windows\Src\Kit.Core45\Kit.Core45.csproj">
-      <Project>{14123A8E-6D6B-4362-B001-35B8C2505EED}</Project>
-      <Name>Kit.Core45</Name>
+    <ProjectReference Include="..\HockeySDK-Windows\Src\HockeySDK.Net45\HockeySDK.Net45.csproj">
+      <Project>{7CB80B49-38A2-408E-970A-877399C1B3D3}</Project>
+      <Name>HockeySDK.Net45</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
