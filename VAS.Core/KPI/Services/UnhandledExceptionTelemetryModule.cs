@@ -22,9 +22,10 @@
 //
 
 using System;
-using Microsoft.HockeyApp.Services;
+using System.Reflection;
 using Microsoft.HockeyApp.Channel;
 using Microsoft.HockeyApp.DataContracts;
+using Microsoft.HockeyApp.Services;
 using VAS.KPI;
 
 namespace Microsoft.HockeyApp
@@ -41,7 +42,13 @@ namespace Microsoft.HockeyApp
 		{
 			if (!initialized) {
 				GLib.ExceptionManager.UnhandledException += (e) => {
-					HockeyClient.Current.HandleException ((Exception)e.ExceptionObject);
+					TargetInvocationException invException = e.ExceptionObject as TargetInvocationException;
+					if (invException != null) {
+						HockeyClient.Current.HandleException (invException.InnerException);
+					} else {
+						HockeyClient.Current.HandleException ((Exception)e.ExceptionObject);
+					}
+
 					HockeyClient.Current.SendCrashesAsync ().ConfigureAwait (false);
 				};
 

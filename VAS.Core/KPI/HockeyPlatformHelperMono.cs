@@ -24,6 +24,7 @@ using System.IO.IsolatedStorage;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.HockeyApp;
+using Utils = VAS.Core.Common.Utils;
 
 namespace VAS.KPI
 {
@@ -214,15 +215,7 @@ namespace VAS.KPI
 			get {
 
 				if (_appVersion == null) {
-					//ClickOnce
-					try {
-						var type = Type.GetType ("System.Deployment.Application.ApplicationDeployment");
-						object deployment = type.GetMethod ("CurrentDeployment").Invoke (null, null);
-						Version version = type.GetMethod ("CurrentVersion").Invoke (deployment, null) as Version;
-						_appVersion = version.ToString ();
-					} catch (Exception) { }
-					//Excecuting Assembly
-					_appVersion = Assembly.GetCallingAssembly ().GetName ().Version.ToString ();
+					_appVersion = App.Current.Version.ToString ();
 				}
 				return _appVersion ?? "0.0.0-unknown";
 			}
@@ -242,7 +235,9 @@ namespace VAS.KPI
 		/// Gets OS Platform.
 		/// </summary>
 		public string OSPlatform {
-			get { return (Type.GetType ("Mono.Runtime") == null) ? "Windows" : "Mono"; }
+			get {
+				return Utils.OS.ToString ();
+			}
 		}
 
 		/// <summary>
