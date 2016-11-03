@@ -206,15 +206,7 @@ namespace VAS.Services
 				videoEditor.AddSegment (video.File.FilePath, 0, -1, 1, "", video.File.HasAudio, new Area ());
 			}
 
-			try {
-				videoEditor.Start ();
-			} catch (Exception ex) {
-				videoEditor.Cancel ();
-				job.State = JobState.Error;
-				Log.Exception (ex);
-				Log.Error ("Error rendering job: ", job.Name);
-				App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Error rendering job: ") + ex.Message);
-			}
+			videoEditor.Start ();
 		}
 
 		void LoadEditionJob (EditionJob job)
@@ -235,16 +227,7 @@ namespace VAS.Services
 					ProcessDrawing (segment as PlaylistDrawing);
 				}
 			}
-
-			try {
-				videoEditor.Start ();
-			} catch (Exception ex) {
-				videoEditor.Cancel ();
-				job.State = JobState.Error;
-				Log.Exception (ex);
-				Log.Error ("Error rendering job: ", job.Name);
-				App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Error rendering job: ") + ex.Message);
-			}
+			videoEditor.Start ();
 		}
 
 		void ProcessImage (Image image, Time duration)
@@ -366,11 +349,20 @@ namespace VAS.Services
 			}
 			ViewModel.CurrentJob.Model = nextJob.Model;
 			ViewModel.CurrentJob.Progress = (float)EditorState.START;
+			ViewModel.CurrentJob.State = JobState.Running;
 
-			if (ViewModel.CurrentJob.Model is EditionJob) {
-				LoadEditionJob (ViewModel.CurrentJob.Model as EditionJob);
-			} else {
-				LoadConversionJob (ViewModel.CurrentJob.Model as ConversionJob);
+			try {
+				if (ViewModel.CurrentJob.Model is EditionJob) {
+					LoadEditionJob (ViewModel.CurrentJob.Model as EditionJob);
+				} else {
+					LoadConversionJob (ViewModel.CurrentJob.Model as ConversionJob);
+				}
+			} catch (Exception ex) {
+				ViewModel.CurrentJob.State = JobState.Error;
+				Log.Exception (ex);
+				Log.Error ("Error rendering job: ", ViewModel.CurrentJob.Name);
+				App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Error rendering job: ") + ex.Message);
+				StartNextJob ();
 			}
 		}
 
