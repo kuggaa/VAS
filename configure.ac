@@ -147,6 +147,7 @@ VAS.UI.Multimedia.Gtk2/Makefile
 Weavers/Makefile
 
 VAS.Tests/Makefile
+HockeySDK-Windows/Src/HockeySDK.Net45/Makefile
 ])
 
 AC_OUTPUT
