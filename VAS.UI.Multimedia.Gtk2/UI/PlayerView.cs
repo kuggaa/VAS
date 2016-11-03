@@ -214,7 +214,7 @@ namespace VAS.UI
 				jumpspinbutton.Visible = tlabel.Visible = timelabel.Visible =
 					detachbutton.Visible = ratescale.Visible = !playerVM.Compact;
 
-			playerVM.ControlsSensitive = true;
+			controlsbox.Sensitive = ratescale.Sensitive = playerVM.ControlsSensitive;
 			drawbutton.Visible = playerVM.ShowDrawingIcon;
 			DrawingsVisible = false;
 			timescale.Value = 0;
