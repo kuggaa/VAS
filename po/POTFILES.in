@@ -26,6 +26,7 @@ VAS.UI.Gtk2/Dialogs.cs
 VAS.UI.Gtk2/GUIToolkitBase.cs
 VAS.UI.Gtk2/UI/Common/PlaylistTreeView.cs
 VAS.UI.Gtk2/UI/Component/MediaFileChooser.cs
+VAS.UI.Gtk2/UI/Component/RenderingStateBarView.cs
 VAS.UI.Gtk2/UI/Component/Timeline.cs
 VAS.UI.Gtk2/UI/Dialog/DrawingTool.cs
 VAS.UI.Gtk2/UI/Dialog/VideoEditionProperties.cs
@@ -36,6 +37,7 @@ VAS.UI.Gtk2/UI/Menu/PlaysMenu.cs
 VAS.UI.Gtk2/gtk-gui/VAS.UI.Dialog.CalendarDialog.cs
 VAS.UI.Gtk2/gtk-gui/VAS.UI.Dialog.DrawingTool.cs
 VAS.UI.Gtk2/gtk-gui/VAS.UI.Dialog.VideoEditionProperties.cs
+VAS.UI.Gtk2/gtk-gui/VAS.UI.UI.Component.JobsManagerView.cs
 VAS.UI.Multimedia.Gtk2/MultimediaToolkit.cs
 VAS.UI.Multimedia.Gtk2/UI/CapturerBin.cs
 VAS.UI.Multimedia.Gtk2/UI/PlayerCapturerBin.cs
@@ -47,4 +49,5 @@ VAS.UI.Multimedia.Gtk2/gtk-gui/VAS.UI.PlayerView.cs
 VAS.UI.Multimedia.Gtk2/gtk-gui/VAS.UI.VideoWindow.cs
 VAS.UI.Multimedia.Gtk2/gtk-gui/VAS.UIPlayerCapturerBin.cs
 VAS.UI.Gtk2/UI/TreeView/FilterTreeViewBase.cs
+VAS.UI.Gtk2/UI/TreeView/JobsTreeView.cs
 libvas/lgm-video-player.c
