@@ -5,8 +5,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{7CB80B49-38A2-408E-970A-877399C1B3D3}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>HockeySDK.Net45</RootNamespace>
-    <AssemblyName>HockeySDK.Net45</AssemblyName>
+    <RootNamespace>HockeySDK</RootNamespace>
+    <AssemblyName>HockeySDK</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -509,11 +509,6 @@
     <Compile Include="..\Kit.Core45\UserMetrics\UserContextInitializer.cs">
       <Link>UserMetrics\UserContextInitializer.cs</Link>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Kit.Core45\packages.config">
-      <Link>packages.config</Link>
-    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

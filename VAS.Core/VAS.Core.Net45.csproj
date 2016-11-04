@@ -89,7 +89,7 @@
     </ProjectReference>
     <ProjectReference Include="..\HockeySDK-Windows\Src\HockeySDK.Net45\HockeySDK.Net45.csproj">
       <Project>{7CB80B49-38A2-408E-970A-877399C1B3D3}</Project>
-      <Name>HockeySDK.Net45</Name>
+      <Name>HockeySDK</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

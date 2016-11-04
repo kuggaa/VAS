@@ -182,9 +182,9 @@ namespace VAS
 
 		static void InitVersion ()
 		{
-			Assembly assembly = Assembly.GetExecutingAssembly ();
+			Assembly assembly = Assembly.GetEntryAssembly ();
 			Current.Version = assembly.GetName ().Version;
-			var attribute = Assembly.GetExecutingAssembly ().
+			var attribute = Assembly.GetEntryAssembly ().
 									GetCustomAttributes (typeof (AssemblyInformationalVersionAttribute), false).
 									FirstOrDefault ();
 			if (attribute != null) {

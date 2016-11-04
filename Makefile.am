@@ -22,6 +22,7 @@ SUBDIRS = \
 	VAS.Drawing.Cairo \
 	VAS.Multimedia \
 	VAS.Services \
+	HockeySDK-Windows/Src/HockeySDK.Net45 \
 	libvas \
 	system_uuid \
 	data \
