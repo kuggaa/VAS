@@ -37,8 +37,6 @@ namespace VAS.Core.Interfaces.GUI
 
 		IMainController MainController { get; }
 
-		IRenderingStateBar RenderingStateBar { get; }
-
 		bool FullScreen { set; }
 
 		Task<bool> Quit ();
@@ -58,8 +56,6 @@ namespace VAS.Core.Interfaces.GUI
 		void ShowProjectStats (Project project);
 
 		void OpenDatabasesManager ();
-
-		void ManageJobs ();
 
 		Task EditPlay (TimelineEvent play, Project project, bool editTags, bool editPositions, bool editPlayers, bool editNotes);
 

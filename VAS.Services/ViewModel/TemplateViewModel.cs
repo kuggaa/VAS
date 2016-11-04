@@ -70,13 +70,5 @@ namespace VAS.Services.ViewModel
 				return Model?.IsChanged == true;
 			}
 		}
-
-		/// <summary>
-		/// Closes the window.
-		/// </summary>
-		public async Task<bool> CloseWindow ()
-		{
-			return await App.Current.StateController.MoveBack ();
-		}
 	}
 }

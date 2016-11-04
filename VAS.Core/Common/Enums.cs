@@ -77,7 +77,8 @@ namespace VAS.Core.Common
 
 	public enum JobState
 	{
-		NotStarted,
+		None,
+		Pending,
 		Running,
 		Finished,
 		Cancelled,
@@ -151,8 +152,6 @@ namespace VAS.Core.Common
 	{
 		START = 0,
 		FINISHED = 1,
-		CANCELED = -1,
-		ERROR = -2
 	}
 
 	public enum JobType

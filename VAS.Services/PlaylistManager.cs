@@ -29,7 +29,7 @@ using Timer = System.Threading.Timer;
 
 namespace VAS.Services
 {
-	public class PlaylistManager: IService
+	public class PlaylistManager : IService
 	{
 		EventsFilter filter;
 
@@ -237,7 +237,7 @@ namespace VAS.Services
 			if (jobs == null)
 				return;
 			foreach (Job job in jobs)
-				App.Current.RenderingJobsManger.AddJob (job);
+				App.Current.JobsManager.Add (job);
 		}
 
 		protected virtual void HandleTogglePlayEvent (TogglePlayEvent e)

@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Threading.Tasks;
 using Prism.Events;
 
 namespace VAS.Core.Events
@@ -25,9 +26,9 @@ namespace VAS.Core.Events
 	 * */
 	public enum ThreadMethod
 	{
-		PublisherThread = Prism.Events.ThreadOption.PublisherThread,
-		UIThread = Prism.Events.ThreadOption.UIThread,
-		BackgroundThread = Prism.Events.ThreadOption.BackgroundThread
+		PublisherThread = ThreadOption.PublisherThread,
+		UIThread = ThreadOption.UIThread,
+		BackgroundThread = ThreadOption.BackgroundThread
 	}
 
 	public class EventToken
@@ -37,37 +38,51 @@ namespace VAS.Core.Events
 
 	public class EventsBroker
 	{
-		private static IEventAggregator _current;
 
-		public IEventAggregator Current {
-			get {
-				return _current ?? (_current = new EventAggregator ());
-			}
-			private set { 
-				_current = value;
-			}
-		}
+		IEventAggregator Current {
+			get;
+			set;
+		} = new EventAggregator ();
 
-		private PubSubEvent<TEvent> GetEvent<TEvent> ()
+		/// <summary>
+		/// Publish a new empty event.
+		/// </summary>
+		/// <typeparam name="TEvent">The type of the event.</typeparam>
+		public Task Publish<TEvent> ()
 		{
-			return Current.GetEvent<PubSubEvent<TEvent>> ();
+			return Publish (default (TEvent));
 		}
 
-		public void Publish<TEvent> ()
+		/// <summary>
+		/// Publish a new event.
+		/// </summary>
+		/// <param name="event">Event.</param>
+		/// <typeparam name="TEvent">The type of the event.</typeparam>
+		public Task Publish<TEvent> (TEvent @event)
 		{
-			Publish<TEvent> (default(TEvent));
+			return GetEvent<TEvent> ().Publish (@event);
 		}
 
-		public void Publish<TEvent> (TEvent @event)
+		/// <summary>
+		/// Helper method to publish a new <see cref="ReturningValueEvent"/> and return the return value set in the event.
+		/// </summary>
+		/// <returns>The return value of the event.</returns>
+		/// <param name="event">Event.</param>
+		/// <typeparam name="TEvent">The type of the event.</typeparam>
+		public async Task<bool> PublishWithReturn<TEvent> (TEvent @event) where TEvent : ReturningValueEvent
 		{
-			GetEvent<TEvent> ().Publish (@event);
+			await GetEvent<TEvent> ().Publish (@event);
+			return @event.ReturnValue;
 		}
 
-		public EventToken Subscribe<TEvent> (Action action, ThreadMethod threadOption = ThreadMethod.PublisherThread, bool keepSubscriberReferenceAlive = false)
-		{
-			return Subscribe<TEvent> (e => action (), threadOption, keepSubscriberReferenceAlive);
-		}
-
+		/// <summary>
+		/// Subscribes to an event synchronously.
+		/// </summary>
+		/// <param name="action">Callback function called when the event is raised.</param>
+		/// <param name="threadOption">Thread option.</param>
+		/// <param name="keepSubscriberReferenceAlive">If set to <c>true</c> keep subscriber reference alive.</param>
+		/// <param name="filter">Filter.</param>
+		/// <typeparam name="TEvent">The type of the event.</typeparam>
 		public EventToken Subscribe<TEvent> (Action<TEvent> action, ThreadMethod threadOption = ThreadMethod.PublisherThread, bool keepSubscriberReferenceAlive = false, Predicate<TEvent> filter = null)
 		{
 			return new EventToken {
@@ -75,6 +90,26 @@ namespace VAS.Core.Events
 			};
 		}
 
+		/// <summary>
+		/// Subscribes to an event asynchronously.
+		/// </summary>
+		/// <param name="action">Callback function called when the event is raised.</param>
+		/// <param name="threadOption">Thread option.</param>
+		/// <param name="keepSubscriberReferenceAlive">If set to <c>true</c> keep subscriber reference alive.</param>
+		/// <param name="filter">Filter.</param>
+		/// <typeparam name="TEvent">The type of the event.</typeparam>
+		public EventToken SubscribeAsync<TEvent> (Func<TEvent, Task> action, ThreadMethod threadOption = ThreadMethod.PublisherThread, bool keepSubscriberReferenceAlive = false, Predicate<TEvent> filter = null)
+		{
+			return new EventToken {
+				Token = GetEvent<TEvent> ().Subscribe (action, (ThreadOption)threadOption, keepSubscriberReferenceAlive, filter)
+			};
+		}
+
+		/// <summary>
+		/// Unsubscribe to an event using the specified token.
+		/// </summary>
+		/// <param name="eventToken">Event token.</param>
+		/// <typeparam name="TEvent">The type of the event.</typeparam>
 		public void Unsubscribe<TEvent> (EventToken eventToken)
 		{
 			if (eventToken != null) {
@@ -82,7 +117,24 @@ namespace VAS.Core.Events
 			}
 		}
 
+		/// <summary>
+		/// Unsubscribe to an event using the delegate.
+		/// </summary>
+		/// <param name="subscriber">Subscriber.</param>
+		/// <typeparam name="TEvent">The type of the event.</typeparam>
 		public void Unsubscribe<TEvent> (Action<TEvent> subscriber)
+		{
+			if (subscriber != null) {
+				GetEvent<TEvent> ().Unsubscribe (subscriber);
+			}
+		}
+
+		/// <summary>
+		/// Unsubscribe to an event using the delegate.
+		/// </summary>
+		/// <param name="subscriber">Subscriber.</param>
+		/// <typeparam name="TEvent">The type of the event.</typeparam>
+		public void UnsubscribeAsync<TEvent> (Func<TEvent, Task> subscriber)
 		{
 			if (subscriber != null) {
 				GetEvent<TEvent> ().Unsubscribe (subscriber);
@@ -94,16 +146,12 @@ namespace VAS.Core.Events
 		{
 			Current = null;
 		}
-			
-		//this method avoids refactoring return value in all calls
-		public bool EmitCloseOpenedProject (object sender)
+
+		PubSubEvent<TEvent> GetEvent<TEvent> ()
 		{
-			CloseOpenedProjectEvent e = new CloseOpenedProjectEvent {
-				Sender = sender
-			};
-			App.Current.EventsBroker.Publish<CloseOpenedProjectEvent> (e);
-			return e.ReturnValue;
+			return Current.GetEvent<PubSubEvent<TEvent>> ();
 		}
+
 	}
 }
 

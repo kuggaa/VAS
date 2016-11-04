@@ -15,12 +15,36 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using VAS.Core.Common;
-using VAS.Core.MVVMC;
+using System;
 
-namespace VAS.Core.Services.ViewModel
+namespace VAS.Core.MVVMC
 {
-	public class JobCollectionVM : CollectionViewModel<Job, JobVM>
+	/// <summary>
+	/// A base class for objects implementing <see cref="IDisposable"/> using Microsoft's recommend pattern.
+	/// Classes inheriting from <see cref="DisposableBase"/> only need to override the Dispose function.
+	/// </summary>
+	public class DisposableBase : IDisposable
 	{
+		~DisposableBase ()
+		{
+			if (!Disposed) {
+				Dispose (true);
+			}
+		}
+
+		public void Dispose ()
+		{
+			Dispose (true);
+			GC.SuppressFinalize (this);
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (Disposed)
+				return;
+			Disposed = true;
+		}
+
+		protected bool Disposed { get; private set; } = false;
 	}
 }

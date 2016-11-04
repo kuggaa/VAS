@@ -20,27 +20,35 @@ using VAS.Core.Common;
 
 namespace VAS.Core.Interfaces
 {
-	public interface IRenderingJobsManager
+	public interface IJobsManager
 	{
-		void RetryJobs (List<Job> retryJobs);
+		/// <summary>
+		/// Add a new job to the queue.
+		/// </summary>
+		/// <param name="job">Job.</param>
+		void Add (Job job);
 
-		void DeleteJob (Job job);
+		/// <summary>
+		/// Retry the list of jobs.
+		/// </summary>
+		/// <param name="jobs">Jobs.</param>
+		void Retry (IEnumerable<Job> jobs);
 
-		void ClearDoneJobs ();
+		/// <summary>
+		/// Cancel the list of jobs. If <paramref name="jobs"/> is <c>null</c> cancell the current job.
+		/// </summary>
+		/// <param name="jobs">Cancel jobs.</param>
+		void Cancel (IEnumerable<Job> jobs = null);
 
-		void CancelJobs (List<Job> cancelJobs);
+		/// <summary>
+		/// Cancels all jobs.
+		/// </summary>
+		void CancelAll ();
 
-		void CancelCurrentJob ();
-
-		void CancelJob (Job job);
-
-		void CancelAllJobs ();
-
-		void AddJob (Job job);
-
-		List<Job> Jobs { get; }
-
-		List<Job> PendingJobs { get; }
+		/// <summary>
+		/// Clears all finished jobs.
+		/// </summary>
+		void ClearFinished ();
 	}
 }
 

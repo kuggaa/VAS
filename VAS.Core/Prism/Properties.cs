@@ -16,21 +16,21 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using VAS.Core.Services.ViewModel;
 
-namespace VAS.Core.Events
+namespace Prism.Properties
 {
-	public class ClearDoneJobsEvent : Event
+	internal static class Resources
 	{
-	}
+		internal static string InvalidDelegateRerefenceTypeException {
+			get {
+				return "InvalidDelegateRerefenceTypeException";
+			}
+		}
 
-	public class RetrySelectedJobsEvent : Event
-	{
-		public JobCollectionVM Jobs { get; set; }
-	}
-
-	public class CancelSelectedJobsEvent : Event
-	{
-		public JobCollectionVM Jobs { get; set; }
+		internal static string EventAggregatorNotConstructedOnUIThread {
+			get {
+				return "EventAggregatorNotConstructedOnUIThread";
+			}
+		}
 	}
 }

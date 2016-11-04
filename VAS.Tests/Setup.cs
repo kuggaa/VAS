@@ -34,6 +34,11 @@ namespace VAS.Tests
 		{
 			// Initialize VAS.Core by using a type, this will call the module initialization
 			VFS.SetCurrent (new FileSystem ());
+			Initialize ();
+		}
+
+		public static void Initialize ()
+		{
 			App.Current = new AppDummy ();
 			App.InitDependencies ();
 			App.Current.Config = new ConfigDummy ();

@@ -25,140 +25,175 @@ using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Interfaces.MVVMC;
-using VAS.Core.Services;
-using VAS.Core.Services.ViewModel;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
+using VAS.Services.ViewModel;
+using VAS.Core.MVVMC;
 
 namespace VAS.Services
 {
-	public class RenderingJobsController : IRenderingJobsControler, IController
+	public class RenderingJobsController : DisposableBase, IController, IService
 	{
-		/* List of pending jobs */
-		JobCollectionVM jobs, pendingJobs;
 		IVideoEditor videoEditor;
 		IFramesCapturer capturer;
-		JobVM currentJob;
 		ControllerStatus status = ControllerStatus.Stopped;
 
-		public bool Disposed { get; private set; } = false;
+		public RenderingJobsController (JobsManagerVM viewModel)
+		{
+			ViewModel = viewModel;
+		}
 
-		public JobCollectionVM Jobs {
+		protected override void Dispose (bool disposing)
+		{
+			CancelCurrentJob (false);
+			Stop ();
+			base.Dispose (disposing);
+		}
+
+		public JobsManagerVM ViewModel {
+			get;
+			set;
+		}
+
+		public int Level {
 			get {
-				return jobs;
+				return 0;
 			}
 		}
 
-		public JobCollectionVM PendingJobs {
+		public string Name {
 			get {
-				return pendingJobs;
+				return "Jobs Manager";
 			}
 		}
 
-		public RenderingJobsController ()
+		public void SetViewModel (IViewModel viewModel)
 		{
-			jobs = new JobCollectionVM ();
-			pendingJobs = new JobCollectionVM ();
+			ViewModel = viewModel as JobsManagerVM;
 		}
 
-		public void Dispose ()
+		public IEnumerable<KeyAction> GetDefaultKeyActions ()
 		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
+			return Enumerable.Empty<KeyAction> ();
 		}
 
-		public virtual void Dispose (bool disposing)
+		public void Start ()
 		{
-			if (Disposed)
+			if (status == ControllerStatus.Started) {
+				Log.Error ("Controller already started: " + this);
 				return;
+			}
+			App.Current.EventsBroker.Subscribe<CreateEvent<Job>> (HandleAddJob);
+			App.Current.EventsBroker.Subscribe<RetryEvent<IEnumerable<Job>>> (HandleRetryJobs);
+			App.Current.EventsBroker.Subscribe<CancelEvent<IEnumerable<Job>>> (HandleCancelJobs);
+			App.Current.EventsBroker.Subscribe<ClearEvent<Job>> (HandleClearFinishedJobs);
+			status = ControllerStatus.Started;
+		}
 
-			if (disposing) {
+		public void Stop ()
+		{
+			if (status == ControllerStatus.Stopped) {
+				Log.Error ("Controller already stoped: " + this);
+				return;
+			}
+			App.Current.EventsBroker.Unsubscribe<CreateEvent<Job>> (HandleAddJob);
+			App.Current.EventsBroker.Unsubscribe<RetryEvent<IEnumerable<Job>>> (HandleRetryJobs);
+			App.Current.EventsBroker.Unsubscribe<CancelEvent<IEnumerable<Job>>> (HandleCancelJobs);
+			App.Current.EventsBroker.Unsubscribe<ClearEvent<Job>> (HandleClearFinishedJobs);
+			status = ControllerStatus.Stopped;
+		}
+
+		bool IService.Start ()
+		{
+			Start ();
+			return true;
+		}
+
+		bool IService.Stop ()
+		{
+			Stop ();
+			return true;
+		}
+
+		public void HandleAddJob (CreateEvent<Job> evt)
+		{
+			Job job = evt.Object;
+			if (job == null) {
+				return;
 			}
 
-			Disposed = true;
-		}
-
-		public void AddJob (JobVM job)
-		{
-			if (job == null)
-				return;
-			jobs.Model.Add (job.Model);
-			pendingJobs.Model.Add (job.Model);
-			UpdateJobsStatus ();
-			if (pendingJobs.Count () == 1)
+			job.State = JobState.Pending;
+			ViewModel.Model.Add (job);
+			evt.ReturnValue = true;
+			if (ViewModel.CurrentJob.Model == null) {
 				StartNextJob ();
-		}
-
-		public void RetryJobs (JobCollectionVM retryJobs)
-		{
-			foreach (Job job in retryJobs.Model) {
-				if (!jobs.Model.Contains (job))
-					return;
-				if (!pendingJobs.Model.Contains (job)) {
-					job.State = JobState.NotStarted;
-					jobs.Model.Remove (job);
-					jobs.Model.Add (job);
-					pendingJobs.Model.Add (job);
-					UpdateJobsStatus ();
-				}
 			}
 		}
 
-		public void DeleteJob (JobVM job)
+		public void HandleRetryJobs (RetryEvent<IEnumerable<Job>> evt)
 		{
-			job.State = JobState.Cancelled;
-			CancelJob (job);
-		}
+			IEnumerable<Job> jobs = evt.Object;
+			evt.ReturnValue = false;
 
-		public void ClearDoneJobs ()
-		{
-			jobs.Model.RemoveAll (j => j.State == JobState.Finished);
-		}
-
-		public void CancelJobs (JobCollectionVM cancelJobs)
-		{
-			foreach (JobVM job in cancelJobs) {
-				job.State = JobState.Cancelled;
-				pendingJobs.Model.Remove (job.Model);
+			foreach (Job job in ViewModel.Model.Intersect (jobs)) {
+				// Remove jobs from the list and add them back to the queue
+				ViewModel.Model.Remove (job);
+				job.State = JobState.Pending;
+				HandleAddJob (new CreateEvent<Job> { Object = job });
+				evt.ReturnValue = true;
 			}
+		}
 
-			if (cancelJobs.Contains (currentJob))
+		public void HandleCancelJobs (CancelEvent<IEnumerable<Job>> evt)
+		{
+			IEnumerable<Job> jobs = evt.Object;
+
+			if (jobs == null || !jobs.Any ()) {
 				CancelCurrentJob ();
+				evt.ReturnValue = true;
+			} else {
+				foreach (Job job in jobs) {
+					if (job == ViewModel.CurrentJob.Model) {
+						CancelCurrentJob ();
+					} else {
+						job.State = JobState.Cancelled;
+					}
+				}
+				evt.ReturnValue = true;
+			}
 		}
 
-		public void CancelCurrentJob ()
+		public void HandleClearFinishedJobs (ClearEvent<Job> evt)
 		{
-			CancelJob (currentJob);
+			ViewModel.ViewModels.RemoveAll (j => j.State == JobState.Finished);
+			evt.ReturnValue = true;
 		}
 
-		public void CancelJob (JobVM job)
+		void CleanVideoEditor (bool cancel = false)
 		{
-			if (currentJob != job)
+			if (videoEditor == null) {
 				return;
+			}
 
 			videoEditor.Progress -= OnProgress;
 			videoEditor.Error -= OnError;
-			videoEditor.Cancel ();
-			job.State = JobState.Cancelled;
-			RemoveCurrentFromPending ();
-			UpdateJobsStatus ();
-			StartNextJob ();
+			if (cancel) {
+				videoEditor.Cancel ();
+			}
+			videoEditor = null;
 		}
 
-		public void CancelAllJobs ()
+		void CancelCurrentJob (bool startNext = true)
 		{
-			foreach (JobVM job in pendingJobs)
-				job.State = JobState.Cancelled;
-			pendingJobs.Model.Clear ();
-			CancelJob (currentJob);
+			CleanVideoEditor (true);
+			ViewModel.CurrentJob.Progress = 0;
+			ViewModel.CurrentJob.State = JobState.Cancelled;
+			if (startNext) {
+				StartNextJob ();
+			}
 		}
 
-		protected void ManageJobs ()
-		{
-			App.Current.GUIToolkit.ManageJobs ();
-		}
-
-		private void LoadConversionJob (ConversionJob job)
+		void LoadConversionJob (ConversionJob job)
 		{
 			videoEditor = App.Current.MultimediaToolkit.GetVideoEditor ();
 			videoEditor.EncodingSettings = job.EncodingSettings;
@@ -171,18 +206,10 @@ namespace VAS.Services
 				videoEditor.AddSegment (video.File.FilePath, 0, -1, 1, "", video.File.HasAudio, new Area ());
 			}
 
-			try {
-				videoEditor.Start ();
-			} catch (Exception ex) {
-				videoEditor.Cancel ();
-				job.State = JobState.Error;
-				Log.Exception (ex);
-				Log.Error ("Error rendering job: ", job.Name);
-				App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Error rendering job: ") + ex.Message);
-			}
+			videoEditor.Start ();
 		}
 
-		private void LoadEditionJob (EditionJob job)
+		void LoadEditionJob (EditionJob job)
 		{
 			videoEditor = App.Current.MultimediaToolkit.GetVideoEditor ();
 			videoEditor.EncodingSettings = job.EncodingSettings;
@@ -200,16 +227,7 @@ namespace VAS.Services
 					ProcessDrawing (segment as PlaylistDrawing);
 				}
 			}
-
-			try {
-				videoEditor.Start ();
-			} catch (Exception ex) {
-				videoEditor.Cancel ();
-				job.State = JobState.Error;
-				Log.Exception (ex);
-				Log.Error ("Error rendering job: ", job.Name);
-				App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Error rendering job: ") + ex.Message);
-			}
+			videoEditor.Start ();
 		}
 
 		void ProcessImage (Image image, Time duration)
@@ -302,7 +320,7 @@ namespace VAS.Services
 			return true;
 		}
 
-		private string CreateStillImage (MediaFile file, FrameDrawing drawing)
+		string CreateStillImage (MediaFile file, FrameDrawing drawing)
 		{
 			Image frame, final_image;
 			string path = System.IO.Path.GetTempFileName ().Replace (@"\", @"\\");
@@ -321,153 +339,65 @@ namespace VAS.Services
 			return path;
 		}
 
-		private void CloseAndNext ()
+		void StartNextJob ()
 		{
-			RemoveCurrentFromPending ();
-			UpdateJobsStatus ();
+			CleanVideoEditor ();
+			JobVM nextJob = ViewModel.PendingJobs.FirstOrDefault ();
+			if (nextJob == null) {
+				ViewModel.CurrentJob.Model = null;
+				return;
+			}
+			ViewModel.CurrentJob.Model = nextJob.Model;
+			ViewModel.CurrentJob.Progress = (float)EditorState.START;
+			ViewModel.CurrentJob.State = JobState.Running;
+
+			try {
+				if (ViewModel.CurrentJob.Model is EditionJob) {
+					LoadEditionJob (ViewModel.CurrentJob.Model as EditionJob);
+				} else {
+					LoadConversionJob (ViewModel.CurrentJob.Model as ConversionJob);
+				}
+			} catch (Exception ex) {
+				ViewModel.CurrentJob.State = JobState.Error;
+				Log.Exception (ex);
+				Log.Error ("Error rendering job: ", ViewModel.CurrentJob.Name);
+				App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Error rendering job: ") + ex.Message);
+				StartNextJob ();
+			}
+		}
+
+		void OnError (object sender, string message)
+		{
+			Log.Debug ("Job finished with errors: " + message);
+			App.Current.Dialogs.ErrorMessage (Catalog.GetString ("An error has occurred in the video editor.")
+			+ Catalog.GetString ("Please, try again."));
+			ViewModel.CurrentJob.State = JobState.Error;
 			StartNextJob ();
 		}
 
-		private void ResetGui ()
+#pragma warning disable RECS0018 // Comparison of floating point numbers with equality operator
+		void OnProgress (float progress)
 		{
-			App.Current.GUIToolkit.RenderingStateBar.ProgressText = "";
-			App.Current.GUIToolkit.RenderingStateBar.JobRunning = false;
-		}
-
-		private void StartNextJob ()
-		{
-			if (pendingJobs.Count () == 0) {
-				ResetGui ();
-				return;
-			}
-
-			currentJob = pendingJobs.ElementAt (0);
-			if (currentJob.Model is EditionJob) {
-				LoadEditionJob (currentJob.Model as EditionJob);
-			} else {
-				LoadConversionJob (currentJob.Model as ConversionJob);
-			}
-		}
-
-		private void UpdateProgress (float progress)
-		{
-			App.Current.GUIToolkit.RenderingStateBar.Fraction = progress;
-			App.Current.GUIToolkit.RenderingStateBar.ProgressText = String.Format ("{0}... {1:0.0}%",
-				Catalog.GetString ("Rendering"), progress * 100);
-		}
-
-		private void UpdateJobsStatus ()
-		{
-			App.Current.GUIToolkit.RenderingStateBar.Text = String.Format ("{0} ({1} {2})",
-				Catalog.GetString ("Rendering queue"),
-			   pendingJobs.Count (), Catalog.GetString ("Pending"));
-		}
-
-		private void RemoveCurrentFromPending ()
-		{
-			try {
-				pendingJobs.Model.Remove (currentJob.Model);
-			} catch {
-			}
-		}
-
-		void HandleError ()
-		{
-			Log.Debug ("Job finished with errors");
-			App.Current.Dialogs.ErrorMessage (Catalog.GetString ("An error has occurred in the video editor.")
-			+ Catalog.GetString ("Please, try again."));
-			currentJob.State = JobState.Error;
-			CloseAndNext ();
-		}
-
-		private void MainLoopOnProgress (float progress)
-		{
-			if (progress > (float)EditorState.START && progress <= (float)EditorState.FINISHED
-				&& progress > App.Current.GUIToolkit.RenderingStateBar.Fraction) {
-				UpdateProgress (progress);
-			}
-
-			if (progress == (float)EditorState.CANCELED) {
-				Log.Debug ("Job was cancelled");
-				currentJob.State = JobState.Cancelled;
-				CloseAndNext ();
+			if (progress < (float)EditorState.START || progress > (float)EditorState.FINISHED) {
+				Log.Error ("Progress should have values between 0 and 1: " + progress);
 			} else if (progress == (float)EditorState.START) {
-				if (currentJob.State != JobState.Running) {
+				if (ViewModel.CurrentJob.State != JobState.Running) {
 					Log.Debug ("Job started");
 				}
-				currentJob.State = JobState.Running;
-				App.Current.GUIToolkit.RenderingStateBar.JobRunning = true;
-				UpdateProgress (progress);
+				ViewModel.CurrentJob.State = JobState.Running;
+				ViewModel.CurrentJob.Progress = progress;
 			} else if (progress == (float)EditorState.FINISHED) {
 				Log.Debug ("Job finished successfully");
 				videoEditor.Progress -= OnProgress;
-				UpdateProgress (progress);
-				currentJob.State = JobState.Finished;
-				CloseAndNext ();
-			} else if (progress == (float)EditorState.ERROR) {
-				HandleError ();
+				ViewModel.CurrentJob.Progress = progress;
+				ViewModel.CurrentJob.State = JobState.Finished;
+				StartNextJob ();
+			} else {
+				if (progress > ViewModel.CurrentJob.Progress) {
+					ViewModel.CurrentJob.Progress = progress;
+				}
 			}
 		}
-
-		protected void OnError (object sender, string message)
-		{
-			HandleError ();
-		}
-
-		protected void OnProgress (float progress)
-		{
-			MainLoopOnProgress (progress);
-		}
-
-		public void Start ()
-		{
-			if (status == ControllerStatus.Started) {
-				return;
-			}
-			App.Current.EventsBroker.Subscribe<ClearDoneJobsEvent> (HandleClearDoneJobsEvent);
-			App.Current.EventsBroker.Subscribe<RetrySelectedJobsEvent> (HandleRetrySelectedJobsEvent);
-			App.Current.EventsBroker.Subscribe<CancelSelectedJobsEvent> (HandleCancelSelectedJobsEvent);
-			App.Current.EventsBroker.Subscribe<ConvertVideoFilesEvent> ((e) => {
-				ConversionJob job = new ConversionJob (e.Files, e.Settings);
-				AddJob (new JobVM { Model = job });
-			});
-			status = ControllerStatus.Started;
-		}
-
-		public void Stop ()
-		{
-			if (status == ControllerStatus.Stopped) {
-				return;
-			}
-			App.Current.EventsBroker.Unsubscribe<ClearDoneJobsEvent> (HandleClearDoneJobsEvent);
-			App.Current.EventsBroker.Unsubscribe<RetrySelectedJobsEvent> (HandleRetrySelectedJobsEvent);
-			App.Current.EventsBroker.Unsubscribe<CancelSelectedJobsEvent> (HandleCancelSelectedJobsEvent);
-			status = ControllerStatus.Stopped;
-		}
-
-		public void SetViewModel (IViewModel viewModel)
-		{
-			throw new NotImplementedException ();
-		}
-
-		public IEnumerable<KeyAction> GetDefaultKeyActions ()
-		{
-			return Enumerable.Empty<KeyAction> ();
-		}
-
-		protected void HandleClearDoneJobsEvent (ClearDoneJobsEvent e)
-		{
-			ClearDoneJobs ();
-		}
-
-		protected void HandleRetrySelectedJobsEvent (RetrySelectedJobsEvent e)
-		{
-			RetryJobs (e.Jobs);
-		}
-
-		protected void HandleCancelSelectedJobsEvent (CancelSelectedJobsEvent e)
-		{
-			CancelJobs (e.Jobs);
-		}
+#pragma warning restore RECS0018 // Comparison of floating point numbers with equality operator
 	}
 }

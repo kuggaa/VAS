@@ -15,7 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
+using System.Threading.Tasks;
 using VAS.Core.Events;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
@@ -38,26 +38,26 @@ namespace VAS.Services.ViewModel
 		/// <summary>
 		/// Command to export a project.
 		/// </summary>
-		public void Export ()
+		public Task<bool> Export ()
 		{
-			App.Current.EventsBroker.Publish (new ExportEvent<T> { Object = Model });
+			return App.Current.EventsBroker.PublishWithReturn (new ExportEvent<T> { Object = Model });
 		}
 
 		/// <summary>
 		/// Command to delete a project.
 		/// </summary>
-		public void Delete ()
+		public Task<bool> Delete ()
 		{
-			App.Current.EventsBroker.Publish (new DeleteEvent<T> { Object = Model });
+			return App.Current.EventsBroker.PublishWithReturn (new DeleteEvent<T> { Object = Model });
 		}
 
 		/// <summary>
 		/// Command to save a project.
 		/// </summary>
 		/// <param name="force">If set to <c>true</c> does not prompt to save.</param>
-		public void Save (bool force)
+		public Task<bool> Save (bool force)
 		{
-			App.Current.EventsBroker.Publish (new UpdateEvent<T> { Object = Model, Force = force });
+			return App.Current.EventsBroker.PublishWithReturn (new UpdateEvent<T> { Object = Model, Force = force });
 		}
 	}
 }
