@@ -15,47 +15,50 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using Moq;
 using NUnit.Framework;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
-using VAS.Core.Services.ViewModel;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Drawing.Cairo;
 using VAS.Services;
+using VAS.Services.ViewModel;
 
 namespace VAS.Tests.Services
 {
 	[TestFixture]
 	public class TestRenderingJobsController
 	{
+		JobsManagerVM manager;
+		RenderingJobsController controller;
 		Mock<IVideoEditor> editorMock;
 		string file1, file2;
 
 		[TestFixtureSetUp]
-		public void Setup ()
+		public void SetUpOnce ()
 		{
 			file1 = Path.GetTempFileName ();
 			file2 = Path.GetTempFileName ();
 		}
 
 		[TestFixtureTearDown]
-		public void TearDown ()
+		public void TearDownOnce ()
 		{
 			try {
 				File.Delete (file1);
 				File.Delete (file2);
 			} catch {
 			}
+			SetupClass.Initialize ();
 		}
 
 		[SetUp]
-		public void SetupMocks ()
+		public void Setup ()
 		{
 			editorMock = new Mock<IVideoEditor> ();
 
@@ -70,12 +73,23 @@ namespace VAS.Tests.Services
 			mtk.Setup (m => m.GetFramesCapturer ()).Returns (capturerMock.Object);
 
 			// and guitoolkit
-			var gtk = Mock.Of<IGUIToolkit> (g => g.RenderingStateBar == Mock.Of<IRenderingStateBar> ());
+			var gtk = Mock.Of<IGUIToolkit> ();
 
 			// And eventbroker
 			App.Current.GUIToolkit = gtk;
 			App.Current.MultimediaToolkit = mtk.Object;
 			App.Current.DrawingToolkit = new CairoBackend ();
+			App.Current.EventsBroker = new EventsBroker ();
+
+			manager = new JobsManagerVM { Model = new ObservableCollection<Job> () };
+			controller = new RenderingJobsController (manager);
+			controller.Start ();
+		}
+
+		[TearDown]
+		public void TearDown ()
+		{
+			controller.Stop ();
 		}
 
 		[Test ()]
@@ -85,42 +99,41 @@ namespace VAS.Tests.Services
 
 			try {
 				EditionJob job;
-				RenderingJobsController renderer;
 
-				PrepareEditon (out job, out renderer);
+				job = PrepareEditon ();
 
 				TimelineEvent evt = p.Timeline [0] as TimelineEvent;
 				evt.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
 				PlaylistPlayElement element = new PlaylistPlayElement (evt);
 				job.Playlist.Elements.Add (element);
 
-				renderer.AddJob (new JobVM { Model = job });
+				manager.Add (job);
 
 				// Check that AddSegment is called with the right video file.
 				editorMock.Verify (m => m.AddSegment (p.FileSet [0].FilePath,
 					evt.Start.MSeconds, evt.Stop.MSeconds, evt.Rate, evt.Name, true, new Area ()), Times.Once ());
 
 				/* Test with a camera index bigger than the total cameras */
-				renderer.CancelAllJobs ();
+				manager.CancelAll ();
 				editorMock.ResetCalls ();
 				evt = p.Timeline [1] as TimelineEvent;
 				evt.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (1) };
 				element = new PlaylistPlayElement (evt);
 				job.Playlist.Elements [0] = element;
-				job.State = JobState.NotStarted;
-				renderer.AddJob (new JobVM { Model = job });
+				job.State = JobState.Pending;
+				manager.Add (job);
 				editorMock.Verify (m => m.AddSegment (p.FileSet [1].FilePath,
 					evt.Start.MSeconds, evt.Stop.MSeconds, evt.Rate, evt.Name, true, new Area ()), Times.Once ());
 
 				/* Test with the secondary camera */
-				renderer.CancelAllJobs ();
+				manager.CancelAll ();
 				editorMock.ResetCalls ();
 				evt = p.Timeline [1] as TimelineEvent;
 				evt.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (2) };
 				element = new PlaylistPlayElement (evt);
 				job.Playlist.Elements [0] = element;
-				job.State = JobState.NotStarted;
-				renderer.AddJob (new JobVM { Model = job });
+				job.State = JobState.Pending;
+				manager.Add (job);
 				editorMock.Verify (m => m.AddSegment (p.FileSet [0].FilePath,
 					evt.Start.MSeconds, evt.Stop.MSeconds, evt.Rate, evt.Name, true, new Area ()), Times.Once ());
 			} finally {
@@ -132,9 +145,8 @@ namespace VAS.Tests.Services
 		public void TestLoadEditionJob ()
 		{
 			EditionJob job;
-			RenderingJobsController renderer;
 
-			PrepareEditon (out job, out renderer);
+			job = PrepareEditon ();
 
 			AddTimelineEvent (job.Playlist, 30000, 31000, file1);
 			AddTimelineEvent (job.Playlist, 10000, 15000, file2);
@@ -143,7 +155,7 @@ namespace VAS.Tests.Services
 			AddTimelineEvent (job.Playlist, 86000, 90000, file1);
 			AddTimelineEvent (job.Playlist, 0, 0, "Does not exists");
 
-			renderer.AddJob (new JobVM { Model = job });
+			manager.Add (job);
 
 			editorMock.Verify (m => m.AddSegment (file1, 30000, 1000, 1, null, false, new Area ()));
 			editorMock.Verify (m => m.AddSegment (file2, 10000, 5000, 1, null, false, new Area ()));
@@ -155,10 +167,9 @@ namespace VAS.Tests.Services
 		public void TestLoadEditionJobWithDrawingsInEvents ()
 		{
 			EditionJob job;
-			RenderingJobsController renderer;
 			TimelineEvent evt;
 
-			PrepareEditon (out job, out renderer);
+			job = PrepareEditon ();
 			AddTimelineEvent (job.Playlist, 0, 10000, file1);
 
 			evt = (job.Playlist.Elements [0] as PlaylistPlayElement).Play;
@@ -166,7 +177,7 @@ namespace VAS.Tests.Services
 			evt.Drawings.Add (new FrameDrawing { Render = new Time (2000) });
 			evt.Drawings.Add (new FrameDrawing { Render = new Time (8000) });
 
-			renderer.AddJob (new JobVM { Model = job });
+			manager.Add (job);
 
 			editorMock.Verify (m => m.AddSegment (file1, 0, 2000, 1, null, false, new Area ()));
 			editorMock.Verify (m => m.AddImageSegment (It.IsAny<string> (), 0, 5000, null, new Area ()));
@@ -177,7 +188,7 @@ namespace VAS.Tests.Services
 			editorMock.Verify (m => m.AddSegment (file1, 8000, 2000, 1, null, false, new Area ()));
 		}
 
-		void PrepareEditon (out EditionJob job, out RenderingJobsController renderer)
+		EditionJob PrepareEditon ()
 		{
 			var playlist = new Playlist ();
 
@@ -185,13 +196,7 @@ namespace VAS.Tests.Services
 			EncodingSettings settings = new EncodingSettings (VideoStandards.P720, EncodingProfiles.MP4,
 											EncodingQualities.Medium, 25, 1, outputFile, true, true, 20);
 
-			job = new EditionJob (playlist, settings);
-
-			// Create a rendering object with mocked interfaces
-			renderer = new RenderingJobsController ();
-
-			// Start service
-			renderer.Start ();
+			return new EditionJob (playlist, settings);
 		}
 
 		void AddTimelineEvent (Playlist playlist, int start, int stop, string file)

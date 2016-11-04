@@ -18,29 +18,50 @@
 using VAS.Core.Common;
 using VAS.Core.MVVMC;
 
-namespace VAS.Core.Services.ViewModel
+namespace VAS.Services.ViewModel
 {
+	/// <summary>
+	/// A ViewModel for a <see cref="Job"/>.
+	/// </summary>
 	public class JobVM : ViewModelBase<Job>
 	{
+
+		/// <summary>
+		/// Gets the name of the <see cref="Job"/>.
+		/// </summary>
+		/// <value>The name.</value>
 		public string Name {
 			get {
 				return Model?.Name;
 			}
 		}
 
-		public string StateIconName {
+		/// <summary>
+		/// Gets the progress of the <see cref="Job"/>.
+		/// </summary>
+		/// <value>The progress.</value>
+		public double Progress {
 			get {
-				return Model?.StateIconName;
-			}
-		}
-
-		public JobState? State {
-			get {
-				return Model?.State;
+				return Model != null ? Model.Progress : 0;
 			}
 			set {
 				if (Model != null) {
-					Model.State = value.GetValueOrDefault ();
+					Model.Progress = value;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the state of the <see cref="Job"/>.
+		/// </summary>
+		/// <value>The state.</value>
+		public JobState State {
+			get {
+				return Model != null ? Model.State : JobState.None;
+			}
+			set {
+				if (Model != null) {
+					Model.State = value;
 				}
 			}
 		}

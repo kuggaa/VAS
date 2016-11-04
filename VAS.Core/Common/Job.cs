@@ -19,53 +19,65 @@ using System;
 using System.Collections.Generic;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
+using VAS.Core.MVVMC;
 
 namespace VAS.Core.Common
 {
 	[Serializable]
-	public class Job : StorableBase
+	/// <summary>
+	/// A job running in the background.
+	/// </summary>
+	public class Job : BindableBase
 	{
 		public Job (EncodingSettings encSettings)
 		{
 			EncodingSettings = encSettings;
-			State = JobState.NotStarted;
+			State = JobState.None;
+			Progress = -1;
 		}
 
-		public string Name {
+		/// <summary>
+		/// Gets the name of the job.
+		/// </summary>
+		/// <value>The name.</value>
+		public virtual string Name {
 			get {
 				return System.IO.Path.GetFileName (EncodingSettings.OutputFile);
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the state of the job.
+		/// </summary>
+		/// <value>The state.</value>
 		public JobState State {
 			get;
 			set;
 		}
 
-		public string StateIconName {
-			get {
-				switch (State) {
-				case JobState.Error:
-					return "gtk-dialog-error";
-				case JobState.Finished:
-					return "gtk-ok";
-				case JobState.Cancelled:
-					return "gtk-cancel";
-				case JobState.NotStarted:
-					return "gtk-execute";
-				case JobState.Running:
-					return "gtk-media-record";
-				}
-				return "";
-			}
+		/// <summary>
+		/// Gets or sets the progress of the job with values from 0 to 1.
+		/// </summary>
+		/// <value>The progress.</value>
+		public double Progress {
+			get;
+			set;
 		}
 
+		/// <summary>
+		/// Gets or sets the settings used to perform the job.
+		/// </summary>
+		/// <value>The encoding settings.</value>
+		// FIXME: Move to a base RenderingJob when we support other kind of background jobs.
 		public EncodingSettings EncodingSettings {
 			get;
 			set;
 		}
 	}
 
+	/// <summary>
+	/// A job for rendering a <see cref="Playlist"/>.
+	/// </summary>
 	public class EditionJob : Job
 	{
 		public EditionJob (Playlist playlist, EncodingSettings encSettings) : base (encSettings)
@@ -73,12 +85,25 @@ namespace VAS.Core.Common
 			Playlist = Cloner.Clone (playlist);
 		}
 
+		/// <summary>
+		/// The playlist the render.
+		/// </summary>
+		/// <value>The playlist.</value>
 		public Playlist Playlist {
 			get;
-			set;
+			protected set;
+		}
+
+		public override string Name {
+			get {
+				return Playlist?.Name;
+			}
 		}
 	}
 
+	/// <summary>
+	/// A job for convert and join one or serveral files into a new file.
+	/// </summary>
 	public class ConversionJob : Job
 	{
 		public ConversionJob (List<MediaFile> files, EncodingSettings encSettings) : base (encSettings)
@@ -86,9 +111,13 @@ namespace VAS.Core.Common
 			InputFiles = files;
 		}
 
+		/// <summary>
+		/// Gets or sets the list of files to render.
+		/// </summary>
+		/// <value>The input files.</value>
 		public List<MediaFile> InputFiles {
 			get;
-			set;
+			protected set;
 		}
 	}
 }

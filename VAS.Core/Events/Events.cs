@@ -113,7 +113,7 @@ namespace VAS.Core.Events
 				}
 				return dashboardButton;
 			}
-			set { 
+			set {
 				dashboardButton = value;
 			}
 		}
@@ -134,7 +134,7 @@ namespace VAS.Core.Events
 				}
 				return dashboardButton;
 			}
-			set { 
+			set {
 				dashboardButton = value;
 			}
 		}
@@ -168,9 +168,9 @@ namespace VAS.Core.Events
 	{
 		public Playlist Playlist { get; set; }
 
-		public IPlaylistElement Element  { get; set; }
+		public IPlaylistElement Element { get; set; }
 
-		public bool Playing  { get; set; }
+		public bool Playing { get; set; }
 	}
 
 	public class PlaylistElementLoadedEvent : Event
@@ -265,13 +265,6 @@ namespace VAS.Core.Events
 	{
 	}
 
-	public class ConvertVideoFilesEvent : Event
-	{
-		public List<MediaFile> Files { get; set; }
-
-		public EncodingSettings Settings { get; set; }
-	}
-
 	public class QuitApplicationEvent : Event
 	{
 	}
@@ -322,7 +315,7 @@ namespace VAS.Core.Events
 
 		public bool Edit { get; set; }
 
-		public List<DashboardButton> DashboardButtons { 
+		public List<DashboardButton> DashboardButtons {
 			get {
 				if (dashboardButtons == null) {
 					dashboardButtons = new List<DashboardButton> ();
@@ -367,5 +360,36 @@ namespace VAS.Core.Events
 		/// <value>The name.</value>
 		public string Name { get; set; }
 
+	}
+
+	/// <summary>
+	/// Event sent to notify the cancellation of <typeparam name="T">.
+	/// </summary>
+	public class CancelEvent<T> : ReturningValueEvent
+	{
+		/// <summary>
+		/// Gets or sets the object to cancel.
+		/// </summary>
+		/// <value>The object.</value>
+		public T Object { get; set; }
+	}
+
+	/// <summary>
+	/// Event sent to request the retry of a <typeparam name="T">.
+	/// </summary>
+	public class RetryEvent<T> : ReturningValueEvent
+	{
+		/// <summary>
+		/// Gets or sets the object to retry.
+		/// </summary>
+		/// <value>The object.</value>
+		public T Object { get; set; }
+	}
+
+	/// <summary>
+	/// Event sent to request clearing a <typeparam name="T">.
+	/// </summary>
+	public class ClearEvent<T> : ReturningValueEvent
+	{
 	}
 }
