@@ -67,7 +67,9 @@ namespace VAS.KPI.Services
 
 		public Task<string> GetOperatingSystemVersionAsync ()
 		{
-			return AsyncHelpers.Return<string> (Environment.OSVersion.VersionString);
+			string version = GetOperatingSystemName () + " " + Environment.OSVersion.Version.ToString ()
+																	+ " " + Environment.OSVersion.ServicePack;
+			return AsyncHelpers.Return<string> (version);
 		}
 	}
 }
