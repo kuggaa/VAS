@@ -75,9 +75,7 @@ namespace VAS.Services.ViewModel
 
 		public void CancelAll ()
 		{
-			App.Current.EventsBroker.Publish (new CancelEvent<List<Job>> {
-				Object = Model.Where (j => j.State == JobState.Pending || j.State == JobState.Running).ToList ()
-			});
+			Cancel (Model.Where (j => j.State == JobState.Pending || j.State == JobState.Running).ToList ());
 		}
 
 		public void ClearFinished ()
