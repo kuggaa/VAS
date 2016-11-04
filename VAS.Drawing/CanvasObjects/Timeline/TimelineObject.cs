@@ -247,7 +247,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 	public class CategoryTimeline : TimelineObject
 	{
 		EventsFilter filter;
-		Project project;
+		protected Project project;
 
 		public CategoryTimeline (Project project, List<TimelineEvent> plays, Time maxTime,
 								 double offsetY, Color background, EventsFilter filter) :
