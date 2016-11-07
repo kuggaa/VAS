@@ -219,8 +219,6 @@ namespace VAS.UI.Common
 			}
 			TreeIter iter = dictionaryStore [senderVM];
 			store.EmitRowChanged (store.GetPath (iter), iter);
-			filter?.Refilter ();
-			this.QueueDraw ();
 		}
 
 		protected override bool OnButtonPressEvent (Gdk.EventButton evnt)
@@ -280,7 +278,6 @@ namespace VAS.UI.Common
 				}
 			}
 			ViewModel.SelectionReplace (selected);
-			filter?.Refilter ();
 		}
 
 		protected virtual void HandleViewModelPropertyChanged (object sender, PropertyChangedEventArgs e)
@@ -307,8 +304,9 @@ namespace VAS.UI.Common
 
 		protected virtual int HandleSort (TreeModel model, TreeIter a, TreeIter b)
 		{
-			// FIXME: Implement a generic sort for all TViewModels
-			return 0;
+			TreePath pathA = model.GetPath (a);
+			TreePath pathB = model.GetPath (b);
+			return pathA.Compare (pathB);
 		}
 
 		protected virtual bool HandleFilter (TreeModel model, TreeIter iter)
