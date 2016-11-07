@@ -252,6 +252,11 @@ namespace VAS.Drawing.Widgets
 		{
 			if (ContinuousSeek) {
 				if (SeekEvent != null) {
+					Time clickTime = Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel);
+					if (clickTime >= Duration) {
+						needle.X = Utils.TimeToPos (Duration, SecondsPerPixel);
+						return;
+					}
 					SeekEvent (Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel),
 						false, throttled: true);
 				}
@@ -261,10 +266,13 @@ namespace VAS.Drawing.Widgets
 		protected override void HandleLeftButton (Point coords, ButtonModifier modif)
 		{
 			base.HandleLeftButton (coords, modif);
-
+			Time clickTime = Utils.PosToTime (new Point (coords.X + Scroll, 0), SecondsPerPixel);
+			if (clickTime >= Duration) {
+				return;
+			}
 			needle.X = coords.X;
 			if (SeekEvent != null) {
-				SeekEvent (Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel), true);
+				SeekEvent (clickTime, true);
 			}
 			needle.ReDraw ();
 		}
