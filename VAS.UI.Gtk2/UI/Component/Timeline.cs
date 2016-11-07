@@ -47,11 +47,10 @@ namespace VAS.UI.Component
 		protected TimelineLabels labels;
 		protected double secondsPerPixel;
 		protected uint timeoutID;
-		protected Time currentTime, nextCurrentTime, relativeTime;
+		protected Time currentTime, nextCurrentTime;
 		protected PlaysMenu menu;
 		protected Project project;
 		protected IPlayerController player;
-		protected bool isTimeLineEvent;
 
 		public Timeline ()
 		{
@@ -75,7 +74,6 @@ namespace VAS.UI.Component
 			}
 			// Unsubscribe events
 			App.Current.EventsBroker.Unsubscribe<PlayerTickEvent> (HandlePlayerTick);
-			App.Current.EventsBroker.Unsubscribe<LoadEventEvent> (HandleLoadPlayEvent);
 			Player = null;
 
 			timerule?.Dispose ();
@@ -143,7 +141,6 @@ namespace VAS.UI.Component
 				zoomhbox.HeightRequest = args.Allocation.Height + spacing;
 			};
 			App.Current.EventsBroker.Subscribe<PlayerTickEvent> (HandlePlayerTick);
-			App.Current.EventsBroker.Subscribe<LoadEventEvent> (HandleLoadPlayEvent);
 		}
 
 		/// <summary>
@@ -377,21 +374,10 @@ namespace VAS.UI.Component
 		{
 			if (nextCurrentTime != currentTime) {
 				currentTime = nextCurrentTime;
-				if (isTimeLineEvent) {
-					timeline.CurrentTime = currentTime;
-					timerule.CurrentTime = currentTime;
-				} else {
-					timeline.CurrentTime = relativeTime;
-					timerule.CurrentTime = relativeTime;
-				}
-
+				timeline.CurrentTime = currentTime;
+				timerule.CurrentTime = currentTime;
 			}
 			return true;
-		}
-
-		protected virtual void HandleLoadPlayEvent (LoadEventEvent e)
-		{
-			isTimeLineEvent = e.TimelineEvent != null && e.TimelineEvent.Playing;
 		}
 
 		protected void HandleScrollEvent (object sender, System.EventArgs args)
@@ -482,7 +468,6 @@ namespace VAS.UI.Component
 		void HandlePlayerTick (PlayerTickEvent e)
 		{
 			CurrentTime = e.Time;
-			relativeTime = e.RelativeTime;
 		}
 
 		/// <summary>

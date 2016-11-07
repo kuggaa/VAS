@@ -29,7 +29,7 @@ namespace VAS.Core.Store
 	/// It's expressed in miliseconds and provide some helper methods for time conversion and representation
 	/// </summary>
 	[Serializable]
-	public class Time : BindableBase, IComparable
+	public class Time : BindableBase, IComparable, IComparable<Time>
 	{
 		private const int MS = 1000000;
 		public const int SECONDS_TO_TIME = 1000;
@@ -79,7 +79,7 @@ namespace VAS.Core.Store
 		[PropertyChanged.DoNotNotify]
 		public long NSeconds {
 			get {
-				return  (long)MSeconds * TIME_TO_NSECONDS;
+				return (long)MSeconds * TIME_TO_NSECONDS;
 			}
 			set {
 				MSeconds = (int)(value / TIME_TO_NSECONDS);
@@ -120,7 +120,7 @@ namespace VAS.Core.Store
 		/// <returns>
 		/// A <see cref="System.String"/>
 		/// </returns>
-		public  string ToSecondsString (bool includeHour = false)
+		public string ToSecondsString (bool includeHour = false)
 		{
 			if (Hours > 0 || includeHour)
 				return String.Format ("{0}:{1}:{2}", Hours, Minutes.ToString ("d2"),
@@ -135,7 +135,7 @@ namespace VAS.Core.Store
 		/// <returns>
 		/// A <see cref="System.String"/>
 		/// </returns>
-		public  string ToHoursMinutesString ()
+		public string ToHoursMinutesString ()
 		{
 			return String.Format ("{0}:{1}", Hours.ToString ("d2"), Minutes.ToString ("d2"));
 		}
@@ -146,7 +146,7 @@ namespace VAS.Core.Store
 		/// <returns>
 		/// A <see cref="System.String"/>
 		/// </returns>
-		public  string ToMSecondsString (bool includeHour = false)
+		public string ToMSecondsString (bool includeHour = false)
 		{
 			int _ms;
 			_ms = ((MSeconds % 3600000) % 60000) % 1000;
@@ -178,7 +178,12 @@ namespace VAS.Core.Store
 				Time otherTime = (Time)obj;
 				return MSeconds.CompareTo (otherTime.MSeconds);
 			} else
-				throw new ArgumentException ("Object is not a Temperature");
+				throw new ArgumentException ("Object is not a Time");
+		}
+
+		public int CompareTo (Time other)
+		{
+			return MSeconds.CompareTo (other.MSeconds);
 		}
 
 		#endregion
@@ -190,11 +195,11 @@ namespace VAS.Core.Store
 			if (Object.ReferenceEquals (t1, t2)) {
 				return true;
 			}
-			
+
 			if ((object)t1 == null || (object)t2 == null) {
 				return false;
 			}
-			
+
 			return t1.Equals (t2);
 		}
 
@@ -233,12 +238,12 @@ namespace VAS.Core.Store
 			return new Time { MSeconds = t1.MSeconds + t2.MSeconds };
 		}
 
-		public  static Time operator - (Time t1, Time t2)
+		public static Time operator - (Time t1, Time t2)
 		{
 			return new Time { MSeconds = t1.MSeconds - t2.MSeconds };
 		}
 
-		public  static Time operator - (Time t1, int t2)
+		public static Time operator - (Time t1, int t2)
 		{
 			return new Time { MSeconds = t1.MSeconds - t2 };
 		}
