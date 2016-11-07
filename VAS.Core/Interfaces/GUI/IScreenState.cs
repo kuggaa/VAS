@@ -54,17 +54,31 @@ namespace VAS.Core.Interfaces.GUI
 		KeyContext KeyContext { get; }
 
 		/// <summary>
-		/// Performs steps prior to the state transition, like initialization the View, ViewModel and Controllers.
+		/// Method called once when transition is loaded for first time.
+		/// This method creates the controllers. And receives data.
 		/// </summary>
-		/// <returns><c>True</c> if the transition was successful, <c>False</c> otherwise.</returns>
-		/// <param name="data">The parameters from a previous state.</param>
-		Task<bool> PreTransition (dynamic data);
+		/// <returns>The task result.</returns>
+		/// <param name="data">ViewModel to be used</param>
+		Task<bool> LoadState (dynamic data);
 
 		/// <summary>
-		/// Performs steps before waiting the transition, like de-initializating Controllers or checking ViewModel states.
+		/// Method called once when transition is unloaded.
+		/// This method disposes the controllers.
 		/// </summary>
-		/// <returns><c>True</c> if the transition was successful, <c>False</c> otherwise.</returns>
-		Task<bool> PostTransition ();
+		/// <returns>The task result.</returns>
+		Task<bool> UnloadState ();
+
+		/// <summary>
+		/// Method called to show the state.
+		/// </summary>
+		/// <returns>The task result.</returns>
+		Task<bool> ShowState ();
+
+		/// <summary>
+		/// Method called to hide the state.
+		/// </summary>
+		/// <returns>The task result.</returns>
+		Task<bool> HideState ();
 
 	}
 }
