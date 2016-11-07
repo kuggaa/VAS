@@ -321,6 +321,118 @@ namespace VAS.Tests.Core.Filters
 			Assert.AreEqual ("Elements", property);
 			Assert.AreEqual (1, count);
 		}
+
+		[Test ()]
+		public void TestAndContainingOrSetActive ()
+		{
+			// Arrange
+			var filter = new OrPredicate<string> {
+				new Predicate<string> { Expression = (ev) => true },
+				new Predicate<string> { Expression = (ev) => true },
+			};
+
+			var filter2 = new OrPredicate<string> {
+				new Predicate<string> { Expression = (ev) => true },
+				new Predicate<string> { Expression = (ev) => true },
+			};
+
+			var container = new AndPredicate<string> ();
+			container.Add (filter);
+			container.Add (filter2);
+
+			// Act
+			filter2.Active = false;
+
+			// Assert
+			Assert.IsFalse (filter2 [0].Active);
+			Assert.IsFalse (filter2 [1].Active);
+			Assert.IsTrue (container.Filter (""));
+		}
+
+		[Test ()]
+		public void TestInactiveAndContainingOr ()
+		{
+			// Arrange
+			var filter = new OrPredicate<string> {
+				new Predicate<string> { Expression = (ev) => true },
+				new Predicate<string> { Expression = (ev) => true },
+			};
+
+			var filter2 = new OrPredicate<string> {
+				new Predicate<string> { Expression = (ev) => true },
+				new Predicate<string> { Expression = (ev) => true },
+			};
+
+			var container = new AndPredicate<string> ();
+			container.Add (filter);
+			container.Add (filter2);
+
+			// Act
+			container.Active = false;
+
+			// Assert
+			Assert.IsFalse (container.Active);
+			Assert.IsFalse (filter.Active);
+			Assert.IsFalse (filter [0].Active);
+			Assert.IsFalse (filter [1].Active);
+			Assert.IsFalse (filter2.Active);
+			Assert.IsFalse (filter2 [0].Active);
+			Assert.IsFalse (filter2 [1].Active);
+			Assert.IsTrue (container.Filter (""));
+		}
+
+		[Test ()]
+		public void TestAndOrSetActiveChildren ()
+		{
+			// Arrange
+			var filter = new OrPredicate<string> {
+				new Predicate<string> { Expression = (ev) => true },
+				new Predicate<string> { Expression = (ev) => true },
+			};
+
+			var filter2 = new OrPredicate<string> {
+				new Predicate<string> { Expression = (ev) => true },
+				new Predicate<string> { Expression = (ev) => true },
+			};
+
+			var container = new AndPredicate<string> ();
+			container.Add (filter);
+			container.Add (filter2);
+
+			// Act
+			filter.Active = false;
+			filter2.Active = false;
+
+			// Assert
+			Assert.IsFalse (container.Active);
+			Assert.IsFalse (filter.Active);
+			Assert.IsFalse (filter [0].Active);
+			Assert.IsFalse (filter [1].Active);
+			Assert.IsFalse (filter2.Active);
+			Assert.IsFalse (filter2 [0].Active);
+			Assert.IsFalse (filter2 [1].Active);
+			Assert.IsTrue (container.Filter (""));
+		}
+
+		[Test ()]
+		public void TestAndOrEmpty ()
+		{
+			// Arrange
+			var filter = new OrPredicate<string> ();
+			var filter2 = new OrPredicate<string> ();
+
+			var container = new AndPredicate<string> ();
+			container.Add (filter);
+			container.Add (filter2);
+
+			// Act
+
+			// Assert
+			Assert.IsFalse (filter.Active);
+			Assert.IsFalse (filter2.Active);
+			Assert.IsFalse (container.Active);
+			Assert.IsTrue (container.Filter (""));
+		}
 	}
 }
 
