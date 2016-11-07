@@ -102,7 +102,6 @@ namespace VAS.Tests.Services
 			mockRootController = new Mock<IController> ();
 			// There's one root controller
 			screenState.RootControllers.Add (mockRootController.Object);
-			screenState.Controllers = new List<IController> (screenState.RootControllers);
 
 		}
 
@@ -149,7 +148,7 @@ namespace VAS.Tests.Services
 			mockRootController.Verify (p => p.Stop (), Times.Once ());
 			mockController.Verify (p => p.Stop (), Times.Once ());
 			Assert.AreEqual (0, screenState.Controllers.Count);
-			Assert.AreEqual (0, screenState.RootControllers.Count);
+			Assert.AreEqual (1, screenState.RootControllers.Count);
 		}
 	}
 }
