@@ -59,6 +59,7 @@ namespace VAS.UI
 			drawingWindow.ButtonPressEvent += HandleButtonPressEvent;
 			drawingWindow.ButtonReleaseEvent += HandleButtonReleaseEvent;
 			drawingWindow.Realized += HandleRealized;
+			drawingWindow.Unrealized += HandleUnrealized;
 			drawingWindow.AddEvents ((int)(Gdk.EventMask.ButtonPressMask | Gdk.EventMask.ButtonReleaseMask | Gdk.EventMask.PointerMotionMask | Gdk.EventMask.ScrollMask));
 
 			videoeventbox.ButtonPressEvent += HandleButtonPressEvent;
@@ -123,8 +124,8 @@ namespace VAS.UI
 
 		public virtual bool Ready {
 			get;
-			set;
-		}
+			protected set;
+		} = false;
 
 		public virtual Cursor Cursor {
 			set {
@@ -192,6 +193,11 @@ namespace VAS.UI
 		protected virtual void HandleRealized (object sender, EventArgs e)
 		{
 			WindowHandle = drawingWindow.GdkWindow.GetWindowHandle ();
+		}
+
+		protected void HandleUnrealized (object sender, EventArgs e)
+		{
+			Ready = false;
 		}
 	}
 }

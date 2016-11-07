@@ -5,69 +5,69 @@ namespace VAS.UI
 	public partial class PlayerView
 	{
 		private global::Gtk.VBox vbox3;
-		
+
 		private global::Gtk.HBox mainbox;
-		
+
 		private global::Gtk.HBox hbox3;
-		
+
 		private global::VAS.UI.VideoWindow videowindow;
-		
+
 		private global::Gtk.DrawingArea blackboarddrawingarea;
-		
+
 		private global::Gtk.EventBox lightbackgroundeventbox;
-		
+
 		private global::Gtk.Alignment alignment1;
-		
+
 		private global::Gtk.HBox controlsbox;
-		
+
 		private global::Gtk.HBox buttonsbox;
-		
+
 		private global::Gtk.Button closebutton;
-		
+
 		private global::Gtk.Image closebuttonimage;
-		
+
 		private global::Gtk.Button drawbutton;
-		
+
 		private global::Gtk.Image drawbuttonimage;
-		
+
 		private global::Gtk.Button playbutton;
-		
+
 		private global::Gtk.Image playbuttonimage;
-		
+
 		private global::Gtk.Button pausebutton;
-		
+
 		private global::Gtk.Image pausebuttonimage;
-		
+
 		private global::Gtk.Button prevbutton;
-		
+
 		private global::Gtk.Image prevbuttonimage;
-		
+
 		private global::Gtk.Button nextbutton;
-		
+
 		private global::Gtk.Image nextbuttonimage;
-		
+
 		private global::Gtk.HScale ratescale;
 
 		private global::Gtk.HBox hbox1;
-		
+
 		private global::Gtk.Label jumplabel;
-		
+
 		private global::Gtk.SpinButton jumpspinbutton;
-		
+
 		private global::Gtk.HBox hbox2;
-		
+
 		private global::Gtk.Label tlabel;
-		
+
 		private global::Gtk.HScale timescale;
-		
+
 		private global::Gtk.Label timelabel;
-		
+
 		private global::Gtk.Button volumebutton;
-		
+
 		private global::Gtk.Image volumebuttonimage;
-		
+
 		private global::Gtk.Button detachbutton;
-		
+
 		private global::Gtk.Image detachbuttonimage;
 
 		protected virtual void Build ()
@@ -93,7 +93,6 @@ namespace VAS.UI
 			this.videowindow.Events = ((global::Gdk.EventMask)(256));
 			this.videowindow.Name = "videowindow";
 			this.videowindow.Ratio = 0F;
-			this.videowindow.Ready = false;
 			this.hbox3.Add (this.videowindow);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.videowindow]));
 			w1.Position = 0;
