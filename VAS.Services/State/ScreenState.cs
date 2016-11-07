@@ -35,8 +35,7 @@ namespace VAS.Services.State
 		public ScreenState ()
 		{
 			Panel = App.Current.ViewLocator.Retrieve (Name) as IPanel;
-			RootControllers = App.Current.ControllerLocator.RetrieveAll (Name);
-			Controllers = new List<IController> ();
+			Controllers = App.Current.ControllerLocator.RetrieveAll (Name);
 			KeyContext = new KeyContext ();
 			foreach (IController controller in Controllers) {
 				KeyContext.KeyActions.AddRange (controller.GetDefaultKeyActions ());
@@ -81,11 +80,6 @@ namespace VAS.Services.State
 			set;
 		}
 
-		public List<IController> RootControllers {
-			get;
-			set;
-		}
-
 		public IPanel Panel {
 			get;
 			set;
@@ -103,39 +97,46 @@ namespace VAS.Services.State
 
 		protected bool Disposed { get; private set; } = false;
 
-		public virtual Task<bool> PostTransition ()
+		public virtual Task<bool> LoadState (dynamic data)
 		{
-			foreach (IController controller in RootControllers) {
-				controller.Stop ();
-			}
-			foreach (IController controller in Controllers) {
-				controller.Stop ();
+			return Initialize (data);
+		}
+
+		public virtual Task<bool> UnloadState ()
+		{
+			foreach (var controller in Controllers) {
 				controller.Dispose ();
 			}
 			Controllers.Clear ();
-			ViewModel = default (TViewModel);
+			return AsyncHelpers.Return (true);
+		}
+
+		public virtual Task<bool> HideState ()
+		{
+			foreach (IController controller in Controllers) {
+				controller.Stop ();
+			}
 			App.Current.KeyContextManager.RemoveContext (KeyContext);
 			return AsyncHelpers.Return (true);
 		}
 
-		public virtual Task<bool> PreTransition (dynamic data)
+		public virtual Task<bool> ShowState ()
 		{
-			return Initialize (data);
+			foreach (IController controller in Controllers) {
+				controller.Start ();
+			}
+			App.Current.KeyContextManager.AddContext (KeyContext);
+			return AsyncHelpers.Return (true);
 		}
 
 		protected Task<bool> Initialize (dynamic data)
 		{
 			CreateViewModel (data);
 			Panel.SetViewModel (ViewModel);
-			foreach (IController controller in RootControllers) {
-				controller.SetViewModel (ViewModel);
-				controller.Start ();
-			}
 			CreateControllers (data);
 			foreach (IController controller in Controllers) {
-				controller.Start ();
+				controller.SetViewModel (ViewModel);
 			}
-			App.Current.KeyContextManager.AddContext (KeyContext);
 			return AsyncHelpers.Return (true);
 		}
 

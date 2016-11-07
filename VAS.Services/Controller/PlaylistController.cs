@@ -64,7 +64,7 @@ namespace VAS.Services.Controller
 
 		public void SetViewModel (IViewModel viewModel)
 		{
-			this.viewModel = (PlaylistCollectionVM)viewModel;
+			this.viewModel = viewModel as PlaylistCollectionVM;
 		}
 
 		public IEnumerable<KeyAction> GetDefaultKeyActions ()
