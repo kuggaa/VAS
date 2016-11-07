@@ -15,6 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using VAS.Core;
@@ -156,18 +157,7 @@ namespace VAS.Services
 
 			if (e.CameraTlEvent != null) {
 				Time seekTime = Player.CurrentTime - e.CameraTlEvent.Start;
-
-				if (e.CameraTlEvent.Start != new Time (0)) {
-					seekTime = seekTime <= e.CameraTlEvent.Start ? new Time (0) : seekTime;
-				}
-
-				if (e.CameraTlEvent.Stop != Player.FileSet.Duration) {
-					seekTime = seekTime >= e.CameraTlEvent.Stop ? e.CameraTlEvent.Stop : seekTime;
-					if (Player.Playing) {
-						Player.Stop ();
-					}
-				}
-
+				seekTime = seekTime.Clamp (new Time (0), e.CameraTlEvent.Stop);
 				LoadCameraPlay (e.CameraTlEvent, seekTime, Player.Playing);
 			} else if (Player != null) {
 				Player.UnloadCurrentEvent ();

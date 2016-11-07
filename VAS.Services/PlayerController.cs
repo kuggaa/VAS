@@ -1397,6 +1397,9 @@ namespace VAS.Services
 					EmitTimeChanged (relativeTime, duration);
 				}
 				videoTS = currentTime;
+				if (cameraEvent != null) {
+					currentTime = currentTime - cameraEvent.Start;
+				}
 				App.Current.EventsBroker.Publish<PlayerTickEvent> (
 					new PlayerTickEvent {
 						Time = currentTime,
