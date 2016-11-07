@@ -98,6 +98,7 @@ namespace VAS.Services.Controller
 			if (name != null) {
 				playlist = new Playlist { Name = name };
 				viewModel.Model.Add (playlist);
+				Save (playlist, true);
 			}
 			return playlist;
 		}
@@ -114,12 +115,20 @@ namespace VAS.Services.Controller
 			foreach (var item in e.PlaylistElements) {
 				e.Playlist.Elements.Add (item);
 			}
+			Save (e.Playlist, true);
 		}
 
 		async protected virtual Task HandleNewPlaylist (CreateEvent<Playlist> e)
 		{
 			e.Object = await CreateNewPlaylist ();
 			e.ReturnValue = e.Object != null;
+		}
+
+		void Save (Playlist playlist, bool force = false)
+		{
+			if (playlist != null) {
+				App.Current.DatabaseManager.ActiveDB.Store (playlist, force);
+			}
 		}
 	}
 }

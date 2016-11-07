@@ -15,6 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Moq;
@@ -38,6 +39,8 @@ namespace VAS.Tests.Services
 		Mock<IGUIToolkit> mockGuiToolkit;
 		Mock<IPlayerViewModel> mockPlayerController;
 		Mock<IDialogs> mockDiaklogs;
+		Mock<IStorageManager> storageManagerMock;
+		Mock<IStorage> storageMock;
 		PlaylistController controller;
 
 		[TestFixtureSetUp ()]
@@ -45,6 +48,12 @@ namespace VAS.Tests.Services
 		{
 			mockPlayerController = new Mock<IPlayerViewModel> ();
 			mockGuiToolkit = new Mock<IGUIToolkit> ();
+
+			storageManagerMock = new Mock<IStorageManager> ();
+			storageManagerMock.SetupAllProperties ();
+			storageMock = new Mock<IStorage> ();
+			storageManagerMock.Object.ActiveDB = storageMock.Object;
+			App.Current.DatabaseManager = storageManagerMock.Object;
 		}
 
 		[SetUp ()]
