@@ -113,12 +113,12 @@ namespace VAS.Core.Filters
 			}
 		}
 
-		public bool Filter (T obj)
+		public virtual bool Filter (T obj)
 		{
 			if (compiledExpression == null) {
 				UpdatePredicate ();
 			}
-			return Active && compiledExpression.Invoke (obj);
+			return compiledExpression.Invoke (obj);
 		}
 
 		public virtual void UpdatePredicate ()
@@ -228,6 +228,16 @@ namespace VAS.Core.Filters
 			}
 			base.UpdatePredicate ();
 		}
+
+		public override bool Filter (T obj)
+		{
+			// If !Active we return a false, as it's the neutral element for the Or
+			if (!Active) {
+				return false;
+			} else {
+				return base.Filter (obj);
+			}
+		}
 	}
 
 	/// <summary>
@@ -250,6 +260,16 @@ namespace VAS.Core.Filters
 				expression = expression.And (el.Expression);
 			}
 			base.UpdatePredicate ();
+		}
+
+		public override bool Filter (T obj)
+		{
+			// If !Active we return a true, as it's the neutral element for the And
+			if (!Active) {
+				return true;
+			} else {
+				return base.Filter (obj);
+			}
 		}
 	}
 
