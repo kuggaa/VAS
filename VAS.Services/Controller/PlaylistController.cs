@@ -15,10 +15,12 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VAS.Core;
+using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.MVVMC;
@@ -64,7 +66,10 @@ namespace VAS.Services.Controller
 
 		public void SetViewModel (IViewModel viewModel)
 		{
-			this.viewModel = viewModel as PlaylistCollectionVM;
+			if (viewModel == null) {
+				return;
+			}
+			this.viewModel = (PlaylistCollectionVM)(viewModel as dynamic);
 		}
 
 		public IEnumerable<KeyAction> GetDefaultKeyActions ()
