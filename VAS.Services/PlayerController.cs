@@ -731,10 +731,8 @@ namespace VAS.Services
 			}
 
 			if (cameraEvent != null) {
-				Time seekTime = new Time (0);
-				bool playing = false;
-				LoadSegment (mediafileSet, cameraEvent.Start, cameraEvent.Stop, cameraEvent.Start + seekTime, cameraEvent.Rate,
-					cameraEvent.CamerasConfig, cameraEvent.CamerasLayout, playing);
+				LoadSegment (mediafileSet, cameraEvent.Start, cameraEvent.Stop, CurrentTime, cameraEvent.Rate,
+							 cameraEvent.CamerasConfig, cameraEvent.CamerasLayout, Playing);
 			}
 		}
 
