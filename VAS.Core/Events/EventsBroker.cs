@@ -144,7 +144,7 @@ namespace VAS.Core.Events
 		//wrapper function to avoid the use of a Prism reference in Tests for eventreset
 		protected void ResetEventsBroker ()
 		{
-			Current = null;
+			Current = new EventAggregator ();
 		}
 
 		PubSubEvent<TEvent> GetEvent<TEvent> ()
