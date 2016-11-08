@@ -715,6 +715,7 @@ namespace VAS.Services
 			}
 
 			cameraEvent = evt;
+			Tick ();
 		}
 
 		public virtual void UnloadCurrentEvent ()
