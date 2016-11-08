@@ -56,12 +56,14 @@ namespace VAS.Services.Controller
 		{
 			App.Current.EventsBroker.SubscribeAsync<AddPlaylistElementEvent> (HandleAddPlaylistElement);
 			App.Current.EventsBroker.SubscribeAsync<CreateEvent<Playlist>> (HandleNewPlaylist);
+			App.Current.EventsBroker.SubscribeAsync<DeletePlaylistEvent> (HandleDeletePlaylist);
 		}
 
 		public void Stop ()
 		{
 			App.Current.EventsBroker.UnsubscribeAsync<AddPlaylistElementEvent> (HandleAddPlaylistElement);
 			App.Current.EventsBroker.UnsubscribeAsync<CreateEvent<Playlist>> (HandleNewPlaylist);
+			App.Current.EventsBroker.UnsubscribeAsync<DeletePlaylistEvent> (HandleDeletePlaylist);
 		}
 
 		public void SetViewModel (IViewModel viewModel)
@@ -122,6 +124,12 @@ namespace VAS.Services.Controller
 		{
 			e.Object = await CreateNewPlaylist ();
 			e.ReturnValue = e.Object != null;
+		}
+
+		protected virtual Task HandleDeletePlaylist (DeletePlaylistEvent e)
+		{
+			viewModel.Model.Remove (e.Playlist);
+			return AsyncHelpers.Return (true);
 		}
 
 		void Save (Playlist playlist, bool force = false)
