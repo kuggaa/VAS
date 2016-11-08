@@ -100,13 +100,11 @@ namespace VAS.Tests.Services
 			screenState.Panel = mockPanel.Object;
 
 			mockRootController = new Mock<IController> ();
-			// There's one root controller
-			screenState.RootControllers.Add (mockRootController.Object);
-
+			screenState.Controllers.Add (mockRootController.Object);
 		}
 
 		[Test ()]
-		public void TestPreTransition ()
+		public void TestLoadState ()
 		{
 			// Arrange
 			dynamic data = new ExpandoObject ();
@@ -118,37 +116,73 @@ namespace VAS.Tests.Services
 			bool createControllersCalled = false;
 			screenState.CreateControllersCalled += (sender, e) => createControllersCalled = true;
 
-			// Act
-			screenState.PreTransition (data);
-
-			// Assert
-			mockPanel.Verify (p => p.SetViewModel (viewModel), Times.Once ());
-			mockRootController.Verify (p => p.SetViewModel (viewModel), Times.Once ());
-			mockController.Verify (p => p.SetViewModel (viewModel), Times.Never ());
-			mockController.Verify (p => p.SetViewModel (It.Is<IViewModel> (vm => vm != viewModel)), Times.Once ());
-			Assert.IsTrue (createControllersCalled);
-			mockRootController.Verify (p => p.Start (), Times.Once ());
-			mockController.Verify (p => p.Start (), Times.Once ());
-		}
-
-		[Test ()]
-		public void TestPostTransition ()
-		{
-			// Arrange
-			TestPreTransition ();
 			mockViewModel.ResetCalls ();
 			mockPanel.ResetCalls ();
 			mockController.ResetCalls ();
 			mockRootController.ResetCalls ();
 
 			// Act
-			screenState.PostTransition ();
+			screenState.LoadState (data);
+
+			// Assert
+			mockPanel.Verify (p => p.SetViewModel (viewModel), Times.Once ());
+			mockRootController.Verify (p => p.SetViewModel (viewModel), Times.Once ());
+			mockController.Verify (p => p.SetViewModel (viewModel), Times.Once ());
+			mockController.Verify (p => p.SetViewModel (It.Is<IViewModel> (vm => vm != viewModel)), Times.Once ());
+			Assert.IsTrue (createControllersCalled);
+			mockRootController.Verify (p => p.Start (), Times.Never ());
+			mockController.Verify (p => p.Start (), Times.Never ());
+			Assert.AreEqual (2, screenState.Controllers.Count);
+		}
+
+		[Test ()]
+		public void TestShowState ()
+		{
+			// Arrange
+			TestLoadState ();
+
+			// Act
+			screenState.ShowState ();
+
+			// Assert
+			mockRootController.Verify (p => p.Start (), Times.Once ());
+			mockController.Verify (p => p.Start (), Times.Once ());
+		}
+
+		[Test ()]
+		public void TestHideState ()
+		{
+			// Arrange
+			TestShowState ();
+			mockViewModel.ResetCalls ();
+			mockPanel.ResetCalls ();
+			mockController.ResetCalls ();
+			mockRootController.ResetCalls ();
+
+			// Act
+			screenState.HideState ();
 
 			// Assert
 			mockRootController.Verify (p => p.Stop (), Times.Once ());
 			mockController.Verify (p => p.Stop (), Times.Once ());
+			mockRootController.Verify (p => p.Dispose (), Times.Never ());
+			mockController.Verify (p => p.Dispose (), Times.Never ());
+			Assert.AreEqual (2, screenState.Controllers.Count);
+		}
+
+		[Test ()]
+		public void TestUnloadState ()
+		{
+			// Arrange
+			TestHideState ();
+
+			// Act
+			screenState.UnloadState ();
+
+			// Assert
+			mockRootController.Verify (p => p.Dispose (), Times.Once ());
+			mockController.Verify (p => p.Dispose (), Times.Once ());
 			Assert.AreEqual (0, screenState.Controllers.Count);
-			Assert.AreEqual (1, screenState.RootControllers.Count);
 		}
 	}
 }

@@ -221,10 +221,10 @@ namespace VAS.UI
 			}
 		}
 
-		protected void ModalWindowDeleteEvent (object o, DeleteEventArgs args)
+		protected async void ModalWindowDeleteEvent (object o, DeleteEventArgs args)
 		{
 			if (args.Event.Window != null) {
-				App.Current.StateController.MoveBack ();
+				await App.Current.StateController.MoveBack ();
 			}
 		}
 
