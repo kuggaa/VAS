@@ -26,14 +26,20 @@ namespace VAS.UI.Menus
 {
 	public class PlaylistMenu : Gtk.Menu
 	{
-		MenuItem edit, delete, render;
-		Project project;
-		Playlist playlist;
-
 		public PlaylistMenu ()
 		{
 			CreateMenu ();
 		}
+
+		protected MenuItem Edit { get; set; }
+
+		protected MenuItem Delete { get; set; }
+
+		protected MenuItem Render { get; set; }
+
+		protected Project Project { get; set; }
+
+		protected Playlist Playlist { get; set; }
 
 		public void ShowMenu (Project project, Playlist playlist, bool editableName)
 		{
@@ -46,36 +52,49 @@ namespace VAS.UI.Menus
 			if (playlist == null)
 				return;
 
-			this.playlist = playlist;
-			this.project = project;
-			delete.Visible = (project != null);
+			Playlist = playlist;
+			Project = project;
+			Delete.Visible = (project != null);
 		}
 
 		void CreateMenu ()
 		{
-			edit = new MenuItem (Catalog.GetString ("Edit name"));
-			edit.Activated += (sender, e) => {
-				string name = App.Current.Dialogs.QueryMessage (Catalog.GetString ("Name:"), null,
-								  playlist.Name).Result;
-				if (!String.IsNullOrEmpty (name)) {
-					playlist.Name = name;
-				}
-			};
-			Append (edit);
-
-			render = new MenuItem (Catalog.GetString ("Render"));
-			render.Activated += (sender, e) => App.Current.EventsBroker.Publish<RenderPlaylistEvent> (
-				new RenderPlaylistEvent {
-					Playlist = playlist
-				}
-			);
-			Append (render);
-
-			delete = new MenuItem (Catalog.GetString ("Delete"));
-			delete.Activated += (sender, e) => project.Playlists.Remove (playlist);
-			Append (delete);
+			CreateEdit ();
+			CreateRender ();
+			CreateDelete ();
 
 			ShowAll ();
+		}
+
+		protected virtual void CreateEdit ()
+		{
+			Edit = new MenuItem (Catalog.GetString ("Edit name"));
+			Edit.Activated += (sender, e) => {
+				string name = App.Current.Dialogs.QueryMessage (Catalog.GetString ("Name:"), null,
+								  Playlist.Name).Result;
+				if (!String.IsNullOrEmpty (name)) {
+					Playlist.Name = name;
+				}
+			};
+			Append (Edit);
+		}
+
+		protected virtual void CreateRender ()
+		{
+			Render = new MenuItem (Catalog.GetString ("Render"));
+			Render.Activated += (sender, e) => App.Current.EventsBroker.Publish<RenderPlaylistEvent> (
+				new RenderPlaylistEvent {
+					Playlist = Playlist
+				}
+			);
+			Append (Render);
+		}
+
+		protected virtual void CreateDelete ()
+		{
+			Delete = new MenuItem (Catalog.GetString ("Delete"));
+			Delete.Activated += (sender, e) => Project.Playlists.Remove (Playlist);
+			Append (Delete);
 		}
 	}
 }
