@@ -56,6 +56,9 @@ namespace VAS.Services.Controller
 				return viewModel;
 			}
 			set {
+				if (viewModel != null) {
+					viewModel.PropertyChanged -= HandleSelectionChanged;
+				}
 				viewModel = value;
 				viewModel.PropertyChanged += HandleSelectionChanged;
 				viewModel.Select (viewModel.Model.FirstOrDefault ());
