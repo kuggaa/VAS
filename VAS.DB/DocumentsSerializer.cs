@@ -61,7 +61,7 @@ namespace VAS.DB
 		/// <param name="context">Serialization context.</param>
 		/// <param name="saveChildren">If set to <c>false</c>, <see cref="IStorable"/> children are not saved.</param>
 		internal static void SaveObject (IStorable obj, Database db, SerializationContext context = null,
-		                                 bool saveChildren = true)
+										 bool saveChildren = true)
 		{
 			if (context == null) {
 				context = new SerializationContext (db, obj.GetType ());
@@ -134,8 +134,8 @@ namespace VAS.DB
 		/// <typeparam name="T">Object type.</typeparam>
 		internal static T DeserializeFromJson<T> (string json, Database db, Revision rev)
 		{
-			JsonSerializerSettings settings = GetSerializerSettings (typeof(T),
-				                                  new SerializationContext (db, typeof(T)), rev);
+			JsonSerializerSettings settings = GetSerializerSettings (typeof (T),
+												  new SerializationContext (db, typeof (T)), rev);
 			return JsonConvert.DeserializeObject<T> (json, settings);
 		}
 
@@ -149,7 +149,7 @@ namespace VAS.DB
 			if (id == null) {
 				return id;
 			}
-			string[] ids = id.Split (ID_SEP_CHAR);
+			string [] ids = id.Split (ID_SEP_CHAR);
 			if (ids.Length == 1) {
 				id = ids [0];
 			} else {
@@ -178,7 +178,7 @@ namespace VAS.DB
 			if (id == null) {
 				return id;
 			}
-			string[] ids = id.Split (ID_SEP_CHAR);
+			string [] ids = id.Split (ID_SEP_CHAR);
 			if (ids.Length > 1) {
 				id = ids [0];
 				return id;
@@ -244,10 +244,10 @@ namespace VAS.DB
 		/// <param name = "objType"><see cref="Type"/> of the object to deserialize</param>
 		/// <param name="context">The serialization context"/>
 		internal static object DeserializeObject (Document doc, Type objType,
-		                                          SerializationContext context, JsonSerializer serializer = null)
+												  SerializationContext context, JsonSerializer serializer = null)
 		{
 			if (serializer == null) {
-				serializer = GetSerializer (objType, context, doc.CurrentRevision); 
+				serializer = GetSerializer (objType, context, doc.CurrentRevision);
 				serializer.ContractResolver = context.ContractResolver;
 			}
 			JObject jo = JObject.FromObject (doc.Properties);
@@ -299,7 +299,7 @@ namespace VAS.DB
 		}
 
 		internal static JsonSerializerSettings GetSerializerSettings (Type objType,
-		                                                              SerializationContext context, Revision rev)
+																	  SerializationContext context, Revision rev)
 		{
 			JsonSerializerSettings settings = new JsonSerializerSettings ();
 			settings.Formatting = Formatting.Indented;
@@ -380,9 +380,9 @@ namespace VAS.DB
 		}
 
 		public override object ReadJson (JsonReader reader, Type objectType,
-		                                 object existingValue, JsonSerializer serializer)
+										 object existingValue, JsonSerializer serializer)
 		{
-			if (objectType == typeof(Image)) {
+			if (objectType == typeof (Image)) {
 				string valueString = reader.Value as string;
 
 				if (valueString == null) {
@@ -404,7 +404,7 @@ namespace VAS.DB
 
 		public override bool CanConvert (Type objectType)
 		{
-			return objectType.Equals (typeof(Image));
+			return objectType.Equals (typeof (Image));
 		}
 	}
 
@@ -436,13 +436,13 @@ namespace VAS.DB
 		}
 
 		public override object ReadJson (JsonReader reader, Type objectType, object existingValue,
-		                                 JsonSerializer serializer)
+										 JsonSerializer serializer)
 		{
 			IStorable storable;
 			Guid id;
 			string idStr;
 
-			idStr = reader.Value as string; 
+			idStr = reader.Value as string;
 			if (idStr == null) {
 				return null;
 			}
@@ -472,7 +472,7 @@ namespace VAS.DB
 
 		public override bool CanConvert (Type objectType)
 		{
-			if (typeof(IStorable).IsAssignableFrom (objectType)) {
+			if (typeof (IStorable).IsAssignableFrom (objectType)) {
 				if (objectType != objType)
 					return true;
 				else
@@ -517,7 +517,7 @@ namespace VAS.DB
 		/// <param name = "preservePreloadProperties">If <c>true</c> reloaded properties are preserved instead of
 		/// re-read from the db</param>
 		public StorablesStackContractResolver (SerializationContext context, IStorable parentStorable,
-		                                       bool preservePreloadProperties = false)
+											   bool preservePreloadProperties = false)
 		{
 			this.context = context;
 			this.parentStorable = parentStorable;
@@ -531,7 +531,7 @@ namespace VAS.DB
 			JsonProperty property = base.CreateProperty (member, memberSerialization);
 			if (property.DeclaringType == context.ParentType) {
 				if (preservePreloadProperties &&
-				    property.AttributeProvider.GetAttributes (typeof(PropertyPreload), true).Any ()) {
+					property.AttributeProvider.GetAttributes (typeof (PropertyPreload), true).Any ()) {
 					property.Ignored = true;
 				}
 			}
@@ -541,13 +541,13 @@ namespace VAS.DB
 		protected override JsonContract CreateContract (Type type)
 		{
 			JsonContract contract = base.CreateContract (type);
-			if (typeof(IChanged).IsAssignableFrom (type)) {
+			if (typeof (IChanged).IsAssignableFrom (type)) {
 				contract.OnDeserializedCallbacks.Add (
 					(o, context) => {
 						(o as IChanged).IsChanged = false;
 					});
 			}
-			if (typeof(IStorable).IsAssignableFrom (type)) {
+			if (typeof (IStorable).IsAssignableFrom (type)) {
 				contract.OnDeserializedCallbacks.Add (
 					(o, context) => this.context.Stack.Pop ());
 				if (parentStorable != null && type == parentStorable.GetType ()) {

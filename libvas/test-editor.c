@@ -61,7 +61,7 @@ main (int argc, char *argv[])
 
   if (argc < 9) {
     g_print
-        ("Usage: test-remuxer output_file format bitrate with_audio with_title input_file start stop\n");
+        ("Usage: test-editor output_file format bitrate with_audio with_title input_file start stop\n");
     return 1;
   }
   output_file = argv[1];

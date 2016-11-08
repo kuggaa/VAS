@@ -31,6 +31,15 @@ namespace VAS.Services.ViewModel
 		public ProjectsManagerVM ()
 		{
 			LoadedProject = new TViewModel ();
+			ExportCommand = new Command<string> (Export, (arg) => LoadedProject.Model != null);
+			ImportCommand = new Command (Import);
+			DeleteCommand = new Command (Delete, () => LoadedProject.Model != null);
+			NewCommand = new Command (New);
+			SaveCommand = new Command<bool> (Save, (arg) => {
+				return LoadedProject.Model != null && LoadedProject.IsChanged;
+			});
+			OpenCommand = new Command<TViewModel> (Open, (arg) => LoadedProject.Model != null);
+			ResyncCommand = new Command (Resync, () => LoadedProject.Model != null && LoadedProject.Model.FileSet.Count () > 1);
 		}
 
 		[PropertyChanged.DoNotNotify]
@@ -39,37 +48,62 @@ namespace VAS.Services.ViewModel
 			private set;
 		}
 
-		/// <summary>
-		/// Control whether the save button is clickable or not.
-		/// </summary>
-		/// <value><c>true</c> if save clickable; otherwise, <c>false</c>.</value>
-		public bool SaveSensitive {
+		[PropertyChanged.DoNotNotify]
+		public Command ExportCommand {
 			get;
-			set;
+			protected set;
 		}
 
-		/// <summary>
-		/// Control whether the delete button is clickable or not.
-		/// </summary>
-		/// <value><c>true</c> if delete clickable; otherwise, <c>false</c>.</value>
-		public bool DeleteSensitive {
+		[PropertyChanged.DoNotNotify]
+		public ICommand ImportCommand {
 			get;
-			set;
+			protected set;
 		}
 
-		/// <summary>
-		/// Control whether the export button is clickable or not.
-		/// </summary>
-		/// <value><c>true</c> if delete clickable; otherwise, <c>false</c>.</value>
-		public bool ExportSensitive {
+		[PropertyChanged.DoNotNotify]
+		public Command SaveCommand {
 			get;
-			set;
+			protected set;
+		}
+
+		[PropertyChanged.DoNotNotify]
+		public Command NewCommand {
+			get;
+			protected set;
+		}
+
+		[PropertyChanged.DoNotNotify]
+		public Command DeleteCommand {
+			get;
+			protected set;
+		}
+
+		[PropertyChanged.DoNotNotify]
+		public Command OpenCommand {
+			get;
+			protected set;
+		}
+
+		[PropertyChanged.DoNotNotify]
+		public Command ResyncCommand {
+			get;
+			protected set;
+		}
+
+		virtual protected bool IsProjectLoaded ()
+		{
+			return IsProjectLoaded (null);
+		}
+
+		virtual protected bool IsProjectLoaded (object o)
+		{
+			return LoadedProject != null;
 		}
 
 		/// <summary>
 		/// Command to export the currently loaded project.
 		/// </summary>
-		public Task<bool> Export (string format = null)
+		public virtual Task<bool> Export (string format = null)
 		{
 			TModel template = Selection.FirstOrDefault ()?.Model;
 			if (template != null) {
@@ -81,7 +115,7 @@ namespace VAS.Services.ViewModel
 		/// <summary>
 		/// Command to import a project.
 		/// </summary>
-		public Task<bool> Import ()
+		public virtual Task<bool> Import ()
 		{
 			return App.Current.EventsBroker.PublishWithReturn (new ImportEvent<TModel> ());
 		}
@@ -89,7 +123,7 @@ namespace VAS.Services.ViewModel
 		/// <summary>
 		/// Command to create a new project.
 		/// </summary>
-		public Task<bool> New ()
+		public virtual Task<bool> New ()
 		{
 			return App.Current.EventsBroker.PublishWithReturn (new CreateEvent<TModel> { });
 		}
@@ -97,7 +131,7 @@ namespace VAS.Services.ViewModel
 		/// <summary>
 		/// Command to delete the selected projects.
 		/// </summary>
-		public async virtual Task<bool> Delete ()
+		public virtual async Task<bool> Delete ()
 		{
 			bool ret = true;
 			foreach (TModel project in Selection.Select (vm => vm.Model).ToList ()) {
@@ -125,6 +159,14 @@ namespace VAS.Services.ViewModel
 		public Task<bool> Open (TViewModel viewModel)
 		{
 			return App.Current.EventsBroker.PublishWithReturn (new OpenEvent<TModel> { Object = viewModel.Model });
+		}
+
+		virtual protected void Resync ()
+		{
+			TModel project = Selection.FirstOrDefault ()?.Model;
+			if (project != null) {
+				App.Current.EventsBroker.Publish (new ResyncProjectEvent { Project = project });
+			}
 		}
 	}
 }

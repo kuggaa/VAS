@@ -392,4 +392,16 @@ namespace VAS.Core.Events
 	public class ClearEvent<T> : ReturningValueEvent
 	{
 	}
+
+	/// <summary>
+	/// Event to request a resynchronization of cameras or events in a project.
+	/// </summary>
+	public class ResyncProjectEvent : Event
+	{
+		/// <summary>
+		/// Gets or sets the project to resync.
+		/// </summary>
+		/// <value>The project.</value>
+		public Project Project { get; set; }
+	}
 }

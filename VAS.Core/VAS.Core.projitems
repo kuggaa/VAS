@@ -183,6 +183,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Prism\AsyncDispatcherEventSubscription.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Prism\Properties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\DisposableBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\Command.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\Binding.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\BindingContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

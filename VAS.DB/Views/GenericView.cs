@@ -35,7 +35,7 @@ namespace VAS.DB.Views
 	/// The view also stores a preloaded version of the object that is returned in the
 	/// query using the properties with the attribute <see cref="PropertyPreload"/>
 	/// </summary>
-	public abstract class GenericView<T>: IQueryView <T> where T : IStorable
+	public abstract class GenericView<T> : IQueryView<T> where T : IStorable
 	{
 		readonly Database db;
 		readonly CouchbaseStorage storage;
@@ -47,20 +47,20 @@ namespace VAS.DB.Views
 
 			// List all properties that will are included in the preloaded version of the object
 			// returned in the queries
-			PreviewProperties = typeof(T).GetProperties ().
-				Where (prop => Attribute.IsDefined (prop, typeof(PropertyPreload))).
+			PreviewProperties = typeof (T).GetProperties ().
+				Where (prop => Attribute.IsDefined (prop, typeof (PropertyPreload))).
 				Select (p => p.Name).ToList ();
 
 			// List all properties that are indexed for the queries sorted by Index
 			FilterProperties = new OrderedDictionary ();
 			FilterProperties.Add (DocumentsSerializer.PARENT_PROPNAME, true);
-			foreach (var prop in typeof(T).GetProperties ().
-				Select (p => new { P = p, A = p.GetCustomAttributes (typeof(PropertyIndex), true)}).
+			foreach (var prop in typeof (T).GetProperties ().
+				Select (p => new { P = p, A = p.GetCustomAttributes (typeof (PropertyIndex), true) }).
 				Where (x => x.A.Length == 1).
 				OrderBy (x => (x.A [0] as PropertyIndex).Index)) {
-				FilterProperties.Add (prop.P.Name, typeof(IStorable).IsAssignableFrom (prop.P.PropertyType));
+				FilterProperties.Add (prop.P.Name, typeof (IStorable).IsAssignableFrom (prop.P.PropertyType));
 			}
-			DocumentType = typeof(T).Name;
+			DocumentType = typeof (T).Name;
 		}
 
 		/// <summary>
@@ -69,7 +69,7 @@ namespace VAS.DB.Views
 		/// <value>The type.</value>
 		public Type Type {
 			get {
-				return typeof(T);
+				return typeof (T);
 			}
 		}
 
@@ -277,7 +277,7 @@ namespace VAS.DB.Views
 
 			QueryEnumerator ret = q.Run ();
 			if (full) {
-				context = new SerializationContext (storage.Database, typeof(T));
+				context = new SerializationContext (storage.Database, typeof (T));
 				if (cache != null) {
 					context.Cache = cache;
 				}
@@ -294,18 +294,19 @@ namespace VAS.DB.Views
 					uids.Add (id);
 					try {
 						if (full) {
-							doc = (T)DocumentsSerializer.LoadObject (typeof(T), row.DocumentId,
+							doc = (T)DocumentsSerializer.LoadObject (typeof (T), row.DocumentId,
 								context.DB, context);
 						} else {
 							doc = DocumentsSerializer.DeserializeFromJson<T> (row.Value as string, db, rev);
 							doc.DocumentID = row.DocumentId;
 							doc.ID = id;
+							doc.IsChanged = false;
 							doc.IsLoaded = false;
 							doc.Storage = storage;
 						}
 						noErrors = true;
 					} catch (Exception ex) {
-						Log.Error ("Error deserializing document of type " + typeof(T) + " with ID: " + row.DocumentId);
+						Log.Error ("Error deserializing document of type " + typeof (T) + " with ID: " + row.DocumentId);
 						Log.Exception (ex);
 					}
 					if (noErrors) {

@@ -42,8 +42,9 @@ using System.Runtime.CompilerServices;
 // You can specify all values by your own or you can build default build and revision
 // numbers with the '*' character (the default):
 
-[assembly: AssemblyVersion("0.1.0")]
-[assembly: AssemblyFileVersion("0.1.0-dirty")]
+[assembly: AssemblyVersion("0.1.0.461")]
+[assembly: AssemblyFileVersion("0.1.0.461-0196-dirty")]
+[assembly: AssemblyInformationalVersion("0.1.0.461-0196-dirty")]
 
 // The following attributes specify the key for the sign of your assembly. See the
 // .NET Framework documentation for more information about signing.

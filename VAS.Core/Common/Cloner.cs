@@ -19,6 +19,7 @@ using System;
 using System.IO;
 using VAS.Core.Interfaces;
 using VAS.Core.Serialization;
+using VAS.Core.Store;
 
 namespace VAS.Core.Common
 {
@@ -26,26 +27,34 @@ namespace VAS.Core.Common
 	{
 		public static T Clone<T> (this T source, SerializationType type = SerializationType.Binary)
 		{
+			IStorable storable = source as IStorable;
+			bool isLoaded = false;
 			T retStorable;
 
 			if (Object.ReferenceEquals (source, null))
-				return default(T);
+				return default (T);
 
+			if (storable != null) {
+				// This prevents to Load the object when cloning pre-loaded objects.
+				isLoaded = storable.IsLoaded;
+				storable.IsLoaded = true;
+			}
 			Stream s = new MemoryStream ();
 
 			// Binary deserialization fails in mobile platforms because of
 			// https://bugzilla.xamarin.com/show_bug.cgi?id=37300
-			#if OSTYPE_ANDROID || OSTYPE_IOS
+#if OSTYPE_ANDROID || OSTYPE_IOS
 			type = SerializationType.Json;
-			#endif
+#endif
 
 			using (s) {
 				Serializer.Instance.Save<T> (source, s, type);
 				s.Seek (0, SeekOrigin.Begin);
 				retStorable = Serializer.Instance.Load<T> (s, type);
 			}
-			if (source is IStorable) {
-				(retStorable as IStorable).Storage = (source as IStorable).Storage;
+			if (storable != null) {
+				(retStorable as IStorable).Storage = storable.Storage;
+				(retStorable as IStorable).IsLoaded = storable.IsLoaded = isLoaded;
 			}
 			return retStorable;
 		}

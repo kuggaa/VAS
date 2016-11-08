@@ -18,15 +18,18 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
+using VAS.Core.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace VAS.Core.Store
 {
 	[Serializable]
-	public class StorableBase: BindableBase, IStorable
+	public class StorableBase : BindableBase, IStorable
 	{
 		[NonSerialized]
 		IStorage storage;
@@ -137,7 +140,6 @@ namespace VAS.Core.Store
 		{
 			return ID.GetHashCode ();
 		}
-
 	}
 }
 

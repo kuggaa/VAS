@@ -29,8 +29,6 @@ using Misc = VAS.UI.Helpers.Misc;
 
 namespace VAS.UI.Common
 {
-	[System.ComponentModel.ToolboxItem (true)]
-
 	/// <summary>
 	/// Tree view base implementation for MVVM.
 	/// </summary>
