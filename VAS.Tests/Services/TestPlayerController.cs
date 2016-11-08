@@ -46,6 +46,7 @@ namespace VAS.Tests.Services
 		TimelineEvent evt;
 		TimelineEvent evt2;
 		TimelineEvent evt3;
+		TimelineEvent cameraEvent;
 		PlaylistImage plImage;
 		Playlist playlist;
 		PlaylistManager plMan;
@@ -61,13 +62,13 @@ namespace VAS.Tests.Services
 			/* Mock properties without setter */
 			playerMock.Setup (p => p.CurrentTime).Returns (() => currentTime);
 			playerMock.Setup (p => p.StreamLength).Returns (() => streamLength);
-			playerMock.Setup (p => p.Play (It.IsAny<bool> ())).Raises (p => p.StateChange += null, 
-				new PlaybackStateChangedEvent { 
+			playerMock.Setup (p => p.Play (It.IsAny<bool> ())).Raises (p => p.StateChange += null,
+				new PlaybackStateChangedEvent {
 					Playing = true
 				}
 			);
-			playerMock.Setup (p => p.Pause (It.IsAny<bool> ())).Raises (p => p.StateChange += null, 
-				new PlaybackStateChangedEvent { 
+			playerMock.Setup (p => p.Pause (It.IsAny<bool> ())).Raises (p => p.StateChange += null,
+				new PlaybackStateChangedEvent {
 					Playing = false
 				}
 			);
@@ -109,17 +110,24 @@ namespace VAS.Tests.Services
 		[SetUp ()]
 		public void Setup ()
 		{
-			evt = new TimelineEvent { Start = new Time (100), Stop = new Time (200),
+			evt = new TimelineEvent {
+				Start = new Time (100), Stop = new Time (200),
 				CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) },
 				FileSet = mfs
 			};
-			evt2 = new TimelineEvent { Start = new Time (1000), Stop = new Time (10000),
+			evt2 = new TimelineEvent {
+				Start = new Time (1000), Stop = new Time (10000),
 				CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) },
 				FileSet = mfs
 			};
 			evt3 = new TimelineEvent {
 				Start = new Time (100), Stop = new Time (200),
 				CamerasConfig = new ObservableCollection<CameraConfig> (),
+				FileSet = mfs
+			};
+			cameraEvent = new TimelineEvent {
+				Start = new Time (0), Stop = new Time (10000),
+				CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) },
 				FileSet = mfs
 			};
 			plImage = new PlaylistImage (Utils.LoadImageFromFile (), new Time (5000));
@@ -157,7 +165,7 @@ namespace VAS.Tests.Services
 				new CameraConfig (0),
 				new CameraConfig (1)
 			};
-			viewPortMock = new Mock <IViewPort> ();
+			viewPortMock = new Mock<IViewPort> ();
 			viewPortMock.SetupAllProperties ();
 			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
 			player.Ready ();
@@ -266,7 +274,7 @@ namespace VAS.Tests.Services
 			playerMock.Verify (p => p.Seek (new Time (0), true, false), Times.Never ());
 
 			/* Open with an invalid camera configuration */
-			EventToken et = App.Current.EventsBroker.Subscribe<MultimediaErrorEvent> ((e) => {				
+			EventToken et = App.Current.EventsBroker.Subscribe<MultimediaErrorEvent> ((e) => {
 				multimediaError = true;
 			});
 
@@ -423,7 +431,7 @@ namespace VAS.Tests.Services
 			PreparePlayer ();
 
 			/* Seek without any segment loaded */
-			seekPos = (int)(streamLength.MSeconds * 0.1); 
+			seekPos = (int)(streamLength.MSeconds * 0.1);
 			currentTime = new Time (seekPos);
 			player.Seek (0.1f);
 			playerMock.Verify (p => p.Seek (new Time (seekPos), false, false), Times.Once ());
@@ -533,7 +541,7 @@ namespace VAS.Tests.Services
 			playerMock.Verify (p => p.Seek (currentTime - player.Step, true, false), Times.Never ());
 
 			/* Now with an event loaded */
-			currentTime = new Time (6000);
+			currentTime = new Time (5000);
 			player.UnloadCurrentEvent ();
 			player.LoadEvent (evt2, new Time (0), true);
 			timeChanged = 0;
@@ -562,6 +570,7 @@ namespace VAS.Tests.Services
 			playerMock.Verify (p => p.Seek (currentTime + player.Step, true, false), Times.Once ());
 
 			playerMock.ResetCalls ();
+			currentTime = new Time (6000);
 			loadDrawingsChanged = 0;
 			timeChanged = 0;
 			player.StepBackward ();
@@ -724,8 +733,8 @@ namespace VAS.Tests.Services
 			PreparePlayer ();
 			App.Current.EventsBroker.Publish<OpenedProjectEvent> (
 				new OpenedProjectEvent {
-					Project = new Utils.ProjectDummy (), 
-					ProjectType = ProjectType.FileProject, 
+					Project = new Utils.ProjectDummy (),
+					ProjectType = ProjectType.FileProject,
 					Filter = null,
 					AnalysisWindow = null
 				}
@@ -873,7 +882,8 @@ namespace VAS.Tests.Services
 			playerMock.Verify (p => p.Pause (false), Times.Once ());
 			playerMock.ResetCalls ();
 
-			TimelineEvent evtLocal = new TimelineEvent { Start = new Time (100), Stop = new Time (20000),
+			TimelineEvent evtLocal = new TimelineEvent {
+				Start = new Time (100), Stop = new Time (20000),
 				CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) }, FileSet = mfs
 			};
 			player.LoadEvent (evtLocal, new Time (0), true);
@@ -899,7 +909,7 @@ namespace VAS.Tests.Services
 		public void TestLoadCameraEvent ()
 		{
 			// Arrange
-			viewPortMock = new Mock <IViewPort> ();
+			viewPortMock = new Mock<IViewPort> ();
 			viewPortMock.SetupAllProperties ();
 			player.ViewPorts = new List<IViewPort> { viewPortMock.Object };
 			Time seekTime = new Time (60000);
@@ -949,7 +959,7 @@ namespace VAS.Tests.Services
 				new CameraConfig (2),
 				new CameraConfig (3)
 			};
-			Assert.AreEqual (evt.CamerasConfig, new List <CameraConfig> { new CameraConfig (0) });
+			Assert.AreEqual (evt.CamerasConfig, new List<CameraConfig> { new CameraConfig (0) });
 			player.LoadEvent (evt, new Time (0), true);
 			Assert.AreEqual (1, elementLoaded);
 			Assert.AreEqual (1, brokerElementLoaded);
@@ -966,7 +976,8 @@ namespace VAS.Tests.Services
 		public void TestCamerasVisibleValidation ()
 		{
 			// Create an event referencing unknown MediaFiles in the set.
-			TimelineEvent evt2 = new TimelineEvent { Start = new Time (150), Stop = new Time (200),
+			TimelineEvent evt2 = new TimelineEvent {
+				Start = new Time (150), Stop = new Time (200),
 				CamerasConfig = new ObservableCollection<CameraConfig> {
 					new CameraConfig (0),
 					new CameraConfig (1),
@@ -979,7 +990,7 @@ namespace VAS.Tests.Services
 				new CameraConfig (1),
 				new CameraConfig (0)
 			};
-			viewPortMock = new Mock <IViewPort> ();
+			viewPortMock = new Mock<IViewPort> ();
 			viewPortMock.SetupAllProperties ();
 			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
 			player.Ready ();
@@ -1020,7 +1031,7 @@ namespace VAS.Tests.Services
 				new CameraConfig (0),
 				new CameraConfig (1)
 			};
-			viewPortMock = new Mock <IViewPort> ();
+			viewPortMock = new Mock<IViewPort> ();
 			viewPortMock.SetupAllProperties ();
 			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
 			Assert.AreEqual (0, prepareView);
@@ -1078,7 +1089,8 @@ namespace VAS.Tests.Services
 
 			/* Open another event with the same MediaFileSet and already ready to seek
 			 * and check the cameras layout and visibility is respected */
-			TimelineEvent evt2 = new TimelineEvent { Start = new Time (400), Stop = new Time (50000),
+			TimelineEvent evt2 = new TimelineEvent {
+				Start = new Time (400), Stop = new Time (50000),
 				CamerasConfig = new ObservableCollection<CameraConfig> {
 					new CameraConfig (1),
 					new CameraConfig (0)
@@ -1114,11 +1126,11 @@ namespace VAS.Tests.Services
 			player.PrepareViewEvent += () => prepareView++;
 
 			/* Not ready to seek */
-			player.CamerasConfig = new  ObservableCollection<CameraConfig> {
+			player.CamerasConfig = new ObservableCollection<CameraConfig> {
 				new CameraConfig (0),
 				new CameraConfig (1)
 			};
-			viewPortMock = new Mock <IViewPort> ();
+			viewPortMock = new Mock<IViewPort> ();
 			viewPortMock.SetupAllProperties ();
 			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
 			Assert.AreEqual (0, prepareView);
@@ -1233,7 +1245,8 @@ namespace VAS.Tests.Services
 				drSent = frameDrawing;
 			};
 
-			dr = new FrameDrawing { Render = new Time (50),
+			dr = new FrameDrawing {
+				Render = new Time (50),
 				CameraConfig = new CameraConfig (0),
 			};
 			currentTime = new Time (0);
@@ -1258,7 +1271,7 @@ namespace VAS.Tests.Services
 			currentTime = dr.Render;
 			player.Seek (currentTime, true, false);
 			Assert.IsTrue (player.Playing);
-			Assert.IsNull (drSent); 
+			Assert.IsNull (drSent);
 		}
 
 		[Test ()]
@@ -1286,7 +1299,8 @@ namespace VAS.Tests.Services
 			multiplayerMock.ResetCalls ();
 
 			/* Now load an event */
-			evt1 = new TimelineEvent { Start = new Time (100), Stop = new Time (200), FileSet = mfs,
+			evt1 = new TimelineEvent {
+				Start = new Time (100), Stop = new Time (200), FileSet = mfs,
 				CamerasConfig = new ObservableCollection<CameraConfig> {
 					new CameraConfig (1),
 					new CameraConfig (1)
@@ -1364,7 +1378,8 @@ namespace VAS.Tests.Services
 			player.ApplyROI (cams [0]);
 
 			/* Now create an event with current camera config */
-			evt1 = new TimelineEvent { Start = new Time (100), Stop = new Time (200), FileSet = mfs,
+			evt1 = new TimelineEvent {
+				Start = new Time (100), Stop = new Time (200), FileSet = mfs,
 				CamerasConfig = player.CamerasConfig
 			};
 			/* Check that ROI was copied in event */
@@ -1585,6 +1600,61 @@ namespace VAS.Tests.Services
 			} catch {
 				Assert.Fail ("PlaylistController raised exception in LoadEvent");
 			}
+		}
+
+		[Test ()]
+		public void TestSeekWhenLoadCameraEvent ()
+		{
+			PreparePlayer ();
+			cameraEvent.Start = new Time (2000);
+			cameraEvent.Stop = new Time (5000);
+			currentTime = new Time (0);
+			Time seekTime = new Time (200);
+
+			player.LoadCameraEvent (cameraEvent, seekTime, false);
+			player.Seek (new Time (1000), true);
+
+			//Verification that when loading a camera event it seeks to cameraEvent.Start + seekTime
+			playerMock.Verify (p => p.Seek (new Time (2200), true, false), Times.Once ());
+			//Verification of the Second Seek to 1000 CameraEvent start + Seek time
+			playerMock.Verify (p => p.Seek (new Time (3000), true, false), Times.Once ());
+		}
+
+		[Test ()]
+		public void TestUnLoadEventWithCameraEvent ()
+		{
+			PreparePlayer ();
+			cameraEvent.Start = new Time (2000);
+			cameraEvent.Stop = new Time (15000);
+			currentTime = new Time (5000);
+
+			player.LoadCameraEvent (cameraEvent, currentTime - cameraEvent.Start, false);
+			player.LoadEvent (evt2, new Time (0), false);
+			currentTime = new Time (7000);
+			player.UnloadCurrentEvent ();
+			player.Seek (new Time (1000), true);
+
+			//Verification when unloadCurrent event and CameraEvent != null it seeks to the actual Current Time
+			playerMock.Verify (p => p.Seek (currentTime, true, false), Times.Once ());
+			//Verification of the Second Seek to 1000 CameraEvent start + Seek time
+			playerMock.Verify (p => p.Seek (new Time (3000), true, false), Times.Once ());
+		}
+
+		[Test ()]
+		public void TestCurrentTimeWhenLoadCameraEvent ()
+		{
+			Time curTime = new Time (-1);
+			PreparePlayer ();
+			cameraEvent.Start = new Time (2000);
+			cameraEvent.Stop = new Time (15000);
+			currentTime = new Time (7000);
+
+			App.Current.EventsBroker.Subscribe<PlayerTickEvent> ((obj) => {
+				curTime = obj.Time;
+			});
+			player.LoadCameraEvent (cameraEvent, currentTime - cameraEvent.Start, false);
+
+			Assert.AreEqual (new Time (5000), curTime);
 		}
 
 		void HandleElementLoadedEvent (object element, bool hasNext)
