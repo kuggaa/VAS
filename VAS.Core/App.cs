@@ -29,6 +29,7 @@ namespace VAS
 		public EventsBroker EventsBroker;
 		public StateController StateController;
 		public Registry DependencyRegistry;
+		public Dictionary<Type, Type> ObjectTypeLocator;
 		public IStorageManager DatabaseManager;
 		public IKpiService KPIService;
 		public IJobsManager JobsManager;
@@ -157,6 +158,7 @@ namespace VAS
 			App.Current.ControllerLocator = new ControllerLocator ();
 			App.Current.StateController = new StateController ();
 			App.Current.DependencyRegistry = new Registry ("App Registry");
+			App.Current.ObjectTypeLocator = new Dictionary<Type, Type> ();
 			App.Current.EventsBroker = new EventsBroker ();
 			App.Current.Device = new Core.Device ();
 			App.Current.KPIService = new KpiService ();

@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 
+using System;
 using System.Linq;
 using Gtk;
 using VAS.Core;
@@ -41,7 +42,11 @@ namespace VAS.UI.Common
 			HeadersVisible = false;
 			Selection.Mode = SelectionMode.Multiple;
 			EnableGridLines = TreeViewGridLines.None;
-			playlistMenu = new PlaylistMenu ();
+			if (App.Current.ObjectTypeLocator.ContainsKey (typeof (PlaylistMenu))) {
+				playlistMenu = (PlaylistMenu)Activator.CreateInstance (App.Current.ObjectTypeLocator [typeof (PlaylistMenu)]);
+			} else {
+				playlistMenu = new PlaylistMenu ();
+			}
 			CreateViews ();
 		}
 
