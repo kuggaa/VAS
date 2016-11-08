@@ -166,5 +166,27 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (name + "2", playlistCollectionVM.ViewModels [1].Name);
 		}
 
+		[Test ()]
+		public void TestDeletePlaylist ()
+		{
+			PlaylistCollectionVM playlistCollectionVM = new PlaylistCollectionVM ();
+			controller.SetViewModel (playlistCollectionVM);
+
+			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
+				new AddPlaylistElementEvent {
+					PlaylistElements = new List<IPlaylistElement> (),
+					Playlist = null
+				}
+			);
+			Assert.AreEqual (1, playlistCollectionVM.ViewModels.Count);
+
+			App.Current.EventsBroker.Publish<DeletePlaylistEvent> (
+				new DeletePlaylistEvent {
+					Playlist = playlistCollectionVM.Model.FirstOrDefault ()
+				}
+			);
+
+			Assert.AreEqual (0, playlistCollectionVM.ViewModels.Count);
+		}
 	}
 }
