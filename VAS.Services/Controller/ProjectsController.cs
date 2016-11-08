@@ -46,11 +46,19 @@ namespace VAS.Services.Controller
 			Stop ();
 		}
 
+		public bool ShouldHandleSave {
+			get;
+			set;
+		} = true;
+
 		protected ProjectsManagerVM<TModel, TViewModel> ViewModel {
 			get {
 				return viewModel;
 			}
 			set {
+				if (viewModel != null) {
+					viewModel.PropertyChanged -= HandleSelectionChanged;
+				}
 				viewModel = value;
 				viewModel.PropertyChanged += HandleSelectionChanged;
 				viewModel.Select (viewModel.Model.FirstOrDefault ());
@@ -198,6 +206,9 @@ namespace VAS.Services.Controller
 
 		async Task<bool> Save (TModel project, bool force)
 		{
+			if (!ShouldHandleSave) {
+				return false;
+			}
 			if (!force && project.IsChanged) {
 				string msg = Catalog.GetString ("Do you want to save the current project?");
 				if (!(await App.Current.Dialogs.QuestionMessage (msg, null, this))) {
