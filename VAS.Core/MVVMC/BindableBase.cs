@@ -76,7 +76,7 @@ namespace VAS.Core.MVVMC
 		/// </summary>
 		/// <param name="args">Event args</param>
 		/// <param name="sender">Sender of the event</param>
-		protected void RaisePropertyChanged (PropertyChangedEventArgs args, object sender = null)
+		protected virtual void RaisePropertyChanged (PropertyChangedEventArgs args, object sender = null)
 		{
 			IsChanged = true;
 
