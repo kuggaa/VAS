@@ -15,29 +15,21 @@
     <Compile Include="$(MSBuildThisFileDirectory)..\AssemblyInfo\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TemplateManagerViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TemplateViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\TemplatesController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\ProjectsController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectsManagerVM.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)State\ScreenState.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlaylistVM.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlaylistElementVM.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlaylistCollectionVM.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TimelineEventVM.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypeVM.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypeCollectionVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\EventsController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\VideoPlayerVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\PlaylistController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TemplatesService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)State\DrawingToolState.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\DrawingToolVM.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\JobsManagerVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RenderingJobsController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\JobVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)State\JobsManagerState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TemplateManagerViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectsManagerVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlayerVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\JobsManagerVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\DrawingToolVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />

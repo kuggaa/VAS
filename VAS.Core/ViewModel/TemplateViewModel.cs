@@ -15,54 +15,59 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
+using System.Threading.Tasks;
 using VAS.Core.Common;
+using VAS.Core.Interfaces;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 
-namespace VAS.Services.ViewModel
+namespace VAS.Core.ViewModel
 {
 	/// <summary>
-	/// A ViewModel for a <see cref="Job"/>.
+	/// Generic base class for <see cref="ITemplate"/> ViewModel.
 	/// </summary>
-	public class JobVM : ViewModelBase<Job>
+	public abstract class TemplateViewModel<T> : ViewModelBase<T>, IViewModel<T> where T : ITemplate<T>
 	{
-
 		/// <summary>
-		/// Gets the name of the <see cref="Job"/>.
+		/// Gets the name of the template.
 		/// </summary>
 		/// <value>The name.</value>
 		public string Name {
 			get {
 				return Model?.Name;
 			}
-		}
-
-		/// <summary>
-		/// Gets the progress of the <see cref="Job"/>.
-		/// </summary>
-		/// <value>The progress.</value>
-		public double Progress {
-			get {
-				return Model != null ? Model.Progress : 0;
-			}
 			set {
-				if (Model != null) {
-					Model.Progress = value;
-				}
+				Model.Name = value;
 			}
 		}
 
 		/// <summary>
-		/// Gets or sets the state of the <see cref="Job"/>.
+		/// Gets a value indicating whether the template is editable.
 		/// </summary>
-		/// <value>The state.</value>
-		public JobState State {
+		/// <value><c>true</c> if editable; otherwise, <c>false</c>.</value>
+		public bool Editable {
 			get {
-				return Model != null ? Model.State : JobState.None;
+				return Model?.Static == false;
 			}
-			set {
-				if (Model != null) {
-					Model.State = value;
-				}
+		}
+
+		/// <summary>
+		/// Gets or sets the icon used for the template.
+		/// </summary>
+		/// <value>The icon.</value>
+		public abstract Image Icon {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether the template has been edited.
+		/// </summary>
+		/// <value><c>true</c> if edited; otherwise, <c>false</c>.</value>
+		public bool Edited {
+			get {
+				return Model?.IsChanged == true;
 			}
 		}
 	}

@@ -28,7 +28,7 @@ using VAS.Core.MVVMC;
 using VAS.Core.Store.Playlists;
 using VAS.Core.Common;
 
-namespace VAS.Services.ViewModel
+namespace VAS.Core.ViewModel
 {
 	/// <summary>
 	/// ViewModel for a Playlist. Contains a Collection of PlaylistElements

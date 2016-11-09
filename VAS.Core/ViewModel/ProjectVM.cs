@@ -20,7 +20,7 @@ using VAS.Core.Events;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
-namespace VAS.Services.ViewModel
+namespace VAS.Core.ViewModel
 {
 	public class ProjectVM<T> : ViewModelBase<T> where T : Project
 	{
