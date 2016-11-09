@@ -300,6 +300,7 @@ namespace VAS.DB.Views
 							doc = DocumentsSerializer.DeserializeFromJson<T> (row.Value as string, db, rev);
 							doc.DocumentID = row.DocumentId;
 							doc.ID = id;
+							doc.IsChanged = false;
 							doc.IsLoaded = false;
 							doc.Storage = storage;
 						}
