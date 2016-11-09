@@ -715,6 +715,7 @@ namespace VAS.Services
 			}
 
 			cameraEvent = evt;
+			Tick ();
 		}
 
 		public virtual void UnloadCurrentEvent ()
@@ -731,10 +732,8 @@ namespace VAS.Services
 			}
 
 			if (cameraEvent != null) {
-				Time seekTime = new Time (0);
-				bool playing = false;
-				LoadSegment (mediafileSet, cameraEvent.Start, cameraEvent.Stop, cameraEvent.Start + seekTime, cameraEvent.Rate,
-					cameraEvent.CamerasConfig, cameraEvent.CamerasLayout, playing);
+				LoadSegment (mediafileSet, cameraEvent.Start, cameraEvent.Stop, CurrentTime, cameraEvent.Rate,
+							 cameraEvent.CamerasConfig, cameraEvent.CamerasLayout, Playing);
 			}
 		}
 
@@ -865,23 +864,19 @@ namespace VAS.Services
 				new KeyAction (
 					"PLAYER_SEEK_LEFT_SHORT",
 					App.Current.Keyboard.ParseName ("Left"),
-					() => Seek (CurrentTime + new Time { TotalSeconds = -SHORT_SEEK_SECONDS })
-				),
+					() => PerformStep(new Time { TotalSeconds = -SHORT_SEEK_SECONDS })),
 				new KeyAction (
 					"PLAYER_SEEK_LEFT_LONG",
 					App.Current.Keyboard.ParseName ("<Shift_L>+Left"),
-					() => Seek (CurrentTime + new Time { TotalSeconds = -LONG_SEEK_SECONDS })
-				),
+					() => PerformStep(new Time { TotalSeconds = -LONG_SEEK_SECONDS })),
 				new KeyAction (
 					"PLAYER_SEEK_RIGHT_SHORT",
 					App.Current.Keyboard.ParseName ("Right"),
-					() => Seek (CurrentTime + new Time { TotalSeconds = SHORT_SEEK_SECONDS })
-				),
+					() => PerformStep(new Time { TotalSeconds = SHORT_SEEK_SECONDS })),
 				new KeyAction (
 					"PLAYER_SEEK_RIGHT_LONG",
 					App.Current.Keyboard.ParseName ("<Shift_L>+Right"),
-					() => Seek (CurrentTime + new Time { TotalSeconds = LONG_SEEK_SECONDS })
-				)
+					() => PerformStep(new Time { TotalSeconds = LONG_SEEK_SECONDS }))
 			};
 		}
 
@@ -1285,10 +1280,18 @@ namespace VAS.Services
 		protected virtual void PerformStep (Time step)
 		{
 			Time pos = CurrentTime + step;
-			if (pos.MSeconds < 0) {
-				pos.MSeconds = 0;
-			} else if (pos >= StreamLength) {
-				pos = StreamLength;
+			if (SegmentLoaded) {
+				if (pos < loadedSegment.Start) {
+					pos = loadedSegment.Start;
+				} else if (pos > loadedSegment.Stop) {
+					pos = loadedSegment.Stop;
+				}
+			} else {
+				if (pos.MSeconds < 0) {
+					pos.MSeconds = 0;
+				} else if (pos >= StreamLength) {
+					pos = StreamLength;
+				}
 			}
 			Log.Debug (String.Format ("Stepping {0} seconds from {1} to {2}",
 				step, CurrentTime, pos));
