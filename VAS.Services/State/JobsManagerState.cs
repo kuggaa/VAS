@@ -20,7 +20,7 @@ using VAS.Services.ViewModel;
 
 namespace VAS.Services.State
 {
-	public class JobsManagerState:  ScreenState<JobsManagerVM>
+	public class JobsManagerState : ScreenState<JobsManagerVM>
 	{
 		public const string NAME = "JobsManager";
 

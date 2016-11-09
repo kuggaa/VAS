@@ -183,6 +183,15 @@
     <Compile Include="$(MSBuildThisFileDirectory)Prism\AsyncDispatcherEventSubscription.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Prism\Properties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\DisposableBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypeCollectionVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypeVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TimelineEventVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlaylistCollectionVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlaylistElementVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\JobVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlaylistVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TemplateViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
@@ -203,6 +212,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)Services\" />
     <Folder Include="$(MSBuildThisFileDirectory)Services\ViewModels\" />
     <Folder Include="$(MSBuildThisFileDirectory)Prism\" />
+    <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)VAS.Core.dll.config">

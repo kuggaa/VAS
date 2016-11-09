@@ -18,15 +18,10 @@
 
 using System.Linq;
 using Gtk;
-using VAS.Core;
-using VAS.Core.Events;
 using VAS.Core.Interfaces.MVVMC;
-using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
-using VAS.Services.ViewModel;
-using VAS.UI.Common;
+using VAS.Core.ViewModel;
 using VAS.UI.Menus;
-using Misc = VAS.UI.Helpers.Misc;
 
 namespace VAS.UI.Common
 {

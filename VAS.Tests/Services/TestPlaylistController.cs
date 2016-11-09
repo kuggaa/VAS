@@ -27,8 +27,8 @@ using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
+using VAS.Core.ViewModel;
 using VAS.Services.Controller;
-using VAS.Services.ViewModel;
 
 namespace VAS.Tests.Services
 {

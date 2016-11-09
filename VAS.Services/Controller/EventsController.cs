@@ -21,9 +21,10 @@ using System.Linq;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
-using VAS.Services.ViewModel;
 using VAS.Core.Events;
 using VAS.Core.MVVMC;
+using VAS.Core.ViewModel;
+using VAS.Services.ViewModel;
 
 namespace VAS.Services.Controller
 {

@@ -15,60 +15,72 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
-using System.Threading.Tasks;
+
+using System.Linq;
 using VAS.Core.Common;
-using VAS.Core.Interfaces;
+using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
+using VAS.Core.Store;
 
-namespace VAS.Services.ViewModel
+namespace VAS.Core.ViewModel
 {
 	/// <summary>
-	/// Generic base class for <see cref="ITemplate"/> ViewModel.
+	/// Event type ViewModel, is a NestedViewModels with a child observable collection
 	/// </summary>
-	public abstract class TemplateViewModel<T> : ViewModelBase<T>, IViewModel<T> where T : ITemplate<T>
+	public class EventTypeVM<VMChild> : NestedViewModel<VMChild>, IViewModel<EventType>
+		where VMChild : IViewModel
 	{
 		/// <summary>
-		/// Gets the name of the template.
+		/// Gets or sets the Name of the EventType.
 		/// </summary>
-		/// <value>The name.</value>
+		/// <value>The Name.</value>
 		public string Name {
 			get {
-				return Model?.Name;
+				return Model.Name;
 			}
 			set {
 				Model.Name = value;
 			}
 		}
 
-		/// <summary>
-		/// Gets a value indicating whether the template is editable.
-		/// </summary>
-		/// <value><c>true</c> if editable; otherwise, <c>false</c>.</value>
-		public bool Editable {
+		public Color Color {
 			get {
-				return Model?.Static == false;
+				return Model.Color;
+			}
+			set {
+				Model.Color = value;
 			}
 		}
 
 		/// <summary>
-		/// Gets or sets the icon used for the template.
+		/// Gets the total visible events inside this EventType
 		/// </summary>
-		/// <value>The icon.</value>
-		public abstract Image Icon {
+		/// <value>The visible events.</value>
+		public int VisibleEvents {
+			get {
+				return ViewModels.OfType<IVisible> ().Count (vm => vm.Visible);
+			}
+		}
+
+		public EventType Model {
 			get;
 			set;
 		}
 
-		/// <summary>
-		/// Gets a value indicating whether the template has been edited.
-		/// </summary>
-		/// <value><c>true</c> if edited; otherwise, <c>false</c>.</value>
-		public bool Edited {
-			get {
-				return Model?.IsChanged == true;
+		public override int GetHashCode ()
+		{
+			return Name.GetHashCode ();
+		}
+
+		public override bool Equals (object obj)
+		{
+			EventTypeVM<VMChild> e = obj as EventTypeVM<VMChild>;
+			if (e == null) {
+				return false;
 			}
+			return Model.Name == e.Model.Name;
 		}
 	}
 }
+

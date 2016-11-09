@@ -17,39 +17,19 @@
 //
 //
 
-using VAS.Core.Common;
-using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
-using VAS.Core.Store;
+using VAS.Core.Store.Playlists;
 
-namespace VAS.Services.ViewModel
+namespace VAS.Core.ViewModel
 {
 	/// <summary>
-	/// ViewModel for PlaylistElements, with an IPlaylistElement as Model.
+	/// ViewModel for a collection of PlaylistVM, each with a Playlist as a Model.
 	/// </summary>
-	public class PlaylistElementVM : ViewModelBase<IPlaylistElement>
+	public class PlaylistCollectionVM : CollectionViewModel<Playlist, PlaylistVM>
 	{
-		public string Description {
-			get {
-				return Model.Description;
-			}
-		}
-
-		public Image Miniature {
-			get {
-				return Model.Miniature;
-			}
-		}
-
-		public bool Selected {
-			get;
-			set;
-		}
-
-		public Time Duration {
-			get {
-				return Model.Duration;
-			}
+		public PlaylistCollectionVM ()
+		{
 		}
 	}
 }
+
