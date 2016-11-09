@@ -20,6 +20,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using VAS.Core.Interfaces;
@@ -72,16 +73,20 @@ namespace VAS.Core.Filters
 
 		public CompositePredicate ()
 		{
-			// FIXME: This should be done overriding RaisePropertyChanged from BindableBase (making it virtual)
-			// but for some reason it's not working properly.
-			this.PropertyChanged += (sender, e) => {
-				if (e.PropertyName == "Elements" || e.PropertyName == "Collection" || e.PropertyName == "Active") {
-					UpdatePredicate ();
-				}
-			};
 			Elements.CollectionChanged += (sender, e) => {
 				CollectionChanged (sender, e);
 			};
+		}
+
+		protected override void RaisePropertyChanged (PropertyChangedEventArgs args, object sender = null)
+		{
+			if (IgnoreEvents) {
+				return;
+			}
+			if (args.PropertyName == "Elements" || args.PropertyName == "Collection" || args.PropertyName == "Active") {
+				UpdatePredicate ();
+			}
+			base.RaisePropertyChanged (args, sender);
 		}
 
 		public ObservableCollection<IPredicate<T>> Elements { get; } = new ObservableCollection<IPredicate<T>> ();

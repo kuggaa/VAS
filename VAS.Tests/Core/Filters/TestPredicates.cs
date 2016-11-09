@@ -293,6 +293,7 @@ namespace VAS.Tests.Core.Filters
 			// Arrange
 			string property = "";
 			int count = 0;
+			int countElements = 0;
 
 			var filter = new OrPredicate<string> {
 				new Predicate<string> { Expression = (ev) => true },
@@ -305,21 +306,22 @@ namespace VAS.Tests.Core.Filters
 			};
 
 			var container = new AndPredicate<string> ();
+			container.Elements.CollectionChanged += (sender, e) => {
+				countElements++;
+			};
 			container.PropertyChanged += (sender, e) => {
 				property = e.PropertyName;
 				count++;
 			};
 
 			// Act
-			container.Elements = new ObservableCollection<IPredicate<string>>
-			{
-				filter,
-				filter2,
-			};
+			container.Add (filter);
+			container.Add (filter2);
 
 			//Assert
-			Assert.AreEqual ("Elements", property);
-			Assert.AreEqual (1, count);
+			Assert.AreEqual ("Collection", property);
+			Assert.AreEqual (2, count);
+			Assert.AreEqual (count, countElements);
 		}
 
 		[Test ()]
