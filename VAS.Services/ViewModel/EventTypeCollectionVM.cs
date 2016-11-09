@@ -16,22 +16,24 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
 namespace VAS.Services.ViewModel
 {
 	/// <summary>
-	/// Event type collection View Models, is a Nested Collection that contains
-	/// a child observable collection of type NestedViewModel
+	/// A nested collection of all the timeline <see cref="TimelineEvent"/> grouped by <see cref="EventType"/>,
+	/// where the first level of the of the collection is a list of the <see cref="EventType"/> view models.
+	/// Each <see cref="EventType"/> view model in the collection contains a collection of all the
+	/// <see cref="TimelineEvent"/> from the same event type.
+	/// This type of collection is used to represent timeline events in a tree view grouped by event types or in
+	/// timeline widget where each row show the timeline events for a given a event type.
 	/// </summary>
-	public class EventTypeCollectionVM<TViewModel, VMChild> : NestedViewModel<TViewModel>
-		where TViewModel : INestedViewModel<VMChild>, new()
+	public class EventTypeCollectionVM<TViewModel, TVMChild, TModel> : NestedViewModel<TViewModel>
+		where TViewModel : EventTypeVM<TVMChild>, new()
+		where TVMChild : TimelineEventVM<TModel>
+		where TModel : TimelineEvent
 	{
-		public EventTypeCollectionVM ()
-		{
-		}
 
 		public PlaylistCollectionVM Playlists {
 			get;
