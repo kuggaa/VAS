@@ -35,6 +35,7 @@ namespace VAS.UI
 		protected bool dragStarted;
 
 		public event EventHandler ReadyEvent;
+		public event EventHandler UnReadyEvent;
 		public new event ExposeEventHandler ExposeEvent;
 		public new event ButtonPressEventHandler ButtonPressEvent;
 		public new event ButtonReleaseEventHandler ButtonReleaseEvent;
@@ -198,6 +199,9 @@ namespace VAS.UI
 		protected void HandleUnrealized (object sender, EventArgs e)
 		{
 			Ready = false;
+			if (UnReadyEvent != null) {
+				UnReadyEvent (this, null);
+			}
 		}
 	}
 }

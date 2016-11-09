@@ -300,13 +300,22 @@ namespace VAS.Services
 			disposed = true;
 		}
 
-		public virtual void Ready ()
+		public virtual void Ready (bool ready)
 		{
-			Log.Debug ("Player ready");
-			ready = true;
-			if (delayedOpen != null) {
-				Log.Debug ("Calling delayed open");
-				delayedOpen ();
+			if (ready) {
+				Log.Debug ("Player ready");
+				this.ready = true;
+				if (delayedOpen != null) {
+					Log.Debug ("Calling delayed open");
+					delayedOpen ();
+					delayedOpen = null;
+				}
+			} else {
+				Log.Debug ("Player unready");
+				if (Playing) {
+					Stop ();
+				}
+				this.ready = false;
 				delayedOpen = null;
 			}
 		}

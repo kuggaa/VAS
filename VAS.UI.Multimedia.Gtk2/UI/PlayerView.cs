@@ -265,6 +265,7 @@ namespace VAS.UI
 			videowindow.ButtonPressEvent += OnVideoboxButtonPressEvent;
 			videowindow.ScrollEvent += OnVideoboxScrollEvent;
 			videowindow.ReadyEvent += HandleReady;
+			videowindow.UnReadyEvent += HandleUnReady;
 			videowindow.ExposeEvent += HandleExposeEvent;
 			videowindow.CanFocus = true;
 		}
@@ -497,7 +498,12 @@ namespace VAS.UI
 		{
 			viewPortsBackup = new List<IViewPort> { videowindow };
 			playerVM.ViewPorts = viewPortsBackup;
-			playerVM.Ready ();
+			playerVM.Ready (true);
+		}
+
+		protected virtual void HandleUnReady (object sender, EventArgs e)
+		{
+			playerVM.Ready (false);
 		}
 
 		#endregion

@@ -46,7 +46,9 @@ namespace VAS.Core
 			try {
 				Log.Debug ("Setting Home to " + transition);
 				IScreenState homeState = destination [transition] ();
-				homeState.LoadState (properties);
+				if (!await homeState.LoadState (properties)) {
+					return false;
+				}
 				home = new NavigationState (transition, homeState);
 				return await MoveToHome ();
 			} catch (Exception ex) {
@@ -94,7 +96,9 @@ namespace VAS.Core
 					state = home.ScreenState;
 				} else {
 					state = destination [transition] ();
-					state.LoadState (properties);
+					if (!await state.LoadState (properties)) {
+						return false;
+					}
 				}
 
 				return await PushNavigationState (transition, state, isHome);
@@ -270,14 +274,16 @@ namespace VAS.Core
 			return true;
 		}
 
-		Task<bool> PushNavigationState (string transition, IScreenState state, bool ishome)
+		async Task<bool> PushNavigationState (string transition, IScreenState state, bool ishome)
 		{
 			if (!ishome) {
 				navigationStateStack.Add (new NavigationState (transition, state));
 			}
-			state.ShowState ();
-			App.Current.EventsBroker.Publish (new NavigationEvent { Name = transition });
-			return App.Current.Navigation.Push (state.Panel);
+			if (!await state.ShowState ()) {
+				return false;
+			}
+			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = transition });
+			return await App.Current.Navigation.Push (state.Panel);
 		}
 
 		async Task<bool> PopNavigationState ()
