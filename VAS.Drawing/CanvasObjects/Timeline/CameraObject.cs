@@ -20,6 +20,7 @@ using System.Timers;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
+using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
@@ -30,7 +31,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 	/// <summary>
 	/// Camera object for the Timeline.
 	/// </summary>
-	public class CameraObject: TimeNodeObject
+	public class CameraObject : TimeNodeObject
 	{
 		MediaFile mediaFile;
 		SysTimer stretchedAndEditingTimer;
@@ -49,7 +50,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		}
 
 		public CameraObject (MediaFile mf) :
-			base (new TimeNode { Start = new Time (-mf.Offset.MSeconds),
+			base (new TimeNode {
+				Start = new Time (-mf.Offset.MSeconds),
 				Stop = mf.Duration - mf.Offset, Name = mf.Name
 			})
 		{
@@ -120,7 +122,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		public override void Draw (IDrawingToolkit tk, Area area)
 		{
 			if (!UpdateDrawArea (tk, area, Area) && VideoTLmode != VideoTimelineMode.Edit &&
-			    !(area.Left <= StartX || area.Left >= StopX)) {
+				!(area.Left <= StartX || area.Left >= StopX)) {
 				return;
 			}
 
@@ -370,27 +372,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			if (IsStretched () || !Selected || e.Time == null) {
 				return;
 			}
-
-			if (SelectedLeft) {
-				Time startTime = TimeNode.Start + e.Time;
-				if (startTime >= new Time (0)) {
-					// Almost 1s must be showed in the timeline
-					TimeNode.Start = startTime <= TimeNode.Stop - new Time (1000) ? startTime : TimeNode.Stop - new Time (1000);
-					e.player.Seek (TimeNode.Start);
-				}
-			}
-
-			if (SelectedRight) {
-				Time stopTime = TimeNode.Stop + e.Time;
-				if (stopTime <= MaxTime) {
-					// Almost 1s must be showed in the timeline
-					TimeNode.Stop = stopTime >= TimeNode.Start + new Time (1000) ? stopTime : TimeNode.Start + new Time (1000);
-					e.player.Seek (TimeNode.Stop);
-				}
-			}
-
+			SeekVideo (e.player, e.Time, e.SeekType);
 			SetVideoTlMode ();
-
 			ReDraw ();
 		}
 
@@ -401,6 +384,47 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			App.Current.GUIToolkit.Invoke (delegate {
 				ReDraw ();
 			});
+		}
+
+		void SeekVideo (IPlayerController player, Time seekTime, SeekType seekType)
+		{
+			Time movingBound;
+			Time otherBound;
+			if (SelectedLeft) {
+				movingBound = TimeNode.Start;
+				otherBound = TimeNode.Stop;
+			} else if (SelectedRight) {
+				movingBound = TimeNode.Stop;
+				otherBound = TimeNode.Start;
+			} else {
+				return;
+			}
+
+			if (seekType == SeekType.StepUp) {
+				player.SeekToNextFrame ();
+				movingBound = player.CurrentTime;
+			} else if (seekType == SeekType.StepDown) {
+				player.SeekToPreviousFrame ();
+				movingBound = player.CurrentTime;
+			} else {
+				Time time = movingBound + seekTime;
+				if (SelectedLeft && time >= new Time (0)) {
+					// Almost 1s must be showed in the timeline
+					movingBound = time <= otherBound - new Time (1000) ? time : otherBound - new Time (1000);
+					player.Seek (TimeNode.Start, seekType == SeekType.Accurate ? true : false);
+				}
+				if (SelectedRight && time <= MaxTime) {
+					// Almost 1s must be showed in the timeline
+					movingBound = time >= otherBound + new Time (1000) ? time : otherBound + new Time (1000);
+					player.Seek (movingBound, seekType == SeekType.Accurate ? true : false);
+				}
+			}
+
+			if (SelectedLeft) {
+				TimeNode.Start = movingBound;
+			} else if (SelectedRight) {
+				TimeNode.Stop = movingBound;
+			}
 		}
 	}
 }

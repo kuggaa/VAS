@@ -38,6 +38,12 @@ namespace VAS.Core.Events
 		public Time Time { get; set; }
 
 		/// <summary>
+		/// Gets or sets the type of the seek.
+		/// </summary>
+		/// <value>The type of the seek.</value>
+		public SeekType SeekType { get; set; }
+
+		/// <summary>
 		/// Gets or sets the player.
 		/// </summary>
 		/// <value>The player.</value>
