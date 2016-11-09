@@ -84,7 +84,7 @@ namespace VAS.Core.Filters
 			};
 		}
 
-		public ObservableCollection<IPredicate<T>> Elements { get; set; } = new ObservableCollection<IPredicate<T>> ();
+		public ObservableCollection<IPredicate<T>> Elements { get; } = new ObservableCollection<IPredicate<T>> ();
 
 
 		#region IPredicate implementation
