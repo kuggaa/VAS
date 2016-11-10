@@ -481,7 +481,6 @@ namespace VAS.Tests
 			App.Current.EventsBroker.Publish<LoadCameraEvent> (lce);
 
 			// Assert
-			mockPlayerController.Verify (player => player.UnloadCurrentEvent (), Times.Once ());
 			mockPlayerController.Verify (player => player.Seek (It.IsAny<double> ()), Times.Never ());
 		}
 
