@@ -700,18 +700,22 @@ namespace VAS.Services
 
 		public virtual void LoadCameraEvent (TimelineEvent evt, Time seekTime, bool playing)
 		{
-			MediaFileSet fileSet = evt.FileSet;
-			Log.Debug (string.Format ("Loading event \"{0}\" seek:{1} playing:{2}", evt.Name, seekTime, playing));
+			if (evt != null) {
+				MediaFileSet fileSet = evt.FileSet;
+				Log.Debug (string.Format ("Loading event \"{0}\" seek:{1} playing:{2}", evt.Name, seekTime, playing));
 
-			Switch (evt, null, null);
+				Switch (evt, null, null);
 
-			if (evt.Start != null && evt.Stop != null) {
-				LoadSegment (fileSet, evt.Start, evt.Stop, evt.Start + seekTime, evt.Rate,
-					evt.CamerasConfig, evt.CamerasLayout, playing);
-			} else if (evt.EventTime != null) {
-				AbsoluteSeek (evt.EventTime, true);
-			} else {
-				Log.Error ("Event does not have timing info: " + evt);
+				if (evt.Start != null && evt.Stop != null) {
+					if (ready) {
+						LoadSegment (fileSet, evt.Start, evt.Stop, evt.Start + seekTime, evt.Rate,
+						evt.CamerasConfig, evt.CamerasLayout, playing);
+					}
+				} else if (evt.EventTime != null) {
+					AbsoluteSeek (evt.EventTime, true);
+				} else {
+					Log.Error ("Event does not have timing info: " + evt);
+				}
 			}
 
 			cameraEvent = evt;

@@ -66,11 +66,17 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			App.Current.EventsBroker.Subscribe<ChangeVideoSizeEvent> (HandleChangeVideoSizeEvent);
 		}
 
-		public void Dispose ()
+		protected override void Dispose (bool disposing)
 		{
-			stretchedAndEditingTimer.Dispose ();
-			App.Current.EventsBroker.Unsubscribe<StretchVideoEvent> (HandleStrechVideoEvent);
-			App.Current.EventsBroker.Unsubscribe<ChangeVideoSizeEvent> (HandleChangeVideoSizeEvent);
+			if (Disposed)
+				return;
+
+			base.Dispose (disposing);
+			if (disposing) {
+				stretchedAndEditingTimer.Dispose ();
+				App.Current.EventsBroker.Unsubscribe<StretchVideoEvent> (HandleStrechVideoEvent);
+				App.Current.EventsBroker.Unsubscribe<ChangeVideoSizeEvent> (HandleChangeVideoSizeEvent);
+			}
 		}
 
 		/// <summary>

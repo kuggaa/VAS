@@ -469,17 +469,5 @@ namespace VAS.UI.Component
 		{
 			CurrentTime = e.Time;
 		}
-
-		/// <summary>
-		///  Temporal, until we have a panel style as in Longomatch (AnalysisComponent, CodingWidget, PlaylistManager ...)
-		/// </summary>
-		/// <param name="mf">Mf.</param>
-		public virtual void SetMediaFile (MediaFile mf)
-		{
-			timeoutID = GLib.Timeout.Add (TIMEOUT_MS, UpdateTime);
-			timerule.Duration = mf.Duration;
-
-			QueueDraw ();
-		}
 	}
 }
