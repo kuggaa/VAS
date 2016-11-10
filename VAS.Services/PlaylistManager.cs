@@ -160,7 +160,8 @@ namespace VAS.Services
 				seekTime = seekTime.Clamp (new Time (0), e.CameraTlEvent.Stop);
 				LoadCameraPlay (e.CameraTlEvent, seekTime, Player.Playing);
 			} else if (Player != null) {
-				Player.UnloadCurrentEvent ();
+				(Player as PlayerController)?.LoadCameraEvent (
+					null, new Time (0), false);
 			}
 		}
 
