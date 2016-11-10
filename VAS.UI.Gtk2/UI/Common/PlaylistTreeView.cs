@@ -33,7 +33,7 @@ namespace VAS.UI.Common
 	[System.ComponentModel.ToolboxItem (true)]
 	public class PlaylistTreeView : TreeViewBase<PlaylistCollectionVM, Playlist, PlaylistVM>
 	{
-		PlaylistMenu playlistMenu;
+		protected PlaylistMenu playlistMenu;
 
 		public PlaylistTreeView ()
 		{
@@ -41,7 +41,7 @@ namespace VAS.UI.Common
 			HeadersVisible = false;
 			Selection.Mode = SelectionMode.Multiple;
 			EnableGridLines = TreeViewGridLines.None;
-			playlistMenu = new PlaylistMenu ();
+			CreateMenu ();
 			CreateViews ();
 		}
 
@@ -60,6 +60,11 @@ namespace VAS.UI.Common
 			}
 			base.SetViewModel (viewModel);
 			ViewModel.PropertyChanged += HandleViewModelPropertyChanged;
+		}
+
+		protected virtual void CreateMenu ()
+		{
+			playlistMenu = new PlaylistMenu ();
 		}
 
 		protected virtual void CreateViews ()
