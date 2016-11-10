@@ -157,6 +157,11 @@ namespace VAS.Core.Events
 		public Playlist Playlist { get; set; }
 	}
 
+	public class DeletePlaylistEvent : Event
+	{
+		public Playlist Playlist { get; set; }
+	}
+
 	public class AddPlaylistElementEvent : Event
 	{
 		public Playlist Playlist { get; set; }

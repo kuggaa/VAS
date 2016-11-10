@@ -26,9 +26,11 @@ namespace VAS.UI.Menus
 {
 	public class PlaylistMenu : Gtk.Menu
 	{
-		MenuItem edit, delete, render;
-		Project project;
-		Playlist playlist;
+		protected MenuItem edit;
+		protected MenuItem delete;
+		protected MenuItem render;
+		protected Project project;
+		protected Playlist playlist;
 
 		public PlaylistMenu ()
 		{
@@ -53,6 +55,15 @@ namespace VAS.UI.Menus
 
 		void CreateMenu ()
 		{
+			CreateEdit ();
+			CreateRender ();
+			CreateDelete ();
+
+			ShowAll ();
+		}
+
+		protected virtual void CreateEdit ()
+		{
 			edit = new MenuItem (Catalog.GetString ("Edit name"));
 			edit.Activated += (sender, e) => {
 				string name = App.Current.Dialogs.QueryMessage (Catalog.GetString ("Name:"), null,
@@ -62,7 +73,10 @@ namespace VAS.UI.Menus
 				}
 			};
 			Append (edit);
+		}
 
+		protected virtual void CreateRender ()
+		{
 			render = new MenuItem (Catalog.GetString ("Render"));
 			render.Activated += (sender, e) => App.Current.EventsBroker.Publish<RenderPlaylistEvent> (
 				new RenderPlaylistEvent {
@@ -70,12 +84,13 @@ namespace VAS.UI.Menus
 				}
 			);
 			Append (render);
+		}
 
+		protected virtual void CreateDelete ()
+		{
 			delete = new MenuItem (Catalog.GetString ("Delete"));
 			delete.Activated += (sender, e) => project.Playlists.Remove (playlist);
 			Append (delete);
-
-			ShowAll ();
 		}
 	}
 }
