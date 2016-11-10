@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Couchbase.Lite;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -25,12 +26,13 @@ using VAS.Core.Common;
 using VAS.Core.Filters;
 using VAS.Core.Interfaces;
 using VAS.Core.Store;
+using VAS.Core.Store.Playlists;
 using VAS.DB;
 using VAS.DB.Views;
 
 namespace VAS.Tests.DB
 {
-	class StorableContainerTest: StorableBase
+	class StorableContainerTest : StorableBase
 	{
 		public StorableContainerTest ()
 		{
@@ -40,7 +42,7 @@ namespace VAS.Tests.DB
 		public StorableImageTest Image { get; set; }
 	}
 
-	class StorableListTest: StorableBase
+	class StorableListTest : StorableBase
 	{
 		public StorableListTest ()
 		{
@@ -50,7 +52,7 @@ namespace VAS.Tests.DB
 		public List<StorableImageTest> Images { get; set; }
 	}
 
-	class StorableListNoChildrenTest: StorableListTest
+	class StorableListNoChildrenTest : StorableListTest
 	{
 		public override bool DeleteChildren {
 			get {
@@ -73,11 +75,11 @@ namespace VAS.Tests.DB
 		public List<Image> Images { get; set; }
 	}
 
-	class StorableImageTest2: StorableImageTest
+	class StorableImageTest2 : StorableImageTest
 	{
 	}
 
-	class StorableView: GenericView <IStorable>
+	class StorableView : GenericView<IStorable>
 	{
 		public StorableView (CouchbaseStorage storage) : base (storage)
 		{
@@ -148,7 +150,7 @@ namespace VAS.Tests.DB
 		public void CleanDB ()
 		{
 			db.RunInTransaction (() => {
-				foreach (var d in db.CreateAllDocumentsQuery ().Run()) {
+				foreach (var d in db.CreateAllDocumentsQuery ().Run ()) {
 					db.GetDocument (d.DocumentId).Delete ();
 				}
 				return true;
@@ -331,7 +333,7 @@ namespace VAS.Tests.DB
 			};
 			storage.Store (cont);
 			Assert.AreEqual (3, db.DocumentCount);
-			var cont2 = storage.Retrieve <StorableContainerTest> (cont.ID);
+			var cont2 = storage.Retrieve<StorableContainerTest> (cont.ID);
 			Assert.IsNotNull (cont2.Image);
 			Assert.AreEqual (img.ID, cont2.Image.ID);
 		}
@@ -349,8 +351,8 @@ namespace VAS.Tests.DB
 
 			StorableListTest list2 = storage.Retrieve<StorableListTest> (list.ID);
 			Assert.AreEqual (2, list2.Images.Count);
-			Assert.AreEqual (typeof(StorableImageTest), list2.Images [0].GetType ());
-			Assert.AreEqual (typeof(StorableImageTest2), list2.Images [1].GetType ());
+			Assert.AreEqual (typeof (StorableImageTest), list2.Images [0].GetType ());
+			Assert.AreEqual (typeof (StorableImageTest2), list2.Images [1].GetType ());
 		}
 
 		[Test ()]
@@ -365,7 +367,7 @@ namespace VAS.Tests.DB
 				Image = img,
 			};
 			Assert.AreEqual (0, db.DocumentCount);
-			string newID = String.Format ("{0}&{1}", cont.ID, img.ID); 
+			string newID = String.Format ("{0}&{1}", cont.ID, img.ID);
 			storage.Store (cont);
 			Assert.AreEqual (3, db.DocumentCount);
 			Assert.IsNotNull (db.GetExistingDocument (cont.ID.ToString ()));
@@ -375,7 +377,6 @@ namespace VAS.Tests.DB
 			storage.Delete (cont);
 			Assert.AreEqual (1, db.DocumentCount);
 		}
-
 
 		[Test ()]
 		public void TestRetrieveErrors ()
@@ -406,9 +407,65 @@ namespace VAS.Tests.DB
 			// Initially we don't have a view for IStorable
 			Assert.Throws<KeyNotFoundException> (() => storage.Retrieve<IStorable> (new QueryFilter ()));
 
-			((CouchbaseStorage)storage).AddView (typeof(IStorable), new StorableView (((CouchbaseStorage)storage)));
+			((CouchbaseStorage)storage).AddView (typeof (IStorable), new StorableView (((CouchbaseStorage)storage)));
 
 			Assert.DoesNotThrow (() => storage.Retrieve<IStorable> (new QueryFilter ()));
+		}
+
+		[Test ()]
+		public void TestPlaylistStore ()
+		{
+			// Arrange
+			Playlist playlist1 = new Playlist ();
+			PlaylistPlayElement pe = new PlaylistPlayElement (new TimelineEvent ());
+			playlist1.Elements.Add (pe);
+
+			// Action
+			storage.Store (playlist1, true);
+
+			// Assert
+			Playlist storedPlaylist = storage.Retrieve<Playlist> (playlist1.ID);
+			Assert.AreEqual (3, db.DocumentCount);
+			Assert.AreEqual (playlist1.ID, storedPlaylist.ID);
+			Assert.AreEqual (playlist1.ToString (), storedPlaylist.ToString ());
+			Assert.AreEqual (pe.ToString (), storedPlaylist.Elements.First ().ToString ());
+			Assert.IsNotNull (storedPlaylist.DocumentID);
+		}
+
+		[Test ()]
+		public void TestPlaylistRetrieve ()
+		{
+			// Arrange
+			Playlist playlist1 = new Playlist ();
+			PlaylistPlayElement pe = new PlaylistPlayElement (new TimelineEvent ());
+			playlist1.Elements.Add (pe);
+			storage.Store (playlist1, true);
+			// Action
+			Playlist storedPlaylist = storage.Retrieve<Playlist> (playlist1.ID);
+
+			// Assert
+			Assert.IsNotNull (storedPlaylist);
+			Assert.IsNotNull (storedPlaylist.Elements);
+			Assert.IsNotNull (db.GetExistingDocument (playlist1.ID.ToString ()));
+			Assert.AreEqual (playlist1.ID, storedPlaylist.ID);
+			Assert.AreEqual (playlist1.ToString (), storedPlaylist.ToString ());
+			Assert.AreEqual (pe.ToString (), storedPlaylist.Elements.First ().ToString ());
+			Assert.IsNotNull (storedPlaylist.DocumentID);
+		}
+
+		[Test ()]
+		public void TestPlaylistDelete ()
+		{
+			// Arrange
+			Playlist playlist1 = new Playlist ();
+			PlaylistPlayElement pe = new PlaylistPlayElement (new TimelineEvent ());
+			playlist1.Elements.Add (pe);
+
+			// Action
+			storage.Delete (playlist1);
+
+			// Assert
+			Assert.AreEqual (1, db.DocumentCount);
 		}
 	}
 }
