@@ -913,6 +913,7 @@ namespace VAS.Tests.Services
 			viewPortMock.SetupAllProperties ();
 			player.ViewPorts = new List<IViewPort> { viewPortMock.Object };
 			Time seekTime = new Time (60000);
+			PreparePlayer ();
 
 			// Action
 			player.LoadCameraEvent (evt, seekTime, false);
