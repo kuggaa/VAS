@@ -128,6 +128,7 @@ namespace VAS.Services.Controller
 
 		protected virtual Task HandleDeletePlaylist (DeletePlaylistEvent e)
 		{
+			App.Current.DatabaseManager.ActiveDB.Delete (e.Playlist);
 			viewModel.Model.Remove (e.Playlist);
 			return AsyncHelpers.Return (true);
 		}
