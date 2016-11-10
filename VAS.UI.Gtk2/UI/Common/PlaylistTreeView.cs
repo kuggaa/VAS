@@ -62,10 +62,10 @@ namespace VAS.UI.Common
 			ViewModel.PropertyChanged += HandleViewModelPropertyChanged;
 		}
 
-		void CreateViews ()
+		protected virtual void CreateViews ()
 		{
 			CellRenderer descCell = new CellRendererText ();
-			AppendColumn (null, descCell, RenderPlaylistDescription);
+			AppendColumn (null, descCell, RenderPlaylist);
 		}
 
 		static string FormatDesc (IViewModel playlist)
@@ -75,7 +75,7 @@ namespace VAS.UI.Common
 			return desc;
 		}
 
-		void RenderPlaylistDescription (TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+		protected virtual void RenderPlaylist (TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
 		{
 			string desc;
 			var obj = model.GetValue (iter, COL_DATA);
