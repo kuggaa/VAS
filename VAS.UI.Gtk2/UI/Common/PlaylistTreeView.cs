@@ -33,7 +33,7 @@ namespace VAS.UI.Common
 	[System.ComponentModel.ToolboxItem (true)]
 	public class PlaylistTreeView : TreeViewBase<PlaylistCollectionVM, Playlist, PlaylistVM>
 	{
-		protected PlaylistMenu PlaylistMenu { get; set; }
+		protected PlaylistMenu playlistMenu;
 
 		public PlaylistTreeView ()
 		{
@@ -64,7 +64,7 @@ namespace VAS.UI.Common
 
 		protected virtual void CreateMenu ()
 		{
-			PlaylistMenu = new PlaylistMenu ();
+			playlistMenu = new PlaylistMenu ();
 		}
 
 		protected virtual void CreateViews ()
@@ -106,7 +106,7 @@ namespace VAS.UI.Common
 		protected override void ShowMenu ()
 		{
 			if (ViewModel.Selection.Count () > 0)
-				PlaylistMenu.ShowMenu (null, ViewModel.Selection [0].Model, true);
+				playlistMenu.ShowMenu (null, ViewModel.Selection [0].Model, true);
 		}
 	}
 }
