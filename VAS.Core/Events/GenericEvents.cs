@@ -19,12 +19,12 @@ using System;
 
 namespace VAS.Core.Events
 {
-	public class CRUDEvent<T> : ReturningValueEvent
+	public class GenericEvent<T> : ReturningValueEvent
 	{
 		public T Object { get; set; }
 	}
 
-	public class CreateEvent<T>: CRUDEvent<T>
+	public class CreateEvent<T> : GenericEvent<T>
 	{
 		public T Source { get; set; }
 
@@ -33,16 +33,16 @@ namespace VAS.Core.Events
 		public string Name { get; set; }
 	}
 
-	public class DeleteEvent<T>: CRUDEvent<T>
+	public class DeleteEvent<T> : GenericEvent<T>
 	{
 	}
 
-	public class UpdateEvent<T>: CRUDEvent<T>
+	public class UpdateEvent<T> : GenericEvent<T>
 	{
 		public bool Force { get; set; }
 	}
 
-	public class ExportEvent<T>: CRUDEvent<T>
+	public class ExportEvent<T> : GenericEvent<T>
 	{
 		/// <summary>
 		/// Gets or sets the format in which we want to export the object
@@ -51,16 +51,47 @@ namespace VAS.Core.Events
 		public string Format { get; set; }
 	}
 
-	public class ImportEvent<T>: CRUDEvent<T>
+	public class ImportEvent<T> : GenericEvent<T>
 	{
 	}
 
-	public class ChangeNameEvent<T>: CRUDEvent<T>
+	public class ChangeNameEvent<T> : GenericEvent<T>
 	{
 		public string NewName { get; set; }
 	}
 
-	public class OpenEvent<T> : CRUDEvent<T>
+	public class OpenEvent<T> : GenericEvent<T>
+	{
+	}
+
+	/// <summary>
+	/// Event sent to notify the cancellation of <typeparam name="T">.
+	/// </summary>
+	public class CancelEvent<T> : ReturningValueEvent
+	{
+		/// <summary>
+		/// Gets or sets the object to cancel.
+		/// </summary>
+		/// <value>The object.</value>
+		public T Object { get; set; }
+	}
+
+	/// <summary>
+	/// Event sent to request the retry of a <typeparam name="T">.
+	/// </summary>
+	public class RetryEvent<T> : ReturningValueEvent
+	{
+		/// <summary>
+		/// Gets or sets the object to retry.
+		/// </summary>
+		/// <value>The object.</value>
+		public T Object { get; set; }
+	}
+
+	/// <summary>
+	/// Event sent to request clearing a <typeparam name="T">.
+	/// </summary>
+	public class ClearEvent<T> : ReturningValueEvent
 	{
 	}
 }
