@@ -15,7 +15,6 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -25,13 +24,27 @@ namespace VAS.Core.Common
 {
 	public class RangeObservableCollection<T> : ObservableCollection<T>
 	{
+		public RangeObservableCollection () : base ()
+		{
+		}
+
+		public RangeObservableCollection (List<T> list) : base (list)
+		{
+		}
+
+		public RangeObservableCollection (IEnumerable<T> collection) : base (collection)
+		{
+		}
+
 		public void AddRange (IEnumerable<T> items)
 		{
-			foreach (var item in items) {
-				Items.Add (item);
+			if (items.Any ()) {
+				foreach (T item in items) {
+					Items.Add (item);
+				}
+				NotifyCollectionChangedEventArgs e = new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Add, items.ToList ());
+				OnCollectionChanged (e);
 			}
-			NotifyCollectionChangedEventArgs e = new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Add, items);
-			OnCollectionChanged (e);
 		}
 
 		public void RemoveRange (IEnumerable<T> items)
@@ -39,7 +52,7 @@ namespace VAS.Core.Common
 			foreach (var item in items) {
 				Items.Remove (item);
 			}
-			NotifyCollectionChangedEventArgs e = new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Remove, items);
+			NotifyCollectionChangedEventArgs e = new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Remove, items.ToList ());
 			OnCollectionChanged (e);
 		}
 

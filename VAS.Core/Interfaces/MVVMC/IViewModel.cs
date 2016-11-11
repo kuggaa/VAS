@@ -24,7 +24,7 @@ using VAS.Core.Common;
 
 namespace VAS.Core.Interfaces.MVVMC
 {
-	public interface IViewModel: INotifyPropertyChanged
+	public interface IViewModel : INotifyPropertyChanged
 	{
 	}
 
@@ -44,9 +44,9 @@ namespace VAS.Core.Interfaces.MVVMC
 	/// <summary>
 	/// Interface to get the Child View Models
 	/// </summary>
-	public interface INestedViewModel<VMChilds> : INestedViewModel, IViewModel, IEnumerable <VMChilds>
+	public interface INestedViewModel<VMChilds> : INestedViewModel, IViewModel, IEnumerable<VMChilds>
 	{
-		ObservableCollection<VMChilds> ViewModels { get; }
+		RangeObservableCollection<VMChilds> ViewModels { get; }
 
 		RangeObservableCollection<VMChilds> Selection { get; }
 
@@ -60,7 +60,7 @@ namespace VAS.Core.Interfaces.MVVMC
 	{
 		IPlayerController Player { get; }
 
-		PlayerViewOperationMode Mode  { get; set; }
+		PlayerViewOperationMode Mode { get; set; }
 
 		bool SupportsMultipleCameras { get; set; }
 

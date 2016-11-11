@@ -33,7 +33,7 @@ namespace VAS.Core.MVVMC
 	{
 		public NestedViewModel ()
 		{
-			ViewModels = new ObservableCollection<VMChilds> ();
+			ViewModels = new RangeObservableCollection<VMChilds> ();
 			Selection = new RangeObservableCollection<VMChilds> ();
 			Selection.CollectionChanged += HandleSelectionChanged;
 		}
@@ -42,7 +42,7 @@ namespace VAS.Core.MVVMC
 		/// Gets the collection of child ViewModel
 		/// </summary>
 		/// <value>The ViewModels collection.</value>
-		public virtual ObservableCollection<VMChilds> ViewModels {
+		public virtual RangeObservableCollection<VMChilds> ViewModels {
 			protected set;
 			get;
 		}

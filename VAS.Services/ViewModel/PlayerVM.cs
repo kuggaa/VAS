@@ -391,7 +391,7 @@ namespace VAS.Services.ViewModel
 				.OfType<IPlaylistElement> ()
 				.ToList ();
 
-			playlist.Elements = new ObservableCollection<IPlaylistElement> (list);
+			playlist.Elements = new RangeObservableCollection<IPlaylistElement> (list);
 			playerController.LoadPlaylistEvent (playlist, list.FirstOrDefault (), playing);
 		}
 

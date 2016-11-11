@@ -16,10 +16,12 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using VAS.Core.Common;
 using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.MVVMC
@@ -31,23 +33,23 @@ namespace VAS.Core.MVVMC
 	/// for selecting items within the collection.
 	/// </summary>
 	public class CollectionViewModel<TModel, TViewModel> : NestedViewModel<TViewModel>
-		where TViewModel: IViewModel<TModel>, new()
+		where TViewModel : IViewModel<TModel>, new()
 	{
 		bool editing;
-		ObservableCollection<TModel> model;
+		RangeObservableCollection<TModel> model;
 		Dictionary<TModel, TViewModel> modelToViewModel;
 
 		public CollectionViewModel ()
 		{
-			Model = new ObservableCollection<TModel> ();
-			ViewModels = new ObservableCollection<TViewModel> ();
+			Model = new RangeObservableCollection<TModel> ();
+			ViewModels = new RangeObservableCollection<TViewModel> ();
 		}
 
 		/// <summary>
 		/// Gets or sets the model used in this ViewModel.
 		/// </summary>
 		/// <value>The model.</value>
-		public ObservableCollection<TModel> Model {
+		public RangeObservableCollection<TModel> Model {
 			set {
 				if (ViewModels != null) {
 					ViewModels.CollectionChanged -= HandleViewModelsCollectionChanged;
@@ -55,12 +57,10 @@ namespace VAS.Core.MVVMC
 				if (Model != null) {
 					Model.CollectionChanged -= HandleModelsCollectionChanged;
 				}
-				ViewModels = new ObservableCollection<TViewModel> ();
+				ViewModels = new RangeObservableCollection<TViewModel> ();
 				modelToViewModel = new Dictionary<TModel, TViewModel> ();
 				model = value;
-				foreach (TModel element in model) {
-					AddViewModel (element);
-				}
+				AddViewModels (model);
 				ViewModels.CollectionChanged += HandleViewModelsCollectionChanged;
 				model.CollectionChanged += HandleModelsCollectionChanged;
 			}
@@ -81,13 +81,17 @@ namespace VAS.Core.MVVMC
 			Select (ViewModels.First (vm => vm.Model.Equals (item)));
 		}
 
-		void AddViewModel (TModel model)
+		void AddViewModels (IEnumerable<TModel> models)
 		{
-			var viewModel = new TViewModel {
-				Model = model
-			};
-			ViewModels.Add (viewModel);
-			modelToViewModel [model] = viewModel;
+			var viewModels = new List<TViewModel> ();
+			foreach (TModel model in models) {
+				var viewModel = new TViewModel {
+					Model = model
+				};
+				viewModels.Add (viewModel);
+				modelToViewModel [model] = viewModel;
+			}
+			ViewModels.AddRange (viewModels);
 		}
 
 		void HandleViewModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
@@ -98,12 +102,10 @@ namespace VAS.Core.MVVMC
 			editing = true;
 			switch (e.Action) {
 			case NotifyCollectionChangedAction.Add:
-				foreach (TViewModel viewModel in e.NewItems)
-					model.Add (viewModel.Model);
+				model.AddRange (e.NewItems.OfType<TViewModel> ().Select ((arg) => arg.Model));
 				break;
 			case NotifyCollectionChangedAction.Remove:
-				foreach (TViewModel viewModel in e.OldItems)
-					model.Remove (viewModel.Model);
+				model.RemoveRange (e.OldItems.OfType<TViewModel> ().Select ((arg) => arg.Model));
 				break;
 			case NotifyCollectionChangedAction.Reset:
 				model.Clear ();
@@ -120,21 +122,19 @@ namespace VAS.Core.MVVMC
 			editing = true;
 			switch (e.Action) {
 			case NotifyCollectionChangedAction.Add:
-				foreach (TModel model in e.NewItems) {
-					AddViewModel (model); 
-				}
+				AddViewModels (e.NewItems.OfType<TModel> ());
 				break;
 			case NotifyCollectionChangedAction.Remove:
+				ViewModels.RemoveRange (e.OldItems.OfType<TModel> ().Select ((arg) => modelToViewModel [arg]));
 				foreach (TModel model in e.OldItems) {
-					ViewModels.Remove (modelToViewModel [model]);
 					modelToViewModel.Remove (model);
 				}
 				break;
 			case NotifyCollectionChangedAction.Reset:
-				foreach (var vm in ViewModels.ToList ()) {
-					ViewModels.Remove (vm);
+				foreach (var vm in ViewModels) {
 					modelToViewModel.Remove (vm.Model);
 				}
+				ViewModels.Clear ();
 				break;
 			}
 			editing = false;
