@@ -81,7 +81,7 @@ namespace VAS.Tests.Services
 			App.Current.DrawingToolkit = new CairoBackend ();
 			App.Current.EventsBroker = new EventsBroker ();
 
-			manager = new JobsManagerVM { Model = new ObservableCollection<Job> () };
+			manager = new JobsManagerVM { Model = new RangeObservableCollection<Job> () };
 			controller = new RenderingJobsController (manager);
 			controller.Start ();
 		}
