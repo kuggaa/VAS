@@ -135,7 +135,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\ViewLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\ControllerLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\ViewModelBase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Events\TemplateEvents.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Events\GenericEvents.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\KeyContextManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\KeyContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\KeyAction.cs" />
