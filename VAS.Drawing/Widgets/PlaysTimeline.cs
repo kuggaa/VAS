@@ -467,14 +467,15 @@ namespace VAS.Drawing.Widgets
 
 		protected override void ShowMenu (Point coords)
 		{
-			CategoryTimeline catTimeline = eventsTimelines.Values.Where (
-											   t => t.Visible &&
-											   coords.Y >= t.OffsetY &&
-											   coords.Y < t.OffsetY + t.Height).FirstOrDefault ();
+			TimelineObject timeline = Objects.OfType<TimelineObject> ().Where (
+				t => t.Visible &&
+				coords.Y >= t.OffsetY &&
+				coords.Y < t.OffsetY + t.Height).FirstOrDefault ();
 
+			CategoryTimeline catTimeline = timeline as CategoryTimeline;
 			if (catTimeline != null) {
 				ShowPlaysMenu (coords, catTimeline);
-			} else {
+			} else if (timeline as TimerTimeline != null) {
 				ShowTimersMenu (coords);
 			}
 		}
