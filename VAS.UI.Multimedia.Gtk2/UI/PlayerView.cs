@@ -1,4 +1,4 @@
-// PlayerBin.cs
+// PlayerView.cs
 //
 //  Copyright (C) 2007-2009 Andoni Morales Alastruey
 //
@@ -24,25 +24,19 @@ using System.Linq;
 using Gdk;
 using Gtk;
 using Pango;
-using VAS;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Handlers;
 using VAS.Core.Hotkeys;
-using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
-using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Drawing.Cairo;
 using VAS.Drawing.Widgets;
-using VAS.Services;
 using VAS.Services.ViewModel;
-using Helpers = VAS.UI.Helpers;
-using VASCommon = VAS.Core.Common;
 
 
 namespace VAS.UI
@@ -152,6 +146,7 @@ namespace VAS.UI
 		{
 			ViewModel = (PlayerVM)viewModel;
 			ViewModel.SupportsMultipleCameras = false;
+			SyncVMValues ();
 		}
 
 		public PlayerVM ViewModel {
@@ -507,50 +502,7 @@ namespace VAS.UI
 
 		void PlayerVMPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == "ShowControls") {
-				controlsbox.Visible = ratescale.Visible = playerVM.ShowControls;
-			} else if (e.PropertyName == "ControlsSensitive") {
-				controlsbox.Sensitive = ratescale.Sensitive = playerVM.ControlsSensitive;
-			} else if (e.PropertyName == "Compact") {
-				prevbutton.Visible = nextbutton.Visible = jumplabel.Visible =
-					jumpspinbutton.Visible = tlabel.Visible = timelabel.Visible =
-						detachbutton.Visible = ratescale.Visible = !playerVM.Compact;
-			} else if (e.PropertyName == "PlayerAttached") {
-				HandlePlayerAttachedChanged ();
-			} else if (e.PropertyName == "ShowDetachButton") {
-				detachbutton.Visible = playerVM.ShowDetachButton;
-			} else if (e.PropertyName == "ShowDrawingIcon") {
-				drawbutton.Visible = playerVM.ShowDrawingIcon;
-			} else if (e.PropertyName == "Playing") {
-				HandlePlayingChanged ();
-			} else if (e.PropertyName == "HasNext") {
-				nextbutton.Sensitive = playerVM.HasNext;
-			} else if (e.PropertyName == "CloseButtonVisible") {
-				closebutton.Visible = playerVM.CloseButtonVisible;
-			} else if (e.PropertyName == "Rate") {
-				ignoreRate = true;
-				int index = App.Current.RateList.FindIndex (p => (float)p == playerVM.Rate);
-				ratescale.Value = index + App.Current.LowerRate;
-				ignoreRate = false;
-			} else if (e.PropertyName == "Seekable") {
-				timescale.Sensitive = playerVM.Seekable;
-			} else if (e.PropertyName == "Duration" || e.PropertyName == "CurrentTime") {
-				UpdateTime ();
-			} else if (e.PropertyName == "FrameDrawing") {
-				if (playerVM.FrameDrawing != null) {
-					LoadImage (playerVM.CurrentFrame, playerVM.FrameDrawing);
-				} else {
-					DrawingsVisible = false;
-				}
-			} else if (e.PropertyName == "PlayElement") {
-				HandlePlayElementChanged ();
-			} else if (e.PropertyName == "FileSet") {
-				if (playerVM.FileSet == null || !playerVM.FileSet.Any ()) {
-					playerVM.ControlsSensitive = false;
-				} else {
-					playerVM.ControlsSensitive = true;
-				}
-			}
+			SyncVMValues (e.PropertyName);
 		}
 
 		void HandlePlayerAttachedChanged ()
@@ -592,6 +544,68 @@ namespace VAS.UI
 				} else if (playerVM.PlayElement is PlaylistImage) {
 					PlaylistImage image = playerVM.PlayElement as PlaylistImage;
 					LoadImage (image.Image, null);
+				}
+			}
+		}
+
+		void SyncVMValues (string propertyName = null)
+		{
+			if (propertyName == null || propertyName == "ShowControls") {
+				controlsbox.Visible = ratescale.Visible = playerVM.ShowControls;
+			}
+			if (propertyName == null || propertyName == "ControlsSensitive") {
+				controlsbox.Sensitive = ratescale.Sensitive = playerVM.ControlsSensitive;
+			}
+			if (propertyName == null || propertyName == "Compact") {
+				prevbutton.Visible = nextbutton.Visible = jumplabel.Visible =
+					jumpspinbutton.Visible = tlabel.Visible = timelabel.Visible =
+						detachbutton.Visible = ratescale.Visible = !playerVM.Compact;
+			}
+			if (propertyName == null || propertyName == "PlayerAttached") {
+				HandlePlayerAttachedChanged ();
+			}
+			if (propertyName == null || propertyName == "ShowDetachButton") {
+				detachbutton.Visible = playerVM.ShowDetachButton;
+			}
+			if (propertyName == null || propertyName == "ShowDrawingIcon") {
+				drawbutton.Visible = playerVM.ShowDrawingIcon;
+			}
+			if (propertyName == null || propertyName == "Playing") {
+				HandlePlayingChanged ();
+			}
+			if (propertyName == null || propertyName == "HasNext") {
+				nextbutton.Sensitive = playerVM.HasNext;
+			}
+			if (propertyName == null || propertyName == "CloseButtonVisible") {
+				closebutton.Visible = playerVM.CloseButtonVisible;
+			}
+			if (propertyName == null || propertyName == "Rate") {
+				ignoreRate = true;
+				int index = App.Current.RateList.FindIndex (p => (float)p == playerVM.Rate);
+				ratescale.Value = index + App.Current.LowerRate;
+				ignoreRate = false;
+			}
+			if (propertyName == null || propertyName == "Seekable") {
+				timescale.Sensitive = playerVM.Seekable;
+			}
+			if (propertyName == null || propertyName == "Duration" || propertyName == "CurrentTime") {
+				UpdateTime ();
+			}
+			if (propertyName == null || propertyName == "FrameDrawing") {
+				if (playerVM.FrameDrawing != null) {
+					LoadImage (playerVM.CurrentFrame, playerVM.FrameDrawing);
+				} else {
+					DrawingsVisible = false;
+				}
+			}
+			if (propertyName == null || propertyName == "PlayElement") {
+				HandlePlayElementChanged ();
+			}
+			if (propertyName == null || propertyName == "FileSet") {
+				if (playerVM.FileSet == null || !playerVM.FileSet.Any ()) {
+					playerVM.ControlsSensitive = false;
+				} else {
+					playerVM.ControlsSensitive = true;
 				}
 			}
 		}
