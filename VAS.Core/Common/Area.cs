@@ -23,7 +23,7 @@ using VAS.Core.MVVMC;
 namespace VAS.Core.Common
 {
 	[Serializable]
-	public class Area: BindableBase
+	public class Area : BindableBase
 	{
 		public Area ()
 		{
@@ -144,9 +144,9 @@ namespace VAS.Core.Common
 
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
-		public Point[] Vertices {
+		public Point [] Vertices {
 			get {
-				return new Point[] {
+				return new Point [] {
 					TopLeft,
 					TopRight,
 					BottomRight,
@@ -157,9 +157,9 @@ namespace VAS.Core.Common
 
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
-		public Point[] VerticesCenter {
+		public Point [] VerticesCenter {
 			get {
-				Point[] points = Vertices;
+				Point [] points = Vertices;
 
 				points [0].X += Width / 2;
 				points [1].Y += Height / 2;
@@ -175,13 +175,24 @@ namespace VAS.Core.Common
 			(Top >= area.Bottom) || (Bottom <= area.Top));
 		}
 
+		/// <summary>
+		/// Gets if Point is inside the current Area.
+		/// </summary>
+		/// <returns><c>true</c>, if is inside the area, <c>false</c> otherwise.</returns>
+		/// <param name="point">Point.</param>
+		public bool PointIsInside (Point point)
+		{
+			return (Left < point.X && Right > point.X &&
+					Top < point.Y && Bottom > point.Y);
+		}
+
 		public override bool Equals (object obj)
 		{
 			Area a = obj as Area;
 			if (a == null)
 				return false;
 			if (a.Start != Start ||
-			    a.Width != Width || a.Height != Height) {
+				a.Width != Width || a.Height != Height) {
 				return false;
 			}
 			return true;
