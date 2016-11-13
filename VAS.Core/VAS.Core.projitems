@@ -192,6 +192,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlaylistVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TemplateViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\NestedSubViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

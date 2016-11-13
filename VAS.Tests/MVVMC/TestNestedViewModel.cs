@@ -71,5 +71,25 @@ namespace VAS.Tests.MVVMC
 			Assert.AreSame (viewModel.Selection [0], child1);
 			Assert.AreSame (viewModel.Selection [1], child2);
 		}
+
+		[Test]
+		public void TestReplaceSelectionWithNull ()
+		{
+			int count = 0;
+			string propName = "";
+			var viewModel = new NestedViewModel<ViewModelBase<BindableBase>> ();
+			var child1 = new ViewModelBase<BindableBase> ();
+			var child2 = new ViewModelBase<BindableBase> ();
+			viewModel.ViewModels.Add (child1);
+			viewModel.ViewModels.Add (child2);
+			viewModel.Select (child1);
+			viewModel.PropertyChanged += (sender, e) => { count++; propName = e.PropertyName; };
+
+			viewModel.SelectionReplace (null);
+
+			Assert.AreEqual (1, count);
+			Assert.AreEqual ("Selection", propName);
+			Assert.AreEqual (0, viewModel.Selection.Count);
+		}
 	}
 }

@@ -25,8 +25,8 @@ using VAS.Core.Interfaces.MVVMC;
 namespace VAS.Core.MVVMC
 {
 	/// <summary>
-	/// Base class of a nested ViewModel Type. This type of ViewModel contains an observableCollection of Child
-	/// ViewModels. It implements INotifyCollectionChanged and IEnumerable interfaces.
+	/// Base class implementation of <see cref="INestedViewModel"/> with support for child selection.
+	/// This base class should be used by any ViewModel with a collection of typeparam name="VMChilds".
 	/// </summary>
 	public class NestedViewModel<VMChilds> : BindableBase, INestedViewModel<VMChilds>
 		where VMChilds : IViewModel
