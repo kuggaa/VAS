@@ -61,12 +61,13 @@ namespace VAS.Core.Common
 		public void Replace (IEnumerable<T> items)
 		{
 			Items.Clear ();
-			foreach (var item in items) {
-				Items.Add (item);
+			if (items != null) {
+				foreach (var item in items) {
+					Items.Add (item);
+				}
 			}
 			NotifyCollectionChangedEventArgs e = new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Reset);
 			OnCollectionChanged (e);
-
 		}
 	}
 }
