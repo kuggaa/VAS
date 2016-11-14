@@ -52,7 +52,7 @@ namespace VAS.Services.ViewModel
 			return SubViewModel.GetNotifyCollection ();
 		}
 
-		public ObservableCollection<PlaylistElementVM> ViewModels {
+		public RangeObservableCollection<PlaylistElementVM> ViewModels {
 			get {
 				return SubViewModel.ViewModels;
 			}
@@ -85,7 +85,7 @@ namespace VAS.Services.ViewModel
 		public CollectionViewModel<IPlaylistElement, PlaylistElementVM> SubViewModel {
 			get;
 			set;
-		} = new CollectionViewModel<IPlaylistElement, PlaylistElementVM>();
+		} = new CollectionViewModel<IPlaylistElement, PlaylistElementVM> ();
 
 		public string Name {
 			get {

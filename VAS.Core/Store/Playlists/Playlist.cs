@@ -22,24 +22,25 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using Newtonsoft.Json;
+using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.Serialization;
 
 namespace VAS.Core.Store.Playlists
 {
 	[Serializable]
-	public class Playlist: StorableBase
+	public class Playlist : StorableBase
 	{
 		DateTime creationDate, lastModified;
 		int indexSelection = 0;
-		ObservableCollection<IPlaylistElement> elements;
+		RangeObservableCollection<IPlaylistElement> elements;
 
 		#region Constructors
 
 		public Playlist ()
 		{
 			ID = Guid.NewGuid ();
-			Elements = new ObservableCollection <IPlaylistElement> ();
+			Elements = new RangeObservableCollection<IPlaylistElement> ();
 			CreationDate = LastModified = DateTime.Now;
 		}
 
@@ -54,7 +55,7 @@ namespace VAS.Core.Store.Playlists
 			set;
 		}
 
-		public ObservableCollection<IPlaylistElement> Elements {
+		public RangeObservableCollection<IPlaylistElement> Elements {
 			get {
 				return elements;
 			}
@@ -147,7 +148,7 @@ namespace VAS.Core.Store.Playlists
 			var play = Elements [indexIn];
 			Elements.RemoveAt (indexIn);
 			Elements.Insert (indexOut, play);
-			
+
 			/* adjust selection index */
 			if (indexIn == indexSelection)
 				indexSelection = indexOut;
@@ -179,7 +180,7 @@ namespace VAS.Core.Store.Playlists
 		public void SetActive (IPlaylistElement play)
 		{
 			int newIndex;
-			
+
 			newIndex = Elements.IndexOf (play);
 			if (newIndex >= 0) {
 				indexSelection = newIndex;

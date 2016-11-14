@@ -18,6 +18,7 @@
 using System;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
+using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
@@ -94,7 +95,7 @@ namespace VAS.Tests.Core.Store.Playlists
 
 			Assert.AreEqual (new Time (10 + 20 + 40), pl.Duration);
 
-			pl.Elements = new ObservableCollection<IPlaylistElement> ();
+			pl.Elements = new RangeObservableCollection<IPlaylistElement> ();
 			Assert.AreEqual (new Time (0), pl.Duration);
 		}
 
