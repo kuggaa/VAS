@@ -18,6 +18,7 @@
 using System;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
+using VAS.Core.Common;
 using VAS.Core.MVVMC;
 
 namespace VAS.Tests.MVVMC
@@ -26,13 +27,13 @@ namespace VAS.Tests.MVVMC
 	public class TestCollectionViewModel
 	{
 		CollectionViewModel<BindableBase, DummyViewModel<BindableBase>> viewModel;
-		ObservableCollection<BindableBase> model;
+		RangeObservableCollection<BindableBase> model;
 
 		[SetUp]
 		public void SetUp ()
 		{
 			viewModel = new CollectionViewModel<BindableBase, DummyViewModel<BindableBase>> ();
-			model = new ObservableCollection<BindableBase> { new BindableBase (), new BindableBase () };
+			model = new RangeObservableCollection<BindableBase> { new BindableBase (), new BindableBase () };
 			viewModel.Model = model;
 		}
 
@@ -95,7 +96,7 @@ namespace VAS.Tests.MVVMC
 			Assert.AreEqual (2, viewModel.ViewModels.Count);
 			Assert.AreSame (sel, viewModel.Selection);
 
-			model = new ObservableCollection<BindableBase> { new BindableBase () };
+			model = new RangeObservableCollection<BindableBase> { new BindableBase () };
 			viewModel.Model = model;
 			Assert.AreEqual (1, viewModel.ViewModels.Count);
 			Assert.AreSame (sel, viewModel.Selection);
