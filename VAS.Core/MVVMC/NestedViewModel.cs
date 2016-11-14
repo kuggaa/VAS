@@ -65,6 +65,7 @@ namespace VAS.Core.MVVMC
 		public void Select (VMChilds viewModel)
 		{
 			if (viewModel == null) {
+				Selection.Clear ();
 				return;
 			}
 
