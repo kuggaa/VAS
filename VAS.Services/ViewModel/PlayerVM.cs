@@ -44,9 +44,9 @@ namespace VAS.Services.ViewModel
 		MediaFileSet fileset;
 
 
-		public PlayerVM ()
+		public PlayerVM (bool supportMultipleCameras = true)
 		{
-			playerController = new PlayerController (true);
+			playerController = new PlayerController (supportMultipleCameras);
 			playerController.SetViewModel (this);
 			playerController.Start ();
 		}
