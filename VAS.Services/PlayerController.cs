@@ -309,6 +309,8 @@ namespace VAS.Services
 					Log.Debug ("Calling delayed open");
 					delayedOpen ();
 					delayedOpen = null;
+				} else if (FileSet == null || !FileSet.Any ()) {
+					ShowMessageInViewPorts (Catalog.GetString ("No video available"), true);
 				}
 			} else {
 				Log.Debug ("Player unready");
