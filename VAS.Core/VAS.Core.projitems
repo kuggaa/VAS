@@ -194,6 +194,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\NestedSubViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypeVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TimerVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TimeNodeVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
