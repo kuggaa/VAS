@@ -15,19 +15,15 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.GUI;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
 namespace VAS.Core.ViewModel
 {
-	/// <summary>
-	/// Timeline event ViewModel Generic Base class
-	/// </summary>
-	public class TimelineEventVM<T> : ViewModelBase<T>, IVisible
-		where T : TimelineEvent
+	public class TimelineEventVM : ViewModelBase<TimelineEvent>, IVisible
 	{
 		/// <summary>
 		/// Gets or sets the Name of the TimelineEvent.
@@ -119,6 +115,22 @@ namespace VAS.Core.ViewModel
 		public bool Focus {
 			get;
 			set;
+		}
+	}
+
+	/// <summary>
+	/// Timeline event ViewModel Generic Base class
+	/// </summary>
+	public class TimelineEventVM<T> : TimelineEventVM, IViewModel<T>
+		where T : TimelineEvent
+	{
+		public virtual new T Model {
+			get {
+				return (T)base.Model;
+			}
+			set {
+				base.Model = value;
+			}
 		}
 	}
 }

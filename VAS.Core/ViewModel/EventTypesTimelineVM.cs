@@ -17,7 +17,6 @@
 //
 using System;
 using VAS.Core.MVVMC;
-using VAS.Core.Store;
 
 namespace VAS.Core.ViewModel
 {
@@ -29,12 +28,8 @@ namespace VAS.Core.ViewModel
 	/// This type of collection is used to represent timeline events in a tree view grouped by event types or in
 	/// timeline widget where each row show the timeline events for a given a event type.
 	/// </summary>
-	public class EventTypeCollectionVM<TViewModel, TVMChild, TModel> : NestedViewModel<TViewModel>
-		where TViewModel : EventTypeVM<TVMChild>, new()
-		where TVMChild : TimelineEventVM<TModel>
-		where TModel : TimelineEvent
+	public class EventTypesTimelineVM : NestedViewModel<EventTypeTimelineVM>
 	{
-
 		public PlaylistCollectionVM Playlists {
 			get;
 			set;

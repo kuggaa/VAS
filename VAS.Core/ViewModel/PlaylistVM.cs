@@ -18,75 +18,22 @@
 //
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
+using VAS.Core.Common;
 using VAS.Core.Interfaces;
-using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store.Playlists;
-using VAS.Core.Common;
 
 namespace VAS.Core.ViewModel
 {
 	/// <summary>
-	/// ViewModel for a Playlist. Contains a Collection of PlaylistElements
+	/// ViewModel for a Playlist containing a collection of <see cref="PlaylistElementVM"/>.
 	/// </summary>
-	public class PlaylistVM : ViewModelBase<Playlist>, INestedViewModel<PlaylistElementVM>
+	public class PlaylistVM : NestedSubViewModel<Playlist, PlaylistVM, IPlaylistElement, PlaylistElementVM>
 	{
-		#region INestedViewModel implementation
-
-		public IEnumerator<PlaylistElementVM> GetEnumerator ()
-		{
-			return SubViewModel.GetEnumerator ();
-		}
-
-		IEnumerator IEnumerable.GetEnumerator ()
-		{
-			return SubViewModel.GetEnumerator ();
-		}
-
-		public INotifyCollectionChanged GetNotifyCollection ()
-		{
-			return SubViewModel.GetNotifyCollection ();
-		}
-
-		public RangeObservableCollection<PlaylistElementVM> ViewModels {
-			get {
-				return SubViewModel.ViewModels;
-			}
-		}
-
-		public RangeObservableCollection<PlaylistElementVM> Selection {
-			get;
-			private set;
-		}
-
-		public void SelectionReplace (IEnumerable<PlaylistElementVM> selection)
-		{
-			Selection.Replace (selection);
-		}
-
-		#endregion
-
-		public override Playlist Model {
-			get {
-				return base.Model;
-			}
-			set {
-				base.Model = value;
-				if (value != null) {
-					SubViewModel.Model = Model.Elements;
-				}
-			}
-		}
-
-		public CollectionViewModel<IPlaylistElement, PlaylistElementVM> SubViewModel {
-			get;
-			set;
-		} = new CollectionViewModel<IPlaylistElement, PlaylistElementVM> ();
-
+		/// <summary>
+		/// Gets or sets the name of the playlist.
+		/// </summary>
+		/// <value>The name.</value>
 		public string Name {
 			get {
 				return Model.Name;
@@ -96,18 +43,36 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets the creation date of the playlist.
+		/// </summary>
+		/// <value>The creation date.</value>
 		public DateTime CreationDate {
 			get {
 				return Model.CreationDate;
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the last modification time of the playlist.
+		/// </summary>
+		/// <value>The last modified.</value>
 		public DateTime LastModified {
 			get {
 				return Model.LastModified;
 			}
 			set {
 				Model.LastModified = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets the list of <see cref="IPlaylistElement"/> children.
+		/// </summary>
+		/// <value>The child models.</value>
+		public override RangeObservableCollection<IPlaylistElement> ChildModels {
+			get {
+				return Model.Elements;
 			}
 		}
 	}
