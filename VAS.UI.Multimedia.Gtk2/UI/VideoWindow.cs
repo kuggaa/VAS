@@ -199,6 +199,7 @@ namespace VAS.UI
 		protected void HandleUnrealized (object sender, EventArgs e)
 		{
 			Ready = false;
+			MessageVisible = false;
 			if (UnReadyEvent != null) {
 				UnReadyEvent (this, null);
 			}
