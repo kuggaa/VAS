@@ -33,6 +33,7 @@ namespace VAS.Core.ViewModel
 
 		public ProjectVM ()
 		{
+			Timers = new CollectionViewModel<Timer, TimerVM> ();
 			Playlists = new PlaylistCollectionVM ();
 			EventTypes = new CollectionViewModel<EventType, EventTypeVM> ();
 			EventTypesTimeline = new EventTypesTimelineVM ();
@@ -47,6 +48,15 @@ namespace VAS.Core.ViewModel
 				model = value;
 				UpdateModels ();
 			}
+		}
+
+		/// <summary>
+		/// Gets the collection of timers in the project.
+		/// </summary>
+		/// <value>The timers.</value>
+		public CollectionViewModel<Timer, TimerVM> Timers {
+			get;
+			private set;
 		}
 
 		/// <summary>
