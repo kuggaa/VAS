@@ -183,8 +183,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Prism\AsyncDispatcherEventSubscription.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Prism\Properties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\DisposableBase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypeCollectionVM.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypeVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypesTimelineVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypeTimelineVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TimelineEventVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlaylistCollectionVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlaylistElementVM.cs" />
@@ -193,6 +193,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TemplateViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\NestedSubViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypeVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
