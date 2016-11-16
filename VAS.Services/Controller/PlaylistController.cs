@@ -15,15 +15,18 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VAS.Core;
+using VAS.Core.Common;
 using VAS.Core.Events;
+using VAS.Core.Filters;
 using VAS.Core.Hotkeys;
+using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
+using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Services.ViewModel;
 
@@ -49,6 +52,18 @@ namespace VAS.Services.Controller
 			set;
 		}
 
+		protected EventsFilter Filter { get; set; }
+
+		protected Project OpenedProject {
+			get;
+			set;
+		}
+
+		protected ProjectType OpenedProjectType {
+			get;
+			set;
+		}
+
 		#region IController implementation
 
 		public void Start ()
@@ -56,6 +71,8 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.SubscribeAsync<AddPlaylistElementEvent> (HandleAddPlaylistElement);
 			App.Current.EventsBroker.SubscribeAsync<CreateEvent<Playlist>> (HandleNewPlaylist);
 			App.Current.EventsBroker.SubscribeAsync<DeletePlaylistEvent> (HandleDeletePlaylist);
+			App.Current.EventsBroker.Subscribe<RenderPlaylistEvent> (HandleRenderPlaylist);
+			App.Current.EventsBroker.Subscribe<LoadPlaylistElementEvent> (HandleLoadPlaylistElement);
 		}
 
 		public void Stop ()
@@ -63,6 +80,8 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.UnsubscribeAsync<AddPlaylistElementEvent> (HandleAddPlaylistElement);
 			App.Current.EventsBroker.UnsubscribeAsync<CreateEvent<Playlist>> (HandleNewPlaylist);
 			App.Current.EventsBroker.UnsubscribeAsync<DeletePlaylistEvent> (HandleDeletePlaylist);
+			App.Current.EventsBroker.Unsubscribe<RenderPlaylistEvent> (HandleRenderPlaylist);
+			App.Current.EventsBroker.Unsubscribe<LoadPlaylistElementEvent> (HandleLoadPlaylistElement);
 		}
 
 		public void SetViewModel (IViewModel viewModel)
@@ -80,7 +99,7 @@ namespace VAS.Services.Controller
 
 		#endregion
 
-		async protected virtual Task<Playlist> CreateNewPlaylist ()
+		protected virtual async Task<Playlist> CreateNewPlaylist ()
 		{
 			string name = Catalog.GetString ("New playlist");
 			Playlist playlist = null;
@@ -104,7 +123,7 @@ namespace VAS.Services.Controller
 			return playlist;
 		}
 
-		async protected virtual Task HandleAddPlaylistElement (AddPlaylistElementEvent e)
+		protected virtual async Task HandleAddPlaylistElement (AddPlaylistElementEvent e)
 		{
 			//FIXME: should use PlaylistVM
 			if (e.Playlist == null) {
@@ -119,12 +138,6 @@ namespace VAS.Services.Controller
 			Save (e.Playlist, true);
 		}
 
-		async protected virtual Task HandleNewPlaylist (CreateEvent<Playlist> e)
-		{
-			e.Object = await CreateNewPlaylist ();
-			e.ReturnValue = e.Object != null;
-		}
-
 		protected virtual Task HandleDeletePlaylist (DeletePlaylistEvent e)
 		{
 			App.Current.DatabaseManager.ActiveDB.Delete (e.Playlist);
@@ -132,10 +145,36 @@ namespace VAS.Services.Controller
 			return AsyncHelpers.Return (true);
 		}
 
+		async Task HandleNewPlaylist (CreateEvent<Playlist> e)
+		{
+			e.Object = await CreateNewPlaylist ();
+			e.ReturnValue = e.Object != null;
+		}
+
 		void Save (Playlist playlist, bool force = false)
 		{
 			if (playlist != null) {
 				App.Current.DatabaseManager.ActiveDB.Store (playlist, force);
+			}
+		}
+
+		void HandleLoadPlaylistElement (LoadPlaylistElementEvent e)
+		{
+			if (e.Element != null) {
+				e.Playlist.SetActive (e.Element);
+			}
+			if (e.Playlist.Elements.Count > 0 && PlayerVM != null) {
+				PlayerVM.LoadPlaylistEvent (e.Playlist, e.Element, e.Playing);
+			}
+		}
+
+		void HandleRenderPlaylist (RenderPlaylistEvent e)
+		{
+			List<EditionJob> jobs = App.Current.GUIToolkit.ConfigureRenderingJob (e.Playlist);
+			if (jobs == null)
+				return;
+			foreach (Job job in jobs) {
+				App.Current.JobsManager.Add (job);
 			}
 		}
 	}
