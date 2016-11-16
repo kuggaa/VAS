@@ -15,6 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System.Collections.ObjectModel;
+using VAS.Core.Common;
 using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.MVVMC
@@ -51,7 +52,7 @@ namespace VAS.Core.MVVMC
 			}
 		}
 
-		public override ObservableCollection<TVMChild> ViewModels {
+		public override RangeObservableCollection<TVMChild> ViewModels {
 			get {
 				return SubViewModel.ViewModels;
 			}
@@ -61,7 +62,7 @@ namespace VAS.Core.MVVMC
 		/// Gets the list of child models.
 		/// </summary>
 		/// <value>The child models.</value>
-		public abstract ObservableCollection<TModelChild> ChildModels {
+		public abstract RangeObservableCollection<TModelChild> ChildModels {
 			get;
 		}
 

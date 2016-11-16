@@ -15,11 +15,11 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
-using System.Collections.ObjectModel;
-using NUnit.Framework;
-using VAS.Core.MVVMC;
 using System.Linq;
+using NUnit.Framework;
+using VAS.Core.Common;
+using VAS.Core.MVVMC;
+
 namespace VAS.Tests.MVVMC
 {
 
@@ -29,10 +29,10 @@ namespace VAS.Tests.MVVMC
 
 	public class DummyModelWithChilren : BindableBase
 	{
-		public ObservableCollection<DummyModelChild> Children {
+		public RangeObservableCollection<DummyModelChild> Children {
 			get;
 			set;
-		} = new ObservableCollection<DummyModelChild> ();
+		} = new RangeObservableCollection<DummyModelChild> ();
 	}
 
 	public class DummyModelChildVM : ViewModelBase<DummyModelChild>
@@ -41,7 +41,7 @@ namespace VAS.Tests.MVVMC
 
 	public class DummyNestedSubVM : NestedSubViewModel<DummyModelWithChilren, DummyNestedSubVM, DummyModelChild, DummyModelChildVM>
 	{
-		public override ObservableCollection<DummyModelChild> ChildModels {
+		public override RangeObservableCollection<DummyModelChild> ChildModels {
 			get {
 				return Model.Children;
 			}

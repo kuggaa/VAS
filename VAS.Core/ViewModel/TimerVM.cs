@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System.Collections.ObjectModel;
+using VAS.Core.Common;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
@@ -40,7 +41,7 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
-		public override ObservableCollection<TimeNode> ChildModels {
+		public override RangeObservableCollection<TimeNode> ChildModels {
 			get {
 				return Model.Nodes;
 			}

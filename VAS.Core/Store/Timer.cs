@@ -19,16 +19,17 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Newtonsoft.Json;
+using VAS.Core.Common;
 
 namespace VAS.Core.Store
 {
 	[Serializable]
 	[PropertyChanged.ImplementPropertyChanged]
-	public class Timer: StorableBase
+	public class Timer : StorableBase
 	{
 		public Timer ()
 		{
-			Nodes = new ObservableCollection<TimeNode> ();
+			Nodes = new RangeObservableCollection<TimeNode> ();
 			ID = Guid.NewGuid ();
 		}
 
@@ -37,7 +38,7 @@ namespace VAS.Core.Store
 			set;
 		}
 
-		public ObservableCollection<TimeNode> Nodes {
+		public RangeObservableCollection<TimeNode> Nodes {
 			get;
 			set;
 		}
