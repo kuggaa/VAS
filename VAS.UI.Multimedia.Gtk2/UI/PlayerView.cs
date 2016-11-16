@@ -48,7 +48,7 @@ namespace VAS.UI
 	{
 		protected const int SCALE_FPS = 25;
 		protected IPlayerController player;
-		protected bool seeking, isPlayingPrevState, muted, ignoreRate, ignoreVolume;
+		protected bool inTimescaleSeek, isPlayingPrevState, muted, ignoreRate, ignoreVolume;
 		protected double previousVLevel = 1;
 		protected VolumeWindow vwin;
 		protected Blackboard blackboard;
@@ -214,7 +214,7 @@ namespace VAS.UI
 			DrawingsVisible = false;
 			timescale.Value = 0;
 			timelabel.Text = "";
-			seeking = false;
+			inTimescaleSeek = false;
 			isPlayingPrevState = false;
 			muted = false;
 			ignoreRate = false;
@@ -278,10 +278,12 @@ namespace VAS.UI
 		{
 			if (playerVM.CurrentTime != null && playerVM.Duration != null) {
 				timelabel.Text = playerVM.CurrentTime.ToMSecondsString (true) + "/" + playerVM.Duration.ToMSecondsString ();
-				if (playerVM.Duration.MSeconds == 0) {
-					timescale.Value = 0;
-				} else {
-					timescale.Value = (double)playerVM.CurrentTime.MSeconds / playerVM.Duration.MSeconds;
+				if (!inTimescaleSeek) {
+					if (playerVM.Duration.MSeconds == 0) {
+						timescale.Value = 0;
+					} else {
+						timescale.Value = (double)playerVM.CurrentTime.MSeconds / playerVM.Duration.MSeconds;
+					}
 				}
 			}
 		}
@@ -308,8 +310,8 @@ namespace VAS.UI
 				args.Event.SetButton (1);
 			}
 
-			if (!seeking) {
-				seeking = true;
+			if (!inTimescaleSeek) {
+				inTimescaleSeek = true;
 				isPlayingPrevState = playerVM.Playing;
 				playerVM.IgnoreTicks = true;
 				playerVM.Pause ();
@@ -325,8 +327,8 @@ namespace VAS.UI
 				args.Event.SetButton (1);
 			}
 
-			if (seeking) {
-				seeking = false;
+			if (inTimescaleSeek) {
+				inTimescaleSeek = false;
 				playerVM.IgnoreTicks = false;
 				if (isPlayingPrevState)
 					playerVM.Play ();
@@ -335,7 +337,7 @@ namespace VAS.UI
 
 		protected virtual void HandleTimescaleValueChanged (object sender, System.EventArgs e)
 		{
-			if (seeking) {
+			if (inTimescaleSeek) {
 				playerVM.Seek (timescale.Value);
 				playerVM.CurrentTime = playerVM.Duration * timescale.Value;
 				UpdateTime ();
