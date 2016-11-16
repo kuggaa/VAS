@@ -420,6 +420,11 @@ namespace VAS.Services.ViewModel
 		}
 
 		#endregion
+
+		public void LoadPlaylistEvent (Playlist playlist, IPlaylistElement element, bool playing)
+		{
+			Player?.LoadPlaylistEvent (playlist, element, playing);
+		}
 	}
 }
 

@@ -51,9 +51,7 @@ namespace VAS.Tests.Services
 		PlaylistImage plImage;
 		Playlist playlist;
 		PlaylistController plController;
-
 		PlayerVM playerVM;
-
 		int elementLoaded;
 
 		[TestFixtureSetUp ()]
