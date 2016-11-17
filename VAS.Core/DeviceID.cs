@@ -30,7 +30,7 @@ namespace VAS.Core.Common
 		const string SYSTEM = "/usr/lib/libSystem.dylib";
 		const string K_IO_MASTERPORT_DEFAULT = "kIOMasterPortDefault";
 		const string IO_SERVICE = "IOService:/";
-		static IntPtr platformUUIDCF = GetCFString ("IOPlatformUUID");
+		const string IO_PLATFORM_UUIDCF = "IOPlatformUUID";
 		static Guid deviceID = Guid.Empty;
 
 		[DllImport (SYSTEM)]
@@ -115,7 +115,7 @@ namespace VAS.Core.Common
 				IntPtr port = dlsym (ioKit, K_IO_MASTERPORT_DEFAULT);
 				IntPtr ioRegistryRoot = IORegistryEntryFromPath (Marshal.ReadIntPtr (port), IO_SERVICE);
 				if (ioRegistryRoot != IntPtr.Zero) {
-					IntPtr uuidCf = IORegistryEntryCreateCFProperty (ioRegistryRoot, platformUUIDCF, IntPtr.Zero, 0);
+					IntPtr uuidCf = IORegistryEntryCreateCFProperty (ioRegistryRoot, GetCFString (IO_PLATFORM_UUIDCF), IntPtr.Zero, 0);
 					if (uuidCf != IntPtr.Zero) {
 						deviceID = Guid.Parse (GetString (uuidCf));
 					}
