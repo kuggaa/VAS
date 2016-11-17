@@ -140,6 +140,22 @@ namespace VAS.Tests.MVVMC
 			Assert.IsFalse (bindable.IsChanged);
 			Assert.AreEqual (0, eventCount);
 		}
+
+		[Test]
+		public void TestIsChangedSetBeforeRaising ()
+		{
+			bool isChanged = false;
+			AnalysisEventType evt = new AnalysisEventType ();
+			evt.IsChanged = false;
+			evt.PropertyChanged += (sender, e) => {
+				isChanged = evt.IsChanged;
+			};
+
+			evt.Name = "RRR";
+
+			Assert.IsTrue (evt.IsChanged);
+			Assert.IsTrue (isChanged);
+		}
 	}
 }
 
