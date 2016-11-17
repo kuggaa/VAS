@@ -51,5 +51,8 @@ namespace VAS.Core.Common
 		public const string LINE_DOUBLE_ARROW = "images/tools/line-double-arrow" + IMAGE_EXT;
 		public const string LINE_DOT = "images/tools/line-dot" + IMAGE_EXT;
 		public const string LINE_DOUBLE_DOT = "images/tools/line-double-dot" + IMAGE_EXT;
+
+		public const string TimelineEventsDND = "timeline-events-dnd";
+		public const string PlaylistElementsDND = "playlist-elements-dnd";
 	}
 }

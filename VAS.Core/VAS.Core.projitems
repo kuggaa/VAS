@@ -200,6 +200,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\IAnalysisViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MediaFileSetVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\VideoPlayerVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\DragContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
