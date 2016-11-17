@@ -79,6 +79,8 @@ namespace VAS.Core.MVVMC
 		/// <param name="sender">Sender of the event</param>
 		protected void RaisePropertyChanged (PropertyChangedEventArgs args, object sender = null)
 		{
+			IsChanged = true;
+
 			if (IgnoreEvents) {
 				return;
 			}
@@ -88,7 +90,6 @@ namespace VAS.Core.MVVMC
 				}
 				PropertyChanged (sender, args);
 			}
-			IsChanged = true;
 		}
 
 		/// <summary>
@@ -184,7 +185,6 @@ namespace VAS.Core.MVVMC
 			}
 			forwarding = true;
 			RaisePropertyChanged (e, sender);
-			IsChanged = true;
 			forwarding = false;
 		}
 	}
