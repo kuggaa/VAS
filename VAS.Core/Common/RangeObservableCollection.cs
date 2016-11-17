@@ -23,6 +23,9 @@ using System.Linq;
 
 namespace VAS.Core.Common
 {
+	/// <summary>
+	/// Range observable collection.
+	/// </summary>
 	[Serializable]
 	public class RangeObservableCollection<T> : ObservableCollection<T>
 	{
@@ -38,17 +41,26 @@ namespace VAS.Core.Common
 		{
 		}
 
+		/// <summary>
+		/// Adds multiple items
+		/// </summary>
+		/// <param name="items">Items to add</param>
 		public void AddRange (IEnumerable<T> items)
 		{
 			if (items.Any ()) {
+				int index = Items.Count;
 				foreach (T item in items) {
 					Items.Add (item);
 				}
-				NotifyCollectionChangedEventArgs e = new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Add, items.ToList ());
+				NotifyCollectionChangedEventArgs e = new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Add, items.ToList (), index);
 				OnCollectionChanged (e);
 			}
 		}
 
+		/// <summary>
+		/// Remove multiple items
+		/// </summary>
+		/// <param name="items">Items to remove</param>
 		public void RemoveRange (IEnumerable<T> items)
 		{
 			foreach (var item in items) {
@@ -58,6 +70,27 @@ namespace VAS.Core.Common
 			OnCollectionChanged (e);
 		}
 
+		/// <summary>
+		/// Inserts multiple items at a specified position
+		/// </summary>
+		/// <param name="index">Position</param>
+		/// <param name="items">Items to add</param>
+		public void InsertRange (int index, IEnumerable<T> items)
+		{
+			if (items.Any ()) {
+				int indexCopy = index;
+				foreach (var item in items) {
+					Items.Insert (index++, item);
+				}
+				NotifyCollectionChangedEventArgs e = new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Add, items.ToList (), indexCopy);
+				OnCollectionChanged (e);
+			}
+		}
+
+		/// <summary>
+		/// Replace all collection with new elements
+		/// </summary>
+		/// <param name="items">Items to replace</param>
 		public void Replace (IEnumerable<T> items)
 		{
 			Items.Clear ();
