@@ -363,4 +363,14 @@ namespace VAS.Core.Events
 
 		public bool Playing { get; set; }
 	}
+
+	/// <summary>
+	/// Event to move <typeparam name="TChild"> elements of different parents:<typeparam name="TParent"> to another one at a specified index
+	/// </summary>
+	public class MoveElementsEvent<TParent, TChild> : Event
+	{
+		public Dictionary<TParent, IEnumerable<TChild>> ElementsToRemove { get; set; }
+		public KeyValuePair<TParent, IEnumerable<TChild>> ElementsToAdd { get; set; }
+		public int Index { get; set; }
+	}
 }
