@@ -54,7 +54,7 @@ namespace VAS.Core.MVVMC
 
 		public override RangeObservableCollection<TVMChild> ViewModels {
 			get {
-				return SubViewModel.ViewModels;
+				return SubViewModel?.ViewModels;
 			}
 		}
 
