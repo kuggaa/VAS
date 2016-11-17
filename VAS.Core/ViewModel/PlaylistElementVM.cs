@@ -29,23 +29,39 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class PlaylistElementVM : ViewModelBase<IPlaylistElement>
 	{
+		/// <summary>
+		/// Gets the description of the playlist element
+		/// </summary>
+		/// <value>The description.</value>
 		public string Description {
 			get {
 				return Model.Description;
 			}
 		}
 
+		/// <summary>
+		/// Gets a miniature image for the playlist element.
+		/// </summary>
+		/// <value>The miniature.</value>
 		public Image Miniature {
 			get {
 				return Model.Miniature;
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.PlaylistElementVM"/> is selected.
+		/// </summary>
+		/// <value><c>true</c> if selected; otherwise, <c>false</c>.</value>
 		public bool Selected {
 			get;
 			set;
 		}
 
+		/// <summary>
+		/// Gets the duration of the playlist element.
+		/// </summary>
+		/// <value>The duration.</value>
 		public Time Duration {
 			get {
 				return Model.Duration;
