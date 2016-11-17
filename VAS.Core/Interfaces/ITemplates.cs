@@ -21,17 +21,17 @@ using System.ComponentModel;
 
 namespace VAS.Core.Interfaces
 {
-	public interface ITemplate: IStorable, INotifyPropertyChanged
+	public interface ITemplate : IStorable, INotifyPropertyChanged
 	{
 		string Name { get; set; }
 
-		bool Static  { get; set; }
+		bool Static { get; set; }
 
 		int Version { get; set; }
 
 	}
 
-	public interface ITemplate<T>: ITemplate
+	public interface ITemplate<T> : ITemplate
 	{
 		T Copy (string newName);
 	}
@@ -42,7 +42,7 @@ namespace VAS.Core.Interfaces
 
 	}
 
-	public interface ITemplateProvider<T>: INotifyCollectionChanged, ITemplateProvider where T: ITemplate
+	public interface ITemplateProvider<T> : INotifyCollectionChanged, ITemplateProvider where T : ITemplate
 	{
 		/// <summary>
 		/// Gets a list of all the templates in this provider.
@@ -94,7 +94,7 @@ namespace VAS.Core.Interfaces
 		/// </summary>
 		/// <param name="templateName">Template name.</param>
 		/// <param name="list">Constructor parameters.</param>
-		T Create (string templateName, params object[] list);
+		T Create (string templateName, params object [] list);
 	}
 }
 
