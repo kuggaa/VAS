@@ -20,6 +20,7 @@ using NUnit.Framework;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.Store;
+using VAS.Core.Store.Templates;
 
 namespace VAS.Tests.Core.Common
 {
@@ -43,6 +44,22 @@ namespace VAS.Tests.Core.Common
 			CheckIStorableClone (new StorableBase ());
 			CheckIStorableClone (new MediaFileSet ());
 			CheckIStorableClone (new TimelineEvent ());
+		}
+
+		[Test ()]
+		public void TestClone_IsBindableBase_ChangeCollectionProperty ()
+		{
+			// Arrange
+			Team team = new Team ();
+			var clonedTeam = team.Clone ();
+
+			team.IsChanged = false;
+
+			// Action
+			team.List.Add (new Utils.PlayerDummy ());
+
+			// Assert
+			Assert.IsTrue (team.IsChanged);
 		}
 	}
 }
