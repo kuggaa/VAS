@@ -152,7 +152,6 @@ namespace VAS.UI.Common
 		void ClearSubViewModels ()
 		{
 			ClearSubViewModelListeners (viewModel.ViewModels);
-			viewModel.ViewModels.CollectionChanged -= ViewModelCollectionChanged;
 			store.Clear ();
 			dictionaryStore.Clear ();
 			dictionaryNestedParent.Clear ();

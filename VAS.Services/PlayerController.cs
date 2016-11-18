@@ -300,13 +300,24 @@ namespace VAS.Services
 			disposed = true;
 		}
 
-		public virtual void Ready ()
+		public virtual void Ready (bool ready)
 		{
-			Log.Debug ("Player ready");
-			ready = true;
-			if (delayedOpen != null) {
-				Log.Debug ("Calling delayed open");
-				delayedOpen ();
+			if (ready) {
+				Log.Debug ("Player ready");
+				this.ready = true;
+				if (delayedOpen != null) {
+					Log.Debug ("Calling delayed open");
+					delayedOpen ();
+					delayedOpen = null;
+				} else if (FileSet == null || !FileSet.Any ()) {
+					ShowMessageInViewPorts (Catalog.GetString ("No video available"), true);
+				}
+			} else {
+				Log.Debug ("Player unready");
+				if (Playing) {
+					Stop ();
+				}
+				this.ready = false;
 				delayedOpen = null;
 			}
 		}

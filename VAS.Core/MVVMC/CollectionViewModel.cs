@@ -131,14 +131,11 @@ namespace VAS.Core.MVVMC
 				}
 				break;
 			case NotifyCollectionChangedAction.Reset:
-				foreach (var vm in ViewModels) {
-					modelToViewModel.Remove (vm.Model);
-				}
 				ViewModels.Clear ();
+				modelToViewModel.Clear ();
 				break;
 			}
 			editing = false;
 		}
 	}
 }
-
