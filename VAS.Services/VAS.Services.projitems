@@ -11,7 +11,6 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)PlayerController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UpdatesNotifier.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)PlaylistManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CoreEventsManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)..\AssemblyInfo\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>

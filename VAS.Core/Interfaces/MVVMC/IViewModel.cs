@@ -21,6 +21,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using VAS.Core.Common;
+using VAS.Core.Store.Playlists;
 
 namespace VAS.Core.Interfaces.MVVMC
 {
@@ -67,6 +68,8 @@ namespace VAS.Core.Interfaces.MVVMC
 		bool PlayerAttached { set; }
 
 		bool ShowDetachButton { set; }
+
+		void LoadPlaylistEvent (Playlist playlist, IPlaylistElement element, bool playing);
 	}
 
 	/// <summary>

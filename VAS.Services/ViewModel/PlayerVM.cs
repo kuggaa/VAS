@@ -44,9 +44,9 @@ namespace VAS.Services.ViewModel
 		MediaFileSet fileset;
 
 
-		public PlayerVM ()
+		public PlayerVM (bool supportMultipleCameras = true)
 		{
-			playerController = new PlayerController (true);
+			playerController = new PlayerController (supportMultipleCameras);
 			playerController.SetViewModel (this);
 			playerController.Start ();
 		}
@@ -420,6 +420,11 @@ namespace VAS.Services.ViewModel
 		}
 
 		#endregion
+
+		public void LoadPlaylistEvent (Playlist playlist, IPlaylistElement element, bool playing)
+		{
+			Player?.LoadPlaylistEvent (playlist, element, playing);
+		}
 	}
 }
 

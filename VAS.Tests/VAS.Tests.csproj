@@ -71,7 +71,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Test.cs" />
     <Compile Include="Core\TestResources.cs" />
     <Compile Include="Core\Common\TestCloner.cs" />
     <Compile Include="Core\Common\TestColor.cs" />
@@ -115,7 +114,6 @@
     <Compile Include="Core\Store\TestTimeNode.cs" />
     <Compile Include="Core\Store\TestTimer.cs" />
     <Compile Include="Services\TestPlayerController.cs" />
-    <Compile Include="Services\TestPlaylistManager.cs" />
     <Compile Include="Setup.cs" />
     <Compile Include="MVVMC\TestCollectionViewModel.cs" />
     <Compile Include="MVVMC\TestControllerLocator.cs" />
