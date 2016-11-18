@@ -254,9 +254,9 @@ namespace VAS.Services.ViewModel
 			playerController.Expose ();
 		}
 
-		public void Ready ()
+		public void Ready (bool ready)
 		{
-			playerController.Ready ();
+			playerController.Ready (ready);
 		}
 
 		public void Play ()

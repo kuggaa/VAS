@@ -17,6 +17,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -46,22 +47,18 @@ namespace VAS.Services.Controller
 			Stop ();
 		}
 
-		public bool ShouldHandleSave {
-			get;
-			set;
-		} = true;
-
 		protected ProjectsManagerVM<TModel, TViewModel> ViewModel {
 			get {
 				return viewModel;
 			}
 			set {
 				if (viewModel != null) {
-					viewModel.PropertyChanged -= HandleSelectionChanged;
+					viewModel.Selection.CollectionChanged -= HandleSelectionChanged;
 				}
 				viewModel = value;
-				viewModel.PropertyChanged += HandleSelectionChanged;
-				viewModel.Select (viewModel.Model.FirstOrDefault ());
+				if (started) {
+					viewModel.Selection.CollectionChanged += HandleSelectionChanged;
+				}
 			}
 		}
 
@@ -82,6 +79,9 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.SubscribeAsync<UpdateEvent<TModel>> (HandleSave);
 			App.Current.EventsBroker.SubscribeAsync<CreateEvent<TModel>> (HandleNew);
 			App.Current.EventsBroker.SubscribeAsync<DeleteEvent<TModel>> (HandleDelete);
+			if (viewModel != null) {
+				viewModel.Selection.CollectionChanged += HandleSelectionChanged;
+			}
 			started = true;
 		}
 
@@ -95,6 +95,9 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.UnsubscribeAsync<UpdateEvent<TModel>> (HandleSave);
 			App.Current.EventsBroker.UnsubscribeAsync<CreateEvent<TModel>> (HandleNew);
 			App.Current.EventsBroker.UnsubscribeAsync<DeleteEvent<TModel>> (HandleDelete);
+			if (viewModel != null) {
+				viewModel.Selection.CollectionChanged -= HandleSelectionChanged;
+			}
 			started = false;
 		}
 
@@ -175,13 +178,9 @@ namespace VAS.Services.Controller
 			evt.ReturnValue = await Save (project, true);
 		}
 
-		async void HandleSelectionChanged (object sender, PropertyChangedEventArgs e)
+		async void HandleSelectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
 			TModel loadedProject = null;
-
-			if (e.PropertyName != "Selection") {
-				return;
-			}
 
 			ProjectVM<TModel> projectVM = ViewModel.Selection.FirstOrDefault ();
 
@@ -206,9 +205,6 @@ namespace VAS.Services.Controller
 
 		async Task<bool> Save (TModel project, bool force)
 		{
-			if (!ShouldHandleSave) {
-				return false;
-			}
 			if (!force && project.IsChanged) {
 				string msg = Catalog.GetString ("Do you want to save the current project?");
 				if (!(await App.Current.Dialogs.QuestionMessage (msg, null, this))) {

@@ -58,7 +58,7 @@ namespace VAS.Core.Interfaces.GUI
 		/// This method creates the controllers. And receives data.
 		/// </summary>
 		/// <returns>The task result.</returns>
-		/// <param name="data">ViewModel to be used</param>
+		/// <param name="data">It can be a ViewModel or an ExpandoObject with other properties</param>
 		Task<bool> LoadState (dynamic data);
 
 		/// <summary>

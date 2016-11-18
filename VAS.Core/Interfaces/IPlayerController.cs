@@ -215,7 +215,7 @@ namespace VAS.Core.Interfaces
 		/// The view should call it when it's ready to start playback,
 		/// once it has set a valid window handle to start rendering.
 		/// </summary>
-		void Ready ();
+		void Ready (bool ready);
 
 		/// <summary>
 		/// Applies the configured RegionOfInterest for a given camera.

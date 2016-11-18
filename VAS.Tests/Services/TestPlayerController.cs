@@ -168,7 +168,7 @@ namespace VAS.Tests.Services
 			viewPortMock = new Mock<IViewPort> ();
 			viewPortMock.SetupAllProperties ();
 			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
-			player.Ready ();
+			player.Ready (true);
 			player.Open (mfs);
 			if (readyToSeek) {
 				playerMock.Raise (p => p.ReadyToSeek += null, this);
@@ -278,7 +278,7 @@ namespace VAS.Tests.Services
 				multimediaError = true;
 			});
 
-			player.Ready ();
+			player.Ready (true);
 			player.Open (mfs);
 			Assert.IsTrue (multimediaError);
 			Assert.IsNull (player.FileSet);
@@ -335,7 +335,7 @@ namespace VAS.Tests.Services
 
 			/* Check now with a still image loaded */
 			playerMock.ResetCalls ();
-			player.Ready ();
+			player.Ready (true);
 			player.LoadPlaylistEvent (playlist, plImage, true);
 			player.Play ();
 			playerMock.Verify (p => p.Play (It.IsAny<bool> ()), Times.Never ());
@@ -373,7 +373,7 @@ namespace VAS.Tests.Services
 				strLenght = d;
 			};
 			player.LoadDrawingsEvent += (f) => drawingsCount++;
-			player.Ready ();
+			player.Ready (true);
 			player.Open (mfs);
 			Assert.AreEqual (0, timeChanged);
 
@@ -994,7 +994,7 @@ namespace VAS.Tests.Services
 			viewPortMock = new Mock<IViewPort> ();
 			viewPortMock.SetupAllProperties ();
 			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
-			player.Ready ();
+			player.Ready (true);
 			player.LoadEvent (evt2, new Time (0), true);
 			// Only valid cameras should be visible although no fileset was opened.
 			Assert.AreEqual (2, player.CamerasConfig.Count);
@@ -1043,7 +1043,7 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (1, prepareView);
 			Assert.IsNull (player.FileSet);
 
-			player.Ready ();
+			player.Ready (true);
 			Assert.AreEqual (1, elementLoaded);
 			Assert.AreEqual (1, brokerElementLoaded);
 			Assert.AreEqual (mfs, player.FileSet);
@@ -1146,7 +1146,7 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (0, elementLoaded);
 			Assert.AreEqual (1, prepareView);
 
-			player.Ready ();
+			player.Ready (true);
 			Assert.AreEqual (1, elementLoaded);
 			elementLoaded = 0;
 			Assert.AreEqual (el1.CamerasConfig, player.CamerasConfig);
@@ -1204,7 +1204,7 @@ namespace VAS.Tests.Services
 		public void TestLoadPlaylistEventNullPlayList ()
 		{
 			/* Load video */
-			player.Ready ();
+			player.Ready (true);
 			PlaylistVideo vid = new PlaylistVideo (mfs [0]);
 			player.LoadPlaylistEvent (null, vid, true);
 			Assert.IsFalse (player.Playing);
