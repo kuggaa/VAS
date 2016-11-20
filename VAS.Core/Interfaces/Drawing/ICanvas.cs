@@ -18,19 +18,41 @@
 using System;
 using VAS.Core.Common;
 using VAS.Core.Handlers.Drawing;
-using VAS.Core.Interfaces.Drawing;
+using VAS.Core.Interfaces.GUI;
+using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.Interfaces.Drawing
 {
-
-	public interface ICanvas: IDisposable
+	public interface ICanvasView : IView
 	{
 		void Draw (IContext context, Area area);
 
 		void SetWidget (IWidget widget);
 	}
 
-	public interface ICanvasObject: IDisposable
+	public interface ICanvasView<TViewModel> : IView<TViewModel>, ICanvasView
+		where TViewModel : IViewModel
+	{
+	}
+
+	public interface ICanvasObjectView : IView
+	{
+		void Draw (IDrawingToolkit tk, Area area);
+	}
+
+	public interface ICanvasObjectView<TViewModel> : IView<TViewModel>, ICanvasObjectView
+		where TViewModel : IViewModel
+	{
+	}
+
+	public interface ICanvas : IDisposable
+	{
+		void Draw (IContext context, Area area);
+
+		void SetWidget (IWidget widget);
+	}
+
+	public interface ICanvasObject : IDisposable, IVisible
 	{
 		event CanvasHandler ClickedEvent;
 		event RedrawHandler RedrawEvent;
@@ -46,11 +68,11 @@ namespace VAS.Core.Interfaces.Drawing
 		void ClickReleased ();
 	}
 
-	public interface ICanvasSelectableObject: ICanvasObject, IMovableObject
+	public interface ICanvasSelectableObject : ICanvasObject, IMovableObject
 	{
 	}
 
-	public interface ICanvasDrawableObject: ICanvasSelectableObject
+	public interface ICanvasDrawableObject : ICanvasSelectableObject
 	{
 		IBlackboardObject IDrawableObject {
 			get;

@@ -1,4 +1,4 @@
-﻿//
+//
 //  Copyright (C) 2016 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -15,13 +15,45 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+
 using System;
-namespace VAS.Tests.Core.ViewModel
+using VAS.Core.Common;
+using VAS.Core.Interfaces.Drawing;
+using VAS.Core.ViewModel;
+using VAS.Core.MVVMC;
+
+namespace VAS.Drawing.CanvasObjects.Timeline
 {
-	public class TestEventTypesTimelineVM
+
+	[View ("EventTypeLabelView")]
+	public class EventTypeLabelView : LabelView, ICanvasObjectView<EventTypeVM>
 	{
-		public TestEventTypesTimelineVM ()
+		EventTypeVM viewModel;
+
+		public override Color Color {
+			get {
+				return ViewModel.Color;
+			}
+		}
+
+		public override string Name {
+			get {
+				return ViewModel.Name;
+			}
+		}
+
+		public EventTypeVM ViewModel {
+			get {
+				return viewModel;
+			}
+			set {
+				viewModel = value;
+			}
+		}
+
+		public void SetViewModel (object viewModel)
 		{
+			ViewModel = (EventTypeVM)viewModel;
 		}
 	}
 }

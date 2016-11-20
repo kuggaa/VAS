@@ -62,7 +62,7 @@ namespace VAS.Drawing.CanvasObjects
 			set;
 		}
 
-		public bool Visible {
+		public virtual bool Visible {
 			get;
 			set;
 		}

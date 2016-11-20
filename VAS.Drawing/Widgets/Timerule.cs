@@ -16,21 +16,22 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.ComponentModel;
 using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Handlers;
-using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
-using VAS.Drawing;
 using VAS.Drawing.CanvasObjects.Timeline;
-using VASDrawing = VAS.Drawing;
+using VAS.Core.MVVMC;
 
 namespace VAS.Drawing.Widgets
 {
-	public class Timerule : SelectionCanvas
+	[View ("TimeruleView")]
+	public class Timerule : SelectionCanvas, ICanvasView<IAnalysisViewModel>
 	{
 		public event EventHandler CenterPlayheadClicked;
 		public event SeekEventHandler SeekEvent;
@@ -38,19 +39,19 @@ namespace VAS.Drawing.Widgets
 		const int MINIMUM_TIME_SPACING = 80;
 		int bigLineHeight = 15;
 		int smallLineHeight = 5;
+		int fontSize;
 		readonly int [] MARKER = new int [] { 1, 2, 5, 10, 30, 60, 120, 300, 600, 1200 };
-		NeedleObject needle;
+		NeedleView needle;
 		double scroll;
 		double secondsPerPixel;
 		double timeSpacing = 100.0;
 		Time currentTime;
 		Time duration;
-		IVideoPlayerController player;
-		int fontSize;
+		IAnalysisViewModel viewModel;
 
 		public Timerule (IWidget widget) : base (widget)
 		{
-			needle = new NeedleObject ();
+			needle = new NeedleView ();
 			AddObject (needle);
 			SecondsPerPixel = 0.1;
 			currentTime = new Time (0);
@@ -65,15 +66,23 @@ namespace VAS.Drawing.Widgets
 		{
 		}
 
-		protected override void Dispose (bool disposing)
-		{
-			if (Disposed)
-				return;
-
-			if (disposing) {
-				Player = null;
+		public IAnalysisViewModel ViewModel {
+			get {
+				return viewModel;
 			}
-			base.Dispose (disposing);
+
+			set {
+				if (viewModel != null) {
+					viewModel.PropertyChanged -= HandleFileSetPropertyChanged;
+					viewModel.PlayerVM.Player.PlaybackStateChangedEvent -= HandlePlaybackStateChanged;
+				}
+				viewModel = value;
+				if (viewModel != null) {
+					viewModel.PropertyChanged += HandleFileSetPropertyChanged;
+					viewModel.PlayerVM.Player.PlaybackStateChangedEvent += HandlePlaybackStateChanged;
+				}
+				Duration = viewModel.Project.FileSet.Duration;
+			}
 		}
 
 		public double Scroll {
@@ -83,19 +92,6 @@ namespace VAS.Drawing.Widgets
 			}
 			protected get {
 				return scroll;
-			}
-		}
-
-		public Time Duration {
-			set {
-				if (duration != value) {
-					duration = value;
-					needle.ResetDrawArea ();
-					widget?.ReDraw ();
-				}
-			}
-			protected get {
-				return duration;
 			}
 		}
 
@@ -140,21 +136,6 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
-		public IVideoPlayerController Player {
-			get {
-				return player;
-			}
-			set {
-				if (player != null) {
-					player.PlaybackStateChangedEvent -= HandlePlaybackStateChanged;
-				}
-				player = value;
-				if (player != null) {
-					player.PlaybackStateChangedEvent += HandlePlaybackStateChanged;
-				}
-			}
-		}
-
 		/// <summary>
 		/// Flag to set the mode to AdjustSizeToDuration.
 		/// AdjustSizeToDuration mode means that the timerule area will include the whole duration, without scroll.
@@ -190,6 +171,22 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
+		Time Duration {
+			set {
+				if (duration != value) {
+					duration = value;
+					if (duration.MSeconds == 0) {
+						currentTime = duration;
+					}
+					needle.ResetDrawArea ();
+					widget?.ReDraw ();
+				}
+			}
+			get {
+				return duration;
+			}
+		}
+
 		int RuleHeight {
 			get;
 			set;
@@ -221,6 +218,11 @@ namespace VAS.Drawing.Widgets
 		bool WasPlaying {
 			get;
 			set;
+		}
+
+		public void SetViewModel (object viewModel)
+		{
+			ViewModel = (IAnalysisViewModel)viewModel;
 		}
 
 		protected override void StartMove (Selection sel)
@@ -369,6 +371,11 @@ namespace VAS.Drawing.Widgets
 			}
 			needle.Draw (tk, area);
 			End ();
+		}
+
+		void HandleFileSetPropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			Duration = ViewModel.Project.FileSet.Duration;
 		}
 	}
 }

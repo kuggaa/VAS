@@ -1,5 +1,5 @@
-﻿//
-//  Copyright (C) 2016 Fluendo S.A.
+//
+//  Copyright (C) 2014 Andoni Morales Alastruey <ylatuya@gmail.com>
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,18 +15,38 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-//
-
+using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
-using VAS.Core.Store.Playlists;
+using VAS.Core.ViewModel;
 
-namespace VAS.Core.ViewModel
+namespace VAS.Drawing.CanvasObjects.Timeline
 {
-	/// <summary>
-	/// ViewModel for a collection of PlaylistVM, each with a Playlist as a Model.
-	/// </summary>
-	public class PlaylistCollectionVM : CollectionViewModel<Playlist, PlaylistVM>
+	[View ("TimerTimeNodeView")]
+	public class TimerTimeNodeView : TimeNodeView, ICanvasObjectView<TimeNodeVM>
 	{
+		TimeNodeVM viewModel;
+
+		public TimeNodeVM ViewModel {
+			get {
+				return viewModel;
+			}
+			set {
+				viewModel = value;
+			}
+		}
+
+		/// <summary>
+		/// The timer that hodsl the time node used in this view.
+		/// </summary>
+		/// <value>The timer.</value>
+		public TimerVM Timer {
+			get;
+			set;
+		}
+
+		public void SetViewModel (object viewModel)
+		{
+			ViewModel = (TimeNodeVM)viewModel;
+		}
 	}
 }
-

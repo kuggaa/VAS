@@ -36,12 +36,12 @@ namespace VAS.Services.Controller
 		PlaylistCollectionVM viewModel;
 		ProjectVM<Project> projectViewModel;
 
-		public PlaylistController (IVideoPlayerViewModel playerVM)
+		public PlaylistController (VideoPlayerVM playerVM)
 		{
 			PlayerVM = playerVM;
 		}
 
-		public IVideoPlayerViewModel PlayerVM {
+		public VideoPlayerVM PlayerVM {
 			get;
 			set;
 		}

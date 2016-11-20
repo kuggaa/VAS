@@ -18,18 +18,29 @@
 using System.Linq;
 using NUnit.Framework;
 using VAS.Core.MVVMC;
+
 namespace VAS.Tests.MVVMC
 {
 	[TestFixture]
 	public class TestNestedViewModel
 	{
+		NestedViewModel<ViewModelBase<BindableBase>> viewModel;
+		ViewModelBase<BindableBase> child1, child2;
+
+		[SetUp]
+		public void SetUp ()
+		{
+			viewModel = new NestedViewModel<ViewModelBase<BindableBase>> ();
+			child1 = new ViewModelBase<BindableBase> ();
+			child2 = new ViewModelBase<BindableBase> ();
+			viewModel.ViewModels.Add (child1);
+			viewModel.ViewModels.Add (child2);
+		}
+
 		[Test]
 		public void TestEnumerator ()
 		{
-			var viewModel = new NestedViewModel<ViewModelBase<BindableBase>> ();
-			viewModel.ViewModels.Add (new ViewModelBase<BindableBase> ());
-
-			Assert.AreEqual (1, viewModel.Count ());
+			Assert.AreEqual (2, viewModel.Count ());
 		}
 
 		[Test]
@@ -37,11 +48,6 @@ namespace VAS.Tests.MVVMC
 		{
 			int count = 0;
 			string propName = "";
-			var viewModel = new NestedViewModel<ViewModelBase<BindableBase>> ();
-			var child1 = new ViewModelBase<BindableBase> ();
-			var child2 = new ViewModelBase<BindableBase> ();
-			viewModel.ViewModels.Add (child1);
-			viewModel.ViewModels.Add (child2);
 			viewModel.PropertyChanged += (sender, e) => { count++; propName = e.PropertyName; };
 
 			viewModel.Select (child1);
@@ -56,11 +62,6 @@ namespace VAS.Tests.MVVMC
 		{
 			int count = 0;
 			string propName = "";
-			var viewModel = new NestedViewModel<ViewModelBase<BindableBase>> ();
-			var child1 = new ViewModelBase<BindableBase> ();
-			var child2 = new ViewModelBase<BindableBase> ();
-			viewModel.ViewModels.Add (child1);
-			viewModel.ViewModels.Add (child2);
 			viewModel.Select (child1);
 			viewModel.PropertyChanged += (sender, e) => { count++; propName = e.PropertyName; };
 
@@ -77,11 +78,6 @@ namespace VAS.Tests.MVVMC
 		{
 			int count = 0;
 			string propName = "";
-			var viewModel = new NestedViewModel<ViewModelBase<BindableBase>> ();
-			var child1 = new ViewModelBase<BindableBase> ();
-			var child2 = new ViewModelBase<BindableBase> ();
-			viewModel.ViewModels.Add (child1);
-			viewModel.ViewModels.Add (child2);
 			viewModel.Select (child1);
 			viewModel.PropertyChanged += (sender, e) => { count++; propName = e.PropertyName; };
 

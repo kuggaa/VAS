@@ -19,7 +19,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controller\ProjectsController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)State\ScreenState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\EventsController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\VideoPlayerVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\PlaylistController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TemplatesService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)State\DrawingToolState.cs" />
@@ -27,7 +26,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)State\JobsManagerState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TemplateManagerViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectsManagerVM.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlayerVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\JobsManagerVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\DrawingToolVM.cs" />
   </ItemGroup>

@@ -15,18 +15,16 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-//
-
+using System;
 using VAS.Core.MVVMC;
-using VAS.Core.Store.Playlists;
 
-namespace VAS.Core.ViewModel
+namespace VAS.Drawing
 {
-	/// <summary>
-	/// ViewModel for a collection of PlaylistVM, each with a Playlist as a Model.
-	/// </summary>
-	public class PlaylistCollectionVM : CollectionViewModel<Playlist, PlaylistVM>
+	public static class DrawingInit
 	{
+		public static void ScanViews ()
+		{
+			Scanner.ScanViews (App.Current.ViewLocator);
+		}
 	}
 }
-

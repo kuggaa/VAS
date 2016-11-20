@@ -63,7 +63,7 @@ namespace VAS.Tests.Core.ViewModel
 			viewModel.PropertyChanged += (sender, e) => count++;
 			model.Name = "Test2";
 
-			Assert.AreEqual (2, count);
+			Assert.AreEqual (4, count);
 		}
 	}
 }

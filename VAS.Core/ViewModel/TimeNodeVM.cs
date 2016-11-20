@@ -18,11 +18,19 @@
 using System;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
+using VAS.Core.Interfaces.GUI;
 
 namespace VAS.Core.ViewModel
 {
-	public class TimeNodeVM : ViewModelBase<TimeNode>
+	/// <summary>
+	/// ViewModel for <see cref="TimeNode"/> objects.
+	/// </summary>
+	public class TimeNodeVM : ViewModelBase<TimeNode>, IVisible
 	{
+		public TimeNodeVM ()
+		{
+			Visible = true;
+		}
 
 		/// <summary>
 		/// Gets or sets the name.
@@ -71,6 +79,25 @@ namespace VAS.Core.ViewModel
 			set {
 				Model.EventTime = value;
 			}
+		}
+
+		/// <summary>
+		/// Gets the duration.
+		/// </summary>
+		/// <value>The duration.</value>
+		public Time Duration {
+			get {
+				return Model.Duration;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.TimeNodeVM"/> is visible.
+		/// </summary>
+		/// <value><c>true</c> if visible; otherwise, <c>false</c>.</value>
+		public virtual bool Visible {
+			get;
+			set;
 		}
 	}
 }

@@ -27,7 +27,7 @@ namespace VAS.Tests.MVVMC
 	{
 	}
 
-	public class DummyModelWithChilren : BindableBase
+	public class DummyModelWithChildren : BindableBase
 	{
 		public RangeObservableCollection<DummyModelChild> Children {
 			get;
@@ -39,7 +39,7 @@ namespace VAS.Tests.MVVMC
 	{
 	}
 
-	public class DummyNestedSubVM : NestedSubViewModel<DummyModelWithChilren, DummyNestedSubVM, DummyModelChild, DummyModelChildVM>
+	public class DummyNestedSubVM : NestedSubViewModel<DummyModelWithChildren, DummyNestedSubVM, DummyModelChild, DummyModelChildVM>
 	{
 		public override RangeObservableCollection<DummyModelChild> ChildModels {
 			get {
@@ -52,7 +52,7 @@ namespace VAS.Tests.MVVMC
 	public class TestNestedSubViewModel
 	{
 		DummyModelChild child1, child2, child3;
-		DummyModelWithChilren model;
+		DummyModelWithChildren model;
 		DummyNestedSubVM viewModel;
 
 		[SetUp]
@@ -61,7 +61,7 @@ namespace VAS.Tests.MVVMC
 			child1 = new DummyModelChild ();
 			child2 = new DummyModelChild ();
 			child3 = new DummyModelChild ();
-			model = new DummyModelWithChilren ();
+			model = new DummyModelWithChildren ();
 			model.Children.Add (child1);
 			model.Children.Add (child2);
 			model.Children.Add (child3);
@@ -81,16 +81,16 @@ namespace VAS.Tests.MVVMC
 		[Test]
 		public void TestReplaceModel ()
 		{
-			child1 = new DummyModelChild ();
-			child2 = new DummyModelChild ();
-			model = new DummyModelWithChilren ();
-			model.Children.Add (child1);
-			model.Children.Add (child2);
+			var child4 = new DummyModelChild ();
+			var child5 = new DummyModelChild ();
+			model = new DummyModelWithChildren ();
+			model.Children.Add (child4);
+			model.Children.Add (child5);
 			viewModel.Model = model;
 
 			Assert.AreEqual (2, viewModel.Count ());
-			Assert.AreSame (child1, viewModel.ViewModels [0].Model);
-			Assert.AreSame (child2, viewModel.ViewModels [1].Model);
+			Assert.AreSame (child4, viewModel.ViewModels [0].Model);
+			Assert.AreSame (child5, viewModel.ViewModels [1].Model);
 		}
 
 		[Test]

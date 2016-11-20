@@ -34,16 +34,16 @@ namespace VAS.Core.ViewModel
 		public ProjectVM ()
 		{
 			Timers = new CollectionViewModel<Timer, TimerVM> ();
+			Timeline = new TimelineVM ();
 			Playlists = new PlaylistCollectionVM ();
 			EventTypes = new CollectionViewModel<EventType, EventTypeVM> ();
-			EventTypesTimeline = new EventTypesTimelineVM ();
+			FileSet = new MediaFileSetVM ();
 		}
 
 		public override Project Model {
 			get {
 				return model;
 			}
-
 			set {
 				model = value;
 				UpdateModels ();
@@ -81,7 +81,16 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the event types timeline vm.
 		/// </summary>
 		/// <value>The event types timeline vm.</value>
-		public EventTypesTimelineVM EventTypesTimeline {
+		public TimelineVM Timeline {
+			get;
+			protected set;
+		}
+
+		/// <summary>
+		/// Gets or sets the file set.
+		/// </summary>
+		/// <value>The file set.</value>
+		public MediaFileSetVM FileSet {
 			get;
 			protected set;
 		}
@@ -97,19 +106,6 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
-		/// Gets or sets the media file set.
-		/// </summary>
-		/// <value>The file set.</value>
-		public MediaFileSet FileSet {
-			get {
-				return Model.FileSet;
-			}
-			set {
-				Model.FileSet = value;
-			}
-		}
-
-		/// <summary>
 		/// Gets a value indicating whether the project has been edited.
 		/// </summary>
 		/// <value><c>true</c> if edited; otherwise, <c>false</c>.</value>
@@ -119,11 +115,18 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Updates the model in the child ViewModel. Super classes should override this function to update their
+		/// own child ViewModel.
+		/// </summary>
 		protected virtual void UpdateModels ()
 		{
 			Playlists.Model = Model.Playlists;
 			EventTypes.Model = Model.EventTypes;
 			Timers.Model = Model.Timers;
+			Timeline.CreateEventTypeTimelines (EventTypes);
+			Timeline.Model = Model.Timeline;
+			FileSet.Model = Model.FileSet;
 		}
 	}
 

@@ -367,4 +367,10 @@ namespace VAS.Core.Events
 
 	}
 
+	public class LoadTimelineEvent<T> : Event
+	{
+		public T Object { get; set; }
+
+		public bool Playing { get; set; }
+	}
 }
