@@ -34,9 +34,9 @@ using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
+using VAS.Core.ViewModel;
 using VAS.Drawing.Cairo;
 using VAS.Drawing.Widgets;
-using VAS.Services.ViewModel;
 
 
 namespace VAS.UI
@@ -123,7 +123,7 @@ namespace VAS.UI
 
 		protected override void OnUnrealized ()
 		{
-			playerVM.Stop ();
+			playerVM?.Stop ();
 			base.OnUnrealized ();
 		}
 
@@ -418,7 +418,7 @@ namespace VAS.UI
 				playerVM.Volume = previousVLevel;
 
 			if (!ignoreRate) {
-				playerVM.SetRate (val);
+				playerVM.Rate = val;
 
 			}
 		}

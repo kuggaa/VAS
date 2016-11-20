@@ -77,4 +77,3 @@ namespace VAS.Core.ViewModel
 		}
 	}
 }
-

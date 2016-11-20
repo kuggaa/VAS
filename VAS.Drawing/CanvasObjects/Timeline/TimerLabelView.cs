@@ -1,4 +1,4 @@
-﻿//
+//
 //  Copyright (C) 2016 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -15,29 +15,32 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
-using VAS.Core.MVVMC;
 
-namespace VAS.Core.ViewModel
+using VAS.Core.Interfaces.Drawing;
+using VAS.Core.MVVMC;
+using VAS.Core.ViewModel;
+
+namespace VAS.Drawing.CanvasObjects.Timeline
 {
-	/// <summary>
-	/// A nested collection of all the timeline's <see cref="TimelineEvent"/> grouped by <see cref="EventType"/>,
-	/// where the first level of the of the collection is a list of the <see cref="EventType"/> view models.
-	/// Each <see cref="EventType"/> view model in the collection contains a collection of all the
-	/// <see cref="TimelineEvent"/> view models from the same event type.
-	/// This type of collection is used to represent timeline events in a tree view grouped by event types or in
-	/// timeline widget where each row show the timeline events for a given a event type.
-	/// </summary>
-	public class EventTypesTimelineVM : NestedViewModel<EventTypeTimelineVM>
+
+	[View ("TimerLabelView")]
+	public class TimerLabelView : LabelView, ICanvasObjectView<TimerVM>
 	{
-		public PlaylistCollectionVM Playlists {
+		public override string Name {
+			get {
+				return ViewModel.Name;
+			}
+		}
+
+		public TimerVM ViewModel {
 			get;
 			set;
 		}
 
-		public VMChild LoadedEvent {
-			get;
-			set;
+		public void SetViewModel (object viewModel)
+		{
+			ViewModel = viewModel as TimerVM;
 		}
 	}
+
 }

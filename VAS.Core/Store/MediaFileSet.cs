@@ -29,7 +29,7 @@ namespace VAS.Core.Store
 	[Serializable]
 	[PropertyChanged.ImplementPropertyChanged]
 	[JsonObject]
-	public class MediaFileSet : ObservableCollection<MediaFile>, IStorable
+	public class MediaFileSet : RangeObservableCollection<MediaFile>, IStorable
 	{
 		[NonSerialized]
 		IStorage storage;
@@ -122,7 +122,7 @@ namespace VAS.Core.Store
 
 		[JsonProperty]
 		[Obsolete]
-		Dictionary <MediaFileAngle, MediaFile> Files {
+		Dictionary<MediaFileAngle, MediaFile> Files {
 			set {
 				// Transform old Files dict to ordered list
 				foreach (KeyValuePair<MediaFileAngle, MediaFile> File in value) {

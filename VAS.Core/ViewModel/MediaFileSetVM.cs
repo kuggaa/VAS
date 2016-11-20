@@ -15,18 +15,35 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-//
-
+using System;
 using VAS.Core.MVVMC;
-using VAS.Core.Store.Playlists;
+using VAS.Core.Store;
+using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.ViewModel
 {
 	/// <summary>
-	/// ViewModel for a collection of PlaylistVM, each with a Playlist as a Model.
+	/// A ViewModel for <see cref="MediaFileSet"/>.
 	/// </summary>
-	public class PlaylistCollectionVM : CollectionViewModel<Playlist, PlaylistVM>
+	public class MediaFileSetVM : CollectionViewModel<MediaFile, MediaFileVM>, IViewModel<MediaFileSet>
 	{
+		public new MediaFileSet Model {
+			get {
+				return base.Model as MediaFileSet;
+			}
+			set {
+				base.Model = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets the duration of the media file set.
+		/// </summary>
+		/// <value>The duration.</value>
+		public Time Duration {
+			get {
+				return Model.Duration;
+			}
+		}
 	}
 }
-

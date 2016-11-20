@@ -31,6 +31,7 @@ using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
+using VAS.Core.ViewModel;
 using VAS.Services.ViewModel;
 using Timer = System.Threading.Timer;
 
@@ -300,6 +301,11 @@ namespace VAS.Services
 			disposed = true;
 		}
 
+		public void SetViewModel (IViewModel viewModel)
+		{
+			playerVM = (VideoPlayerVM)viewModel;
+		}
+
 		public virtual void Ready (bool ready)
 		{
 			if (ready) {
@@ -325,6 +331,17 @@ namespace VAS.Services
 		public virtual void Open (MediaFileSet fileSet, bool play = false)
 		{
 			Log.Debug ("Openning file set");
+			if (fileSet == null || !fileSet.Any ()) {
+				Stop ();
+				EmitTimeChanged (new Time (0), new Time (0));
+				FileSet = fileSet;
+				IgnoreTicks = true;
+				ShowMessageInViewPorts (Catalog.GetString ("No video loaded"), true);
+				return;
+			}
+
+			IgnoreTicks = false;
+			ShowMessageInViewPorts (null, false);
 			if (ready) {
 				InternalOpen (fileSet, true, true, play, true);
 			} else {
@@ -841,12 +858,6 @@ namespace VAS.Services
 		{
 		}
 
-		//FIXME: MVVMC to be implemented
-		void IController.SetViewModel (IViewModel viewModel)
-		{
-			playerVM = (VideoPlayerVM)viewModel;
-		}
-
 		IEnumerable<KeyAction> IController.GetDefaultKeyActions ()
 		{
 			return new KeyAction [] {
@@ -896,13 +907,6 @@ namespace VAS.Services
 		}
 
 		#endregion
-
-		public virtual void ResetCounter ()
-		{
-			Stop ();
-			EmitTimeChanged (new Time (0), new Time (0));
-			IgnoreTicks = true;
-		}
 
 		#region Signals
 
@@ -981,7 +985,6 @@ namespace VAS.Services
 
 		protected virtual void EmitMediaFileSetLoaded (MediaFileSet fileSet, ObservableCollection<CameraConfig> camerasVisible)
 		{
-			playerVM.FileSet = fileSet;
 			playerVM.CamerasConfig = camerasVisible;
 			if (MediaFileSetLoadedEvent != null && !disposed) {
 				MediaFileSetLoadedEvent (fileSet, camerasVisible);

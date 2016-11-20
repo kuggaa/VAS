@@ -50,7 +50,7 @@ namespace VAS.Tests.Core.ViewModel
 				Model = model
 			};
 
-			Assert.AreEqual (model.FileSet, viewModel.FileSet);
+			Assert.AreEqual (model.FileSet, viewModel.FileSet.Model);
 			Assert.AreEqual (model.ShortDescription, viewModel.ShortDescription);
 		}
 

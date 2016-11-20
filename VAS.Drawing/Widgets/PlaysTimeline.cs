@@ -16,20 +16,20 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Events;
-using VAS.Core.Filters;
 using VAS.Core.Handlers;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
-using VAS.Drawing;
+using VAS.Core.ViewModel;
 using VAS.Drawing.CanvasObjects;
 using VAS.Drawing.CanvasObjects.Timeline;
-using LMCommon = VAS.Core.Common;
-using VASDrawing = VAS.Drawing;
 
 namespace VAS.Drawing.Widgets
 {
@@ -42,48 +42,58 @@ namespace VAS.Drawing.Widgets
 		public event ShowTimersMenuHandler ShowTimersMenuEvent;
 		public event ShowTimerMenuHandler ShowTimerMenuEvent;
 
-		protected Project project;
-		protected EventsFilter playsFilter;
+		protected int labelWidth, labelHeight, eventTypesStartIndex;
 		protected double secondsPerPixel;
 		protected Time duration, currentTime;
 		protected TimelineEvent loadedEvent;
 		protected bool movingTimeNode;
-		protected Dictionary<TimelineObject, object> timelineToFilter;
-		protected Dictionary<EventType, CategoryTimeline> eventsTimelines;
+		protected Dictionary<IViewModel, TimelineView> viewModelToView;
+		IAnalysisViewModel viewModel;
 
-		public PlaysTimeline (IWidget widget, IVideoPlayerController player) : base (widget)
+		public PlaysTimeline (IWidget widget) : base (widget)
 		{
-			eventsTimelines = new Dictionary<EventType, CategoryTimeline> ();
-			timelineToFilter = new Dictionary<TimelineObject, object> ();
+			viewModelToView = new Dictionary<IViewModel, TimelineView> ();
 			secondsPerPixel = 0.1;
 			Accuracy = Constants.TIMELINE_ACCURACY;
 			SelectionMode = MultiSelectionMode.MultipleWithModifier;
-			SingleSelectionObjects.Add (typeof (TimerTimeNodeObject));
+			SingleSelectionObjects.Add (typeof (TimerTimeNodeView));
 			currentTime = new Time (0);
-			Player = player;
-
-			App.Current.EventsBroker.Subscribe<LoadVideoEvent> (HandleLoadVideoMessage);
-			App.Current.EventsBroker.Subscribe<CloseVideoEvent> (HandleCloseVideoEvent);
+			duration = new Time (0);
 		}
 
-		public PlaysTimeline () : this (null, null)
+		public PlaysTimeline () : this (null)
 		{
 		}
 
-		protected override void Dispose (bool disposing)
-		{
-			if (Disposed)
-				return;
-
-			base.Dispose (disposing);
-			if (disposing) {
-				App.Current.EventsBroker.Unsubscribe<LoadVideoEvent> (HandleLoadVideoMessage);
-				App.Current.EventsBroker.Unsubscribe<CloseVideoEvent> (HandleCloseVideoEvent);
-				foreach (CategoryTimeline ct in eventsTimelines.Values) {
-					ct.Dispose ();
-				}
-				CameraNode?.Dispose ();
+		public IAnalysisViewModel ViewModel {
+			get {
+				return viewModel;
 			}
+			protected set {
+				if (viewModel != null) {
+					viewModel.Project.EventTypes.ViewModels.CollectionChanged -= HandleEventTypesCollectionChanged;
+					viewModel.Project.EventTypes.PropertyChanged -= HandleEventTypesPropertyChanged;
+					viewModel.Project.FileSet.ViewModels.CollectionChanged -= HandleFileSetCollectionChanged; ;
+				}
+				viewModel = value;
+				ClearObjects ();
+				if (viewModel != null) {
+					viewModel.Project.EventTypes.ViewModels.CollectionChanged += HandleEventTypesCollectionChanged;
+					viewModel.Project.EventTypes.PropertyChanged += HandleEventTypesPropertyChanged;
+					duration = viewModel.Project.FileSet.Duration;
+					int i = 0;
+					FillCanvas (ref i);
+					if (widget != null) {
+						widget.Height = Objects.Count * StyleConf.TimelineCategoryHeight;
+					}
+					viewModel.Project.FileSet.ViewModels.CollectionChanged += HandleFileSetCollectionChanged; ;
+				}
+			}
+		}
+
+		public virtual void SetViewModel (object viewModel)
+		{
+			ViewModel = (IAnalysisViewModel)viewModel;
 		}
 
 		/// <summary>
@@ -91,8 +101,9 @@ namespace VAS.Drawing.Widgets
 		/// </summary>
 		/// <value>The player.</value>
 		public IVideoPlayerController Player {
-			get;
-			set;
+			get {
+				return ViewModel?.PlayerVM.Player;
+			}
 		}
 
 		/// <summary>
@@ -104,7 +115,7 @@ namespace VAS.Drawing.Widgets
 				Area area;
 				double start, stop;
 
-				foreach (TimelineObject tl in Objects) {
+				foreach (TimelineView tl in Objects) {
 					tl.CurrentTime = value;
 				}
 				if (currentTime < value) {
@@ -140,39 +151,14 @@ namespace VAS.Drawing.Widgets
 		/// Gets or sets the periods timeline.
 		/// </summary>
 		/// <value>The periods timeline.</value>
-		public TimerTimeline PeriodsTimeline {
+		public TimerTimelineView PeriodsTimeline {
 			get;
 			set;
 		}
 
-		protected CameraObject CameraNode {
-			get {
-				if (timelineToFilter.Any (x => x.Key.GetType () == typeof (CameraTimeline))) {
-					return ((CameraObject)timelineToFilter
-					.FirstOrDefault (x => x.Key.GetType () == typeof (CameraTimeline)).Key.GetNodeAtPosition (0));
-				} else {
-					return null;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Loads the project.
-		/// </summary>
-		/// <param name="project">Project.</param>
-		/// <param name="filter">Filter.</param>
-		public void LoadProject (Project project, EventsFilter filter)
-		{
-			this.project = project;
-			ClearObjects ();
-			eventsTimelines.Clear ();
-			duration = project.FileSet.Duration;
-			playsFilter = filter;
-			FillCanvas ();
-			filter.FilterUpdated += UpdateVisibleCategories;
-			if (widget != null) {
-				widget.Height = Objects.Count * StyleConf.TimelineCategoryHeight;
-			}
+		protected CameraNodeView CameraNode {
+			get;
+			set;
 		}
 
 		/// <summary>
@@ -181,67 +167,17 @@ namespace VAS.Drawing.Widgets
 		/// <param name="play">Play.</param>
 		public void LoadPlay (TimelineEvent play)
 		{
-			if (play == this.loadedEvent) {
+			if (play == loadedEvent) {
 				return;
 			}
 
-			foreach (CategoryTimeline tl in eventsTimelines.Values) {
-				TimelineEventObjectBase loaded = tl.Load (play);
-				if (loaded != null) {
-					ClearSelection ();
-					UpdateSelection (new Selection (loaded, SelectionPosition.All, 0), false);
-					break;
-				}
-			}
-		}
+			loadedEvent = play;
 
-		/// <summary>
-		/// Adds the play.
-		/// </summary>
-		/// <param name="play">Play.</param>
-		public void AddPlay (TimelineEvent play)
-		{
-			eventsTimelines [play.EventType].AddPlay (play);
-		}
-
-		/// <summary>
-		/// Removes the timers.
-		/// </summary>
-		/// <param name="nodes">Nodes.</param>
-		public void RemoveTimers (List<TimeNode> nodes)
-		{
-			foreach (TimerTimeline tl in Objects.OfType<TimerTimeline> ()) {
-				foreach (TimeNode node in nodes) {
-					tl.RemoveNode (node);
-				}
-			}
-			widget?.ReDraw ();
-		}
-
-		/// <summary>
-		/// Adds the timer node.
-		/// </summary>
-		/// <param name="timer">Timer.</param>
-		/// <param name="tn">Tn.</param>
-		public void AddTimerNode (Timer timer, TimeNode tn)
-		{
-			TimerTimeline tl = Objects.OfType<TimerTimeline> ().FirstOrDefault (t => t.HasTimer (timer));
-			if (tl != null) {
-				tl.AddTimeNode (timer, tn);
-				widget?.ReDraw ();
-			}
-		}
-
-		/// <summary>
-		/// Removes the plays.
-		/// </summary>
-		/// <param name="plays">Plays.</param>
-		public void RemovePlays (List<TimelineEvent> plays)
-		{
-			foreach (TimelineEvent p in plays) {
-				eventsTimelines [p.EventType].RemoveNode (p);
-				Selections.RemoveAll (s => (s.Drawable as TimelineEventObjectBase).Event == p);
-			}
+			EventTypeTimelineVM timelineVM = ViewModel.Project.Timeline.First ((e) => e.Model == play.EventType);
+			EventTypeTimelineView timelineView = viewModelToView [timelineVM] as EventTypeTimelineView;
+			TimelineEventView timelineEventView = timelineView.GetView (play);
+			ClearSelection ();
+			UpdateSelection (new Selection (timelineEventView, SelectionPosition.All, 0), false);
 		}
 
 		/// <summary>
@@ -250,7 +186,7 @@ namespace VAS.Drawing.Widgets
 		/// <returns>The camera width.</returns>
 		public double GetCameraWidth ()
 		{
-			if (!project.FileSet.Any ()) {
+			if (!ViewModel.Project.FileSet.Any ()) {
 				return 0;
 			}
 
@@ -285,93 +221,117 @@ namespace VAS.Drawing.Widgets
 				timers.FirstOrDefault ().Nodes.Add (nodeStart);
 			}
 
-			timers.FirstOrDefault ().Nodes.Add (CameraNode.TimeNode);
+			timers.FirstOrDefault ().Nodes.Add (CameraNode.TimeNode.Model);
 
-			if (CameraNode.TimeNode.Stop != CameraNode.MediaFile.Duration) {
+			if (CameraNode.TimeNode.Stop != CameraNode.ViewModel.Duration) {
 				TimeNode nodeEnd = new TimeNode () {
 					Start = CameraNode.TimeNode.Stop,
-					Stop = CameraNode.MediaFile.Duration
+					Stop = CameraNode.ViewModel.Duration
 				};
 				timers.FirstOrDefault ().Nodes.Add (nodeEnd);
 			}
-			PeriodsTimeline = new TimerTimeline (timers, false, NodeDraggingMode.Borders, false,
-				CameraNode.MediaFile.Duration, 0, Color.Blue1, Color.Blue1);
+			PeriodsTimeline = new TimerTimelineView {
+				ShowLine = false,
+				ShowName = false,
+				DraggingMode = NodeDraggingMode.Borders,
+				Duration = CameraNode.ViewModel.Duration,
+				LineColor = Color.Blue1,
+			};
+			PeriodsTimeline.ViewModel = ViewModel.Project.Timers;
+		}
+
+		protected override void ClearObjects ()
+		{
+			base.ClearObjects ();
+			viewModelToView.Clear ();
 		}
 
 		protected void Update ()
 		{
 			double width = duration.TotalSeconds / SecondsPerPixel;
 			widget.Width = width + 10;
-			foreach (TimelineObject tl in Objects) {
+			foreach (TimelineView tl in Objects) {
 				tl.Width = width + 10;
 				tl.SecondsPerPixel = SecondsPerPixel;
 			}
 		}
 
-		protected void AddTimeline (TimelineObject tl, object filter)
+		protected void AddTimeline (TimelineView timelineView, IViewModel viewModel)
 		{
-			AddObject (tl);
-			timelineToFilter [tl] = filter;
-			if (tl is CategoryTimeline) {
-				eventsTimelines [filter as EventType] = tl as CategoryTimeline;
+			AddObject (timelineView);
+			if (timelineView is EventTypeTimelineView) {
+				viewModelToView [viewModel] = timelineView;
 			}
 		}
 
-		protected virtual void FillCanvas ()
+		void UpdateRowsOffsets ()
 		{
-			TimelineObject tl;
 			int i = 0;
+			foreach (TimelineView timeline in Objects.OfType<TimelineView> ()) {
+				if (timeline.Visible) {
+					timeline.OffsetY = i * timeline.Height;
+					timeline.BackgroundColor = Utils.ColorForRow (i);
+					i++;
+				}
+			}
+			widget.ReDraw ();
+		}
 
-			FillCanvasForTimers (ref i);
-			FillCanvasForEventTypes (ref i);
+		protected virtual void FillCanvas (ref int line)
+		{
+			FillCanvasForTimers (ref line);
+			FillCanvasForEventTypes (ref line);
 
-			UpdateVisibleCategories ();
+			UpdateRowsOffsets ();
 			Update ();
 			HeightRequest = Objects.Count * StyleConf.TimelineCategoryHeight;
 		}
 
 		protected virtual void FillCanvasForTimers (ref int line)
 		{
-			TimelineObject tl;
-
-			foreach (Timer t in project.Timers) {
-				tl = new TimerTimeline (new List<Timer> { t }, false, NodeDraggingMode.All, false, duration,
-					line * StyleConf.TimelineCategoryHeight,
-					Utils.ColorForRow (line), App.Current.Style.PaletteBackgroundDark);
-				AddTimeline (tl, t);
+			foreach (TimerVM timerVM in ViewModel.Project.Timers) {
+				var timelineView = new TimerTimelineView {
+					ShowLine = false,
+					ShowName = false,
+					DraggingMode = NodeDraggingMode.All,
+					Duration = duration,
+					OffsetY = line * StyleConf.TimelineCategoryHeight,
+					LineColor = Utils.ColorForRow (line),
+					BackgroundColor = App.Current.Style.PaletteBackgroundDark,
+				};
+				var timersVM = new NestedViewModel<TimerVM> ();
+				timersVM.ViewModels.Add (timerVM);
+				timelineView.ViewModel = timersVM;
+				AddTimeline (timelineView, timerVM);
 			}
 		}
 
 		protected virtual void FillCanvasForEventTypes (ref int line)
 		{
-			TimelineObject tl;
-
-			foreach (EventType type in project.EventTypes) {
-				List<TimelineEvent> timelineEventList = project.EventsByType (type);
-				var timelineEventLongoMatchList = new List<TimelineEvent> ();
-				timelineEventList.ForEach (x => timelineEventLongoMatchList.Add (x));
-				tl = new CategoryTimeline (project, timelineEventLongoMatchList, duration,
-					line * StyleConf.TimelineCategoryHeight,
-					Utils.ColorForRow (line), playsFilter);
-				AddTimeline (tl, type);
+			foreach (EventTypeTimelineVM timelineVM in ViewModel.Project.Timeline) {
+				EventTypeTimelineView timelineView = AddEventTypeTimeline (timelineVM);
+				timelineView.OffsetY = line * StyleConf.TimelineCategoryHeight;
+				timelineView.BackgroundColor = Utils.ColorForRow (line);
+				timelineView.ViewModel = timelineVM;
 				line++;
 			}
 		}
 
-		protected void UpdateVisibleCategories ()
+		protected virtual EventTypeTimelineView AddEventTypeTimeline (EventTypeTimelineVM timelineVM)
 		{
-			int i = 0;
-			foreach (TimelineObject timeline in Objects) {
-				if (playsFilter.IsVisible (timelineToFilter [timeline])) {
-					timeline.OffsetY = i * timeline.Height;
-					timeline.Visible = true;
-					timeline.BackgroundColor = Utils.ColorForRow (i);
-					i++;
-				} else {
-					timeline.Visible = false;
-				}
-			}
-			widget.ReDraw ();
+			var timelineView = new EventTypeTimelineView {
+				Duration = duration,
+				Height = StyleConf.TimelineCategoryHeight,
+			};
+			timelineView.ViewModel = timelineVM;
+			AddTimeline (timelineView, timelineVM);
+			return timelineView;
+		}
+
+		protected virtual void RemoveEventTypeTimeline (EventTypeTimelineVM timelineVM)
+		{
+			RemoveObject (viewModelToView [timelineVM]);
+			UpdateRowsOffsets ();
 		}
 
 		protected void ShowTimersMenu (Point coords)
@@ -379,26 +339,26 @@ namespace VAS.Drawing.Widgets
 			if (PeriodsTimeline != null &&
 				coords.Y >= PeriodsTimeline.OffsetY &&
 				coords.Y < PeriodsTimeline.OffsetY + PeriodsTimeline.Height) {
-				Timer t = Selections.Select (p => (p.Drawable as TimerTimeNodeObject).Timer).FirstOrDefault ();
+				TimerVM t = Selections.Select (p => (p.Drawable as TimerTimeNodeView).Timer).FirstOrDefault ();
 				if (ShowTimerMenuEvent != null) {
-					ShowTimerMenuEvent (t, Utils.PosToTime (coords, SecondsPerPixel));
+					ShowTimerMenuEvent (t.Model, Utils.PosToTime (coords, SecondsPerPixel));
 				}
 			} else {
-				List<TimeNode> nodes = Selections.Select (p => (p.Drawable as TimeNodeObject).TimeNode).ToList ();
+				List<TimeNodeVM> nodes = Selections.Select (p => (p.Drawable as TimeNodeView).TimeNode).ToList ();
 				if (nodes.Count > 0 && ShowTimersMenuEvent != null) {
-					ShowTimersMenuEvent (nodes);
+					ShowTimersMenuEvent (nodes.Select (n => n.Model).ToList ());
 				}
 			}
 		}
 
-		protected void ShowPlaysMenu (Point coords, CategoryTimeline catTimeline)
+		protected void ShowPlaysMenu (Point coords, EventTypeTimelineView catTimeline)
 		{
 			EventType ev = null;
 			List<TimelineEvent> plays;
 
-			plays = Selections.Select (p => (p.Drawable as TimelineEventObjectBase).Event).ToList ();
+			plays = Selections.Select (p => (p.Drawable as TimelineEventView).TimelineEvent.Model).ToList ();
 
-			ev = eventsTimelines.GetKeyByValue (catTimeline);
+			ev = catTimeline.ViewModel.EventTypeVM.Model;
 			if (ev != null && ShowMenuEvent != null) {
 				ShowMenuEvent (plays, ev, Utils.PosToTime (coords, SecondsPerPixel));
 			}
@@ -406,31 +366,31 @@ namespace VAS.Drawing.Widgets
 
 		protected override void SelectionChanged (List<Selection> selections)
 		{
-			TimelineEvent ev = null;
+			TimelineEventVM ev = null;
 			CameraTimelineSelectedEvent ctse = null;
 			bool notififyCameraTimelineSelectedEvent = false;
 			if (selections.Count > 0) {
 				CanvasObject d = selections.Last ().Drawable as CanvasObject;
-				if (d is TimelineEventObjectBase) {
-					ev = (d as TimelineEventObjectBase).Event;
+				if (d is TimelineEventView) {
+					ev = (d as TimelineEventView).TimelineEvent;
 					// If event is in selections list, must be selected but
 					// in the first time it is incorrectly marked as false
 					ev.Playing = true;
-					loadedEvent = ev;
-				} else if (d is CameraObject) {
+					loadedEvent = ev.Model;
+				} else if (d is CameraNodeView) {
 					notififyCameraTimelineSelectedEvent = true;
 					ctse = new CameraTimelineSelectedEvent ();
-					ctse.bordersAreSelected = ((CameraObject)d).SelectedLeft || ((CameraObject)d).SelectedRight;
+					ctse.bordersAreSelected = ((CameraNodeView)d).SelectedLeft || ((CameraNodeView)d).SelectedRight;
 				}
 			}
-			App.Current.EventsBroker.Publish<LoadEventEvent> (
+			App.Current.EventsBroker.Publish (
 				new LoadEventEvent {
-					TimelineEvent = ev
+					TimelineEvent = ev?.Model
 				}
 			);
 
 			if (notififyCameraTimelineSelectedEvent) {
-				App.Current.EventsBroker.Publish<CameraTimelineSelectedEvent> (ctse);
+				App.Current.EventsBroker.Publish (ctse);
 			}
 		}
 
@@ -442,9 +402,9 @@ namespace VAS.Drawing.Widgets
 			if (sel.Position != SelectionPosition.All) {
 				widget.SetCursor (CursorType.DoubleArrow);
 			}
-			if (sel.Drawable is TimeNodeObject) {
+			if (sel.Drawable is TimeNodeView) {
 				movingTimeNode = true;
-				App.Current.EventsBroker.Publish<TogglePlayEvent> (
+				App.Current.EventsBroker.Publish (
 					new TogglePlayEvent {
 						Playing = false
 					}
@@ -456,7 +416,7 @@ namespace VAS.Drawing.Widgets
 		{
 			widget.SetCursor (CursorType.Arrow);
 			if (movingTimeNode) {
-				App.Current.EventsBroker.Publish<TogglePlayEvent> (
+				App.Current.EventsBroker.Publish (
 					new TogglePlayEvent {
 						Playing = true
 					}
@@ -467,15 +427,15 @@ namespace VAS.Drawing.Widgets
 
 		protected override void ShowMenu (Point coords)
 		{
-			TimelineObject timeline = Objects.OfType<TimelineObject> ().Where (
+			TimelineView timeline = Objects.OfType<TimelineView> ().Where (
 				t => t.Visible &&
 				coords.Y >= t.OffsetY &&
 				coords.Y < t.OffsetY + t.Height).FirstOrDefault ();
 
-			CategoryTimeline catTimeline = timeline as CategoryTimeline;
+			EventTypeTimelineView catTimeline = timeline as EventTypeTimelineView;
 			if (catTimeline != null) {
 				ShowPlaysMenu (coords, catTimeline);
-			} else if (timeline as TimerTimeline != null) {
+			} else if (timeline as TimerTimelineView != null) {
 				ShowTimersMenu (coords);
 			}
 		}
@@ -484,26 +444,25 @@ namespace VAS.Drawing.Widgets
 		{
 			Time moveTime;
 			CanvasObject co;
-			TimelineEvent play;
 
 			co = (sel.Drawable as CanvasObject);
 
-			if (co is TimelineEventObjectBase) {
-				play = (co as TimelineEventObjectBase).Event;
+			if (co is TimelineEventView) {
+				TimelineEventVM timelineEventVM = (co as TimelineEventView).TimelineEvent;
 
 				if (sel.Position == SelectionPosition.Right) {
-					moveTime = play.Duration;
+					moveTime = timelineEventVM.Duration;
 				} else {
 					moveTime = new Time (0);
 				}
-				App.Current.EventsBroker.Publish<TimeNodeChangedEvent> (
+				App.Current.EventsBroker.Publish (
 					new TimeNodeChangedEvent {
-						TimeNode = play,
+						TimeNode = timelineEventVM.Model,
 						Time = moveTime
 					}
 				);
-			} else if (co is TimeNodeObject) {
-				TimeNode to = (co as TimeNodeObject).TimeNode;
+			} else if (co is TimeNodeView) {
+				TimeNodeVM to = (co as TimeNodeView).TimeNode;
 
 				if (sel.Position == SelectionPosition.Right) {
 					moveTime = to.Stop;
@@ -514,24 +473,45 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
-		protected void HandleLoadVideoMessage (LoadVideoEvent changeVideoMessageEvent)
+		protected virtual void HandleEventTypesPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
-			if (this.project != null) {
-				timelineToFilter.Clear ();
-				ClearObjects ();
-				duration = changeVideoMessageEvent.mfs.Duration;
-				FillCanvas ();
+			if (e.PropertyName != "Visible") {
+				return;
 			}
+			UpdateRowsOffsets ();
 		}
 
-		protected void HandleCloseVideoEvent (CloseVideoEvent closeVideoEvent)
+		protected virtual void HandleEventTypesCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
-			if (this.project != null) {
-				timelineToFilter.Clear ();
-				ClearObjects ();
-				duration = new Time (0);
-				FillCanvas ();
+			switch (e.Action) {
+			case NotifyCollectionChangedAction.Add: {
+					foreach (EventTypeTimelineVM viewModel in e.OldItems.OfType<EventTypeTimelineVM> ()) {
+						RemoveEventTypeTimeline (viewModel);
+					}
+					break;
+				}
+			case NotifyCollectionChangedAction.Remove: {
+					foreach (EventTypeTimelineVM viewModel in e.NewItems.OfType<EventTypeTimelineVM> ()) {
+						AddEventTypeTimeline (viewModel);
+					}
+					break;
+				}
+			case NotifyCollectionChangedAction.Reset: {
+					foreach (EventTypeTimelineVM viewModel in Objects.OfType<EventTypeTimelineVM> ()) {
+						RemoveEventTypeTimeline (viewModel);
+					}
+					break;
+				}
 			}
+			UpdateRowsOffsets ();
+		}
+
+		void HandleFileSetCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		{
+			ClearObjects ();
+			duration = ViewModel.Project.FileSet.Duration;
+			int i = 0;
+			FillCanvas (ref i);
 		}
 	}
 }

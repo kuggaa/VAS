@@ -15,16 +15,15 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using VAS.Core.Events;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.MVVMC;
-using VAS.Core.Store;
-using VAS.Core.Events;
 using VAS.Core.MVVMC;
+using VAS.Core.Store;
 using VAS.Core.ViewModel;
-using VAS.Services.ViewModel;
 
 namespace VAS.Services.Controller
 {
@@ -75,11 +74,11 @@ namespace VAS.Services.Controller
 		public virtual void SetViewModel (IViewModel viewModel)
 		{
 			if (viewModel is IAnalysisViewModel) {
-				PlayerVM = (VideoPlayerVM)(viewModel as IAnalysisViewModel).PlayerViewModel;
+				PlayerVM = (viewModel as IAnalysisViewModel).PlayerVM;
 			}
 		}
 
-		public virtual IEnumerable<VAS.Core.Hotkeys.KeyAction> GetDefaultKeyActions ()
+		public virtual IEnumerable<KeyAction> GetDefaultKeyActions ()
 		{
 			return Enumerable.Empty<KeyAction> ();
 		}
@@ -96,7 +95,7 @@ namespace VAS.Services.Controller
 			PlayerVM.LoadEvents (e.Object.OfType<TimelineEvent> ().ToList (), e.Playing);
 		}
 
-		protected virtual void HandlePlayerVMPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		protected virtual void HandlePlayerVMPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 		}
 	}

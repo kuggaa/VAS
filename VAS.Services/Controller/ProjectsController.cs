@@ -183,10 +183,6 @@ namespace VAS.Services.Controller
 		{
 			TModel loadedProject = null;
 
-			if (sender != ViewModel || e.PropertyName != "Selection") {
-				return;
-			}
-
 			ProjectVM<TModel> projectVM = ViewModel.Selection.FirstOrDefault ();
 
 			if (projectVM != null) {

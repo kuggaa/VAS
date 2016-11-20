@@ -1,4 +1,4 @@
-﻿//
+//
 //  Copyright (C) 2016 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -15,18 +15,26 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-//
 
-using VAS.Core.MVVMC;
-using VAS.Core.Store.Playlists;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using VAS.Core.Common;
+using VAS.Core.ViewModel;
 
-namespace VAS.Core.ViewModel
+namespace VAS.Core.Interfaces.MVVMC
 {
+
 	/// <summary>
-	/// ViewModel for a collection of PlaylistVM, each with a Playlist as a Model.
+	/// Interface that every panel related to analysis should implement, that is panels that 
+	/// has Players in it, and or Events Managers lists, etc.
 	/// </summary>
-	public class PlaylistCollectionVM : CollectionViewModel<Playlist, PlaylistVM>
+	public interface IAnalysisViewModel : IViewModel
 	{
+		VideoPlayerVM PlayerVM { get; }
+
+		ProjectVM Project { get; }
 	}
 }
-

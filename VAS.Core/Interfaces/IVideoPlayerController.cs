@@ -39,6 +39,8 @@ namespace VAS.Core.Interfaces
 		event MediaFileSetLoadedHandler MediaFileSetLoadedEvent;
 		event PrepareViewHandler PrepareViewEvent;
 
+		void SetViewModel (IViewModel viewModel);
+
 		/// <summary>
 		/// The file set currently openned by the player.
 		/// </summary>
@@ -161,6 +163,14 @@ namespace VAS.Core.Interfaces
 		/// <param name="seekTime">Seek time.</param>
 		/// <param name="playing">If set to <c>true</c> playing.</param>
 		void LoadEvent (TimelineEvent evt, Time seekTime, bool playing);
+
+		/// <summary>
+		/// Loads a segment in the player with the visible part of the stretched video file.
+		/// </summary>
+		/// <param name="evt">Evt.</param>
+		/// <param name="seekTime">Seek time.</param>
+		/// <param name="playing">If set to <c>true</c> playing.</param>
+		void LoadCameraEvent (TimelineEvent evt, Time seekTime, bool playing);
 
 		/// <summary>
 		/// Loads a playlist event.

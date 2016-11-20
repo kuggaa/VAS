@@ -137,7 +137,7 @@ namespace VAS.Tests.MVVMC
 			bindable.IgnoreEvents = false;
 
 			// Assert
-			Assert.IsFalse (bindable.IsChanged);
+			Assert.IsTrue (bindable.IsChanged);
 			Assert.AreEqual (0, eventCount);
 		}
 

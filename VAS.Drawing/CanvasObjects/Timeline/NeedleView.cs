@@ -23,12 +23,12 @@ using VAS.Core.Store.Drawables;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
-	public class NeedleObject : CanvasObject, ICanvasSelectableObject
+	public class NeedleView : CanvasObject, ICanvasSelectableObject
 	{
 		static ISurface needle;
 		static bool surfacesInitialized = false;
 
-		public NeedleObject ()
+		public NeedleView ()
 		{
 			LoadSurfaces ();
 			Width = needle.Width;

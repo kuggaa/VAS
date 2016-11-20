@@ -16,14 +16,17 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.ComponentModel;
 using System.Timers;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
+using VAS.Core.ViewModel;
 using SysTimer = System.Timers.Timer;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
@@ -31,32 +34,16 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 	/// <summary>
 	/// Camera object for the Timeline.
 	/// </summary>
-	public class CameraObject : TimeNodeObject
+	[View ("CameraTimeNodeView")]
+	public class CameraNodeView : TimeNodeView, ICanvasObjectView<MediaFileVM>
 	{
-		MediaFile mediaFile;
+		MediaFileVM viewModel;
 		SysTimer stretchedAndEditingTimer;
-
 		VideoTimelineMode videoTlmode;
 
-		VideoTimelineMode VideoTLmode {
-			get { return videoTlmode; }
-			set {
-				videoTlmode = value;
-				if (!IsStretched ()) {
-					App.Current.EventsBroker.Publish<VideoTimelineModeChangedEvent> (
-						new VideoTimelineModeChangedEvent () { videoTlMode = videoTlmode });
-				}
-			}
-		}
-
-		public CameraObject (MediaFile mf) :
-			base (new TimeNode {
-				Start = new Time (-mf.Offset.MSeconds),
-				Stop = mf.Duration - mf.Offset, Name = mf.Name
-			})
+		public CameraNodeView ()
 		{
 			VideoTLmode = VideoTimelineMode.Default;
-			mediaFile = mf;
 			DraggingMode = NodeDraggingMode.Borders;
 			SelectionMode = NodeSelectionMode.Borders;
 			ClippingMode = NodeClippingMode.LeftStrict;
@@ -79,13 +66,19 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 		}
 
-		/// <summary>
-		/// Gets the media file.
-		/// </summary>
-		/// <value>The media file.</value>
-		public MediaFile MediaFile {
+		public MediaFileVM ViewModel {
 			get {
-				return mediaFile;
+				return viewModel;
+			}
+			set {
+				if (viewModel != null) {
+					viewModel.PropertyChanged -= HandleMediaFilePropertyChanged;
+				}
+				viewModel = value;
+				if (viewModel != null) {
+					UpdateTimeNode ();
+					viewModel.PropertyChanged += HandleMediaFilePropertyChanged;
+				}
 			}
 		}
 
@@ -95,7 +88,30 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		/// <value>The description.</value>
 		public override string Description {
 			get {
-				return mediaFile.Name;
+				return viewModel.Name;
+			}
+		}
+
+		public bool SelectedLeft {
+			get;
+			set;
+		}
+
+		public bool SelectedRight {
+			get;
+			set;
+		}
+
+		VideoTimelineMode VideoTLmode {
+			get {
+				return videoTlmode;
+			}
+			set {
+				videoTlmode = value;
+				if (!IsStretched ()) {
+					App.Current.EventsBroker.Publish (
+						new VideoTimelineModeChangedEvent { videoTlMode = videoTlmode });
+				}
 			}
 		}
 
@@ -110,14 +126,9 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 		}
 
-		public bool SelectedLeft {
-			get;
-			set;
-		}
-
-		public bool SelectedRight {
-			get;
-			set;
+		public void SetViewModel (object viewModel)
+		{
+			ViewModel = (MediaFileVM)viewModel;
 		}
 
 		/// <summary>
@@ -390,6 +401,26 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			App.Current.GUIToolkit.Invoke (delegate {
 				ReDraw ();
 			});
+		}
+
+		protected virtual void HandleMediaFilePropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "Duration") {
+				UpdateTimeNode ();
+				EmitRedrawEvent (this, null);
+			}
+		}
+
+		void UpdateTimeNode ()
+		{
+			TimeNode = new TimeNodeVM {
+				Model = new TimeNode {
+					Start = new Time (-ViewModel.Offset.MSeconds),
+					Stop = ViewModel.Duration - viewModel.Offset,
+					Name = ViewModel.Name
+				}
+			};
+			MaxTime = ViewModel.Duration;
 		}
 
 		void SeekVideo (IVideoPlayerController player, Time seekTime, SeekType seekType)

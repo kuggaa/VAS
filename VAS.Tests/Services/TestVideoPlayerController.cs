@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Moq;
 using NUnit.Framework;
-using VAS;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
@@ -29,9 +28,9 @@ using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
+using VAS.Core.ViewModel;
 using VAS.Services;
 using VAS.Services.Controller;
-using VAS.Services.ViewModel;
 
 namespace VAS.Tests.Services
 {
@@ -137,9 +136,8 @@ namespace VAS.Tests.Services
 			playlist.Elements.Add (plImage);
 			currentTime = new Time (0);
 
-			playerVM = new VideoPlayerVM ();
 			player = new VideoPlayerController ();
-			playerVM.Player = player;
+			playerVM = new VideoPlayerVM (player);
 			(player as IController).SetViewModel (playerVM);
 			playlist.SetActive (playlist.Elements [0]);
 
@@ -233,11 +231,49 @@ namespace VAS.Tests.Services
 		}
 
 		[Test ()]
-		public void TestOpened ()
+		public void TestOpenFileSet ()
 		{
+			viewPortMock = new Mock<IViewPort> ();
+			viewPortMock.SetupAllProperties ();
+			player.ViewPorts = new List<IViewPort> { viewPortMock.Object };
 			Assert.IsFalse (player.Opened);
-			player.Open (new MediaFileSet ());
+
+			player.Open (new MediaFileSet { new MediaFile () });
+
+			viewPortMock.VerifySet (v => v.MessageVisible = false, Times.Once ());
 			Assert.IsTrue (player.Opened);
+		}
+
+		[Test ()]
+		public void TestOpenEmptyFileSet ()
+		{
+			viewPortMock = new Mock<IViewPort> ();
+			viewPortMock.SetupAllProperties ();
+			player.ViewPorts = new List<IViewPort> { viewPortMock.Object };
+			Assert.IsFalse (player.Opened);
+
+			player.Open (new MediaFileSet ());
+
+			playerMock.Verify (p => p.Pause (false), Times.Once ());
+			viewPortMock.VerifySet (v => v.Message = "No video loaded", Times.Once ());
+			viewPortMock.VerifySet (v => v.MessageVisible = true, Times.Once ());
+			Assert.IsTrue (player.Opened);
+		}
+
+		[Test ()]
+		public void TestOpenNullFileSet ()
+		{
+			viewPortMock = new Mock<IViewPort> ();
+			viewPortMock.SetupAllProperties ();
+			player.ViewPorts = new List<IViewPort> { viewPortMock.Object };
+			Assert.IsFalse (player.Opened);
+
+			player.Open (null);
+
+			playerMock.Verify (p => p.Pause (false), Times.Once ());
+			viewPortMock.VerifySet (v => v.Message = "No video loaded", Times.Once ());
+			viewPortMock.VerifySet (v => v.MessageVisible = true, Times.Once ());
+			Assert.IsFalse (player.Opened);
 		}
 
 		[Test ()]

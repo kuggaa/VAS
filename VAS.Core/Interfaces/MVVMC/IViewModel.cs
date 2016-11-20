@@ -21,7 +21,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using VAS.Core.Common;
-using VAS.Core.Store.Playlists;
+using VAS.Core.ViewModel;
 
 namespace VAS.Core.Interfaces.MVVMC
 {
@@ -52,33 +52,6 @@ namespace VAS.Core.Interfaces.MVVMC
 		RangeObservableCollection<VMChilds> Selection { get; }
 
 		void SelectionReplace (IEnumerable<VMChilds> selection);
-	}
-
-	/// <summary>
-	/// Interface that the player View Model should use
-	/// </summary>
-	public interface IVideoPlayerViewModel : IViewModel
-	{
-		IVideoPlayerController Player { get; }
-
-		PlayerViewOperationMode Mode { get; set; }
-
-		bool SupportsMultipleCameras { get; set; }
-
-		bool PlayerAttached { set; }
-
-		bool ShowDetachButton { set; }
-
-		void LoadPlaylistEvent (Playlist playlist, IPlaylistElement element, bool playing);
-	}
-
-	/// <summary>
-	/// Interface that every panel related to analysis should implement, that is panels that 
-	/// has Players in it, and or Events Managers lists, etc.
-	/// </summary>
-	public interface IAnalysisViewModel
-	{
-		IVideoPlayerViewModel PlayerViewModel { get; }
 	}
 }
 

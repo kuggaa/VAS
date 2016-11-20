@@ -18,23 +18,21 @@
 using VAS.Core.Common;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
-using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
 namespace VAS.Core.ViewModel
 {
-	public class TimelineEventVM : ViewModelBase<TimelineEvent>, IVisible
+	/// <summary>
+	/// A ViewModel for <see cref="TimelineEvent"/> objects.
+	/// </summary>
+	public class TimelineEventVM : TimeNodeVM, IViewModel<TimelineEvent>
 	{
-		/// <summary>
-		/// Gets or sets the Name of the TimelineEvent.
-		/// </summary>
-		/// <value>The name.</value>
-		public string Name {
+		public virtual new TimelineEvent Model {
 			get {
-				return Model.Name;
+				return (TimelineEvent)base.Model;
 			}
 			set {
-				Model.Name = value;
+				base.Model = value;
 			}
 		}
 
@@ -100,15 +98,6 @@ namespace VAS.Core.ViewModel
 			set;
 		}
 
-		/// <summary>
-		/// Gets or sets a value indicating whether this <see cref="VAS.Services.ViewModel.TimelineEventVM`1"/> is visible.
-		/// </summary>
-		/// <value><c>true</c> if visible; otherwise, <c>false</c>.</value>
-		public virtual bool Visible {
-			get;
-			set;
-		} = true;
-		
 		/// Gets or sets a value indicating whether this <see cref="T:VAS.Services.ViewModel.TimelineEventVM`1"/> has focus.
 		/// </summary>
 		/// <value><c>true</c> if focus; otherwise, <c>false</c>.</value>
