@@ -23,7 +23,6 @@ using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Filters;
 using VAS.Core.Hotkeys;
-using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
@@ -35,6 +34,7 @@ namespace VAS.Services.Controller
 	public class PlaylistController : DisposableBase, IController
 	{
 		PlaylistCollectionVM viewModel;
+		ProjectVM<Project> projectViewModel;
 
 		public PlaylistController (IVideoPlayerViewModel playerVM)
 		{
@@ -55,8 +55,15 @@ namespace VAS.Services.Controller
 		protected EventsFilter Filter { get; set; }
 
 		protected Project OpenedProject {
-			get;
-			set;
+			get {
+				return projectViewModel?.Model;
+			}
+			set {
+				if (projectViewModel == null) {
+					projectViewModel = new ProjectVM<Project> ();
+				}
+				projectViewModel.Model = value;
+			}
 		}
 
 		protected ProjectType OpenedProjectType {
@@ -73,6 +80,11 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.SubscribeAsync<DeletePlaylistEvent> (HandleDeletePlaylist);
 			App.Current.EventsBroker.Subscribe<RenderPlaylistEvent> (HandleRenderPlaylist);
 			App.Current.EventsBroker.Subscribe<LoadPlaylistElementEvent> (HandleLoadPlaylistElement);
+
+			App.Current.EventsBroker.Subscribe<OpenedProjectEvent> (HandleOpenedProjectChanged);
+			App.Current.EventsBroker.Subscribe<LoadEventEvent> (HandleLoadPlayEvent);
+			App.Current.EventsBroker.Subscribe<LoadCameraEvent> (HandleLoadCameraEvent);
+			App.Current.EventsBroker.Subscribe<TimeNodeChangedEvent> (HandlePlayChanged);
 		}
 
 		public void Stop ()
@@ -82,6 +94,11 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.UnsubscribeAsync<DeletePlaylistEvent> (HandleDeletePlaylist);
 			App.Current.EventsBroker.Unsubscribe<RenderPlaylistEvent> (HandleRenderPlaylist);
 			App.Current.EventsBroker.Unsubscribe<LoadPlaylistElementEvent> (HandleLoadPlaylistElement);
+
+			App.Current.EventsBroker.Unsubscribe<OpenedProjectEvent> (HandleOpenedProjectChanged);
+			App.Current.EventsBroker.Unsubscribe<LoadEventEvent> (HandleLoadPlayEvent);
+			App.Current.EventsBroker.Unsubscribe<LoadCameraEvent> (HandleLoadCameraEvent);
+			App.Current.EventsBroker.Unsubscribe<TimeNodeChangedEvent> (HandlePlayChanged);
 		}
 
 		public void SetViewModel (IViewModel viewModel)
@@ -90,6 +107,8 @@ namespace VAS.Services.Controller
 				return;
 			}
 			this.viewModel = (PlaylistCollectionVM)(viewModel as dynamic);
+			// projectViewModel can be set to null...
+			this.projectViewModel = (viewModel as dynamic) as ProjectVM<Project>;
 		}
 
 		public IEnumerable<KeyAction> GetDefaultKeyActions ()
@@ -98,6 +117,18 @@ namespace VAS.Services.Controller
 		}
 
 		#endregion
+
+		protected void LoadPlay (TimelineEvent play, Time seekTime, bool playing)
+		{
+			if (play != null && PlayerVM != null && PlayerVM.Player != null) {
+				play.Playing = true;
+				PlayerVM.Player.LoadEvent (
+					play, seekTime, playing);
+				if (playing) {
+					PlayerVM.Player.Play ();
+				}
+			}
+		}
 
 		protected virtual async Task<Playlist> CreateNewPlaylist ()
 		{
@@ -145,6 +176,48 @@ namespace VAS.Services.Controller
 			return AsyncHelpers.Return (true);
 		}
 
+		protected virtual void HandleLoadPlayEvent (LoadEventEvent e)
+		{
+			if (e.TimelineEvent?.Duration.MSeconds == 0) {
+				// These events don't have duration, we start playing as if it was a seek
+				PlayerVM.Player.Switch (null, null, null);
+				PlayerVM.Player.UnloadCurrentEvent ();
+				PlayerVM.Player.Seek (e.TimelineEvent.EventTime, true);
+				PlayerVM.Player.Play ();
+			} else {
+				if (e.TimelineEvent != null) {
+					LoadPlay (e.TimelineEvent, new Time (0), true);
+				} else if (PlayerVM != null && PlayerVM.Player != null) {
+					PlayerVM.Player.UnloadCurrentEvent ();
+				}
+			}
+		}
+
+		//FIXME: this should be in Player controller when decoupled from PalyerVM
+		protected virtual void HandleLoadCameraEvent (LoadCameraEvent e)
+		{
+			if (e.CameraTlEvent != null) {
+				Time seekTime = PlayerVM.Player.CurrentTime - e.CameraTlEvent.Start;
+				seekTime = seekTime.Clamp (new Time (0), e.CameraTlEvent.Stop);
+				LoadCameraPlay (e.CameraTlEvent, seekTime, PlayerVM.Player.Playing);
+			} else if (PlayerVM != null && PlayerVM.Player != null) {
+				PlayerVM.Player.UnloadCurrentEvent ();
+			}
+		}
+
+		//FIXME: this should be in Player controller when decoupled from PalyerVM
+		void LoadCameraPlay (TimelineEvent play, Time seekTime, bool playing)
+		{
+			if (play != null && PlayerVM != null && PlayerVM.Player != null) {
+				play.Playing = true;
+				(PlayerVM.Player as VideoPlayerController)?.LoadCameraEvent (
+					play, seekTime, playing);
+				if (playing) {
+					PlayerVM.Player.Play ();
+				}
+			}
+		}
+
 		async Task HandleNewPlaylist (CreateEvent<Playlist> e)
 		{
 			e.Object = await CreateNewPlaylist ();
@@ -176,6 +249,24 @@ namespace VAS.Services.Controller
 			foreach (Job job in jobs) {
 				App.Current.JobsManager.Add (job);
 			}
+		}
+
+		//FIXME: this should be in Player controller when decoupled from PalyerVM
+		void HandlePlayChanged (TimeNodeChangedEvent e)
+		{
+			if (e.TimeNode is TimelineEvent) {
+				LoadPlay (e.TimeNode as TimelineEvent, e.Time, false);
+				if (Filter != null) {
+					Filter.Update ();
+				}
+			}
+		}
+
+		void HandleOpenedProjectChanged (OpenedProjectEvent e)
+		{
+			OpenedProject = e.Project;
+			OpenedProjectType = e.ProjectType;
+			PlayerVM.Player.LoadedPlaylist = null;
 		}
 	}
 }
