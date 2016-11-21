@@ -51,7 +51,7 @@ namespace VAS.Core.Store
 			Timeline = new ObservableCollection<TimelineEvent> ();
 			Timers = new ObservableCollection<Timer> ();
 			Periods = new ObservableCollection<Period> ();
-			Playlists = new ObservableCollection<Playlist> ();
+			Playlists = new RangeObservableCollection<Playlist> ();
 			EventTypes = new ObservableCollection<EventType> ();
 			Version = Constants.DB_VERSION;
 			LastModified = DateTime.Now;
@@ -125,7 +125,7 @@ namespace VAS.Core.Store
 			set;
 		}
 
-		public ObservableCollection<Playlist> Playlists {
+		public RangeObservableCollection<Playlist> Playlists {
 			get;
 			set;
 		}
