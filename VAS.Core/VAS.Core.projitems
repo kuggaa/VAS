@@ -102,9 +102,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Handlers\Drawing.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Filters\EventsFilter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IGUIToolkit.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IPlayerView.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IPlayerController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Multimedia\IPlayer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IVideoPlayerView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IVideoPlayerController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Multimedia\IVideoPlayer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IViewPort.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IMainController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IBusyDialog.cs" />

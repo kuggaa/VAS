@@ -27,7 +27,7 @@ using VAS.Multimedia.Common;
 
 namespace VAS.Multimedia.Player
 {
-	public class GstPlayer : GLib.Object, IPlayer
+	public class GstVideoPlayer : GLib.Object, IVideoPlayer
 	{
 
 		public event ErrorHandler Error;
@@ -104,12 +104,12 @@ namespace VAS.Multimedia.Player
 		[DllImport ("libvas.dll")]
 		static extern void lgm_video_player_expose (IntPtr pixbuf);
 
-		public unsafe GstPlayer () : base (IntPtr.Zero)
+		public unsafe GstVideoPlayer () : base (IntPtr.Zero)
 		{
 			Init (PlayerUseType.Video);
 		}
 
-		public unsafe GstPlayer (PlayerUseType type) : base (IntPtr.Zero)
+		public unsafe GstVideoPlayer (PlayerUseType type) : base (IntPtr.Zero)
 		{
 			Init (type);
 		}
@@ -157,7 +157,7 @@ namespace VAS.Multimedia.Player
 		static void readytoseek_cb (IntPtr bvw)
 		{
 			try {
-				GstPlayer bvw_managed = GLib.Object.GetObject (bvw, false) as GstPlayer;
+				GstVideoPlayer bvw_managed = GLib.Object.GetObject (bvw, false) as GstVideoPlayer;
 				bvw_managed.OnReadyToSeek ();
 			} catch (Exception e) {
 				GLib.ExceptionManager.RaiseUnhandledException (e, false);
@@ -171,7 +171,7 @@ namespace VAS.Multimedia.Player
 			OverrideVirtualMethod (gtype, "ready_to_seek", ReadyToSeekVMCallback);
 		}
 
-		[GLib.DefaultSignalHandler (Type = typeof(GstPlayer), ConnectionMethod = "OverrideReadyToSeek")]
+		[GLib.DefaultSignalHandler (Type = typeof (GstVideoPlayer), ConnectionMethod = "OverrideReadyToSeek")]
 		protected virtual void OnReadyToSeek ()
 		{
 			GLib.Value ret = GLib.Value.Empty;
@@ -204,7 +204,7 @@ namespace VAS.Multimedia.Player
 		static void statechange_cb (IntPtr bvw, bool playing)
 		{
 			try {
-				GstPlayer bvw_managed = GLib.Object.GetObject (bvw, false) as GstPlayer;
+				GstVideoPlayer bvw_managed = GLib.Object.GetObject (bvw, false) as GstVideoPlayer;
 				bvw_managed.OnStateChange (playing);
 			} catch (Exception e) {
 				GLib.ExceptionManager.RaiseUnhandledException (e, false);
@@ -218,7 +218,7 @@ namespace VAS.Multimedia.Player
 			OverrideVirtualMethod (gtype, "state_change", StateChangeVMCallback);
 		}
 
-		[GLib.DefaultSignalHandler (Type = typeof(GstPlayer), ConnectionMethod = "OverrideStateChange")]
+		[GLib.DefaultSignalHandler (Type = typeof (GstVideoPlayer), ConnectionMethod = "OverrideStateChange")]
 		protected virtual void OnStateChange (bool playing)
 		{
 			GLib.Value ret = GLib.Value.Empty;
@@ -253,7 +253,7 @@ namespace VAS.Multimedia.Player
 		static void eos_cb (IntPtr bvw)
 		{
 			try {
-				GstPlayer bvw_managed = GLib.Object.GetObject (bvw, false) as GstPlayer;
+				GstVideoPlayer bvw_managed = GLib.Object.GetObject (bvw, false) as GstVideoPlayer;
 				bvw_managed.OnEos ();
 			} catch (Exception e) {
 				GLib.ExceptionManager.RaiseUnhandledException (e, false);
@@ -267,7 +267,7 @@ namespace VAS.Multimedia.Player
 			OverrideVirtualMethod (gtype, "eos", EosVMCallback);
 		}
 
-		[GLib.DefaultSignalHandler (Type = typeof(GstPlayer), ConnectionMethod = "OverrideEos")]
+		[GLib.DefaultSignalHandler (Type = typeof (GstVideoPlayer), ConnectionMethod = "OverrideEos")]
 		protected virtual void OnEos ()
 		{
 			GLib.Value ret = GLib.Value.Empty;
@@ -300,7 +300,7 @@ namespace VAS.Multimedia.Player
 		static void error_cb (IntPtr bvw, IntPtr message)
 		{
 			try {
-				GstPlayer bvw_managed = GLib.Object.GetObject (bvw, false) as GstPlayer;
+				GstVideoPlayer bvw_managed = GLib.Object.GetObject (bvw, false) as GstVideoPlayer;
 				bvw_managed.OnError (GLib.Marshaller.Utf8PtrToString (message));
 			} catch (Exception e) {
 				GLib.ExceptionManager.RaiseUnhandledException (e, false);
@@ -314,7 +314,7 @@ namespace VAS.Multimedia.Player
 			OverrideVirtualMethod (gtype, "error", ErrorVMCallback);
 		}
 
-		[GLib.DefaultSignalHandler (Type = typeof(GstPlayer), ConnectionMethod = "OverrideError")]
+		[GLib.DefaultSignalHandler (Type = typeof (GstVideoPlayer), ConnectionMethod = "OverrideError")]
 		protected virtual void OnError (string message)
 		{
 			GLib.Value ret = GLib.Value.Empty;
@@ -349,7 +349,7 @@ namespace VAS.Multimedia.Player
 		static void tick_cb (IntPtr bvw, long current_time, long stream_length, double current_position)
 		{
 			try {
-				GstPlayer bvw_managed = GLib.Object.GetObject (bvw, false) as GstPlayer;
+				GstVideoPlayer bvw_managed = GLib.Object.GetObject (bvw, false) as GstVideoPlayer;
 				bvw_managed.OnTick (current_time, stream_length, current_position);
 			} catch (Exception e) {
 				GLib.ExceptionManager.RaiseUnhandledException (e, false);
@@ -363,7 +363,7 @@ namespace VAS.Multimedia.Player
 			OverrideVirtualMethod (gtype, "tick", TickVMCallback);
 		}
 
-		[GLib.DefaultSignalHandler (Type = typeof(GstPlayer), ConnectionMethod = "OverrideTick")]
+		[GLib.DefaultSignalHandler (Type = typeof (GstVideoPlayer), ConnectionMethod = "OverrideTick")]
 		protected virtual void OnTick (long current_time, long stream_length, double current_position)
 		{
 			GLib.Value ret = GLib.Value.Empty;
@@ -546,15 +546,15 @@ namespace VAS.Multimedia.Player
 			}
 		}
 
-		static GstPlayer ()
+		static GstVideoPlayer ()
 		{
 			VAS.Multimedia.Video.ObjectManager.Initialize ();
 		}
 	}
 
-	public class GstFramesCapturer: GstPlayer , IFramesCapturer
+	public class GstFramesCapturer : GstVideoPlayer, IFramesCapturer
 	{
-	
+
 		public unsafe GstFramesCapturer () : base (PlayerUseType.Capture)
 		{
 		}

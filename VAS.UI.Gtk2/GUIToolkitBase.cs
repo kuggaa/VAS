@@ -81,9 +81,9 @@ namespace VAS.UI
 			registry.Register<I, C> (priority);
 		}
 
-		public virtual IPlayerView GetPlayerView ()
+		public virtual IVideoPlayerView GetPlayerView ()
 		{
-			return registry.Retrieve<IPlayerView> ();
+			return registry.Retrieve<IVideoPlayerView> ();
 		}
 
 		public virtual List<EditionJob> ConfigureRenderingJob (Playlist playlist)

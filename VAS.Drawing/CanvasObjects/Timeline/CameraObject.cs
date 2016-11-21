@@ -392,7 +392,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			});
 		}
 
-		void SeekVideo (IPlayerController player, Time seekTime, SeekType seekType)
+		void SeekVideo (IVideoPlayerController player, Time seekTime, SeekType seekType)
 		{
 			Time movingBound;
 			Time otherBound;

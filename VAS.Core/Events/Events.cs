@@ -278,7 +278,7 @@ namespace VAS.Core.Events
 	{
 		public Playlist Presentation { get; set; }
 
-		public IPlayerController Player { get; set; }
+		public IVideoPlayerController Player { get; set; }
 	}
 
 	public class CreateProjectEvent : Event

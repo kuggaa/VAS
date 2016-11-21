@@ -45,7 +45,7 @@ namespace VAS.Drawing.Widgets
 		double timeSpacing = 100.0;
 		Time currentTime;
 		Time duration;
-		IPlayerController player;
+		IVideoPlayerController player;
 		int fontSize;
 
 		public Timerule (IWidget widget) : base (widget)
@@ -140,7 +140,7 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
-		public IPlayerController Player {
+		public IVideoPlayerController Player {
 			get {
 				return player;
 			}

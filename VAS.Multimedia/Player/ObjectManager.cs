@@ -31,7 +31,7 @@ namespace VAS.Multimedia.Video
 
 			initialized = true;
 
-			GLib.GType.Register (GstPlayer.GType, typeof(GstPlayer));
+			GLib.GType.Register (GstVideoPlayer.GType, typeof(GstVideoPlayer));
 		}
 	}
 }
