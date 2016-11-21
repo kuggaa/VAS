@@ -44,7 +44,7 @@
     <Compile Include="Remuxer\GstRemuxer.cs" />
     <Compile Include="Remuxer\ObjectManager.cs" />
     <Compile Include="Utils\MultimediaFactory.cs" />
-    <Compile Include="Player\GstPlayer.cs" />
+    <Compile Include="Player\GstVideoPlayer.cs" />
     <Compile Include="Player\ObjectManager.cs" />
     <Compile Include="Utils\Devices.cs" />
     <Compile Include="Utils\WindowHandle.cs" />

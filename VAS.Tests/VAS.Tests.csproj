@@ -113,7 +113,7 @@
     <Compile Include="Core\Store\TestTimelineEvent.cs" />
     <Compile Include="Core\Store\TestTimeNode.cs" />
     <Compile Include="Core\Store\TestTimer.cs" />
-    <Compile Include="Services\TestPlayerController.cs" />
+    <Compile Include="Services\TestVideoPlayerController.cs" />
     <Compile Include="Setup.cs" />
     <Compile Include="MVVMC\TestCollectionViewModel.cs" />
     <Compile Include="MVVMC\TestControllerLocator.cs" />

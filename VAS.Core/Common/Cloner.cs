@@ -18,6 +18,7 @@
 using System;
 using System.IO;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 using VAS.Core.Serialization;
 
 namespace VAS.Core.Common
@@ -29,15 +30,19 @@ namespace VAS.Core.Common
 			T retStorable;
 
 			if (Object.ReferenceEquals (source, null))
-				return default(T);
+				return default (T);
 
 			Stream s = new MemoryStream ();
 
 			// Binary deserialization fails in mobile platforms because of
 			// https://bugzilla.xamarin.com/show_bug.cgi?id=37300
-			#if OSTYPE_ANDROID || OSTYPE_IOS
+#if OSTYPE_ANDROID || OSTYPE_IOS
 			type = SerializationType.Json;
-			#endif
+#endif
+
+			if (source is BindableBase) {
+				type = SerializationType.Json;
+			}
 
 			using (s) {
 				Serializer.Instance.Save<T> (source, s, type);

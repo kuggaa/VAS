@@ -30,7 +30,6 @@ namespace VAS.Core.Store.Templates
 	public class Team : StorableBase, IDisposable, ITemplate<Team>
 	{
 		public const int CURRENT_VERSION = 1;
-		ObservableCollection<Player> list;
 
 		public Team ()
 		{
@@ -98,18 +97,8 @@ namespace VAS.Core.Store.Templates
 		}
 
 		public ObservableCollection<Player> List {
-			get {
-				return list;
-			}
-			set {
-				if (list != null) {
-					list.CollectionChanged -= PlayersChanged;
-				}
-				list = value;
-				if (list != null) {
-					list.CollectionChanged += PlayersChanged;
-				}
-			}
+			get;
+			set;
 		}
 
 		[PropertyPreload]
@@ -139,11 +128,6 @@ namespace VAS.Core.Store.Templates
 				player.ID = Guid.NewGuid ();
 			}
 			return newTeam;
-		}
-
-		void PlayersChanged (object sender, NotifyCollectionChangedEventArgs e)
-		{
-			IsChanged = true;
 		}
 	}
 }

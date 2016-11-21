@@ -38,7 +38,7 @@ namespace VAS.Multimedia
 		{
 			registry = new Registry ("Multimedia backend");
 			/* Register default elements */
-			Register<IPlayer, GstPlayer> (0);
+			Register<IVideoPlayer, GstVideoPlayer> (0);
 			Register<IFramesCapturer, GstFramesCapturer> (0);
 			Register<IVideoEditor, GstVideoSplitter> (0);
 			Register<IRemuxer, GstRemuxer> (0);
@@ -51,14 +51,14 @@ namespace VAS.Multimedia
 			registry.Register<I, C> (priority);
 		}
 
-		public IPlayer GetPlayer ()
+		public IVideoPlayer GetPlayer ()
 		{
-			return registry.Retrieve<IPlayer> ();
+			return registry.Retrieve<IVideoPlayer> ();
 		}
 
-		public IMultiPlayer GetMultiPlayer ()
+		public IMultiVideoPlayer GetMultiPlayer ()
 		{
-			return registry.Retrieve<IMultiPlayer> ();
+			return registry.Retrieve<IMultiVideoPlayer> ();
 		}
 
 		public IFramesCapturer GetFramesCapturer ()

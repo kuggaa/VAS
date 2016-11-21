@@ -53,7 +53,7 @@ namespace VAS.Core.Interfaces.GUI
 
 		//void TagTeam (TeamType team);
 
-		IPlayerController Player{ get; }
+		IVideoPlayerController Player{ get; }
 
 		ICapturerBin Capturer{ get; }
 	}

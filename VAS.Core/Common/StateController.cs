@@ -50,7 +50,7 @@ namespace VAS.Core
 					return false;
 				}
 				home = new NavigationState (transition, homeState);
-				return await MoveToHome ();
+				return await MoveToHome (true);
 			} catch (Exception ex) {
 				Log.Exception (ex);
 				return false;
@@ -63,7 +63,7 @@ namespace VAS.Core
 		/// </summary>
 		/// <returns>True if the move could be performed. False otherwise</returns>
 		/// <param name="transition">Transition.</param>
-		public async Task<bool> MoveTo (string transition, dynamic properties, bool emptyStack = false)
+		public async Task<bool> MoveTo (string transition, dynamic properties, bool emptyStack = false, bool forceMove = false)
 		{
 			Log.Debug ("Moving to " + transition);
 
@@ -75,7 +75,10 @@ namespace VAS.Core
 			try {
 				bool isModal = false;
 				NavigationState lastState = LastState (out isModal);
-
+				if (!forceMove && lastState != null && lastState.Name == transition) {
+					Log.Debug ("Not moved to " + transition + "because we're already there");
+					return true;
+				}
 				if (emptyStack) {
 					if (!await EmptyStateStack ()) {
 						return false;
@@ -200,7 +203,7 @@ namespace VAS.Core
 		/// Moves to home. It clears all Modal windows and Panels in the Main Window.
 		/// </summary>
 		/// <returns>True if the move to the home could be performed. False otherwise</returns>
-		public async Task<bool> MoveToHome ()
+		public async Task<bool> MoveToHome (bool forceMove = false)
 		{
 			if (home == null) {
 				Log.Debug ("Moving failed because transition to home doesn't exist");
@@ -208,7 +211,7 @@ namespace VAS.Core
 			}
 
 			try {
-				return await MoveTo (home.Name, null, true);
+				return await MoveTo (home.Name, null, true, forceMove);
 			} catch (Exception ex) {
 				Log.Exception (ex);
 				return false;

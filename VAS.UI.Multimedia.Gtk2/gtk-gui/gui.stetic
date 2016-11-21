@@ -74,7 +74,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="VAS.UI.PlayerView" design-size="2118 433">
+  <widget class="Gtk.Bin" id="VAS.UI.VideoPlayerView" design-size="2118 433">
     <property name="MemberName" />
     <child>
       <widget class="Gtk.VBox" id="vbox3">
@@ -779,7 +779,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="VAS.UI.PlayerCapturerBin" design-size="1478 300">
+  <widget class="Gtk.Bin" id="VAS.UI.VideoPlayerCapturerBin" design-size="1478 300">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
