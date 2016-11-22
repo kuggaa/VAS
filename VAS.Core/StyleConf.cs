@@ -44,7 +44,7 @@ namespace VAS.Core.Common
 		public const int HeaderFontSize = 20;
 		public const int HeaderHeight = 60;
 
-		public const  int TemplatesHeaderIconSize = 54;
+		public const int TemplatesHeaderIconSize = 54;
 		public const int TemplatesIconSize = 36;
 
 		public const int NewHeaderSpacing = 10;
@@ -90,7 +90,7 @@ namespace VAS.Core.Common
 		public const int ListArrowRightHeight = 12;
 
 		public const int TeamsShieldIconSize = 45;
-		
+
 		public const string TimelineNeedleResource = "icons/hicolor/scalable/actions/longomatch-timeline-needle-big" + IMAGE_EXT;
 		public const string TimelineNeedleUP = "icons/hicolor/scalable/actions/longomatch-timeline-needle-up" + IMAGE_EXT;
 		public const int TimelineNeedleBigWidth = 11;
@@ -129,7 +129,7 @@ namespace VAS.Core.Common
 		public const int PlayerNumberY = 60 - PlayerLineWidth - PlayerNumberSize + 1;
 		public const int PlayerArrowX = PlayerNumberX;
 		public const int PlayerArrowY = PlayerNumberY - PlayerArrowSize + 1;
-		
+
 		public const string SubsLock = "icons/hicolor/scalable/actions/longomatch-player-swap-lock" + IMAGE_EXT;
 		public const string SubsUnlock = "icons/hicolor/scalable/actions/longomatch-player-swap-unlock" + IMAGE_EXT;
 		public const string SubsIcon = "icons/hicolor/scalable/actions/longomatch-subs-arrow" + IMAGE_EXT;
@@ -171,10 +171,10 @@ namespace VAS.Core.Common
 		public static Color ButtonScoreColor = Color.Parse ("#d8ffc7");
 		public static Color ButtonPenaltyColor = Color.Parse ("#ffc7f0");
 		public static Color ButtonEventColor = Color.Parse ("#c7e9ff");
-		
+
 		public static int PlayerCapturerIconSize = 20;
 		public static int PlayerCapturerControlsHeight = 30;
-		
+
 		public int BenchLineWidth = 2;
 		public int TeamTaggerBenchBorder = 10;
 
@@ -199,6 +199,11 @@ namespace VAS.Core.Common
 		public const int FilterTreeViewOnlyTopOffset = 2;
 
 		public string Font = "Ubuntu";
+
+		// Environment variables
+		public const string TEST = "TEST";
+
+		// Properties
 
 		public Color HomeTeamColor { get; set; }
 
@@ -241,8 +246,8 @@ namespace VAS.Core.Common
 
 		public static StyleConf Load (string filename)
 		{
-			return Serializer.Instance.Load <StyleConf> (filename);
+			return Serializer.Instance.Load<StyleConf> (filename);
 		}
-		
+
 	}
 }
