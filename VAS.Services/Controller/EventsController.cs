@@ -31,10 +31,11 @@ namespace VAS.Services.Controller
 	/// Events controller, base class of the Events Controller.
 	/// </summary>
 	public class EventsController<TModel, TViewModel> : DisposableBase, IController
-
 		where TModel : TimelineEvent
 		where TViewModel : TimelineEventVM<TModel>, new()
 	{
+		VideoPlayerVM playerVM;
+
 		protected override void Dispose (bool disposing)
 		{
 			base.Dispose (disposing);
@@ -42,8 +43,18 @@ namespace VAS.Services.Controller
 		}
 
 		public VideoPlayerVM PlayerVM {
-			get;
-			set;
+			get {
+				return playerVM;
+			}
+			set {
+				if (playerVM != null) {
+					playerVM.PropertyChanged -= HandlePlayerVMPropertyChanged;
+				}
+				playerVM = value;
+				if (playerVM != null) {
+					playerVM.PropertyChanged += HandlePlayerVMPropertyChanged;
+				}
+			}
 		}
 
 		#region IController implementation
@@ -82,6 +93,10 @@ namespace VAS.Services.Controller
 		void HandleOpenListEvent (LoadTimelineEvent<IEnumerable<TModel>> e)
 		{
 			PlayerVM.LoadEvents (e.Object.OfType<TimelineEvent> ().ToList (), e.Playing);
+		}
+
+		protected virtual void HandlePlayerVMPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
 		}
 	}
 }

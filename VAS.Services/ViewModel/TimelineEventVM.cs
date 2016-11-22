@@ -112,6 +112,14 @@ namespace VAS.Services.ViewModel
 			get;
 			set;
 		} = true;
+		
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Services.ViewModel.TimelineEventVM`1"/> has focus.
+		/// </summary>
+		/// <value><c>true</c> if focus; otherwise, <c>false</c>.</value>
+		public bool Focus {
+			get;
+			set;
+		}
 	}
 }
 
