@@ -253,7 +253,7 @@ namespace VAS.Drawing
 				}
 			}
 			if (Objects != null) {
-				foreach (ICanvasSelectableObject cso in Objects) {
+				foreach (ICanvasSelectableObject cso in Objects.Where (x => x is ICanvasSelectableObject)) {
 					cso.Selected = false;
 					if (cso.GetType () == typeof (CameraObject)) {
 						((CameraObject)cso).SelectedLeft = false;
@@ -343,7 +343,7 @@ namespace VAS.Drawing
 
 			/* Iterate over all the objects now */
 			if (sel == null) {
-				foreach (ICanvasSelectableObject co in Objects) {
+				foreach (ICanvasSelectableObject co in Objects.Where (x => x is ICanvasSelectableObject)) {
 					sel = co.GetSelection (coords, Accuracy, inMotion);
 					if (sel == null)
 						continue;

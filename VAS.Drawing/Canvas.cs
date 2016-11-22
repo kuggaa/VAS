@@ -299,7 +299,7 @@ namespace VAS.Drawing
 			tk.Clear (BackgroundColor);
 		}
 
-		protected void DrawObjects (Area area)
+		protected virtual void DrawObjects (Area area)
 		{
 			List<CanvasObject> highlighted = new List<CanvasObject> ();
 			foreach (ICanvasObject co in Objects) {
