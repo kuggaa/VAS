@@ -15,6 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using System.IO;
 using VAS.Core.Common;
 
@@ -24,6 +25,12 @@ namespace VAS.Core
 	{
 		public static Image LoadImage (string name)
 		{
+			var isTest = Environment.GetEnvironmentVariable (StyleConf.TEST) != null ?
+									Boolean.Parse (Environment.GetEnvironmentVariable (StyleConf.TEST)) :
+									false;
+			if (isTest) {
+				return new Image (10, 10);
+			}
 			return new Image (Utils.GetDataFilePath (name));
 		}
 	}
