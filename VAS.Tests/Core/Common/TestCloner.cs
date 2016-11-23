@@ -27,25 +27,6 @@ namespace VAS.Tests.Core.Common
 	[TestFixture]
 	public class TestCloner
 	{
-		static void CheckIStorableClone (IStorable storable1)
-		{
-			IStorable storable2 = storable1.Clone ();
-			Assert.AreEqual (storable1, storable2);
-			Assert.AreNotSame (storable1, storable2);
-			storable1.Storage = Mock.Of<IStorage> ();
-			storable2 = storable1.Clone ();
-			Assert.IsNotNull (storable1.Storage);
-			Assert.AreEqual (storable1.Storage, storable2.Storage);
-		}
-
-		[Test]
-		public void TestCloneIStorable ()
-		{
-			CheckIStorableClone (new StorableBase ());
-			CheckIStorableClone (new MediaFileSet ());
-			CheckIStorableClone (new TimelineEvent ());
-		}
-
 		[Test ()]
 		public void TestClone_IsBindableBase_ChangeCollectionProperty ()
 		{
