@@ -320,7 +320,7 @@ namespace VAS.Core.Store
 		[PropertyChanged.DoNotNotify]
 		public virtual Color Color {
 			get {
-				return EventType.Color;
+				return EventType?.Color;
 			}
 		}
 

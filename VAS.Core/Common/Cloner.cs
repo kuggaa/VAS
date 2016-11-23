@@ -32,8 +32,6 @@ namespace VAS.Core.Common
 			if (Object.ReferenceEquals (source, null))
 				return default (T);
 
-			Stream s = new MemoryStream ();
-
 			// Binary deserialization fails in mobile platforms because of
 			// https://bugzilla.xamarin.com/show_bug.cgi?id=37300
 #if OSTYPE_ANDROID || OSTYPE_IOS
@@ -44,10 +42,14 @@ namespace VAS.Core.Common
 				type = SerializationType.Json;
 			}
 
-			using (s) {
-				Serializer.Instance.Save<T> (source, s, type);
-				s.Seek (0, SeekOrigin.Begin);
-				retStorable = Serializer.Instance.Load<T> (s, type);
+			if (type == SerializationType.Json) {
+				retStorable = Serializer.Instance.JsonClone (source);
+			} else {
+				using (Stream s = new MemoryStream ()) {
+					Serializer.Instance.Save<T> (source, s, type);
+					s.Seek (0, SeekOrigin.Begin);
+					retStorable = Serializer.Instance.Load<T> (s, type);
+				}
 			}
 			if (source is IStorable) {
 				(retStorable as IStorable).Storage = (source as IStorable).Storage;

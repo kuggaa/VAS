@@ -35,5 +35,13 @@ namespace VAS.Core.Interfaces
 		           SerializationType type = SerializationType.Json);
 
 		T LoadSafe<T> (string filepath);
+
+		/// <summary>
+		/// Deep clone of object using Json and avoiding JsonIgnore
+		/// </summary>
+		/// <returns>The object's deep clone.</returns>
+		/// <param name="obj">The object to be cloned.</param>
+		/// <typeparam name="T">The type of the object to be cloned.</typeparam>
+		T JsonClone<T> (T obj);
 	}
 }
