@@ -20,15 +20,18 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using Moq;
 using NUnit.Framework;
+using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Filters;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
+using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Serialization;
@@ -530,6 +533,18 @@ namespace VAS.Tests
 					File.Delete (mf.FilePath);
 				}
 			}
+		}
+
+		public static Mock<IScreenState> GetScreenStateMocked (string transitionName)
+		{
+			var screenStateMock = new Mock<IScreenState> ();
+			screenStateMock.Setup (x => x.LoadState (It.IsAny<ExpandoObject> ())).Returns (AsyncHelpers.Return (true));
+			screenStateMock.Setup (x => x.ShowState ()).Returns (AsyncHelpers.Return (true));
+			screenStateMock.Setup (x => x.UnloadState ()).Returns (AsyncHelpers.Return (true));
+			screenStateMock.Setup (x => x.HideState ()).Returns (AsyncHelpers.Return (true));
+			screenStateMock.Setup (x => x.Panel).Returns (new Mock<IPanel> ().Object);
+			screenStateMock.Setup (x => x.Name).Returns (transitionName);
+			return screenStateMock;
 		}
 
 		public static void AreEquals (IStorable obj1, IStorable obj2, bool areEquals = true)
