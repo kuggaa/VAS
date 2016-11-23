@@ -23,16 +23,16 @@ namespace VAS.Core.Interfaces
 	public interface ISerializer
 	{
 		void Save<T> (T obj, Stream stream,
-		              SerializationType type = SerializationType.Json);
+					  SerializationType type = SerializationType.Json);
 
 		void Save<T> (T obj, string filepath,
-		              SerializationType type = SerializationType.Json);
+					  SerializationType type = SerializationType.Json);
 
 		T Load<T> (Stream stream,
-		           SerializationType type = SerializationType.Json);
+				   SerializationType type = SerializationType.Json);
 
 		T Load<T> (string filepath,
-		           SerializationType type = SerializationType.Json);
+				   SerializationType type = SerializationType.Json);
 
 		T LoadSafe<T> (string filepath);
 

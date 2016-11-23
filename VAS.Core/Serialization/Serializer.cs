@@ -68,15 +68,15 @@ namespace VAS.Core.Serialization
 		}
 
 		public void Save<T> (T obj, Stream stream,
-		                     SerializationType type = SerializationType.Json)
+							 SerializationType type = SerializationType.Json)
 		{
 			switch (type) {
 			case SerializationType.Binary:
-				BinaryFormatter formatter = new  BinaryFormatter ();
+				BinaryFormatter formatter = new BinaryFormatter ();
 				formatter.Serialize (stream, obj);
 				break;
 			case SerializationType.Xml:
-				XmlSerializer xmlformatter = new XmlSerializer (typeof(T));
+				XmlSerializer xmlformatter = new XmlSerializer (typeof (T));
 				xmlformatter.Serialize (stream, obj);
 				break;
 			case SerializationType.Json:
@@ -89,11 +89,11 @@ namespace VAS.Core.Serialization
 		}
 
 		public void Save<T> (T obj, string filepath,
-		                     SerializationType type = SerializationType.Json)
+							 SerializationType type = SerializationType.Json)
 		{
 			string tmpPath = filepath + ".tmp";
 			using (Stream stream = new FileStream (tmpPath, FileMode.Create,
-				                       FileAccess.Write, FileShare.None)) {
+									   FileAccess.Write, FileShare.None)) {
 				Save<T> (obj, stream, type);
 			}
 			if (File.Exists (filepath)) {
@@ -104,7 +104,7 @@ namespace VAS.Core.Serialization
 		}
 
 		public object Load (Type type, Stream stream,
-		                    SerializationType serType = SerializationType.Json)
+							SerializationType serType = SerializationType.Json)
 		{
 			switch (serType) {
 			case SerializationType.Binary:
@@ -124,13 +124,13 @@ namespace VAS.Core.Serialization
 		}
 
 		public T Load<T> (Stream stream,
-		                  SerializationType type = SerializationType.Json)
+						  SerializationType type = SerializationType.Json)
 		{
-			return (T)Load (typeof(T), stream, type);
+			return (T)Load (typeof (T), stream, type);
 		}
 
 		public T Load<T> (string filepath,
-		                  SerializationType type = SerializationType.Json)
+						  SerializationType type = SerializationType.Json)
 		{
 			Stream stream = new FileStream (filepath, FileMode.Open, FileAccess.Read, FileShare.Read);
 			using (stream) {
@@ -140,7 +140,7 @@ namespace VAS.Core.Serialization
 
 		public T LoadSafe<T> (string filepath)
 		{
-		
+
 			Stream stream = new FileStream (filepath, FileMode.Open,
 								FileAccess.Read, FileShare.Read);
 			using (stream) {
@@ -255,23 +255,23 @@ namespace VAS.Core.Serialization
 			object ret = null;
 
 			if (reader.Value != null) {
-				if (objectType == typeof(Time)) {
-					if (reader.ValueType == typeof(Int64)) {
+				if (objectType == typeof (Time)) {
+					if (reader.ValueType == typeof (Int64)) {
 						ret = new Time ((int)(Int64)reader.Value);
 					} else {
 						ret = new Time ((Int32)reader.Value);
 					}
-				} else if (objectType == typeof(Color)) {
+				} else if (objectType == typeof (Color)) {
 					string rgbStr = (string)reader.Value;
 					ret = Color.Parse (rgbStr);
-				} else if (objectType == typeof(Image)) {
-					byte[] buf = Convert.FromBase64String ((string)reader.Value); 
+				} else if (objectType == typeof (Image)) {
+					byte [] buf = Convert.FromBase64String ((string)reader.Value);
 					ret = Image.Deserialize (buf);
-				} else if (objectType == typeof(HotKey)) {
-					string[] hk = ((string)reader.Value).Split (' '); 
+				} else if (objectType == typeof (HotKey)) {
+					string [] hk = ((string)reader.Value).Split (' ');
 					ret = new HotKey { Key = int.Parse (hk [0]), Modifier = GetModifierValue (hk [1]) };
-				} else if (objectType == typeof(Point)) {
-					string[] ps = ((string)reader.Value).Split (' '); 
+				} else if (objectType == typeof (Point)) {
+					string [] ps = ((string)reader.Value).Split (' ');
 					ret = new Point (double.Parse (ps [0], NumberFormatInfo.InvariantInfo),
 						double.Parse (ps [1], NumberFormatInfo.InvariantInfo));
 				}
@@ -285,11 +285,11 @@ namespace VAS.Core.Serialization
 		public override bool CanConvert (Type objectType)
 		{
 			return (
-			    objectType == typeof(Time) ||
-			    objectType == typeof(Color) ||
-			    objectType == typeof(Point) ||
-			    objectType == typeof(HotKey) ||
-			    objectType == typeof(Image) && handleImages);
+				objectType == typeof (Time) ||
+				objectType == typeof (Color) ||
+				objectType == typeof (Point) ||
+				objectType == typeof (HotKey) ||
+				objectType == typeof (Image) && handleImages);
 		}
 
 		int GetModifierValue (string serializedValue)
