@@ -34,13 +34,27 @@ namespace VAS.Tests.Core.Common
 			var team = new DummyTeam ();
 			var clonedTeam = team.Clone ();
 
-			team.IsChanged = false;
+			clonedTeam.IsChanged = false;
 
 			// Action
-			team.List.Add (new Utils.PlayerDummy ());
+			clonedTeam.List.Add (new Utils.PlayerDummy ());
 
 			// Assert
-			Assert.IsTrue (team.IsChanged);
+			Assert.IsTrue (clonedTeam.IsChanged);
+		}
+
+		[Test ()]
+		public void TestClone_IsBindableBase_CloneProperty ()
+		{
+			// Arrange
+			Utils.DashboardDummy dashboard = new Utils.DashboardDummy ();
+			Utils.ProjectDummy p = new Utils.ProjectDummy ();
+
+			// Action
+			p.Dashboard = dashboard.Clone ();
+
+			// Assert
+			Assert.IsTrue (p.Dashboard.IsChanged);
 		}
 	}
 }
