@@ -68,7 +68,7 @@ namespace VAS.Drawing.CanvasObjects.Teams
 
 		Color Color {
 			get {
-				return Player.Color;
+				return Player?.Color;
 			}
 		}
 
