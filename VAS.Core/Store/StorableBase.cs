@@ -17,6 +17,8 @@
 //
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Xml.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
@@ -48,6 +50,7 @@ namespace VAS.Core.Store
 			set;
 		}
 
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		// Use IgnoreDataMember to prevent the cloner trying to serialize Storage

@@ -173,7 +173,6 @@ namespace VAS.Core.Serialization
 			T retStorable;
 			var jsonSettings = JsonSettings;
 			jsonSettings.ContractResolver = new IsChangedContractResolver (true);
-
 			using (Stream s = new MemoryStream ()) {
 				using (StreamWriter sw = new StreamWriter (s, Encoding.UTF8)) {
 					sw.NewLine = "\n";
@@ -314,13 +313,14 @@ namespace VAS.Core.Serialization
 
 		protected override JsonProperty CreateProperty (MemberInfo member, MemberSerialization memberSerialization)
 		{
-			if (member.Name == "Mock") {
-			}
-
 			var property = base.CreateProperty (member, memberSerialization);
 			if (IgnoreJsonIgnore) {
 				var attribs = property.AttributeProvider.GetAttributes (typeof (NonSerializedAttribute), true);
-				if (attribs.Count == 0) {
+				var attribs2 = property.AttributeProvider.GetAttributes (typeof (ObsoleteAttribute), true);
+				var attribs3 = property.AttributeProvider.GetAttributes (typeof (XmlIgnoreAttribute), true);
+				if (attribs.Count + attribs2.Count + attribs3.Count > 0) {
+					property.Ignored = true;
+				} else {
 					property.Ignored = false;
 				}
 			}
