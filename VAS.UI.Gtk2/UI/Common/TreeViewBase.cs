@@ -241,6 +241,11 @@ namespace VAS.UI.Common
 			return ret;
 		}
 
+		protected override bool OnKeyPressEvent (Gdk.EventKey evnt)
+		{
+			return false;
+		}
+
 		#region Virtual methods
 
 		protected virtual void ShowMenu ()
