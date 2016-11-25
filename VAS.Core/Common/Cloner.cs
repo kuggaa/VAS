@@ -69,7 +69,8 @@ namespace VAS.Core.Common
 			if (storable != null) {
 				(retStorable as IStorable).Storage = storable.Storage;
 				(retStorable as IStorable).IsLoaded = storable.IsLoaded = isLoaded;
-				(retStorable as IStorable).IsChanged = storable.IsChanged = isChanged;
+				storable.IsChanged = isChanged;
+				(retStorable as IStorable).IsChanged = true;
 			}
 			return retStorable;
 		}
