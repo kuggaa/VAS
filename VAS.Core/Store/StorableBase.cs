@@ -43,6 +43,7 @@ namespace VAS.Core.Store
 
 		#region IStorable implementation
 
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotSetChanged]
 		public bool IsLoaded {
@@ -63,6 +64,7 @@ namespace VAS.Core.Store
 			}
 		}
 
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public virtual bool DeleteChildren {
@@ -122,6 +124,7 @@ namespace VAS.Core.Store
 		/// Set to <c>true</c> while the object is being loaded. Used internally
 		/// to prevent infinite loops.
 		/// </summary>
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		bool IsLoading {

@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Xml.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
@@ -173,6 +174,7 @@ namespace VAS.Core.Store.Templates
 		/// <summary>
 		/// A list with all the timers used in this dashboard
 		/// </summary>
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public List<Timer> Timers {
@@ -181,6 +183,7 @@ namespace VAS.Core.Store.Templates
 			}
 		}
 
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public int CanvasWidth {
@@ -192,6 +195,7 @@ namespace VAS.Core.Store.Templates
 			}
 		}
 
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public int CanvasHeight {
@@ -203,6 +207,7 @@ namespace VAS.Core.Store.Templates
 			}
 		}
 
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Dictionary<string, List<Tag>> CommonTagsByGroup {

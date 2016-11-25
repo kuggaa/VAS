@@ -24,6 +24,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Serialization;
@@ -150,7 +151,7 @@ namespace VAS.Core.Store
 			}
 		}
 
-
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public IEnumerable<IGrouping<EventType, TimelineEvent>> EventsGroupedByEventType {
@@ -170,6 +171,7 @@ namespace VAS.Core.Store
 		/// Gets a short description of the project.
 		/// </summary>
 		/// <value>The short description.</value>
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public virtual string ShortDescription {

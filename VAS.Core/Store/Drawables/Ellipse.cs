@@ -16,15 +16,16 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Xml.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 
 namespace VAS.Core.Store.Drawables
 {
 	[Serializable]
-	public class Ellipse: Drawable
+	public class Ellipse : Drawable
 	{
-		
+
 		public Ellipse ()
 		{
 		}
@@ -62,6 +63,7 @@ namespace VAS.Core.Store.Drawables
 			set;
 		}
 
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Point Top {
@@ -70,6 +72,7 @@ namespace VAS.Core.Store.Drawables
 			}
 		}
 
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Point Bottom {
@@ -78,6 +81,7 @@ namespace VAS.Core.Store.Drawables
 			}
 		}
 
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Point Left {
@@ -86,6 +90,7 @@ namespace VAS.Core.Store.Drawables
 			}
 		}
 
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Point Right {
@@ -94,6 +99,7 @@ namespace VAS.Core.Store.Drawables
 			}
 		}
 
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public override Area Area {
@@ -106,7 +112,7 @@ namespace VAS.Core.Store.Drawables
 		public override Selection GetSelection (Point p, double pr = 0.05, bool inMotion = false)
 		{
 			double d;
-			
+
 			if (Selected) {
 				return base.GetSelection (p, pr);
 			}
@@ -135,28 +141,24 @@ namespace VAS.Core.Store.Drawables
 		{
 			switch (sel.Position) {
 			case SelectionPosition.Top:
-			case SelectionPosition.Bottom:
-				{
+			case SelectionPosition.Bottom: {
 					AxisY = Math.Abs (p.Y - Center.Y);
 					break;
 				}
 			case SelectionPosition.Left:
-			case SelectionPosition.Right:
-				{
+			case SelectionPosition.Right: {
 					AxisX = Math.Abs (p.X - Center.X);
 					break;
 				}
 			case SelectionPosition.TopLeft:
 			case SelectionPosition.TopRight:
 			case SelectionPosition.BottomLeft:
-			case SelectionPosition.BottomRight:
-				{
+			case SelectionPosition.BottomRight: {
 					AxisX = Math.Abs (p.X - Center.X);
 					AxisY = Math.Abs (p.Y - Center.Y);
 					break;
 				}
-			case SelectionPosition.All:
-				{
+			case SelectionPosition.All: {
 					Center.X += p.X - moveStart.X;
 					Center.Y += p.Y - moveStart.Y;
 					break;
