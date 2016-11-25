@@ -16,13 +16,14 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Xml.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 
 namespace VAS.Core.Store.Drawables
 {
 	[Serializable]
-	public class Circle: Ellipse
+	public class Circle : Ellipse
 	{
 		public Circle ()
 		{
@@ -38,6 +39,7 @@ namespace VAS.Core.Store.Drawables
 			set;
 		}
 
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public override double AxisY {
@@ -49,6 +51,7 @@ namespace VAS.Core.Store.Drawables
 			}
 		}
 
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public override double AxisX {
@@ -60,6 +63,7 @@ namespace VAS.Core.Store.Drawables
 			}
 		}
 
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public override Area Area {

@@ -18,6 +18,7 @@
 //
 //
 using System;
+using System.Xml.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
@@ -31,7 +32,7 @@ namespace VAS.Core.Store
 	/// It has a name that describe it and a start and stop <see cref="LongoMatch.Store.Time"/>
 	/// </summary>
 	[Serializable]
-	public class TimeNode: BindableBase
+	public class TimeNode : BindableBase
 	{
 		Time start, stop, eventTime;
 
@@ -101,6 +102,7 @@ namespace VAS.Core.Store
 		/// <summary>
 		/// Duration (stop_time - start_time)
 		/// </summary>
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Time Duration {
@@ -121,6 +123,7 @@ namespace VAS.Core.Store
 			set;
 		}
 
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public string RateString {

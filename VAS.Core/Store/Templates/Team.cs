@@ -17,6 +17,7 @@
 //
 using System;
 using System.ComponentModel;
+using System.Xml.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
@@ -89,6 +90,11 @@ namespace VAS.Core.Store.Templates
 		/// <value>The list.</value>
 		[JsonProperty]
 		public RangeObservableCollection<Player> List {
+
+		[XmlIgnore]
+		[JsonIgnore]
+		[PropertyChanged.DoNotNotify]
+		protected bool Disposed {
 			get;
 			protected set;
 		}

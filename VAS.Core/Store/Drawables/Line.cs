@@ -16,15 +16,16 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Xml.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 
 namespace VAS.Core.Store.Drawables
 {
 	[Serializable]
-	public class Line: Drawable
+	public class Line : Drawable
 	{
-		
+
 		public Line ()
 		{
 		}
@@ -52,6 +53,7 @@ namespace VAS.Core.Store.Drawables
 			set;
 		}
 
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public override Area Area {
@@ -61,6 +63,7 @@ namespace VAS.Core.Store.Drawables
 			}
 		}
 
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Point Center {
@@ -73,14 +76,14 @@ namespace VAS.Core.Store.Drawables
 		public override Selection GetSelection (Point p, double pr = 0.05, bool inMotion = false)
 		{
 			double d;
-		
+
 			if (MatchPoint (Start, p, pr, out d)) {
 				return new Selection (this, SelectionPosition.LineStart, d);
 			} else if (MatchPoint (Stop, p, pr, out d)) {
 				return new Selection (this, SelectionPosition.LineStop, d);
 			} else {
 				double minx, maxx, miny, maxy;
-				
+
 				minx = Math.Min (Start.X, Stop.X) - pr;
 				maxx = Math.Max (Start.X, Stop.X) + pr;
 				miny = Math.Min (Start.Y, Stop.Y) - pr;
@@ -94,13 +97,13 @@ namespace VAS.Core.Store.Drawables
 					d = p.Distance (new Point (p.X, Start.Y));
 				} else {
 					double yi, slope;
-					
+
 					slope = (Start.Y - Stop.Y) / (Start.X - Stop.X);
 					yi = Start.Y - (slope * Start.X);
 					d = Math.Abs ((slope * p.X) + yi - p.Y);
 					d /= 2;
 				}
-				
+
 				if (d < pr) {
 					return new Selection (this, SelectionPosition.All, d);
 				} else {

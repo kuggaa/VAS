@@ -19,6 +19,7 @@
 //
 using System;
 using System.IO;
+using System.Xml.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
@@ -154,6 +155,7 @@ namespace VAS.Core.Store
 			set;
 		}
 
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public bool IsFakeCapture {
@@ -162,6 +164,7 @@ namespace VAS.Core.Store
 			}
 		}
 
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public string ShortDescription {

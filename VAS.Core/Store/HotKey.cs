@@ -18,6 +18,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Xml.Serialization;
 using Newtonsoft.Json;
 using VAS.Core;
 using VAS.Core.Common;
@@ -68,6 +69,7 @@ namespace VAS.Core.Store
 		/// <summary>
 		/// Get whether the hotkey is defined or not
 		/// </summary>
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Boolean Defined {

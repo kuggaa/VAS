@@ -17,6 +17,7 @@
 //
 using System;
 using System.Linq;
+using System.Xml.Serialization;
 using Newtonsoft.Json;
 
 namespace VAS.Core.Store
@@ -25,25 +26,27 @@ namespace VAS.Core.Store
 	/// FIXME: Periods should be only in LongoMatch and not in VAS
 	/// </summary>
 	[Serializable]
-	public class Period: Timer
+	public class Period : Timer
 	{
 
 		public Period ()
 		{
 		}
 
+		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public TimeNode PeriodNode {
 			get {
 				Time start, stop;
-				
+
 				start = new Time (Nodes.Min (tn => tn.Start.MSeconds));
 				stop = new Time (Nodes.Max (tn => tn.Stop != null ? tn.Stop.MSeconds : 0));
 				if (stop.MSeconds == 0) {
 					stop = null;
 				}
-				return new TimeNode {Name = Name,
+				return new TimeNode {
+					Name = Name,
 					Start = start, Stop = stop
 				};
 			}
