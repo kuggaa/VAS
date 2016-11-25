@@ -140,7 +140,6 @@ namespace VAS.Core.Serialization
 
 		public T LoadSafe<T> (string filepath)
 		{
-
 			Stream stream = new FileStream (filepath, FileMode.Open,
 								FileAccess.Read, FileShare.Read);
 			using (stream) {
@@ -164,6 +163,7 @@ namespace VAS.Core.Serialization
 				settings.Converters.Add (new VersionConverter ());
 				settings.Converters.Add (new VASConverter (true));
 				settings.Binder = new MigrationBinder (Serializer.TypesMappings, Serializer.NamespacesReplacements);
+				settings.MetadataPropertyHandling = MetadataPropertyHandling.ReadAhead;
 				return settings;
 			}
 		}
@@ -180,7 +180,7 @@ namespace VAS.Core.Serialization
 					sw.Flush ();
 					s.Seek (0, SeekOrigin.Begin);
 					using (StreamReader sr = new StreamReader (s, Encoding.UTF8)) {
-						retStorable = (T)JsonConvert.DeserializeObject (sr.ReadToEnd (), typeof (T), jsonSettings);
+						retStorable = (T)JsonConvert.DeserializeObject (sr.ReadToEnd (), obj.GetType (), JsonSettings);
 					}
 				}
 			}
@@ -316,9 +316,8 @@ namespace VAS.Core.Serialization
 			var property = base.CreateProperty (member, memberSerialization);
 			if (IgnoreJsonIgnore) {
 				var attribs = property.AttributeProvider.GetAttributes (typeof (NonSerializedAttribute), true);
-				var attribs2 = property.AttributeProvider.GetAttributes (typeof (ObsoleteAttribute), true);
-				var attribs3 = property.AttributeProvider.GetAttributes (typeof (XmlIgnoreAttribute), true);
-				if (attribs.Count + attribs2.Count + attribs3.Count > 0) {
+				var attribs2 = property.AttributeProvider.GetAttributes (typeof (XmlIgnoreAttribute), true);
+				if (attribs.Count + attribs2.Count > 0) {
 					property.Ignored = true;
 				} else {
 					property.Ignored = false;
