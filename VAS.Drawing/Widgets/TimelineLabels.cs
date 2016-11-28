@@ -78,12 +78,12 @@ namespace VAS.Drawing.Widgets
 		{
 			IView view = App.Current.ViewLocator.Retrieve ("EventTypeLabelView");
 			view.SetViewModel (eventTypeVM);
-			var l = view as LabelView;
-			l.Width = labelWidth;
-			l.Height = labelHeight;
-			l.OffsetY = i * labelHeight;
-			AddLabel (l, eventTypeVM);
-			eventTypeToLabel [eventTypeVM] = l;
+			var labelView = view as LabelView;
+			labelView.Width = labelWidth;
+			labelView.Height = labelHeight;
+			labelView.OffsetY = i * labelHeight;
+			AddLabel (labelView, eventTypeVM);
+			eventTypeToLabel [eventTypeVM] = labelView;
 		}
 
 		protected virtual void AddLabel (LabelView label, object obj)
@@ -99,16 +99,16 @@ namespace VAS.Drawing.Widgets
 
 		protected virtual void FillCanvas (ref int i)
 		{
-			LabelView l;
+			LabelView labelView;
 
 			foreach (var timerViewModel in ViewModel.Project.Timers) {
 				IView view = App.Current.ViewLocator.Retrieve ("TimerLabelView");
 				view.SetViewModel (timerViewModel);
-				l = view as LabelView;
-				l.Width = labelWidth;
-				l.Height = labelHeight;
-				l.OffsetY = i * labelHeight;
-				AddLabel (l, timerViewModel);
+				labelView = view as LabelView;
+				labelView.Width = labelWidth;
+				labelView.Height = labelHeight;
+				labelView.OffsetY = i * labelHeight;
+				AddLabel (labelView, timerViewModel);
 				i++;
 			}
 			eventTypesStartIndex = i;

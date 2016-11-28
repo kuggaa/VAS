@@ -26,6 +26,16 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class MediaFileVM : ViewModelBase<MediaFile>
 	{
+		[PropertyChanged.DoNotCheckEquality]
+		public override MediaFile Model {
+			get {
+				return base.Model;
+			}
+			set {
+				base.Model = value;
+			}
+		}
+
 		/// <summary>
 		/// Path of the media file.
 		/// </summary>
@@ -160,6 +170,15 @@ namespace VAS.Core.ViewModel
 			get {
 				return Model.ShortDescription;
 			}
+		}
+
+		/// <summary>
+		/// Get or sets the selected grabber of the media file node.
+		/// </summary>
+		/// <value>The selected grabber.</value>
+		public SelectionPosition SelectedGrabber {
+			get;
+			set;
 		}
 	}
 }

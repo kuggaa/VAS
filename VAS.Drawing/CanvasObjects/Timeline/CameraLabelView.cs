@@ -23,6 +23,9 @@ using VAS.Core.MVVMC;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
+	/// <summary>
+	/// A label for the cameras timeline row.
+	/// </summary>
 	[View ("CameraLabelView")]
 	public class CameraLabelView : LabelView, ICanvasObjectView
 	{

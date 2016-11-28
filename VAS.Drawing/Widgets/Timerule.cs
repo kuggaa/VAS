@@ -73,13 +73,11 @@ namespace VAS.Drawing.Widgets
 
 			set {
 				if (viewModel != null) {
-					viewModel.PropertyChanged -= HandleFileSetPropertyChanged;
-					viewModel.PlayerVM.Player.PlaybackStateChangedEvent -= HandlePlaybackStateChanged;
+					viewModel.VideoPlayer.PropertyChanged -= HandlePropertyChangedEventHandler;
 				}
 				viewModel = value;
 				if (viewModel != null) {
-					viewModel.PropertyChanged += HandleFileSetPropertyChanged;
-					viewModel.PlayerVM.Player.PlaybackStateChangedEvent += HandlePlaybackStateChanged;
+					viewModel.VideoPlayer.PropertyChanged += HandlePropertyChangedEventHandler;
 				}
 				Duration = viewModel.Project.FileSet.Duration;
 			}
@@ -211,8 +209,9 @@ namespace VAS.Drawing.Widgets
 		}
 
 		bool PlayingState {
-			get;
-			set;
+			get {
+				return ViewModel.VideoPlayer.Playing;
+			}
 		}
 
 		bool WasPlaying {
@@ -223,76 +222,6 @@ namespace VAS.Drawing.Widgets
 		public void SetViewModel (object viewModel)
 		{
 			ViewModel = (IAnalysisViewModel)viewModel;
-		}
-
-		protected override void StartMove (Selection sel)
-		{
-			WasPlaying = PlayingState;
-			App.Current.EventsBroker.Publish<TogglePlayEvent> (
-				new TogglePlayEvent {
-					Playing = false
-				}
-			);
-		}
-
-		protected override void StopMove (bool moved)
-		{
-			if (moved && !ContinuousSeek) {
-				if (SeekEvent != null) {
-					SeekEvent (Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel),
-						true);
-				}
-			}
-			App.Current.EventsBroker.Publish<TogglePlayEvent> (
-				new TogglePlayEvent {
-					Playing = WasPlaying
-				}
-			);
-		}
-
-		protected override void SelectionMoved (Selection sel)
-		{
-			if (ContinuousSeek) {
-				if (SeekEvent != null) {
-					Time clickTime = Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel);
-					if (clickTime >= Duration) {
-						needle.X = Utils.TimeToPos (Duration, SecondsPerPixel);
-						return;
-					}
-					SeekEvent (Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel),
-						false, throttled: true);
-				}
-			}
-		}
-
-		protected override void HandleLeftButton (Point coords, ButtonModifier modif)
-		{
-			base.HandleLeftButton (coords, modif);
-			Time clickTime = Utils.PosToTime (new Point (coords.X + Scroll, 0), SecondsPerPixel);
-			if (clickTime >= Duration) {
-				return;
-			}
-			needle.X = coords.X;
-			if (SeekEvent != null) {
-				SeekEvent (clickTime, true);
-			}
-			needle.ReDraw ();
-		}
-
-		protected override void HandleDoubleClick (Point coords, ButtonModifier modif)
-		{
-			base.HandleDoubleClick (coords, modif);
-
-			if (Selections.Any ()) {
-				if (CenterPlayheadClicked != null) {
-					CenterPlayheadClicked (this, new EventArgs ());
-				}
-			}
-		}
-
-		void HandlePlaybackStateChanged (PlaybackStateChangedEvent e)
-		{
-			PlayingState = e.Playing;
 		}
 
 		public override void Draw (IContext context, Area area)
@@ -373,9 +302,77 @@ namespace VAS.Drawing.Widgets
 			End ();
 		}
 
-		void HandleFileSetPropertyChanged (object sender, PropertyChangedEventArgs e)
+		protected override void StartMove (Selection sel)
 		{
-			Duration = ViewModel.Project.FileSet.Duration;
+			WasPlaying = PlayingState;
+			App.Current.EventsBroker.Publish<TogglePlayEvent> (
+				new TogglePlayEvent {
+					Playing = false
+				}
+			);
+		}
+
+		protected override void StopMove (bool moved)
+		{
+			if (moved && !ContinuousSeek) {
+				if (SeekEvent != null) {
+					SeekEvent (Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel),
+						true);
+				}
+			}
+			App.Current.EventsBroker.Publish<TogglePlayEvent> (
+				new TogglePlayEvent {
+					Playing = WasPlaying
+				}
+			);
+		}
+
+		protected override void SelectionMoved (Selection sel)
+		{
+			if (ContinuousSeek) {
+				if (SeekEvent != null) {
+					Time clickTime = Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel);
+					if (clickTime >= Duration) {
+						needle.X = Utils.TimeToPos (Duration, SecondsPerPixel);
+						return;
+					}
+					SeekEvent (Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel),
+						false, throttled: true);
+				}
+			}
+		}
+
+		protected override void HandleLeftButton (Point coords, ButtonModifier modif)
+		{
+			base.HandleLeftButton (coords, modif);
+			Time clickTime = Utils.PosToTime (new Point (coords.X + Scroll, 0), SecondsPerPixel);
+			if (clickTime >= Duration) {
+				return;
+			}
+			needle.X = coords.X;
+			if (SeekEvent != null) {
+				SeekEvent (clickTime, true);
+			}
+			needle.ReDraw ();
+		}
+
+		protected override void HandleDoubleClick (Point coords, ButtonModifier modif)
+		{
+			base.HandleDoubleClick (coords, modif);
+
+			if (Selections.Any ()) {
+				if (CenterPlayheadClicked != null) {
+					CenterPlayheadClicked (this, new EventArgs ());
+				}
+			}
+		}
+
+		void HandlePropertyChangedEventHandler (object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "Duration") {
+				Duration = ViewModel.VideoPlayer.Duration;
+			}
+
 		}
 	}
 }

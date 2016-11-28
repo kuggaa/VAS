@@ -63,7 +63,11 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			return (TimelineEventView)nodes.FirstOrDefault (e => (e as TimelineEventView).TimelineEvent.Model == evt);
 		}
 
-		public virtual void AddTimelineEvent (TimelineEventVM timelineEvent)
+		/// <summary>
+		/// Adds a new the timeline event view to the timeline.
+		/// </summary>
+		/// <param name="timelineEvent">Timeline event.</param>
+		protected virtual void AddTimelineEvent (TimelineEventVM timelineEvent)
 		{
 			TimelineEventView po = (TimelineEventView)App.Current.ViewLocator.Retrieve ("TimelineEventView");
 			po.TimelineEvent = timelineEvent;

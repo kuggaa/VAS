@@ -21,6 +21,9 @@ using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
+	/// <summary>
+	/// A view for <see cref="Timer"/> in a timeline row.
+	/// </summary>
 	[View ("TimerTimeNodeView")]
 	public class TimerTimeNodeView : TimeNodeView, ICanvasObjectView<TimeNodeVM>
 	{
@@ -36,7 +39,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		}
 
 		/// <summary>
-		/// The timer that hodsl the time node used in this view.
+		/// The timer that holds the time node used in this view.
 		/// </summary>
 		/// <value>The timer.</value>
 		public TimerVM Timer {

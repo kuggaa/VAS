@@ -147,7 +147,7 @@ namespace VAS.Core.ViewModel
 				}
 			case NotifyCollectionChangedAction.Remove: {
 					foreach (TimelineEventVM viewModel in e.OldItems) {
-						eventTypeToTimeline [viewModel.Model.EventType].ViewModels.Remove (viewModel);
+						RemoveTimelineEventVM (viewModel);
 					}
 					break;
 				}
@@ -177,5 +177,11 @@ namespace VAS.Core.ViewModel
 		{
 			eventTypeToTimeline [viewModel.Model.EventType].ViewModels.Add (viewModel);
 		}
+
+		void RemoveTimelineEventVM (TimelineEventVM viewModel)
+		{
+			eventTypeToTimeline [viewModel.Model.EventType].ViewModels.Remove (viewModel);
+		}
+
 	}
 }

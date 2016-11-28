@@ -160,7 +160,7 @@ namespace VAS.UI
 				playerVM = value;
 				if (playerVM != null) {
 					playerVM.PropertyChanged += PlayerVMPropertyChanged;
-					playerVM.Mode = PlayerViewOperationMode.Analysis;
+					playerVM.ViewMode = PlayerViewOperationMode.Analysis;
 					playerVM.Step = new Time { TotalSeconds = jumpspinbutton.ValueAsInt };
 					playerVM.ViewPorts = viewPortsBackup;
 					playerVM.SetCamerasConfig (new ObservableCollection<CameraConfig> { new CameraConfig (0) });
@@ -201,7 +201,7 @@ namespace VAS.UI
 
 		protected virtual void ResetGui ()
 		{
-			if (playerVM.Mode != PlayerViewOperationMode.LiveAnalysisReview) {
+			if (playerVM.ViewMode != PlayerViewOperationMode.LiveAnalysisReview) {
 				closebutton.Visible = false;
 			}
 
@@ -541,7 +541,7 @@ namespace VAS.UI
 		{
 			if (playerVM.PlayElement == null) {
 				DrawingsVisible = false;
-				if (playerVM.Mode != PlayerViewOperationMode.LiveAnalysisReview) {
+				if (playerVM.ViewMode != PlayerViewOperationMode.LiveAnalysisReview) {
 					playerVM.CloseButtonVisible = false;
 				}
 			} else {
@@ -596,7 +596,7 @@ namespace VAS.UI
 			if (propertyName == null || propertyName == "Seekable") {
 				timescale.Sensitive = playerVM.Seekable;
 			}
-			if (propertyName == null || propertyName == "Duration" || propertyName == "CurrentTime") {
+			if (propertyName == null || propertyName == "Duration" || propertyName == "CurrentTime" || propertyName == "PlayerMode") {
 				UpdateTime ();
 			}
 			if (propertyName == null || propertyName == "FrameDrawing") {

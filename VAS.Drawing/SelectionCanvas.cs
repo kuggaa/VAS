@@ -247,18 +247,10 @@ namespace VAS.Drawing
 			foreach (Selection sel in Selections) {
 				ICanvasSelectableObject po = sel.Drawable as ICanvasSelectableObject;
 				po.Selected = false;
-				if (po.GetType () == typeof (CameraNodeView)) {
-					((CameraNodeView)po).SelectedLeft = false;
-					((CameraNodeView)po).SelectedRight = false;
-				}
 			}
 			if (Objects != null) {
 				foreach (ICanvasSelectableObject cso in Objects.Where (x => x is ICanvasSelectableObject)) {
 					cso.Selected = false;
-					if (cso.GetType () == typeof (CameraNodeView)) {
-						((CameraNodeView)cso).SelectedLeft = false;
-						((CameraNodeView)cso).SelectedRight = false;
-					}
 				}
 			}
 			Selections.Clear ();
@@ -303,25 +295,9 @@ namespace VAS.Drawing
 
 			if (seldup != null) {
 				so.Selected = false;
-				if (so.GetType () == typeof (CameraNodeView)) {
-					((CameraNodeView)so).SelectedLeft = false;
-					((CameraNodeView)so).SelectedRight = false;
-				}
 				Selections.Remove (seldup);
 			} else {
 				so.Selected = true;
-				if (so.GetType () == typeof (CameraNodeView)) {
-					if (sel.Position == SelectionPosition.Left) {
-						((CameraNodeView)so).SelectedLeft = true;
-					} else {
-						((CameraNodeView)so).SelectedLeft = false;
-					}
-					if (sel.Position == SelectionPosition.Right) {
-						((CameraNodeView)so).SelectedRight = true;
-					} else {
-						((CameraNodeView)so).SelectedRight = false;
-					}
-				}
 				Selections.Add (sel);
 			}
 			if (notify) {

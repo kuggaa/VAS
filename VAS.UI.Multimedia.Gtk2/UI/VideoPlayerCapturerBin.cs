@@ -88,7 +88,7 @@ namespace VAS.UI
 				} else {
 					ShowCapturer ();
 				}
-				ViewModel.Mode = value;
+				ViewModel.ViewMode = value;
 				Log.Debug ("CapturerPlayer setting mode " + value);
 			}
 		}
@@ -97,7 +97,7 @@ namespace VAS.UI
 		{
 			playerbox.Visible = true;
 			replayhbox.Visible = false;
-			if (playerVM.Mode == PlayerViewOperationMode.LiveAnalysisReview && App.Current.Config.ReviewPlaysInSameWindow)
+			if (playerVM.ViewMode == PlayerViewOperationMode.LiveAnalysisReview && App.Current.Config.ReviewPlaysInSameWindow)
 				capturerbox.Visible = true;
 			else
 				capturerbox.Visible = false;
@@ -145,25 +145,25 @@ namespace VAS.UI
 		{
 			if (e.PropertyName == "PlayElement") {
 				if (playerVM.PlayElement == null) {
-					if (playerVM.Mode == PlayerViewOperationMode.Analysis) {
+					if (playerVM.ViewMode == PlayerViewOperationMode.Analysis) {
 						return;
 					}
 					livebox.Visible = replayhbox.Visible = false;
 					playerVM.Pause ();
 					ShowCapturer ();
 				} else {
-					if (playerVM.PlayElement is TimelineEvent && playerVM.Mode == PlayerViewOperationMode.LiveAnalysisReview) {
+					if (playerVM.PlayElement is TimelineEvent && playerVM.ViewMode == PlayerViewOperationMode.LiveAnalysisReview) {
 						ShowPlayer ();
 						livebox.Visible = replayhbox.Visible = true;
 					}
 				}
 			} else if (e.PropertyName == "Mode") {
-				if (playerVM.Mode == PlayerViewOperationMode.Analysis) {
+				if (playerVM.ViewMode == PlayerViewOperationMode.Analysis) {
 					ShowPlayer ();
 				} else {
 					ShowCapturer ();
 				}
-				Log.Debug ("CapturerPlayer setting mode " + playerVM.Mode);
+				Log.Debug ("CapturerPlayer setting mode " + playerVM.ViewMode);
 			} else if (e.PropertyName == "PrepareView") {
 				ShowPlayer ();
 			}

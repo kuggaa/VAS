@@ -37,16 +37,6 @@ namespace VAS.Core.Events
 		public TimelineEvent TimelineEvent { get; set; }
 	}
 
-	public class LoadCameraEvent : Event
-	{
-		public TimelineEvent CameraTlEvent { get; set; }
-	}
-
-	public class CameraTimelineSelectedEvent : Event
-	{
-		public bool bordersAreSelected { get; set; }
-	}
-
 	public class EventCreatedEvent : Event
 	{
 		public TimelineEvent TimelineEvent { get; set; }

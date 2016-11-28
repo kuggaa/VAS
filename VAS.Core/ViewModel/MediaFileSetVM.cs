@@ -27,12 +27,18 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class MediaFileSetVM : CollectionViewModel<MediaFile, MediaFileVM>, IViewModel<MediaFileSet>
 	{
+		public MediaFileSetVM ()
+		{
+			VisibleRegion = new TimeNodeVM ();
+		}
+
 		public new MediaFileSet Model {
 			get {
 				return base.Model as MediaFileSet;
 			}
 			set {
 				base.Model = value;
+				VisibleRegion.Model = Model?.VisibleRegion;
 			}
 		}
 
@@ -44,6 +50,25 @@ namespace VAS.Core.ViewModel
 			get {
 				return Model.Duration;
 			}
+		}
+
+		/// <summary>
+		/// Gets or sets the visible region.
+		/// </summary>
+		/// <value>The visible region.</value>
+		public TimeNodeVM VisibleRegion {
+			get;
+			protected set;
+		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.MediaFileSetVM"/> is stretched
+		/// and only the visible region is used.
+		/// </summary>
+		/// <value><c>true</c> if is stretched; otherwise, <c>false</c>.</value>
+		public bool IsStretched {
+			get;
+			set;
 		}
 	}
 }

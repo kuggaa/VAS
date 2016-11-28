@@ -31,11 +31,6 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 	{
 		MediaFileVM viewModel;
 
-		public CameraTimelineView ()
-		{
-			CameraNode = new CameraNodeView ();
-		}
-
 		public MediaFileVM ViewModel {
 			get {
 				return viewModel;
@@ -43,15 +38,6 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			set {
 				SetMediaFile (value);
 			}
-		}
-
-		/// <summary>
-		/// Gets or sets the view for the first camera node, the first <see cref="MediaFile"/>.
-		/// </summary>
-		/// <value>The camera node.</value>
-		public CameraNodeView CameraNode {
-			get;
-			protected set;
 		}
 
 		public Color LineColor {
@@ -76,15 +62,15 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 		public void SetMediaFile (MediaFileVM mediaFile)
 		{
-			CameraNode.ViewModel = mediaFile;
-			CameraNode.OffsetY = OffsetY;
-			CameraNode.Height = Height;
-			CameraNode.SecondsPerPixel = SecondsPerPixel;
-			CameraNode.MaxTime = Duration;
-			CameraNode.ShowName = ShowName;
-			CameraNode.LineColor = LineColor;
-			CameraNode = CameraNode;
-			AddNode (CameraNode);
+			var cameraNodeView = new CameraView ();
+			cameraNodeView.ViewModel = mediaFile;
+			cameraNodeView.OffsetY = OffsetY;
+			cameraNodeView.Height = Height;
+			cameraNodeView.SecondsPerPixel = SecondsPerPixel;
+			cameraNodeView.MaxTime = Duration;
+			cameraNodeView.ShowName = ShowName;
+			cameraNodeView.LineColor = LineColor;
+			AddNode (cameraNodeView);
 		}
 	}
 }
