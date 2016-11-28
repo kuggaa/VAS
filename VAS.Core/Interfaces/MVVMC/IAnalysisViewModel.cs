@@ -16,12 +16,6 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using VAS.Core.Common;
 using VAS.Core.ViewModel;
 
 namespace VAS.Core.Interfaces.MVVMC
@@ -33,7 +27,7 @@ namespace VAS.Core.Interfaces.MVVMC
 	/// </summary>
 	public interface IAnalysisViewModel : IViewModel
 	{
-		VideoPlayerVM PlayerVM { get; }
+		VideoPlayerVM VideoPlayer { get; }
 
 		ProjectVM Project { get; }
 	}

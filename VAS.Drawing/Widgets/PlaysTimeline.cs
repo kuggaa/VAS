@@ -102,7 +102,7 @@ namespace VAS.Drawing.Widgets
 		/// <value>The player.</value>
 		public IVideoPlayerController Player {
 			get {
-				return ViewModel?.PlayerVM.Player;
+				return ViewModel?.VideoPlayer.Player;
 			}
 		}
 
@@ -156,90 +156,6 @@ namespace VAS.Drawing.Widgets
 			set;
 		}
 
-		protected CameraNodeView CameraNode {
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// Loads the play.
-		/// </summary>
-		/// <param name="play">Play.</param>
-		public void LoadPlay (TimelineEvent play)
-		{
-			if (play == loadedEvent) {
-				return;
-			}
-
-			loadedEvent = play;
-
-			EventTypeTimelineVM timelineVM = ViewModel.Project.Timeline.First ((e) => e.Model == play.EventType);
-			EventTypeTimelineView timelineView = viewModelToView [timelineVM] as EventTypeTimelineView;
-			TimelineEventView timelineEventView = timelineView.GetView (play);
-			ClearSelection ();
-			UpdateSelection (new Selection (timelineEventView, SelectionPosition.All, 0), false);
-		}
-
-		/// <summary>
-		/// Gets the width of the camera expressed in position.
-		/// </summary>
-		/// <returns>The camera width.</returns>
-		public double GetCameraWidth ()
-		{
-			if (!ViewModel.Project.FileSet.Any ()) {
-				return 0;
-			}
-
-			if (CameraNode == null) {
-				return 0;
-			}
-
-			if (CameraNode.IsStretched ()) {
-				return CameraNode.GetWidthPosition ();
-			} else {
-				return CameraNode.GetMaxTimePosition ();
-			}
-		}
-
-		public bool IsStretched ()
-		{
-			return CameraNode != null ? CameraNode.IsStretched () : false;
-		}
-
-		/// <summary>
-		/// Sets the periods time line.
-		/// </summary>
-		public void SetPeriodsTimeLine ()
-		{
-			List<Timer> timers = new List<Timer> ();
-			timers.Add (new Timer ());
-			if (CameraNode.TimeNode.Start != new Time (0)) {
-				TimeNode nodeStart = new TimeNode () {
-					Start = new Time (0),
-					Stop = CameraNode.TimeNode.Start
-				};
-				timers.FirstOrDefault ().Nodes.Add (nodeStart);
-			}
-
-			timers.FirstOrDefault ().Nodes.Add (CameraNode.TimeNode.Model);
-
-			if (CameraNode.TimeNode.Stop != CameraNode.ViewModel.Duration) {
-				TimeNode nodeEnd = new TimeNode () {
-					Start = CameraNode.TimeNode.Stop,
-					Stop = CameraNode.ViewModel.Duration
-				};
-				timers.FirstOrDefault ().Nodes.Add (nodeEnd);
-			}
-			PeriodsTimeline = new TimerTimelineView {
-				ShowLine = false,
-				ShowName = false,
-				DraggingMode = NodeDraggingMode.Borders,
-				Duration = CameraNode.ViewModel.Duration,
-				LineColor = Color.Blue1,
-			};
-			PeriodsTimeline.ViewModel = ViewModel.Project.Timers;
-		}
-
 		protected override void ClearObjects ()
 		{
 			base.ClearObjects ();
@@ -285,6 +201,21 @@ namespace VAS.Drawing.Widgets
 			UpdateRowsOffsets ();
 			Update ();
 			HeightRequest = Objects.Count * StyleConf.TimelineCategoryHeight;
+		}
+
+		/// <summary>
+		/// Sets the periods time line.
+		/// </summary>
+		// FIXME: Should be moved to longomatch, which is the one using it
+		protected void CreatePeriodsTimeline ()
+		{
+			PeriodsTimeline = new TimerTimelineView {
+				ShowLine = false,
+				ShowName = false,
+				DraggingMode = NodeDraggingMode.Borders,
+				LineColor = Color.Blue1,
+			};
+			PeriodsTimeline.ViewModel = ViewModel.Project.Timers;
 		}
 
 		protected virtual void FillCanvasForTimers (ref int line)
@@ -367,8 +298,7 @@ namespace VAS.Drawing.Widgets
 		protected override void SelectionChanged (List<Selection> selections)
 		{
 			TimelineEventVM ev = null;
-			CameraTimelineSelectedEvent ctse = null;
-			bool notififyCameraTimelineSelectedEvent = false;
+
 			if (selections.Count > 0) {
 				CanvasObject d = selections.Last ().Drawable as CanvasObject;
 				if (d is TimelineEventView) {
@@ -377,10 +307,6 @@ namespace VAS.Drawing.Widgets
 					// in the first time it is incorrectly marked as false
 					ev.Playing = true;
 					loadedEvent = ev.Model;
-				} else if (d is CameraNodeView) {
-					notififyCameraTimelineSelectedEvent = true;
-					ctse = new CameraTimelineSelectedEvent ();
-					ctse.bordersAreSelected = ((CameraNodeView)d).SelectedLeft || ((CameraNodeView)d).SelectedRight;
 				}
 			}
 			App.Current.EventsBroker.Publish (
@@ -388,10 +314,6 @@ namespace VAS.Drawing.Widgets
 					TimelineEvent = ev?.Model
 				}
 			);
-
-			if (notififyCameraTimelineSelectedEvent) {
-				App.Current.EventsBroker.Publish (ctse);
-			}
 		}
 
 		protected override void StartMove (Selection sel)
@@ -461,8 +383,8 @@ namespace VAS.Drawing.Widgets
 						Time = moveTime
 					}
 				);
-			} else if (co is TimeNodeView) {
-				TimeNodeVM to = (co as TimeNodeView).TimeNode;
+			} else if (co is CameraView) {
+				TimeNodeVM to = (co as CameraView).TimeNode;
 
 				if (sel.Position == SelectionPosition.Right) {
 					moveTime = to.Stop;

@@ -22,6 +22,9 @@ using VAS.Core.Store.Drawables;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
+	/// <summary>
+	/// Base class for row labels in the timeline.
+	/// </summary>
 	public class LabelView : CanvasObject, ICanvasSelectableObject
 	{
 		double width, height, offsetY;

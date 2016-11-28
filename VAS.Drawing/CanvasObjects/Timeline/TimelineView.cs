@@ -29,7 +29,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 {
 	/// <summary>
 	/// A base View for timelines working with <see cref="TimeNodeVM"/> objects.
-	/// The super class is responsible to listen for collection changes in its ViewModel and add/remode
+	/// The sub class is responsible to listen for collection changes in its ViewModel and add/remode
 	/// <see cref="TimeNodeView"/> to the timeline using the funtions provided in the base class. 
 	/// </summary>
 	public abstract class TimelineView : CanvasObject, ICanvasSelectableObject

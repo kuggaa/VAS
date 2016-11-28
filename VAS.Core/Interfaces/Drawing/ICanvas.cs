@@ -23,28 +23,6 @@ using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.Interfaces.Drawing
 {
-	public interface ICanvasView : IView
-	{
-		void Draw (IContext context, Area area);
-
-		void SetWidget (IWidget widget);
-	}
-
-	public interface ICanvasView<TViewModel> : IView<TViewModel>, ICanvasView
-		where TViewModel : IViewModel
-	{
-	}
-
-	public interface ICanvasObjectView : IView
-	{
-		void Draw (IDrawingToolkit tk, Area area);
-	}
-
-	public interface ICanvasObjectView<TViewModel> : IView<TViewModel>, ICanvasObjectView
-		where TViewModel : IViewModel
-	{
-	}
-
 	public interface ICanvas : IDisposable
 	{
 		void Draw (IContext context, Area area);
@@ -58,8 +36,6 @@ namespace VAS.Core.Interfaces.Drawing
 		event RedrawHandler RedrawEvent;
 
 		void Draw (IDrawingToolkit tk, Area area);
-
-		bool Visible { set; get; }
 
 		string Description { set; get; }
 
@@ -79,5 +55,36 @@ namespace VAS.Core.Interfaces.Drawing
 			set;
 		}
 	}
+
+	/// <summary>
+	/// Interface for canvas widgets that are a View.
+	/// </summary>
+	public interface ICanvasView : ICanvas, IView
+	{
+	}
+
+	/// <summary>
+	/// Generic Interface for canvas widgets that are a View.
+	/// </summary>
+	public interface ICanvasView<TViewModel> : ICanvasView, IView<TViewModel>
+		where TViewModel : IViewModel
+	{
+	}
+
+	/// <summary>
+	/// Interface for canvas objects that are a View.
+	/// </summary>
+	public interface ICanvasObjectView : ICanvasObject, IView
+	{
+	}
+
+	/// <summary>
+	/// Generic Interface for canvas objects that are a View.
+	/// </summary>
+	public interface ICanvasObjectView<TViewModel> : ICanvasObjectView, IView<TViewModel>
+		where TViewModel : IViewModel
+	{
+	}
+
 }
 

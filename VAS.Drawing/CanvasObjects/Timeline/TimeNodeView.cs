@@ -21,7 +21,6 @@ using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
 using VAS.Core.ViewModel;
-using System.Configuration;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
@@ -98,7 +97,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		/// Gets or sets the color of the line.
 		/// </summary>
 		/// <value>The color of the line.</value>
-		public Color LineColor {
+		public virtual Color LineColor {
 			get;
 			set;
 		}
@@ -116,9 +115,9 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		/// Gets or sets the max time.
 		/// </summary>
 		/// <value>The max time.</value>
-		public Time MaxTime {
+		public virtual Time MaxTime {
 			set;
-			protected get;
+			get;
 		}
 
 		/// <summary>

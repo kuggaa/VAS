@@ -27,7 +27,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Widgets\TimelineLabels.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\LabelView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimeNodeView.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\CameraNodeView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimelineEventView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\NeedleView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Widgets\Timerule.cs" />
@@ -60,5 +59,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimerTimelineView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\EventTypeTimelineView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimerTimeNodeView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\CameraView.cs" />
   </ItemGroup>
 </Project>

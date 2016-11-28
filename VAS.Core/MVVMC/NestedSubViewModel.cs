@@ -52,6 +52,10 @@ namespace VAS.Core.MVVMC
 			}
 		}
 
+		/// <summary>
+		/// Gets the list of child ViewModel's from the collection ViewModel.
+		/// </summary>
+		/// <value>The view models.</value>
 		public override RangeObservableCollection<TVMChild> ViewModels {
 			get {
 				return SubViewModel?.ViewModels;

@@ -83,7 +83,6 @@ namespace VAS.Services.Controller
 
 			App.Current.EventsBroker.Subscribe<OpenedProjectEvent> (HandleOpenedProjectChanged);
 			App.Current.EventsBroker.Subscribe<LoadEventEvent> (HandleLoadPlayEvent);
-			App.Current.EventsBroker.Subscribe<LoadCameraEvent> (HandleLoadCameraEvent);
 			App.Current.EventsBroker.Subscribe<TimeNodeChangedEvent> (HandlePlayChanged);
 		}
 
@@ -97,7 +96,6 @@ namespace VAS.Services.Controller
 
 			App.Current.EventsBroker.Unsubscribe<OpenedProjectEvent> (HandleOpenedProjectChanged);
 			App.Current.EventsBroker.Unsubscribe<LoadEventEvent> (HandleLoadPlayEvent);
-			App.Current.EventsBroker.Unsubscribe<LoadCameraEvent> (HandleLoadCameraEvent);
 			App.Current.EventsBroker.Unsubscribe<TimeNodeChangedEvent> (HandlePlayChanged);
 		}
 
@@ -189,31 +187,6 @@ namespace VAS.Services.Controller
 					LoadPlay (e.TimelineEvent, new Time (0), true);
 				} else if (PlayerVM != null && PlayerVM.Player != null) {
 					PlayerVM.Player.UnloadCurrentEvent ();
-				}
-			}
-		}
-
-		//FIXME: this should be in Player controller when decoupled from PalyerVM
-		protected virtual void HandleLoadCameraEvent (LoadCameraEvent e)
-		{
-			if (e.CameraTlEvent != null) {
-				Time seekTime = PlayerVM.Player.CurrentTime - e.CameraTlEvent.Start;
-				seekTime = seekTime.Clamp (new Time (0), e.CameraTlEvent.Stop);
-				LoadCameraPlay (e.CameraTlEvent, seekTime, PlayerVM.Player.Playing);
-			} else if (PlayerVM != null && PlayerVM.Player != null) {
-				PlayerVM.Player.UnloadCurrentEvent ();
-			}
-		}
-
-		//FIXME: this should be in Player controller when decoupled from PalyerVM
-		void LoadCameraPlay (TimelineEvent play, Time seekTime, bool playing)
-		{
-			if (play != null && PlayerVM != null && PlayerVM.Player != null) {
-				play.Playing = true;
-				(PlayerVM.Player as VideoPlayerController)?.LoadCameraEvent (
-					play, seekTime, playing);
-				if (playing) {
-					PlayerVM.Player.Play ();
 				}
 			}
 		}

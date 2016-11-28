@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
@@ -103,6 +104,15 @@ namespace VAS.Core.Store
 
 		#endregion
 
+		/// <summary>
+		/// Gets or sets the visible region of the file set.
+		/// </summary>
+		/// <value>The visible region.</value>
+		public TimeNode VisibleRegion {
+			get;
+			set;
+		}
+
 		[JsonProperty]
 		[PropertyChanged.DoNotNotify]
 		ObservableCollection<MediaFile> MediaFiles {
@@ -114,9 +124,9 @@ namespace VAS.Core.Store
 				}
 			}
 			set {
-				this.Clear ();
+				Clear ();
 				if (value != null) {
-					this.AddRange (value);
+					AddRange (value);
 				}
 			}
 		}
@@ -297,6 +307,23 @@ namespace VAS.Core.Store
 		public override int GetHashCode ()
 		{
 			return ID.GetHashCode ();
+		}
+
+		protected override void OnCollectionChanged (NotifyCollectionChangedEventArgs e)
+		{
+			if (Count != 0) {
+				if (VisibleRegion == null) {
+					VisibleRegion = new TimeNode { Start = new Time (0), Stop = Duration };
+				} else {
+					if (VisibleRegion.Start > Duration) {
+						VisibleRegion.Start = new Time (0);
+					}
+					if (VisibleRegion.Stop > Duration) {
+						VisibleRegion.Stop = Duration;
+					}
+				}
+			}
+			base.OnCollectionChanged (e);
 		}
 	}
 }

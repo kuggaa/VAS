@@ -46,7 +46,6 @@ namespace VAS.Tests.Services
 		TimelineEvent evt;
 		TimelineEvent evt2;
 		TimelineEvent evt3;
-		TimelineEvent cameraEvent;
 		PlaylistImage plImage;
 		Playlist playlist;
 		PlaylistController plController;
@@ -123,11 +122,6 @@ namespace VAS.Tests.Services
 			evt3 = new TimelineEvent {
 				Start = new Time (100), Stop = new Time (200),
 				CamerasConfig = new ObservableCollection<CameraConfig> (),
-				FileSet = mfs
-			};
-			cameraEvent = new TimelineEvent {
-				Start = new Time (0), Stop = new Time (10000),
-				CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) },
 				FileSet = mfs
 			};
 			plImage = new PlaylistImage (Utils.LoadImageFromFile (), new Time (5000));
@@ -943,24 +937,6 @@ namespace VAS.Tests.Services
 		}
 
 		[Test ()]
-		public void TestLoadCameraEvent ()
-		{
-			// Arrange
-			viewPortMock = new Mock<IViewPort> ();
-			viewPortMock.SetupAllProperties ();
-			player.ViewPorts = new List<IViewPort> { viewPortMock.Object };
-			Time seekTime = new Time (60000);
-			PreparePlayer ();
-
-			// Action
-			player.LoadCameraEvent (evt, seekTime, false);
-
-			// Assert
-			Assert.IsNull (player.CamerasLayout);
-			Assert.AreEqual (1, player.CamerasConfig.Count);
-		}
-
-		[Test ()]
 		public void TestUnloadEvent ()
 		{
 			int elementLoaded = 0;
@@ -1446,14 +1422,13 @@ namespace VAS.Tests.Services
 		{
 			PreparePlayer ();
 
-			player.PresentationMode = false;
+			player.Mode = VideoPlayerOperationMode.Normal;
 			player.Seek (new Time (10), true, false, false);
 			playerMock.Verify (p => p.Seek (new Time (10), true, false), Times.Once ());
 		}
 
 		[Test ()]
-		[Ignore ("Need migration of LoadPlaylistElementEvent")]
-		public void TestPresentationSeek ()
+		public void TestPresentationSeekToADifferentElement ()
 		{
 			Playlist localPlaylist = new Playlist ();
 			PlaylistPlayElement element0 = new PlaylistPlayElement (evt.Clone ());
@@ -1464,36 +1439,24 @@ namespace VAS.Tests.Services
 			element.Play.Stop = new Time (10);
 			localPlaylist.Elements.Add (element0);
 			localPlaylist.Elements.Add (element);
-
-			player.LoadedPlaylist = localPlaylist;
-
-			App.Current.EventsBroker.Publish<LoadPlaylistElementEvent> (
-				new LoadPlaylistElementEvent {
-					Playlist = localPlaylist,
-					Element = element0,
-					Playing = false
-				}
-			);
 			PreparePlayer ();
-
+			player.Mode = VideoPlayerOperationMode.Presentation;
 			playerMock.ResetCalls ();
-
 			int playlistElementSelected = 0;
 			App.Current.EventsBroker.Subscribe<PlaylistElementLoadedEvent> ((e) => playlistElementSelected++);
 
-			player.PresentationMode = true;
+			player.LoadPlaylistEvent (localPlaylist, element0, false);
 			player.Seek (new Time (15), true, false, false);
-			Assert.AreEqual (1, playlistElementSelected);
+
+			// One when the element is loaded, another one when we seek to a time from another element
+			Assert.AreEqual (2, playlistElementSelected);
+			playerMock.Verify (p => p.Seek (new Time (10), true, false), Times.Once ());
 			playerMock.Verify (p => p.Seek (new Time (5), true, false), Times.Once ());
 		}
 
-		[Test ()]
-		[Ignore ("Need migration of LoadPlaylistElementEvent")]
+		[Test]
 		public void TestPresentationSeekSameElement ()
 		{
-			//var plMan = new PlaylistController (playerVM);
-			//plMan.Start ();
-
 			Playlist localPlaylist = new Playlist ();
 			PlaylistPlayElement element0 = new PlaylistPlayElement (evt.Clone ());
 			PlaylistPlayElement element = new PlaylistPlayElement (evt.Clone ());
@@ -1503,25 +1466,17 @@ namespace VAS.Tests.Services
 			element.Play.Stop = new Time (10);
 			localPlaylist.Elements.Add (element0);
 			localPlaylist.Elements.Add (element);
-			App.Current.EventsBroker.Publish<LoadPlaylistElementEvent> (
-				new LoadPlaylistElementEvent {
-					Playlist = localPlaylist,
-					Element = element0,
-					Playing = false
-				}
-			);
 			PreparePlayer ();
+			player.Mode = VideoPlayerOperationMode.Presentation;
 			playerMock.ResetCalls ();
-
 			int playlistElementLoaded = 0;
 			App.Current.EventsBroker.Subscribe<LoadPlaylistElementEvent> ((e) => playlistElementLoaded++);
 
-			player.PresentationMode = true;
+			player.LoadPlaylistEvent (localPlaylist, element0, false);
 			player.Seek (new Time (5), true, false, false);
 			Assert.AreEqual (0, playlistElementLoaded);
+			playerMock.Verify (p => p.Seek (new Time (10), true, false), Times.Once ());
 			playerMock.Verify (p => p.Seek (new Time (15), true, false), Times.Once ());
-
-			plController.Stop ();
 		}
 
 		[Test ()]
@@ -1543,7 +1498,7 @@ namespace VAS.Tests.Services
 			int playlistElementSelected = 0;
 			App.Current.EventsBroker.Subscribe<LoadPlaylistElementEvent> ((e) => playlistElementSelected++);
 
-			player.PresentationMode = true;
+			player.Mode = VideoPlayerOperationMode.Presentation;
 			Assert.IsFalse (player.Seek (new Time (5000), true, false, false));
 			Assert.AreEqual (0, playlistElementSelected);
 			playerMock.Verify (p => p.Seek (It.IsAny<Time> (), It.IsAny<bool> (), It.IsAny<bool> ()), Times.Never ());
@@ -1565,7 +1520,7 @@ namespace VAS.Tests.Services
 			int playlistElementSelected = 0;
 			App.Current.EventsBroker.Subscribe<LoadPlaylistElementEvent> ((e) => playlistElementSelected++);
 
-			player.PresentationMode = true;
+			player.Mode = VideoPlayerOperationMode.Presentation;
 			Assert.IsFalse (player.Seek (new Time (4000), true, false, false));
 			Assert.AreEqual (0, playlistElementSelected);
 			playerMock.Verify (p => p.Seek (It.IsAny<Time> (), It.IsAny<bool> (), It.IsAny<bool> ()), Times.Never ());
@@ -1641,59 +1596,83 @@ namespace VAS.Tests.Services
 			}
 		}
 
-		[Test ()]
-		public void TestSeekWhenLoadCameraEvent ()
+		[Test]
+		public void TestSeekStretchMode ()
 		{
 			PreparePlayer ();
-			cameraEvent.Start = new Time (2000);
-			cameraEvent.Stop = new Time (5000);
-			currentTime = new Time (0);
-			Time seekTime = new Time (200);
+			currentTime = new Time (2100);
+			player.FileSet.VisibleRegion.Start = new Time (2000);
+			player.FileSet.VisibleRegion.Stop = new Time (5000);
 
-			player.LoadCameraEvent (cameraEvent, seekTime, false);
+			player.Mode = VideoPlayerOperationMode.Stretched;
 			player.Seek (new Time (1000), true);
 
-			//Verification that when loading a camera event it seeks to cameraEvent.Start + seekTime
-			playerMock.Verify (p => p.Seek (new Time (2200), true, false), Times.Once ());
-			//Verification of the Second Seek to 1000 CameraEvent start + Seek time
+			// First seek when the mode is changed
+			playerMock.Verify (p => p.Seek (new Time (2100), true, false), Times.Once ());
+			// Second seek to the new position + VisibleRegion.Start
 			playerMock.Verify (p => p.Seek (new Time (3000), true, false), Times.Once ());
 		}
 
-		[Test ()]
-		public void TestUnLoadEventWithCameraEvent ()
+		[Test]
+		public void TestUnloadEventInStretchMode ()
 		{
 			PreparePlayer ();
-			cameraEvent.Start = new Time (2000);
-			cameraEvent.Stop = new Time (15000);
 			currentTime = new Time (5000);
+			player.FileSet.VisibleRegion.Start = new Time (2000);
+			player.FileSet.VisibleRegion.Stop = new Time (15000);
 
-			player.LoadCameraEvent (cameraEvent, currentTime - cameraEvent.Start, false);
+			player.Mode = VideoPlayerOperationMode.Stretched;
 			player.LoadEvent (evt2, new Time (0), false);
 			currentTime = new Time (7000);
+			playerMock.ResetCalls ();
 			player.UnloadCurrentEvent ();
 			player.Seek (new Time (1000), true);
 
-			//Verification when unloadCurrent event and CameraEvent != null it seeks to the actual Current Time
+			// Check the first seek to current time
 			playerMock.Verify (p => p.Seek (currentTime, true, false), Times.Once ());
-			//Verification of the Second Seek to 1000 CameraEvent start + Seek time
+			// Check the second seek to 1000 + VisibleRegion.Start seek time
 			playerMock.Verify (p => p.Seek (new Time (3000), true, false), Times.Once ());
 		}
 
-		[Test ()]
-		public void TestCurrentTimeWhenLoadCameraEvent ()
+		[Test]
+		public void TestUnloadEventInStretchModeWhenCurrentTimeIsOutsideTheVisibleRegion ()
 		{
-			Time curTime = new Time (-1);
 			PreparePlayer ();
-			cameraEvent.Start = new Time (2000);
-			cameraEvent.Stop = new Time (15000);
-			currentTime = new Time (7000);
+			currentTime = new Time (5000);
+			player.FileSet.VisibleRegion.Start = new Time (2000);
+			player.FileSet.VisibleRegion.Stop = new Time (5000);
 
+			player.Mode = VideoPlayerOperationMode.Stretched;
+			player.LoadEvent (evt2, new Time (0), false);
+			currentTime = new Time (7000);
+			playerMock.ResetCalls ();
+			player.UnloadCurrentEvent ();
+
+			// Check the first seek to current time
+			playerMock.Verify (p => p.Seek (new Time (5000), true, false), Times.Once ());
+			Assert.AreEqual (new Time (3000), playerVM.Duration);
+			Assert.AreEqual (new Time (5000), playerVM.CurrentTime);
+		}
+
+		[Test ()]
+		public void TestTimeStretchMode ()
+		{
+			Time curTime = null, relativeTime = null;
+			PreparePlayer ();
+			currentTime = new Time (7000);
+			player.FileSet.VisibleRegion.Start = new Time (2000);
+			player.FileSet.VisibleRegion.Stop = new Time (15000);
 			App.Current.EventsBroker.Subscribe<PlayerTickEvent> ((obj) => {
 				curTime = obj.Time;
+				relativeTime = obj.RelativeTime;
 			});
-			player.LoadCameraEvent (cameraEvent, currentTime - cameraEvent.Start, false);
+
+			player.Mode = VideoPlayerOperationMode.Stretched;
 
 			Assert.AreEqual (new Time (5000), curTime);
+			Assert.AreEqual (new Time (5000), relativeTime);
+			Assert.AreEqual (new Time (13000), playerVM.Duration);
+			Assert.AreEqual (new Time (5000), playerVM.CurrentTime);
 		}
 
 		void HandleElementLoadedEvent (object element, bool hasNext)

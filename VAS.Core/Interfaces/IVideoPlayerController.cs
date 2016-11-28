@@ -39,8 +39,6 @@ namespace VAS.Core.Interfaces
 		event MediaFileSetLoadedHandler MediaFileSetLoadedEvent;
 		event PrepareViewHandler PrepareViewEvent;
 
-		void SetViewModel (IViewModel viewModel);
-
 		/// <summary>
 		/// The file set currently openned by the player.
 		/// </summary>
@@ -100,12 +98,10 @@ namespace VAS.Core.Interfaces
 		Playlist LoadedPlaylist { get; set; }
 
 		/// <summary>
-		/// Flag indicating whether this <see cref="LongoMatch.Core.Interfaces.IPlayerController"/>
-		/// is in presentation mode.
-		/// Presentation mode emits ticks relative to the full duration of the loaded playlist.
+		/// Gets or sets the operation mode.
 		/// </summary>
-		/// <value><c>true</c> if presentation mode; otherwise, <c>false</c>.</value>
-		bool PresentationMode { get; set; }
+		/// <value>The mode.</value>
+		VideoPlayerOperationMode Mode { get; set; }
 
 		/// <summary>
 		/// Switch the specified play, playlist and element.
@@ -163,14 +159,6 @@ namespace VAS.Core.Interfaces
 		/// <param name="seekTime">Seek time.</param>
 		/// <param name="playing">If set to <c>true</c> playing.</param>
 		void LoadEvent (TimelineEvent evt, Time seekTime, bool playing);
-
-		/// <summary>
-		/// Loads a segment in the player with the visible part of the stretched video file.
-		/// </summary>
-		/// <param name="evt">Evt.</param>
-		/// <param name="seekTime">Seek time.</param>
-		/// <param name="playing">If set to <c>true</c> playing.</param>
-		void LoadCameraEvent (TimelineEvent evt, Time seekTime, bool playing);
 
 		/// <summary>
 		/// Loads a playlist event.

@@ -149,7 +149,7 @@ namespace VAS.UI.Component
 
 		VideoPlayerVM Player {
 			get {
-				return ViewModel?.PlayerVM;
+				return ViewModel?.VideoPlayer;
 			}
 		}
 
@@ -320,7 +320,11 @@ namespace VAS.UI.Component
 
 		void HandlePlayerTick (PlayerTickEvent e)
 		{
-			CurrentTime = e.Time;
+			if (ViewModel.Project.FileSet.IsStretched) {
+				CurrentTime = e.RelativeTime;
+			} else {
+				CurrentTime = e.Time;
+			}
 		}
 	}
 }

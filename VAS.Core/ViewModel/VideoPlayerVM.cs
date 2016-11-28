@@ -136,7 +136,7 @@ namespace VAS.Core.ViewModel
 			set;
 		}
 
-		public PlayerViewOperationMode Mode {
+		public PlayerViewOperationMode ViewMode {
 			set {
 				mode = value;
 				switch (mode) {
@@ -164,6 +164,15 @@ namespace VAS.Core.ViewModel
 			}
 			get {
 				return mode;
+			}
+		}
+
+		public VideoPlayerOperationMode PlayerMode {
+			set {
+				Player.Mode = value;
+			}
+			get {
+				return Player.Mode;
 			}
 		}
 
@@ -231,12 +240,6 @@ namespace VAS.Core.ViewModel
 		public bool Opened {
 			get {
 				return playerController.Opened;
-			}
-		}
-
-		public bool PresentationMode {
-			set {
-				playerController.PresentationMode = value;
 			}
 		}
 
@@ -320,6 +323,9 @@ namespace VAS.Core.ViewModel
 		public void OpenFileSet (MediaFileSetVM fileset, bool play = false)
 		{
 			FileSet = fileset;
+			if (!Compact) {
+				ShowDetachButton = fileset != null && fileset.Any ();
+			}
 			playerController.Open (fileset?.Model, play);
 		}
 
@@ -350,11 +356,17 @@ namespace VAS.Core.ViewModel
 				Player.Play ();
 			} else {
 				if (e != null) {
-					LoadPlay (e, new Time (0), playing);
+					LoadEvent (e, new Time (0), playing);
 				} else if (Player != null) {
 					Player.UnloadCurrentEvent ();
 				}
 			}
+		}
+
+		public void LoadEvent (TimelineEvent e, Time seekTime, bool playing)
+		{
+			e.Playing = true;
+			Player.LoadEvent (e, seekTime, playing);
 		}
 
 		public void LoadEvents (List<TimelineEvent> events, bool playing)
@@ -368,15 +380,6 @@ namespace VAS.Core.ViewModel
 
 			playlist.Elements = new RangeObservableCollection<IPlaylistElement> (list);
 			playerController.LoadPlaylistEvent (playlist, list.FirstOrDefault (), playing);
-		}
-
-		public void LoadPlay (TimelineEvent e, Time seekTime, bool playing)
-		{
-			e.Playing = true;
-			Player.LoadEvent (e, seekTime, playing);
-			if (playing) {
-				Player.Play ();
-			}
 		}
 
 		public void LoadPlaylistEvent (Playlist playlist, IPlaylistElement element, bool playing)

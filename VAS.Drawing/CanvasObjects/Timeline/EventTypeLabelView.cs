@@ -25,6 +25,9 @@ using VAS.Core.MVVMC;
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
 
+	/// <summary>
+	/// A label for the event types timeline row.
+	/// </summary>
 	[View ("EventTypeLabelView")]
 	public class EventTypeLabelView : LabelView, ICanvasObjectView<EventTypeVM>
 	{

@@ -23,6 +23,9 @@ using VAS.Core.ViewModel;
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
 
+	/// <summary>
+	/// A label for the times timeline row.
+	/// </summary>
 	[View ("TimerLabelView")]
 	public class TimerLabelView : LabelView, ICanvasObjectView<TimerVM>
 	{

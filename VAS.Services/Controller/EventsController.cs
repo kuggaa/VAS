@@ -74,7 +74,7 @@ namespace VAS.Services.Controller
 		public virtual void SetViewModel (IViewModel viewModel)
 		{
 			if (viewModel is IAnalysisViewModel) {
-				PlayerVM = (viewModel as IAnalysisViewModel).PlayerVM;
+				PlayerVM = (viewModel as IAnalysisViewModel).VideoPlayer;
 			}
 		}
 
