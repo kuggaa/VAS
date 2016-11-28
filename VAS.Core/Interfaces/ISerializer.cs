@@ -42,6 +42,6 @@ namespace VAS.Core.Interfaces
 		/// <returns>The object's deep clone.</returns>
 		/// <param name="obj">The object to be cloned.</param>
 		/// <typeparam name="T">The type of the object to be cloned.</typeparam>
-		T JsonClone<T> (T obj);
+		T Clone<T> (T obj);
 	}
 }
