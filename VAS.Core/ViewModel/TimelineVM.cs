@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
@@ -104,6 +105,8 @@ namespace VAS.Core.ViewModel
 			set;
 		}
 
+		[JsonIgnore]
+		[PropertyChanged.DoNotNotify]
 		protected bool Disposed {
 			get;
 			private set;
