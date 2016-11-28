@@ -168,7 +168,7 @@ namespace VAS.Core.Serialization
 			}
 		}
 
-		public T JsonClone<T> (T obj)
+		public T Clone<T> (T obj)
 		{
 			T retStorable;
 			var jsonSettings = JsonSettings;
@@ -180,7 +180,7 @@ namespace VAS.Core.Serialization
 					sw.Flush ();
 					s.Seek (0, SeekOrigin.Begin);
 					using (StreamReader sr = new StreamReader (s, Encoding.UTF8)) {
-						retStorable = (T)JsonConvert.DeserializeObject (sr.ReadToEnd (), obj.GetType (), JsonSettings);
+						retStorable = (T)JsonConvert.DeserializeObject (sr.ReadToEnd (), obj.GetType (), jsonSettings);
 					}
 				}
 			}
@@ -316,8 +316,8 @@ namespace VAS.Core.Serialization
 			var property = base.CreateProperty (member, memberSerialization);
 			if (IgnoreJsonIgnore) {
 				var attribs = property.AttributeProvider.GetAttributes (typeof (NonSerializedAttribute), true);
-				var attribs2 = property.AttributeProvider.GetAttributes (typeof (XmlIgnoreAttribute), true);
-				if (attribs.Count + attribs2.Count > 0) {
+				var attribs2 = property.AttributeProvider.GetAttributes (typeof (CloneIgnore), true);
+				if (attribs.Count + attribs2.Count > 0 || !property.Writable) {
 					property.Ignored = true;
 				} else {
 					property.Ignored = false;
@@ -328,14 +328,19 @@ namespace VAS.Core.Serialization
 
 		protected override JsonContract CreateContract (Type type)
 		{
-			JsonContract contract = base.CreateContract (type);
-			if (typeof (IChanged).IsAssignableFrom (type)) {
-				contract.OnDeserializedCallbacks.Add (
-					(o, context) => {
-						if (!IgnoreJsonIgnore) {
-							(o as IChanged).IsChanged = false;
-						}
-					});
+			try {
+				JsonContract contract = base.CreateContract (type);
+				if (typeof (IChanged).IsAssignableFrom (type)) {
+					contract.OnDeserializedCallbacks.Add (
+						(o, context) => {
+							if (!IgnoreJsonIgnore) {
+								(o as IChanged).IsChanged = false;
+							}
+						});
+				}
+				return contract;
+			} catch (Exception ex) {
+				return null;
 			}
 			return contract;
 		}

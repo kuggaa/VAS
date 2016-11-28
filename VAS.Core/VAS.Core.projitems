@@ -249,6 +249,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ActionLinkVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\HotKeyVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Converter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Serialization\CloneIgnore.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
