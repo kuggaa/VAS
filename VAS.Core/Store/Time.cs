@@ -18,10 +18,9 @@
 //
 //
 using System;
-using System.Xml.Serialization;
 using Newtonsoft.Json;
-using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
+using VAS.Core.Serialization;
 
 namespace VAS.Core.Store
 {
@@ -62,7 +61,7 @@ namespace VAS.Core.Store
 		/// <summary>
 		/// Time in seconds
 		/// </summary>		
-		[XmlIgnore]
+		[CloneIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public int TotalSeconds {
@@ -77,7 +76,7 @@ namespace VAS.Core.Store
 		/// <summary>
 		/// Time in nano seconds
 		/// </summary>
-		[XmlIgnore]
+		[CloneIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public long NSeconds {
@@ -89,7 +88,6 @@ namespace VAS.Core.Store
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public int Seconds {
@@ -98,7 +96,6 @@ namespace VAS.Core.Store
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public int Minutes {
@@ -107,7 +104,6 @@ namespace VAS.Core.Store
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public int Hours {

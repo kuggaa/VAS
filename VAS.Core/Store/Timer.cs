@@ -17,7 +17,6 @@
 //
 using System;
 using System.Linq;
-using System.Xml.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 
@@ -42,7 +41,6 @@ namespace VAS.Core.Store
 			set;
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Time TotalTime {

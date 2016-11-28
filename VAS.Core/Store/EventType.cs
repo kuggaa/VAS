@@ -19,9 +19,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Xml.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
+using VAS.Core.Serialization;
 
 namespace VAS.Core.Store
 {
@@ -81,6 +81,7 @@ namespace VAS.Core.Store
 			set;
 		}
 
+		[CloneIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public string SortMethodString {
@@ -127,7 +128,6 @@ namespace VAS.Core.Store
 
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
-		[XmlIgnore]
 		public Dictionary<string, List<Tag>> TagsByGroup {
 			get {
 				return Tags?.GroupBy (t => t.Group).ToDictionary (g => g.Key, g => g.ToList ());

@@ -16,9 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using System.Xml.Serialization;
 using Newtonsoft.Json;
-using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
 
 namespace VAS.Core.Common
@@ -47,7 +45,6 @@ namespace VAS.Core.Common
 			Height = height;
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public bool Empty {
@@ -72,7 +69,6 @@ namespace VAS.Core.Common
 			set;
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public double Left {
@@ -81,7 +77,6 @@ namespace VAS.Core.Common
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public double Top {
@@ -90,7 +85,6 @@ namespace VAS.Core.Common
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public double Right {
@@ -99,7 +93,6 @@ namespace VAS.Core.Common
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public double Bottom {
@@ -116,7 +109,6 @@ namespace VAS.Core.Common
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Point TopRight {
@@ -125,7 +117,6 @@ namespace VAS.Core.Common
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Point BottomLeft {
@@ -134,7 +125,6 @@ namespace VAS.Core.Common
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Point BottomRight {
@@ -143,7 +133,6 @@ namespace VAS.Core.Common
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Point Center {
@@ -152,7 +141,6 @@ namespace VAS.Core.Common
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Point [] Vertices {
@@ -166,7 +154,6 @@ namespace VAS.Core.Common
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Point [] VerticesCenter {

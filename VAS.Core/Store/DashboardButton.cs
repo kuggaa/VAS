@@ -20,11 +20,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using System.Xml.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.MVVMC;
+using VAS.Core.Serialization;
 
 namespace VAS.Core.Store
 {
@@ -117,7 +117,6 @@ namespace VAS.Core.Store
 			set;
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Color LightColor {
@@ -129,7 +128,6 @@ namespace VAS.Core.Store
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Color DarkColor {
@@ -193,7 +191,7 @@ namespace VAS.Core.Store
 			set;
 		}
 
-		[XmlIgnore]
+		[CloneIgnore]
 		public override HotKey HotKey {
 			get {
 				return Tag != null ? Tag.HotKey : null;
@@ -205,7 +203,7 @@ namespace VAS.Core.Store
 			}
 		}
 
-		[XmlIgnore]
+		[CloneIgnore]
 		public override string Name {
 			get {
 				return Tag != null ? Tag.Value : null;
@@ -231,7 +229,7 @@ namespace VAS.Core.Store
 			set;
 		}
 
-		[XmlIgnore]
+		[CloneIgnore]
 		public override string Name {
 			get {
 				return Timer != null ? Timer.Name : null;
@@ -252,7 +250,7 @@ namespace VAS.Core.Store
 			set;
 		}
 
-		[XmlIgnore]
+		[CloneIgnore]
 		public override string Name {
 			get {
 				return EventType != null ? EventType.Name : null;
@@ -264,7 +262,7 @@ namespace VAS.Core.Store
 			}
 		}
 
-		[XmlIgnore]
+		[CloneIgnore]
 		public override Color BackgroundColor {
 			get {
 				return EventType != null ? EventType.Color : null;
@@ -304,7 +302,6 @@ namespace VAS.Core.Store
 			set;
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public AnalysisEventType AnalysisEventType {

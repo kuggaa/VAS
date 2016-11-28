@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Xml.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
@@ -82,6 +81,7 @@ namespace VAS.Core.Store
 			set;
 		}
 
+		[CloneIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public IStorage Storage {
@@ -93,7 +93,6 @@ namespace VAS.Core.Store
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public bool DeleteChildren {
@@ -244,7 +243,6 @@ namespace VAS.Core.Store
 		/// <summary>
 		/// Whether this event has at least one <see cref="FrameDrawing"/>
 		/// </summary>
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public bool HasDrawings {
@@ -308,7 +306,6 @@ namespace VAS.Core.Store
 			set;
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public virtual string Description {
@@ -320,7 +317,6 @@ namespace VAS.Core.Store
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public virtual Color Color {

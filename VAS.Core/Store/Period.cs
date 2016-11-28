@@ -17,8 +17,8 @@
 //
 using System;
 using System.Linq;
-using System.Xml.Serialization;
 using Newtonsoft.Json;
+using VAS.Core.Serialization;
 
 namespace VAS.Core.Store
 {
@@ -33,7 +33,7 @@ namespace VAS.Core.Store
 		{
 		}
 
-		[XmlIgnore]
+		[CloneIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public TimeNode PeriodNode {

@@ -21,7 +21,6 @@ using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Xml.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
@@ -66,7 +65,6 @@ namespace VAS.Core.Store.Playlists
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public int CurrentIndex {
@@ -75,7 +73,6 @@ namespace VAS.Core.Store.Playlists
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public IPlaylistElement Selected {

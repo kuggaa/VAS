@@ -18,7 +18,6 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Xml.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
@@ -107,7 +106,6 @@ namespace VAS.Core.Store.Playlists
 			set;
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public string Description {
@@ -116,7 +114,6 @@ namespace VAS.Core.Store.Playlists
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Image Miniature {
