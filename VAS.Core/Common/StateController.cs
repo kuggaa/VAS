@@ -129,8 +129,7 @@ namespace VAS.Core
 				Log.Debug ("Moving to " + transition + " in modal mode");
 				IScreenState state = destination [transition] ();
 
-				bool isModal;
-				NavigationState lastState = LastState (out isModal);
+				NavigationState lastState = LastState ();
 				if (!await lastState.ScreenState.HideState ()) {
 					return false;
 				}
