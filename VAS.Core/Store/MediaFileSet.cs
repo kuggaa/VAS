@@ -38,6 +38,7 @@ namespace VAS.Core.Store
 		public MediaFileSet ()
 		{
 			ID = Guid.NewGuid ();
+			IsLoaded = true;
 		}
 
 		public Guid ID {
