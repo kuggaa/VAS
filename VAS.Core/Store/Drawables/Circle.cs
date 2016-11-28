@@ -16,9 +16,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using System.Xml.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
+using VAS.Core.Serialization;
 
 namespace VAS.Core.Store.Drawables
 {
@@ -39,7 +39,7 @@ namespace VAS.Core.Store.Drawables
 			set;
 		}
 
-		[XmlIgnore]
+		[CloneIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public override double AxisY {
@@ -51,7 +51,7 @@ namespace VAS.Core.Store.Drawables
 			}
 		}
 
-		[XmlIgnore]
+		[CloneIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public override double AxisX {
@@ -63,7 +63,6 @@ namespace VAS.Core.Store.Drawables
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public override Area Area {

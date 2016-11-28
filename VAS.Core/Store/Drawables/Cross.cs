@@ -17,7 +17,6 @@
 //
 using System;
 using System.Linq;
-using System.Xml.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 
@@ -47,7 +46,6 @@ namespace VAS.Core.Store.Drawables
 			get;
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public override Area Area {
@@ -59,7 +57,6 @@ namespace VAS.Core.Store.Drawables
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Point StartI {
@@ -68,7 +65,6 @@ namespace VAS.Core.Store.Drawables
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Point StopI {

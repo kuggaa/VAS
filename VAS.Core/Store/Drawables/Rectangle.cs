@@ -17,7 +17,6 @@
 //
 using System;
 using System.Linq;
-using System.Xml.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 
@@ -35,7 +34,6 @@ namespace VAS.Core.Store.Drawables
 			Update (origin, width, height);
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public double Width {
@@ -44,7 +42,6 @@ namespace VAS.Core.Store.Drawables
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public double Height {
@@ -53,7 +50,6 @@ namespace VAS.Core.Store.Drawables
 			}
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Point Center {

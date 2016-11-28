@@ -18,9 +18,7 @@
 //
 //
 using System;
-using System.Xml.Serialization;
 using Newtonsoft.Json;
-using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
 using VAS.Core.Serialization;
 
@@ -102,7 +100,6 @@ namespace VAS.Core.Store
 		/// <summary>
 		/// Duration (stop_time - start_time)
 		/// </summary>
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Time Duration {
@@ -123,7 +120,6 @@ namespace VAS.Core.Store
 			set;
 		}
 
-		[XmlIgnore]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public string RateString {
