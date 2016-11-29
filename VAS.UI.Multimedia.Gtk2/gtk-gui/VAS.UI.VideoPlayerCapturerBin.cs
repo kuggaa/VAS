@@ -24,7 +24,7 @@ namespace VAS.UI
 
 		private global::VAS.UI.CapturerBin capturerbin;
 
-		protected virtual void Build()
+		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);
 			// Widget VAS.UI.VideoPlayerCapturerBin

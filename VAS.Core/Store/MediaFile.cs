@@ -115,7 +115,7 @@ namespace VAS.Core.Store
 		/// <value>The display width of the video.</value>
 		public uint DisplayVideoWidth {
 			get {
-				return (uint) (VideoWidth * Par);
+				return (uint)(VideoWidth * Par);
 			}
 		}
 
