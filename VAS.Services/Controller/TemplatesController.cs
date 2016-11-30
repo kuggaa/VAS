@@ -294,13 +294,31 @@ namespace VAS.Services.Controller
 		async protected virtual Task HandleDelete (DeleteEvent<ObservableCollection<TModel>> evt)
 		{
 			ObservableCollection<TModel> templates = evt.Object;
+			IEnumerable<Guid> ids = evt.Object.Select (x => x.ID).Intersect (ViewModel.Select (x => x.Model.ID));
+			List<TViewModel> selectedViewModels = new List<TViewModel> (
+				ViewModel.Selection.Where (x => ids.Contains (x.Model.ID)));
 
 			if (templates != null) {
 				string msg = templates.Count () == 1 ?
 							String.Format (ConfirmDeleteText, templates.FirstOrDefault ().Name) : ConfirmDeleteListText;
-				if (await App.Current.Dialogs.QuestionMessage (msg, null)) {
-					foreach (TModel template in templates) {
-						Provider.Delete (template);
+					if (await App.Current.Dialogs.QuestionMessage (msg, null)) {
+						foreach (TModel template in templates) {
+							Provider.Delete (template);
+						}
+						ViewModel.Select (ViewModel.Model.FirstOrDefault ());
+						evt.ReturnValue = true;
+					}
+				} else {
+					string msg = GetDeleteChildrenQuestion (templates);
+					if (await App.Current.Dialogs.QuestionMessage (msg, null)) {
+						foreach (var vm in selectedViewModels) {
+							var updateEvent = new UpdateEvent<TModel> ();
+							RemoveSelectedChildren (vm);
+							updateEvent.Object = vm.Model;
+							updateEvent.Force = true;
+							await HandleSave (updateEvent);
+						}
+						evt.ReturnValue = true;
 					}
 					viewModel.Select (viewModel.Model.FirstOrDefault ());
 					evt.ReturnValue = true;
