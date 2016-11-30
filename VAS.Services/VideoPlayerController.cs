@@ -345,7 +345,7 @@ namespace VAS.Services
 			Log.Debug ("Openning file set");
 			if (fileSet == null || !fileSet.Any ()) {
 				Stop ();
-				EmitTimeChanged (new Time (0), new Time (0));
+				EmitTimeChanged (new Time (0), new Time (0), new Time (0));
 				FileSet = fileSet;
 				IgnoreTicks = true;
 				ShowMessageInViewPorts (Catalog.GetString ("No video loaded"), true);
@@ -948,20 +948,33 @@ namespace VAS.Services
 			}
 		}
 
-		protected virtual void EmitTimeChanged (Time currentTime, Time duration)
+		protected virtual void EmitTimeChanged (Time currentTime, Time relativeTime, Time duration)
 		{
-			if (Mode == VideoPlayerOperationMode.Stretched) {
-				duration = visibleRegion.Duration;
-			} else {
-				duration = duration ?? currentTime;
+			if (duration == null) {
+				if (Mode == VideoPlayerOperationMode.Stretched) {
+					duration = visibleRegion.Duration;
+				} else {
+					duration = streamLength;
+				}
 			}
+
+			if (Mode == VideoPlayerOperationMode.Stretched) {
+				currentTime = currentTime - visibleRegion.Start;
+			}
+
 			playerVM.Duration = duration;
 			playerVM.CurrentTime = currentTime;
 			playerVM.Seekable = !StillImageLoaded;
 
 			if (TimeChangedEvent != null && !disposed) {
-				TimeChangedEvent (currentTime, duration ?? currentTime, !StillImageLoaded);
+				TimeChangedEvent (relativeTime, duration, !StillImageLoaded);
 			}
+			App.Current.EventsBroker.Publish (
+				new PlayerTickEvent {
+					Time = currentTime,
+					RelativeTime = relativeTime
+				}
+			);
 		}
 
 		protected virtual void EmitPlaybackStateChanged (object sender, bool playing)
@@ -1363,7 +1376,7 @@ namespace VAS.Services
 					duration = LoadedPlaylist.Duration;
 				}
 
-				EmitTimeChanged (relativeTime, duration);
+				EmitTimeChanged (CurrentTime, relativeTime, duration);
 
 				if (imageLoadedTS >= loadedPlaylistElement.Duration) {
 					Next ();
@@ -1388,7 +1401,7 @@ namespace VAS.Services
 						duration = loadedSegment.Stop - loadedSegment.Start;
 					}
 
-					EmitTimeChanged (relativeTime, duration);
+					EmitTimeChanged (currentTime, relativeTime, duration);
 
 					if (currentTime > loadedSegment.Stop) {
 						/* Check if the segment is now finished and jump to next one */
@@ -1406,25 +1419,9 @@ namespace VAS.Services
 						}
 					}
 				} else {
-					if (duration == null) {
-						if (Mode == VideoPlayerOperationMode.Stretched) {
-							duration = visibleRegion.Duration;
-						} else {
-							duration = streamLength;
-						}
-					}
-					EmitTimeChanged (relativeTime, duration);
+					EmitTimeChanged (currentTime, relativeTime, duration);
 				}
 				videoTS = currentTime;
-				if (Mode == VideoPlayerOperationMode.Stretched) {
-					currentTime = currentTime - visibleRegion.Start;
-				}
-				App.Current.EventsBroker.Publish<PlayerTickEvent> (
-					new PlayerTickEvent {
-						Time = currentTime,
-						RelativeTime = relativeTime
-					}
-				);
 				return true;
 			}
 		}

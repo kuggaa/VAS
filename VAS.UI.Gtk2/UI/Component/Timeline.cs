@@ -320,11 +320,7 @@ namespace VAS.UI.Component
 
 		void HandlePlayerTick (PlayerTickEvent e)
 		{
-			if (ViewModel.Project.FileSet.IsStretched) {
-				CurrentTime = e.RelativeTime;
-			} else {
-				CurrentTime = e.Time;
-			}
+			CurrentTime = e.Time;
 		}
 	}
 }
