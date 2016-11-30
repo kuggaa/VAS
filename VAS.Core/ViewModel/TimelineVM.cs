@@ -49,27 +49,13 @@ namespace VAS.Core.ViewModel
 			FullTimeline.ViewModels.CollectionChanged += HandleTimelineCollectionChanged;
 		}
 
-		~TimelineVM ()
-		{
-			if (!Disposed) {
-				Dispose (true);
-			}
-		}
-
-		public void Dispose ()
-		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
-		}
-
-		protected virtual void Dispose (bool disposing)
+		protected override void Dispose (bool disposing)
 		{
 			if (Disposed)
 				return;
-
+			base.Dispose (disposing);
 			FullTimeline.ViewModels.CollectionChanged -= HandleTimelineCollectionChanged;
 			ViewModels.CollectionChanged -= HandleEventTypesCollectionChanged;
-			Disposed = true;
 		}
 
 		public RangeObservableCollection<TimelineEvent> Model {

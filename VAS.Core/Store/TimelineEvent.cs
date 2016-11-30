@@ -54,23 +54,18 @@ namespace VAS.Core.Store
 			Teams = new ObservableCollection<Team> ();
 		}
 
-		public void Dispose ()
-		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
-		}
-
-		protected virtual void Dispose (bool disposing)
+		protected override void Dispose (bool disposing)
 		{
 			if (Disposed)
 				return;
 
-			Miniature?.Dispose ();
-			foreach (var drawing in Drawings) {
-				drawing.Miniature?.Dispose ();
+			if (disposing) {
+				Miniature?.Dispose ();
+				foreach (var drawing in Drawings) {
+					drawing.Miniature?.Dispose ();
+				}
 			}
-
-			Disposed = true;
+			base.Dispose (disposing);
 		}
 
 		#endregion

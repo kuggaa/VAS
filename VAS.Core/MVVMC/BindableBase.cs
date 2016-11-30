@@ -30,8 +30,7 @@ namespace VAS.Core.MVVMC
 	/// to automatically raise property changed events.
 	/// </summary>
 	[Serializable]
-	[PropertyChanged.ImplementPropertyChanged]
-	public class BindableBase : INotifyPropertyChanged, IChanged
+	public class BindableBase : DisposableBase, INotifyPropertyChanged, IChanged
 	{
 		// Don't serialize observers when cloning this object
 		[field: NonSerialized]
