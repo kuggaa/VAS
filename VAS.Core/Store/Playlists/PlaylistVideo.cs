@@ -25,8 +25,7 @@ using VAS.Core.MVVMC;
 namespace VAS.Core.Store.Playlists
 {
 	[Serializable]
-	[PropertyChanged.ImplementPropertyChanged]
-	public class PlaylistVideo: BindableBase, IPlaylistElement
+	public class PlaylistVideo : BindableBase, IPlaylistElement
 	{
 		public PlaylistVideo (MediaFile file)
 		{
