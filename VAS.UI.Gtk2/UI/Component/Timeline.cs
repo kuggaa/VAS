@@ -162,7 +162,6 @@ namespace VAS.UI.Component
 		{
 			timerule = new Timerule (new WidgetWrapper (timerulearea));
 			timerule.CenterPlayheadClicked += HandleFocusClicked;
-			timerule.SeekEvent += HandleTimeruleSeek;
 			timeline = App.Current.ViewLocator.Retrieve ("PlaysTimelineView") as PlaysTimeline;
 			timeline.SetWidget (new WidgetWrapper (timelinearea));
 			labels = App.Current.ViewLocator.Retrieve ("TimelineLabelsView") as TimelineLabels;
@@ -310,12 +309,6 @@ namespace VAS.UI.Component
 			m.Add (item);
 			m.ShowAll ();
 			m.Popup ();
-		}
-
-		protected void HandleTimeruleSeek (Time pos, bool accurate, bool synchronous = false, bool throttled = false)
-		{
-			App.Current.EventsBroker.Publish<LoadEventEvent> (new LoadEventEvent ());
-			Player.Seek (pos, accurate, synchronous, throttled);
 		}
 
 		void HandlePlayerTick (PlayerTickEvent e)
