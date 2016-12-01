@@ -87,14 +87,14 @@ namespace VAS.Tests.Services
 				VideoWidth = 320,
 				VideoHeight = 240,
 				Par = 1,
-				Duration = new Time (100)
+				Duration = new Time { TotalSeconds = 5000 }
 			});
 			mfs.Add (new MediaFile {
 				FilePath = "test2",
 				VideoWidth = 320,
 				VideoHeight = 240,
 				Par = 1,
-				Duration = new Time (200)
+				Duration = new Time { TotalSeconds = 5000 }
 			});
 
 			App.Current.LowerRate = 1;
@@ -139,6 +139,7 @@ namespace VAS.Tests.Services
 			plController.Start ();
 
 			streamLength = new Time { TotalSeconds = 5000 };
+
 			elementLoaded = 0;
 			playerMock.ResetCalls ();
 		}
@@ -315,7 +316,6 @@ namespace VAS.Tests.Services
 			Assert.IsFalse (player.Opened);
 
 			/* Open with the view ready */
-			streamLength = new Time { TotalSeconds = 5000 };
 			currentTime = new Time (0);
 			PreparePlayer ();
 			playerMock.Verify (p => p.Open (mfs [0]), Times.Once ());
@@ -452,7 +452,6 @@ namespace VAS.Tests.Services
 			Time curTime = new Time (0);
 			Time strLenght = new Time (0);
 
-			streamLength = new Time { TotalSeconds = 5000 };
 			player.TimeChangedEvent += (c, d, s) => {
 				timeChanged++;
 				curTime = c;
@@ -498,7 +497,6 @@ namespace VAS.Tests.Services
 			Time strLenght = new Time (0);
 
 			currentTime = new Time { TotalSeconds = 2000 };
-			streamLength = new Time { TotalSeconds = 5000 };
 			PreparePlayer ();
 			player.TimeChangedEvent += (c, d, s) => {
 				timeChanged++;
@@ -1507,12 +1505,13 @@ namespace VAS.Tests.Services
 		[Test ()]
 		public void TestPresentationSeekLongerThanFileset ()
 		{
-			Assert.Greater (new Time (4000), mfs.Duration);
+			Time seekTime = new Time { TotalSeconds = 51000 };
+			Assert.Greater (seekTime, mfs.Duration);
 			PreparePlayer ();
 			Playlist localPlaylist = new Playlist ();
 			PlaylistPlayElement element0 = new PlaylistPlayElement (evt.Clone ());
 			element0.Play.Start = new Time (0);
-			element0.Play.Stop = new Time (5000);
+			element0.Play.Stop = new Time { TotalSeconds = 6000 };
 			localPlaylist.Elements.Add (element0);
 			player.Switch (null, localPlaylist, element0);
 			playerMock.ResetCalls ();
@@ -1521,7 +1520,7 @@ namespace VAS.Tests.Services
 			App.Current.EventsBroker.Subscribe<LoadPlaylistElementEvent> ((e) => playlistElementSelected++);
 
 			player.Mode = VideoPlayerOperationMode.Presentation;
-			Assert.IsFalse (player.Seek (new Time (4000), true, false, false));
+			Assert.IsFalse (player.Seek (seekTime, true, false, false));
 			Assert.AreEqual (0, playlistElementSelected);
 			playerMock.Verify (p => p.Seek (It.IsAny<Time> (), It.IsAny<bool> (), It.IsAny<bool> ()), Times.Never ());
 		}
