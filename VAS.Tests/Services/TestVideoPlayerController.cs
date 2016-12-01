@@ -1438,18 +1438,24 @@ namespace VAS.Tests.Services
 			localPlaylist.Elements.Add (element0);
 			localPlaylist.Elements.Add (element);
 			PreparePlayer ();
-			player.Mode = VideoPlayerOperationMode.Presentation;
 			playerMock.ResetCalls ();
 			int playlistElementSelected = 0;
 			App.Current.EventsBroker.Subscribe<PlaylistElementLoadedEvent> ((e) => playlistElementSelected++);
 
 			player.LoadPlaylistEvent (localPlaylist, element0, false);
+			player.Mode = VideoPlayerOperationMode.Presentation;
 			player.Seek (new Time (15), true, false, false);
 
 			// One when the element is loaded, another one when we seek to a time from another element
 			Assert.AreEqual (2, playlistElementSelected);
 			playerMock.Verify (p => p.Seek (new Time (10), true, false), Times.Once ());
 			playerMock.Verify (p => p.Seek (new Time (5), true, false), Times.Once ());
+		}
+
+		[Test]
+		public void TestSetPresentationModeWithoutPlaylistSet ()
+		{
+			Assert.Throws<InvalidOperationException> (() => player.Mode = VideoPlayerOperationMode.Presentation);
 		}
 
 		[Test]
@@ -1465,12 +1471,12 @@ namespace VAS.Tests.Services
 			localPlaylist.Elements.Add (element0);
 			localPlaylist.Elements.Add (element);
 			PreparePlayer ();
-			player.Mode = VideoPlayerOperationMode.Presentation;
 			playerMock.ResetCalls ();
 			int playlistElementLoaded = 0;
 			App.Current.EventsBroker.Subscribe<LoadPlaylistElementEvent> ((e) => playlistElementLoaded++);
 
 			player.LoadPlaylistEvent (localPlaylist, element0, false);
+			player.Mode = VideoPlayerOperationMode.Presentation;
 			player.Seek (new Time (5), true, false, false);
 			Assert.AreEqual (0, playlistElementLoaded);
 			playerMock.Verify (p => p.Seek (new Time (10), true, false), Times.Once ());
