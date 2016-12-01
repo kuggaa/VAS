@@ -267,16 +267,14 @@ namespace VAS.Tests.Core.Store
 		}
 
 		[Test]
-		public void TestVisibleRegionIsEmptyAfterClear ()
+		public void TestVisibleRegionRemainsIsNullAfterClear ()
 		{
 			MediaFileSet mfs = new MediaFileSet ();
-			Assert.AreEqual (new Time (-1), mfs.VisibleRegion.Start);
-			Assert.AreEqual (new Time (-1), mfs.VisibleRegion.Stop);
+			Assert.IsNull (mfs.VisibleRegion);
 
 			mfs.Clear ();
 
-			Assert.AreEqual (new Time (-1), mfs.VisibleRegion.Start);
-			Assert.AreEqual (new Time (-1), mfs.VisibleRegion.Stop);
+			Assert.IsNull (mfs.VisibleRegion);
 		}
 
 		[Test]
