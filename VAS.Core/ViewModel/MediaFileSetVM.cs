@@ -53,6 +53,20 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
+		/// Gets the duration of the media taking in account if it's stretched or not
+		/// </summary>
+		/// <value>The duration.</value>
+		public Time VirtualDuration {
+			get {
+				if (IsStretched) {
+					return VisibleRegion.Duration;
+				} else {
+					return Model.Duration;
+				}
+			}
+		}
+
+		/// <summary>
 		/// Gets or sets the visible region.
 		/// </summary>
 		/// <value>The visible region.</value>

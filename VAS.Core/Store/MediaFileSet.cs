@@ -40,6 +40,7 @@ namespace VAS.Core.Store
 		{
 			ID = Guid.NewGuid ();
 			IsLoaded = true;
+			VisibleRegion = new TimeNode { Start = new Time (-1), Stop = new Time (-1) };
 		}
 
 		public Guid ID {
@@ -312,8 +313,9 @@ namespace VAS.Core.Store
 		protected override void OnCollectionChanged (NotifyCollectionChangedEventArgs e)
 		{
 			if (Count != 0) {
-				if (VisibleRegion == null) {
-					VisibleRegion = new TimeNode { Start = new Time (0), Stop = Duration };
+				if (VisibleRegion.Start.MSeconds == -1 && VisibleRegion.Stop.MSeconds == -1) {
+					VisibleRegion.Start = new Time (0);
+					VisibleRegion.Stop = Duration;
 				} else {
 					if (VisibleRegion.Start > Duration) {
 						VisibleRegion.Start = new Time (0);

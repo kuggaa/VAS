@@ -79,7 +79,7 @@ namespace VAS.Drawing.Widgets
 				if (viewModel != null) {
 					viewModel.Project.FileSet.PropertyChanged += HandlePropertyChangedEventHandler;
 				}
-				Duration = viewModel.Project.FileSet.Duration;
+				Duration = viewModel.Project.FileSet.VirtualDuration;
 			}
 		}
 
@@ -369,8 +369,8 @@ namespace VAS.Drawing.Widgets
 
 		void HandlePropertyChangedEventHandler (object sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == "IsStretched") {
-				Duration = ViewModel.VideoPlayer.Duration;
+			if (e.PropertyName == "IsStretched" || e.PropertyName == "Collection") {
+				Duration = ViewModel.Project.FileSet.VirtualDuration;
 			}
 		}
 	}
