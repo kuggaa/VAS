@@ -81,8 +81,12 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		/// <value><c>true</c> if is stretched; otherwise, <c>false</c>.</value>
 		public bool IsStretched {
-			get;
-			set;
+			get {
+				return Model.IsStretched;
+			}
+			set {
+				Model.IsStretched = value;
+			}
 		}
 	}
 }

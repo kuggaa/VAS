@@ -114,6 +114,15 @@ namespace VAS.Core.Store
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets if the media file is stretched.
+		/// </summary>
+		/// <value>The is stretched.</value>
+		public bool IsStretched {
+			get;
+			set;
+		}
+
 		[JsonProperty]
 		[PropertyChanged.DoNotNotify]
 		ObservableCollection<MediaFile> MediaFiles {
@@ -312,16 +321,16 @@ namespace VAS.Core.Store
 
 		protected override void OnCollectionChanged (NotifyCollectionChangedEventArgs e)
 		{
-			if (Count != 0) {
+			if (Count != 0 && Duration != null) {
 				if (VisibleRegion.Start.MSeconds == -1 && VisibleRegion.Stop.MSeconds == -1) {
 					VisibleRegion.Start = new Time (0);
-					VisibleRegion.Stop = Duration;
+					VisibleRegion.Stop = new Time (Duration.MSeconds);
 				} else {
 					if (VisibleRegion.Start > Duration) {
 						VisibleRegion.Start = new Time (0);
 					}
 					if (VisibleRegion.Stop > Duration) {
-						VisibleRegion.Stop = Duration;
+						VisibleRegion.Stop = new Time (Duration.MSeconds);
 					}
 				}
 			}

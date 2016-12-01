@@ -267,21 +267,22 @@ namespace VAS.Tests.Core.Store
 		}
 
 		[Test]
-		public void TestVisibleRegionRemainsNullAfterClear ()
+		public void TestVisibleRegionIsEmptyAfterClear ()
 		{
 			MediaFileSet mfs = new MediaFileSet ();
-			Assert.IsNull (mfs.VisibleRegion);
+			Assert.AreEqual (new Time (-1), mfs.VisibleRegion.Start);
+			Assert.AreEqual (new Time (-1), mfs.VisibleRegion.Stop);
 
 			mfs.Clear ();
 
-			Assert.IsNull (mfs.VisibleRegion);
+			Assert.AreEqual (new Time (-1), mfs.VisibleRegion.Start);
+			Assert.AreEqual (new Time (-1), mfs.VisibleRegion.Stop);
 		}
 
 		[Test]
 		public void TestVisibleRegionSetAfterAddingFirstElement ()
 		{
 			MediaFileSet mfs = new MediaFileSet ();
-			Assert.IsNull (mfs.VisibleRegion);
 
 			mfs.Add (new MediaFile {
 				FilePath = "/videos/test.mp4",
@@ -312,6 +313,20 @@ namespace VAS.Tests.Core.Store
 			Assert.IsNotNull (mfs.VisibleRegion);
 			Assert.AreEqual (new Time (0), mfs.VisibleRegion.Start);
 			Assert.AreEqual (new Time (5000), mfs.VisibleRegion.Stop);
+		}
+
+		[Test]
+		public void TestChangingStopDoesNotChangeDuration ()
+		{
+			MediaFileSet mfs = new MediaFileSet ();
+			mfs.Add (new MediaFile {
+				FilePath = "/videos/test.mp4",
+				Duration = new Time (20000),
+			});
+			mfs.VisibleRegion.Stop.MSeconds += 100;
+
+			Assert.AreEqual (new Time (20000), mfs.Duration);
+			Assert.IsFalse (mfs.VisibleRegion.Stop == mfs.Duration);
 		}
 	}
 }
