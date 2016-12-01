@@ -609,13 +609,6 @@ namespace VAS.UI
 			if (propertyName == null || propertyName == "PlayElement") {
 				HandlePlayElementChanged ();
 			}
-			if (propertyName == null || propertyName == "FileSet") {
-				if (playerVM.FileSet == null || !playerVM.FileSet.Any ()) {
-					playerVM.ControlsSensitive = false;
-				} else {
-					playerVM.ControlsSensitive = true;
-				}
-			}
 		}
 	}
 }

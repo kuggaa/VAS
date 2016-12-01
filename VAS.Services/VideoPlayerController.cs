@@ -348,11 +348,13 @@ namespace VAS.Services
 				EmitTimeChanged (new Time (0), new Time (0), new Time (0));
 				FileSet = fileSet;
 				IgnoreTicks = true;
+				playerVM.ControlsSensitive = false;
 				ShowMessageInViewPorts (Catalog.GetString ("No video loaded"), true);
 				return;
 			}
 
 			IgnoreTicks = false;
+			playerVM.ControlsSensitive = true;
 			ShowMessageInViewPorts (null, false);
 			if (ready) {
 				InternalOpen (fileSet, true, true, play, true);
