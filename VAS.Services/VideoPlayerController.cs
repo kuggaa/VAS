@@ -761,7 +761,6 @@ namespace VAS.Services
 			}
 			Log.Debug ("Unload current event");
 			Reset ();
-			UpdateDuration ();
 			if (defaultFileSet != null && !defaultFileSet.Equals (FileSet)) {
 				UpdateCamerasConfig (defaultCamerasConfig, defaultCamerasLayout);
 				EmitEventUnloaded ();
@@ -776,6 +775,7 @@ namespace VAS.Services
 							 CurrentTime.Clamp (visibleRegion.Start, visibleRegion.Stop), (float)Rate,
 							 CamerasConfig, CamerasLayout, Playing);
 			}
+			UpdateDuration ();
 		}
 
 		public virtual void Next ()
