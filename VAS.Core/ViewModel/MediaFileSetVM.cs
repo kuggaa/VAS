@@ -15,10 +15,10 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
+using System.ComponentModel;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
-using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.ViewModel
 {
@@ -27,6 +27,8 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class MediaFileSetVM : CollectionViewModel<MediaFile, MediaFileVM>, IViewModel<MediaFileSet>
 	{
+		MediaFileSet model;
+
 		public MediaFileSetVM ()
 		{
 			VisibleRegion = new TimeNodeVM ();
@@ -34,10 +36,11 @@ namespace VAS.Core.ViewModel
 
 		public new MediaFileSet Model {
 			get {
-				return base.Model as MediaFileSet;
+				return model;
 			}
 			set {
-				base.Model = value;
+				model = value;
+				base.Model = model.MediaFiles;
 				VisibleRegion.Model = Model?.VisibleRegion;
 			}
 		}
@@ -87,6 +90,14 @@ namespace VAS.Core.ViewModel
 			set {
 				Model.IsStretched = value;
 			}
+		}
+
+		protected override void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "VisibleRegion") {
+				VisibleRegion.Model = Model.VisibleRegion;
+			}
+			base.ForwardPropertyChanged (sender, e);
 		}
 	}
 }
