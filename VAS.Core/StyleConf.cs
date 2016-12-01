@@ -203,7 +203,24 @@ namespace VAS.Core.Common
 		// Environment variables
 		public const string TEST = "TEST";
 
-		// Properties
+		public StyleConf ()
+		{
+			HomeTeamColor = Color.Red;
+			AwayTeamColor = Color.Blue;
+			PaletteBackground = Color.Black;
+			PaletteBackgroundLight = Color.Black;
+			PaletteBackgroundSemiLight = Color.Black;
+			PaletteBackgroundDark = Color.Black;
+			PaletteBackgroundDarkBright = Color.Black;
+			PaletteSelected = Color.Black;
+			PaletteActive = Color.Black;
+			PaletteTool = Color.Black;
+			PaletteText = Color.Black;
+		}
+
+		#region Properties
+
+		//Colors
 
 		public Color HomeTeamColor { get; set; }
 
@@ -229,20 +246,125 @@ namespace VAS.Core.Common
 
 		public Color PaletteText { get; set; }
 
-		public StyleConf ()
-		{
-			HomeTeamColor = Color.Red;
-			AwayTeamColor = Color.Blue;
-			PaletteBackground = Color.Black;
-			PaletteBackgroundLight = Color.Black;
-			PaletteBackgroundSemiLight = Color.Black;
-			PaletteBackgroundDark = Color.Black;
-			PaletteBackgroundDarkBright = Color.Black;
-			PaletteSelected = Color.Black;
-			PaletteActive = Color.Black;
-			PaletteTool = Color.Black;
-			PaletteText = Color.Black;
-		}
+		public Color BackgroundLevel0 { get; set; }
+
+		public Color BackgroundLevel1 { get; set; }
+
+		public Color BackgroundLevel2 { get; set; }
+
+		public Color BackgroundLevel3 { get; set; }
+
+		public Color BackgroundLevel4a { get; set; }
+
+		public Color BackgroundLevel4b { get; set; }
+
+		public Color TextColor { get; set; }
+
+		public Color Text_DarkColor { get; set; }
+
+		public Color Foreground_Team_B { get; set; }
+
+		public Color Foreground_Team_B_tl { get; set; }
+
+		public Color Foreground_Team_A { get; set; }
+
+		public Color Foreground_Team_A_tl { get; set; }
+
+		public Color Foreground_Good { get; set; }
+
+		public Color Foreground_Bad { get; set; }
+
+		public Color Foreground_Highlight { get; set; }
+
+		//Sizes
+
+		public int IconXLargeHeight { get; set; }
+
+		public int IconXLargeWidth { get; set; }
+
+		public int IconLargeHeight { get; set; }
+
+		public int IconLargeWidth { get; set; }
+
+		public int IconMediumHeight { get; set; }
+
+		public int IconMediumWidth { get; set; }
+
+		public int IconSmallHeight { get; set; }
+
+		public int IconSmallWidth { get; set; }
+
+		public int IconXSmallHeight { get; set; }
+
+		public int IconXSmallWidth { get; set; }
+
+		public int IconTinyHeight { get; set; }
+
+		public int IconTinyWidth { get; set; }
+
+		public int ButtonTimelineHeight { get; set; }
+
+		public int ButtonTimelineWidth { get; set; }
+
+		public int ButtonNormalHeight { get; set; }
+
+		public int ButtonNormalWidth { get; set; }
+
+		public int ButtonTabHeight { get; set; }
+
+		public int ButtonTabWidth { get; set; }
+
+		public int ButtonFocusHeight { get; set; }
+
+		public int ButtonFocusWidth { get; set; }
+
+		public int ButtonDialogHeight { get; set; }
+
+		public int ContainerBigPadding { get; set; }
+
+		public int ContainerRegularPadding { get; set; }
+
+		public int ContainerTightPadding { get; set; }
+
+		//Fonts
+
+		public string BigScoresFontFamily { get; set; }
+
+		public int BigScoresFontSize { get; set; }
+
+		public string TightScoresFontFamily { get; set; }
+
+		public int TightScoresFontSize { get; set; }
+
+		public string TitlesFontFamily { get; set; }
+
+		public string TitlesFontSlant { get; set; }
+
+		public int TitlesFontSize { get; set; }
+
+		public string SubTitleFontFamily { get; set; }
+
+		public int SubTitleFontSize { get; set; }
+
+		public string NamesFontFamily { get; set; }
+
+		public int NamesFontSize { get; set; }
+
+		public string ContentFontFamily { get; set; }
+
+		public int ContentFontSize { get; set; }
+
+		public string LabelFontFamily { get; set; }
+
+		public int LabelFontSize { get; set; }
+
+		public string LabelTightFontFamily { get; set; }
+
+		public string LabelTightFontSlant { get; set; }
+
+		public int LabelTightFontSize { get; set; }
+
+		#endregion
 
 		public static StyleConf Load (string filename)
 		{
