@@ -34,7 +34,6 @@ namespace VAS.Drawing.Widgets
 	public class Timerule : SelectionCanvas, ICanvasView<IAnalysisViewModel>
 	{
 		public event EventHandler CenterPlayheadClicked;
-		public event SeekEventHandler SeekEvent;
 
 		const int MINIMUM_TIME_SPACING = 80;
 		int bigLineHeight = 15;
@@ -305,40 +304,30 @@ namespace VAS.Drawing.Widgets
 		protected override void StartMove (Selection sel)
 		{
 			WasPlaying = PlayingState;
-			App.Current.EventsBroker.Publish<TogglePlayEvent> (
-				new TogglePlayEvent {
-					Playing = false
-				}
-			);
+			ViewModel.VideoPlayer.LoadEvent (null, false);
 		}
 
 		protected override void StopMove (bool moved)
 		{
 			if (moved && !ContinuousSeek) {
-				if (SeekEvent != null) {
-					SeekEvent (Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel),
-						true);
-				}
+				ViewModel.VideoPlayer.Seek (
+					Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel), true);
 			}
-			App.Current.EventsBroker.Publish<TogglePlayEvent> (
-				new TogglePlayEvent {
-					Playing = WasPlaying
-				}
-			);
+			if (WasPlaying) {
+				ViewModel.VideoPlayer.Play ();
+			}
 		}
 
 		protected override void SelectionMoved (Selection sel)
 		{
 			if (ContinuousSeek) {
-				if (SeekEvent != null) {
-					Time clickTime = Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel);
-					if (clickTime >= Duration) {
-						needle.X = Utils.TimeToPos (Duration, SecondsPerPixel);
-						return;
-					}
-					SeekEvent (Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel),
-						false, throttled: true);
+				Time clickTime = Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel);
+				if (clickTime >= Duration) {
+					needle.X = Utils.TimeToPos (Duration, SecondsPerPixel);
+					return;
 				}
+				ViewModel.VideoPlayer.Seek (Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel),
+						   false, throttled: true);
 			}
 		}
 
@@ -350,9 +339,7 @@ namespace VAS.Drawing.Widgets
 				return;
 			}
 			needle.X = coords.X;
-			if (SeekEvent != null) {
-				SeekEvent (clickTime, true);
-			}
+			ViewModel.VideoPlayer.Seek (clickTime, true);
 			needle.ReDraw ();
 		}
 
