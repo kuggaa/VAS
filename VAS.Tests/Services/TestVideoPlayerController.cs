@@ -1258,7 +1258,7 @@ namespace VAS.Tests.Services
 			};
 
 			dr = new FrameDrawing {
-				Render = new Time (50),
+				Render = new Time (150),
 				CameraConfig = new CameraConfig (0),
 			};
 			currentTime = new Time (0);
@@ -1268,8 +1268,8 @@ namespace VAS.Tests.Services
 			evt.Drawings.Add (dr);
 			player.LoadEvent (evt, new Time (0), true);
 			Assert.IsTrue (player.Playing);
-			currentTime = new Time (dr.Render.MSeconds);
-			player.Seek (currentTime, true, false);
+			currentTime = dr.Render;
+			player.Seek (currentTime - evt.Start, true, false);
 			Assert.IsFalse (player.Playing);
 			Assert.AreEqual (dr, drSent);
 			player.Play ();
@@ -1281,7 +1281,7 @@ namespace VAS.Tests.Services
 			player.LoadEvent (evt, new Time (0), true);
 			Assert.IsTrue (player.Playing);
 			currentTime = dr.Render;
-			player.Seek (currentTime, true, false);
+			player.Seek (currentTime - evt.Start, true, false);
 			Assert.IsTrue (player.Playing);
 			Assert.IsNull (drSent);
 		}
