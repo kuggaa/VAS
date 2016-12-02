@@ -974,8 +974,9 @@ namespace VAS.Services
 				currentTime = currentTime - visibleRegion.Start;
 			}
 
-			playerVM.CurrentTime = currentTime;
+			playerVM.CurrentTime = relativeTime;
 			playerVM.Seekable = !StillImageLoaded;
+
 
 			if (TimeChangedEvent != null && !disposed) {
 				TimeChangedEvent (relativeTime, playerVM.Duration, !StillImageLoaded);
