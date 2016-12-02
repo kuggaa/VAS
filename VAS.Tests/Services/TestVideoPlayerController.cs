@@ -1656,7 +1656,7 @@ namespace VAS.Tests.Services
 			// Check the first seek to current time
 			playerMock.Verify (p => p.Seek (new Time (5000), true, false), Times.Once ());
 			Assert.AreEqual (new Time (3000), playerVM.Duration);
-			Assert.AreEqual (new Time (5000), playerVM.CurrentTime);
+			Assert.AreEqual (new Time (3000), playerVM.CurrentTime);
 		}
 
 		[Test ()]
