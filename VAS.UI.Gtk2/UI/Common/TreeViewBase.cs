@@ -22,10 +22,12 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using Gdk;
 using Gtk;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using Misc = VAS.UI.Helpers.Misc;
+using Point = VAS.Core.Common.Point;
 
 namespace VAS.UI.Common
 {
@@ -50,6 +52,11 @@ namespace VAS.UI.Common
 		protected TViewModel activatedViewModel;
 		protected Menu menu;
 
+		//DragDrop variables
+		protected TargetList targets;
+		Point dragStart;
+		bool dragging, dragStarted, enableDragSource;
+
 		public TreeViewBase () : this (new TreeStore (typeof (TViewModel)))
 		{
 		}
@@ -59,6 +66,7 @@ namespace VAS.UI.Common
 			Model = store = treeStore;
 			dictionaryStore = new Dictionary<IViewModel, TreeIter> ();
 			dictionaryNestedParent = new Dictionary<INotifyCollectionChanged, TreeIter> ();
+			Selection.SelectFunction = SelectFunction;
 			Selection.Changed += HandleTreeviewSelectionChanged;
 			RowActivated += HandleTreeviewRowActivated;
 		}
@@ -79,15 +87,38 @@ namespace VAS.UI.Common
 					ClearSubViewModels ();
 				}
 				viewModel = value;
+				int i = 0;
 				foreach (TViewModel item in viewModel.ViewModels) {
-					AddSubViewModel (item, TreeIter.Zero);
+					AddSubViewModel (item, TreeIter.Zero, i);
+					i++;
 				}
 				viewModel.ViewModels.CollectionChanged += ViewModelCollectionChanged;
-				CreateFilterAndSort ();
 			}
 		}
 
 		#endregion
+
+		protected void CreateFilterAndSort ()
+		{
+			filter = new TreeModelFilter (store, null);
+			filter.VisibleFunc = new TreeModelFilterVisibleFunc (HandleFilter);
+			sort = new TreeModelSort (filter);
+			sort.SetSortFunc (COL_DATA, HandleSort);
+			sort.SetSortColumnId (COL_DATA, SortType.Ascending);
+			Model = sort;
+		}
+
+		protected void CreateDragSource (TargetEntry [] targetEntries)
+		{
+			enableDragSource = true;
+			targets = new TargetList (targetEntries);
+			EnableModelDragSource (ModifierType.None, targetEntries, DragAction.Default);
+		}
+
+		protected void CreateDragDest (TargetEntry [] targetEntries)
+		{
+			EnableModelDragDest (targetEntries, DragAction.Default);
+		}
 
 		void ViewModelCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
@@ -98,8 +129,10 @@ namespace VAS.UI.Common
 			}
 			switch (e.Action) {
 			case NotifyCollectionChangedAction.Add:
+				int i = 0;
 				foreach (IViewModel item in e.NewItems) {
-					AddSubViewModel (item, parent);
+					AddSubViewModel (item, parent, e.NewStartingIndex + i);
+					i++;
 				}
 				break;
 
@@ -126,20 +159,21 @@ namespace VAS.UI.Common
 			filter?.Refilter ();
 		}
 
-		protected virtual void AddSubViewModel (IViewModel subViewModel, TreeIter parent)
+		protected virtual void AddSubViewModel (IViewModel subViewModel, TreeIter parent, int index)
 		{
 			TreeIter iter;
 			(subViewModel as INotifyPropertyChanged).PropertyChanged += PropertyChangedItem;
 			if (!parent.Equals (TreeIter.Zero)) {
-				iter = store.AppendValues (parent, subViewModel);
+				iter = store.InsertWithValues (parent, index, subViewModel);
 				dictionaryStore.Add (subViewModel, iter);
 			} else {
-				iter = store.AppendValues (subViewModel);
+				iter = store.InsertWithValues (index, subViewModel);
 				dictionaryStore.Add (subViewModel, iter);
 			}
 			if (subViewModel is IEnumerable) {
+				index = 0;
 				foreach (var v in (subViewModel as IEnumerable)) {
-					AddSubViewModel (v as IViewModel, iter);
+					AddSubViewModel (v as IViewModel, iter, index++);
 				}
 				INotifyCollectionChanged notif = (subViewModel as INestedViewModel).GetNotifyCollection ();
 				if (!dictionaryNestedParent.ContainsKey (notif)) {
@@ -237,6 +271,11 @@ namespace VAS.UI.Common
 				ShowMenu ();
 			} else {
 				ret = base.OnButtonPressEvent (evnt);
+				if (paths.Length > 0 && enableDragSource) {
+					dragging = true;
+					dragStarted = false;
+					dragStart = new Point (evnt.X, evnt.Y);
+				}
 			}
 			return ret;
 		}
@@ -246,20 +285,95 @@ namespace VAS.UI.Common
 			return false;
 		}
 
+		protected override bool OnButtonReleaseEvent (EventButton evnt)
+		{
+			dragging = dragStarted = false;
+			return base.OnButtonReleaseEvent (evnt);
+		}
+
+		protected override bool OnMotionNotifyEvent (EventMotion evnt)
+		{
+			if (dragging && !dragStarted) {
+				if (dragStart.Distance (new Point (evnt.X, evnt.Y)) > 5) {
+					Gtk.Drag.Begin (this, targets, DragAction.Default, 1, evnt);
+					dragStarted = true;
+				}
+			}
+			return base.OnMotionNotifyEvent (evnt);
+		}
+
+		protected override void OnDragBegin (DragContext context)
+		{
+			base.OnDragBegin (context);
+			TreePath [] paths = Selection.GetSelectedRows ();
+			TreeIter iter;
+			Model.GetIter (out iter, paths [0]);
+			object firstDraggedElement = Model.GetValue (iter, COL_DATA);
+			App.Current.DragContext.SourceDataType = firstDraggedElement.GetType ();
+		}
+
+		protected override void OnDragDataGet (DragContext context, SelectionData selectionData, uint info, uint time)
+		{
+			List<IViewModel> draggedViewModels = new List<IViewModel> ();
+			var paths = Selection.GetSelectedRows ();
+			foreach (var path in paths) {
+				TreeIter iter;
+				Model.GetIter (out iter, path);
+				var vm = (IViewModel)Model.GetValue (iter, COL_DATA);
+				if (vm != null) {
+					draggedViewModels.Add (vm);
+				}
+			}
+			App.Current.DragContext.SourceData = draggedViewModels;
+		}
+
+		protected override void OnDragDataReceived (DragContext context, int x, int y, SelectionData selectionData, uint info, uint time)
+		{
+			List<IViewModel> draggedElements = App.Current.DragContext.SourceData as List<IViewModel>;
+			bool success = HandleDragReceived (draggedElements, x, y, Gtk.Drag.GetSourceWidget (context) == this);
+			Gtk.Drag.Finish (context, success, false, time);
+		}
+
+		protected override bool OnDragMotion (DragContext context, int x, int y, uint time)
+		{
+			TreeIter iter;
+			TreePath path;
+			TreeViewDropPosition pos;
+
+			if (GetDestRowAtPos (x, y, out path, out pos)) {
+				Model.GetIter (out iter, path);
+				IViewModel element = Model.GetValue (iter, COL_DATA) as IViewModel;
+				if (AllowDrop (element)) {
+					DragAction action = DragAction.Copy;
+					if (Gtk.Drag.GetSourceWidget (context) == this) {
+						action = DragAction.Move;
+					}
+					DisableDragInto (path, context, time, pos);
+					Gdk.Drag.Status (context, action, time);
+					return true;
+				}
+			}
+			return false;
+		}
+
+		protected override void OnDragEnd (DragContext context)
+		{
+			App.Current.DragContext.SourceDataType = null;
+			App.Current.DragContext.SourceData = null;
+			base.OnDragEnd (context);
+		}
+
+		protected override bool OnDragFailed (DragContext drag_context, DragResult drag_result)
+		{
+			App.Current.DragContext.SourceDataType = null;
+			App.Current.DragContext.SourceData = null;
+			return base.OnDragFailed (drag_context, drag_result);
+		}
+
 		#region Virtual methods
 
 		protected virtual void ShowMenu ()
 		{
-		}
-
-		protected virtual void CreateFilterAndSort ()
-		{
-			filter = new TreeModelFilter (store, null);
-			filter.VisibleFunc = new TreeModelFilterVisibleFunc (HandleFilter);
-			sort = new TreeModelSort (filter);
-			sort.SetSortFunc (COL_DATA, HandleSort);
-			sort.SetSortColumnId (COL_DATA, SortType.Ascending);
-			Model = sort;
 		}
 
 		protected virtual void HandleTreeviewRowActivated (object o, RowActivatedArgs args)
@@ -269,8 +383,33 @@ namespace VAS.UI.Common
 			activatedViewModel = Model.GetValue (iter, COL_DATA) as TViewModel;
 		}
 
+		protected virtual bool SelectFunction (TreeSelection selection, TreeModel model, TreePath path, bool selected)
+		{
+			TreePath [] selectedRows;
+
+			selectedRows = selection.GetSelectedRows ();
+			if (!selected && selectedRows.Length > 0) {
+				object currentSelected;
+				object firstSelected;
+				TreeIter iter;
+				model.GetIter (out iter, selectedRows [0]);
+				firstSelected = model.GetValue (iter, COL_DATA);
+				model.GetIter (out iter, path);
+				currentSelected = model.GetValue (iter, COL_DATA);
+				if (currentSelected.GetType ().IsAssignableFrom (firstSelected.GetType ())) {
+					return true;
+				}
+				return false;
+			}
+			return true;
+		}
+
 		protected virtual void HandleTreeviewSelectionChanged (object sender, EventArgs e)
 		{
+			if (ViewModel == null) {
+				return;
+			}
+
 			TreeIter iter;
 			List<TViewModel> selected = new List<TViewModel> ();
 
@@ -288,7 +427,7 @@ namespace VAS.UI.Common
 		{
 			if (e.PropertyName == "SortType") {
 				/* Hack to make it actually resort */
-				sort.SetSortFunc (COL_DATA, HandleSort);
+				sort?.SetSortFunc (COL_DATA, HandleSort);
 			}
 
 			if (e.PropertyName == "FilterText") {
@@ -299,8 +438,10 @@ namespace VAS.UI.Common
 				//Sincronization of the first external selection
 				if (ViewModel.Selection.Count == 1 && Selection.CountSelectedRows () == 0) {
 					TreeIter externalSelected = dictionaryStore [ViewModel.Selection.FirstOrDefault ()];
-					externalSelected = filter.ConvertChildIterToIter (externalSelected);
-					externalSelected = sort.ConvertChildIterToIter (externalSelected);
+					if (filter != null) {
+						externalSelected = filter.ConvertChildIterToIter (externalSelected);
+						externalSelected = sort.ConvertChildIterToIter (externalSelected);
+					}
 					Selection.SelectIter (externalSelected);
 				}
 			}
@@ -319,7 +460,91 @@ namespace VAS.UI.Common
 			return (vm?.Visible ?? true);
 		}
 
+		protected virtual bool AllowDrop (IViewModel destination)
+		{
+			return App.Current.DragContext.SourceDataType.IsAssignableFrom (destination.GetType ());
+		}
+
+		protected virtual bool HandleDragReceived (List<IViewModel> draggedViewModels, int x, int y, bool internalDrop)
+		{
+			IViewModel destParentVM, destChildVM;
+			TreePath path;
+			TreeViewDropPosition pos;
+			TreeIter iter;
+			var elementsToRemove = new Dictionary<INestedViewModel, List<IViewModel>> ();
+			var elementsToAdd = new KeyValuePair<INestedViewModel, List<IViewModel>> ();
+			if (GetDestRowAtPos (x, y, out path, out pos)) {
+				int destIndex;
+				store.GetIter (out iter, path);
+				FillParentAndChild (iter, path, pos, out destParentVM, out destChildVM);
+				store.GetIter (out iter, path);
+				int [] Indices = store.GetPath (iter).Indices;
+				if (pos == TreeViewDropPosition.Before ||
+							pos == TreeViewDropPosition.IntoOrBefore) {
+					destIndex = Indices [Indices.Length - 1];
+				} else {
+					destIndex = Indices [Indices.Length - 1] + 1;
+				}
+				if (destChildVM == null) {
+					if (internalDrop) {
+						elementsToRemove.Add (ViewModel as INestedViewModel, draggedViewModels.ToList ());
+					}
+					elementsToAdd = new KeyValuePair<INestedViewModel, List<IViewModel>> (ViewModel as INestedViewModel, draggedViewModels);
+				} else {
+					if (internalDrop) {
+						TreeIter parent;
+						//Get the parentVM for every drag ViewModel
+						foreach (IViewModel vm in draggedViewModels) {
+							iter = dictionaryStore [vm];
+							if (Model.IterParent (out parent, iter)) {
+								INestedViewModel sourceParentVM = Model.GetValue (parent, COL_DATA) as INestedViewModel;
+								if (!elementsToRemove.ContainsKey (sourceParentVM)) {
+									elementsToRemove.Add (sourceParentVM, new List<IViewModel> ());
+								}
+								elementsToRemove [sourceParentVM].Add (vm);
+							}
+						}
+					}
+					elementsToAdd = new KeyValuePair<INestedViewModel, List<IViewModel>> (destParentVM as INestedViewModel, draggedViewModels);
+				}
+				return MoveElements (elementsToRemove, elementsToAdd, destIndex);
+			}
+			return false;
+		}
+
+		protected virtual bool MoveElements (Dictionary<INestedViewModel, List<IViewModel>> elementsToRemove,
+											 KeyValuePair<INestedViewModel, List<IViewModel>> elementsToAdd, int index)
+		{
+			return false;
+		}
+
 		#endregion
+
+		void FillParentAndChild (TreeIter iter, TreePath path, TreeViewDropPosition pos, out IViewModel parentVM, out IViewModel childVM)
+
+		{
+			TreeIter parent;
+
+			IViewModel obj = Model.GetValue (iter, 0) as IViewModel;
+			if (Model.IterParent (out parent, iter)) {
+				parentVM = Model.GetValue (parent, 0) as IViewModel;
+				childVM = obj;
+			} else {
+				parentVM = obj;
+				childVM = null;
+			}
+		}
+
+		void DisableDragInto (TreePath path, DragContext context, uint time, TreeViewDropPosition pos)
+		{
+			if (pos == TreeViewDropPosition.IntoOrAfter) {
+				pos = TreeViewDropPosition.After;
+			} else if (pos == TreeViewDropPosition.IntoOrBefore) {
+				pos = TreeViewDropPosition.Before;
+			}
+			SetDragDestRow (path, pos);
+			Gdk.Drag.Status (context, context.SuggestedAction, time);
+		}
 	}
 }
 

@@ -80,10 +80,10 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.SubscribeAsync<DeletePlaylistEvent> (HandleDeletePlaylist);
 			App.Current.EventsBroker.Subscribe<RenderPlaylistEvent> (HandleRenderPlaylist);
 			App.Current.EventsBroker.Subscribe<LoadPlaylistElementEvent> (HandleLoadPlaylistElement);
-
 			App.Current.EventsBroker.Subscribe<OpenedProjectEvent> (HandleOpenedProjectChanged);
 			App.Current.EventsBroker.Subscribe<LoadEventEvent> (HandleLoadPlayEvent);
 			App.Current.EventsBroker.Subscribe<TimeNodeChangedEvent> (HandlePlayChanged);
+			App.Current.EventsBroker.Subscribe<MoveElementsEvent<PlaylistVM, PlaylistElementVM>> (HandleMoveElements);
 		}
 
 		public void Stop ()
@@ -93,10 +93,10 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.UnsubscribeAsync<DeletePlaylistEvent> (HandleDeletePlaylist);
 			App.Current.EventsBroker.Unsubscribe<RenderPlaylistEvent> (HandleRenderPlaylist);
 			App.Current.EventsBroker.Unsubscribe<LoadPlaylistElementEvent> (HandleLoadPlaylistElement);
-
 			App.Current.EventsBroker.Unsubscribe<OpenedProjectEvent> (HandleOpenedProjectChanged);
 			App.Current.EventsBroker.Unsubscribe<LoadEventEvent> (HandleLoadPlayEvent);
 			App.Current.EventsBroker.Unsubscribe<TimeNodeChangedEvent> (HandlePlayChanged);
+			App.Current.EventsBroker.Unsubscribe<MoveElementsEvent<PlaylistVM, PlaylistElementVM>> (HandleMoveElements);
 		}
 
 		public void SetViewModel (IViewModel viewModel)
@@ -240,6 +240,23 @@ namespace VAS.Services.Controller
 			OpenedProject = e.Project;
 			OpenedProjectType = e.ProjectType;
 			PlayerVM.Player.LoadedPlaylist = null;
+		}
+
+		void HandleMoveElements (MoveElementsEvent<PlaylistVM, PlaylistElementVM> e)
+		{
+			int indexCopy = e.Index;
+			for (int i = 0; i < indexCopy; i++) {
+				if (e.ElementsToAdd.Value.Contains (e.ElementsToAdd.Key.ViewModels [i])) {
+					e.Index--;
+				}
+			}
+			foreach (var playlist in e.ElementsToRemove) {
+				playlist.Key.ViewModels.RemoveRange (playlist.Value);
+				Save (playlist.Key.Model, true);
+			}
+			e.Index = e.Index.Clamp (0, e.ElementsToAdd.Key.ViewModels.Count);
+			e.ElementsToAdd.Key.ViewModels.InsertRange (e.Index, e.ElementsToAdd.Value);
+			Save (e.ElementsToAdd.Key.Model, true);
 		}
 	}
 }

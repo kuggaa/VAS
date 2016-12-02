@@ -16,8 +16,11 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Gtk;
+using VAS.Core.Common;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
@@ -38,6 +41,9 @@ namespace VAS.UI.Common
 			EnableGridLines = TreeViewGridLines.None;
 			CreateMenu ();
 			CreateViews ();
+			CreateDragDest (new [] { new TargetEntry (Constants.PlaylistElementsDND, TargetFlags.App, 0),
+				new TargetEntry (Constants.TimelineEventsDND, TargetFlags.App, 0)});
+			CreateDragSource (new [] { new TargetEntry (Constants.PlaylistElementsDND, TargetFlags.App, 0) });
 		}
 
 		public override void Dispose ()
@@ -95,13 +101,58 @@ namespace VAS.UI.Common
 
 		protected override void HandleTreeviewRowActivated (object o, RowActivatedArgs args)
 		{
-			// TODO: Load the playlist to the player
+			TreeIter iter;
+			TreeIter parent;
+			Model.GetIter (out iter, args.Path);
+			var element = Model.GetValue (iter, COL_DATA) as PlaylistElementVM;
+			if (element != null) {
+				if (Model.IterParent (out parent, iter)) {
+					var playlist = Model.GetValue (parent, COL_DATA) as PlaylistVM;
+					ViewModel.LoadPlaylist (playlist, element, true);
+				}
+			}
+		}
+
+		protected override void HandleTreeviewSelectionChanged (object sender, EventArgs e)
+		{
+			TreeIter iter;
+			TreeIter parent;
+			base.HandleTreeviewSelectionChanged (sender, e);
+			if (!ViewModel.Selection.Any ()) {
+				if (Selection.GetSelectedRows ().Count () == 1) {
+					var path = Selection.GetSelectedRows ().First ();
+					Model.GetIter (out iter, path);
+					var element = Model.GetValue (iter, COL_DATA) as PlaylistElementVM;
+					if (element != null) {
+						if (Model.IterParent (out parent, iter)) {
+							var playlist = Model.GetValue (parent, COL_DATA) as PlaylistVM;
+							ViewModel.LoadPlaylist (playlist, element, false);
+						}
+					}
+				}
+			}
 		}
 
 		protected override void ShowMenu ()
 		{
 			if (ViewModel.Selection.Count () > 0)
 				playlistMenu.ShowMenu (null, ViewModel.Selection [0].Model, true);
+		}
+
+		protected override bool MoveElements (Dictionary<INestedViewModel, List<IViewModel>> elementsToRemove,
+											  KeyValuePair<INestedViewModel, List<IViewModel>> elementsToAdd, int index)
+		{
+			if (elementsToRemove.Keys.OfType<PlaylistVM> ().Count () == elementsToRemove.Count &&
+				elementsToAdd.Key is PlaylistVM) {
+
+				var toRemove = elementsToRemove.ToDictionary (e => e.Key as PlaylistVM, e => e.Value.OfType<PlaylistElementVM> ());
+				var toAdd = new KeyValuePair<PlaylistVM, IEnumerable<PlaylistElementVM>> (
+					elementsToAdd.Key as PlaylistVM, elementsToAdd.Value.OfType<PlaylistElementVM> ());
+
+				ViewModel.MovePlaylistElements (toRemove, toAdd, index);
+				return true;
+			}
+			return false;
 		}
 	}
 }
