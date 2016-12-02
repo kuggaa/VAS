@@ -198,50 +198,6 @@ namespace VAS.Drawing.CanvasObjects
 
 	}
 
-	public abstract class CanvasButtonObject : FixedSizeCanvasObject
-	{
-		bool active;
-
-		public bool Toggle {
-			get;
-			set;
-		}
-
-		public virtual bool Active {
-			get {
-				return active;
-			}
-			set {
-				bool changed = active != value;
-				active = value;
-				if (changed) {
-					ReDraw ();
-				}
-			}
-		}
-
-		public void Click ()
-		{
-			ClickPressed (new Point (Position.X + 1, Position.Y + 1),
-				ButtonModifier.None);
-
-			ClickReleased ();
-		}
-
-		public override void ClickPressed (Point p, ButtonModifier modif)
-		{
-			Active = !Active;
-		}
-
-		public override void ClickReleased ()
-		{
-			if (!Toggle) {
-				Active = !Active;
-			}
-			EmitClickEvent ();
-		}
-	}
-
 	public abstract class CanvasDrawableObject<T> : CanvasObject, ICanvasDrawableObject where T : IBlackboardObject
 	{
 

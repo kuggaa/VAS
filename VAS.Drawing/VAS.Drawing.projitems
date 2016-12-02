@@ -60,5 +60,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\EventTypeTimelineView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimerTimeNodeView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\CameraView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimelineButtonView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\CanvasButtonObject.cs" />
   </ItemGroup>
 </Project>

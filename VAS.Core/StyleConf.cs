@@ -198,6 +198,19 @@ namespace VAS.Core.Common
 		public const int FilterTreeViewOnlyRightOffset = 10;
 		public const int FilterTreeViewOnlyTopOffset = 2;
 
+		public const string TimelineButtonActiveTheme = "theme/gtk-2.0/Button/button_tl_a" + IMAGE_EXT;
+		public const string TimelineButtonNormalTheme = "theme/gtk-2.0/Button/button_tl_n" + IMAGE_EXT;
+		public const string TimelineButtonInsensititveTheme = "theme/gtk-2.0/Button/button_tl_i" + IMAGE_EXT;
+		public const string TimelineButtonPrelightTheme = "theme/gtk-2.0/Button/button_tl_p" + IMAGE_EXT;
+
+		//Button Styles
+		public const string ButtonTimeline = "buttontimeline";
+		public const string ButtonNormal = "buttonnormal";
+		public const string ButtonTab = "buttontab";
+		public const string ButtonRATab = "buttonratab";
+		public const string ButtonFocus = "buttonfocus";
+		public const string ButtonDialog = "buttondialog";
+
 		public string Font = "Ubuntu";
 
 		// Environment variables
