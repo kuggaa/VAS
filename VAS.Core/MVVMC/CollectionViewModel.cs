@@ -60,7 +60,7 @@ namespace VAS.Core.MVVMC
 				ViewModels.Clear ();
 				modelToViewModel = new Dictionary<TModel, TViewModel> ();
 				model = value;
-				AddViewModels (model);
+				AddViewModels (0, model);
 				ViewModels.CollectionChanged += HandleViewModelsCollectionChanged;
 				model.CollectionChanged += HandleModelsCollectionChanged;
 			}
@@ -86,7 +86,7 @@ namespace VAS.Core.MVVMC
 			return new TViewModel { Model = model };
 		}
 
-		void AddViewModels (IEnumerable<TModel> models)
+		void AddViewModels (int index, IEnumerable<TModel> models)
 		{
 			var viewModels = new List<TViewModel> ();
 			foreach (TModel model in models) {
@@ -94,7 +94,7 @@ namespace VAS.Core.MVVMC
 				viewModels.Add (viewModel);
 				modelToViewModel [model] = viewModel;
 			}
-			ViewModels.AddRange (viewModels);
+			ViewModels.InsertRange (index, viewModels);
 		}
 
 		void HandleViewModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
@@ -105,7 +105,7 @@ namespace VAS.Core.MVVMC
 			editing = true;
 			switch (e.Action) {
 			case NotifyCollectionChangedAction.Add:
-				model.AddRange (e.NewItems.OfType<TViewModel> ().Select ((arg) => arg.Model));
+				model.InsertRange (e.NewStartingIndex, e.NewItems.OfType<TViewModel> ().Select ((arg) => arg.Model));
 				break;
 			case NotifyCollectionChangedAction.Remove:
 				model.RemoveRange (e.OldItems.OfType<TViewModel> ().Select ((arg) => arg.Model));
@@ -125,7 +125,7 @@ namespace VAS.Core.MVVMC
 			editing = true;
 			switch (e.Action) {
 			case NotifyCollectionChangedAction.Add:
-				AddViewModels (e.NewItems.OfType<TModel> ());
+				AddViewModels (e.NewStartingIndex, e.NewItems.OfType<TModel> ());
 				break;
 			case NotifyCollectionChangedAction.Remove:
 				ViewModels.RemoveRange (e.OldItems.OfType<TModel> ().Select ((arg) => modelToViewModel [arg]));

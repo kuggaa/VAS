@@ -34,6 +34,7 @@ namespace VAS
 		public IJobsManager JobsManager;
 		public ViewLocator ViewLocator;
 		public ControllerLocator ControllerLocator;
+		public DragContext DragContext;
 
 		public string homeDirectory = ".";
 		public string baseDirectory = ".";
@@ -160,6 +161,7 @@ namespace VAS
 			App.Current.EventsBroker = new EventsBroker ();
 			App.Current.Device = new Core.Device ();
 			App.Current.KPIService = new KpiService ();
+			App.Current.DragContext = new DragContext ();
 		}
 
 		// copied from OneplayLongomMatch::CoreServices
