@@ -464,7 +464,7 @@ namespace VAS.Services
 						Log.Debug (string.Format ("Seeking to {0} accurate:{1} synchronous:{2} throttled:{3}",
 							time, accurate, synchronous, throttled));
 						player.Seek (time, accurate, synchronous);
-						Tick ();
+						Tick (time);
 					}
 				} else {
 					Log.Debug ("Delaying seek until player is ready");
@@ -1379,8 +1379,12 @@ namespace VAS.Services
 		/// Called periodically to update the current time and check if and has reached
 		/// its stop time, or drawings must been shonw.
 		/// </summary>
-		protected virtual bool Tick ()
+		protected virtual bool Tick (Time currentTime = null)
 		{
+			if (currentTime == null) {
+				currentTime = CurrentTime;
+			}
+
 			if (StillImageLoaded) {
 				Time relativeTime = imageLoadedTS;
 
@@ -1388,7 +1392,7 @@ namespace VAS.Services
 					relativeTime += LoadedPlaylist.GetCurrentStartTime ();
 				}
 
-				EmitTimeChanged (CurrentTime, relativeTime);
+				EmitTimeChanged (currentTime, relativeTime);
 
 				if (imageLoadedTS >= loadedPlaylistElement.Duration) {
 					Next ();
@@ -1399,7 +1403,6 @@ namespace VAS.Services
 				}
 				return true;
 			} else {
-				Time currentTime = CurrentTime;
 				Time relativeTime = currentTime;
 				if (Mode == VideoPlayerOperationMode.Presentation) {
 					relativeTime += LoadedPlaylist.GetCurrentStartTime ();
