@@ -20,6 +20,7 @@ using Gtk;
 using Stetic;
 using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.ViewModel;
 using VAS.Services.ViewModel;
 using VAS.UI.Common;
 

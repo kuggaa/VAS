@@ -16,41 +16,46 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 
+using System;
 using System.Linq;
-using VAS.Core.Common;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
-namespace VAS.Services.ViewModel
+namespace VAS.Core.ViewModel
 {
 	/// <summary>
-	/// Event type ViewModel, is a NestedViewModels with a child observable collection
+	/// A ViewModel for a timeline row with a collection of <see cref="TimelineEvent"/>
+	/// from the same <see cref="EventType"/> 
 	/// </summary>
-	public class EventTypeVM<VMChild> : NestedViewModel<VMChild>, IViewModel<EventType>
-		where VMChild : IViewModel
+	public class EventTypeTimelineVM : NestedViewModel<TimelineEventVM>, IViewModel<EventType>
 	{
-		/// <summary>
-		/// Gets or sets the Name of the EventType.
-		/// </summary>
-		/// <value>The Name.</value>
-		public string Name {
+		public EventTypeTimelineVM (EventTypeVM eventTypeVM)
+		{
+			EventTypeVM = eventTypeVM;
+		}
+
+		public EventTypeTimelineVM () : this (new EventTypeVM ())
+		{
+		}
+
+		public EventType Model {
 			get {
-				return Model.Name;
+				return EventTypeVM.Model;
 			}
 			set {
-				Model.Name = value;
+				EventTypeVM.Model = value;
 			}
 		}
 
-		public Color Color {
-			get {
-				return Model.Color;
-			}
-			set {
-				Model.Color = value;
-			}
+		/// <summary>
+		/// Gets or sets the ViewModel for the <see cref="EventType"/> of the timeline.
+		/// </summary>
+		/// <value>The event type vm.</value>
+		public EventTypeVM EventTypeVM {
+			get;
+			protected set;
 		}
 
 		/// <summary>
@@ -63,19 +68,14 @@ namespace VAS.Services.ViewModel
 			}
 		}
 
-		public EventType Model {
-			get;
-			set;
-		}
-
 		public override int GetHashCode ()
 		{
-			return Name.GetHashCode ();
+			return Model.Name.GetHashCode ();
 		}
 
 		public override bool Equals (object obj)
 		{
-			EventTypeVM<VMChild> e = obj as EventTypeVM<VMChild>;
+			EventTypeTimelineVM e = obj as EventTypeTimelineVM;
 			if (e == null) {
 				return false;
 			}

@@ -37,31 +37,17 @@ namespace VAS.Core.Store.Templates
 			List = new ObservableCollection<Player> ();
 			Version = Constants.DB_VERSION;
 		}
-
-		~Team ()
-		{
-			Dispose (false);
-		}
-
-		public void Dispose ()
-		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
-		}
-
-		protected virtual void Dispose (bool disposing)
+		protected override void Dispose (bool disposing)
 		{
 			if (Disposed)
 				return;
-
 			if (disposing) {
 				Shield?.Dispose ();
 				foreach (Player p in List) {
 					p.Dispose ();
 				}
 			}
-
-			Disposed = true;
+			base.Dispose (disposing);
 		}
 
 		/// <summary>

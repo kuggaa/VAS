@@ -21,6 +21,7 @@ using VAS.Core;
 using VAS.Core.Events;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
+using VAS.Core.ViewModel;
 
 namespace VAS.Services.ViewModel
 {

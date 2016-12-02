@@ -286,6 +286,7 @@ namespace VAS.Core.Common
 		AngleCenter,
 		CircleBorder,
 		All,
+		None,
 	}
 
 	public enum LineStyle
@@ -540,5 +541,25 @@ namespace VAS.Core.Common
 		/// Controller is stopped.
 		/// </summary>
 		Stopped
+	}
+
+	/// <summary>
+	/// Video player operation mode.
+	/// </summary>
+	public enum VideoPlayerOperationMode
+	{
+		/// <summary>
+		/// Regular operation mode.
+		/// </summary>
+		Normal,
+		/// <summary>
+		/// Limits the playback region the media file visible region.
+		/// </summary>
+		Stretched,
+		/// <summary>
+		/// Works with the full length of the current playlist loaded instead of just the length of the event loaded,
+		/// emiting ticks relative to the full duration of the loaded playlist.
+		/// </summary>
+		Presentation
 	}
 }

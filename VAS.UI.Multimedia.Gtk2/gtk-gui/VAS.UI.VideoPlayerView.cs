@@ -72,12 +72,12 @@ namespace VAS.UI
 
 		protected virtual void Build()
 		{
-			global::Stetic.Gui.Initialize (this);
+			global::Stetic.Gui.Initialize(this);
 			// Widget VAS.UI.VideoPlayerView
-			global::Stetic.BinContainer.Attach (this);
+			global::Stetic.BinContainer.Attach(this);
 			this.Name = "VAS.UI.VideoPlayerView";
 			// Container child VAS.UI.VideoPlayerView.Gtk.Container+ContainerChild
-			this.vbox3 = new global::Gtk.VBox ();
+			this.vbox3 = new global::Gtk.VBox();
 			this.vbox3.Name = "vbox3";
 			this.vbox3.Spacing = 6;
 			// Container child vbox3.Gtk.Box+BoxChild
@@ -93,8 +93,8 @@ namespace VAS.UI
 			this.videowindow.Events = ((global::Gdk.EventMask)(256));
 			this.videowindow.Name = "videowindow";
 			this.videowindow.Ratio = 0F;
-			this.hbox3.Add (this.videowindow);
-			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.videowindow]));
+			this.hbox3.Add(this.videowindow);
+			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.hbox3[this.videowindow]));
 			w1.Position = 0;
 			// Container child hbox3.Gtk.Box+BoxChild
 			this.blackboarddrawingarea = new global::Gtk.DrawingArea();
@@ -281,7 +281,6 @@ namespace VAS.UI
 			this.timescale.Adjustment.Upper = 1;
 			this.timescale.Adjustment.PageIncrement = 1;
 			this.timescale.Adjustment.StepIncrement = 1;
-			this.timescale.Adjustment.Value = 0.023876404494382;
 			this.timescale.DrawValue = false;
 			this.timescale.Digits = 0;
 			this.timescale.ValuePos = ((global::Gtk.PositionType)(2));

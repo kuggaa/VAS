@@ -17,17 +17,25 @@
 //
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
-using VAS.Core.Store;
+using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
-	public class TimelineEventObjectBase : TimeNodeObject
+	public class TimelineEventView : TimeNodeView
 	{
-		public TimelineEventObjectBase (TimelineEvent play, Project project) : base (play)
+		public TimelineEventView ()
 		{
-			Project = project;
 			// Only event boundaries can be dragged
 			DraggingMode = NodeDraggingMode.Borders;
+		}
+
+		public TimelineEventVM TimelineEvent {
+			get {
+				return (TimelineEventVM)TimeNode;
+			}
+			set {
+				TimeNode = value;
+			}
 		}
 
 		public ISurface SelectionLeft {
@@ -40,20 +48,9 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			set;
 		}
 
-		public Project Project {
-			get;
-			set;
-		}
-
 		public override string Description {
 			get {
-				return Event.Name;
-			}
-		}
-
-		public TimelineEvent Event {
-			get {
-				return TimeNode as TimelineEvent;
+				return TimelineEvent.Name;
 			}
 		}
 
@@ -74,8 +71,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 			y = OffsetY + Height / 2;
 			tk.LineWidth = lineWidth;
-			tk.FillColor = Event.Color;
-			tk.StrokeColor = Event.Color;
+			tk.FillColor = TimelineEvent.Color;
+			tk.StrokeColor = TimelineEvent.Color;
 			if (stop - start <= lineWidth) {
 				tk.LineWidth = 0;
 				tk.DrawCircle (new Point (start + (stop - start) / 2, y), 3);
@@ -87,7 +84,6 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 		protected virtual void DrawBorders (IDrawingToolkit tk, double start, double stop, int lineWidth)
 		{
-			Color color;
 			double y1, y2;
 
 			tk.LineWidth = lineWidth;

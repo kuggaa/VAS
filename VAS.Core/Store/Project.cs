@@ -48,11 +48,11 @@ namespace VAS.Core.Store
 		public Project ()
 		{
 			ID = System.Guid.NewGuid ();
-			Timeline = new ObservableCollection<TimelineEvent> ();
-			Timers = new ObservableCollection<Timer> ();
-			Periods = new ObservableCollection<Period> ();
+			Timeline = new RangeObservableCollection<TimelineEvent> ();
+			Timers = new RangeObservableCollection<Timer> ();
+			Periods = new RangeObservableCollection<Period> ();
 			Playlists = new RangeObservableCollection<Playlist> ();
-			EventTypes = new ObservableCollection<EventType> ();
+			EventTypes = new RangeObservableCollection<EventType> ();
 			Version = Constants.DB_VERSION;
 			LastModified = DateTime.Now;
 		}
@@ -95,13 +95,13 @@ namespace VAS.Core.Store
 			set;
 		}
 
-		public ObservableCollection<TimelineEvent> Timeline {
+		public RangeObservableCollection<TimelineEvent> Timeline {
 			get;
 			set;
 		}
 
 		[JsonProperty (Order = -7)]
-		public ObservableCollection<EventType> EventTypes {
+		public RangeObservableCollection<EventType> EventTypes {
 			get;
 			set;
 		}
@@ -115,12 +115,12 @@ namespace VAS.Core.Store
 			set;
 		}
 
-		public ObservableCollection<Period> Periods {
+		public RangeObservableCollection<Period> Periods {
 			get;
 			set;
 		}
 
-		public ObservableCollection<Timer> Timers {
+		public RangeObservableCollection<Timer> Timers {
 			get;
 			set;
 		}
@@ -179,7 +179,7 @@ namespace VAS.Core.Store
 		#region Public Methods
 
 		public abstract TimelineEvent AddEvent (EventType type, Time start, Time stop, Time eventTime, Image miniature,
-		                                        bool addToTimeline = true);
+												bool addToTimeline = true);
 
 		public abstract void AddEvent (TimelineEvent play);
 
@@ -233,7 +233,7 @@ namespace VAS.Core.Store
 			EventTypes.AddRange (timelinetypes.Except (EventTypes));
 
 			/* Remove null EventTypes just in case */
-			EventTypes = new ObservableCollection<EventType> (EventTypes.Where (e => e != null));						
+			EventTypes = new RangeObservableCollection<EventType> (EventTypes.Where (e => e != null));
 		}
 
 		public List<TimelineEvent> EventsByType (EventType evType)
@@ -271,7 +271,7 @@ namespace VAS.Core.Store
 		/// <param name="periods">The new periods syncrhonized with the video file.</param>
 		public void ResyncEvents (IList<Period> periods)
 		{
-			ObservableCollection<TimelineEvent> newTimeline = new ObservableCollection<TimelineEvent> ();
+			RangeObservableCollection<TimelineEvent> newTimeline = new RangeObservableCollection<TimelineEvent> ();
 
 			if (periods.Count != Periods.Count) {
 				throw new IndexOutOfRangeException (
@@ -287,7 +287,7 @@ namespace VAS.Core.Store
 				/* Find the events in this period */
 				var periodEvents = Timeline.Where (e =>
 					e.EventTime >= oldTN.Start &&
-				                   e.EventTime <= oldTN.Stop).ToList ();
+								   e.EventTime <= oldTN.Stop).ToList ();
 
 				/* Apply new offset and move the new timeline so that the next
 				 * iteration for the following period does not use them anymore */

@@ -31,11 +31,12 @@ using VAS.Core.MVVMC;
 using VAS.Core.Serialization;
 using VAS.Core.Store;
 using VAS.Core.Store.Templates;
+using VAS.Core.ViewModel;
 
 namespace VAS.Tests
 {
 
-	public class DummyView: IView
+	public class DummyView : IView
 	{
 		public void Dispose ()
 		{
@@ -71,7 +72,7 @@ namespace VAS.Tests
 		}
 	}
 
-	public class DummyViewModel<T>: IViewModel<T>
+	public class DummyViewModel<T> : IViewModel<T>
 	{
 		public T Model {
 			get;
@@ -81,11 +82,23 @@ namespace VAS.Tests
 		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 	}
 
-	public class DummyBindable: BindableBase
+	public class DummyBindable : BindableBase
 	{
 		public void Raise (string name)
 		{
 			RaisePropertyChanged (name);
+		}
+	}
+
+
+	public class DummyDashboardViewModel : TemplateViewModel<Dashboard>
+	{
+		public override Image Icon {
+			get {
+				return null;
+			}
+			set {
+			}
 		}
 	}
 
@@ -166,7 +179,7 @@ namespace VAS.Tests
 					Timeline.Add (evt);
 				}
 
-				return evt;				
+				return evt;
 			}
 
 			public override void AddEvent (TimelineEvent play)
@@ -192,7 +205,7 @@ namespace VAS.Tests
 				Console.WriteLine (jsonString);
 			}
 			stream.Seek (0, SeekOrigin.Begin);
-			
+
 			return Serializer.Instance.Load<T> (stream, SerializationType.Json);
 		}
 
@@ -211,7 +224,7 @@ namespace VAS.Tests
 				Console.WriteLine (jsonString);
 			}
 			stream.Seek (0, SeekOrigin.Begin);
-			
+
 			var newobj = Serializer.Instance.Load<T> (stream, SerializationType.Json);
 			if (!ignoreIsChanged) {
 				ObjectChangedParser parser = new ObjectChangedParser ();

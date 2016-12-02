@@ -37,16 +37,6 @@ namespace VAS.Core.Events
 		public TimelineEvent TimelineEvent { get; set; }
 	}
 
-	public class LoadCameraEvent : Event
-	{
-		public TimelineEvent CameraTlEvent { get; set; }
-	}
-
-	public class CameraTimelineSelectedEvent : Event
-	{
-		public bool bordersAreSelected { get; set; }
-	}
-
 	public class EventCreatedEvent : Event
 	{
 		public TimelineEvent TimelineEvent { get; set; }
@@ -367,34 +357,10 @@ namespace VAS.Core.Events
 
 	}
 
-	/// <summary>
-	/// Event sent to notify the cancellation of <typeparam name="T">.
-	/// </summary>
-	public class CancelEvent<T> : ReturningValueEvent
+	public class LoadTimelineEvent<T> : Event
 	{
-		/// <summary>
-		/// Gets or sets the object to cancel.
-		/// </summary>
-		/// <value>The object.</value>
 		public T Object { get; set; }
-	}
 
-	/// <summary>
-	/// Event sent to request the retry of a <typeparam name="T">.
-	/// </summary>
-	public class RetryEvent<T> : ReturningValueEvent
-	{
-		/// <summary>
-		/// Gets or sets the object to retry.
-		/// </summary>
-		/// <value>The object.</value>
-		public T Object { get; set; }
-	}
-
-	/// <summary>
-	/// Event sent to request clearing a <typeparam name="T">.
-	/// </summary>
-	public class ClearEvent<T> : ReturningValueEvent
-	{
+		public bool Playing { get; set; }
 	}
 }

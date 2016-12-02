@@ -30,11 +30,10 @@ namespace VAS.Core.MVVMC
 	/// to automatically raise property changed events.
 	/// </summary>
 	[Serializable]
-	[PropertyChanged.ImplementPropertyChanged]
-	public class BindableBase: INotifyPropertyChanged, IChanged
+	public class BindableBase : DisposableBase, INotifyPropertyChanged, IChanged
 	{
 		// Don't serialize observers when cloning this object
-		[field:NonSerialized]
+		[field: NonSerialized]
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		bool forwarding;
@@ -79,6 +78,8 @@ namespace VAS.Core.MVVMC
 		/// <param name="sender">Sender of the event</param>
 		protected void RaisePropertyChanged (PropertyChangedEventArgs args, object sender = null)
 		{
+			IsChanged = true;
+
 			if (IgnoreEvents) {
 				return;
 			}
@@ -88,7 +89,6 @@ namespace VAS.Core.MVVMC
 				}
 				PropertyChanged (sender, args);
 			}
-			IsChanged = true;
 		}
 
 		/// <summary>
@@ -147,14 +147,14 @@ namespace VAS.Core.MVVMC
 			// Disconnect the old collection and all its children
 			if (oldValue != null) {
 				oldValue.CollectionChanged -= CollectionChanged;
-				foreach (var element in (oldValue as IEnumerable).OfType<INotifyPropertyChanged>()) {
+				foreach (var element in (oldValue as IEnumerable).OfType<INotifyPropertyChanged> ()) {
 					element.PropertyChanged -= ForwardPropertyChanged;
 				}
 			}
 			// Connect the new collection and all its children
 			if (newValue != null) {
 				newValue.CollectionChanged += CollectionChanged;
-				foreach (var element in (newValue as IEnumerable).OfType<INotifyPropertyChanged>()) {
+				foreach (var element in (newValue as IEnumerable).OfType<INotifyPropertyChanged> ()) {
 					element.PropertyChanged += ForwardPropertyChanged;
 				}
 			}
@@ -164,12 +164,12 @@ namespace VAS.Core.MVVMC
 		{
 			if (e.OldItems != null) {
 				// Keep track to new items added to the collection and start observing them
-				foreach (var element in e.OldItems.OfType<INotifyPropertyChanged>()) {
+				foreach (var element in e.OldItems.OfType<INotifyPropertyChanged> ()) {
 					element.PropertyChanged -= ForwardPropertyChanged;
 				}
 			} else if (e.NewItems != null) {
 				// Keep track to items removed from the collection and stop observing them
-				foreach (var element in e.NewItems.OfType<INotifyPropertyChanged>()) {
+				foreach (var element in e.NewItems.OfType<INotifyPropertyChanged> ()) {
 					element.PropertyChanged += ForwardPropertyChanged;
 				}
 			}
@@ -184,7 +184,6 @@ namespace VAS.Core.MVVMC
 			}
 			forwarding = true;
 			RaisePropertyChanged (e, sender);
-			IsChanged = true;
 			forwarding = false;
 		}
 	}

@@ -98,12 +98,10 @@ namespace VAS.Core.Interfaces
 		Playlist LoadedPlaylist { get; set; }
 
 		/// <summary>
-		/// Flag indicating whether this <see cref="LongoMatch.Core.Interfaces.IPlayerController"/>
-		/// is in presentation mode.
-		/// Presentation mode emits ticks relative to the full duration of the loaded playlist.
+		/// Gets or sets the operation mode.
 		/// </summary>
-		/// <value><c>true</c> if presentation mode; otherwise, <c>false</c>.</value>
-		bool PresentationMode { get; set; }
+		/// <value>The mode.</value>
+		VideoPlayerOperationMode Mode { get; set; }
 
 		/// <summary>
 		/// Switch the specified play, playlist and element.

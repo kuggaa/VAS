@@ -16,26 +16,27 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
-using VAS.Core;
 using VAS.Core.Common;
-using VAS.Core.Filters;
 using VAS.Core.Interfaces.Drawing;
-using VAS.Core.Store;
+using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.ViewModel;
 using VAS.Drawing.CanvasObjects.Timeline;
-using VASDrawing = VAS.Drawing;
 
 namespace VAS.Drawing.Widgets
 {
-	public class TimelineLabels : Canvas
+
+	public abstract class TimelineLabels : SelectionCanvas
 	{
-		protected Project project;
-		protected EventsFilter filter;
-		protected Dictionary<LabelObject, object> labelToObject;
+		protected Dictionary<EventTypeVM, LabelView> eventTypeToLabel;
+		protected int labelWidth, labelHeight, eventTypesStartIndex;
+		IAnalysisViewModel viewModel;
 
 		public TimelineLabels (IWidget widget) : base (widget)
 		{
-			labelToObject = new Dictionary<LabelObject, object> ();
+			eventTypeToLabel = new Dictionary<EventTypeVM, LabelView> ();
+			SelectionMode = MultiSelectionMode.Single;
 		}
 
 		public TimelineLabels () : this (null)
@@ -45,72 +46,126 @@ namespace VAS.Drawing.Widgets
 		public double Scroll {
 			set {
 				foreach (var o in Objects) {
-					LabelObject cl = o as LabelObject;
-					cl.Scroll = value; 
+					LabelView cl = o as LabelView;
+					cl.Scroll = value;
 				}
 			}
 		}
 
-		public void LoadProject (Project project, EventsFilter filter)
-		{
-			ClearObjects ();
-			this.project = project;
-			this.filter = filter;
-			if (project != null) {
-				FillCanvas ();
-				UpdateVisibleCategories ();
-				filter.FilterUpdated += UpdateVisibleCategories;
+		public IAnalysisViewModel ViewModel {
+			get {
+				return viewModel;
+			}
+			set {
+				if (viewModel != null) {
+					viewModel.Project.EventTypes.ViewModels.CollectionChanged -= HandleCollectionChanged;
+					viewModel.Project.EventTypes.PropertyChanged -= HandleEventTypesPropertyChanged;
+				}
+				viewModel = value;
+				if (viewModel != null) {
+					viewModel.Project.EventTypes.ViewModels.CollectionChanged += HandleCollectionChanged;
+					viewModel.Project.EventTypes.PropertyChanged += HandleEventTypesPropertyChanged;
+				}
 			}
 		}
 
-		protected virtual void AddLabel (LabelObject label, object obj)
+		public virtual void SetViewModel (object viewModel)
+		{
+			ViewModel = (IAnalysisViewModel)viewModel;
+		}
+
+		protected virtual void AddEventType (EventTypeVM eventTypeVM, int i)
+		{
+			IView view = App.Current.ViewLocator.Retrieve ("EventTypeLabelView");
+			view.SetViewModel (eventTypeVM);
+			var labelView = view as LabelView;
+			labelView.Width = labelWidth;
+			labelView.Height = labelHeight;
+			labelView.OffsetY = i * labelHeight;
+			AddLabel (labelView, eventTypeVM);
+			eventTypeToLabel [eventTypeVM] = labelView;
+		}
+
+		protected virtual void AddLabel (LabelView label, object obj)
 		{
 			AddObject (label);
-			labelToObject [label] = obj;
 		}
 
-		protected virtual void FillCanvas ()
+		protected void RemoveEventTypeLabel (EventTypeVM viewModel)
 		{
-			LabelObject l;
-			int i = 0, w, h;
-
-			w = StyleConf.TimelineLabelsWidth;
-			h = StyleConf.TimelineCategoryHeight;
-
-			foreach (Timer t in project.Timers) {
-				l = new TimerLabelObject (t, w, h, i * h);
-				AddLabel (l, t);
-				i++;
-			}
-
-			foreach (EventType eventType in project.EventTypes) {
-				/* Add the category label */
-				l = new EventTypeLabelObject (eventType, w, h, i * h);
-				AddLabel (l, eventType);
-				i++;
-			}
-			
-			double width = labelToObject.Keys.Max (la => la.RequiredWidth);
-			foreach (LabelObject lo in labelToObject.Keys) {
-				lo.Width = width;
-			}
-			WidthRequest = (int)width;
+			RemoveObject (eventTypeToLabel [viewModel]);
+			eventTypeToLabel.Remove (viewModel);
 		}
 
-		protected virtual void UpdateVisibleCategories ()
+		protected virtual void FillCanvas (ref int i)
 		{
-			int i = 0;
-			foreach (LabelObject label in Objects) {
-				if (filter.IsVisible (labelToObject [label])) {
+			LabelView labelView;
+
+			foreach (var timerViewModel in ViewModel.Project.Timers) {
+				IView view = App.Current.ViewLocator.Retrieve ("TimerLabelView");
+				view.SetViewModel (timerViewModel);
+				labelView = view as LabelView;
+				labelView.Width = labelWidth;
+				labelView.Height = labelHeight;
+				labelView.OffsetY = i * labelHeight;
+				AddLabel (labelView, timerViewModel);
+				i++;
+			}
+			eventTypesStartIndex = i;
+			foreach (var eventTypeVM in ViewModel.Project.EventTypes) {
+				AddEventType (eventTypeVM, i);
+				i++;
+			}
+			UpdateLabelOffsets ();
+		}
+
+		protected virtual void UpdateLabelOffsets ()
+		{
+			int i = eventTypesStartIndex;
+			foreach (EventTypeVM eventTypeVM in ViewModel.Project.EventTypes) {
+				LabelView label = eventTypeToLabel [eventTypeVM];
+				if (label.Visible) {
 					label.OffsetY = i * label.Height;
-					label.Visible = true;
-					label.BackgroundColor = VASDrawing.Utils.ColorForRow (i);
+					label.BackgroundColor = Utils.ColorForRow (i);
 					i++;
-				} else {
-					label.Visible = false;
 				}
 			}
 			widget?.ReDraw ();
+		}
+
+		protected virtual void HandleCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		{
+			switch (e.Action) {
+			case NotifyCollectionChangedAction.Add: {
+					int i = eventTypesStartIndex + e.NewStartingIndex;
+					foreach (EventTypeVM viewModel in e.NewItems.OfType<EventTypeVM> ()) {
+						AddEventType (viewModel, i);
+						i++;
+					}
+					break;
+				}
+			case NotifyCollectionChangedAction.Remove: {
+					foreach (EventTypeVM viewModel in e.OldItems.OfType<EventTypeVM> ()) {
+						RemoveEventTypeLabel (viewModel);
+					}
+					break;
+				}
+			case NotifyCollectionChangedAction.Reset: {
+					foreach (EventTypeVM viewModel in eventTypeToLabel.Keys) {
+						RemoveEventTypeLabel (viewModel);
+					}
+					break;
+				}
+			}
+			UpdateLabelOffsets ();
+		}
+
+		void HandleEventTypesPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName != "Visible") {
+				return;
+			}
+			UpdateLabelOffsets ();
 		}
 	}
 }

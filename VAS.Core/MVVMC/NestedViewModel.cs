@@ -25,8 +25,8 @@ using VAS.Core.Interfaces.MVVMC;
 namespace VAS.Core.MVVMC
 {
 	/// <summary>
-	/// Base class of a nested ViewModel Type. This type of ViewModel contains an observableCollection of Child
-	/// ViewModels. It implements INotifyCollectionChanged and IEnumerable interfaces.
+	/// Base class implementation of <see cref="INestedViewModel"/> with support for child selection.
+	/// This base class should be used by any ViewModel with a collection of typeparam name="VMChilds".
 	/// </summary>
 	public class NestedViewModel<VMChilds> : BindableBase, INestedViewModel<VMChilds>
 		where VMChilds : IViewModel
@@ -59,9 +59,9 @@ namespace VAS.Core.MVVMC
 		}
 
 		/// <summary>
-		/// Selects the specified item from the list.
+		/// Selects the specified child viewModel.
 		/// </summary>
-		/// <param name="item">The item to select.</param>
+		/// <param name="viewModel">The item to select.</param>
 		public void Select (VMChilds viewModel)
 		{
 			if (viewModel == null) {
@@ -79,6 +79,10 @@ namespace VAS.Core.MVVMC
 			}
 		}
 
+		/// <summary>
+		/// Replace the current selection with a new one.
+		/// </summary>
+		/// <param name="selection">Selection.</param>
 		public void SelectionReplace (IEnumerable<VMChilds> selection)
 		{
 			Selection.Replace (selection);

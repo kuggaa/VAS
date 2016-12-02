@@ -69,21 +69,21 @@ namespace Weavers
 		public IAssemblyResolver AssemblyResolver { get; set; }
 
 		public const string BINDABLE_BASE = "BindableBase";
-		public const string OBSERVABLE_COLLECTION = "ObservableCollection`1";
+		public const string COLLECTION_CHANGED = "INotifyCollectionChanged";
+		public const string PROPERTY_CHANGED = "INotifyPropertyChanged";
 		public const string CONNECT = "ConnectChild";
 
 		MethodReference connectMethod;
+		TypeResolver typeResolver;
 		TypeDefinition bindableBaseType;
-		TypeDefinition observableCollectionType;
 		HashSet<TypeDefinition> bindableTypes;
 
 		public void Execute ()
 		{
+			typeResolver = new TypeResolver ();
+
 			var bindableBaseTypeFinder = new TypeFinder (ModuleDefinition, AssemblyResolver, BINDABLE_BASE);
 			bindableBaseType = bindableBaseTypeFinder.Execute ();
-
-			var observableCollectionTypeFinder = new TypeFinder (ModuleDefinition, AssemblyResolver, OBSERVABLE_COLLECTION);
-			observableCollectionType = observableCollectionTypeFinder.Execute ();
 
 			var exceptionFinder = new ExceptionFinder (ModuleDefinition, AssemblyResolver);
 			exceptionFinder.Execute ();
@@ -96,18 +96,36 @@ namespace Weavers
 			bindableTypes = new HashSet<TypeDefinition> (
 				ModuleDefinition.GetTypes ().Where (x => x.IsClass && IsBindableBaseType (x)));
 
-			// Get a list of all the classes deriving from ObservableCollection
-			var observableTypes = new HashSet<TypeDefinition> (
-				                      ModuleDefinition.GetTypes ().Where (x => x.IsClass && IsObservableCollectionType (x)));
-
-			foreach (var type in observableTypes) {
-				bindableTypes.Add (type);
-			}
-
-			// Process BindableBase and ObservableCollection types to inject the ConnectChild () function
+			// Process BindableBase types to inject the ConnectChild () function
 			foreach (var type in bindableTypes) {
 				ProcessType (type);
 			}
+		}
+
+		/// <summary>
+		/// Checks if the property has a generic type and if this generic type has a constraint that implements
+		/// INotifyPropertyChanged or INotifyCollectionChanged. An example is BaseViewModel with the generic type
+		/// TModel that has the contraint where TModel : INotifyPropertyChanged
+		/// </summary>
+		bool HasGenericINotifyProperty (TypeDefinition typeWithGeneric, PropertyReference property)
+		{
+			if (!typeWithGeneric.HasGenericParameters || !property.PropertyType.ContainsGenericParameter) {
+				return false;
+			}
+			var generic = typeWithGeneric.GenericParameters.FirstOrDefault ((arg) => arg.Name == property.PropertyType.Name);
+			return generic != null &&
+				generic.Constraints.Any ((arg) =>
+										 arg.Name == PROPERTY_CHANGED ||
+										 arg.Name == COLLECTION_CHANGED ||
+										 ImplementsINotify (ToDefinition (arg)));
+		}
+
+		TypeDefinition ToDefinition (TypeReference typeReference)
+		{
+			if (typeReference.IsDefinition) {
+				return (TypeDefinition)typeReference;
+			}
+			return typeResolver.Resolve (typeReference);
 		}
 
 		bool IsBindableBaseType (TypeDefinition type)
@@ -123,26 +141,40 @@ namespace Weavers
 			}
 		}
 
-		bool IsObservableCollectionType (TypeDefinition type)
+		bool ImplementsINotify (TypeReference typeRef)
 		{
-			if (type == observableCollectionType) {
-				return true;
-			} else if (type.BaseType == observableCollectionType) {
-				return true;
-			} else if (type.BaseType != null) {
-				return IsObservableCollectionType (type.BaseType.Resolve ());
-			} else {
+			if (typeRef == null) {
 				return false;
 			}
+
+			if (typeRef.Name == COLLECTION_CHANGED || typeRef.Name == PROPERTY_CHANGED) {
+				return true;
+			}
+
+			TypeDefinition typeDef = ToDefinition (typeRef);
+			if (typeDef == null) {
+				return false;
+			}
+
+			var fullName = typeDef.FullName;
+			if (typeDef.Interfaces != null && typeDef.Interfaces.Any (x => x.Name == COLLECTION_CHANGED || x.Name == PROPERTY_CHANGED)) {
+				return true;
+			}
+			if (typeDef.BaseType == null) {
+				return false;
+			}
+			return ImplementsINotify (typeDef.BaseType);
 		}
 
 		void ProcessType (TypeDefinition type)
 		{
 			LogInfo ("\t" + type.FullName);
 			foreach (var property in type.Properties) {
-
-				if (!bindableTypes.Contains (property.PropertyType.Resolve ()) &&
-				    !property.PropertyType.Name.StartsWith ("ObservableCollection")) {
+				TypeDefinition propertyType = property.PropertyType.Resolve ();
+				if (!bindableTypes.Contains (propertyType)
+					&& !HasGenericINotifyProperty (type, property)
+					&& !ImplementsINotify (property.PropertyType)
+					) {
 					continue;
 				}
 
@@ -161,8 +193,8 @@ namespace Weavers
 				}
 
 				if (property.CustomAttributes.FirstOrDefault (
-					    a => a.AttributeType.Name == "JsonIgnoreAttribute" ||
-					    a.AttributeType.Name == "DoNotNotifyAttribute") != null) {
+						a => a.AttributeType.Name == "JsonIgnoreAttribute" ||
+						a.AttributeType.Name == "DoNotNotifyAttribute") != null) {
 					continue;
 				}
 

@@ -23,13 +23,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\CanvasObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimelineObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimelineView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Widgets\TimelineLabels.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\LabelObject.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimeNodeObject.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\CameraObject.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimelineEventObject.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\NeedleObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\LabelView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimeNodeView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimelineEventView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\NeedleView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Widgets\Timerule.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Widgets\PlaysTimeline.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)..\AssemblyInfo\AssemblyInfo.cs">
@@ -52,5 +51,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Blackboard\QuadrilateralObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Blackboard\RectangleObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Blackboard\TextObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\EventTypeLabelView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimerLabelView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\CameraLabelView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Init.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\CameraTimelineView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimerTimelineView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\EventTypeTimelineView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimerTimeNodeView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\CameraView.cs" />
   </ItemGroup>
 </Project>

@@ -15,53 +15,36 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
+using System.Collections.ObjectModel;
+using VAS.Core.Common;
+using VAS.Core.MVVMC;
+using VAS.Core.Store;
 
-namespace VAS.Core.Events
+namespace VAS.Core.ViewModel
 {
-	public class CRUDEvent<T> : ReturningValueEvent
+	/// <summary>
+	/// ViewModel for <see cref="Timer"/> objects.
+	/// </summary>
+	public class TimerVM : NestedSubViewModel<Timer, TimerVM, TimeNode, TimeNodeVM>
 	{
-		public T Object { get; set; }
-	}
 
-	public class CreateEvent<T>: CRUDEvent<T>
-	{
-		public T Source { get; set; }
-
-		public int Count { get; set; }
-
-		public string Name { get; set; }
-	}
-
-	public class DeleteEvent<T>: CRUDEvent<T>
-	{
-	}
-
-	public class UpdateEvent<T>: CRUDEvent<T>
-	{
-		public bool Force { get; set; }
-	}
-
-	public class ExportEvent<T>: CRUDEvent<T>
-	{
 		/// <summary>
-		/// Gets or sets the format in which we want to export the object
+		/// Gets or sets the name of the timer.
 		/// </summary>
-		/// <value>The format.</value>
-		public string Format { get; set; }
-	}
+		/// <value>The name.</value>
+		public virtual string Name {
+			get {
+				return Model.Name;
+			}
+			set {
+				Model.Name = value;
+			}
+		}
 
-	public class ImportEvent<T>: CRUDEvent<T>
-	{
-	}
-
-	public class ChangeNameEvent<T>: CRUDEvent<T>
-	{
-		public string NewName { get; set; }
-	}
-
-	public class OpenEvent<T> : CRUDEvent<T>
-	{
+		public override RangeObservableCollection<TimeNode> ChildModels {
+			get {
+				return Model.Nodes;
+			}
+		}
 	}
 }
-

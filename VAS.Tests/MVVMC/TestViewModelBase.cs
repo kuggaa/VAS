@@ -15,9 +15,9 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using NUnit.Framework;
-using VAS.Core.MVVMC;
+using VAS.Core.Store;
+using VAS.Core.ViewModel;
 
 namespace VAS.Tests.MVVMC
 {
@@ -28,11 +28,14 @@ namespace VAS.Tests.MVVMC
 		public void TextForwardProperty ()
 		{
 			int eventCount = 0;
-			var model = new DummyBindable ();
-			var viewModel = new ViewModelBase<BindableBase> ();
-			viewModel.Model = model;
+			TimeNode timeNode = new TimeNode ();
+			TimeNodeVM viewModel = new TimeNodeVM ();
+			viewModel.Model = timeNode;
 			viewModel.PropertyChanged += (sender, e) => eventCount++;
-			model.Raise ("test");
+
+
+			timeNode.EventTime = new Time (0);
+
 			Assert.AreEqual (1, eventCount);
 		}
 
@@ -40,15 +43,14 @@ namespace VAS.Tests.MVVMC
 		public void TextChangeModel ()
 		{
 			int eventCount = 0;
-			var model = new DummyBindable ();
-			var viewModel = new ViewModelBase<BindableBase> ();
-			viewModel.Model = model;
-
-			Assert.DoesNotThrow (() => viewModel.Model = null);
-
-			viewModel.Model = model;
+			TimeNode timeNode = new TimeNode ();
+			TimeNodeVM viewModel = new TimeNodeVM ();
+			viewModel.Model = null;
+			viewModel.Model = timeNode;
 			viewModel.PropertyChanged += (sender, e) => eventCount++;
-			model.Raise ("test");
+
+			timeNode.EventTime = new Time (0);
+
 			Assert.AreEqual (1, eventCount);
 		}
 	}

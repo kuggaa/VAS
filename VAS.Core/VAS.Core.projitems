@@ -120,7 +120,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\ITool.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Store\Templates\Team.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Events\MultimediaEvents.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IProgressReport.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Events\EventsBroker.cs" />
@@ -135,7 +134,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\ViewLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\ControllerLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\ViewModelBase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Events\TemplateEvents.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Events\GenericEvents.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\KeyContextManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\KeyContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\KeyAction.cs" />
@@ -183,6 +182,24 @@
     <Compile Include="$(MSBuildThisFileDirectory)Prism\AsyncDispatcherEventSubscription.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Prism\Properties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\DisposableBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TimelineVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TimelineEventVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlaylistCollectionVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlaylistElementVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\JobVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlaylistVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TemplateViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TimeNodeVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\NestedSubViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypeVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TimerVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TimeNodeVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MediaFileVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypeTimelineVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\IAnalysisViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MediaFileSetVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\VideoPlayerVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
@@ -203,6 +220,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)Services\" />
     <Folder Include="$(MSBuildThisFileDirectory)Services\ViewModels\" />
     <Folder Include="$(MSBuildThisFileDirectory)Prism\" />
+    <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)VAS.Core.dll.config">

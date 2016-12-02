@@ -22,8 +22,8 @@ namespace VAS.Core.MVVMC
 	/// <summary>
 	/// Attribute used to register IView components.
 	/// </summary>
-	[AttributeUsage (AttributeTargets.Class, AllowMultiple = true)]
-	public class ViewAttribute: Attribute
+	[AttributeUsage (AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
+	public class ViewAttribute : Attribute
 	{
 		public ViewAttribute (string viewName)
 		{

@@ -57,7 +57,7 @@ namespace VAS.Core.MVVMC
 				if (Model != null) {
 					Model.CollectionChanged -= HandleModelsCollectionChanged;
 				}
-				ViewModels = new RangeObservableCollection<TViewModel> ();
+				ViewModels.Clear ();
 				modelToViewModel = new Dictionary<TModel, TViewModel> ();
 				model = value;
 				AddViewModels (model);
@@ -81,13 +81,16 @@ namespace VAS.Core.MVVMC
 			Select (ViewModels.First (vm => vm.Model.Equals (item)));
 		}
 
+		protected virtual TViewModel CreateInstance (TModel model)
+		{
+			return new TViewModel { Model = model };
+		}
+
 		void AddViewModels (IEnumerable<TModel> models)
 		{
 			var viewModels = new List<TViewModel> ();
 			foreach (TModel model in models) {
-				var viewModel = new TViewModel {
-					Model = model
-				};
+				var viewModel = CreateInstance (model);
 				viewModels.Add (viewModel);
 				modelToViewModel [model] = viewModel;
 			}

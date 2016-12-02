@@ -97,7 +97,7 @@ namespace VAS.Services
 			if (loadedPlay != null && plays.Contains (loadedPlay)) {
 				App.Current.EventsBroker.Publish<LoadEventEvent> (new LoadEventEvent ());
 			}
-			filter.Update ();
+			filter?.Update ();
 		}
 
 		protected virtual void HandleShowFullScreenEvent (ShowFullScreenEvent e)
@@ -249,7 +249,7 @@ namespace VAS.Services
 				play.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
 			}
 
-			filter.Update ();
+			filter?.Update ();
 			App.Current.EventsBroker.Publish<EventCreatedEvent> (
 				new EventCreatedEvent {
 					TimelineEvent = play
@@ -334,7 +334,7 @@ namespace VAS.Services
 			}
 			DeletePlays (newEvents.ToList (), false);
 			Save (openedProject);
-			filter.Update ();
+			filter?.Update ();
 		}
 
 		protected virtual void HandleDashboardEditedEvent (DashboardEditedEvent e)
@@ -354,7 +354,7 @@ namespace VAS.Services
 					}
 				);
 			}
-			filter.Update ();
+			filter?.Update ();
 		}
 
 		public void HandleNewEvent (NewEventEvent e)

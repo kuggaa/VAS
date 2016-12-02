@@ -16,8 +16,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
@@ -27,9 +27,8 @@ using VAS.Core.Interfaces;
 namespace VAS.Core.Store
 {
 	[Serializable]
-	[PropertyChanged.ImplementPropertyChanged]
 	[JsonObject]
-	public class MediaFileSet : ObservableCollection<MediaFile>, IStorable
+	public class MediaFileSet : StorableBase, IList<MediaFile>
 	{
 		[NonSerialized]
 		IStorage storage;
@@ -38,91 +37,38 @@ namespace VAS.Core.Store
 		public MediaFileSet ()
 		{
 			ID = Guid.NewGuid ();
+			IsLoaded = true;
+			VisibleRegion = null;
+			MediaFiles = new RangeObservableCollection<MediaFile> ();
 		}
 
-		public Guid ID {
+		/// <summary>
+		/// Gets or sets the visible region of the file set.
+		/// </summary>
+		/// <value>The visible region.</value>
+		public TimeNode VisibleRegion {
 			get;
 			set;
 		}
 
-		#region IStorable
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public IStorage Storage {
-			get {
-				return storage;
-			}
-			set {
-				storage = value;
-			}
-		}
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool IsLoaded {
+		/// <summary>
+		/// Gets or sets if the media file is stretched.
+		/// </summary>
+		/// <value>The is stretched.</value>
+		public bool IsStretched {
 			get;
 			set;
 		}
 
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public List<IStorable> SavedChildren {
+		public RangeObservableCollection<MediaFile> MediaFiles {
 			get;
 			set;
 		}
 
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool DeleteChildren {
-			get;
-			set;
-		}
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool IsChanged {
-			get;
-			set;
-		}
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public string DocumentID {
-			get;
-			set;
-		}
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public Guid ParentID {
-			get;
-			set;
-		}
-
-		#endregion
-
-		[JsonProperty]
-		[PropertyChanged.DoNotNotify]
-		ObservableCollection<MediaFile> MediaFiles {
-			get {
-				if (Count == 0) {
-					return null;
-				} else {
-					return new ObservableCollection<MediaFile> (this);
-				}
-			}
-			set {
-				this.Clear ();
-				if (value != null) {
-					this.AddRange (value);
-				}
-			}
-		}
-
+		// Keep this property for backwards compatibility
 		[JsonProperty]
 		[Obsolete]
-		Dictionary <MediaFileAngle, MediaFile> Files {
+		Dictionary<MediaFileAngle, MediaFile> Files {
 			set {
 				// Transform old Files dict to ordered list
 				foreach (KeyValuePair<MediaFileAngle, MediaFile> File in value) {
@@ -181,6 +127,33 @@ namespace VAS.Core.Store
 				} else {
 					return new Time (0);
 				}
+			}
+		}
+
+		[JsonIgnore]
+		[PropertyChanged.DoNotNotify]
+		public int Count {
+			get {
+				return MediaFiles.Count;
+			}
+		}
+
+		[JsonIgnore]
+		[PropertyChanged.DoNotNotify]
+		public bool IsReadOnly {
+			get {
+				return false;
+			}
+		}
+
+		[JsonIgnore]
+		[PropertyChanged.DoNotNotify]
+		public MediaFile this [int index] {
+			get {
+				return MediaFiles [index];
+			}
+			set {
+				MediaFiles [index] = value;
 			}
 		}
 
@@ -296,6 +269,73 @@ namespace VAS.Core.Store
 		public override int GetHashCode ()
 		{
 			return ID.GetHashCode ();
+		}
+
+		public IEnumerator<MediaFile> GetEnumerator ()
+		{
+			return MediaFiles.GetEnumerator ();
+		}
+
+		public int IndexOf (MediaFile item)
+		{
+			return MediaFiles.IndexOf (item);
+		}
+
+		public void Insert (int index, MediaFile item)
+		{
+			MediaFiles.Insert (index, item);
+		}
+
+		public void RemoveAt (int index)
+		{
+			MediaFiles.RemoveAt (index);
+		}
+
+		public void Add (MediaFile item)
+		{
+			MediaFiles.Add (item);
+		}
+
+		public void Clear ()
+		{
+			MediaFiles.Clear ();
+		}
+
+		public bool Contains (MediaFile item)
+		{
+			return MediaFiles.Contains (item);
+		}
+
+		public void CopyTo (MediaFile [] array, int arrayIndex)
+		{
+			MediaFiles.CopyTo (array, arrayIndex);
+		}
+
+		public bool Remove (MediaFile item)
+		{
+			return MediaFiles.Remove (item);
+		}
+
+		protected override void CollectionChanged (object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			if (Count != 0 && Duration != null) {
+				if (VisibleRegion == null) {
+					VisibleRegion = new TimeNode { Start = new Time (0), Stop = new Time (Duration.MSeconds) };
+				} else {
+					if (VisibleRegion.Start > Duration) {
+						VisibleRegion.Start = new Time (0);
+					}
+					if (VisibleRegion.Stop > Duration) {
+						VisibleRegion.Stop = new Time (Duration.MSeconds);
+					}
+				}
+			}
+			base.CollectionChanged (sender, e);
+		}
+
+		IEnumerator IEnumerable.GetEnumerator ()
+		{
+			return MediaFiles.GetEnumerator ();
 		}
 	}
 }

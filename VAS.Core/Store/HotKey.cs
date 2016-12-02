@@ -32,7 +32,6 @@ namespace VAS.Core.Store
 	/// 'key' and 'modifier' are set to -1 when it's initialized
 	/// </summary>
 	[Serializable]
-	[PropertyChanged.ImplementPropertyChanged]
 	public class HotKey : BindableBase, IEquatable<HotKey>
 	{
 		#region Constructors

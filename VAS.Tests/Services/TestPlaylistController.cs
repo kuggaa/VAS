@@ -27,8 +27,8 @@ using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
+using VAS.Core.ViewModel;
 using VAS.Services.Controller;
-using VAS.Services.ViewModel;
 
 namespace VAS.Tests.Services
 {
@@ -37,7 +37,7 @@ namespace VAS.Tests.Services
 		const string name = "name";
 
 		Mock<IGUIToolkit> mockGuiToolkit;
-		Mock<IVideoPlayerViewModel> mockPlayerController;
+		VideoPlayerVM videoPlayerVM;
 		Mock<IDialogs> mockDiaklogs;
 		Mock<IStorageManager> storageManagerMock;
 		Mock<IStorage> storageMock;
@@ -46,7 +46,6 @@ namespace VAS.Tests.Services
 		[TestFixtureSetUp ()]
 		public void FixtureSetup ()
 		{
-			mockPlayerController = new Mock<IVideoPlayerViewModel> ();
 			mockGuiToolkit = new Mock<IGUIToolkit> ();
 
 			storageManagerMock = new Mock<IStorageManager> ();
@@ -62,7 +61,8 @@ namespace VAS.Tests.Services
 			mockDiaklogs = new Mock<IDialogs> ();
 			App.Current.GUIToolkit = mockGuiToolkit.Object;
 			App.Current.Dialogs = mockDiaklogs.Object;
-			controller = new PlaylistController (mockPlayerController.Object);
+			videoPlayerVM = new VideoPlayerVM (new Mock<IVideoPlayerController> ().Object);
+			controller = new PlaylistController (videoPlayerVM);
 			controller.Start ();
 			mockDiaklogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
 													 It.IsAny<object> ())).Returns (AsyncHelpers.Return (name));
