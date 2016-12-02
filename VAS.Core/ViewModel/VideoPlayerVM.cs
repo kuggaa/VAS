@@ -23,29 +23,28 @@ using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
+using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
-using VAS.Core.Interfaces.Multimedia;
-using VAS.Core;
 
-namespace VAS.Services.ViewModel
+namespace VAS.Core.ViewModel
 {
 	/// <summary>
 	/// Player View Model, Creates it's own instance of player controller.
 	/// Every view that needs to control the player should use this ViewModel instead of the
 	/// PlayerController.
 	/// </summary>
-	public class VideoPlayerVM : BindableBase, IVideoPlayerViewModel
+	public class VideoPlayerVM : BindableBase, IViewModel
 	{
 		IVideoPlayerController playerController;
 		PlayerViewOperationMode mode;
 		MediaFileSet fileset;
 
-		public VideoPlayerVM (bool supportMultipleCameras = true)
+		public VideoPlayerVM (IVideoPlayerController controller)
 		{
-			playerController = new VideoPlayerController (supportMultipleCameras);
+			playerController = controller;
 			playerController.SetViewModel (this);
 			playerController.Start ();
 		}
@@ -115,9 +114,9 @@ namespace VAS.Services.ViewModel
 			set;
 		}
 
-		public MediaFileSet FileSet {
+		public MediaFileSetVM FileSet {
 			get;
-			set;
+			protected set;
 		}
 
 		public FrameDrawing FrameDrawing {
@@ -137,7 +136,7 @@ namespace VAS.Services.ViewModel
 			set;
 		}
 
-		public PlayerViewOperationMode Mode {
+		public PlayerViewOperationMode ViewMode {
 			set {
 				mode = value;
 				switch (mode) {
@@ -165,6 +164,15 @@ namespace VAS.Services.ViewModel
 			}
 			get {
 				return mode;
+			}
+		}
+
+		public VideoPlayerOperationMode PlayerMode {
+			set {
+				Player.Mode = value;
+			}
+			get {
+				return Player.Mode;
 			}
 		}
 
@@ -235,12 +243,6 @@ namespace VAS.Services.ViewModel
 			}
 		}
 
-		public bool PresentationMode {
-			set {
-				playerController.PresentationMode = value;
-			}
-		}
-
 		#region methods
 
 		public void Dispose ()
@@ -298,16 +300,6 @@ namespace VAS.Services.ViewModel
 			playerController.TogglePlay ();
 		}
 
-		public void SetRate (float rate)
-		{
-			playerController.Rate = rate;
-			App.Current.EventsBroker.Publish<PlaybackRateChangedEvent> (
-				new PlaybackRateChangedEvent {
-					Value = rate
-				}
-			);
-		}
-
 		public void SeekToPreviousFrame ()
 		{
 			playerController.SeekToPreviousFrame ();
@@ -328,30 +320,20 @@ namespace VAS.Services.ViewModel
 			playerController.StepForward ();
 		}
 
-		public void OpenFileSet (MediaFileSet fileset, bool play = false)
+		public void OpenFileSet (MediaFileSetVM fileset, bool play = false)
 		{
 			FileSet = fileset;
-			playerController.Open (fileset, play);
-		}
-
-		public void ResetCounter ()
-		{
-			(playerController as VAS.Services.VideoPlayerController).ResetCounter ();
-			ShowMessage (Catalog.GetString ("No video loaded"));
-		}
-
-		public void ShowMessage (string message)
-		{
-			App.Current.EventsBroker.Publish<ChangeVideoMessageEvent> (
-				new ChangeVideoMessageEvent () {
-					message = message
-				});
+			if (!Compact) {
+				ShowDetachButton = fileset != null && fileset.Any ();
+			}
+			playerController.Open (fileset?.Model, play);
 		}
 
 		public void ApplyROI (CameraConfig cameraConfig)
 		{
 			playerController.ApplyROI (cameraConfig);
 		}
+
 		//FIXME: This setter is strange, but we need it to correctly set the CamerasConfig
 		// to the PlayerController
 		/// <summary>
@@ -374,11 +356,17 @@ namespace VAS.Services.ViewModel
 				Player.Play ();
 			} else {
 				if (e != null) {
-					LoadPlay (e, new Time (0), playing);
+					LoadEvent (e, new Time (0), playing);
 				} else if (Player != null) {
 					Player.UnloadCurrentEvent ();
 				}
 			}
+		}
+
+		public void LoadEvent (TimelineEvent e, Time seekTime, bool playing)
+		{
+			e.Playing = true;
+			Player.LoadEvent (e, seekTime, playing);
 		}
 
 		public void LoadEvents (List<TimelineEvent> events, bool playing)
@@ -394,13 +382,9 @@ namespace VAS.Services.ViewModel
 			playerController.LoadPlaylistEvent (playlist, list.FirstOrDefault (), playing);
 		}
 
-		public void LoadPlay (TimelineEvent e, Time seekTime, bool playing)
+		public void LoadPlaylistEvent (Playlist playlist, IPlaylistElement element, bool playing)
 		{
-			e.Playing = true;
-			Player.LoadEvent (e, seekTime, playing);
-			if (playing) {
-				Player.Play ();
-			}
+			Player?.LoadPlaylistEvent (playlist, element, playing);
 		}
 
 		/// <summary>
@@ -419,11 +403,6 @@ namespace VAS.Services.ViewModel
 		}
 
 		#endregion
-
-		public void LoadPlaylistEvent (Playlist playlist, IPlaylistElement element, bool playing)
-		{
-			Player?.LoadPlaylistEvent (playlist, element, playing);
-		}
 	}
 }
 

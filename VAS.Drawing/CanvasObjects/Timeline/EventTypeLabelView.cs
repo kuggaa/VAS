@@ -1,4 +1,4 @@
-﻿//
+//
 //  Copyright (C) 2016 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -15,55 +15,48 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+
+using System;
 using VAS.Core.Common;
+using VAS.Core.Interfaces.Drawing;
+using VAS.Core.ViewModel;
 using VAS.Core.MVVMC;
 
-namespace VAS.Services.ViewModel
+namespace VAS.Drawing.CanvasObjects.Timeline
 {
+
 	/// <summary>
-	/// A ViewModel for a <see cref="Job"/>.
+	/// A label for the event types timeline row.
 	/// </summary>
-	public class JobVM : ViewModelBase<Job>
+	[View ("EventTypeLabelView")]
+	public class EventTypeLabelView : LabelView, ICanvasObjectView<EventTypeVM>
 	{
+		EventTypeVM viewModel;
 
-		/// <summary>
-		/// Gets the name of the <see cref="Job"/>.
-		/// </summary>
-		/// <value>The name.</value>
-		public string Name {
+		public override Color Color {
 			get {
-				return Model?.Name;
+				return ViewModel.Color;
 			}
 		}
 
-		/// <summary>
-		/// Gets the progress of the <see cref="Job"/>.
-		/// </summary>
-		/// <value>The progress.</value>
-		public double Progress {
+		public override string Name {
 			get {
-				return Model != null ? Model.Progress : 0;
-			}
-			set {
-				if (Model != null) {
-					Model.Progress = value;
-				}
+				return ViewModel.Name;
 			}
 		}
 
-		/// <summary>
-		/// Gets or sets the state of the <see cref="Job"/>.
-		/// </summary>
-		/// <value>The state.</value>
-		public JobState State {
+		public EventTypeVM ViewModel {
 			get {
-				return Model != null ? Model.State : JobState.None;
+				return viewModel;
 			}
 			set {
-				if (Model != null) {
-					Model.State = value;
-				}
+				viewModel = value;
 			}
+		}
+
+		public void SetViewModel (object viewModel)
+		{
+			ViewModel = (EventTypeVM)viewModel;
 		}
 	}
 }

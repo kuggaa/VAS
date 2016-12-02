@@ -15,30 +15,24 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.GUI;
-using VAS.Core.MVVMC;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 
-namespace VAS.Services.ViewModel
+namespace VAS.Core.ViewModel
 {
 	/// <summary>
-	/// Timeline event ViewModel Generic Base class
+	/// A ViewModel for <see cref="TimelineEvent"/> objects.
 	/// </summary>
-	public class TimelineEventVM<T> : ViewModelBase<T>, IVisible
-		where T : TimelineEvent
+	public class TimelineEventVM : TimeNodeVM, IViewModel<TimelineEvent>
 	{
-		/// <summary>
-		/// Gets or sets the Name of the TimelineEvent.
-		/// </summary>
-		/// <value>The name.</value>
-		public string Name {
+		public virtual new TimelineEvent Model {
 			get {
-				return Model.Name;
+				return (TimelineEvent)base.Model;
 			}
 			set {
-				Model.Name = value;
+				base.Model = value;
 			}
 		}
 
@@ -104,21 +98,28 @@ namespace VAS.Services.ViewModel
 			set;
 		}
 
-		/// <summary>
-		/// Gets or sets a value indicating whether this <see cref="VAS.Services.ViewModel.TimelineEventVM`1"/> is visible.
-		/// </summary>
-		/// <value><c>true</c> if visible; otherwise, <c>false</c>.</value>
-		public virtual bool Visible {
-			get;
-			set;
-		} = true;
-		
 		/// Gets or sets a value indicating whether this <see cref="T:VAS.Services.ViewModel.TimelineEventVM`1"/> has focus.
 		/// </summary>
 		/// <value><c>true</c> if focus; otherwise, <c>false</c>.</value>
 		public bool Focus {
 			get;
 			set;
+		}
+	}
+
+	/// <summary>
+	/// Timeline event ViewModel Generic Base class
+	/// </summary>
+	public class TimelineEventVM<T> : TimelineEventVM, IViewModel<T>
+		where T : TimelineEvent
+	{
+		public virtual new T Model {
+			get {
+				return (T)base.Model;
+			}
+			set {
+				base.Model = value;
+			}
 		}
 	}
 }

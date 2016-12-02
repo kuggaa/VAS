@@ -19,19 +19,18 @@
 using System;
 using System.Collections.Generic;
 using Gtk;
-using VAS;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Filters;
 using VAS.Core.Interfaces;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Drawing.Cairo;
 using VAS.Drawing.Widgets;
 using VAS.UI.Menus;
-using Helpers = VAS.UI.Helpers;
-using LMCommon = VAS.Core.Common;
 using VASDrawing = VAS.Drawing;
+using VAS.Core.ViewModel;
 
 namespace VAS.UI.Component
 {
@@ -39,23 +38,22 @@ namespace VAS.UI.Component
 	/// VAS Timeline.
 	/// </summary>
 	[System.ComponentModel.ToolboxItem (true)]
-	public partial class Timeline : Gtk.Bin
+	public partial class Timeline : Gtk.Bin, IView<IAnalysisViewModel>
 	{
-		protected const uint TIMEOUT_MS = 100;
-		protected PlaysTimeline timeline;
-		protected Timerule timerule;
 		protected TimelineLabels labels;
-		protected double secondsPerPixel;
-		protected uint timeoutID;
-		protected Time currentTime, nextCurrentTime;
 		protected PlaysMenu menu;
-		protected Project project;
-		protected IVideoPlayerController player;
+		const uint TIMEOUT_MS = 100;
+		Timerule timerule;
+		PlaysTimeline timeline;
+		double secondsPerPixel;
+		uint timeoutID;
+		Time currentTime, nextCurrentTime;
+		IAnalysisViewModel viewModel;
 
 		public Timeline ()
 		{
 			this.Build ();
-			Initialization ();
+			Initialize ();
 		}
 
 		~Timeline ()
@@ -74,7 +72,6 @@ namespace VAS.UI.Component
 			}
 			// Unsubscribe events
 			App.Current.EventsBroker.Unsubscribe<PlayerTickEvent> (HandlePlayerTick);
-			Player = null;
 
 			timerule?.Dispose ();
 			timeline?.Dispose ();
@@ -102,15 +99,73 @@ namespace VAS.UI.Component
 			Disposed = true;
 		}
 
-		protected bool Disposed { get; private set; } = false;
+		/// <summary>
+		/// Gets or sets the current time.
+		/// </summary>
+		/// <value>The current time.</value>
+		public Time CurrentTime {
+			set {
+				nextCurrentTime = value;
+			}
+			protected get {
+				return currentTime;
+			}
+		}
 
-		void Initialization ()
+		protected bool Disposed {
+			get;
+			private set;
+		}
+
+		public IAnalysisViewModel ViewModel {
+			get {
+				return viewModel;
+			}
+			set {
+				viewModel = value;
+
+				labels.SetViewModel (viewModel);
+				timeline.SetViewModel (viewModel);
+				timerule.SetViewModel (viewModel);
+
+				if (viewModel == null) {
+					if (timeoutID != 0) {
+						GLib.Source.Remove (timeoutID);
+						timeoutID = 0;
+					}
+					return;
+				}
+
+				if (timeoutID == 0) {
+					timeoutID = GLib.Timeout.Add (TIMEOUT_MS, UpdateTime);
+				}
+				focusscale.Value = 6;
+
+				timeline.ShowMenuEvent += HandleShowMenu;
+				timeline.ShowTimersMenuEvent += HandleShowTimersMenu;
+				QueueDraw ();
+			}
+		}
+
+		VideoPlayerVM Player {
+			get {
+				return ViewModel?.VideoPlayer;
+			}
+		}
+
+		public void SetViewModel (object viewModel)
+		{
+			ViewModel = (IAnalysisViewModel)viewModel;
+		}
+
+		void Initialize ()
 		{
 			timerule = new Timerule (new WidgetWrapper (timerulearea));
 			timerule.CenterPlayheadClicked += HandleFocusClicked;
-			timerule.SeekEvent += HandleTimeruleSeek;
-			timeline = createPlaysTimeline ();
-			labels = createTimelineLabels ();
+			timeline = App.Current.ViewLocator.Retrieve ("PlaysTimelineView") as PlaysTimeline;
+			timeline.SetWidget (new WidgetWrapper (timelinearea));
+			labels = App.Current.ViewLocator.Retrieve ("TimelineLabelsView") as TimelineLabels;
+			labels.SetWidget (new WidgetWrapper (labelsarea));
 
 			focusbuttonimage.Pixbuf = Helpers.Misc.LoadIcon ("longomatch-dash-center-view", Gtk.IconSize.Menu, 0);
 
@@ -144,99 +199,6 @@ namespace VAS.UI.Component
 		}
 
 		/// <summary>
-		/// Gets or sets the current time.
-		/// </summary>
-		/// <value>The current time.</value>
-		public virtual Time CurrentTime {
-			set {
-				nextCurrentTime = value;
-			}
-			protected get {
-				return currentTime;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the player.
-		/// </summary>
-		/// <value>The player.</value>
-		public virtual IVideoPlayerController Player {
-			get {
-				return player;
-			}
-			set {
-				player = value;
-				timerule.Player = player;
-				timeline.Player = player;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the labels area.
-		/// </summary>
-		/// <value>The labels area.</value>
-		public virtual DrawingArea LabelsArea {
-			get {
-				return labelsarea;
-			}
-			set {
-				labelsarea = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the timeline area.
-		/// </summary>
-		/// <value>The timeline area.</value>
-		public virtual DrawingArea TimelineArea {
-			get {
-				return timelinearea;
-			}
-			set {
-				timelinearea = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the focus scale.
-		/// </summary>
-		/// <value>The focus scale.</value>
-		protected HScale FocusScale {
-			get {
-				return focusscale;
-			}
-			set {
-				focusscale = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the left box.
-		/// </summary>
-		/// <value>The left box.</value>
-		protected VBox LeftBox {
-			get {
-				return leftbox;
-			}
-			set {
-				leftbox = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the timerule area.
-		/// </summary>
-		/// <value>The timerule area.</value>
-		protected virtual DrawingArea TimeruleArea {
-			get {
-				return timerulearea;
-			}
-			set {
-				timerulearea = value;
-			}
-		}
-
-		/// <summary>
 		/// Fit this instance.
 		/// </summary>
 		public virtual void Fit ()
@@ -258,116 +220,6 @@ namespace VAS.UI.Component
 		public virtual void ZoomOut ()
 		{
 			focusscale.Adjustment.Value += focusscale.Adjustment.StepIncrement;
-		}
-
-		/// <summary>
-		/// Fits the zoom tot the Camera timeline width.
-		/// </summary>
-		public virtual void FitZoom ()
-		{
-			double width = timeline.GetCameraWidth ();
-			if (Math.Truncate ((double)(TimeruleArea.Allocation.Width)) < Math.Truncate (width)) {
-				while (Math.Truncate ((double)(TimeruleArea.Allocation.Width)) < Math.Truncate (width)
-					   && this.FocusScale.Adjustment.Value < 12) {
-					ZoomOut ();
-					width = timeline.GetCameraWidth ();
-				}
-			} else {
-				while (Math.Truncate ((double)(TimeruleArea.Allocation.Width)) > Math.Truncate (width)
-					   && this.FocusScale.Adjustment.Value > 0) {
-					ZoomIn ();
-					width = timeline.GetCameraWidth ();
-				}
-				ZoomOut ();
-			}
-		}
-
-		/// <summary>
-		/// Creates a PlaysTimeline.
-		/// </summary>
-		/// <returns>The playsTimeline.</returns>
-		protected virtual PlaysTimeline createPlaysTimeline ()
-		{
-			return new PlaysTimeline (new WidgetWrapper (timelinearea), Player);
-		}
-
-		/// <summary>
-		/// Creates the timeline labels.
-		/// </summary>
-		/// <returns>The timeline labels.</returns>
-		protected virtual TimelineLabels createTimelineLabels ()
-		{
-			return new TimelineLabels (new WidgetWrapper (labelsarea));
-		}
-
-
-		/// <summary>
-		/// Sets the project in the timeline.
-		/// </summary>
-		/// <param name="project">Project.</param>
-		/// <param name="filter">Filter.</param>
-		public virtual void SetProject (Project project, EventsFilter filter)
-		{
-			this.project = project;
-			timeline.LoadProject (project, filter);
-			labels.LoadProject (project, filter);
-
-			if (project == null) {
-				if (timeoutID != 0) {
-					GLib.Source.Remove (timeoutID);
-					timeoutID = 0;
-				}
-				return;
-			}
-
-			if (timeoutID == 0) {
-				timeoutID = GLib.Timeout.Add (TIMEOUT_MS, UpdateTime);
-			}
-			focusscale.Value = 6;
-			timerule.Duration = project.FileSet.Duration;
-
-			timeline.ShowMenuEvent += HandleShowMenu;
-			timeline.ShowTimersMenuEvent += HandleShowTimersMenu;
-			QueueDraw ();
-		}
-
-		/// <summary>
-		/// Loads the play.
-		/// </summary>
-		/// <param name="evt">Evt.</param>
-		public virtual void LoadPlay (TimelineEvent evt)
-		{
-			timeline.LoadPlay (evt);
-		}
-
-		/// <summary>
-		/// Adds the play.
-		/// </summary>
-		/// <param name="play">Play.</param>
-		public virtual void AddPlay (TimelineEvent play)
-		{
-			timeline.AddPlay (play);
-			QueueDraw ();
-		}
-
-		/// <summary>
-		/// Removes the plays.
-		/// </summary>
-		/// <param name="plays">Plays.</param>
-		public virtual void RemovePlays (List<TimelineEvent> plays)
-		{
-			timeline.RemovePlays (plays);
-			QueueDraw ();
-		}
-
-		/// <summary>
-		/// Adds the timer node.
-		/// </summary>
-		/// <param name="timer">Timer.</param>
-		/// <param name="tn">Tn.</param>
-		public virtual void AddTimerNode (Timer timer, TimeNode tn)
-		{
-			timeline.AddTimerNode (timer, tn);
 		}
 
 		protected bool UpdateTime ()
@@ -441,7 +293,7 @@ namespace VAS.UI.Component
 
 		protected void HandleShowMenu (List<TimelineEvent> plays, EventType eventType, Time time)
 		{
-			menu.ShowTimelineMenu (project, plays, eventType, time);
+			menu.ShowTimelineMenu (viewModel.Project.Model, plays, eventType, time);
 		}
 
 		protected void HandleShowTimersMenu (List<TimeNode> nodes)
@@ -449,20 +301,14 @@ namespace VAS.UI.Component
 			Menu m = new Gtk.Menu ();
 			MenuItem item = new MenuItem (Catalog.GetString ("Delete"));
 			item.Activated += (object sender, EventArgs e) => {
-				foreach (Timer t in project.Timers) {
+				foreach (Timer t in viewModel.Project.Model.Timers) {
 					t.Nodes.RemoveAll (nodes.Contains);
 				}
-				timeline.RemoveTimers (nodes);
+				//timeline.RemoveTimers (nodes);
 			};
 			m.Add (item);
 			m.ShowAll ();
 			m.Popup ();
-		}
-
-		protected void HandleTimeruleSeek (Time pos, bool accurate, bool synchronous = false, bool throttled = false)
-		{
-			App.Current.EventsBroker.Publish<LoadEventEvent> (new LoadEventEvent ());
-			player.Seek (pos, accurate, synchronous, throttled);
 		}
 
 		void HandlePlayerTick (PlayerTickEvent e)

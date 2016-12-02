@@ -15,50 +15,57 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System.Threading.Tasks;
-using VAS.Core.Events;
+//
+
+using VAS.Core.Common;
+using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
-namespace VAS.Services.ViewModel
+namespace VAS.Core.ViewModel
 {
-	public class ProjectVM<T> : ViewModelBase<T> where T : Project
+	/// <summary>
+	/// ViewModel for PlaylistElements, with an IPlaylistElement as Model.
+	/// </summary>
+	public class PlaylistElementVM : ViewModelBase<IPlaylistElement>
 	{
-
 		/// <summary>
-		/// Gets a value indicating whether the project has been edited.
+		/// Gets the description of the playlist element
 		/// </summary>
-		/// <value><c>true</c> if edited; otherwise, <c>false</c>.</value>
-		public bool Edited {
+		/// <value>The description.</value>
+		public string Description {
 			get {
-				return Model?.IsChanged == true;
+				return Model.Description;
 			}
 		}
 
 		/// <summary>
-		/// Command to export a project.
+		/// Gets a miniature image for the playlist element.
 		/// </summary>
-		public Task<bool> Export ()
-		{
-			return App.Current.EventsBroker.PublishWithReturn (new ExportEvent<T> { Object = Model });
+		/// <value>The miniature.</value>
+		public Image Miniature {
+			get {
+				return Model.Miniature;
+			}
 		}
 
 		/// <summary>
-		/// Command to delete a project.
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.PlaylistElementVM"/> is selected.
 		/// </summary>
-		public Task<bool> Delete ()
-		{
-			return App.Current.EventsBroker.PublishWithReturn (new DeleteEvent<T> { Object = Model });
+		/// <value><c>true</c> if selected; otherwise, <c>false</c>.</value>
+		public bool Selected {
+			get;
+			set;
 		}
 
 		/// <summary>
-		/// Command to save a project.
+		/// Gets the duration of the playlist element.
 		/// </summary>
-		/// <param name="force">If set to <c>true</c> does not prompt to save.</param>
-		public Task<bool> Save (bool force)
-		{
-			return App.Current.EventsBroker.PublishWithReturn (new UpdateEvent<T> { Object = Model, Force = force });
+		/// <value>The duration.</value>
+		public Time Duration {
+			get {
+				return Model.Duration;
+			}
 		}
 	}
 }
-

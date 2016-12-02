@@ -1,5 +1,5 @@
-﻿//
-//  Copyright (C) 2016 Fluendo S.A.
+//
+//  Copyright (C) 2014 Andoni Morales Alastruey <ylatuya@gmail.com>
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,32 +15,41 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
-using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
-using VAS.Core.Store;
+using VAS.Core.ViewModel;
 
-namespace VAS.Services.ViewModel
+namespace VAS.Drawing.CanvasObjects.Timeline
 {
 	/// <summary>
-	/// Event type collection View Models, is a Nested Collection that contains
-	/// a child observable collection of type NestedViewModel
+	/// A view for <see cref="Timer"/> in a timeline row.
 	/// </summary>
-	public class EventTypeCollectionVM<TViewModel, VMChild> : NestedViewModel<TViewModel>
-		where TViewModel : INestedViewModel<VMChild>, new()
+	[View ("TimerTimeNodeView")]
+	public class TimerTimeNodeView : TimeNodeView, ICanvasObjectView<TimeNodeVM>
 	{
-		public EventTypeCollectionVM ()
+		TimeNodeVM viewModel;
+
+		public TimeNodeVM ViewModel {
+			get {
+				return viewModel;
+			}
+			set {
+				viewModel = value;
+			}
+		}
+
+		/// <summary>
+		/// The timer that holds the time node used in this view.
+		/// </summary>
+		/// <value>The timer.</value>
+		public TimerVM Timer {
+			get;
+			set;
+		}
+
+		public void SetViewModel (object viewModel)
 		{
-		}
-
-		public PlaylistCollectionVM Playlists {
-			get;
-			set;
-		}
-
-		public VMChild LoadedEvent {
-			get;
-			set;
+			ViewModel = (TimeNodeVM)viewModel;
 		}
 	}
 }

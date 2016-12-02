@@ -28,8 +28,7 @@ using SImage = Gdk.Pixbuf;
 namespace VAS.Core.Store.Playlists
 {
 	[Serializable]
-	[PropertyChanged.ImplementPropertyChanged]
-	public class PlaylistImage: BindableBase, IPlaylistElement
+	public class PlaylistImage : BindableBase, IPlaylistElement
 	{
 		public PlaylistImage (Image image, Time duration)
 		{

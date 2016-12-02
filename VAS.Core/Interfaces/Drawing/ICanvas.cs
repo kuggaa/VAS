@@ -18,26 +18,24 @@
 using System;
 using VAS.Core.Common;
 using VAS.Core.Handlers.Drawing;
-using VAS.Core.Interfaces.Drawing;
+using VAS.Core.Interfaces.GUI;
+using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.Interfaces.Drawing
 {
-
-	public interface ICanvas: IDisposable
+	public interface ICanvas : IDisposable
 	{
 		void Draw (IContext context, Area area);
 
 		void SetWidget (IWidget widget);
 	}
 
-	public interface ICanvasObject: IDisposable
+	public interface ICanvasObject : IDisposable, IVisible
 	{
 		event CanvasHandler ClickedEvent;
 		event RedrawHandler RedrawEvent;
 
 		void Draw (IDrawingToolkit tk, Area area);
-
-		bool Visible { set; get; }
 
 		string Description { set; get; }
 
@@ -46,16 +44,47 @@ namespace VAS.Core.Interfaces.Drawing
 		void ClickReleased ();
 	}
 
-	public interface ICanvasSelectableObject: ICanvasObject, IMovableObject
+	public interface ICanvasSelectableObject : ICanvasObject, IMovableObject
 	{
 	}
 
-	public interface ICanvasDrawableObject: ICanvasSelectableObject
+	public interface ICanvasDrawableObject : ICanvasSelectableObject
 	{
 		IBlackboardObject IDrawableObject {
 			get;
 			set;
 		}
 	}
+
+	/// <summary>
+	/// Interface for canvas widgets that are a View.
+	/// </summary>
+	public interface ICanvasView : ICanvas, IView
+	{
+	}
+
+	/// <summary>
+	/// Generic Interface for canvas widgets that are a View.
+	/// </summary>
+	public interface ICanvasView<TViewModel> : ICanvasView, IView<TViewModel>
+		where TViewModel : IViewModel
+	{
+	}
+
+	/// <summary>
+	/// Interface for canvas objects that are a View.
+	/// </summary>
+	public interface ICanvasObjectView : ICanvasObject, IView
+	{
+	}
+
+	/// <summary>
+	/// Generic Interface for canvas objects that are a View.
+	/// </summary>
+	public interface ICanvasObjectView<TViewModel> : ICanvasObjectView, IView<TViewModel>
+		where TViewModel : IViewModel
+	{
+	}
+
 }
 

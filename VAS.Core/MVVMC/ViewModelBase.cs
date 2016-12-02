@@ -21,10 +21,8 @@ using System.ComponentModel;
 
 namespace VAS.Core.MVVMC
 {
-	public class ViewModelBase<T>: BindableBase, IViewModel<T> where T: INotifyPropertyChanged
+	public class ViewModelBase<T> : BindableBase, IViewModel<T> where T : INotifyPropertyChanged
 	{
-		T model;
-
 		/// <summary>
 		/// Gets or sets the model used by this ViewModel.
 		/// We disable Foody's equality check since we work sometimes with
@@ -34,23 +32,8 @@ namespace VAS.Core.MVVMC
 		/// <value>The model.</value>
 		[PropertyChanged.DoNotCheckEquality]
 		public virtual T Model {
-			set {
-				if (model != null) {
-					model.PropertyChanged -= ForwardPropertyChanged;
-				}
-				model = value;
-				if (model != null) {
-					model.PropertyChanged += ForwardPropertyChanged;
-				}
-			}
-			get {
-				return model;
-			}
-		}
-
-		protected virtual void ForwardPropertyChanged (object sender, PropertyChangedEventArgs args)
-		{
-			RaisePropertyChanged (args);
+			set;
+			get;
 		}
 	}
 }

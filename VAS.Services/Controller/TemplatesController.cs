@@ -31,6 +31,7 @@ using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Serialization;
+using VAS.Core.ViewModel;
 using VAS.Services.ViewModel;
 
 namespace VAS.Services.Controller

@@ -23,6 +23,7 @@ namespace VAS.Core.MVVMC
 	/// A base class for objects implementing <see cref="IDisposable"/> using Microsoft's recommend pattern.
 	/// Classes inheriting from <see cref="DisposableBase"/> only need to override the Dispose function.
 	/// </summary>
+	[Serializable]
 	public class DisposableBase : IDisposable
 	{
 		~DisposableBase ()

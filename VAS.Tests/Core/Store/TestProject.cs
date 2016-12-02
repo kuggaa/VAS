@@ -118,7 +118,7 @@ namespace VAS.Tests.Core.Store
 		{
 			Utils.ProjectDummy p = CreateProject (false);
 			TimelineEvent evt = p.AddEvent (p.EventTypes [0], new Time (1000), new Time (2000),
-				                    null, null, false);
+									null, null, false);
 			Assert.AreEqual (p, evt.Project);
 
 			Assert.AreEqual (p.Timeline.Count, 0);
@@ -156,13 +156,13 @@ namespace VAS.Tests.Core.Store
 			Assert.AreEqual (p.Timeline [0], p3);
 		}
 
-		[Test ()] 
+		[Test ()]
 		[Ignore ("Not implemented")]
 		public void TestCleanupTimers ()
 		{
 		}
 
-		[Test ()] 
+		[Test ()]
 		[Ignore ("From LongoMatch - DefaultTemplate not available for VAS")]
 		public void TestUpdateEventTypesAndTimers ()
 		{
@@ -197,7 +197,7 @@ namespace VAS.Tests.Core.Store
 			Assert.AreEqual (8, p.EventTypes.Count);
 		}
 
-		[Test ()] 
+		[Test ()]
 		[Ignore ("From LongoMatch - DefaultTemplate not available for VAS")]
 		public void TestEventsByType ()
 		{
@@ -209,13 +209,13 @@ namespace VAS.Tests.Core.Store
 			Assert.AreEqual (1, p.EventsByType (p.EventTypes [6]).Count);
 		}
 
-		[Test ()] 
+		[Test ()]
 		[Ignore ("Not implemented")]
 		public void TestConsolidateDescription ()
 		{
 		}
 
-		[Test ()] 
+		[Test ()]
 		[Ignore ("Not implemented")]
 		public void TestEquals ()
 		{
@@ -227,13 +227,13 @@ namespace VAS.Tests.Core.Store
 			Assert.IsFalse (p1.Equals (p3));
 		}
 
-		[Test ()] 
+		[Test ()]
 		[Ignore ("Not implemented")]
 		public void TestExport ()
 		{
 		}
 
-		[Test ()] 
+		[Test ()]
 		public void TestImport ()
 		{
 			// Arrange
@@ -242,7 +242,7 @@ namespace VAS.Tests.Core.Store
 			string originalPath = Path.Combine ("non-existing-path", Path.GetFileName (videopath));
 
 			Project p = CreateProject ();
-			p.FileSet = new MediaFileSet{ new MediaFile{ FilePath = originalPath } };
+			p.FileSet = new MediaFileSet { new MediaFile { FilePath = originalPath } };
 			Assert.IsFalse (p.FileSet.CheckFiles ());
 
 			Project.Export (p, path);
@@ -270,17 +270,20 @@ namespace VAS.Tests.Core.Store
 			List<Period> syncedPeriods;
 
 			period = new Period ();
-			period.Nodes.Add (new TimeNode { Start = new Time (0),
+			period.Nodes.Add (new TimeNode {
+				Start = new Time (0),
 				Stop = new Time (3000)
 			});
 			p.Periods.Add (period);
 			period = new Period ();
-			period.Nodes.Add (new TimeNode { Start = new Time (3001),
+			period.Nodes.Add (new TimeNode {
+				Start = new Time (3001),
 				Stop = new Time (6000)
 			});
 			p.Periods.Add (period);
 			period = new Period ();
-			period.Nodes.Add (new TimeNode { Start = new Time (6001),
+			period.Nodes.Add (new TimeNode {
+				Start = new Time (6001),
 				Stop = new Time (6500)
 			});
 			p.Periods.Add (period);
@@ -391,7 +394,7 @@ namespace VAS.Tests.Core.Store
 			MediaFile newMediaFileSet = new MediaFile { FilePath = Path.GetRandomFileName () };
 
 			Project p = CreateProject ();
-			p.FileSet = new MediaFileSet{ originalMediaFileSet };
+			p.FileSet = new MediaFileSet { originalMediaFileSet };
 			p.IsChanged = false;
 			p.PropertyChanged += (sender, e) => eventCount++;
 

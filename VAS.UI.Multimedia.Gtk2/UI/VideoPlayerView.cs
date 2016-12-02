@@ -34,9 +34,9 @@ using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
+using VAS.Core.ViewModel;
 using VAS.Drawing.Cairo;
 using VAS.Drawing.Widgets;
-using VAS.Services.ViewModel;
 
 
 namespace VAS.UI
@@ -123,7 +123,7 @@ namespace VAS.UI
 
 		protected override void OnUnrealized ()
 		{
-			playerVM.Stop ();
+			playerVM?.Stop ();
 			base.OnUnrealized ();
 		}
 
@@ -160,7 +160,7 @@ namespace VAS.UI
 				playerVM = value;
 				if (playerVM != null) {
 					playerVM.PropertyChanged += PlayerVMPropertyChanged;
-					playerVM.Mode = PlayerViewOperationMode.Analysis;
+					playerVM.ViewMode = PlayerViewOperationMode.Analysis;
 					playerVM.Step = new Time { TotalSeconds = jumpspinbutton.ValueAsInt };
 					playerVM.ViewPorts = viewPortsBackup;
 					playerVM.SetCamerasConfig (new ObservableCollection<CameraConfig> { new CameraConfig (0) });
@@ -201,7 +201,7 @@ namespace VAS.UI
 
 		protected virtual void ResetGui ()
 		{
-			if (playerVM.Mode != PlayerViewOperationMode.LiveAnalysisReview) {
+			if (playerVM.ViewMode != PlayerViewOperationMode.LiveAnalysisReview) {
 				closebutton.Visible = false;
 			}
 
@@ -418,7 +418,7 @@ namespace VAS.UI
 				playerVM.Volume = previousVLevel;
 
 			if (!ignoreRate) {
-				playerVM.SetRate (val);
+				playerVM.Rate = val;
 
 			}
 		}
@@ -541,7 +541,7 @@ namespace VAS.UI
 		{
 			if (playerVM.PlayElement == null) {
 				DrawingsVisible = false;
-				if (playerVM.Mode != PlayerViewOperationMode.LiveAnalysisReview) {
+				if (playerVM.ViewMode != PlayerViewOperationMode.LiveAnalysisReview) {
 					playerVM.CloseButtonVisible = false;
 				}
 			} else {
@@ -596,7 +596,7 @@ namespace VAS.UI
 			if (propertyName == null || propertyName == "Seekable") {
 				timescale.Sensitive = playerVM.Seekable;
 			}
-			if (propertyName == null || propertyName == "Duration" || propertyName == "CurrentTime") {
+			if (propertyName == null || propertyName == "Duration" || propertyName == "CurrentTime" || propertyName == "PlayerMode") {
 				UpdateTime ();
 			}
 			if (propertyName == null || propertyName == "FrameDrawing") {
@@ -608,13 +608,6 @@ namespace VAS.UI
 			}
 			if (propertyName == null || propertyName == "PlayElement") {
 				HandlePlayElementChanged ();
-			}
-			if (propertyName == null || propertyName == "FileSet") {
-				if (playerVM.FileSet == null || !playerVM.FileSet.Any ()) {
-					playerVM.ControlsSensitive = false;
-				} else {
-					playerVM.ControlsSensitive = true;
-				}
 			}
 		}
 	}

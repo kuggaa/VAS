@@ -30,6 +30,7 @@ using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Interfaces.Plugins;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
+using VAS.Core.ViewModel;
 using VAS.Services.ViewModel;
 
 namespace VAS.Services.Controller

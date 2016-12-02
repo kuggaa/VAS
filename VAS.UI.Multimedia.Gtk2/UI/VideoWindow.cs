@@ -74,14 +74,6 @@ namespace VAS.UI
 
 			MessageVisible = false;
 			messageLabel.Ellipsize = Pango.EllipsizeMode.End;
-
-			App.Current.EventsBroker.Subscribe<ChangeVideoMessageEvent> (HandleChangeVideoMessage);
-		}
-
-		void HandleChangeVideoMessage (ChangeVideoMessageEvent changeVideoMessageEvent)
-		{
-			this.Message = changeVideoMessageEvent.message;
-			this.MessageVisible = changeVideoMessageEvent.message != null && changeVideoMessageEvent.message != String.Empty;
 		}
 
 		public virtual object WindowHandle {

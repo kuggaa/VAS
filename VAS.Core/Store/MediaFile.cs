@@ -27,26 +27,27 @@ using VAS.Core.MVVMC;
 namespace VAS.Core.Store
 {
 	[Serializable]
-	public class MediaFile: BindableBase
+	public class MediaFile : BindableBase
 	{
+
 		public MediaFile ()
 		{
 			Offset = new Time (0);
 		}
 
 		public MediaFile (string filePath,
-		                  long length,
-		                  ushort fps,
-		                  bool hasAudio,
-		                  bool hasVideo,
-		                  string container,
-		                  string videoCodec,
-		                  string audioCodec,
-		                  uint videoWidth,
-		                  uint videoHeight,
-		                  double par,
-		                  Image preview,
-		                  String name)
+						  long length,
+						  ushort fps,
+						  bool hasAudio,
+						  bool hasVideo,
+						  string container,
+						  string videoCodec,
+						  string audioCodec,
+						  uint videoWidth,
+						  uint videoHeight,
+						  double par,
+						  Image preview,
+						  String name) : this ()
 		{
 			FilePath = filePath;
 			Duration = new Time ((int)length);
@@ -60,7 +61,6 @@ namespace VAS.Core.Store
 			Fps = fps;
 			Preview = preview;
 			Par = par;
-			Offset = new Time (0);
 			Name = name;
 		}
 
@@ -115,7 +115,7 @@ namespace VAS.Core.Store
 		/// <value>The display width of the video.</value>
 		public uint DisplayVideoWidth {
 			get {
-				return (uint) (VideoWidth * Par);
+				return (uint)(VideoWidth * Par);
 			}
 		}
 

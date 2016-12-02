@@ -91,7 +91,7 @@ namespace VAS.Tests.Core.Store
 			MediaFileSet mf = new MediaFileSet ();
 			Assert.AreEqual (mf.Duration.MSeconds, 0);
 			mf.Add (new MediaFile { Duration = new Time (2000), Name = "Test asset" });
-			Assert.AreEqual (mf.Duration.MSeconds, 2000); 
+			Assert.AreEqual (mf.Duration.MSeconds, 2000);
 			mf.Replace ("Test asset", new MediaFile { Duration = new Time (2001), Name = "Test asset 2" });
 			Assert.AreEqual (mf.Duration.MSeconds, 2001);
 		}
@@ -114,7 +114,7 @@ namespace VAS.Tests.Core.Store
 			Assert.AreEqual ("path3", mf [2].FilePath);
 
 			mf.Replace ("Test asset 2", new MediaFile ("path4", 34000, 25, true, true, "mp4", "h264",
-				"aac", 320, 240, 1.3, null, "Test asset 4")  { Offset = new Time (4) });
+				"aac", 320, 240, 1.3, null, "Test asset 4") { Offset = new Time (4) });
 
 			Assert.AreEqual (3, mf.Count);
 			Assert.AreEqual ("path1", mf [0].FilePath);
@@ -223,9 +223,6 @@ namespace VAS.Tests.Core.Store
 			MediaFileSet mf = new MediaFileSet ();
 			MediaFileSet mf2 = new MediaFileSet ();
 
-			#warning Nunit's AreEqual doesn't call the Equals method of MediaFileSet
-			Assert.AreEqual (mf, mf2);
-
 			Assert.IsFalse (mf.Equals (mf2));
 		}
 
@@ -235,9 +232,6 @@ namespace VAS.Tests.Core.Store
 			MediaFileSet mf = new MediaFileSet ();
 			MediaFileSet mf2 = new MediaFileSet ();
 			mf2.ID = mf.ID;
-
-			#warning Nunit's AreEqual doesn't call the Equals method of MediaFileSet
-			Assert.AreEqual (mf, mf2);
 
 			Assert.IsTrue (mf.Equals (mf2));
 		}
@@ -270,6 +264,67 @@ namespace VAS.Tests.Core.Store
 			Assert.IsTrue (mfs2.CheckMediaFilesModified (mfs));
 			Assert.AreNotEqual (mfs [0].FilePath, mfs2 [0].FilePath);
 			Assert.AreEqual (mfs.ID, mfs2.ID);
+		}
+
+		[Test]
+		public void TestVisibleRegionRemainsIsNullAfterClear ()
+		{
+			MediaFileSet mfs = new MediaFileSet ();
+			Assert.IsNull (mfs.VisibleRegion);
+
+			mfs.Clear ();
+
+			Assert.IsNull (mfs.VisibleRegion);
+		}
+
+		[Test]
+		public void TestVisibleRegionSetAfterAddingFirstElement ()
+		{
+			MediaFileSet mfs = new MediaFileSet ();
+
+			mfs.Add (new MediaFile {
+				FilePath = "/videos/test.mp4",
+				Duration = new Time (5000),
+			});
+
+			Assert.IsNotNull (mfs.VisibleRegion);
+			Assert.AreEqual (new Time (0), mfs.VisibleRegion.Start);
+			Assert.AreEqual (new Time (5000), mfs.VisibleRegion.Stop);
+		}
+
+		[Test]
+		public void TestVisibleRegionOutOfBounds ()
+		{
+			MediaFileSet mfs = new MediaFileSet ();
+			mfs.Add (new MediaFile {
+				FilePath = "/videos/test.mp4",
+				Duration = new Time (20000),
+			});
+			mfs.VisibleRegion.Start = new Time (7000);
+			mfs.VisibleRegion.Stop = new Time (17000);
+			mfs.Clear ();
+			mfs.Add (new MediaFile {
+				FilePath = "/videos/test.mp4",
+				Duration = new Time (5000),
+			});
+
+			Assert.IsNotNull (mfs.VisibleRegion);
+			Assert.AreEqual (new Time (0), mfs.VisibleRegion.Start);
+			Assert.AreEqual (new Time (5000), mfs.VisibleRegion.Stop);
+		}
+
+		[Test]
+		public void TestChangingStopDoesNotChangeDuration ()
+		{
+			MediaFileSet mfs = new MediaFileSet ();
+			mfs.Add (new MediaFile {
+				FilePath = "/videos/test.mp4",
+				Duration = new Time (20000),
+			});
+			mfs.VisibleRegion.Stop.MSeconds += 100;
+
+			Assert.AreEqual (new Time (20000), mfs.Duration);
+			Assert.IsFalse (mfs.VisibleRegion.Stop == mfs.Duration);
 		}
 	}
 }

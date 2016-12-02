@@ -1,4 +1,4 @@
-﻿//
+//
 //  Copyright (C) 2016 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -15,27 +15,25 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
-using System.Threading.Tasks;
-using VAS.Core.Common;
-using VAS.Core.Interfaces;
-using VAS.Core.Interfaces.MVVMC;
-using VAS.Core.MVVMC;
 
-namespace VAS.Services.ViewModel
+using VAS.Core.Common;
+using VAS.Core.MVVMC;
+using VAS.Core.Store;
+
+namespace VAS.Core.ViewModel
 {
 	/// <summary>
-	/// Generic base class for <see cref="ITemplate"/> ViewModel.
+	/// View model for <see cref="EventType"/> objects.
 	/// </summary>
-	public abstract class TemplateViewModel<T> : ViewModelBase<T>, IViewModel<T> where T : ITemplate<T>
+	public class EventTypeVM : ViewModelBase<EventType>
 	{
 		/// <summary>
-		/// Gets the name of the template.
+		/// Gets or sets the name of the EventType.
 		/// </summary>
 		/// <value>The name.</value>
 		public string Name {
 			get {
-				return Model?.Name;
+				return Model.Name;
 			}
 			set {
 				Model.Name = value;
@@ -43,32 +41,17 @@ namespace VAS.Services.ViewModel
 		}
 
 		/// <summary>
-		/// Gets a value indicating whether the template is editable.
+		/// Gets or sets the color of the event type.
 		/// </summary>
-		/// <value><c>true</c> if editable; otherwise, <c>false</c>.</value>
-		public bool Editable {
+		/// <value>The color.</value>
+		public Color Color {
 			get {
-				return Model?.Static == false;
+				return Model.Color;
 			}
-		}
-
-		/// <summary>
-		/// Gets or sets the icon used for the template.
-		/// </summary>
-		/// <value>The icon.</value>
-		public abstract Image Icon {
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// Gets a value indicating whether the template has been edited.
-		/// </summary>
-		/// <value><c>true</c> if edited; otherwise, <c>false</c>.</value>
-		public bool Edited {
-			get {
-				return Model?.IsChanged == true;
+			set {
+				Model.Color = value;
 			}
 		}
 	}
+
 }

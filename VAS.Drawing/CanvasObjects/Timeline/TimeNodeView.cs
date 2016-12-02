@@ -16,26 +16,25 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
+using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
 	/// <summary>
 	/// Time node object.
 	/// </summary>
-	public class TimeNodeObject : CanvasObject, ICanvasSelectableObject
+	public class TimeNodeView : CanvasObject, ICanvasSelectableObject
 	{
 		protected ISurface needle;
 		protected SelectionPosition movingPos;
 		protected const int MAX_TIME_SPAN = 1000;
 
-		public TimeNodeObject (TimeNode node)
+		public TimeNodeView ()
 		{
-			TimeNode = node;
 			SelectionMode = NodeSelectionMode.All;
 			DraggingMode = NodeDraggingMode.All;
 			LineColor = App.Current.Style.PaletteBackgroundLight;
@@ -57,11 +56,21 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 		}
 
+		public override bool Visible {
+			get {
+				return TimeNode.Visible;
+			}
+#pragma warning disable RECS0029
+			set {
+#pragma warning restore RECS0029
+			}
+		}
+
 		/// <summary>
 		/// Gets or sets the time node.
 		/// </summary>
 		/// <value>The time node.</value>
-		public TimeNode TimeNode {
+		public TimeNodeVM TimeNode {
 			get;
 			set;
 		}
@@ -88,7 +97,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		/// Gets or sets the color of the line.
 		/// </summary>
 		/// <value>The color of the line.</value>
-		public Color LineColor {
+		public virtual Color LineColor {
 			get;
 			set;
 		}
@@ -106,9 +115,9 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		/// Gets or sets the max time.
 		/// </summary>
 		/// <value>The max time.</value>
-		public Time MaxTime {
+		public virtual Time MaxTime {
 			set;
-			protected get;
+			get;
 		}
 
 		/// <summary>
@@ -371,16 +380,5 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		}
 	}
 
-	public class TimerTimeNodeObject : TimeNodeObject
-	{
-		public TimerTimeNodeObject (Timer t, TimeNode tn) : base (tn)
-		{
-			Timer = t;
-		}
 
-		public Timer Timer {
-			get;
-			set;
-		}
-	}
 }
