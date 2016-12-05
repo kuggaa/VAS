@@ -34,7 +34,7 @@ namespace VAS.Services.Controller
 	public class PlaylistController : DisposableBase, IController
 	{
 		PlaylistCollectionVM viewModel;
-		ProjectVM<Project> projectViewModel;
+		ProjectVM projectViewModel;
 
 		public PlaylistController (VideoPlayerVM playerVM)
 		{
@@ -106,7 +106,7 @@ namespace VAS.Services.Controller
 			}
 			this.viewModel = (PlaylistCollectionVM)(viewModel as dynamic);
 			// projectViewModel can be set to null...
-			this.projectViewModel = (viewModel as dynamic) as ProjectVM<Project>;
+			this.projectViewModel = (ProjectVM)(viewModel as dynamic);
 		}
 
 		public IEnumerable<KeyAction> GetDefaultKeyActions ()
