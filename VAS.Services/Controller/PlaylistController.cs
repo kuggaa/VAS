@@ -147,7 +147,9 @@ namespace VAS.Services.Controller
 			if (name != null) {
 				playlist = new Playlist { Name = name };
 				viewModel.Model.Add (playlist);
-				Save (playlist, true);
+				if (projectViewModel == null) {
+					Save (playlist, true);
+				}
 			}
 			return playlist;
 		}
@@ -164,7 +166,9 @@ namespace VAS.Services.Controller
 			foreach (var item in e.PlaylistElements) {
 				e.Playlist.Elements.Add (item);
 			}
-			Save (e.Playlist, true);
+			if (projectViewModel == null) {
+				Save (e.Playlist, true);
+			}
 		}
 
 		protected virtual Task HandleDeletePlaylist (DeletePlaylistEvent e)
