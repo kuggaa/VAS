@@ -128,6 +128,12 @@ namespace VAS.Core
 			try {
 				Log.Debug ("Moving to " + transition + " in modal mode");
 				IScreenState state = destination [transition] ();
+
+				NavigationState lastState = LastState ();
+				if (!await lastState.ScreenState.HideState ()) {
+					return false;
+				}
+
 				bool ok = await state.LoadState (properties);
 				if (ok) {
 					await PushModalState (transition, state, LastState ()?.ScreenState);
@@ -158,10 +164,16 @@ namespace VAS.Core
 				Log.Debug ("Moving Back");
 				if (current != null) {
 					if (!isModal) {
-						return await PopNavigationState ();
+						if (!await PopNavigationState ()) {
+							return false;
+						}
 					} else {
-						return await PopModalState (current);
+						if (!await PopModalState (current)) {
+							return false;
+						}
 					}
+					current = LastState (out isModal);
+					return await current.ScreenState.ShowState ();
 				}
 				return true;
 			} catch (Exception ex) {
