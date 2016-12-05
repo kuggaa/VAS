@@ -32,12 +32,33 @@ namespace VAS.Services.ViewModel
 		public ProjectsManagerVM ()
 		{
 			LoadedProject = new TViewModel ();
+			NewCommand = new Command (New, () => true);
+			OpenCommand = new Command<TViewModel> (Open, (arg) => Selection.Count == 1);
+			DeleteCommand = new Command (Delete, () => Selection.Any ());
 		}
 
 		[PropertyChanged.DoNotNotify]
 		public TViewModel LoadedProject {
 			get;
 			private set;
+		}
+
+		[PropertyChanged.DoNotNotify]
+		public Command NewCommand {
+			get;
+			protected set;
+		}
+
+		[PropertyChanged.DoNotNotify]
+		public Command OpenCommand {
+			get;
+			protected set;
+		}
+
+		[PropertyChanged.DoNotNotify]
+		public Command DeleteCommand {
+			get;
+			protected set;
 		}
 
 		/// <summary>
@@ -90,21 +111,19 @@ namespace VAS.Services.ViewModel
 		/// <summary>
 		/// Command to create a new project.
 		/// </summary>
-		public Task<bool> New ()
+		protected virtual void New ()
 		{
-			return App.Current.EventsBroker.PublishWithReturn (new CreateEvent<TModel> { });
+			App.Current.EventsBroker.Publish (new CreateEvent<TModel> { });
 		}
 
 		/// <summary>
 		/// Command to delete the selected projects.
 		/// </summary>
-		public async virtual Task<bool> Delete ()
+		protected virtual void Delete ()
 		{
-			bool ret = true;
 			foreach (TModel project in Selection.Select (vm => vm.Model).ToList ()) {
-				ret &= await App.Current.EventsBroker.PublishWithReturn (new DeleteEvent<TModel> { Object = project });
+				App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = project });
 			}
-			return ret;
 		}
 
 		/// <summary>
@@ -123,9 +142,9 @@ namespace VAS.Services.ViewModel
 		/// <summary>
 		/// Command to Open a project
 		/// </summary>
-		public Task<bool> Open (TViewModel viewModel)
+		protected virtual void Open (TViewModel viewModel)
 		{
-			return App.Current.EventsBroker.PublishWithReturn (new OpenEvent<TModel> { Object = viewModel.Model });
+			App.Current.EventsBroker.Publish (new OpenEvent<TModel> { Object = viewModel?.Model });
 		}
 	}
 }
