@@ -202,6 +202,9 @@ namespace VAS.Services.Controller
 				ViewModel.ExportSensitive = loadedProject != null;
 				ViewModel.SaveSensitive = false;
 			}
+			//Update commands
+			ViewModel.OpenCommand.EmitCanExecuteChanged ();
+			ViewModel.DeleteCommand.EmitCanExecuteChanged ();
 		}
 
 		async Task<bool> Save (TModel project, bool force)
