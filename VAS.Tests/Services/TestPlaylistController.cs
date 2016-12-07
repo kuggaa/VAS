@@ -17,6 +17,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Moq;
 using NUnit.Framework;
@@ -32,6 +33,30 @@ using VAS.Services.Controller;
 
 namespace VAS.Tests.Services
 {
+
+	public class DummyPlaylistVM : IViewModel
+	{
+		public PlaylistCollectionVM Playlist {
+			get; set;
+		}
+
+		public ProjectVM Project {
+			get; set;
+		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		public static explicit operator PlaylistCollectionVM (DummyPlaylistVM dummy)
+		{
+			return dummy?.Playlist;
+		}
+
+		public static explicit operator ProjectVM (DummyPlaylistVM dummy)
+		{
+			return dummy?.Project;
+		}
+	}
+
 	public class TestPlaylistController
 	{
 		const string name = "name";
@@ -42,6 +67,7 @@ namespace VAS.Tests.Services
 		Mock<IStorageManager> storageManagerMock;
 		Mock<IStorage> storageMock;
 		PlaylistController controller;
+		DummyPlaylistVM dummyVM;
 
 		[TestFixtureSetUp ()]
 		public void FixtureSetup ()
@@ -53,6 +79,7 @@ namespace VAS.Tests.Services
 			storageMock = new Mock<IStorage> ();
 			storageManagerMock.Object.ActiveDB = storageMock.Object;
 			App.Current.DatabaseManager = storageManagerMock.Object;
+			dummyVM = new DummyPlaylistVM ();
 		}
 
 		[SetUp ()]
@@ -66,6 +93,10 @@ namespace VAS.Tests.Services
 			controller.Start ();
 			mockDiaklogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
 													 It.IsAny<object> ())).Returns (AsyncHelpers.Return (name));
+
+
+			dummyVM.Playlist = new PlaylistCollectionVM ();
+			controller.SetViewModel (dummyVM);
 		}
 
 		[TearDown ()]
@@ -77,8 +108,7 @@ namespace VAS.Tests.Services
 		[Test ()]
 		public void TestNewPlaylist ()
 		{
-			PlaylistCollectionVM playlistCollectionVM = new PlaylistCollectionVM ();
-			controller.SetViewModel (playlistCollectionVM);
+			PlaylistCollectionVM playlistCollectionVM = dummyVM.Playlist;
 
 			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
 				new AddPlaylistElementEvent {
@@ -98,8 +128,7 @@ namespace VAS.Tests.Services
 		[Test ()]
 		public void TestAddSamePlaylist ()
 		{
-			PlaylistCollectionVM playlistCollectionVM = new PlaylistCollectionVM ();
-			controller.SetViewModel (playlistCollectionVM);
+			PlaylistCollectionVM playlistCollectionVM = dummyVM.Playlist;
 
 			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
 				new AddPlaylistElementEvent {
@@ -132,8 +161,7 @@ namespace VAS.Tests.Services
 		[Test ()]
 		public void TestAddTwoPlaylist ()
 		{
-			PlaylistCollectionVM playlistCollectionVM = new PlaylistCollectionVM ();
-			controller.SetViewModel (playlistCollectionVM);
+			PlaylistCollectionVM playlistCollectionVM = dummyVM.Playlist;
 
 			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
 				new AddPlaylistElementEvent {
@@ -169,8 +197,7 @@ namespace VAS.Tests.Services
 		[Test ()]
 		public void TestDeletePlaylist ()
 		{
-			PlaylistCollectionVM playlistCollectionVM = new PlaylistCollectionVM ();
-			controller.SetViewModel (playlistCollectionVM);
+			PlaylistCollectionVM playlistCollectionVM = dummyVM.Playlist;
 
 			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
 				new AddPlaylistElementEvent {
