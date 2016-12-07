@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System.ComponentModel;
+using System.Linq;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
@@ -89,6 +90,16 @@ namespace VAS.Core.ViewModel
 			}
 			set {
 				Model.IsStretched = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets the file path.
+		/// </summary>
+		/// <value>The file path.</value>
+		public string FilePath {
+			get {
+				return (Model.FirstOrDefault ()).FilePath;
 			}
 		}
 
