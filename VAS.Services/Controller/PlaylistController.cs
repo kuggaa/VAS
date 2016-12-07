@@ -34,7 +34,7 @@ namespace VAS.Services.Controller
 	public class PlaylistController : DisposableBase, IController
 	{
 		PlaylistCollectionVM viewModel;
-		ProjectVM<Project> projectViewModel;
+		ProjectVM projectViewModel;
 
 		public PlaylistController (VideoPlayerVM playerVM)
 		{
@@ -106,7 +106,7 @@ namespace VAS.Services.Controller
 			}
 			this.viewModel = (PlaylistCollectionVM)(viewModel as dynamic);
 			// projectViewModel can be set to null...
-			this.projectViewModel = (viewModel as dynamic) as ProjectVM<Project>;
+			this.projectViewModel = (ProjectVM)(viewModel as dynamic);
 		}
 
 		public IEnumerable<KeyAction> GetDefaultKeyActions ()
@@ -147,7 +147,9 @@ namespace VAS.Services.Controller
 			if (name != null) {
 				playlist = new Playlist { Name = name };
 				viewModel.Model.Add (playlist);
-				Save (playlist, true);
+				if (projectViewModel == null) {
+					Save (playlist, true);
+				}
 			}
 			return playlist;
 		}
@@ -164,7 +166,9 @@ namespace VAS.Services.Controller
 			foreach (var item in e.PlaylistElements) {
 				e.Playlist.Elements.Add (item);
 			}
-			Save (e.Playlist, true);
+			if (projectViewModel == null) {
+				Save (e.Playlist, true);
+			}
 		}
 
 		protected virtual Task HandleDeletePlaylist (DeletePlaylistEvent e)
