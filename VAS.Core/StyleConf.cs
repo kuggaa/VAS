@@ -339,6 +339,8 @@ namespace VAS.Core.Common
 
 		public int ContainerTightPadding { get; set; }
 
+		public int MainToolbarHeight { get; set; }
+
 		//Fonts
 
 		public string BigScoresFontFamily { get; set; }
