@@ -341,7 +341,7 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		async void HandleSelectionChanged (object sender, PropertyChangedEventArgs e)
+		protected virtual async void HandleSelectionChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName != "Selection") {
 				return;
@@ -374,6 +374,9 @@ namespace VAS.Services.Controller
 			ViewModel.DeleteSensitive = loadedTemplate != null && ViewModel.LoadedTemplate.Editable;
 			ViewModel.ExportSensitive = loadedTemplate != null;
 			ViewModel.SaveSensitive = false;
+
+			//Update commands
+			ViewModel.DeleteCommand.EmitCanExecuteChanged ();
 		}
 
 		async Task HandleChangeName (ChangeNameEvent<TModel> evt)

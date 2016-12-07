@@ -37,12 +37,32 @@ namespace VAS.Services.ViewModel
 		public TemplatesManagerViewModel ()
 		{
 			LoadedTemplate = new TViewModel ();
+			NewCommand = new Command (New, () => true);
+			DeleteCommand = new Command (Delete, () => Selection.Any ());
 		}
 
 		[PropertyChanged.DoNotNotify]
 		public TViewModel LoadedTemplate {
 			get;
 			set;
+		}
+
+		[PropertyChanged.DoNotNotify]
+		public Command NewCommand {
+			get;
+			protected set;
+		}
+
+		[PropertyChanged.DoNotNotify]
+		public Command OpenCommand {
+			get;
+			protected set;
+		}
+
+		[PropertyChanged.DoNotNotify]
+		public Command DeleteCommand {
+			get;
+			protected set;
 		}
 
 		/// <summary>
@@ -95,9 +115,9 @@ namespace VAS.Services.ViewModel
 		/// <summary>
 		/// Command to create a new a template.
 		/// </summary>
-		public Task<bool> New ()
+		protected virtual void New ()
 		{
-			return App.Current.EventsBroker.PublishWithReturn (new CreateEvent<TModel> ());
+			App.Current.EventsBroker.Publish (new CreateEvent<TModel> ());
 		}
 
 		/// <summary>
@@ -111,17 +131,16 @@ namespace VAS.Services.ViewModel
 		/// <summary>
 		/// Command to delete the currently loaded template.
 		/// </summary>
-		public Task<bool> Delete ()
+		protected virtual void Delete ()
 		{
 			if (Selection != null) {
 				ObservableCollection<TModel> objects = new ObservableCollection<TModel>
 					(Selection.Where (x => x.Model != null).Select (x => x.Model));
 				if (objects.Any ()) {
-					return App.Current.EventsBroker.PublishWithReturn (
+					App.Current.EventsBroker.Publish (
 						new DeleteEvent<ObservableCollection<TModel>> { Object = objects });
 				}
 			}
-			return AsyncHelpers.Return (false);
 		}
 
 		/// <summary>
