@@ -66,7 +66,9 @@ namespace VAS.Services.Controller
 				viewModel = value;
 				viewModel.PropertyChanged += HandleSelectionChanged;
 				viewModel.LoadedTemplate.PropertyChanged += HandleTemplateChanged;
-				viewModel.Select (viewModel.Model.FirstOrDefault ());
+				if (viewModel.Selection.Count == 0) {
+					viewModel.Select (viewModel.Model.FirstOrDefault ());
+				}
 			}
 		}
 
@@ -121,7 +123,7 @@ namespace VAS.Services.Controller
 
 		public virtual void SetViewModel (IViewModel viewModel)
 		{
-			ViewModel = (TemplatesManagerViewModel<TModel, TViewModel>)viewModel;
+			ViewModel = (TemplatesManagerViewModel<TModel, TViewModel>)(viewModel as dynamic);
 		}
 
 		public virtual void Start ()
