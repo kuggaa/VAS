@@ -20,6 +20,7 @@ using System.Windows.Input;
 using System.Diagnostics.Contracts;
 using System.Threading;
 using System.Runtime.CompilerServices;
+using VAS.Core.Common;
 
 namespace VAS.Core.MVVMC
 {
@@ -70,6 +71,33 @@ namespace VAS.Core.MVVMC
 					EmitCanExecuteChanged ();
 				}
 			}
+		}
+
+		/// <summary>
+		/// Gets or sets the icon related to that command
+		/// </summary>
+		/// <value>The icon.</value>
+		public Image Icon {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the text related to that command
+		/// </summary>
+		/// <value>The text.</value>
+		public string Text {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the tool tip text related to that command
+		/// </summary>
+		/// <value>The tool tip text.</value>
+		public string ToolTipText {
+			get;
+			set;
 		}
 
 		public bool CanExecute (object parameter)

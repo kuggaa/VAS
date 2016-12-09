@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VAS.Core;
+using VAS.Core.Common;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
