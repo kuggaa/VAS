@@ -36,7 +36,6 @@ using VAS.Services.ViewModel;
 
 namespace VAS.Services.Controller
 {
-
 	/// <summary>
 	/// Base Controller for working with <see cref="ITemplate"/> like dashboards and teams.
 	/// </summary>
@@ -89,6 +88,10 @@ namespace VAS.Services.Controller
 		protected string ConfirmDeleteText { get; set; }
 
 		protected string ConfirmDeleteListText { get; set; }
+
+		protected string ConfirmDeleteChildText { get; set; }
+
+		protected string ConfirmDeleteChildListText { get; set; }
 
 		protected string CouldNotLoadText { get; set; }
 
@@ -166,6 +169,26 @@ namespace VAS.Services.Controller
 		#endregion
 
 		protected abstract bool SaveValidations (TModel model);
+
+		/// <summary>
+		/// Removes the selected children in vm.
+		/// </summary>
+		/// <param name="vm">The selected ViewModel with selected children.</param>
+		protected abstract void RemoveSelectedChildren (TViewModel vm);
+
+		/// <summary>
+		/// Select between ConfirmDeleteChildText fullfiled and ConfirmDeleteChildListText
+		/// </summary>
+		/// <returns>The delete children question.</returns>
+		/// <param name="templates">List of Templates.</param>
+		protected abstract string GetDeleteChildrenQuestion (ObservableCollection<TModel> templates);
+
+		/// <summary>
+		/// Checks if list hasn't children selected
+		/// </summary>
+		/// <returns><c>true</c>, if list has only parents without children selected, <c>false</c> otherwise.</returns>
+		/// <param name="selectedViewModels">Selected view models.</param>
+		protected abstract bool CheckIsOnlyParentList (IEnumerable<TViewModel> selectedViewModels);
 
 		#region Handle Events
 
@@ -294,21 +317,37 @@ namespace VAS.Services.Controller
 		async protected virtual Task HandleDelete (DeleteEvent<ObservableCollection<TModel>> evt)
 		{
 			ObservableCollection<TModel> templates = evt.Object;
+			IEnumerable<Guid> ids = evt.Object.Select (x => x.ID).Intersect (ViewModel.Select (x => x.Model.ID));
+			IEnumerable<TViewModel> selectedViewModels = ViewModel.Selection.Where (x => ids.Contains (x.Model.ID));
 
-			if (templates != null) {
-				string msg = templates.Count () == 1 ?
+			if (templates != null && templates.Any ()) {
+				if (CheckIsOnlyParentList (selectedViewModels)) {
+					string msg = templates.Count () == 1 ?
 							String.Format (ConfirmDeleteText, templates.FirstOrDefault ().Name) : ConfirmDeleteListText;
-				if (await App.Current.Dialogs.QuestionMessage (msg, null)) {
-					foreach (TModel template in templates) {
-						Provider.Delete (template);
+					if (await App.Current.Dialogs.QuestionMessage (msg, null)) {
+						foreach (TModel template in templates) {
+							Provider.Delete (template);
+						}
+						ViewModel.Select (ViewModel.Model.FirstOrDefault ());
+						evt.ReturnValue = true;
 					}
-					viewModel.Select (viewModel.Model.FirstOrDefault ());
-					evt.ReturnValue = true;
+				} else {
+					string msg = GetDeleteChildrenQuestion (templates);
+					if (await App.Current.Dialogs.QuestionMessage (msg, null)) {
+						foreach (var vm in selectedViewModels) {
+							var updateEvent = new UpdateEvent<TModel> ();
+							RemoveSelectedChildren (vm);
+							updateEvent.Object = vm.Model;
+							updateEvent.Force = true;
+							await HandleSave (updateEvent);
+						}
+						evt.ReturnValue = true;
+					}
 				}
 			}
 		}
 
-		async Task HandleSave (UpdateEvent<TModel> evt)
+		async protected Task HandleSave (UpdateEvent<TModel> evt)
 		{
 			TModel template = evt.Object;
 			bool force = evt.Force;

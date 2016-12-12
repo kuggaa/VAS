@@ -15,7 +15,6 @@
 //		along with this program; if not, write to the Free Software
 //		Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -32,7 +31,6 @@ using Point = VAS.Core.Common.Point;
 namespace VAS.UI.Common
 {
 	[System.ComponentModel.ToolboxItem (true)]
-
 	/// <summary>
 	/// Tree view base implementation for MVVM.
 	/// </summary>

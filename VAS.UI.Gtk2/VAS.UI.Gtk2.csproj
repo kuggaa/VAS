@@ -95,6 +95,7 @@
     <Compile Include="UI\TreeView\JobsTreeView.cs" />
     <Compile Include="UI\TreeView\FilterTreeViewBase.cs" />
     <Compile Include="UI\TreeView\StringObject.cs" />
+    <Compile Include="UI\Common\NestedTreeViewBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

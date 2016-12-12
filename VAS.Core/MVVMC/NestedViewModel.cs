@@ -17,7 +17,6 @@
 //
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.MVVMC;
