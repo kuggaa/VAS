@@ -238,6 +238,17 @@ namespace VAS.Tests.Core.Store
 			Assert.IsTrue (evt.IsChanged);
 			evt.IsChanged = false;
 		}
+
+		[Test]
+		public void TestReplaceSameCameraConfigDoesNotEmitEvents ()
+		{
+			int count = 0;
+			var timelineEvent = new TimelineEvent ();
+			timelineEvent.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0), new CameraConfig (2) };
+			timelineEvent.PropertyChanged += (sender, e) => { count++; };
+			timelineEvent.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0), new CameraConfig (2) };
+			Assert.AreEqual (0, count);
+		}
 	}
 }
 

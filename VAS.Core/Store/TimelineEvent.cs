@@ -212,6 +212,7 @@ namespace VAS.Core.Store
 		/// Whether this event is currently playing.
 		/// </summary>
 		[JsonIgnore]
+		[PropertyChanged.DoNotNotifyAttribute]
 		public bool Playing {
 			get;
 			set;
@@ -295,6 +296,9 @@ namespace VAS.Core.Store
 				return camerasConfig;
 			}
 			set {
+				if (value.SequenceEqualSafe (camerasConfig)) {
+					return;
+				}
 				camerasConfig = value;
 				ValidateCameras (camerasConfig);
 			}
