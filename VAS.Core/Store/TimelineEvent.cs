@@ -296,9 +296,6 @@ namespace VAS.Core.Store
 				return camerasConfig;
 			}
 			set {
-				if (value.SequenceEqualSafe (camerasConfig)) {
-					return;
-				}
 				camerasConfig = value;
 				ValidateCameras (camerasConfig);
 			}
