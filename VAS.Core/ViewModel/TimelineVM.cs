@@ -174,6 +174,9 @@ namespace VAS.Core.ViewModel
 
 		void AddTimelineEventVM (TimelineEventVM viewModel)
 		{
+			if (!eventTypeToTimeline.ContainsKey (viewModel.Model.EventType)) {
+				ViewModels.Add (new EventTypeTimelineVM { Model = viewModel.Model.EventType });
+			}
 			eventTypeToTimeline [viewModel.Model.EventType].ViewModels.Add (viewModel);
 		}
 
