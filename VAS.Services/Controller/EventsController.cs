@@ -24,6 +24,7 @@ using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
+using VAS.Services.ViewModel;
 
 namespace VAS.Services.Controller
 {
@@ -35,6 +36,7 @@ namespace VAS.Services.Controller
 		where TViewModel : TimelineEventVM<TModel>, new()
 	{
 		VideoPlayerVM playerVM;
+		TimelineVM viewModel;
 
 		protected override void Dispose (bool disposing)
 		{
@@ -53,6 +55,22 @@ namespace VAS.Services.Controller
 				playerVM = value;
 				if (playerVM != null) {
 					playerVM.PropertyChanged += HandlePlayerVMPropertyChanged;
+				}
+			}
+		}
+
+		public virtual TimelineVM ViewModel {
+			get {
+				return viewModel;
+			}
+			set {
+				if (viewModel != null) {
+					viewModel.Filters.PropertyChanged -= HandlePropertyChanged;
+				}
+				viewModel = value;
+				if (viewModel != null) {
+					HandleFiltersChanged ();
+					viewModel.Filters.PropertyChanged += HandlePropertyChanged;
 				}
 			}
 		}
@@ -85,6 +103,10 @@ namespace VAS.Services.Controller
 
 		#endregion
 
+		protected virtual void HandlePlayerVMPropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+		}
+
 		void HandleOpenEvent (LoadTimelineEvent<TModel> e)
 		{
 			PlayerVM.LoadEvent (e.Object, e.Playing);
@@ -95,8 +117,18 @@ namespace VAS.Services.Controller
 			PlayerVM.LoadEvents (e.Object.OfType<TimelineEvent> ().ToList (), e.Playing);
 		}
 
-		protected virtual void HandlePlayerVMPropertyChanged (object sender, PropertyChangedEventArgs e)
+		void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
+			if (e.PropertyName == "Collection" || e.PropertyName == "Active") {
+				HandleFiltersChanged ();
+			}
+		}
+
+		void HandleFiltersChanged ()
+		{
+			foreach (var eventVM in ViewModel.SelectMany (eventTypeVM => eventTypeVM.ViewModels)) {
+				eventVM.Visible = ViewModel.Filters.Filter (eventVM);
+			}
 		}
 	}
 }
