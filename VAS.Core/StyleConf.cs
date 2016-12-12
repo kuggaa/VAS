@@ -204,12 +204,12 @@ namespace VAS.Core.Common
 		public const string TimelineButtonPrelightTheme = "theme/gtk-2.0/Button/button_tl_p" + IMAGE_EXT;
 
 		//Button Styles
-		public const string ButtonTimeline = "buttontimeline";
-		public const string ButtonNormal = "buttonnormal";
-		public const string ButtonTab = "buttontab";
-		public const string ButtonRATab = "buttonratab";
-		public const string ButtonFocus = "buttonfocus";
-		public const string ButtonDialog = "buttondialog";
+		public const string ButtonTimeline = "ButtonTimeline";
+		public const string ButtonNormal = "ButtonNormal";
+		public const string ButtonTab = "ButtonTab";
+		public const string ButtonRATab = "ButtonRATab";
+		public const string ButtonFocus = "ButtonFocus";
+		public const string ButtonDialog = "ButtonDialog";
 
 		public string Font = "Ubuntu";
 
