@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.ComponentModel;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
@@ -32,6 +33,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		protected ISurface needle;
 		protected SelectionPosition movingPos;
 		protected const int MAX_TIME_SPAN = 1000;
+		TimeNodeVM timeNode;
 
 		public TimeNodeView ()
 		{
@@ -71,8 +73,19 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		/// </summary>
 		/// <value>The time node.</value>
 		public TimeNodeVM TimeNode {
-			get;
-			set;
+			get {
+				return timeNode;
+			}
+
+			set {
+				if (timeNode != null) {
+					timeNode.PropertyChanged -= HandleTimeNodePropertyChanged;
+				}
+				timeNode = value;
+				if (timeNode != null) {
+					timeNode.PropertyChanged += HandleTimeNodePropertyChanged;
+				}
+			}
 		}
 
 		/// <summary>
@@ -377,6 +390,13 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		public double GetWidthPosition ()
 		{
 			return StopX - StartX;
+		}
+
+		void HandleTimeNodePropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "Visible") {
+				ReDraw ();
+			}
 		}
 	}
 
