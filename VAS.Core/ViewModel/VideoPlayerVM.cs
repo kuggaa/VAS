@@ -323,9 +323,6 @@ namespace VAS.Core.ViewModel
 		public void OpenFileSet (MediaFileSetVM fileset, bool play = false)
 		{
 			FileSet = fileset;
-			if (!Compact) {
-				ShowDetachButton = fileset != null && fileset.Any ();
-			}
 			playerController.Open (fileset?.Model, play);
 		}
 
