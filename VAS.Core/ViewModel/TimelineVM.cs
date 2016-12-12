@@ -21,6 +21,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using Newtonsoft.Json;
 using VAS.Core.Common;
+using VAS.Core.Filters;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
@@ -43,6 +44,7 @@ namespace VAS.Core.ViewModel
 
 		public TimelineVM ()
 		{
+			Filters = new AndPredicate<TimelineEventVM> ();
 			eventTypeToTimeline = new Dictionary<EventType, EventTypeTimelineVM> ();
 			ViewModels.CollectionChanged += HandleEventTypesCollectionChanged;
 			FullTimeline = CreateFullTimeline ();
@@ -87,6 +89,17 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		/// <value>The loaded event.</value>
 		public TimelineEventVM LoadedEvent {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Filters to apply to the contained events.
+		/// This AndPredicate typically contains OrPredicates, 
+		/// which in turn contain the actual filters.
+		/// </summary>
+		/// <value>The filters.</value>
+		public AndPredicate<TimelineEventVM> Filters {
 			get;
 			set;
 		}
