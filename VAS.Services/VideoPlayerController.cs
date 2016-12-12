@@ -129,7 +129,7 @@ namespace VAS.Services
 				if (defaultCamerasConfig == null) {
 					defaultCamerasConfig = value;
 				}
-				if (loadedEvent != null) {
+				if (loadedEvent != null && !(loadedEvent.CamerasConfig.SequenceEqualSafe (value))) {
 					loadedEvent.CamerasConfig = new ObservableCollection<CameraConfig> (value);
 				} else if (loadedPlaylistElement is PlaylistPlayElement) {
 					(loadedPlaylistElement as PlaylistPlayElement).CamerasConfig =
