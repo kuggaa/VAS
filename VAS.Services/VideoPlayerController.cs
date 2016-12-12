@@ -188,6 +188,7 @@ namespace VAS.Services
 			}
 			set {
 				player.Volume = value;
+				EmitVolumeChanged (value);
 			}
 		}
 
@@ -961,8 +962,9 @@ namespace VAS.Services
 			}
 		}
 
-		protected virtual void EmitVolumeChanged (float volume)
+		protected virtual void EmitVolumeChanged (double volume)
 		{
+			playerVM.Volume = volume;
 			if (VolumeChangedEvent != null && !disposed) {
 				VolumeChangedEvent (volume);
 			}

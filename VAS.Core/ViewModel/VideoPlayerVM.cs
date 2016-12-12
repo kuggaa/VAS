@@ -69,17 +69,22 @@ namespace VAS.Core.ViewModel
 			set;
 		} = true;
 
-		[PropertyChanged.DoNotNotify]
+		/// <summary>
+		/// Gets or sets the current audio volume.
+		/// This value is only used for display in the view. To change the volume use <see cref="SetVolume"/>
+		/// </summary>
+		/// <value>The new volume.</value>
 		public double Volume {
-			get {
-				return playerController.Volume;
-			}
-			set {
-				playerController.Volume = value;
-			}
+			get;
+			set;
 		}
 
-		public float Rate {
+		/// <summary>
+		/// Gets or sets the current playback rate.
+		/// This value is only used for display in the view. To change the rate use <see cref="SetRate"/>
+		/// </summary>
+		/// <value>The new rate.</value>
+		public double Rate {
 			get;
 			set;
 		}
@@ -399,6 +404,15 @@ namespace VAS.Core.ViewModel
 			);
 		}
 
+		public void SetRate (double rate)
+		{
+			playerController.Rate = rate;
+		}
+
+		public void SetVolume (double volume)
+		{
+			playerController.Volume = volume;
+		}
 		#endregion
 	}
 }
