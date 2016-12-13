@@ -86,6 +86,12 @@ namespace VAS.Core
 					if (!await EmptyStateStack ()) {
 						return false;
 					}
+					if (lastState == home && home.Name != transition) {
+						if (!await lastState.ScreenState.HideState ()) {
+							Log.Debug ("Moving failed because home panel " + lastState.Name + " cannot move.");
+							return false;
+						}
+					}
 				} else if (isModal) {
 					if (!await PopAllModalStates ()) {
 						return false;
