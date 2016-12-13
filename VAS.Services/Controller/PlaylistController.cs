@@ -106,7 +106,9 @@ namespace VAS.Services.Controller
 			}
 			this.viewModel = (PlaylistCollectionVM)(viewModel as dynamic);
 			// projectViewModel can be set to null...
-			this.projectViewModel = (ProjectVM)(viewModel as dynamic);
+			try {
+				this.projectViewModel = (ProjectVM)(viewModel as dynamic);
+			} catch { }
 		}
 
 		public IEnumerable<KeyAction> GetDefaultKeyActions ()
