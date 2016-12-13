@@ -40,6 +40,8 @@ namespace VAS.Core.Interfaces.MVVMC
 	public interface INestedViewModel
 	{
 		INotifyCollectionChanged GetNotifyCollection ();
+
+		INotifyCollectionChanged GetSelectionNotifyCollection ();
 	}
 
 	/// <summary>
