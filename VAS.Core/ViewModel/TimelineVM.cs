@@ -122,6 +122,15 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
+		/// Adds a TimelineEvent
+		/// </summary>
+		/// <param name="timelineEvent">TimelineEvent.</param>
+		public void AddTimelineEvent (TimelineEvent timelineEvent)
+		{
+			FullTimeline.ViewModels.Add (new TimelineEventVM { Model = timelineEvent });
+		}
+
+		/// <summary>
 		/// Creates the timeline view model with all the timeline events.
 		/// </summary>
 		protected virtual CollectionViewModel<TimelineEvent, TimelineEventVM> CreateFullTimeline ()
@@ -184,6 +193,5 @@ namespace VAS.Core.ViewModel
 		{
 			eventTypeToTimeline [viewModel.Model.EventType].ViewModels.Remove (viewModel);
 		}
-
 	}
 }
