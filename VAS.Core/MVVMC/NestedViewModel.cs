@@ -18,6 +18,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.MVVMC;
 
@@ -35,6 +36,7 @@ namespace VAS.Core.MVVMC
 			ViewModels = new RangeObservableCollection<VMChilds> ();
 			Selection = new RangeObservableCollection<VMChilds> ();
 			Selection.CollectionChanged += HandleSelectionChanged;
+			ViewModels.CollectionChanged += HandleViewModelsChanged;
 		}
 
 		/// <summary>
@@ -97,6 +99,15 @@ namespace VAS.Core.MVVMC
 		}
 
 		/// <summary>
+		/// Gets the Interface INotifyCollectionChanged of the Selection collection
+		/// </summary>
+		/// <returns>The Collection as a INotifyCollectionChanged</returns>
+		public INotifyCollectionChanged GetSelectionNotifyCollection ()
+		{
+			return Selection;
+		}
+
+		/// <summary>
 		/// Gets the enumerator of the Child View Models Collection
 		/// </summary>
 		/// <returns>The enumerator.</returns>
@@ -117,6 +128,42 @@ namespace VAS.Core.MVVMC
 		void HandleSelectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
 			RaisePropertyChanged ("Selection");
+		}
+
+		void HandleViewModelsChanged (object sender, NotifyCollectionChangedEventArgs e)
+		{
+			switch (e.Action) {
+			case NotifyCollectionChangedAction.Add:
+				AddNestedChildSelectionChanged (e.NewItems.OfType<INestedViewModel> ());
+				break;
+
+			case NotifyCollectionChangedAction.Remove:
+				RemoveNestedChildSelectionChanged (e.OldItems.OfType<INestedViewModel> ());
+				break;
+
+			case NotifyCollectionChangedAction.Reset:
+				RemoveNestedChildSelectionChanged (ViewModels.OfType<INestedViewModel> ());
+				break;
+
+			case NotifyCollectionChangedAction.Replace:
+				AddNestedChildSelectionChanged (e.NewItems.OfType<INestedViewModel> ());
+				RemoveNestedChildSelectionChanged (e.OldItems.OfType<INestedViewModel> ());
+				break;
+			}
+		}
+
+		void AddNestedChildSelectionChanged (IEnumerable<INestedViewModel> childs)
+		{
+			foreach (var child in childs) {
+				child.GetSelectionNotifyCollection ().CollectionChanged += HandleSelectionChanged;
+			}
+		}
+
+		void RemoveNestedChildSelectionChanged (IEnumerable<INestedViewModel> childs)
+		{
+			foreach (var child in childs) {
+				child.GetSelectionNotifyCollection ().CollectionChanged -= HandleSelectionChanged;
+			}
 		}
 	}
 }
