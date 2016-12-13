@@ -90,5 +90,17 @@ namespace VAS.Tests.Core.ViewModel
 			Assert.AreEqual (4, viewModel.FullTimeline.ViewModels.Count);
 			Assert.AreEqual (1, viewModel.ViewModels.First (e => e.EventTypeVM.Model == eventType).Count ());
 		}
+
+		[Test]
+		public void TestAddTimelineEventWithEmptyEventTypes ()
+		{
+			Project project = Utils.CreateProject (true);
+			TimelineVM viewModel = new TimelineVM ();
+
+			viewModel.FullTimeline.ViewModels.Add (new TimelineEventVM { Model = project.Timeline [0] });
+
+			Assert.AreEqual (project.Timeline [0], viewModel.FullTimeline.ViewModels [0].Model);
+			Assert.IsTrue (viewModel.ViewModels.Count == 1);
+		}
 	}
 }
