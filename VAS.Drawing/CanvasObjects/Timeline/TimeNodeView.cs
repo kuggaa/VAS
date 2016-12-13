@@ -64,8 +64,10 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 #pragma warning disable RECS0029
 			set {
-#pragma warning restore RECS0029
+				// NOTE: there is a Visible property in the parent that we need
+				// but this object's visibility depends on the VM
 			}
+#pragma warning restore RECS0029
 		}
 
 		/// <summary>
