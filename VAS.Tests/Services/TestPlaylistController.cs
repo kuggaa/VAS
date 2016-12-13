@@ -30,6 +30,7 @@ using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
 using VAS.Services.Controller;
+using VAS.Tests;
 
 namespace VAS.Tests.Services
 {
@@ -103,6 +104,13 @@ namespace VAS.Tests.Services
 		public void TearDown ()
 		{
 			controller.Stop ();
+			storageMock.ResetCalls ();
+			storageManagerMock.ResetCalls ();
+			mockGuiToolkit.ResetCalls ();
+
+			App.Current.EventsBroker.Publish (new OpenedProjectEvent {
+				Project = null,
+			});
 		}
 
 		[Test ()]
@@ -214,6 +222,186 @@ namespace VAS.Tests.Services
 			);
 
 			Assert.AreEqual (0, playlistCollectionVM.ViewModels.Count);
+		}
+
+		[Test]
+		public void TestSavePlaylistWithoutProject ()
+		{
+			// Arrange
+			Playlist playlist = new Playlist { Name = "playlist without a project" };
+
+			// Act
+			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
+				new AddPlaylistElementEvent {
+					PlaylistElements = new List<IPlaylistElement> (),
+					Playlist = playlist
+				}
+			);
+
+			// Assert
+			storageMock.Verify (s => s.Store<Playlist> (playlist, true), Times.Once ());
+		}
+
+		[Test]
+		public void TestSavePlaylistInProject ()
+		{
+			// Arrange
+			Project project = Utils.CreateProject (true);
+			Playlist playlist = new Playlist { Name = "playlist in project" };
+			project.Playlists.Add (playlist);
+			App.Current.EventsBroker.Publish (new OpenedProjectEvent {
+				Project = project,
+			});
+
+			// Act
+			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
+				new AddPlaylistElementEvent {
+					PlaylistElements = new List<IPlaylistElement> (),
+					Playlist = playlist
+				}
+			);
+
+			// Assert
+			storageMock.Verify (s => s.Store<Playlist> (playlist, true), Times.Never ());
+		}
+
+		[Test]
+		public void TestSavePlaylistCreateWithoutProject ()
+		{
+			// Arrange
+
+			// Act
+			var ev = new CreateEvent<Playlist> ();
+			App.Current.EventsBroker.Publish (ev);
+
+			// Assert
+			storageMock.Verify (s => s.Store<Playlist> (ev.Object, true), Times.Once ());
+		}
+
+		[Test]
+		public void TestSavePlaylistCreateWithProject ()
+		{
+			// Arrange
+			Project project = Utils.CreateProject (true);
+			App.Current.EventsBroker.Publish (new OpenedProjectEvent {
+				Project = project,
+			});
+
+			// Act
+			var ev = new CreateEvent<Playlist> ();
+			App.Current.EventsBroker.Publish (ev);
+
+			// Assert
+			storageMock.Verify (s => s.Store<Playlist> (ev.Object, true), Times.Never ());
+		}
+
+		[Test]
+		public void TestSavePlaylistMoveElementWithoutProject ()
+		{
+			// Arrange
+			Playlist playlist = new Playlist { Name = "playlist without a project" };
+			var playlist2 = new Playlist { Name = "playlist2 without a project" };
+
+			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
+				new AddPlaylistElementEvent {
+					PlaylistElements = new List<IPlaylistElement> {
+						new PlaylistPlayElement (new TimelineEvent { Name = "event1" }),
+						new PlaylistPlayElement (new TimelineEvent { Name = "event2" }),
+					},
+					Playlist = playlist
+				}
+			);
+
+			mockDialogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
+										 It.IsAny<object> ())).Returns (AsyncHelpers.Return (name + "2"));
+
+			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
+				new AddPlaylistElementEvent {
+					PlaylistElements = new List<IPlaylistElement> (),
+					Playlist = playlist2
+				}
+			);
+
+			Dictionary<PlaylistVM, IEnumerable<PlaylistElementVM>> toRemove = new Dictionary<PlaylistVM, IEnumerable<PlaylistElementVM>> ();
+			toRemove.Add (
+				new PlaylistVM { Model = playlist },
+				new List<PlaylistElementVM> { new PlaylistElementVM { Model = playlist.Elements.First () } }
+			);
+			KeyValuePair<PlaylistVM, IEnumerable<PlaylistElementVM>> toAdd = new KeyValuePair<PlaylistVM, IEnumerable<PlaylistElementVM>> (
+				new PlaylistVM { Model = playlist2 },
+				new List<PlaylistElementVM> { new PlaylistElementVM { Model = playlist.Elements.First () } }
+			);
+
+			storageMock.ResetCalls ();
+
+			// Act
+			var ev = new MoveElementsEvent<PlaylistVM, PlaylistElementVM> {
+				ElementsToRemove = toRemove,
+				ElementsToAdd = toAdd,
+				Index = 0,
+			};
+			App.Current.EventsBroker.Publish (ev);
+
+			// Assert
+			storageMock.Verify (s => s.Store<Playlist> (playlist, true), Times.Once ());
+			storageMock.Verify (s => s.Store<Playlist> (playlist2, true), Times.Once ());
+		}
+
+		[Test]
+		public void TestSavePlaylistMoveElementWithProject ()
+		{
+			// Arrange
+			Project project = Utils.CreateProject (true);
+			App.Current.EventsBroker.Publish (new OpenedProjectEvent {
+				Project = project,
+			});
+
+			Playlist playlist = new Playlist { Name = "playlist without a project" };
+			var playlist2 = new Playlist { Name = "playlist2 without a project" };
+
+			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
+				new AddPlaylistElementEvent {
+					PlaylistElements = new List<IPlaylistElement> {
+						new PlaylistPlayElement (new TimelineEvent { Name = "event1" }),
+						new PlaylistPlayElement (new TimelineEvent { Name = "event2" }),
+					},
+					Playlist = playlist
+				}
+			);
+
+			mockDialogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
+										 It.IsAny<object> ())).Returns (AsyncHelpers.Return (name + "2"));
+
+			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
+				new AddPlaylistElementEvent {
+					PlaylistElements = new List<IPlaylistElement> (),
+					Playlist = playlist2
+				}
+			);
+
+			Dictionary<PlaylistVM, IEnumerable<PlaylistElementVM>> toRemove = new Dictionary<PlaylistVM, IEnumerable<PlaylistElementVM>> ();
+			toRemove.Add (
+				new PlaylistVM { Model = playlist },
+				new List<PlaylistElementVM> { new PlaylistElementVM { Model = playlist.Elements.First () } }
+			);
+			KeyValuePair<PlaylistVM, IEnumerable<PlaylistElementVM>> toAdd = new KeyValuePair<PlaylistVM, IEnumerable<PlaylistElementVM>> (
+				new PlaylistVM { Model = playlist2 },
+				new List<PlaylistElementVM> { new PlaylistElementVM { Model = playlist.Elements.First () } }
+			);
+
+			storageMock.ResetCalls ();
+
+			// Act
+			var ev = new MoveElementsEvent<PlaylistVM, PlaylistElementVM> {
+				ElementsToRemove = toRemove,
+				ElementsToAdd = toAdd,
+				Index = 0,
+			};
+			App.Current.EventsBroker.Publish (ev);
+
+			// Assert
+			storageMock.Verify (s => s.Store<Playlist> (playlist, true), Times.Never ());
+			storageMock.Verify (s => s.Store<Playlist> (playlist2, true), Times.Never ());
 		}
 	}
 }
