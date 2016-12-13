@@ -89,7 +89,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 		}
 
-		public double Scroll {
+		public virtual double Scroll {
 			get;
 			set;
 		}
