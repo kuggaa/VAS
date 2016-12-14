@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.ComponentModel;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
@@ -32,6 +33,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		protected ISurface needle;
 		protected SelectionPosition movingPos;
 		protected const int MAX_TIME_SPAN = 1000;
+		TimeNodeVM timeNode;
 
 		public TimeNodeView ()
 		{
@@ -62,8 +64,10 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 #pragma warning disable RECS0029
 			set {
-#pragma warning restore RECS0029
+				// NOTE: there is a Visible property in the parent that we need
+				// but this object's visibility depends on the VM
 			}
+#pragma warning restore RECS0029
 		}
 
 		/// <summary>
@@ -71,8 +75,19 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		/// </summary>
 		/// <value>The time node.</value>
 		public TimeNodeVM TimeNode {
-			get;
-			set;
+			get {
+				return timeNode;
+			}
+
+			set {
+				if (timeNode != null) {
+					timeNode.PropertyChanged -= HandleTimeNodePropertyChanged;
+				}
+				timeNode = value;
+				if (timeNode != null) {
+					timeNode.PropertyChanged += HandleTimeNodePropertyChanged;
+				}
+			}
 		}
 
 		/// <summary>
@@ -377,6 +392,13 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		public double GetWidthPosition ()
 		{
 			return StopX - StartX;
+		}
+
+		void HandleTimeNodePropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "Visible") {
+				ReDraw ();
+			}
 		}
 	}
 
