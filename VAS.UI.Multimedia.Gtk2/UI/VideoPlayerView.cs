@@ -608,6 +608,7 @@ namespace VAS.UI
 			}
 			if (propertyName == null || propertyName == "PlayElement") {
 				HandlePlayElementChanged ();
+				playerVM.ControlsSensitive = true;
 			}
 		}
 	}
