@@ -29,7 +29,7 @@ namespace VAS.Core
 									Boolean.Parse (Environment.GetEnvironmentVariable (StyleConf.TEST)) :
 									false;
 			if (isTest) {
-				return new Image (10, 10);
+				return null;
 			}
 			return new Image (Utils.GetDataFilePath (name));
 		}
