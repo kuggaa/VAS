@@ -64,7 +64,7 @@ namespace VAS.Tests.Services
 
 		Mock<IGUIToolkit> mockGuiToolkit;
 		VideoPlayerVM videoPlayerVM;
-		Mock<IDialogs> mockDiaklogs;
+		Mock<IDialogs> mockDialogs;
 		Mock<IStorageManager> storageManagerMock;
 		Mock<IStorage> storageMock;
 		PlaylistController controller;
@@ -86,13 +86,13 @@ namespace VAS.Tests.Services
 		[SetUp ()]
 		public void Setup ()
 		{
-			mockDiaklogs = new Mock<IDialogs> ();
+			mockDialogs = new Mock<IDialogs> ();
 			App.Current.GUIToolkit = mockGuiToolkit.Object;
-			App.Current.Dialogs = mockDiaklogs.Object;
+			App.Current.Dialogs = mockDialogs.Object;
 			videoPlayerVM = new VideoPlayerVM (new Mock<IVideoPlayerController> ().Object);
 			controller = new PlaylistController (videoPlayerVM);
 			controller.Start ();
-			mockDiaklogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
+			mockDialogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
 													 It.IsAny<object> ())).Returns (AsyncHelpers.Return (name));
 
 
@@ -125,7 +125,7 @@ namespace VAS.Tests.Services
 				}
 			);
 
-			mockDiaklogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
+			mockDialogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
 				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Once ());
 
 			Assert.AreEqual (1, playlistCollectionVM.ViewModels.Count);
@@ -145,7 +145,7 @@ namespace VAS.Tests.Services
 				}
 			);
 
-			mockDiaklogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
+			mockDialogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
 				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Once ());
 
 			Assert.AreEqual (1, playlistCollectionVM.ViewModels.Count);
@@ -159,7 +159,7 @@ namespace VAS.Tests.Services
 				}
 			);
 
-			mockDiaklogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
+			mockDialogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
 				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Once ());
 
 			Assert.AreEqual (1, playlistCollectionVM.ViewModels.Count);
@@ -178,13 +178,13 @@ namespace VAS.Tests.Services
 				}
 			);
 
-			mockDiaklogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
+			mockDialogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
 				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Once ());
 
 			Assert.AreEqual (1, playlistCollectionVM.ViewModels.Count);
 			Assert.AreEqual (name, playlistCollectionVM.ViewModels [0].Name);
 
-			mockDiaklogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
+			mockDialogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
 										 It.IsAny<object> ())).Returns (AsyncHelpers.Return (name + "2"));
 
 
@@ -195,7 +195,7 @@ namespace VAS.Tests.Services
 				}
 			);
 
-			mockDiaklogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (), It.IsAny<string> (),
+			mockDialogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (), It.IsAny<string> (),
 																		It.IsAny<string> (), It.IsAny<object> ()), Times.Exactly (2));
 
 			Assert.AreEqual (2, playlistCollectionVM.ViewModels.Count);

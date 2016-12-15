@@ -149,7 +149,7 @@ namespace VAS.Tests
 			#endregion
 		}
 
-		//dummy class for abstract validation. Copied ffrom LongoMatch and adapted to VAS.
+		//dummy class for abstract validation. Copied from LongoMatch and adapted to VAS.
 		public class ProjectDummy : Project
 		{
 			#region implemented abstract members of Project
