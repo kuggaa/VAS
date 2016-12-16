@@ -33,6 +33,7 @@ namespace VAS.Tests.Core.ViewModel
 			var model = Utils.CreateProject (true);
 			model.Timers.Add (new Timer ());
 			model.Playlists.Add (new Playlist ());
+			model.Periods.Add (new Period ());
 			var viewModel = new ProjectVM<Project> {
 				Model = model
 			};
@@ -40,6 +41,7 @@ namespace VAS.Tests.Core.ViewModel
 			Assert.AreEqual (1, viewModel.Timers.Count ());
 			Assert.AreEqual (5, viewModel.EventTypes.Count ());
 			Assert.AreEqual (1, model.Playlists.Count ());
+			Assert.AreEqual (1, model.Periods.Count ());
 		}
 
 		[Test]
