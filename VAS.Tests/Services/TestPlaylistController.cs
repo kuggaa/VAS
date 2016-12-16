@@ -30,6 +30,7 @@ using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
 using VAS.Services.Controller;
+using VAS.Tests;
 
 namespace VAS.Tests.Services
 {
@@ -63,7 +64,7 @@ namespace VAS.Tests.Services
 
 		Mock<IGUIToolkit> mockGuiToolkit;
 		VideoPlayerVM videoPlayerVM;
-		Mock<IDialogs> mockDiaklogs;
+		Mock<IDialogs> mockDialogs;
 		Mock<IStorageManager> storageManagerMock;
 		Mock<IStorage> storageMock;
 		PlaylistController controller;
@@ -85,13 +86,13 @@ namespace VAS.Tests.Services
 		[SetUp ()]
 		public void Setup ()
 		{
-			mockDiaklogs = new Mock<IDialogs> ();
+			mockDialogs = new Mock<IDialogs> ();
 			App.Current.GUIToolkit = mockGuiToolkit.Object;
-			App.Current.Dialogs = mockDiaklogs.Object;
+			App.Current.Dialogs = mockDialogs.Object;
 			videoPlayerVM = new VideoPlayerVM (new Mock<IVideoPlayerController> ().Object);
 			controller = new PlaylistController (videoPlayerVM);
 			controller.Start ();
-			mockDiaklogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
+			mockDialogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
 													 It.IsAny<object> ())).Returns (AsyncHelpers.Return (name));
 
 
@@ -103,6 +104,13 @@ namespace VAS.Tests.Services
 		public void TearDown ()
 		{
 			controller.Stop ();
+			storageMock.ResetCalls ();
+			storageManagerMock.ResetCalls ();
+			mockGuiToolkit.ResetCalls ();
+
+			App.Current.EventsBroker.Publish (new OpenedProjectEvent {
+				Project = null,
+			});
 		}
 
 		[Test ()]
@@ -117,7 +125,7 @@ namespace VAS.Tests.Services
 				}
 			);
 
-			mockDiaklogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
+			mockDialogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
 				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Once ());
 
 			Assert.AreEqual (1, playlistCollectionVM.ViewModels.Count);
@@ -137,7 +145,7 @@ namespace VAS.Tests.Services
 				}
 			);
 
-			mockDiaklogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
+			mockDialogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
 				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Once ());
 
 			Assert.AreEqual (1, playlistCollectionVM.ViewModels.Count);
@@ -151,7 +159,7 @@ namespace VAS.Tests.Services
 				}
 			);
 
-			mockDiaklogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
+			mockDialogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
 				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Once ());
 
 			Assert.AreEqual (1, playlistCollectionVM.ViewModels.Count);
@@ -170,13 +178,13 @@ namespace VAS.Tests.Services
 				}
 			);
 
-			mockDiaklogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
+			mockDialogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
 				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Once ());
 
 			Assert.AreEqual (1, playlistCollectionVM.ViewModels.Count);
 			Assert.AreEqual (name, playlistCollectionVM.ViewModels [0].Name);
 
-			mockDiaklogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
+			mockDialogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
 										 It.IsAny<object> ())).Returns (AsyncHelpers.Return (name + "2"));
 
 
@@ -187,7 +195,7 @@ namespace VAS.Tests.Services
 				}
 			);
 
-			mockDiaklogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (), It.IsAny<string> (),
+			mockDialogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (), It.IsAny<string> (),
 																		It.IsAny<string> (), It.IsAny<object> ()), Times.Exactly (2));
 
 			Assert.AreEqual (2, playlistCollectionVM.ViewModels.Count);
@@ -214,6 +222,186 @@ namespace VAS.Tests.Services
 			);
 
 			Assert.AreEqual (0, playlistCollectionVM.ViewModels.Count);
+		}
+
+		[Test]
+		public void TestSavePlaylistWithoutProject ()
+		{
+			// Arrange
+			Playlist playlist = new Playlist { Name = "playlist without a project" };
+
+			// Act
+			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
+				new AddPlaylistElementEvent {
+					PlaylistElements = new List<IPlaylistElement> (),
+					Playlist = playlist
+				}
+			);
+
+			// Assert
+			storageMock.Verify (s => s.Store<Playlist> (playlist, true), Times.Once ());
+		}
+
+		[Test]
+		public void TestSavePlaylistInProject ()
+		{
+			// Arrange
+			Project project = Utils.CreateProject (true);
+			Playlist playlist = new Playlist { Name = "playlist in project" };
+			project.Playlists.Add (playlist);
+			App.Current.EventsBroker.Publish (new OpenedProjectEvent {
+				Project = project,
+			});
+
+			// Act
+			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
+				new AddPlaylistElementEvent {
+					PlaylistElements = new List<IPlaylistElement> (),
+					Playlist = playlist
+				}
+			);
+
+			// Assert
+			storageMock.Verify (s => s.Store<Playlist> (playlist, true), Times.Never ());
+		}
+
+		[Test]
+		public void TestSavePlaylistCreateWithoutProject ()
+		{
+			// Arrange
+
+			// Act
+			var ev = new CreateEvent<Playlist> ();
+			App.Current.EventsBroker.Publish (ev);
+
+			// Assert
+			storageMock.Verify (s => s.Store<Playlist> (ev.Object, true), Times.Once ());
+		}
+
+		[Test]
+		public void TestSavePlaylistCreateWithProject ()
+		{
+			// Arrange
+			Project project = Utils.CreateProject (true);
+			App.Current.EventsBroker.Publish (new OpenedProjectEvent {
+				Project = project,
+			});
+
+			// Act
+			var ev = new CreateEvent<Playlist> ();
+			App.Current.EventsBroker.Publish (ev);
+
+			// Assert
+			storageMock.Verify (s => s.Store<Playlist> (ev.Object, true), Times.Never ());
+		}
+
+		[Test]
+		public void TestSavePlaylistMoveElementWithoutProject ()
+		{
+			// Arrange
+			Playlist playlist = new Playlist { Name = "playlist without a project" };
+			var playlist2 = new Playlist { Name = "playlist2 without a project" };
+
+			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
+				new AddPlaylistElementEvent {
+					PlaylistElements = new List<IPlaylistElement> {
+						new PlaylistPlayElement (new TimelineEvent { Name = "event1" }),
+						new PlaylistPlayElement (new TimelineEvent { Name = "event2" }),
+					},
+					Playlist = playlist
+				}
+			);
+
+			mockDialogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
+										 It.IsAny<object> ())).Returns (AsyncHelpers.Return (name + "2"));
+
+			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
+				new AddPlaylistElementEvent {
+					PlaylistElements = new List<IPlaylistElement> (),
+					Playlist = playlist2
+				}
+			);
+
+			Dictionary<PlaylistVM, IEnumerable<PlaylistElementVM>> toRemove = new Dictionary<PlaylistVM, IEnumerable<PlaylistElementVM>> ();
+			toRemove.Add (
+				new PlaylistVM { Model = playlist },
+				new List<PlaylistElementVM> { new PlaylistElementVM { Model = playlist.Elements.First () } }
+			);
+			KeyValuePair<PlaylistVM, IEnumerable<PlaylistElementVM>> toAdd = new KeyValuePair<PlaylistVM, IEnumerable<PlaylistElementVM>> (
+				new PlaylistVM { Model = playlist2 },
+				new List<PlaylistElementVM> { new PlaylistElementVM { Model = playlist.Elements.First () } }
+			);
+
+			storageMock.ResetCalls ();
+
+			// Act
+			var ev = new MoveElementsEvent<PlaylistVM, PlaylistElementVM> {
+				ElementsToRemove = toRemove,
+				ElementsToAdd = toAdd,
+				Index = 0,
+			};
+			App.Current.EventsBroker.Publish (ev);
+
+			// Assert
+			storageMock.Verify (s => s.Store<Playlist> (playlist, true), Times.Once ());
+			storageMock.Verify (s => s.Store<Playlist> (playlist2, true), Times.Once ());
+		}
+
+		[Test]
+		public void TestSavePlaylistMoveElementWithProject ()
+		{
+			// Arrange
+			Project project = Utils.CreateProject (true);
+			App.Current.EventsBroker.Publish (new OpenedProjectEvent {
+				Project = project,
+			});
+
+			Playlist playlist = new Playlist { Name = "playlist without a project" };
+			var playlist2 = new Playlist { Name = "playlist2 without a project" };
+
+			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
+				new AddPlaylistElementEvent {
+					PlaylistElements = new List<IPlaylistElement> {
+						new PlaylistPlayElement (new TimelineEvent { Name = "event1" }),
+						new PlaylistPlayElement (new TimelineEvent { Name = "event2" }),
+					},
+					Playlist = playlist
+				}
+			);
+
+			mockDialogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
+										 It.IsAny<object> ())).Returns (AsyncHelpers.Return (name + "2"));
+
+			App.Current.EventsBroker.Publish<AddPlaylistElementEvent> (
+				new AddPlaylistElementEvent {
+					PlaylistElements = new List<IPlaylistElement> (),
+					Playlist = playlist2
+				}
+			);
+
+			Dictionary<PlaylistVM, IEnumerable<PlaylistElementVM>> toRemove = new Dictionary<PlaylistVM, IEnumerable<PlaylistElementVM>> ();
+			toRemove.Add (
+				new PlaylistVM { Model = playlist },
+				new List<PlaylistElementVM> { new PlaylistElementVM { Model = playlist.Elements.First () } }
+			);
+			KeyValuePair<PlaylistVM, IEnumerable<PlaylistElementVM>> toAdd = new KeyValuePair<PlaylistVM, IEnumerable<PlaylistElementVM>> (
+				new PlaylistVM { Model = playlist2 },
+				new List<PlaylistElementVM> { new PlaylistElementVM { Model = playlist.Elements.First () } }
+			);
+
+			storageMock.ResetCalls ();
+
+			// Act
+			var ev = new MoveElementsEvent<PlaylistVM, PlaylistElementVM> {
+				ElementsToRemove = toRemove,
+				ElementsToAdd = toAdd,
+				Index = 0,
+			};
+			App.Current.EventsBroker.Publish (ev);
+
+			// Assert
+			storageMock.Verify (s => s.Store<Playlist> (playlist, true), Times.Never ());
+			storageMock.Verify (s => s.Store<Playlist> (playlist2, true), Times.Never ());
 		}
 	}
 }
