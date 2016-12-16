@@ -38,6 +38,7 @@ namespace VAS.Core.ViewModel
 			Playlists = new PlaylistCollectionVM ();
 			EventTypes = new CollectionViewModel<EventType, EventTypeVM> ();
 			FileSet = new MediaFileSetVM ();
+			Periods = new CollectionViewModel<Period, PeriodVM> ();
 		}
 
 		public override Project Model {
@@ -48,6 +49,15 @@ namespace VAS.Core.ViewModel
 				model = value;
 				UpdateModels ();
 			}
+		}
+
+		/// <summary>
+		/// Gets the collection of periods in the project.
+		/// </summary>
+		/// <value>The timers.</value>
+		public CollectionViewModel<Period, PeriodVM> Periods {
+			get;
+			private set;
 		}
 
 		/// <summary>
@@ -124,6 +134,7 @@ namespace VAS.Core.ViewModel
 			Playlists.Model = Model.Playlists;
 			EventTypes.Model = Model.EventTypes;
 			Timers.Model = Model.Timers;
+			Periods.Model = Model.Periods;
 			Timeline.CreateEventTypeTimelines (EventTypes);
 			Timeline.Model = Model.Timeline;
 			FileSet.Model = Model.FileSet;
