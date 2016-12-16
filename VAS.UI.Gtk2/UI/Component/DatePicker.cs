@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using VAS.UI.Helpers;
 
 namespace VAS.UI.UI.Component
 {
@@ -30,7 +31,7 @@ namespace VAS.UI.UI.Component
 		{
 			this.Build ();
 
-			datebuttonimage.Pixbuf = VAS.UI.Helpers.Misc.LoadIcon ("longomatch-calendar", Gtk.IconSize.Button, 0);
+			datebuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-calendar", Gtk.IconSize.Button, 0);
 
 			datebutton.Clicked += HandleClicked;
 			dateentry.Changed += HandleChanged;
@@ -49,6 +50,18 @@ namespace VAS.UI.UI.Component
 			get {
 				return date;
 			}
+		}
+
+		/// <summary>
+		/// Sets the background color for a DatePicker in a particular state.
+		/// It also changes his childs background.
+		/// </summary>
+		/// <param name="state">Type.</param>
+		/// <param name="color">Color.</param>
+		public new void ModifyBg (Gtk.StateType state, Gdk.Color color)
+		{
+			base.ModifyBg (state, color);
+			Child.ModifyBg (state, color);
 		}
 
 		void HandleChanged (object sender, EventArgs e)

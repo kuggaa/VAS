@@ -14,49 +14,48 @@ namespace VAS.UI.UI.Component
 
 		private global::Gtk.Image datebuttonimage;
 
-		protected virtual void Build()
+		protected virtual void Build ()
 		{
-			global::Stetic.Gui.Initialize(this);
+			global::Stetic.Gui.Initialize (this);
 			// Widget VAS.UI.UI.Component.DatePicker
-			global::Stetic.BinContainer.Attach(this);
+			global::Stetic.BinContainer.Attach (this);
 			this.Name = "VAS.UI.UI.Component.DatePicker";
 			// Container child VAS.UI.UI.Component.DatePicker.Gtk.Container+ContainerChild
-			this.dateentryeventbox = new global::Gtk.EventBox();
+			this.dateentryeventbox = new global::Gtk.EventBox ();
 			this.dateentryeventbox.Name = "dateentryeventbox";
 			// Container child dateentryeventbox.Gtk.Container+ContainerChild
-			this.hbox2 = new global::Gtk.HBox();
+			this.hbox2 = new global::Gtk.HBox ();
 			this.hbox2.Name = "hbox2";
 			this.hbox2.BorderWidth = ((uint)(2));
 			// Container child hbox2.Gtk.Box+BoxChild
-			this.dateentry = new global::Gtk.Entry();
+			this.dateentry = new global::Gtk.Entry ();
 			this.dateentry.CanFocus = true;
 			this.dateentry.Name = "dateentry";
 			this.dateentry.IsEditable = false;
 			this.dateentry.HasFrame = false;
 			this.dateentry.InvisibleChar = '•';
-			this.hbox2.Add(this.dateentry);
-			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.dateentry]));
+			this.hbox2.Add (this.dateentry);
+			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.dateentry]));
 			w1.Position = 0;
 			// Container child hbox2.Gtk.Box+BoxChild
-			this.datebutton = new global::Gtk.Button();
+			this.datebutton = new global::Gtk.Button ();
 			this.datebutton.CanFocus = true;
 			this.datebutton.Name = "datebutton";
 			// Container child datebutton.Gtk.Container+ContainerChild
-			this.datebuttonimage = new global::Gtk.Image();
+			this.datebuttonimage = new global::Gtk.Image ();
 			this.datebuttonimage.Name = "datebuttonimage";
-			this.datebutton.Add(this.datebuttonimage);
-			this.hbox2.Add(this.datebutton);
-			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.datebutton]));
+			this.datebutton.Add (this.datebuttonimage);
+			this.hbox2.Add (this.datebutton);
+			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.datebutton]));
 			w3.Position = 1;
 			w3.Expand = false;
 			w3.Fill = false;
-			this.dateentryeventbox.Add(this.hbox2);
-			this.Add(this.dateentryeventbox);
-			if ((this.Child != null))
-			{
-				this.Child.ShowAll();
+			this.dateentryeventbox.Add (this.hbox2);
+			this.Add (this.dateentryeventbox);
+			if ((this.Child != null)) {
+				this.Child.ShowAll ();
 			}
-			this.Hide();
+			this.Hide ();
 		}
 	}
 }
