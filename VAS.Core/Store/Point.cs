@@ -22,9 +22,9 @@ using VAS.Core.MVVMC;
 
 namespace VAS.Core.Common
 {
-	
+
 	[Serializable]
-	public class Point: BindableBase
+	public class Point : BindableBase
 	{
 
 		public Point (double x, double y)
@@ -76,6 +76,32 @@ namespace VAS.Core.Common
 				return false;
 
 			return p.X == X && p.Y == Y;
+		}
+
+		/// <summary>
+		/// Determinates if the point is inside the given area.
+		/// </summary>
+		/// <returns><c>true</c>, if is inside area, <c>false</c> otherwise.</returns>
+		/// <param name="area">Area.</param>
+		public bool IsInsideArea (Area area)
+		{
+			return IsInsideArea (area.Start, area.Width, area.Height);
+		}
+
+		/// <summary>
+		/// Determinates if the point is inside the area determinated by point, width and height.
+		/// </summary>
+		/// <returns><c>true</c>, if is inside area, <c>false</c> otherwise.</returns>
+		/// <param name="p">Start point.</param>
+		/// <param name="width">Width.</param>
+		/// <param name="height">Height.</param>
+		public bool IsInsideArea (Point p, double width, double height)
+		{
+			if (this.X > p.X && this.X < p.X + width &&
+				this.Y > p.Y && this.Y < p.Y + height) {
+				return true;
+			}
+			return false;
 		}
 
 		public static bool operator == (Point p1, Point p2)
