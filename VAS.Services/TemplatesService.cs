@@ -15,7 +15,7 @@ using VAS.DB;
 namespace VAS.Services
 {
 	public class TemplatesProvider<T> : ITemplateProvider<T>
-		where T : ITemplate<T>
+		where T : ITemplate
 	{
 		public event NotifyCollectionChangedEventHandler CollectionChanged;
 
@@ -120,7 +120,7 @@ namespace VAS.Services
 			CheckInvalidChars (newName);
 			Log.Information (String.Format ("Copying template {0} to {1}", template.Name, newName));
 
-			template = template.Copy (newName);
+			template = (T)template.Copy (newName);
 			Add (template);
 			return template;
 		}
