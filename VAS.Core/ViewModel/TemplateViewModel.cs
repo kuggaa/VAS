@@ -15,18 +15,21 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
+using VAS.Core.Store;
 
 namespace VAS.Core.ViewModel
 {
 	/// <summary>
 	/// Generic base class for <see cref="ITemplate"/> ViewModel.
 	/// </summary>
-	public abstract class TemplateViewModel<T> : ViewModelBase<T>, IViewModel<T> where T : ITemplate<T>
+	public abstract class TemplateViewModel<T> : ViewModelBase<T>, IViewModel<T> where T : ITemplate
 	{
 		/// <summary>
 		/// Gets the name of the template.
@@ -69,5 +72,91 @@ namespace VAS.Core.ViewModel
 				return Model?.IsChanged == true;
 			}
 		}
+	}
+
+	public abstract class TemplateViewModel<TModel, TChildModel, TChildViewModel> : TemplateViewModel<TModel>, INestedViewModel<TChildViewModel>
+		where TModel : ITemplate<TChildModel>
+		where TChildViewModel : IViewModel<TChildModel>, new()
+		where TChildModel : BindableBase
+	{
+
+		public TemplateViewModel ()
+		{
+			Selection = new RangeObservableCollection<TChildViewModel> ();
+			SubViewModel = new CollectionViewModel<TChildModel, TChildViewModel> ();
+		}
+
+		public override TModel Model {
+			get {
+				return base.Model;
+			}
+			set {
+				base.Model = value;
+				SubViewModel.Model = Model.List;
+			}
+		}
+
+		public CollectionViewModel<TChildModel, TChildViewModel> SubViewModel {
+			get;
+			set;
+		}
+
+		#region Implement INestedViewModel
+
+		/// <summary>
+		/// Gets the selection.
+		/// </summary>
+		/// <value>The selection.</value>
+		public RangeObservableCollection<TChildViewModel> Selection {
+			get;
+			protected set;
+		}
+
+		/// <summary>
+		/// Gets the enumerator of the Child View Models Collection
+		/// </summary>
+		/// <returns>The enumerator.</returns>
+		public IEnumerator<TChildViewModel> GetEnumerator ()
+		{
+			return ViewModels.GetEnumerator ();
+		}
+
+		/// <summary>
+		/// Gets the enumerator of the Child View Models Collection
+		/// </summary>
+		/// <returns>The enumerator.</returns>
+		IEnumerator IEnumerable.GetEnumerator ()
+		{
+			return ViewModels.GetEnumerator ();
+		}
+
+		/// Gets the Interface INotifyCollectionChanged of the Child ViewModels
+		/// </summary>
+		/// <returns>The Collection as a INotifyCollectionChanged</returns>
+		public INotifyCollectionChanged GetNotifyCollection ()
+		{
+			return ViewModels;
+		}
+
+		/// <summary>
+		/// Gets the collection of child ViewModel
+		/// </summary>
+		/// <value>The ViewModels collection.</value>
+		public RangeObservableCollection<TChildViewModel> ViewModels {
+			get {
+				return SubViewModel.ViewModels;
+			}
+		}
+
+		/// <summary>
+		/// Replaces the Selection with the provided one
+		/// </summary>
+		/// <param name="selection">Selection.</param>
+		public void SelectionReplace (IEnumerable<TChildViewModel> selection)
+		{
+			Selection.Replace (selection);
+		}
+
+		#endregion
 	}
 }

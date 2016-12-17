@@ -18,6 +18,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using VAS.Core.Common;
 
 namespace VAS.Core.Interfaces
 {
@@ -29,11 +30,12 @@ namespace VAS.Core.Interfaces
 
 		int Version { get; set; }
 
+		ITemplate Copy (string newName);
 	}
 
-	public interface ITemplate<T> : ITemplate
+	public interface ITemplate<TChild> : ITemplate
 	{
-		T Copy (string newName);
+		RangeObservableCollection<TChild> List { get; }
 	}
 
 	public interface ITemplateProvider

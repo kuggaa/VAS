@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using Newtonsoft.Json;
@@ -37,7 +36,7 @@ namespace VAS.Core.Store.Templates
 	/// in a grid to code events in a the game's timeline.
 	/// </summary>
 	[Serializable]
-	abstract public class Dashboard: StorableBase, ITemplate<Dashboard>, IDisposable
+	abstract public class Dashboard : StorableBase, ITemplate<DashboardButton>, IDisposable
 	{
 
 		public const int CURRENT_VERSION = 1;
@@ -57,18 +56,21 @@ namespace VAS.Core.Store.Templates
 				/* Ingore for unit tests */
 			}
 			ID = Guid.NewGuid ();
-			List = new ObservableCollection<DashboardButton> ();
+			List = new RangeObservableCollection<DashboardButton> ();
 			GamePeriods = new ObservableCollection<string> { "1", "2" };
 			Version = Constants.DB_VERSION;
 		}
 
-		public void Dispose ()
+		protected override void Dispose (bool disposing)
 		{
-			FieldBackground?.Dispose ();
-			HalfFieldBackground?.Dispose ();
-			GoalBackground?.Dispose ();
-			foreach (var button in List) {
-				button.BackgroundImage?.Dispose ();
+			base.Dispose (disposing);
+			if (disposing) {
+				FieldBackground?.Dispose ();
+				HalfFieldBackground?.Dispose ();
+				GoalBackground?.Dispose ();
+				foreach (var button in List) {
+					button.BackgroundImage?.Dispose ();
+				}
 			}
 		}
 
@@ -97,7 +99,7 @@ namespace VAS.Core.Store.Templates
 		/// <summary>
 		/// A list with all the buttons in this dashboard
 		/// </summary>
-		public ObservableCollection<DashboardButton> List {
+		public RangeObservableCollection<DashboardButton> List {
 			get;
 			set;
 		}
@@ -214,7 +216,7 @@ namespace VAS.Core.Store.Templates
 		/// <summary>
 		/// Creates a deep copy of this dashboard
 		/// </summary>
-		public Dashboard Copy (string newName)
+		public virtual ITemplate Copy (string newName)
 		{
 			Load ();
 			Dashboard newDashboard = this.Clone ();
@@ -311,16 +313,16 @@ namespace VAS.Core.Store.Templates
 			AnalysisEventType evtype;
 			Color c = StyleConf.ButtonEventColor;
 			HotKey h = new HotKey ();
-			
+
 			evtype = new AnalysisEventType {
 				Name = "Event Type " + index,
 				SortMethod = SortMethodType.SortByStartTime,
 				Color = c
 			};
 
-			button = new  AnalysisEventButton {
+			button = new AnalysisEventButton {
 				EventType = evtype,
-				Start = new Time{ TotalSeconds = 10 },
+				Start = new Time { TotalSeconds = 10 },
 				Stop = new Time { TotalSeconds = 10 },
 				HotKey = h,
 				/* Leave the first row for the timers and score */

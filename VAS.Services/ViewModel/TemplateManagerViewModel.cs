@@ -24,15 +24,19 @@ using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
 using VAS.Core;
 using VAS.Core.ViewModel;
+using VAS.Core.Store;
+using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Services.ViewModel
 {
 	/// <summary>
 	/// Generic base class ViewModel for a templates manager View, like the Dashboards Manager or the Teams Manager
 	/// </summary>
-	public class TemplatesManagerViewModel<TModel, TViewModel> : CollectionViewModel<TModel, TViewModel>
-		where TModel : ITemplate<TModel>
-		where TViewModel : TemplateViewModel<TModel>, new()
+	public class TemplatesManagerViewModel<TModel, TViewModel, TChildModel, TChildViewModel> : CollectionViewModel<TModel, TViewModel>
+		where TModel : StorableBase, ITemplate<TChildModel>, new()
+		where TViewModel : TemplateViewModel<TModel, TChildModel, TChildViewModel>, new()
+		where TChildModel : BindableBase
+		where TChildViewModel : IViewModel<TChildModel>, new()
 	{
 		public TemplatesManagerViewModel ()
 		{
