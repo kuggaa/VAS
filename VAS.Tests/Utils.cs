@@ -102,6 +102,23 @@ namespace VAS.Tests
 		}
 	}
 
+	public class DummyTeam : Team<Utils.PlayerDummy>
+	{
+	}
+
+	public class DummyPlayerVM : ViewModelBase<Utils.PlayerDummy>
+	{
+	}
+
+	public class DummyTeamVM : TemplateViewModel<DummyTeam, Utils.PlayerDummy, DummyPlayerVM>
+	{
+		public override Image Icon {
+			get;
+			set;
+		}
+	}
+
+
 	public static class Utils
 	{
 		public class PlayerDummy : Player

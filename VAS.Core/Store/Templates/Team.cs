@@ -16,25 +16,23 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.Serialization;
+using VAS.Core.MVVMC;
 
 namespace VAS.Core.Store.Templates
 {
 	[Serializable]
-	public class Team : StorableBase, IDisposable, ITemplate<Team>
+	public abstract class Team : StorableBase, IDisposable, ITemplate
 	{
 		public const int CURRENT_VERSION = 1;
 
 		public Team ()
 		{
 			ID = Guid.NewGuid ();
-			List = new ObservableCollection<Player> ();
 			Version = Constants.DB_VERSION;
 		}
 		protected override void Dispose (bool disposing)
@@ -43,9 +41,6 @@ namespace VAS.Core.Store.Templates
 				return;
 			if (disposing) {
 				Shield?.Dispose ();
-				foreach (Player p in List) {
-					p.Dispose ();
-				}
 			}
 			base.Dispose (disposing);
 		}
@@ -82,39 +77,53 @@ namespace VAS.Core.Store.Templates
 			set;
 		}
 
-		public ObservableCollection<Player> List {
-			get;
-			set;
-		}
-
 		[PropertyPreload]
 		public Image Shield {
 			get;
 			set;
 		}
 
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		protected bool Disposed {
+		/// <summary>
+		/// Creates a deep copy of this team with new ID's for each player
+		/// </summary>
+		public abstract ITemplate Copy (string newName);
+	}
+
+	public class Team<TPlayer> : Team, ITemplate<TPlayer>
+		where TPlayer : StorableBase
+	{
+		public Team ()
+		{
+			List = new RangeObservableCollection<TPlayer> ();
+		}
+
+		protected override void Dispose (bool disposing)
+		{
+			base.Dispose (disposing);
+			foreach (TPlayer p in List) {
+				p.Dispose ();
+			}
+		}
+
+		public RangeObservableCollection<TPlayer> List {
 			get;
-			private set;
+			set;
 		}
 
 		/// <summary>
 		/// Creates a deep copy of this team with new ID's for each player
 		/// </summary>
-		public Team Copy (string newName)
+		public override ITemplate Copy (string newName)
 		{
 			Load ();
-			Team newTeam = this.Clone ();
+			ITemplate<TPlayer> newTeam = this.Clone ();
 			newTeam.ID = Guid.NewGuid ();
 			newTeam.DocumentID = null;
 			newTeam.Name = newName;
-			foreach (Player player in newTeam.List) {
+			foreach (TPlayer player in newTeam.List) {
 				player.ID = Guid.NewGuid ();
 			}
 			return newTeam;
 		}
 	}
 }
-
