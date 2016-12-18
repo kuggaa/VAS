@@ -63,6 +63,9 @@ namespace VAS.Core.Store.Templates
 
 		protected override void Dispose (bool disposing)
 		{
+			if (Disposed) {
+				return;
+			}
 			base.Dispose (disposing);
 			if (disposing) {
 				FieldBackground?.Dispose ();
@@ -99,9 +102,10 @@ namespace VAS.Core.Store.Templates
 		/// <summary>
 		/// A list with all the buttons in this dashboard
 		/// </summary>
+		[JsonProperty]
 		public RangeObservableCollection<DashboardButton> List {
 			get;
-			set;
+			protected set;
 		}
 
 		/// <summary>
