@@ -21,7 +21,6 @@ using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.Serialization;
-using VAS.Core.MVVMC;
 
 namespace VAS.Core.Store.Templates
 {
@@ -39,10 +38,10 @@ namespace VAS.Core.Store.Templates
 		{
 			if (Disposed)
 				return;
+			base.Dispose (disposing);
 			if (disposing) {
 				Shield?.Dispose ();
 			}
-			base.Dispose (disposing);
 		}
 
 		/// <summary>
@@ -99,15 +98,19 @@ namespace VAS.Core.Store.Templates
 
 		protected override void Dispose (bool disposing)
 		{
+			if (Disposed) {
+				return;
+			}
 			base.Dispose (disposing);
 			foreach (TPlayer p in List) {
 				p.Dispose ();
 			}
 		}
 
+		[JsonProperty]
 		public RangeObservableCollection<TPlayer> List {
 			get;
-			set;
+			protected set;
 		}
 
 		/// <summary>

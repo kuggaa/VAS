@@ -26,7 +26,7 @@ using VAS.Core.MVVMC;
 namespace VAS.Core.Store
 {
 	[Serializable]
-	public class StorableBase: BindableBase, IStorable
+	public class StorableBase : BindableBase, IStorable
 	{
 		[NonSerialized]
 		IStorage storage;
@@ -111,7 +111,7 @@ namespace VAS.Core.Store
 
 		protected virtual void CheckIsLoaded ()
 		{
-			if (!IsLoaded && !IsLoading) {
+			if (!IsLoaded && !IsLoading && !Disposed) {
 				IsLoading = true;
 				if (Storage == null) {
 					throw new StorageException ("Storage not set in preloaded object");
