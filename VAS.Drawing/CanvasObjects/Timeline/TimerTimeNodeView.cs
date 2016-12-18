@@ -27,14 +27,12 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 	[View ("TimerTimeNodeView")]
 	public class TimerTimeNodeView : TimeNodeView, ICanvasObjectView<TimeNodeVM>
 	{
-		TimeNodeVM viewModel;
-
 		public TimeNodeVM ViewModel {
 			get {
-				return viewModel;
+				return TimeNode;
 			}
 			set {
-				viewModel = value;
+				TimeNode = value;
 			}
 		}
 

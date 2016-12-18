@@ -16,8 +16,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 
+using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
@@ -25,26 +25,25 @@ using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
+	/// <summary>
+	/// A timeline that renders project timers and allows interacting with them.
+	/// </summary>
 	[View ("TimerTimelineView")]
-	public class TimerTimelineView : TimelineView, ICanvasObjectView<NestedViewModel<TimerVM>>
+	public class TimerTimelineView : TimelineView, ICanvasObjectView<TimerVM>
 	{
-		NestedViewModel<TimerVM> viewModel;
+		TimerVM viewModel;
+		Dictionary<TimeNodeVM, TimeNodeView> viewModelToView;
+
+		public TimerTimelineView ()
+		{
+			viewModelToView = new Dictionary<TimeNodeVM, TimeNodeView> ();
+		}
 
 		/// <summary>
 		///  Color used to drag the nodes in the timeline
 		/// </summary>
 		/// <value>The color of the line.</value>
 		public Color LineColor {
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// Gets or sets a value indicating whether the nodes in the this
-		/// <see cref="T:VAS.Drawing.CanvasObjects.Timeline.TimerTimelineView"/> will be rendered with just a line.
-		/// </summary>
-		/// <value><c>true</c> if show line; otherwise, <c>false</c>.</value>
-		public bool ShowLine {
 			get;
 			set;
 		}
@@ -68,55 +67,33 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			set;
 		}
 
-		public NestedViewModel<TimerVM> ViewModel {
+		public TimerVM ViewModel {
 			get {
 				return viewModel;
 			}
 			set {
 				if (viewModel != null) {
-					viewModel.ViewModels.CollectionChanged -= HandleTimersCollectionChanged;
+					viewModel.GetNotifyCollection ().CollectionChanged -= HandleTimerCollectionChanged;
 				}
 				viewModel = value;
+				ClearObjects ();
 				if (viewModel != null) {
-					viewModel.ViewModels.CollectionChanged += HandleTimersCollectionChanged;
+					viewModel.GetNotifyCollection ().CollectionChanged += HandleTimerCollectionChanged;
+					Reload ();
 				}
-				ReloadPeriods ();
 			}
 		}
 
 		public void SetViewModel (object viewModel)
 		{
-			ViewModel = (NestedViewModel<TimerVM>)viewModel;
+			ViewModel = (TimerVM)viewModel;
 		}
 
-		protected override void DrawBackground (IDrawingToolkit tk, Area area)
-		{
-			base.DrawBackground (tk, area);
-
-			if (ShowLine) {
-				// We want the background line and overlay to use the same starting point although they have different sizes.
-				double linepos = OffsetY + Height / 2 + StyleConf.TimelineLineSize / 2;
-				tk.FillColor = App.Current.Style.PaletteBackgroundDark;
-				tk.StrokeColor = App.Current.Style.PaletteBackgroundDark;
-				tk.LineWidth = StyleConf.TimelineBackgroundLineSize;
-				tk.DrawLine (new Point (0, linepos),
-					new Point (Width, linepos));
-			}
-		}
-
-		void ReloadPeriods ()
-		{
-			ClearObjects ();
-			foreach (TimerVM t in viewModel) {
-				AddTimer (t, false);
-			}
-		}
-
-		void AddTimeNode (TimeNodeVM timeNodeVM, TimerVM timerVM)
+		void AddTimeNode (TimeNodeVM timeNodeVM)
 		{
 			TimerTimeNodeView to = new TimerTimeNodeView ();
 			to.ViewModel = timeNodeVM;
-			to.Timer = timerVM;
+			to.Timer = ViewModel;
 			to.OffsetY = OffsetY;
 			to.Height = Height;
 			to.SecondsPerPixel = SecondsPerPixel;
@@ -125,39 +102,34 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			to.ShowName = ShowName;
 			to.LineColor = LineColor;
 			AddNode (to);
+			viewModelToView.Add (timeNodeVM, to);
 		}
 
-		void AddTimer (TimerVM timer, bool newtimer = true)
+		void RemoveTimeNode (TimeNodeVM timeNodeVM)
 		{
-			foreach (TimeNodeVM timeNodeVM in timer.ViewModels) {
-				AddTimeNode (timeNodeVM, timer);
-			}
-			if (newtimer) {
-				viewModel.ViewModels.Add (timer);
-			}
-			ReDraw ();
+			RemoveObject (viewModelToView [timeNodeVM], true);
+			viewModelToView.Remove (timeNodeVM);
 		}
 
-		void RemoveTimer (TimerVM timer)
+		void Reload ()
 		{
-			foreach (TimerTimeNodeView view in nodes.OfType<TimerTimeNodeView> ()) {
-				if (timer.ViewModels.Contains (view.ViewModel)) {
-					RemoveObject (view, true);
-				}
+			ClearObjects ();
+			viewModelToView.Clear ();
+			foreach (TimeNodeVM t in viewModel) {
+				AddTimeNode (t);
 			}
-			ReDraw ();
 		}
 
-		void HandleTimersCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		void HandleTimerCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
 			if (e.Action == NotifyCollectionChangedAction.Reset) {
-				ReloadPeriods ();
+				Reload ();
 			} else {
-				foreach (TimerVM timer in e.OldItems) {
-					RemoveTimer (timer);
+				foreach (TimeNodeVM timenodeVM in e.OldItems) {
+					RemoveTimeNode (timenodeVM);
 				}
-				foreach (TimerVM timer in e.NewItems) {
-					AddTimer (timer);
+				foreach (TimeNodeVM timeNodeVM in e.NewItems) {
+					AddTimeNode (timeNodeVM);
 				}
 			}
 		}
