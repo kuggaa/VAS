@@ -65,11 +65,19 @@ namespace VAS.Core.Store
 			}
 		}
 
-		public virtual void Dispose ()
+		protected override void Dispose (bool disposing)
 		{
-			Dashboard?.Dispose ();
-			foreach (TimelineEvent evt in Timeline) {
-				evt.Dispose ();
+			if (Disposed) {
+				return;
+			}
+			base.Dispose (disposing);
+			if (disposing) {
+				Dashboard?.Dispose ();
+				if (Timeline != null) {
+					foreach (TimelineEvent evt in Timeline) {
+						evt.Dispose ();
+					}
+				}
 			}
 		}
 

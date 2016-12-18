@@ -38,6 +38,9 @@ namespace VAS.Core.Store
 
 		protected override void Dispose (bool disposing)
 		{
+			if (Disposed) {
+				return;
+			}
 			base.Dispose (disposing);
 			if (disposing) {
 				Photo?.Dispose ();
