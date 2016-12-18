@@ -251,5 +251,13 @@ namespace VAS.Core.Store.Playlists
 			base.CollectionChanged (sender, e);
 			UpdateDuration ();
 		}
+
+		protected override void ForwardPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "Start" || e.PropertyName == "Stop") {
+				UpdateDuration ();
+			}
+			base.ForwardPropertyChanged (sender, e);
+		}
 	}
 }
