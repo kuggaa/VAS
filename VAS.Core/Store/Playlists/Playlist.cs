@@ -18,8 +18,8 @@
 //
 //
 using System;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using Newtonsoft.Json;
 using VAS.Core.Common;
@@ -235,6 +235,14 @@ namespace VAS.Core.Store.Playlists
 		{
 			base.CollectionChanged (sender, e);
 			UpdateDuration ();
+		}
+
+		protected override void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "Start" || e.PropertyName == "Stop") {
+				UpdateDuration ();
+			}
+			base.ForwardPropertyChanged (sender, e);
 		}
 	}
 }

@@ -77,6 +77,7 @@ namespace VAS.Services
 		VideoPlayerVM playerVM;
 		TimeNode visibleRegion;
 		VideoPlayerOperationMode mode;
+		Playlist loadedPlaylist;
 
 		protected struct Segment
 		{
@@ -282,8 +283,19 @@ namespace VAS.Services
 		}
 
 		public virtual Playlist LoadedPlaylist {
-			get;
-			set;
+			get {
+				return loadedPlaylist;
+			}
+
+			set {
+				if (loadedPlaylist != null) {
+					loadedPlaylist.PropertyChanged -= HandlePlaylistDurationChanged;
+				}
+				loadedPlaylist = value;
+				if (loadedPlaylist != null) {
+					loadedPlaylist.PropertyChanged += HandlePlaylistDurationChanged;
+				}
+			}
 		}
 
 		public virtual VideoPlayerOperationMode Mode {
@@ -1582,6 +1594,13 @@ namespace VAS.Services
 		protected void HandleMediaFileSetPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == "IsStretched" || e.PropertyName == "Collection") {
+				UpdateDuration ();
+			}
+		}
+
+		void HandlePlaylistDurationChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (mode == VideoPlayerOperationMode.Presentation) {
 				UpdateDuration ();
 			}
 		}
