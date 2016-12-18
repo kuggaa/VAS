@@ -203,37 +203,21 @@ namespace VAS.Drawing.Widgets
 			HeightRequest = Objects.Count * StyleConf.TimelineCategoryHeight;
 		}
 
-		/// <summary>
-		/// Sets the periods time line.
-		/// </summary>
-		// FIXME: Should be moved to longomatch, which is the one using it
-		protected void CreatePeriodsTimeline ()
-		{
-			PeriodsTimeline = new TimerTimelineView {
-				ShowLine = false,
-				ShowName = false,
-				DraggingMode = NodeDraggingMode.Borders,
-				LineColor = Color.Blue1,
-			};
-			PeriodsTimeline.ViewModel = ViewModel.Project.Timers;
-		}
-
 		protected virtual void FillCanvasForTimers (ref int line)
 		{
 			foreach (TimerVM timerVM in ViewModel.Project.Timers) {
 				var timelineView = new TimerTimelineView {
-					ShowLine = false,
 					ShowName = false,
 					DraggingMode = NodeDraggingMode.All,
 					Duration = duration,
 					OffsetY = line * StyleConf.TimelineCategoryHeight,
-					LineColor = Utils.ColorForRow (line),
-					BackgroundColor = App.Current.Style.PaletteBackgroundDark,
+					Height = StyleConf.TimelineCategoryHeight,
+					LineColor = App.Current.Style.PaletteBackgroundDark,
+					BackgroundColor = Utils.ColorForRow (line),
 				};
-				var timersVM = new NestedViewModel<TimerVM> ();
-				timersVM.ViewModels.Add (timerVM);
-				timelineView.ViewModel = timersVM;
+				timelineView.ViewModel = timerVM;
 				AddTimeline (timelineView, timerVM);
+				line++;
 			}
 		}
 

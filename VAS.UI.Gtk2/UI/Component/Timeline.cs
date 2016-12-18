@@ -40,9 +40,9 @@ namespace VAS.UI.Component
 	{
 		protected TimelineLabels labels;
 		protected PlaysMenu menu;
+		protected PlaysTimeline timeline;
 		const uint TIMEOUT_MS = 100;
 		Timerule timerule;
-		PlaysTimeline timeline;
 		double secondsPerPixel;
 		uint timeoutID;
 		Time currentTime, nextCurrentTime;
