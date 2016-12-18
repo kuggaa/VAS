@@ -108,6 +108,7 @@ namespace VAS.Drawing.Widgets
 				labelView.Width = labelWidth;
 				labelView.Height = labelHeight;
 				labelView.OffsetY = i * labelHeight;
+				labelView.BackgroundColor = Utils.ColorForRow (i);
 				AddLabel (labelView, timerViewModel);
 				i++;
 			}
