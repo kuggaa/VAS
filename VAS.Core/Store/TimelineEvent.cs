@@ -56,16 +56,16 @@ namespace VAS.Core.Store
 
 		protected override void Dispose (bool disposing)
 		{
-			if (Disposed)
+			if (Disposed) {
 				return;
-
+			}
+			base.Dispose (disposing);
 			if (disposing) {
 				Miniature?.Dispose ();
 				foreach (var drawing in Drawings) {
 					drawing.Miniature?.Dispose ();
 				}
 			}
-			base.Dispose (disposing);
 		}
 
 		#endregion
@@ -331,13 +331,11 @@ namespace VAS.Core.Store
 
 		#endregion
 
-		protected bool Disposed { get; private set; } = false;
-
 		#region Public methods
 
 		protected void CheckIsLoaded ()
 		{
-			if (!IsLoaded && !IsLoading) {
+			if (!IsLoaded && !IsLoading && !Disposed) {
 				IsLoading = true;
 				if (Storage == null) {
 					throw new StorageException ("Storage not set in preloaded object");
