@@ -193,6 +193,7 @@ namespace VAS.Core.Common
 		public const string ButtonAlert = "icons/hicolor/scalable/actions/longomatch-alert" + IMAGE_EXT;
 		public const string DownloadButton = "icons/hicolor/scalable/actions/longomatch-import" + IMAGE_EXT;
 		public const string DeleteButton = "icons/hicolor/scalable/actions/longomatch-delete" + IMAGE_EXT;
+		public const string PlayButton = "icons/hicolor/scalable/actions/video_c_play" + IMAGE_EXT;
 
 		public const int FilterTreeViewToogleWidth = 30;
 		public const int FilterTreeViewOnlyRightOffset = 10;
@@ -202,6 +203,10 @@ namespace VAS.Core.Common
 		public const string TimelineButtonNormalTheme = "theme/gtk-2.0/Button/button_tl_n" + IMAGE_EXT;
 		public const string TimelineButtonInsensititveTheme = "theme/gtk-2.0/Button/button_tl_i" + IMAGE_EXT;
 		public const string TimelineButtonPrelightTheme = "theme/gtk-2.0/Button/button_tl_p" + IMAGE_EXT;
+		public const string NormalButtonActiveTheme = "theme/gtk-2.0/Button/button_n_a" + IMAGE_EXT;
+		public const string NormalButtonNormalTheme = "theme/gtk-2.0/Button/button_n_n" + IMAGE_EXT;
+		public const string NormalButtonInsensititveTheme = "theme/gtk-2.0/Button/button_n_i" + IMAGE_EXT;
+		public const string NormalButtonPrelightTheme = "theme/gtk-2.0/Button/button_n_p" + IMAGE_EXT;
 
 		//Button Styles
 		public const string ButtonTimeline = "ButtonTimeline";
