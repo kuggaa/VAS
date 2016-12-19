@@ -40,6 +40,8 @@ namespace VAS.UI.Component
 		protected const int LEFT_OFFSET = 5;
 
 		protected static Point cursor;
+		static bool playButtonPrelighted = false;
+		static double offsetX, offsetY = 0;
 
 		static ISurface PlayIcon = null;
 		static ISurface BtnNormalBackground = null;
@@ -63,6 +65,38 @@ namespace VAS.UI.Component
 		public void SetViewModel (object viewModel)
 		{
 			ViewModel = (IViewModel)viewModel;
+		}
+
+		/// <summary>
+		/// Returns the Area that should redraw based on X, Y positions
+		/// </summary>
+		/// <returns>The area to be redrawn, or null otherwise</returns>
+		/// <param name="cellX">Cell x.</param>
+		/// <param name="cellY">Cell y.</param>
+		/// <param name="TotalY">Total y.</param>
+		/// <param name="width">Width.</param>
+		/// <param name="viewModel">View model.</param>
+		public static Area ShouldRedraw (double cellX, double cellY, double TotalY, int width, IViewModel viewModel)
+		{
+			Point drawingImagePoint = null;
+			cursor.X = cellX;
+			cursor.Y = TotalY;
+			double startY = VERTICAL_OFFSET + offsetY;
+			double startX = width - offsetX - RIGTH_OFFSET - App.Current.Style.ButtonNormalWidth;
+			double margin = cellY - startY;
+			//Just to know if its inside PlayButton
+			if (cellY > startY && cellY < startY + App.Current.Style.ButtonNormalHeight) {
+				if (cellX > startX && cellX < startX + App.Current.Style.ButtonNormalWidth) {
+					drawingImagePoint = new Point (startX, TotalY - margin);
+					playButtonPrelighted = true;
+
+				} else if (playButtonPrelighted) {
+					playButtonPrelighted = false;
+					drawingImagePoint = new Point (startX, TotalY - margin);
+				}
+			}
+			return drawingImagePoint == null ? null :
+				new Area (drawingImagePoint, App.Current.Style.ButtonNormalWidth, App.Current.Style.ButtonNormalHeight);
 		}
 
 		public override void GetSize (Widget widget, ref Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
@@ -90,10 +124,14 @@ namespace VAS.UI.Component
 				Area cell = new Area (new Point (cellArea.X, cellArea.Y),
 								cellArea.Width, cellArea.Height);
 
+				//Get thoffset to properly calulate if needs tooltip or redraw
+				offsetX = bkg.Right - cell.Right;
+				offsetY = cell.Top - bkg.Top;
+
 				if (ViewModel is EventTypeTimelineVM) {
 					var vm = (EventTypeTimelineVM)ViewModel;
 					RenderType (vm.EventTypeVM.Name, vm.VisibleEvents, vm.EventTypeVM.Color, App.Current.DrawingToolkit, context, bkg, cell, state);
-					RenderPlayButton (App.Current.DrawingToolkit, cell);
+					RenderPlayButton (App.Current.DrawingToolkit, cell, vm.VisibleEvents == 0, state);
 				} else if (ViewModel is PlaylistVM) {
 					var vm = (PlaylistVM)ViewModel;
 					RenderType (vm.Name, vm.Count (), App.Current.Style.PaletteText, App.Current.DrawingToolkit, context, bkg, cell, state);
@@ -159,11 +197,17 @@ namespace VAS.UI.Component
 			tk.DrawLine (new Point (x1, y), new Point (x2, y));
 		}
 
-		void RenderPlayButton (IDrawingToolkit tk, Area cellArea)
+		void RenderPlayButton (IDrawingToolkit tk, Area cellArea, bool insensitive, CellState state)
 		{
 			Point p = new Point (cellArea.Right - App.Current.Style.ButtonNormalWidth - RIGTH_OFFSET,
 								cellArea.Top + VERTICAL_OFFSET);
-			tk.DrawSurface (p, App.Current.Style.ButtonNormalWidth, App.Current.Style.ButtonNormalHeight, BtnNormalBackground, ScaleMode.AspectFit);
+			ISurface background = BtnNormalBackground;
+			if (insensitive) {
+				background = BtnNormalBackgroundInsensitive;
+			} else if (state.HasFlag (CellState.Prelit) && playButtonPrelighted) {
+				background = BtnNormalBackgroundPrelight;
+			}
+			tk.DrawSurface (p, App.Current.Style.ButtonNormalWidth, App.Current.Style.ButtonNormalHeight, background, ScaleMode.AspectFit);
 			tk.DrawSurface (p, App.Current.Style.IconLargeHeight, App.Current.Style.IconLargeHeight, PlayIcon, ScaleMode.AspectFit);
 		}
 
