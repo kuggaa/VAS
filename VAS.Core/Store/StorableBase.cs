@@ -41,7 +41,7 @@ namespace VAS.Core.Store
 
 		#region IStorable implementation
 
-		[CloneIgnore]
+		[CloneIgnoreAttribute]
 		[JsonIgnore]
 		[PropertyChanged.DoNotSetChanged]
 		public bool IsLoaded {
@@ -49,7 +49,7 @@ namespace VAS.Core.Store
 			set;
 		}
 
-		[CloneIgnore]
+		[CloneIgnoreAttribute]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		// Use IgnoreDataMember to prevent the cloner trying to serialize Storage
@@ -121,7 +121,7 @@ namespace VAS.Core.Store
 		/// Set to <c>true</c> while the object is being loaded. Used internally
 		/// to prevent infinite loops.
 		/// </summary>
-		[CloneIgnore]
+		[CloneIgnoreAttribute]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		bool IsLoading {

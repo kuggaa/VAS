@@ -39,7 +39,7 @@ namespace VAS.Core.Store.Drawables
 			set;
 		}
 
-		[CloneIgnore]
+		[CloneIgnoreAttribute]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public override double AxisY {
@@ -51,7 +51,7 @@ namespace VAS.Core.Store.Drawables
 			}
 		}
 
-		[CloneIgnore]
+		[CloneIgnoreAttribute]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public override double AxisX {

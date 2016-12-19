@@ -316,7 +316,7 @@ namespace VAS.Core.Serialization
 			var property = base.CreateProperty (member, memberSerialization);
 			if (IgnoreJsonIgnore) {
 				var attribs = property.AttributeProvider.GetAttributes (typeof (NonSerializedAttribute), true);
-				var attribs2 = property.AttributeProvider.GetAttributes (typeof (CloneIgnore), true);
+				var attribs2 = property.AttributeProvider.GetAttributes (typeof (CloneIgnoreAttribute), true);
 				if (attribs.Count + attribs2.Count > 0 || !property.Writable) {
 					property.Ignored = true;
 				} else {

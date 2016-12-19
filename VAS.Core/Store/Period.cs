@@ -33,7 +33,7 @@ namespace VAS.Core.Store
 		{
 		}
 
-		[CloneIgnore]
+		[CloneIgnoreAttribute]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public TimeNode PeriodNode {

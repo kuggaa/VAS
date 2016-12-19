@@ -191,7 +191,7 @@ namespace VAS.Core.Store
 			set;
 		}
 
-		[CloneIgnore]
+		[CloneIgnoreAttribute]
 		public override HotKey HotKey {
 			get {
 				return Tag != null ? Tag.HotKey : null;
@@ -203,7 +203,7 @@ namespace VAS.Core.Store
 			}
 		}
 
-		[CloneIgnore]
+		[CloneIgnoreAttribute]
 		public override string Name {
 			get {
 				return Tag != null ? Tag.Value : null;
@@ -229,7 +229,7 @@ namespace VAS.Core.Store
 			set;
 		}
 
-		[CloneIgnore]
+		[CloneIgnoreAttribute]
 		public override string Name {
 			get {
 				return Timer != null ? Timer.Name : null;
@@ -250,7 +250,7 @@ namespace VAS.Core.Store
 			set;
 		}
 
-		[CloneIgnore]
+		[CloneIgnoreAttribute]
 		public override string Name {
 			get {
 				return EventType != null ? EventType.Name : null;
@@ -262,7 +262,7 @@ namespace VAS.Core.Store
 			}
 		}
 
-		[CloneIgnore]
+		[CloneIgnoreAttribute]
 		public override Color BackgroundColor {
 			get {
 				return EventType != null ? EventType.Color : null;

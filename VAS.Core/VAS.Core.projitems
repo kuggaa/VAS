@@ -250,6 +250,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\HotKeyVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Converter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\CloneIgnore.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Serialization\CloneIgnoreAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
