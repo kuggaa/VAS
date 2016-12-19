@@ -17,7 +17,7 @@
 //
 using NUnit.Framework;
 using VAS.Core.Common;
-using VAS;
+using VAS.Core;
 
 namespace VAS.Tests.Core
 {
@@ -25,11 +25,18 @@ namespace VAS.Tests.Core
 	public class TestResources
 	{
 
-		[TestFixtureSetUp ()]
+		[TestFixtureSetUp]
 		public void Setup ()
 		{
 			//FIXME: RelativePrefix cannot be used
 			App.Current.DataDir.Add ("./data/");
+			Resources.TEST_MODE = false;
+		}
+
+		[TestFixtureTearDown]
+		public void TearDown ()
+		{
+			Resources.TEST_MODE = true;
 		}
 
 		[Test ()]
