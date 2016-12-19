@@ -15,24 +15,31 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using System.IO;
+using System.Text;
 using VAS.Core.Common;
 
 namespace VAS.Core
 {
 	public static class Resources
 	{
+		/// <summary>
+		/// Set this value to <c>true</c> in unit test to create dummy images.
+		/// </summary>
+		public static bool TEST_MODE = false;
+
 		public static Image LoadImage (string name)
 		{
-			var isTest = Environment.GetEnvironmentVariable (StyleConf.TEST) != null ?
-									Boolean.Parse (Environment.GetEnvironmentVariable (StyleConf.TEST)) :
-									false;
-			if (isTest) {
-				return new Image (10, 10);
+			if (TEST_MODE) {
+				string svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16px\" height=\"16px\"/>";
+				using (Stream s = new MemoryStream (Encoding.UTF8.GetBytes (svg))) {
+					return new Image (s);
+				}
 			}
 			return new Image (Utils.GetDataFilePath (name));
 		}
 	}
+
+
 }
 
