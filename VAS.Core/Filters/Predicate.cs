@@ -210,6 +210,14 @@ namespace VAS.Core.Filters
 		}
 
 		#endregion
+
+		public void RaiseCollectionPropertyChange (object sender)
+		{
+			if (sender == null) {
+				sender = this;
+			}
+			RaisePropertyChanged (new PropertyChangedEventArgs ("Collection"), sender);
+		}
 	}
 
 	/// <summary>
