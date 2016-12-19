@@ -28,9 +28,7 @@ namespace VAS.Core.MVVMC
 	{
 		~DisposableBase ()
 		{
-			if (!Disposed) {
-				Dispose (true);
-			}
+			Dispose (false);
 		}
 
 		public void Dispose ()
