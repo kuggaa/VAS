@@ -27,19 +27,25 @@ namespace VAS.KPI
 	{
 		public void Init (string appId, string user, string email)
 		{
+#if !DEBUG
 			HockeyClient.Current.Configure (appId)
 						.SetContactInfo (user, email);
 			HockeyClient.Current.SendCrashesAsync ().ConfigureAwait (false);
+#endif
 		}
 
 		public void TrackEvent (string eventName, IDictionary<string, string> properties = null, IDictionary<string, double> metrics = null)
 		{
+#if !DEBUG
 			HockeyClient.Current.TrackEvent (eventName, properties, metrics);
+#endif
 		}
 
 		public void TrackException (Exception ex, IDictionary<string, string> properties)
 		{
+#if !DEBUG
 			HockeyClient.Current.TrackException (ex, properties);
+#endif
 		}
 	}
 }
