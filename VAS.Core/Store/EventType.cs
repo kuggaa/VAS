@@ -81,7 +81,7 @@ namespace VAS.Core.Store
 			set;
 		}
 
-		[CloneIgnore]
+		[CloneIgnoreAttribute]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public string SortMethodString {

@@ -232,7 +232,7 @@ namespace VAS.Tests.Core.Common
 		[JsonIgnore]
 		public string JsonIgnoreString { get; set; }
 
-		[CloneIgnore]
+		[CloneIgnoreAttribute]
 		[JsonIgnore]
 		public string JsonIgnoreAndCloneIgnoreString { get; set; }
 

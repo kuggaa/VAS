@@ -19,7 +19,7 @@ using System;
 namespace VAS.Core.Serialization
 {
 	[AttributeUsage (AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = false)]
-	public class CloneIgnore : Attribute
+	public class CloneIgnoreAttribute : Attribute
 	{
 	}
 }

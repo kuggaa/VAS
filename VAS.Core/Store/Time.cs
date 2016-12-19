@@ -61,7 +61,7 @@ namespace VAS.Core.Store
 		/// <summary>
 		/// Time in seconds
 		/// </summary>		
-		[CloneIgnore]
+		[CloneIgnoreAttribute]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public int TotalSeconds {
@@ -76,7 +76,7 @@ namespace VAS.Core.Store
 		/// <summary>
 		/// Time in nano seconds
 		/// </summary>
-		[CloneIgnore]
+		[CloneIgnoreAttribute]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public long NSeconds {
