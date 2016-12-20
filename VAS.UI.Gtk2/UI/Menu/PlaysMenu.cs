@@ -52,7 +52,7 @@ namespace VAS.UI.Menus
 
 		public void ShowMenu (Project project, List<TimelineEvent> plays)
 		{
-			ShowMenu (project, plays, null, null, null, false);
+			ShowMenu (project, plays, null, null, project.EventTypes, false);
 		}
 
 		public void ShowTimelineMenu (Project project, List<TimelineEvent> plays, EventType eventType, Time time)
