@@ -126,11 +126,26 @@ namespace VAS.Core.Common
 			return deviceID;
 		}
 
+		/// <summary>
+		/// Get the DeviceID in a Windows platform.
+		/// Get it from the registry key "HKCU\Software\{SoftwareName}\MachineGuid". It will be created if needed.
+		/// </summary>
+		/// <returns>The device identifier.</returns>
 		public static Guid WindowsDeviceID ()
 		{
-			RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey ("Software\\Microsoft\\Cryptography");
+			Log.Debug ("Getting deviceID");
 			try {
-				return Guid.Parse (key.GetValue ("MachineGuid") as string);
+				RegistryKey userKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey ("Software", true)
+											   .CreateSubKey (App.Current.SoftwareName);
+				string guid = userKey.GetValue ("MachineGuid") as string;
+				if (guid == null) {
+					Log.Debug ("CurrentUser MachineGuid is null");
+					Guid id = Guid.NewGuid ();
+					guid = id.ToString ();
+					userKey.SetValue ("MachineGuid", id);
+				}
+				Log.Debug ("DeviceID: " + guid);
+				return Guid.Parse (guid);
 			} catch (Exception ex) {
 				Log.Exception (ex);
 				return Guid.Empty;
