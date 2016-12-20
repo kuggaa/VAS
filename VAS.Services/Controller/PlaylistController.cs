@@ -15,6 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,23 +29,14 @@ using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace VAS.Services.Controller
 {
 	public class PlaylistController : DisposableBase, IController
 	{
-		PlaylistCollectionVM viewModel;
+		PlaylistCollectionVM playlistViewModel;
 		ProjectVM projectViewModel;
-
-		public PlaylistController (VideoPlayerVM playerVM)
-		{
-			PlayerVM = playerVM;
-		}
-
-		public VideoPlayerVM PlayerVM {
-			get;
-			set;
-		}
 
 		protected override void Dispose (bool disposing)
 		{
@@ -52,21 +44,12 @@ namespace VAS.Services.Controller
 			Stop ();
 		}
 
-		protected EventsFilter Filter { get; set; }
-
-		protected Project OpenedProject {
-			get {
-				return projectViewModel?.Model;
-			}
-			set {
-				if (projectViewModel == null) {
-					projectViewModel = new ProjectVM<Project> ();
-				}
-				projectViewModel.Model = value;
-			}
+		public VideoPlayerVM PlayerVM {
+			get;
+			set;
 		}
 
-		protected ProjectType OpenedProjectType {
+		protected EventsFilter Filter {
 			get;
 			set;
 		}
@@ -80,7 +63,6 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.SubscribeAsync<DeletePlaylistEvent> (HandleDeletePlaylist);
 			App.Current.EventsBroker.Subscribe<RenderPlaylistEvent> (HandleRenderPlaylist);
 			App.Current.EventsBroker.Subscribe<LoadPlaylistElementEvent> (HandleLoadPlaylistElement);
-			App.Current.EventsBroker.Subscribe<OpenedProjectEvent> (HandleOpenedProjectChanged);
 			App.Current.EventsBroker.Subscribe<LoadEventEvent> (HandleLoadPlayEvent);
 			App.Current.EventsBroker.Subscribe<TimeNodeChangedEvent> (HandlePlayChanged);
 			App.Current.EventsBroker.Subscribe<MoveElementsEvent<PlaylistVM, PlaylistElementVM>> (HandleMoveElements);
@@ -93,7 +75,6 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.UnsubscribeAsync<DeletePlaylistEvent> (HandleDeletePlaylist);
 			App.Current.EventsBroker.Unsubscribe<RenderPlaylistEvent> (HandleRenderPlaylist);
 			App.Current.EventsBroker.Unsubscribe<LoadPlaylistElementEvent> (HandleLoadPlaylistElement);
-			App.Current.EventsBroker.Unsubscribe<OpenedProjectEvent> (HandleOpenedProjectChanged);
 			App.Current.EventsBroker.Unsubscribe<LoadEventEvent> (HandleLoadPlayEvent);
 			App.Current.EventsBroker.Unsubscribe<TimeNodeChangedEvent> (HandlePlayChanged);
 			App.Current.EventsBroker.Unsubscribe<MoveElementsEvent<PlaylistVM, PlaylistElementVM>> (HandleMoveElements);
@@ -104,9 +85,12 @@ namespace VAS.Services.Controller
 			if (viewModel == null) {
 				return;
 			}
-			this.viewModel = (PlaylistCollectionVM)(viewModel as dynamic);
-			// projectViewModel can be set to null...
-			this.projectViewModel = (ProjectVM)(viewModel as dynamic);
+			try {
+				playlistViewModel = (PlaylistCollectionVM)(viewModel as dynamic);
+			} catch (RuntimeBinderException) {
+				projectViewModel = (ProjectVM)(viewModel as dynamic);
+				playlistViewModel = projectViewModel.Playlists;
+			}
 		}
 
 		public IEnumerable<KeyAction> GetDefaultKeyActions ()
@@ -137,7 +121,7 @@ namespace VAS.Services.Controller
 				name = await App.Current.Dialogs.QueryMessage (Catalog.GetString ("Playlist name:"), null, name);
 				if (name != null) {
 					done = true;
-					if (viewModel.ViewModels.Any (p => p.Name == name)) {
+					if (playlistViewModel.ViewModels.Any (p => p.Name == name)) {
 						string msg = Catalog.GetString ("A playlist already exists with the same name");
 						App.Current.Dialogs.ErrorMessage (msg);
 						done = false;
@@ -146,7 +130,7 @@ namespace VAS.Services.Controller
 			}
 			if (name != null) {
 				playlist = new Playlist { Name = name };
-				viewModel.Model.Add (playlist);
+				playlistViewModel.Model.Add (playlist);
 				Save (playlist, true);
 			}
 			return playlist;
@@ -169,8 +153,12 @@ namespace VAS.Services.Controller
 
 		protected virtual Task HandleDeletePlaylist (DeletePlaylistEvent e)
 		{
-			App.Current.DatabaseManager.ActiveDB.Delete (e.Playlist);
-			viewModel.Model.Remove (e.Playlist);
+			Playlist playlist = e.Playlist;
+
+			if (playlist != null && projectViewModel == null) {
+				App.Current.DatabaseManager.ActiveDB.Delete (e.Playlist);
+			}
+			playlistViewModel.Model.Remove (e.Playlist);
 			return AsyncHelpers.Return (true);
 		}
 
@@ -229,17 +217,8 @@ namespace VAS.Services.Controller
 		{
 			if (e.TimeNode is TimelineEvent) {
 				LoadPlay (e.TimeNode as TimelineEvent, e.Time, false);
-				if (Filter != null) {
-					Filter.Update ();
-				}
+				Filter?.Update ();
 			}
-		}
-
-		void HandleOpenedProjectChanged (OpenedProjectEvent e)
-		{
-			OpenedProject = e.Project;
-			OpenedProjectType = e.ProjectType;
-			PlayerVM.Player.LoadedPlaylist = null;
 		}
 
 		void HandleMoveElements (MoveElementsEvent<PlaylistVM, PlaylistElementVM> e)
