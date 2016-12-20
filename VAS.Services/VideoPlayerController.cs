@@ -345,6 +345,7 @@ namespace VAS.Services
 		public void SetViewModel (IViewModel viewModel)
 		{
 			playerVM = (VideoPlayerVM)viewModel;
+			playerVM.Player = this;
 		}
 
 		public virtual void Ready (bool ready)

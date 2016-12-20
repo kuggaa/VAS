@@ -38,16 +38,7 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class VideoPlayerVM : BindableBase, IViewModel
 	{
-		IVideoPlayerController playerController;
 		PlayerViewOperationMode mode;
-		MediaFileSet fileset;
-
-		public VideoPlayerVM (IVideoPlayerController controller)
-		{
-			playerController = controller;
-			playerController.SetViewModel (this);
-			playerController.Start ();
-		}
 
 		public bool ControlsSensitive {
 			get;
@@ -132,7 +123,7 @@ namespace VAS.Core.ViewModel
 		[PropertyChanged.DoNotNotify]
 		public Image CurrentFrame {
 			get {
-				return playerController.CurrentFrame;
+				return Player.CurrentFrame;
 			}
 		}
 
@@ -192,15 +183,8 @@ namespace VAS.Core.ViewModel
 		}
 
 		public IVideoPlayerController Player {
-			get {
-				return playerController;
-			}
-			set {
-				if (playerController != null) {
-					playerController.Dispose ();
-				}
-				playerController = value;
-			}
+			get;
+			set;
 		}
 
 		public bool PlayerAttached {
@@ -216,13 +200,13 @@ namespace VAS.Core.ViewModel
 
 		public Time Step {
 			set {
-				playerController.Step = value;
+				Player.Step = value;
 			}
 		}
 
 		public List<IViewPort> ViewPorts {
 			set {
-				playerController.ViewPorts = value;
+				Player.ViewPorts = value;
 			}
 		}
 
@@ -244,7 +228,7 @@ namespace VAS.Core.ViewModel
 		[PropertyChanged.DoNotNotify]
 		public bool Opened {
 			get {
-				return playerController.Opened;
+				return Player.Opened;
 			}
 		}
 
@@ -252,88 +236,88 @@ namespace VAS.Core.ViewModel
 
 		public void Dispose ()
 		{
-			playerController.Dispose ();
+			Player.Dispose ();
 		}
 
 		public void Expose ()
 		{
-			playerController.Expose ();
+			Player.Expose ();
 		}
 
 		public void Ready (bool ready)
 		{
-			playerController.Ready (ready);
+			Player.Ready (ready);
 		}
 
 		public void Play ()
 		{
-			playerController.Play ();
+			Player.Play ();
 		}
 
 		public void Pause ()
 		{
-			playerController.Pause ();
+			Player.Pause ();
 		}
 
 		public void Stop ()
 		{
-			((IPlayback)playerController).Stop ();
+			((IPlayback)Player).Stop ();
 		}
 
 		public void Seek (double pos)
 		{
-			playerController.Seek (pos);
+			Player.Seek (pos);
 		}
 
 		public void Seek (Time time, bool accurate = false, bool synchronous = false, bool throttled = false)
 		{
-			playerController.Seek (time, accurate, synchronous, throttled);
+			Player.Seek (time, accurate, synchronous, throttled);
 		}
 
 		public void Previous ()
 		{
-			playerController.Previous ();
+			Player.Previous ();
 		}
 
 		public void Next ()
 		{
-			playerController.Next ();
+			Player.Next ();
 		}
 
 		public void TogglePlay ()
 		{
-			playerController.TogglePlay ();
+			Player.TogglePlay ();
 		}
 
 		public void SeekToPreviousFrame ()
 		{
-			playerController.SeekToPreviousFrame ();
+			Player.SeekToPreviousFrame ();
 		}
 
 		public void SeekToNextFrame ()
 		{
-			playerController.SeekToNextFrame ();
+			Player.SeekToNextFrame ();
 		}
 
 		public void StepBackward ()
 		{
-			playerController.StepBackward ();
+			Player.StepBackward ();
 		}
 
 		public void StepForward ()
 		{
-			playerController.StepForward ();
+			Player.StepForward ();
 		}
 
 		public void OpenFileSet (MediaFileSetVM fileset, bool play = false)
 		{
 			FileSet = fileset;
-			playerController.Open (fileset?.Model, play);
+			Player.Open (fileset?.Model, play);
 		}
 
 		public void ApplyROI (CameraConfig cameraConfig)
 		{
-			playerController.ApplyROI (cameraConfig);
+			Player.ApplyROI (cameraConfig);
 		}
 
 		public void LoadEvent (TimelineEvent e, bool playing)
@@ -369,7 +353,7 @@ namespace VAS.Core.ViewModel
 				.ToList ();
 
 			playlist.Elements = new RangeObservableCollection<IPlaylistElement> (list);
-			playerController.LoadPlaylistEvent (playlist, list.FirstOrDefault (), playing);
+			Player.LoadPlaylistEvent (playlist, list.FirstOrDefault (), playing);
 		}
 
 		public void LoadPlaylistEvent (Playlist playlist, IPlaylistElement element, bool playing)
@@ -398,7 +382,7 @@ namespace VAS.Core.ViewModel
 		/// <param name="cameras">Cameras.</param>
 		public void SetCamerasConfig (ObservableCollection<CameraConfig> cameras)
 		{
-			playerController.CamerasConfig = cameras;
+			Player.CamerasConfig = cameras;
 		}
 
 		/// <summary>
@@ -407,7 +391,7 @@ namespace VAS.Core.ViewModel
 		/// <param name="rate">Rate.</param>
 		public void SetRate (double rate)
 		{
-			playerController.Rate = rate;
+			Player.Rate = rate;
 		}
 
 		/// <summary>
@@ -416,7 +400,7 @@ namespace VAS.Core.ViewModel
 		/// <param name="volume">Volume.</param>
 		public void SetVolume (double volume)
 		{
-			playerController.Volume = volume;
+			Player.Volume = volume;
 		}
 		#endregion
 	}
