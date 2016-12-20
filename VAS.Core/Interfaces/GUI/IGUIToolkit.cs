@@ -21,10 +21,9 @@ using System.Threading.Tasks;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Filters;
-using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
-using Image = VAS.Core.Common.Image;
+using VAS.Core.ViewModel;
 
 namespace VAS.Core.Interfaces.GUI
 {
@@ -44,10 +43,6 @@ namespace VAS.Core.Interfaces.GUI
 		List<EditionJob> ConfigureRenderingJob (Playlist playlist);
 
 		void ExportFrameSeries (Project openenedProject, TimelineEvent play, string snapshotDir);
-
-		void OpenProject (Project project, ProjectType projectType,
-						  CaptureSettings props, EventsFilter filter,
-						  out IAnalysisWindowBase analysisWindow);
 
 		Project ChooseProject (List<Project> projects);
 
