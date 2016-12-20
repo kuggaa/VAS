@@ -15,23 +15,14 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // 
-using System.Collections.Generic;
 
-using VAS.Core.Common;
-using VAS.Core.Filters;
 using VAS.Core.Store;
 
 namespace VAS.Core.Interfaces.GUI
 {
 	public interface IAnalysisWindowBase
 	{
-		void SetProject (Project project, ProjectType projectType, CaptureSettings props, EventsFilter filter);
-
-		void ReloadProject ();
-
 		void CloseOpenedProject ();
-
-		void UpdateCategories ();
 
 		void DetachPlayer ();
 
@@ -51,11 +42,9 @@ namespace VAS.Core.Interfaces.GUI
 
 		void TagPlayer (Player player);
 
-		//void TagTeam (TeamType team);
+		IVideoPlayerController Player { get; }
 
-		IVideoPlayerController Player{ get; }
-
-		ICapturerBin Capturer{ get; }
+		ICapturerBin Capturer { get; }
 	}
 }
 

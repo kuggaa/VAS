@@ -309,8 +309,6 @@ namespace VAS.Core.Events
 		public ProjectType ProjectType { get; set; }
 
 		public EventsFilter Filter { get; set; }
-
-		public IAnalysisWindowBase AnalysisWindow { get; set; }
 	}
 
 	public class NewDashboardEvent : Event

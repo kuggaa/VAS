@@ -766,7 +766,6 @@ namespace VAS.Tests.Services
 					Project = new Utils.ProjectDummy (),
 					ProjectType = ProjectType.FileProject,
 					Filter = null,
-					AnalysisWindow = null
 				}
 			);
 			EventToken et = App.Current.EventsBroker.Subscribe<LoadPlaylistElementEvent> ((e) => playlistElementSelected++);

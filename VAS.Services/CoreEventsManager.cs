@@ -340,7 +340,6 @@ namespace VAS.Services
 		protected virtual void HandleDashboardEditedEvent (DashboardEditedEvent e)
 		{
 			openedProject.UpdateEventTypesAndTimers ();
-			analysisWindow.ReloadProject ();
 		}
 
 		void HandleDuplicateEvents (DuplicateEventsEvent e)
