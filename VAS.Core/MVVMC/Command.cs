@@ -98,7 +98,7 @@ namespace VAS.Core.MVVMC
 			set;
 		}
 
-		public bool CanExecute (object parameter)
+		public bool CanExecute (object parameter = null)
 		{
 			if (canExecute != null) {
 				return canExecute (parameter);
