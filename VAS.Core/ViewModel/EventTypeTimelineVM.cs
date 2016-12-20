@@ -18,6 +18,7 @@
 
 using System;
 using System.Linq;
+using VAS.Core.Events;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
@@ -66,6 +67,14 @@ namespace VAS.Core.ViewModel
 			get {
 				return ViewModels.OfType<IVisible> ().Count (vm => vm.Visible);
 			}
+		}
+
+		public void LoadEventType ()
+		{
+			App.Current.EventsBroker.Publish (new LoadTimelineEvent<EventTypeVM> {
+				Object = EventTypeVM,
+				Playing = true
+			});
 		}
 
 		public override int GetHashCode ()

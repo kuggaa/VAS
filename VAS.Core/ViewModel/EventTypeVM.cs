@@ -17,6 +17,7 @@
 //
 
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
@@ -51,6 +52,15 @@ namespace VAS.Core.ViewModel
 			set {
 				Model.Color = value;
 			}
+		}
+
+
+		public void LoadEventType ()
+		{
+			App.Current.EventsBroker.Publish (new LoadTimelineEvent<EventTypeVM> {
+				Object = this,
+				Playing = true
+			});
 		}
 	}
 

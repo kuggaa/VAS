@@ -99,6 +99,18 @@ namespace VAS.UI.Component
 				new Area (drawingImagePoint, App.Current.Style.ButtonNormalWidth, App.Current.Style.ButtonNormalHeight);
 		}
 
+		public static bool ClickedPlayButton (double cellX, double cellY, int width)
+		{
+			double startY = VERTICAL_OFFSET + offsetY;
+			double startX = width - offsetX - RIGTH_OFFSET - App.Current.Style.ButtonNormalWidth;
+			if (cellY > startY && cellY < startY + App.Current.Style.ButtonNormalHeight) {
+				if (cellX > startX && cellX < startX + App.Current.Style.ButtonNormalWidth) {
+					return true;
+				}
+			}
+			return false;
+		}
+
 		public override void GetSize (Widget widget, ref Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 		{
 			x_offset = 0;

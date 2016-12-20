@@ -19,13 +19,14 @@ using System;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.Store.Drawables;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
 	/// <summary>
 	/// Draws buttons in the timeline using the style ButtonTimeline in gtkrc
 	/// </summary>
-	public class TimelineButtonView : CanvasButtonObject
+	public class TimelineButtonView : CanvasButtonObject, ICanvasSelectableObject
 	{
 		protected ISurface backBufferSurface;
 		bool insensitive;
@@ -36,6 +37,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			BackgroundImage = Resources.LoadImage (StyleConf.TimelineButtonNormalTheme);
 			BackgroundImageActive = Resources.LoadImage (StyleConf.TimelineButtonActiveTheme);
 			BackgroundImageInsensitive = Resources.LoadImage (StyleConf.TimelineButtonInsensititveTheme);
+			BackgroundImageHighlighted = Resources.LoadImage (StyleConf.TimelineButtonPrelightTheme);
 			Width = App.Current.Style.ButtonTimelineWidth;
 			Height = App.Current.Style.ButtonTimelineHeight;
 			IconWidth = App.Current.Style.IconXSmallWidth;
@@ -84,6 +86,15 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		/// </summary>
 		/// <value>The background image insensitive.</value>
 		public Image BackgroundImageInsensitive {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the background image highlighted (Prelight).
+		/// </summary>
+		/// <value>The background image highlighted.</value>
+		public Image BackgroundImageHighlighted {
 			get;
 			set;
 		}
@@ -149,6 +160,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		{
 			if (!insensitive) {
 				base.ClickPressed (p, modif);
+				ReDraw ();
 			}
 		}
 
@@ -163,6 +175,20 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			tk.Begin ();
 			tk.DrawSurface (backBufferSurface, Position);
 			tk.End ();
+		}
+
+		public Selection GetSelection (Point point, double precision, bool inMotion = false)
+		{
+			if (point.X >= Position.X && point.X <= Position.X + Width) {
+				if (point.Y >= Position.Y && point.Y <= Position.Y + Height) {
+					return new Selection (this, SelectionPosition.All, 0);
+				}
+			}
+			return null;
+		}
+
+		public void Move (Selection s, Point dst, Point start)
+		{
 		}
 
 		protected void ResetBackbuffer ()
@@ -192,6 +218,9 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 					ScaleMode.AspectFit);
 			} else if (Insensitive && BackgroundImageInsensitive != null) {
 				tk.DrawImage (Position, Width, Height, BackgroundImageInsensitive,
+					ScaleMode.AspectFit);
+			} else if (Highlighted && BackgroundImageHighlighted != null) {
+				tk.DrawImage (Position, Width, Height, BackgroundImageHighlighted,
 					ScaleMode.AspectFit);
 			} else if (BackgroundImage != null) {
 				tk.DrawImage (Position, Width, Height, BackgroundImage,
