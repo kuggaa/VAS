@@ -18,11 +18,12 @@
 using System;
 using System.Windows.Input;
 using System.Diagnostics.Contracts;
-using System.Threading;
-using System.Runtime.CompilerServices;
 
 namespace VAS.Core.MVVMC
 {
+	/// <summary>
+	/// <see cref="ICommand"/> implementation for MVVM
+	/// </summary>
 	public class Command : ICommand
 	{
 		public event EventHandler CanExecuteChanged;
@@ -56,6 +57,7 @@ namespace VAS.Core.MVVMC
 			Contract.Requires (canExecute != null);
 		}
 
+		#region ICommand implementation
 		public bool Executable {
 			private get {
 				return executable;
@@ -92,6 +94,16 @@ namespace VAS.Core.MVVMC
 				CanExecuteChanged (this, EventArgs.Empty);
 			}
 		}
+		#endregion
+
+		/// <summary>
+		/// Execute the command without parameters.
+		/// </summary>
+		public void Execute ()
+		{
+			execute (null);
+		}
+
 	}
 
 	public sealed class Command<T> : Command
