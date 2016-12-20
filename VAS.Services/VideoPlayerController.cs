@@ -117,6 +117,13 @@ namespace VAS.Services
 
 		#endregion
 
+		// FIXME: remove when PlaylistManager is ported to MVVM
+		public VideoPlayerVM ViewModel {
+			get {
+				return playerVM;
+			}
+		}
+
 		#region IPlayerController implementation
 
 		public virtual bool IgnoreTicks {
