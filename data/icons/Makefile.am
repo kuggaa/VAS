@@ -1,4 +1,4 @@
-iconsdir = @datadir@/@PACKAGE@/icons
+iconsdir = @datadir@/@USER_PACKAGE@/icons
 nobase_dist_icons_DATA = Makefile.am \
 	hicolor/index.theme \
 	hicolor/scalable/actions/longomatch-cancel-rec.svg \
@@ -14,4 +14,5 @@ nobase_dist_icons_DATA = Makefile.am \
 	hicolor/scalable/actions/longomatch-pause-clock.svg \
 	hicolor/scalable/actions/longomatch-replay.svg \
 	hicolor/scalable/actions/longomatch-resume-clock.svg \
-	hicolor/scalable/actions/longomatch-stop.svg
+	hicolor/scalable/actions/longomatch-stop.svg \
+	hicolor/scalable/actions/video_c_play.svg

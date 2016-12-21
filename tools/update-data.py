@@ -13,7 +13,7 @@ nobase_dist_%(dir)s_DATA = %(files)s
 def main():
     home = sys.argv[1]
 #    for d in ['icons', 'theme', 'images']:
-    for d in ['images']:
+    for d in ['images', 'icons']:
         di = os.path.join(home, 'data', d)
         files =  subprocess.check_output(["git", "ls-files", di])
         files = [x.replace(os.path.join('data', d) + '/', '') for x in files.split('\n')[:-1]]
