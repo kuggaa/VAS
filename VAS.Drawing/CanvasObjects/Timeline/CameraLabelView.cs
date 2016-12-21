@@ -35,14 +35,12 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 		public override void Draw (IDrawingToolkit tk, Area area)
 		{
-			double y = OffsetY - Math.Floor (Scroll);
-
 			// Draw background
 			tk.Begin ();
 			tk.FillColor = BackgroundColor;
 			tk.StrokeColor = App.Current.Style.PaletteWidgets;
 			tk.LineWidth = 1;
-			tk.DrawRectangle (new Point (0, y), Width, Height);
+			tk.DrawRectangle (new Point (0, scrolledY), Width, Height);
 
 			/* Draw category name */
 			tk.FontSlant = FontSlant.Normal;
@@ -51,7 +49,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			tk.FillColor = App.Current.Style.PaletteWidgets;
 			tk.FontAlignment = FontAlignment.Right;
 			tk.StrokeColor = App.Current.Style.PaletteWidgets;
-			tk.DrawText (new Point (0, y), Width - StyleConf.TimelineLabelHSpacing, Height, Name);
+			tk.DrawText (new Point (0, scrolledY), Width - StyleConf.TimelineLabelHSpacing, Height, Name);
 			tk.End ();
 		}
 	}

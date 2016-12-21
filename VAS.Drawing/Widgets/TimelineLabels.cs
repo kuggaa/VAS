@@ -29,13 +29,13 @@ namespace VAS.Drawing.Widgets
 
 	public abstract class TimelineLabels : SelectionCanvas
 	{
-		protected Dictionary<EventTypeVM, LabelView> eventTypeToLabel;
+		protected Dictionary<EventTypeTimelineVM, LabelView> eventTypeToLabel;
 		protected int labelWidth, labelHeight, eventTypesStartIndex;
 		IAnalysisViewModel viewModel;
 
 		public TimelineLabels (IWidget widget) : base (widget)
 		{
-			eventTypeToLabel = new Dictionary<EventTypeVM, LabelView> ();
+			eventTypeToLabel = new Dictionary<EventTypeTimelineVM, LabelView> ();
 			SelectionMode = MultiSelectionMode.Single;
 		}
 
@@ -58,7 +58,7 @@ namespace VAS.Drawing.Widgets
 			}
 			set {
 				if (viewModel != null) {
-					viewModel.Project.EventTypes.ViewModels.CollectionChanged -= HandleCollectionChanged;
+					viewModel.Project.Timeline.ViewModels.CollectionChanged -= HandleCollectionChanged;
 					viewModel.Project.EventTypes.PropertyChanged -= HandleEventTypesPropertyChanged;
 				}
 				viewModel = value;
@@ -74,7 +74,7 @@ namespace VAS.Drawing.Widgets
 			ViewModel = (IAnalysisViewModel)viewModel;
 		}
 
-		protected virtual void AddEventType (EventTypeVM eventTypeVM, int i)
+		protected virtual void AddEventType (EventTypeTimelineVM eventTypeVM, int i)
 		{
 			IView view = App.Current.ViewLocator.Retrieve ("EventTypeLabelView");
 			view.SetViewModel (eventTypeVM);
@@ -91,7 +91,7 @@ namespace VAS.Drawing.Widgets
 			AddObject (label);
 		}
 
-		protected void RemoveEventTypeLabel (EventTypeVM viewModel)
+		protected void RemoveEventTypeLabel (EventTypeTimelineVM viewModel)
 		{
 			RemoveObject (eventTypeToLabel [viewModel]);
 			eventTypeToLabel.Remove (viewModel);
@@ -112,7 +112,7 @@ namespace VAS.Drawing.Widgets
 				i++;
 			}
 			eventTypesStartIndex = i;
-			foreach (var eventTypeVM in ViewModel.Project.EventTypes) {
+			foreach (var eventTypeVM in ViewModel.Project.Timeline.ViewModels) {
 				AddEventType (eventTypeVM, i);
 				i++;
 			}
@@ -122,7 +122,7 @@ namespace VAS.Drawing.Widgets
 		protected virtual void UpdateLabelOffsets ()
 		{
 			int i = eventTypesStartIndex;
-			foreach (EventTypeVM eventTypeVM in ViewModel.Project.EventTypes) {
+			foreach (EventTypeTimelineVM eventTypeVM in ViewModel.Project.Timeline.ViewModels) {
 				LabelView label = eventTypeToLabel [eventTypeVM];
 				if (label.Visible) {
 					label.OffsetY = i * label.Height;
@@ -138,20 +138,20 @@ namespace VAS.Drawing.Widgets
 			switch (e.Action) {
 			case NotifyCollectionChangedAction.Add: {
 					int i = eventTypesStartIndex + e.NewStartingIndex;
-					foreach (EventTypeVM viewModel in e.NewItems.OfType<EventTypeVM> ()) {
+					foreach (EventTypeTimelineVM viewModel in e.NewItems.OfType<EventTypeTimelineVM> ()) {
 						AddEventType (viewModel, i);
 						i++;
 					}
 					break;
 				}
 			case NotifyCollectionChangedAction.Remove: {
-					foreach (EventTypeVM viewModel in e.OldItems.OfType<EventTypeVM> ()) {
+					foreach (EventTypeTimelineVM viewModel in e.OldItems.OfType<EventTypeTimelineVM> ()) {
 						RemoveEventTypeLabel (viewModel);
 					}
 					break;
 				}
 			case NotifyCollectionChangedAction.Reset: {
-					foreach (EventTypeVM viewModel in eventTypeToLabel.Keys) {
+					foreach (EventTypeTimelineVM viewModel in eventTypeToLabel.Keys) {
 						RemoveEventTypeLabel (viewModel);
 					}
 					break;
