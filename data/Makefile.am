@@ -1,1 +1,1 @@
-SUBDIRS = images
+SUBDIRS = icons images
