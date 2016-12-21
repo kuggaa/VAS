@@ -82,6 +82,7 @@ namespace VAS.UI.Common
 			}
 			set {
 				if (viewModel != null) {
+					viewModel.ViewModels.CollectionChanged -= ViewModelCollectionChanged;
 					ClearSubViewModels ();
 				}
 				viewModel = value;
@@ -141,10 +142,7 @@ namespace VAS.UI.Common
 				break;
 
 			case NotifyCollectionChangedAction.Reset:
-				ClearSubViewModelListeners (dictionaryStore.Keys.OfType<TViewModel> ());
-				store.Clear ();
-				dictionaryStore.Clear ();
-				dictionaryNestedParent.Clear ();
+				ViewModel = viewModel;
 				break;
 
 			case NotifyCollectionChangedAction.Move:
