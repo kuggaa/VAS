@@ -22,14 +22,13 @@ using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
-using VAS.Core.Store;
 
 namespace VAS.Core.ViewModel
 {
 	/// <summary>
 	/// Generic base class for <see cref="ITemplate"/> ViewModel.
 	/// </summary>
-	public abstract class TemplateViewModel<T> : ViewModelBase<T>, IViewModel<T> where T : ITemplate
+	public abstract class TemplateViewModel<T> : ViewModelBase<T> where T : ITemplate
 	{
 		/// <summary>
 		/// Gets the name of the template.
