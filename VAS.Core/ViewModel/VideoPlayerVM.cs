@@ -359,7 +359,7 @@ namespace VAS.Core.ViewModel
 			Player.LoadEvent (e, seekTime, playing);
 		}
 
-		public void LoadEvents (List<TimelineEvent> events, bool playing)
+		public void LoadEvents (IEnumerable<TimelineEvent> events, bool playing)
 		{
 			Playlist playlist = new Playlist ();
 
