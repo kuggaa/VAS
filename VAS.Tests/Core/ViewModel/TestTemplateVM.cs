@@ -17,7 +17,6 @@
 //
 using System.Linq;
 using NUnit.Framework;
-using VAS.Core.ViewModel;
 
 namespace VAS.Tests.Core.ViewModel
 {
@@ -29,7 +28,6 @@ namespace VAS.Tests.Core.ViewModel
 		{
 			var model = new Utils.DashboardDummy {
 				Name = "dash",
-				Static = true,
 			};
 			var viewModel = new DummyDashboardViewModel {
 				Model = model
@@ -46,7 +44,6 @@ namespace VAS.Tests.Core.ViewModel
 		{
 			var model = new Utils.DashboardDummy {
 				Name = "dash",
-				Static = true,
 			};
 			var viewModel = new DummyDashboardViewModel {
 				Model = model
@@ -63,7 +60,6 @@ namespace VAS.Tests.Core.ViewModel
 		{
 			var model = new DummyTeam {
 				Name = "dash",
-				Static = true,
 			};
 			model.List.Add (new Utils.PlayerDummy ());
 			model.List.Add (new Utils.PlayerDummy ());
@@ -82,7 +78,6 @@ namespace VAS.Tests.Core.ViewModel
 		{
 			var model = new DummyTeam {
 				Name = "dash",
-				Static = true,
 			};
 			model.List.Add (new Utils.PlayerDummy ());
 			model.List.Add (new Utils.PlayerDummy ());
@@ -102,7 +97,6 @@ namespace VAS.Tests.Core.ViewModel
 		{
 			var model = new DummyTeam {
 				Name = "dash",
-				Static = true,
 			};
 			model.List.Add (new Utils.PlayerDummy ());
 			model.List.Add (new Utils.PlayerDummy ());
@@ -120,7 +114,6 @@ namespace VAS.Tests.Core.ViewModel
 		{
 			var model = new DummyTeam {
 				Name = "dash",
-				Static = true,
 			};
 			var viewModel = new DummyTeamVM {
 				Model = model
