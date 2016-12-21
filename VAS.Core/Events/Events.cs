@@ -15,6 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using VAS.Core.Common;
@@ -223,6 +224,11 @@ namespace VAS.Core.Events
 		public bool Current { get; set; }
 	}
 
+	public class DrawingSavedToProjectEvent : Event
+	{
+		public Guid ProjectId { get; set; }
+	}
+
 	public class CaptureFinishedEvent : Event
 	{
 		public bool Cancel { get; set; }
@@ -273,6 +279,7 @@ namespace VAS.Core.Events
 
 	public class CreateProjectEvent : Event
 	{
+		public Guid ProjectId { get; set; }
 	}
 
 	public class SaveProjectEvent : Event
@@ -323,6 +330,8 @@ namespace VAS.Core.Events
 		}
 
 		List<DashboardButton> dashboardButtons;
+
+		public Guid ProjectId { get; set; }
 	}
 
 	public class NewEventEvent : Event

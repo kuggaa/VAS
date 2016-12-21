@@ -147,7 +147,9 @@ namespace VAS.Services.Controller
 				playlist = new Playlist { Name = name };
 				viewModel.Model.Add (playlist);
 				Save (playlist, true);
+				App.Current.EventsBroker.Publish (new NewPlaylistEvent ());
 			}
+
 			return playlist;
 		}
 
