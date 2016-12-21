@@ -15,11 +15,8 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
+using System.Linq;
 using NUnit.Framework;
-using VAS.Core.Store.Templates;
-using VAS.Core.ViewModel;
-using System.Reflection;
 
 namespace VAS.Tests.Core.ViewModel
 {
@@ -31,7 +28,6 @@ namespace VAS.Tests.Core.ViewModel
 		{
 			var model = new Utils.DashboardDummy {
 				Name = "dash",
-				Static = true,
 			};
 			var viewModel = new DummyDashboardViewModel {
 				Model = model
@@ -48,7 +44,6 @@ namespace VAS.Tests.Core.ViewModel
 		{
 			var model = new Utils.DashboardDummy {
 				Name = "dash",
-				Static = true,
 			};
 			var viewModel = new DummyDashboardViewModel {
 				Model = model
@@ -58,6 +53,73 @@ namespace VAS.Tests.Core.ViewModel
 
 			model.Name = "Test";
 			Assert.AreEqual (true, viewModel.Edited);
+		}
+
+		[Test]
+		public void TestModelSync ()
+		{
+			var model = new DummyTeam {
+				Name = "dash",
+			};
+			model.List.Add (new Utils.PlayerDummy ());
+			model.List.Add (new Utils.PlayerDummy ());
+			model.List.Add (new Utils.PlayerDummy ());
+
+			var viewModel = new DummyTeamVM {
+				Model = model
+			};
+
+			Assert.AreEqual (3, viewModel.Count ());
+			Assert.IsInstanceOf (typeof (DummyPlayerVM), viewModel.First ());
+		}
+
+		[Test]
+		public void TestAddChild ()
+		{
+			var model = new DummyTeam {
+				Name = "dash",
+			};
+			model.List.Add (new Utils.PlayerDummy ());
+			model.List.Add (new Utils.PlayerDummy ());
+			model.List.Add (new Utils.PlayerDummy ());
+			var viewModel = new DummyTeamVM {
+				Model = model
+			};
+
+			model.List.Add (new Utils.PlayerDummy ());
+
+			Assert.AreEqual (4, viewModel.Count ());
+			Assert.IsInstanceOf (typeof (DummyPlayerVM), viewModel.Last ());
+		}
+
+		[Test]
+		public void TestRemoveChild ()
+		{
+			var model = new DummyTeam {
+				Name = "dash",
+			};
+			model.List.Add (new Utils.PlayerDummy ());
+			model.List.Add (new Utils.PlayerDummy ());
+			var viewModel = new DummyTeamVM {
+				Model = model
+			};
+
+			model.List.Remove (model.List [0]);
+
+			Assert.AreEqual (1, viewModel.Count ());
+		}
+
+		[Test]
+		public void TestSelectionInit ()
+		{
+			var model = new DummyTeam {
+				Name = "dash",
+			};
+			var viewModel = new DummyTeamVM {
+				Model = model
+			};
+
+			Assert.IsNotNull (viewModel.Selection);
 		}
 	}
 }

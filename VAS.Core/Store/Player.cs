@@ -26,7 +26,7 @@ namespace VAS.Core.Store
 	/// Player of a team
 	/// </summary>
 	[Serializable]
-	abstract public class Player: StorableBase, IDisposable
+	abstract public class Player : StorableBase, IDisposable
 	{
 
 		#region Constructors
@@ -36,9 +36,15 @@ namespace VAS.Core.Store
 			ID = Guid.NewGuid ();
 		}
 
-		public void Dispose ()
+		protected override void Dispose (bool disposing)
 		{
-			Photo?.Dispose ();
+			if (Disposed) {
+				return;
+			}
+			base.Dispose (disposing);
+			if (disposing) {
+				Photo?.Dispose ();
+			}
 		}
 
 		#endregion
@@ -50,7 +56,7 @@ namespace VAS.Core.Store
 		/// </summary>
 		[PropertyIndex (0)]
 		[PropertyPreload]
-		public string Name {
+		public virtual string Name {
 			get;
 			set;
 		}
@@ -125,8 +131,7 @@ namespace VAS.Core.Store
 
 		#endregion
 
-
-		public virtual string ToString ()
+		public override string ToString ()
 		{
 			string displayName;
 

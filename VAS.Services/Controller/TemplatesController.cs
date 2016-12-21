@@ -31,6 +31,7 @@ using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Serialization;
+using VAS.Core.Store;
 using VAS.Core.ViewModel;
 using VAS.Services.ViewModel;
 
@@ -39,11 +40,13 @@ namespace VAS.Services.Controller
 	/// <summary>
 	/// Base Controller for working with <see cref="ITemplate"/> like dashboards and teams.
 	/// </summary>
-	public abstract class TemplatesController<TModel, TViewModel> : DisposableBase, IController
-		where TModel : BindableBase, ITemplate<TModel>, new()
-		where TViewModel : TemplateViewModel<TModel>, new()
+	public abstract class TemplatesController<TModel, TViewModel, TChildModel, TChildViewModel> : DisposableBase, IController
+		where TModel : StorableBase, ITemplate<TChildModel>, new()
+		where TViewModel : TemplateViewModel<TModel, TChildModel, TChildViewModel>, new()
+		where TChildModel : BindableBase
+		where TChildViewModel : IViewModel<TChildModel>, new()
 	{
-		TemplatesManagerViewModel<TModel, TViewModel> viewModel;
+		TemplatesManagerViewModel<TModel, TViewModel, TChildModel, TChildViewModel> viewModel;
 		ITemplateProvider<TModel> provider;
 		bool started;
 
@@ -53,7 +56,7 @@ namespace VAS.Services.Controller
 			Stop ();
 		}
 
-		public TemplatesManagerViewModel<TModel, TViewModel> ViewModel {
+		public TemplatesManagerViewModel<TModel, TViewModel, TChildModel, TChildViewModel> ViewModel {
 			get {
 				return viewModel;
 			}
@@ -126,7 +129,7 @@ namespace VAS.Services.Controller
 
 		public virtual void SetViewModel (IViewModel viewModel)
 		{
-			ViewModel = (TemplatesManagerViewModel<TModel, TViewModel>)(viewModel as dynamic);
+			ViewModel = (TemplatesManagerViewModel<TModel, TViewModel, TChildModel, TChildViewModel>)(viewModel as dynamic);
 		}
 
 		public virtual void Start ()
@@ -171,24 +174,43 @@ namespace VAS.Services.Controller
 		protected abstract bool SaveValidations (TModel model);
 
 		/// <summary>
-		/// Removes the selected children in vm.
+		/// Removes the selected children.
 		/// </summary>
-		/// <param name="vm">The selected ViewModel with selected children.</param>
-		protected abstract void RemoveSelectedChildren (TViewModel vm);
+		/// <param name="vm">Vm.</param>
+		protected void RemoveSelectedChildren (TViewModel vm)
+		{
+			foreach (var childVM in vm.Selection) {
+				vm.ViewModels.Remove (childVM);
+			}
+		}
 
 		/// <summary>
-		/// Select between ConfirmDeleteChildText fullfiled and ConfirmDeleteChildListText
+		/// Get the message to delete an item. If there is a single child selection, it uses the name of child
+		/// instead of number.
 		/// </summary>
-		/// <returns>The delete children question.</returns>
-		/// <param name="templates">List of Templates.</param>
-		protected abstract string GetDeleteChildrenQuestion (ObservableCollection<TModel> templates);
+		/// <returns>The question.</returns>
+		/// <param name="templates">Templates to remove.</param>
+		protected string GetDeleteChildrenQuestion (ObservableCollection<TModel> templates)
+		{
+			string msg = ConfirmDeleteChildListText;
+			if (templates.Count () == 1) {
+				var childSelection = ViewModel.Selection.First (x => x.Model.Equals (templates.First ())).Selection;
+				if (childSelection.Count () == 1) {
+					msg = string.Format (ConfirmDeleteChildText, childSelection.First ());
+				}
+			}
+			return msg;
+		}
 
 		/// <summary>
-		/// Checks if list hasn't children selected
+		/// Check if it's a selection of child items or parents.
 		/// </summary>
-		/// <returns><c>true</c>, if list has only parents without children selected, <c>false</c> otherwise.</returns>
+		/// <returns><c>true</c>, if it's a child selection, <c>false</c> otherwise.</returns>
 		/// <param name="selectedViewModels">Selected view models.</param>
-		protected abstract bool CheckIsOnlyParentList (IEnumerable<TViewModel> selectedViewModels);
+		protected bool IsChildSelection (IEnumerable<TViewModel> selectedViewModels)
+		{
+			return selectedViewModels.FirstOrDefault ().Selection.Any ();
+		}
 
 		#region Handle Events
 
@@ -321,7 +343,7 @@ namespace VAS.Services.Controller
 			IEnumerable<TViewModel> selectedViewModels = ViewModel.Selection.Where (x => ids.Contains (x.Model.ID));
 
 			if (templates != null && templates.Any ()) {
-				if (CheckIsOnlyParentList (selectedViewModels)) {
+				if (!IsChildSelection (selectedViewModels)) {
 					string msg = templates.Count () == 1 ?
 							String.Format (ConfirmDeleteText, templates.FirstOrDefault ().Name) : ConfirmDeleteListText;
 					if (await App.Current.Dialogs.QuestionMessage (msg, null)) {
@@ -462,7 +484,6 @@ namespace VAS.Services.Controller
 			}
 		}
 
-#pragma warning restore RECS0165 // Asynchronous methods should return a Task instead of void
 		#endregion
 
 		async Task<bool> SaveStatic (TModel template)
@@ -486,7 +507,7 @@ namespace VAS.Services.Controller
 				if (newName == null) {
 					return false;
 				}
-				TModel newtemplate = template.Copy (newName);
+				TModel newtemplate = (TModel)template.Copy (newName);
 				newtemplate.Static = false;
 				saveOk = SaveTemplate (newtemplate);
 			}

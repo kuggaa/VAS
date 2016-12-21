@@ -18,22 +18,44 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using VAS.Core.Common;
 
 namespace VAS.Core.Interfaces
 {
 	public interface ITemplate : IStorable, INotifyPropertyChanged
 	{
+		/// <summary>
+		/// Gets or sets the name of the template.
+		/// </summary>
+		/// <value>The name.</value>
 		string Name { get; set; }
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.Interfaces.ITemplate"/> is not editable.
+		/// </summary>
+		/// <value><c>true</c> if not editable; otherwise, <c>false</c>.</value>
 		bool Static { get; set; }
 
+		/// <summary>
+		/// Gets or sets the version of the data used to create this template.
+		/// </summary>
+		/// <value>The version.</value>
 		int Version { get; set; }
 
+		/// <summary>
+		/// Creates a deep copy of the recipe changing the ID's of the storables too.
+		/// </summary>
+		/// <param name="newName">New name.</param>
+		ITemplate Copy (string newName);
 	}
 
-	public interface ITemplate<T> : ITemplate
+	public interface ITemplate<TChild> : ITemplate
 	{
-		T Copy (string newName);
+		/// <summary>
+		/// Gets the list of <typeparamref name="TChild"/> children in the template.
+		/// </summary>
+		/// <value>The list.</value>
+		RangeObservableCollection<TChild> List { get; }
 	}
 
 	public interface ITemplateProvider
