@@ -1,5 +1,5 @@
 ﻿//
-//  Copyright (C) 2015 Fluendo S.A.
+//  Copyright (C) 2016 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,31 +15,16 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System.IO;
-using System.Text;
-using VAS.Core.Common;
+using System;
+using VAS.Core.MVVMC;
+using VAS.Core.Store;
 
-namespace VAS.Core
+namespace VAS.Core.ViewModel
 {
-	public static class Resources
+	/// <summary>
+	/// ViewModel for <see cref="DashboardButton"/>.
+	/// </summary>
+	public class DashboardButtonVM : ViewModelBase<DashboardButton>
 	{
-		/// <summary>
-		/// Set this value to <c>true</c> in unit test to create dummy images.
-		/// </summary>
-		public static bool TEST_MODE = false;
-
-		public static Image LoadImage (string name)
-		{
-			if (TEST_MODE) {
-				string svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16px\" height=\"16px\"/>";
-				using (Stream s = new MemoryStream (Encoding.UTF8.GetBytes (svg))) {
-					return new Image (s);
-				}
-			}
-			return new Image (Utils.GetDataFilePath (name));
-		}
 	}
-
-
 }
-

@@ -202,6 +202,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\VideoPlayerVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\DragContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\Command.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\DashboardButtonVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
