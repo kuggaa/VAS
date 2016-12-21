@@ -24,7 +24,6 @@ using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
-using VAS.Services.ViewModel;
 
 namespace VAS.Services.Controller
 {
@@ -81,12 +80,14 @@ namespace VAS.Services.Controller
 		{
 			App.Current.EventsBroker.Subscribe<LoadTimelineEvent<TModel>> (HandleOpenEvent);
 			App.Current.EventsBroker.Subscribe<LoadTimelineEvent<IEnumerable<TModel>>> (HandleOpenListEvent);
+			App.Current.EventsBroker.Subscribe<LoadTimelineEvent<EventTypeTimelineVM>> (HandleOpenEventType);
 		}
 
 		public virtual void Stop ()
 		{
 			App.Current.EventsBroker.Unsubscribe<LoadTimelineEvent<TModel>> (HandleOpenEvent);
 			App.Current.EventsBroker.Unsubscribe<LoadTimelineEvent<IEnumerable<TModel>>> (HandleOpenListEvent);
+			App.Current.EventsBroker.Unsubscribe<LoadTimelineEvent<EventTypeTimelineVM>> (HandleOpenEventType);
 		}
 
 		public virtual void SetViewModel (IViewModel viewModel)
@@ -114,7 +115,14 @@ namespace VAS.Services.Controller
 
 		void HandleOpenListEvent (LoadTimelineEvent<IEnumerable<TModel>> e)
 		{
-			PlayerVM.LoadEvents (e.Object.OfType<TimelineEvent> ().ToList (), e.Playing);
+			PlayerVM.LoadEvents (e.Object.OfType<TimelineEvent> (), e.Playing);
+		}
+
+		void HandleOpenEventType (LoadTimelineEvent<EventTypeTimelineVM> e)
+		{
+			var timelineEvents = e.Object.ViewModels.Where ((arg) => arg.Visible == true)
+													.Select ((arg) => arg.Model);
+			PlayerVM.LoadEvents (timelineEvents, e.Playing);
 		}
 
 		void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
