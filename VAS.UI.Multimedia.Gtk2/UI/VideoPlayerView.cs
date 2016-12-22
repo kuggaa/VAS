@@ -369,7 +369,7 @@ namespace VAS.UI
 			} else if (prevLevel < 1 && level == 1.0) {
 				SetVolumeIcon ("longomatch-control-volume-hi");
 			}
-			playerVM.Volume = level;
+			playerVM.SetVolume (level);
 			if (level == 0)
 				muted = true;
 			else
@@ -411,15 +411,14 @@ namespace VAS.UI
 			// Mute for rate != 1
 			if (val != 1 && playerVM.Volume != 0) {
 				previousVLevel = playerVM.Volume;
-				playerVM.Volume = 0;
+				playerVM.SetVolume (0);
 			} else if (val != 1 && muted)
 				previousVLevel = 0;
 			else if (val == 1)
-				playerVM.Volume = previousVLevel;
+				playerVM.SetVolume (previousVLevel);
 
 			if (!ignoreRate) {
-				playerVM.Rate = val;
-
+				playerVM.SetRate (val);
 			}
 		}
 
