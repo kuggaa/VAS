@@ -44,7 +44,7 @@ namespace VAS.Core.MVVMC
 		/// </summary>
 		/// <value>The ViewModels collection.</value>
 		public virtual RangeObservableCollection<VMChilds> ViewModels {
-			protected set;
+			private set;
 			get;
 		}
 
