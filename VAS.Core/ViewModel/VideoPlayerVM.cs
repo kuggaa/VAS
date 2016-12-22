@@ -69,17 +69,22 @@ namespace VAS.Core.ViewModel
 			set;
 		} = true;
 
-		[PropertyChanged.DoNotNotify]
+		/// <summary>
+		/// Gets or sets the current audio volume.
+		/// This value is only used for display in the view. To change the volume use <see cref="SetVolume"/>
+		/// </summary>
+		/// <value>The new volume.</value>
 		public double Volume {
-			get {
-				return playerController.Volume;
-			}
-			set {
-				playerController.Volume = value;
-			}
+			get;
+			set;
 		}
 
-		public float Rate {
+		/// <summary>
+		/// Gets or sets the current playback rate.
+		/// This value is only used for display in the view. To change the rate use <see cref="SetRate"/>
+		/// </summary>
+		/// <value>The new rate.</value>
+		public double Rate {
 			get;
 			set;
 		}
@@ -331,18 +336,6 @@ namespace VAS.Core.ViewModel
 			playerController.ApplyROI (cameraConfig);
 		}
 
-		//FIXME: This setter is strange, but we need it to correctly set the CamerasConfig
-		// to the PlayerController
-		/// <summary>
-		/// Sets the cameras config in PlayerController, use this call to set CameraConfig just in
-		/// PlayerController
-		/// </summary>
-		/// <param name="cameras">Cameras.</param>
-		public void SetCamerasConfig (ObservableCollection<CameraConfig> cameras)
-		{
-			playerController.CamerasConfig = cameras;
-		}
-
 		public void LoadEvent (TimelineEvent e, bool playing)
 		{
 			if (e?.Duration.MSeconds == 0) {
@@ -399,6 +392,32 @@ namespace VAS.Core.ViewModel
 			);
 		}
 
+		/// <summary>
+		/// Changes the cameras config in the player.
+		/// </summary>
+		/// <param name="cameras">Cameras.</param>
+		public void SetCamerasConfig (ObservableCollection<CameraConfig> cameras)
+		{
+			playerController.CamerasConfig = cameras;
+		}
+
+		/// <summary>
+		/// Change the playback rate of the player.
+		/// </summary>
+		/// <param name="rate">Rate.</param>
+		public void SetRate (double rate)
+		{
+			playerController.Rate = rate;
+		}
+
+		/// <summary>
+		/// Change the volume of the player.
+		/// </summary>
+		/// <param name="volume">Volume.</param>
+		public void SetVolume (double volume)
+		{
+			playerController.Volume = volume;
+		}
 		#endregion
 	}
 }
