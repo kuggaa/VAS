@@ -336,18 +336,6 @@ namespace VAS.Core.ViewModel
 			playerController.ApplyROI (cameraConfig);
 		}
 
-		//FIXME: This setter is strange, but we need it to correctly set the CamerasConfig
-		// to the PlayerController
-		/// <summary>
-		/// Sets the cameras config in PlayerController, use this call to set CameraConfig just in
-		/// PlayerController
-		/// </summary>
-		/// <param name="cameras">Cameras.</param>
-		public void SetCamerasConfig (ObservableCollection<CameraConfig> cameras)
-		{
-			playerController.CamerasConfig = cameras;
-		}
-
 		public void LoadEvent (TimelineEvent e, bool playing)
 		{
 			if (e?.Duration.MSeconds == 0) {
@@ -404,11 +392,28 @@ namespace VAS.Core.ViewModel
 			);
 		}
 
+		/// <summary>
+		/// Changes the cameras config in the player.
+		/// </summary>
+		/// <param name="cameras">Cameras.</param>
+		public void SetCamerasConfig (ObservableCollection<CameraConfig> cameras)
+		{
+			playerController.CamerasConfig = cameras;
+		}
+
+		/// <summary>
+		/// Change the playback rate of the player.
+		/// </summary>
+		/// <param name="rate">Rate.</param>
 		public void SetRate (double rate)
 		{
 			playerController.Rate = rate;
 		}
 
+		/// <summary>
+		/// Change the volume of the player.
+		/// </summary>
+		/// <param name="volume">Volume.</param>
 		public void SetVolume (double volume)
 		{
 			playerController.Volume = volume;
