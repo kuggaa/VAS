@@ -32,9 +32,14 @@ using VAS.Core.Serialization;
 using VAS.Core.Store;
 using VAS.Core.Store.Templates;
 using VAS.Core.ViewModel;
+using VAS.Services;
 
 namespace VAS.Tests
 {
+	public class DummyUserStatisticsService : UserStatisticsService
+	{
+
+	}
 
 	public class DummyView : IView
 	{
