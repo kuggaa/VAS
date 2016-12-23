@@ -102,5 +102,20 @@ namespace VAS.Tests.Core.ViewModel
 			Assert.AreEqual (project.Timeline [0], viewModel.FullTimeline.ViewModels [0].Model);
 			Assert.IsTrue (viewModel.ViewModels.Count == 1);
 		}
+
+		[Test]
+		public void TestClearTimeline ()
+		{
+			Project project = Utils.CreateProject (true);
+			ProjectVM projectVM = new ProjectVM { Model = project };
+			TimelineVM viewModel = new TimelineVM ();
+			viewModel.CreateEventTypeTimelines (projectVM.EventTypes);
+			viewModel.Model = project.Timeline;
+
+			viewModel.Clear ();
+
+			Assert.AreEqual (0, viewModel.ViewModels.Count);
+			Assert.AreEqual (0, viewModel.FullTimeline.ViewModels.Count);
+		}
 	}
 }

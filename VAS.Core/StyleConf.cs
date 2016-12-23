@@ -291,10 +291,6 @@ namespace VAS.Core.Common
 
 		//Sizes
 
-		public int IconXLargeHeight { get; set; }
-
-		public int IconXLargeWidth { get; set; }
-
 		public int IconLargeHeight { get; set; }
 
 		public int IconLargeWidth { get; set; }

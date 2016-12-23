@@ -105,7 +105,6 @@ namespace VAS.Services.Controller
 				return;
 			}
 			this.viewModel = (PlaylistCollectionVM)(viewModel as dynamic);
-			// projectViewModel can be set to null...
 			this.projectViewModel = (ProjectVM)(viewModel as dynamic);
 		}
 

@@ -40,12 +40,12 @@ namespace VAS.Core.ViewModel
 	public class TimelineVM : NestedViewModel<EventTypeTimelineVM>, IViewModel<RangeObservableCollection<TimelineEvent>>
 	{
 		RangeObservableCollection<TimelineEvent> model;
-		Dictionary<EventType, EventTypeTimelineVM> eventTypeToTimeline;
+		Dictionary<string, EventTypeTimelineVM> eventTypeToTimeline;
 
 		public TimelineVM ()
 		{
 			Filters = new AndPredicate<TimelineEventVM> ();
-			eventTypeToTimeline = new Dictionary<EventType, EventTypeTimelineVM> ();
+			eventTypeToTimeline = new Dictionary<string, EventTypeTimelineVM> ();
 			ViewModels.CollectionChanged += HandleEventTypesCollectionChanged;
 			FullTimeline = CreateFullTimeline ();
 			FullTimeline.ViewModels.CollectionChanged += HandleTimelineCollectionChanged;
@@ -111,6 +111,12 @@ namespace VAS.Core.ViewModel
 			private set;
 		}
 
+		public void Clear ()
+		{
+			ViewModels.Clear ();
+			FullTimeline.ViewModels.Clear ();
+		}
+
 		/// <summary>
 		/// Creates the child event type timelines from the list of the project's event types.
 		/// </summary>
@@ -168,22 +174,22 @@ namespace VAS.Core.ViewModel
 		{
 			eventTypeToTimeline.Clear ();
 			foreach (EventTypeTimelineVM timeline in ViewModels) {
-				eventTypeToTimeline [timeline.Model] = timeline;
+				eventTypeToTimeline [timeline.Model.Name] = timeline;
 			}
 		}
 
 		void AddTimelineEventVM (TimelineEventVM viewModel)
 		{
-			if (!eventTypeToTimeline.ContainsKey (viewModel.Model.EventType)) {
+			if (!eventTypeToTimeline.ContainsKey (viewModel.Model.EventType.Name)) {
+
 				ViewModels.Add (new EventTypeTimelineVM { Model = viewModel.Model.EventType });
 			}
-			eventTypeToTimeline [viewModel.Model.EventType].ViewModels.Add (viewModel);
+			eventTypeToTimeline [viewModel.Model.EventType.Name].ViewModels.Add (viewModel);
 		}
 
 		void RemoveTimelineEventVM (TimelineEventVM viewModel)
 		{
-			eventTypeToTimeline [viewModel.Model.EventType].ViewModels.Remove (viewModel);
+			eventTypeToTimeline [viewModel.Model.EventType.Name].ViewModels.Remove (viewModel);
 		}
-
 	}
 }
