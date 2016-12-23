@@ -138,6 +138,15 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
+		/// Gets the Interface INotifyCollectionChanged of the Selection collection
+		/// </summary>
+		/// <returns>The Collection as a INotifyCollectionChanged</returns>
+		public INotifyCollectionChanged GetSelectionNotifyCollection ()
+		{
+			return Selection;
+		}
+
+		/// <summary>
 		/// Gets the collection of child ViewModel
 		/// </summary>
 		/// <value>The ViewModels collection.</value>

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces.GUI;
+using VAS.Core.MVVMC;
 
 namespace VAS.Core
 {
@@ -21,6 +22,7 @@ namespace VAS.Core
 		List<NavigationState> navigationStateStack;
 		List<NavigationState> modalStateStack;
 		Dictionary<string, Stack<Func<IScreenState>>> overwrittenTransitions;
+		Dictionary<string, Command> transitionCommands;
 
 		public StateController ()
 		{
@@ -28,6 +30,7 @@ namespace VAS.Core
 			navigationStateStack = new List<NavigationState> ();
 			modalStateStack = new List<NavigationState> ();
 			overwrittenTransitions = new Dictionary<string, Stack<Func<IScreenState>>> ();
+			transitionCommands = new Dictionary<string, Command> ();
 		}
 
 		public string Current {
@@ -82,6 +85,12 @@ namespace VAS.Core
 				if (emptyStack) {
 					if (!await EmptyStateStack ()) {
 						return false;
+					}
+					if (lastState == home && home.Name != transition) {
+						if (!await lastState.ScreenState.HideState ()) {
+							Log.Debug ("Moving failed because home panel " + lastState.Name + " cannot move.");
+							return false;
+						}
 					}
 				} else if (isModal) {
 					if (!await PopAllModalStates ()) {
@@ -248,6 +257,18 @@ namespace VAS.Core
 		}
 
 		/// <summary>
+		/// Register the specified transition and panel Initialization function with a param name="toolbar"
+		/// </summary>
+		/// <param name="transition">Transition.</param>
+		/// <param name="toolbar">Toolbar Information</param>
+		/// <param name="panel">Panel.</param>
+		public void Register (string transition, Command command, Func<IScreenState> panel)
+		{
+			Register (transition, panel);
+			transitionCommands [transition] = command;
+		}
+
+		/// <summary>
 		/// Removes a registered transition.
 		/// </summary>
 		/// <param name="transition">Transition.</param>
@@ -264,7 +285,16 @@ namespace VAS.Core
 				destination [transition] = overwrittenTransitions [transition].Pop ();
 			}
 
+			if (transitionCommands.ContainsKey (transition)) {
+				transitionCommands.Remove (transition);
+			}
+
 			return ok;
+		}
+
+		public Dictionary<string, Command> GetTransitionCommands ()
+		{
+			return transitionCommands;
 		}
 
 		/// <summary>

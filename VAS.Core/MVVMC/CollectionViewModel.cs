@@ -40,7 +40,6 @@ namespace VAS.Core.MVVMC
 		public CollectionViewModel ()
 		{
 			Model = new RangeObservableCollection<TModel> ();
-			ViewModels = new RangeObservableCollection<TViewModel> ();
 		}
 
 		/// <summary>

@@ -17,17 +17,26 @@
 //
 using System;
 using System.Diagnostics.Contracts;
-using System.Windows.Input;
 using Gtk;
+using VAS.Core.MVVMC;
 
 namespace VAS.UI.Helpers
 {
 	public static class Bindings
 	{
-		static public void Bind (this Button button, ICommand command, object parameter = null)
+		static public void Bind (this Button button, Command command, object parameter = null)
 		{
 			Contract.Requires (button != null);
 			Contract.Requires (command != null);
+
+			if (command.Icon != null) {
+				var image = new Gtk.Image ();
+				image.Pixbuf = command.Icon.Value;
+				button.Image = image;
+				button.ImagePosition = PositionType.Left;
+			}
+			button.Label = command.Text;
+			button.TooltipText = command.ToolTipText;
 
 			button.Sensitive = command.CanExecute (parameter);
 			EventHandler handler = (sender, e) => {
@@ -38,6 +47,10 @@ namespace VAS.UI.Helpers
 				command.CanExecuteChanged -= handler;
 			};
 			button.Clicked += (sender, e) => {
+				var radioButton = sender as RadioButton;
+				if (radioButton != null && radioButton.Active == false) {
+					return;
+				}
 				command.Execute (parameter);
 			};
 		}
