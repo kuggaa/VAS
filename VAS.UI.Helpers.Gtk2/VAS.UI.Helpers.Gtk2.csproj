@@ -48,6 +48,7 @@
       <Link>AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Bindings.cs" />
+    <Compile Include="ButtonHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

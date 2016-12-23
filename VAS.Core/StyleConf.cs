@@ -347,9 +347,21 @@ namespace VAS.Core.Common
 
 		public int BigScoresFontSize { get; set; }
 
+		public string BigScoresFont {
+			get {
+				return string.Concat (BigScoresFontFamily, " ", BigScoresFontSize);
+			}
+		}
+
 		public string TightScoresFontFamily { get; set; }
 
 		public int TightScoresFontSize { get; set; }
+
+		public string TightScoresFont {
+			get {
+				return string.Concat (TightScoresFontFamily, " ", TightScoresFontSize);
+			}
+		}
 
 		public string TitlesFontFamily { get; set; }
 
@@ -357,27 +369,63 @@ namespace VAS.Core.Common
 
 		public int TitlesFontSize { get; set; }
 
+		public string TitlesFont {
+			get {
+				return string.Concat (TitlesFontFamily, " ", TitlesFontSlant, " ", TitlesFontSize);
+			}
+		}
+
 		public string SubTitleFontFamily { get; set; }
 
 		public int SubTitleFontSize { get; set; }
+
+		public string SubTitleFont {
+			get {
+				return string.Concat (SubTitleFontFamily, " ", SubTitleFontSize);
+			}
+		}
 
 		public string NamesFontFamily { get; set; }
 
 		public int NamesFontSize { get; set; }
 
+		public string NamesFont {
+			get {
+				return string.Concat (NamesFontFamily, " ", NamesFontSize);
+			}
+		}
+
 		public string ContentFontFamily { get; set; }
 
 		public int ContentFontSize { get; set; }
 
+		public string ContentFont {
+			get {
+				return string.Concat (ContentFontFamily, " ", ContentFontSize);
+			}
+		}
+
 		public string LabelFontFamily { get; set; }
 
 		public int LabelFontSize { get; set; }
+
+		public string LabelFont {
+			get {
+				return string.Concat (LabelFontFamily, " ", LabelFontSize);
+			}
+		}
 
 		public string LabelTightFontFamily { get; set; }
 
 		public string LabelTightFontSlant { get; set; }
 
 		public int LabelTightFontSize { get; set; }
+
+		public string LabelTightFont {
+			get {
+				return string.Concat (LabelTightFontFamily, " ", LabelTightFontSlant, " ", LabelTightFontSize);
+			}
+		}
 
 		#endregion
 

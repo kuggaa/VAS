@@ -16,7 +16,6 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using Gdk;
 using Gtk;
 using VAS.Core.Common;
 using VAS.Core.Events;
@@ -24,22 +23,31 @@ using VAS.Core.Handlers;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Drawing.Cairo;
 using Image = VAS.Core.Common.Image;
-using Point = VAS.Core.Common.Point;
 
 namespace VAS.UI.Component
 {
 	public class CellRendererButtonImage : CellRendererToggle
 	{
-		const int BUTTON_HEIGHT = 30;
-		const int BUTTON_WIDTH = 60;
-
+		int BUTTON_WIDTH = App.Current.Style.ButtonNormalWidth;
+		int BUTTON_HEIGHT = App.Current.Style.ButtonNormalHeight;
+		const int SPACING = 5;
+		const int LINE_WIDTH = 1;
+		static double offsetX, offsetY = 0;
+		static int cellWidth, cellHeight = 0;
+		static Point cursor;
 		public event ClickedHandler Clicked;
+		bool buttonPrelighted = false;
 
 		public CellRendererButtonImage (Image icon)
 		{
 			Icon = icon;
+			cursor = new Point (0, 0);
 		}
 
+		/// <summary>
+		/// Gets or sets the icon.
+		/// </summary>
+		/// <value>The icon.</value>
 		public Image Icon {
 			get;
 			set;
@@ -52,7 +60,7 @@ namespace VAS.UI.Component
 			}
 		}
 
-		public override void GetSize (Widget widget, ref Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
+		public override void GetSize (Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 		{
 			x_offset = 0;
 			y_offset = 0;
@@ -61,28 +69,64 @@ namespace VAS.UI.Component
 			height = BUTTON_HEIGHT;
 		}
 
-		protected override void Render (Drawable window, Widget widget, Rectangle backgroundArea,
-		                                Rectangle cellArea, Rectangle exposeArea, CellRendererState flags)
+		/// <summary>
+		/// Returns the Area that should redraw based on X, Y positions
+		/// </summary>
+		/// <returns>The area to be redrawn, or null otherwise</returns>
+		/// <param name="cellX">Cell x.</param>
+		/// <param name="cellY">Cell y.</param>
+		/// <param name="TotalY">Total y.</param>
+		public Area ShouldRedraw (double cellX, double cellY, double TotalY, double column0_width)
+		{
+			Point drawingImagePoint = null;
+
+			cursor.X = column0_width + cellX;
+			cursor.Y = TotalY;
+			double startX = offsetX;
+			int tx = cellWidth - StyleConf.FilterTreeViewOnlyRightOffset;
+			double startY = offsetY;
+			double margin = cellY - startY;
+			if (startX < cellX && offsetX + tx > cellX &&
+				startY < cellY && startY + cellHeight > cellY) {
+				buttonPrelighted = true;
+				drawingImagePoint = new Point (startX + column0_width, TotalY - margin);
+			} else if (buttonPrelighted) {
+				buttonPrelighted = false;
+				drawingImagePoint = new Point (startX + column0_width, TotalY - margin);
+			}
+
+			return drawingImagePoint == null ? null : new Area (drawingImagePoint, cellWidth, cellHeight * 2);
+		}
+
+		protected override void Render (Gdk.Drawable window, Widget widget, Gdk.Rectangle backgroundArea,
+										Gdk.Rectangle cellArea, Gdk.Rectangle exposeArea, CellRendererState flags)
 		{
 			IDrawingToolkit tk = App.Current.DrawingToolkit;
 
 			using (IContext context = new CairoContext (window)) {
-				int width = cellArea.Width - StyleConf.FilterTreeViewOnlyRightOffset;
-				int height = cellArea.Height - StyleConf.FilterTreeViewOnlyTopOffset * 2;
-				Point pos = new Point (cellArea.X + backgroundArea.Width - cellArea.Width,
-					            cellArea.Y + StyleConf.FilterTreeViewOnlyTopOffset);
+				cellWidth = cellArea.Width;
+				cellHeight = cellArea.Height;
+
+				Point pos = new Point (cellArea.X + backgroundArea.Width / 2 - BUTTON_WIDTH / 2,
+									   cellArea.Y + StyleConf.FilterTreeViewOnlyTopOffset);
+
+				Point imagePos = new Point (pos.X + SPACING, pos.Y + StyleConf.FilterTreeViewOnlyTopOffset);
+
+				//Get the offset to properly calculate if needs tooltip or redraw
+				offsetX = pos.X - backgroundArea.X;
+				offsetY = pos.Y - backgroundArea.Y;
+
 				tk.Context = context;
 				tk.Begin ();
-				tk.FillColor = VAS.Core.Common.Color.Green1;
-				if (flags.HasFlag (CellRendererState.Prelit)) {
-					tk.FillColor = VAS.Core.Common.Color.Green;
+				tk.StrokeColor = Color.Black;
+				tk.FillColor = Color.Transparent;
+				if (flags.HasFlag (CellRendererState.Prelit) && cursor.IsInsideArea (pos, BUTTON_WIDTH, BUTTON_HEIGHT)) {
+					tk.StrokeColor = Color.Orange;
+					tk.LineWidth = LINE_WIDTH;
 				}
 
-				tk.LineWidth = 1;
-				tk.StrokeColor = VAS.Core.Common.Color.Green;
-				tk.DrawRoundedRectangle (pos, width, height, 3);
-				tk.StrokeColor = App.Current.Style.PaletteText;
-				tk.DrawImage (pos, width, height, Icon, ScaleMode.AspectFit);
+				tk.DrawRectangle (pos, BUTTON_WIDTH, BUTTON_HEIGHT);
+				tk.DrawImage (imagePos, BUTTON_WIDTH - (SPACING * 2), BUTTON_HEIGHT - (StyleConf.FilterTreeViewOnlyTopOffset * 2), Icon, ScaleMode.AspectFit);
 				tk.End ();
 				tk.Context = null;
 			}
