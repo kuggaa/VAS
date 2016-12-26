@@ -39,6 +39,10 @@ namespace VAS.Core.Common
 		{
 		}
 
+		public Image (string filepath, int width, int height) : base (filepath, width, height)
+		{
+		}
+
 		public Image (Stream stream) : base (stream)
 		{
 		}
@@ -56,6 +60,11 @@ namespace VAS.Core.Common
 		protected override Pixbuf LoadFromFile (string filepath)
 		{
 			return new Pixbuf (filepath);
+		}
+
+		protected override Pixbuf LoadFromFile (string filepath, int width, int height)
+		{
+			return new Pixbuf (filepath, width, height);
 		}
 
 		protected override Pixbuf LoadFromStream (Stream stream)

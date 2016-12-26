@@ -719,9 +719,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 			ResetBackbuffer ();
 
-			backBufferSurface = tk.CreateSurface ((int)Width, (int)Height);
+			backBufferSurface = tk.CreateSurface ((int)Width * 2, (int)Height * 2);
 			using (IContext c = backBufferSurface.Context) {
 				tk.Context = c;
+				tk.TranslateAndScale (new Point (0, 0), new Point (2, 2));
 				DrawBackbuffer (tk);
 			}
 		}
@@ -751,7 +752,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 			tk.Context = ctx;
 			tk.Begin ();
-			tk.DrawSurface (backBufferSurface, Position);
+			tk.DrawSurface (Position, Width, Height, backBufferSurface, ScaleMode.AspectFit);
 			DrawSelectedTags (tk);
 			DrawRecordTime (tk);
 			DrawApplyButton (tk);

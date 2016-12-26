@@ -31,7 +31,6 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		public NeedleView ()
 		{
 			LoadSurfaces ();
-			Width = needle.Width;
 			X = 0;
 			TimelineHeight = 0;
 		}
@@ -55,19 +54,20 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		}
 
 		public double Width {
-			get;
-			set;
+			get {
+				return StyleConf.TimelineNeedleBigWidth;
+			}
 		}
 
 		public double Height {
 			get {
-				return needle.Height;
+				return StyleConf.TimelineNeedleBigHeight;
 			}
 		}
 
 		public Point TopLeft {
 			get {
-				return new Point (X - Width / 2, TimelineHeight - needle.Height);
+				return new Point (X - Width / 2, TimelineHeight - Height);
 			}
 		}
 
@@ -85,7 +85,10 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		static public void LoadSurfaces ()
 		{
 			if (!surfacesInitialized) {
-				needle = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.TimelineNeedleResource, false);
+				needle = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.TimelineNeedleResource,
+																			   StyleConf.TimelineNeedleBigWidth,
+																			   StyleConf.TimelineNeedleBigHeight,
+																			   false);
 				surfacesInitialized = true;
 			}
 		}

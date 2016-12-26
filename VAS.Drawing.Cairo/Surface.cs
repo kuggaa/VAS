@@ -37,6 +37,7 @@ namespace VAS.Drawing.Cairo
 					context.Paint ();
 				}
 			}
+			Scale = 1;
 		}
 
 		~Surface ()
@@ -87,14 +88,19 @@ namespace VAS.Drawing.Cairo
 
 		public int Width {
 			get {
-				return surface.Width;
+				return surface.Width / Scale;
 			}
 		}
 
 		public int Height {
 			get {
-				return surface.Height;
+				return surface.Height / Scale;
 			}
+		}
+
+		public int Scale {
+			get;
+			set;
 		}
 
 		protected bool Disposed { get; private set; } = false;

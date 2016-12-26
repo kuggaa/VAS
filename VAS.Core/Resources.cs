@@ -28,7 +28,7 @@ namespace VAS.Core
 		/// </summary>
 		public static bool TEST_MODE = false;
 
-		public static Image LoadImage (string name)
+		public static Image LoadImage (string name, int width = 0, int height = 0)
 		{
 			if (TEST_MODE) {
 				string svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16px\" height=\"16px\"/>";
@@ -36,7 +36,11 @@ namespace VAS.Core
 					return new Image (s);
 				}
 			}
-			return new Image (Utils.GetDataFilePath (name));
+			if (width != 0 && height != 0) {
+				return new Image (Utils.GetDataFilePath (name), width * 2, height * 2);
+			} else {
+				return new Image (Utils.GetDataFilePath (name));
+			}
 		}
 	}
 
