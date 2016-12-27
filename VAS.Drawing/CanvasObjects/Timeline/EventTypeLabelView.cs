@@ -16,13 +16,13 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 
-using System;
+using System.ComponentModel;
+using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
-using VAS.Core.ViewModel;
 using VAS.Core.MVVMC;
-using VAS.Core;
 using VAS.Core.Store.Drawables;
+using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
@@ -133,13 +133,13 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			ViewModel.LoadEventType ();
 		}
 
-		void HandlePropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName != "Visible") {
-				return;
+			if (e.PropertyName == nameof (TimelineEventVM.Visible) ||
+				e.PropertyName == "Collection") {
+				playButton.Insensitive = ViewModel.VisibleEvents == 0;
+				ReDraw ();
 			}
-			playButton.Insensitive = ViewModel.VisibleEvents == 0;
-			ReDraw ();
 		}
 
 		void HandleButtonRedrawEvent (ICanvasObject co, Area area)
