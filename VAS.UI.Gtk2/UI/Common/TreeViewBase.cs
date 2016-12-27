@@ -53,7 +53,7 @@ namespace VAS.UI.Common
 		//DragDrop variables
 		protected TargetList targets;
 		Point dragStart;
-		bool dragging, dragStarted, enableDragSource;
+		protected bool dragging, dragStarted, enableDragSource;
 
 		public TreeViewBase () : this (new TreeStore (typeof (TViewModel)))
 		{
