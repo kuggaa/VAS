@@ -30,6 +30,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		double width, height, offsetY;
 		protected const int DEFAULT_FONT_SIZE = 12;
 		protected const FontWeight DEFAULT_FONT_WEIGHT = FontWeight.Bold;
+		protected double scrolledY;
+		double scroll;
 
 		public LabelView ()
 		{
@@ -90,8 +92,14 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		}
 
 		public virtual double Scroll {
-			get;
-			set;
+			get {
+				return scroll;
+			}
+
+			set {
+				scroll = value;
+				HandleSizeChanged ();
+			}
 		}
 
 		public Color BackgroundColor {
@@ -114,21 +122,20 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		public override void Draw (IDrawingToolkit tk, Area area)
 		{
 			double hs, vs;
-			double y;
 
 			hs = StyleConf.TimelineLabelHSpacing;
 			vs = StyleConf.TimelineLabelVSpacing;
-			y = OffsetY - Math.Floor (Scroll);
+
 			tk.Begin ();
 			tk.FillColor = BackgroundColor;
 			tk.StrokeColor = BackgroundColor;
 			tk.LineWidth = 0;
-			tk.DrawRectangle (new Point (0, y), Width, Height);
+			tk.DrawRectangle (new Point (0, scrolledY), Width, Height);
 
 			/* Draw a rectangle with the category color */
 			tk.FillColor = Color;
 			tk.StrokeColor = Color;
-			tk.DrawRectangle (new Point (hs, y + vs), RectSize, RectSize);
+			tk.DrawRectangle (new Point (hs, scrolledY + vs), RectSize, RectSize);
 
 			/* Draw category name */
 			tk.FontSlant = FontSlant.Normal;
@@ -137,13 +144,13 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			tk.FillColor = App.Current.Style.PaletteWidgets;
 			tk.FontAlignment = FontAlignment.Left;
 			tk.StrokeColor = App.Current.Style.PaletteWidgets;
-			tk.DrawText (new Point (TextOffset, y), Width - TextOffset, Height, Name);
+			tk.DrawText (new Point (TextOffset, scrolledY), Width - TextOffset, Height, Name);
 			tk.End ();
 		}
 
-		public Selection GetSelection (Point point, double precision, bool inMotion = false)
+		public virtual Selection GetSelection (Point point, double precision, bool inMotion = false)
 		{
-			Rectangle r = new Rectangle (new Point (0, OffsetY), Width, Height);
+			Rectangle r = new Rectangle (new Point (0, scrolledY), Width, Height);
 			Selection s = r.GetSelection (point, precision);
 			if (s != null) {
 				s.Drawable = this;
@@ -158,6 +165,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 		protected virtual void HandleSizeChanged ()
 		{
+			scrolledY = OffsetY - Math.Floor (Scroll);
 		}
 	}
 }

@@ -16,11 +16,13 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 
-using System;
+using System.ComponentModel;
+using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
-using VAS.Core.ViewModel;
 using VAS.Core.MVVMC;
+using VAS.Core.Store.Drawables;
+using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
@@ -29,34 +31,122 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 	/// A label for the event types timeline row.
 	/// </summary>
 	[View ("EventTypeLabelView")]
-	public class EventTypeLabelView : LabelView, ICanvasObjectView<EventTypeVM>
+	public class EventTypeLabelView : LabelView, ICanvasObjectView<EventTypeTimelineVM>
 	{
-		EventTypeVM viewModel;
+		const int TIMELINE_BUTTON_MARGIN = 3;
+
+		EventTypeTimelineVM viewModel;
+		TimelineButtonView playButton;
+
+		public EventTypeLabelView ()
+		{
+			playButton = new TimelineButtonView ();
+			playButton.Icon = Resources.LoadImage (StyleConf.PlayButton);
+			playButton.ClickedEvent += PlayButtonClickedEvent;
+			playButton.RedrawEvent += HandleButtonRedrawEvent;
+		}
 
 		public override Color Color {
 			get {
-				return ViewModel.Color;
+				return ViewModel.EventTypeVM.Color;
 			}
 		}
 
 		public override string Name {
 			get {
-				return ViewModel.Name;
+				return ViewModel.EventTypeVM.Name;
 			}
 		}
 
-		public EventTypeVM ViewModel {
+		public EventTypeTimelineVM ViewModel {
 			get {
 				return viewModel;
 			}
 			set {
+				if (viewModel != null) {
+					viewModel.PropertyChanged -= HandlePropertyChanged;
+				}
 				viewModel = value;
+				if (viewModel != null) {
+					viewModel.PropertyChanged += HandlePropertyChanged;
+					playButton.Insensitive = viewModel.VisibleEvents == 0;
+				}
 			}
 		}
 
 		public void SetViewModel (object viewModel)
 		{
-			ViewModel = (EventTypeVM)viewModel;
+			ViewModel = (EventTypeTimelineVM)viewModel;
+		}
+
+		public override void Draw (IDrawingToolkit tk, Area area)
+		{
+			double hs, vs;
+
+			hs = StyleConf.TimelineLabelHSpacing;
+			vs = StyleConf.TimelineLabelVSpacing;
+
+			tk.Begin ();
+			tk.FillColor = BackgroundColor;
+			tk.StrokeColor = BackgroundColor;
+			tk.LineWidth = 0;
+			tk.DrawRectangle (new Point (0, scrolledY), Width, Height);
+
+			/* Draw a rectangle with the category color */
+			tk.FillColor = Color;
+			tk.StrokeColor = Color;
+			tk.DrawRectangle (new Point (hs, scrolledY + vs), RectSize, RectSize);
+
+			/* Draw category name */
+			tk.FontSlant = FontSlant.Normal;
+			tk.FontWeight = DEFAULT_FONT_WEIGHT;
+			tk.FontSize = DEFAULT_FONT_SIZE;
+			tk.FillColor = App.Current.Style.PaletteWidgets;
+			tk.FontAlignment = FontAlignment.Left;
+			tk.StrokeColor = App.Current.Style.PaletteWidgets;
+			tk.DrawText (new Point (TextOffset, scrolledY), Width - TextOffset, Height, Name);
+			//Draw playButton
+			playButton.Position = new Point (Width - RectSize - TIMELINE_BUTTON_MARGIN,
+											 scrolledY + TIMELINE_BUTTON_MARGIN);
+			playButton.Draw (tk, area);
+			tk.End ();
+		}
+
+		public override Selection GetSelection (Point point, double precision, bool inMotion = false)
+		{
+			Selection selection = playButton.GetSelection (point, precision, inMotion);
+			if (selection == null) {
+				selection = base.GetSelection (point, precision, inMotion);
+			}
+			return selection;
+		}
+
+		protected override void HandleSizeChanged ()
+		{
+			base.HandleSizeChanged ();
+			playButton.Width = (int)RectSize;
+			playButton.Height = (int)RectSize;
+		}
+
+		void PlayButtonClickedEvent (ICanvasObject co)
+		{
+			ViewModel.LoadEventType ();
+		}
+
+		void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof (TimelineEventVM.Visible) ||
+				e.PropertyName == "Collection") {
+				playButton.Insensitive = ViewModel.VisibleEvents == 0;
+				ReDraw ();
+			} else if (e.PropertyName == nameof (EventTypeVM.Name)) {
+				ReDraw ();
+			}
+		}
+
+		void HandleButtonRedrawEvent (ICanvasObject co, Area area)
+		{
+			EmitRedrawEvent (co as CanvasObject, area);
 		}
 	}
 }
