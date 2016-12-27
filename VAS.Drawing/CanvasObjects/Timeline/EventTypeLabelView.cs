@@ -139,6 +139,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				e.PropertyName == "Collection") {
 				playButton.Insensitive = ViewModel.VisibleEvents == 0;
 				ReDraw ();
+			} else if (e.PropertyName == nameof (EventTypeVM.Name)) {
+				ReDraw ();
 			}
 		}
 
