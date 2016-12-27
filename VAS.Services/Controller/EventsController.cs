@@ -78,16 +78,16 @@ namespace VAS.Services.Controller
 
 		public virtual void Start ()
 		{
-			App.Current.EventsBroker.Subscribe<LoadTimelineEvent<TModel>> (HandleOpenEvent);
-			App.Current.EventsBroker.Subscribe<LoadTimelineEvent<IEnumerable<TModel>>> (HandleOpenListEvent);
-			App.Current.EventsBroker.Subscribe<LoadTimelineEvent<EventTypeTimelineVM>> (HandleOpenEventType);
+			App.Current.EventsBroker.Subscribe<LoadTimelineEvent<TModel>> (HandleLoadEvent);
+			App.Current.EventsBroker.Subscribe<LoadTimelineEvent<IEnumerable<TModel>>> (HandleLoadEventsList);
+			App.Current.EventsBroker.Subscribe<LoadTimelineEvent<EventTypeTimelineVM>> (HandleLoadEventType);
 		}
 
 		public virtual void Stop ()
 		{
-			App.Current.EventsBroker.Unsubscribe<LoadTimelineEvent<TModel>> (HandleOpenEvent);
-			App.Current.EventsBroker.Unsubscribe<LoadTimelineEvent<IEnumerable<TModel>>> (HandleOpenListEvent);
-			App.Current.EventsBroker.Unsubscribe<LoadTimelineEvent<EventTypeTimelineVM>> (HandleOpenEventType);
+			App.Current.EventsBroker.Unsubscribe<LoadTimelineEvent<TModel>> (HandleLoadEvent);
+			App.Current.EventsBroker.Unsubscribe<LoadTimelineEvent<IEnumerable<TModel>>> (HandleLoadEventsList);
+			App.Current.EventsBroker.Unsubscribe<LoadTimelineEvent<EventTypeTimelineVM>> (HandleLoadEventType);
 		}
 
 		public virtual void SetViewModel (IViewModel viewModel)
@@ -108,17 +108,17 @@ namespace VAS.Services.Controller
 		{
 		}
 
-		void HandleOpenEvent (LoadTimelineEvent<TModel> e)
+		void HandleLoadEvent (LoadTimelineEvent<TModel> e)
 		{
 			PlayerVM.LoadEvent (e.Object, e.Playing);
 		}
 
-		void HandleOpenListEvent (LoadTimelineEvent<IEnumerable<TModel>> e)
+		void HandleLoadEventsList (LoadTimelineEvent<IEnumerable<TModel>> e)
 		{
 			PlayerVM.LoadEvents (e.Object.OfType<TimelineEvent> (), e.Playing);
 		}
 
-		void HandleOpenEventType (LoadTimelineEvent<EventTypeTimelineVM> e)
+		void HandleLoadEventType (LoadTimelineEvent<EventTypeTimelineVM> e)
 		{
 			var timelineEvents = e.Object.ViewModels.Where ((arg) => arg.Visible == true)
 													.Select ((arg) => arg.Model);
