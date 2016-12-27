@@ -17,7 +17,7 @@ def main():
         di = os.path.join(home, 'data', d)
         files =  subprocess.check_output(["git", "ls-files", di])
         files = [x.replace(os.path.join('data', d) + '/', '') for x in files.split('\n')[:-1]]
-        files = [x for x in files if not os.path.isdir(os.path.join(di, x))]
+        files = [x for x in files if not os.path.isdir(os.path.join(di, x)) and x != 'Makefile.am']
         files = " \\\n\t".join(files)
         am = os.path.join(di, 'Makefile.am')
         with open (am, "w+") as f:
