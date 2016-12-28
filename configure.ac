@@ -130,6 +130,7 @@ build/Makefile
 libvas/Makefile
 system_uuid/Makefile
 data/Makefile
+data/icons/Makefile
 data/images/Makefile
 Makefile
 
