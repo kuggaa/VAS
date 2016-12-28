@@ -178,7 +178,7 @@ namespace VAS.Core.Common
 			}
 		}
 
-		private static void Write (string format, params object[] args)
+		private static void Write (string format, params object [] args)
 		{
 			try {
 				if (LogFile != null)
@@ -332,7 +332,7 @@ namespace VAS.Core.Common
 			}
 		}
 
-		public static void DebugFormat (string format, params object[] args)
+		public static void DebugFormat (string format, params object [] args)
 		{
 			if (Debugging) {
 				Debug (String.Format (format, args));
@@ -363,7 +363,7 @@ namespace VAS.Core.Common
 			Information (message, null, showUser);
 		}
 
-		public static void InformationFormat (string format, params object[] args)
+		public static void InformationFormat (string format, params object [] args)
 		{
 			Information (String.Format (format, args));
 		}
@@ -392,7 +392,7 @@ namespace VAS.Core.Common
 			Warning (message, null, showUser);
 		}
 
-		public static void WarningFormat (string format, params object[] args)
+		public static void WarningFormat (string format, params object [] args)
 		{
 			Warning (String.Format (format, args));
 		}
@@ -421,7 +421,7 @@ namespace VAS.Core.Common
 			Error (message, null, showUser);
 		}
 
-		public static void ErrorFormat (string format, params object[] args)
+		public static void ErrorFormat (string format, params object [] args)
 		{
 			Error (String.Format (format, args));
 		}
