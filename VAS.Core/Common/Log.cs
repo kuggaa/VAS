@@ -111,6 +111,8 @@ namespace VAS.Core.Common
 
 		private static bool debugging = false;
 
+		static object writeLock = new object ();
+
 		public static bool Debugging {
 			get {
 				return debugging;
@@ -157,15 +159,17 @@ namespace VAS.Core.Common
 					thread_name = String.Format ("{0} ", thread.ManagedThreadId);
 				}
 
-				Write ("[{5}{0} {1:00}:{2:00}:{3:00}.{4:000}]", TypeString (type), DateTime.Now.Hour,
-					DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond, thread_name);
+				lock (writeLock) {
+					Write ("[{5}{0} {1:00}:{2:00}:{3:00}.{4:000}]", TypeString (type), DateTime.Now.Hour,
+						DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond, thread_name);
 
-				ConsoleCrayon.ResetColor ();
+					ConsoleCrayon.ResetColor ();
 
-				if (details != null) {
-					Write (" {0} - {1}\n", message, details);
-				} else {
-					Write (" {0}\n", message);
+					if (details != null) {
+						Write (" {0} - {1}\n", message, details);
+					} else {
+						Write (" {0}\n", message);
+					}
 				}
 			}
 
@@ -174,7 +178,7 @@ namespace VAS.Core.Common
 			}
 		}
 
-		private static void Write (string format, params object[] args)
+		private static void Write (string format, params object [] args)
 		{
 			try {
 				if (LogFile != null)
@@ -328,7 +332,7 @@ namespace VAS.Core.Common
 			}
 		}
 
-		public static void DebugFormat (string format, params object[] args)
+		public static void DebugFormat (string format, params object [] args)
 		{
 			if (Debugging) {
 				Debug (String.Format (format, args));
@@ -359,7 +363,7 @@ namespace VAS.Core.Common
 			Information (message, null, showUser);
 		}
 
-		public static void InformationFormat (string format, params object[] args)
+		public static void InformationFormat (string format, params object [] args)
 		{
 			Information (String.Format (format, args));
 		}
@@ -388,7 +392,7 @@ namespace VAS.Core.Common
 			Warning (message, null, showUser);
 		}
 
-		public static void WarningFormat (string format, params object[] args)
+		public static void WarningFormat (string format, params object [] args)
 		{
 			Warning (String.Format (format, args));
 		}
@@ -417,7 +421,7 @@ namespace VAS.Core.Common
 			Error (message, null, showUser);
 		}
 
-		public static void ErrorFormat (string format, params object[] args)
+		public static void ErrorFormat (string format, params object [] args)
 		{
 			Error (String.Format (format, args));
 		}
