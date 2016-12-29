@@ -3,7 +3,6 @@
 //
 
 using System;
-using System.Linq;
 using Gdk;
 using Gtk;
 using VAS.Core.Common;
@@ -15,164 +14,153 @@ namespace VAS.UI.Helpers
 	public static class ButtonHelper
 	{
 		/// <summary>
-		/// Creates a button normal.
+		/// Creates a normal button from a <see cref="Command"/>.
 		/// </summary>
-		/// <returns>The button normal.</returns>
-		/// <param name="icon">Icon.</param>
-		/// <param name="toolTip">Tool tip.</param>
+		/// <returns>The button.</returns>
 		/// <param name="command">Command.</param>
-		public static Button CreateButtonNormal (Pixbuf icon, string toolTip, Command command = null)
+		public static Button CreateButton (Command command)
 		{
-			Button button;
-			button = new Button ();
-			ApplyStyleNormal (button, icon, toolTip, command);
-
+			Button button = new Button ();
+			button.ApplyStyleNormal (command);
 			return button;
 		}
 
 		/// <summary>
-		/// Creates a button tab.
+		/// Creates a tab button from a <see cref="Command"/>.
 		/// </summary>
-		/// <returns>The button tab.</returns>
-		/// <param name="icon">Icon.</param>
-		/// <param name="toolTip">Tool tip.</param>
-		/// <param name="otherbutton">Otherbutton.</param>
+		/// <returns>The button.</returns>
+		/// <param name="otherButton">Other radio button in the group.</param>
 		/// <param name="command">Command.</param>
-		public static Button CreateButtonTab (Pixbuf icon, string toolTip, RadioButton otherbutton, Command command = null)
+		public static Button CreateTabButton (Command command, RadioButton otherButton)
 		{
-			Button button;
-			button = new RadioButton (otherbutton);
-			(button as RadioButton).DrawIndicator = false;
-			ApplyStyleTab (button, icon, toolTip, command);
-
+			RadioButton button = new RadioButton (otherButton);
+			button.DrawIndicator = false;
+			button.ApplyStyleTab (command);
 			return button;
 		}
 
 		/// <summary>
-		/// Creates a button dialog.
+		/// Creates a button dialog from a <see cref="Command"/>.
 		/// </summary>
 		/// <returns>The button dialog.</returns>
-		/// <param name="toolTip">Tool tip.</param>
 		/// <param name="command">Command.</param>
-		public static Button CreateButtonDialog (string toolTip, Command command = null)
+		public static Button CreateDialogButton (Command command)
 		{
-			Button button;
-			button = new Button ();
-			ApplyStyleDialog (button, toolTip, command);
-
+			Button button = new Button ();
+			button.ApplyStyleDialog (command);
 			return button;
 		}
 
 		/// <summary>
-		/// Applies style normal to the given button.
+		/// Applies the normal style normal to the given button and binds it to a command.
 		/// </summary>
 		/// <param name="button">Button.</param>
-		/// <param name="icon">Icon.</param>
-		/// <param name="toolTip">Tool tip.</param>
-		/// <param name="action">Action.</param>
-		public static void ApplyStyleNormal (this Button button, Pixbuf icon, string toolTip, EventHandler action)
-		{
-			ApplyStyleNormal (button, icon, toolTip, null, action);
-		}
-
-		/// <summary>
-		/// Applies style normal to the given button.
-		/// </summary>
-		/// <param name="button">Button.</param>
-		/// <param name="icon">Icon.</param>
-		/// <param name="toolTip">Tool tip.</param>
 		/// <param name="command">Command.</param>
-		public static void ApplyStyleNormal (this Button button, Pixbuf icon, string toolTip, Command command = null, EventHandler action = null)
+		public static void ApplyStyleNormal (this Button button, Command command = null)
 		{
-			Image image = FillButtonWithImage (button, icon, toolTip, command, action, StyleConf.ButtonNormal);
-
-			button.WidthRequest = App.Current.Style.ButtonNormalWidth;
-			button.HeightRequest = App.Current.Style.ButtonNormalHeight;
-			image.WidthRequest = App.Current.Style.IconLargeWidth;
-			image.HeightRequest = App.Current.Style.IconLargeHeight;
+			if (command != null) {
+				button.Bind (command);
+			}
+			button.ApplyStyle (StyleConf.ButtonNormal, App.Current.Style.ButtonNormalWidth, App.Current.Style.IconLargeWidth);
 		}
 
 		/// <summary>
-		/// Applies style tab to the given button.
+		/// Applies the normal style normal to the given button and binds it to a command.
 		/// </summary>
 		/// <param name="button">Button.</param>
-		/// <param name="icon">Icon.</param>
-		/// <param name="toolTip">Tool tip.</param>
-		/// <param name="action">Action.</param>
-		public static void ApplyStyleTab (this Button button, Pixbuf icon, string toolTip, EventHandler action)
-		{
-			ApplyStyleTab (button, icon, toolTip, null, action);
-		}
-
-		/// <summary>
-		/// Applies style tab to the given button.
-		/// </summary>
-		/// <param name="button">Button.</param>
-		/// <param name="icon">Icon.</param>
-		/// <param name="toolTip">Tool tip.</param>
 		/// <param name="command">Command.</param>
-		public static void ApplyStyleTab (this Button button, Pixbuf icon, string toolTip, Command command = null, EventHandler action = null)
+		public static void ApplyStyleTab (this Button button, Command command = null)
 		{
-			Image image = FillButtonWithImage (button, icon, toolTip, command, action, StyleConf.ButtonTab);
-
-			button.WidthRequest = App.Current.Style.ButtonTabWidth;
-			button.HeightRequest = App.Current.Style.ButtonTabHeight;
-			image.WidthRequest = App.Current.Style.IconLargeWidth;
-			image.HeightRequest = App.Current.Style.IconLargeHeight;
+			if (command != null) {
+				button.Bind (command);
+			}
+			button.ApplyStyle (StyleConf.ButtonTab, App.Current.Style.ButtonTabWidth, App.Current.Style.IconLargeWidth);
 		}
 
 		/// <summary>
-		/// Applies style dialog to the given button.
+		/// Applies the dialog style to the given button and binds it to a command.
 		/// </summary>
 		/// <param name="button">Button.</param>
-		/// <param name="toolTip">Tool tip.</param>
-		/// <param name="action">Action.</param>
-		public static void ApplyStyleDialog (this Button button, string toolTip, EventHandler action)
-		{
-			ApplyStyleDialog (button, toolTip, null, action);
-		}
-
-		/// <summary>
-		/// Applies style dialog to the given button.
-		/// </summary>
-		/// <param name="button">Button.</param>
-		/// <param name="toolTip">Tool tip.</param>
 		/// <param name="command">Command.</param>
-		public static void ApplyStyleDialog (this Button button, string toolTip, Command command = null, EventHandler action = null)
+		public static void ApplyStyleDialog (this Button button, Command command = null)
 		{
-			FillButton (button, toolTip, command, action, StyleConf.ButtonDialog);
-
+			if (command != null) {
+				button.Bind (command);
+			}
 			button.HeightRequest = App.Current.Style.ButtonDialogHeight;
 		}
 
-		static void FillButton (Button button, string toolTip, Command command, EventHandler action, string buttonStyle)
+		/// <summary>
+		/// Sets an icon image to a button.
+		/// </summary>
+		/// <param name="button">Button.</param>
+		/// <param name="icon">Icon.</param>
+		static public void SetImage (this Button button, Pixbuf icon)
 		{
-			button.Name = buttonStyle;
-			button.TooltipMarkup = toolTip;
-
-			if (command != null) {
-				button.Bind (command);
-			} else if (action != null) {
-				button.Clicked += action;
+			if (icon == null) {
+				return;
 			}
+
+			Image image = new Image ();
+			button.Image = image;
+			image.Pixbuf = icon;
 		}
 
-		static Image FillButtonWithImage (Button button, Pixbuf icon, string toolTip, Command command, EventHandler action, string buttonStyle)
+		/// <summary>
+		/// Configures the specified button with an icon, text, tooltip text and clicked callback.
+		/// </summary>
+		/// <param name="button">Button.</param>
+		/// <param name="icon">Icon.</param>
+		/// <param name="text">Text.</param>
+		/// <param name="tooltipText">Tooltip text.</param>
+		/// <param name="callback">Callback.</param>
+		public static void Configure (this Button button, Pixbuf icon, string text, string tooltipText, EventHandler callback)
 		{
-			FillButton (button, toolTip, command, action, buttonStyle);
-
-			if (icon == null) {
-				return null;
+			button.SetImage (icon);
+			if (text != null) {
+				button.Label = text;
 			}
+			button.TooltipText = tooltipText;
+			button.Clicked += callback;
+		}
 
-			Image image = button.Children.FirstOrDefault () as Image;
-			if (image == null) {
-				image = new Image ();
-				button.Add (image);
+		/// <summary>
+		/// Bind a button to  the specified button, command and parameter.
+		/// </summary>
+		/// <param name="button">Button.</param>
+		/// <param name="command">Command.</param>
+		/// <param name="parameter">Parameter.</param>
+		public static void Bind (this Button button, Command command, object parameter = null)
+		{
+			button.SetImage (command.Icon.Value);
+			button.Label = command.Text;
+			button.TooltipText = command.ToolTipText;
+
+			button.Sensitive = command.CanExecute (parameter);
+			EventHandler handler = (sender, e) => {
+				button.Sensitive = command.CanExecute (parameter);
+			};
+			command.CanExecuteChanged += handler;
+			button.Destroyed += (sender, e) => {
+				command.CanExecuteChanged -= handler;
+			};
+			button.Clicked += (sender, e) => {
+				var radioButton = sender as RadioButton;
+				if (radioButton != null && radioButton.Active == false) {
+					return;
+				}
+				command.Execute (parameter);
+			};
+		}
+
+		static void ApplyStyle (this Button button, string buttonStyle, int buttonSize, int imageSize)
+		{
+			button.Name = buttonStyle;
+			button.WidthRequest = buttonSize;
+			button.HeightRequest = buttonSize;
+			if (button.Image != null) {
+				button.ImagePosition = PositionType.Left;
 			}
-			image.Pixbuf = icon;
-
-			return image;
 		}
 	}
 }
