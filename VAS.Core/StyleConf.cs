@@ -218,9 +218,6 @@ namespace VAS.Core.Common
 
 		public string Font = "Ubuntu";
 
-		// Environment variables
-		public const string TEST = "TEST";
-
 		public StyleConf ()
 		{
 			HomeTeamColor = Color.Red;
