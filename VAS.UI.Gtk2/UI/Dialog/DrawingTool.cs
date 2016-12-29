@@ -485,6 +485,7 @@ namespace VAS.UI.Dialog
 				Constants.MAX_THUMBNAIL_SIZE);
 			play.UpdateMiniature ();
 			drawing = null;
+			ViewModel.DrawingSaved ();
 			await App.Current.StateController.MoveBack ();
 		}
 
