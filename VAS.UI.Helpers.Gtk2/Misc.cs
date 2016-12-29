@@ -20,7 +20,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Gdk;
 using Gtk;
 using VAS.Core;
@@ -56,7 +55,7 @@ namespace VAS.UI.Helpers
 			string filename;
 
 			filename = App.Current.Dialogs.OpenFile (Catalog.GetString ("Choose an image"),
-				null, null, "Images", new string [] { "*.png", "*.jpg", "*.jpeg", "*.svg" });
+				null, null, "Images", new string[] { "*.png", "*.jpg", "*.jpeg", "*.svg" }); 
 			if (filename != null) {
 				// For Win32 compatibility we need to open the image file
 				// using a StreamReader. Gdk.Pixbuf(string filePath) uses GLib to open the
@@ -85,7 +84,7 @@ namespace VAS.UI.Helpers
 			if (w > max_width || h > max_height) {
 				Pixbuf scalledPixbuf;
 				double rate = (double)w / (double)h;
-
+				
 				if (h > w)
 					ow = (int)(oh * rate);
 				else
@@ -120,18 +119,18 @@ namespace VAS.UI.Helpers
 		}
 
 		public static ListStore FillImageFormat (ComboBox formatBox, List<VideoStandard> standards,
-												 VideoStandard def)
+		                                         VideoStandard def)
 		{
 			ListStore formatStore;
 			int index = 0, active = 0;
-
-			formatStore = new ListStore (typeof (string), typeof (VideoStandard));
+			
+			formatStore = new ListStore (typeof(string), typeof(VideoStandard));
 			foreach (VideoStandard std in standards) {
 				formatStore.AppendValues (std.Name, std);
 				if (std.Equals (def))
 					active = index;
 				index++;
-			}
+			} 
 			formatBox.Model = formatStore;
 			formatBox.Active = active;
 			return formatStore;
@@ -141,8 +140,8 @@ namespace VAS.UI.Helpers
 		{
 			ListStore encodingStore;
 			int index = 0, active = 0;
-
-			encodingStore = new ListStore (typeof (string), typeof (EncodingProfile));
+			
+			encodingStore = new ListStore (typeof(string), typeof(EncodingProfile));
 			foreach (EncodingProfile prof in EncodingProfiles.Render) {
 				encodingStore.AppendValues (prof.Name, prof);
 				if (prof.Equals (def))
@@ -158,8 +157,8 @@ namespace VAS.UI.Helpers
 		{
 			ListStore qualityStore;
 			int index = 0, active = 0;
-
-			qualityStore = new ListStore (typeof (string), typeof (EncodingQuality));
+			
+			qualityStore = new ListStore (typeof(string), typeof(EncodingQuality));
 			foreach (EncodingQuality qual in EncodingQualities.All) {
 				qualityStore.AppendValues (qual.Name, qual);
 				if (qual.Equals (def)) {
@@ -180,7 +179,7 @@ namespace VAS.UI.Helpers
 		public static Gdk.Pixbuf LoadMissingIcon (Gtk.IconSize size)
 		{
 			int sz, sy;
-			global::Gtk.Icon.SizeLookup (size, out sz, out sy);
+			global::Gtk.Icon.SizeLookup (size, out  sz, out  sy);
 			return LoadMissingIcon (sz);
 		}
 
@@ -236,7 +235,7 @@ namespace VAS.UI.Helpers
 		public static Gdk.Pixbuf LoadIcon (string name, Gtk.IconSize size, IconLookupFlags flags = IconLookupFlags.ForceSvg)
 		{
 			int sz, sy;
-			global::Gtk.Icon.SizeLookup (size, out sz, out sy);
+			global::Gtk.Icon.SizeLookup (size, out  sz, out  sy);
 			return LoadIcon (name, sz, flags);
 		}
 
@@ -257,12 +256,12 @@ namespace VAS.UI.Helpers
 			}
 		}
 
-		static bool IsSkipedType (Widget w, Type [] skipTypes)
+		static bool IsSkipedType (Widget w, Type[] skipTypes)
 		{
 			return skipTypes.Any (t => t.IsInstanceOfType (w));
 		}
 
-		public static void SetFocus (Container w, bool canFocus, params Type [] skipTypes)
+		public static void SetFocus (Container w, bool canFocus, params Type[] skipTypes)
 		{
 			if (IsSkipedType (w, skipTypes)) {
 				return;
@@ -296,7 +295,7 @@ namespace VAS.UI.Helpers
 					}
 				};
 				busy.ShowSync (action);
-
+				
 				if (ex != null) {
 					throw ex;
 				} else if (mediaFile == null) {
@@ -320,11 +319,11 @@ namespace VAS.UI.Helpers
 			IGUIToolkit gui = App.Current.GUIToolkit;
 			IMultimediaToolkit multimedia = App.Current.MultimediaToolkit;
 			string filename;
-
+			
 			filename = App.Current.Dialogs.OpenFile (Catalog.GetString ("Open file"), null, null);
 			if (filename == null)
 				return null;
-
+			
 			mediaFile = DiscoverFile (filename, parent);
 			if (mediaFile != null) {
 				try {
@@ -332,11 +331,11 @@ namespace VAS.UI.Helpers
 						// HACK: We only authorize remuxing in the pro version.
 						if (!App.Current.SupportsFullHD) {
 							string msg = Catalog.GetString ("This file is not in a supported format, " +
-										 "convert it with the video conversion tool");
+							             "convert it with the video conversion tool");
 							throw new Exception (msg);
 						} else {
 							string q = Catalog.GetString ("This file needs to be converted into a more suitable format." +
-									   "(This step will only take a few minutes)");
+							           "(This step will only take a few minutes)");
 							if (App.Current.Dialogs.QuestionMessage (q, null, parent).Result) {
 								string newFilename = multimedia.RemuxFile (mediaFile, parent);
 								if (newFilename != null) {
