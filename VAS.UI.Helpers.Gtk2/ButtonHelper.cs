@@ -70,7 +70,7 @@ namespace VAS.UI.Helpers
 		/// <param name="icon">Icon.</param>
 		/// <param name="toolTip">Tool tip.</param>
 		/// <param name="action">Action.</param>
-		public static void ApplyStyleNormal (Button button, Pixbuf icon, string toolTip, EventHandler action)
+		public static void ApplyStyleNormal (this Button button, Pixbuf icon, string toolTip, EventHandler action)
 		{
 			ApplyStyleNormal (button, icon, toolTip, null, action);
 		}
@@ -82,7 +82,7 @@ namespace VAS.UI.Helpers
 		/// <param name="icon">Icon.</param>
 		/// <param name="toolTip">Tool tip.</param>
 		/// <param name="command">Command.</param>
-		public static void ApplyStyleNormal (Button button, Pixbuf icon, string toolTip, Command command = null, EventHandler action = null)
+		public static void ApplyStyleNormal (this Button button, Pixbuf icon, string toolTip, Command command = null, EventHandler action = null)
 		{
 			Image image = FillButtonWithImage (button, icon, toolTip, command, action, StyleConf.ButtonNormal);
 
@@ -99,7 +99,7 @@ namespace VAS.UI.Helpers
 		/// <param name="icon">Icon.</param>
 		/// <param name="toolTip">Tool tip.</param>
 		/// <param name="action">Action.</param>
-		public static void ApplyStyleTab (Button button, Pixbuf icon, string toolTip, EventHandler action)
+		public static void ApplyStyleTab (this Button button, Pixbuf icon, string toolTip, EventHandler action)
 		{
 			ApplyStyleTab (button, icon, toolTip, null, action);
 		}
@@ -111,7 +111,7 @@ namespace VAS.UI.Helpers
 		/// <param name="icon">Icon.</param>
 		/// <param name="toolTip">Tool tip.</param>
 		/// <param name="command">Command.</param>
-		public static void ApplyStyleTab (Button button, Pixbuf icon, string toolTip, Command command = null, EventHandler action = null)
+		public static void ApplyStyleTab (this Button button, Pixbuf icon, string toolTip, Command command = null, EventHandler action = null)
 		{
 			Image image = FillButtonWithImage (button, icon, toolTip, command, action, StyleConf.ButtonTab);
 
@@ -127,7 +127,7 @@ namespace VAS.UI.Helpers
 		/// <param name="button">Button.</param>
 		/// <param name="toolTip">Tool tip.</param>
 		/// <param name="action">Action.</param>
-		public static void ApplyStyleDialog (Button button, string toolTip, EventHandler action)
+		public static void ApplyStyleDialog (this Button button, string toolTip, EventHandler action)
 		{
 			ApplyStyleDialog (button, toolTip, null, action);
 		}
@@ -138,7 +138,7 @@ namespace VAS.UI.Helpers
 		/// <param name="button">Button.</param>
 		/// <param name="toolTip">Tool tip.</param>
 		/// <param name="command">Command.</param>
-		public static void ApplyStyleDialog (Button button, string toolTip, Command command = null, EventHandler action = null)
+		public static void ApplyStyleDialog (this Button button, string toolTip, Command command = null, EventHandler action = null)
 		{
 			FillButton (button, toolTip, command, action, StyleConf.ButtonDialog);
 
