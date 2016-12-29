@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VAS.Core.Interfaces.GUI;
+using VAS.Core.Store;
 
 namespace VAS.Core
 {
@@ -36,7 +37,7 @@ namespace VAS.Core
 		Task<string> QueryMessage (string key, string title = null, string value = "", object parent = null);
 
 		Task<bool> NewVersionAvailable (Version currentVersion, Version latestVersion,
-		                                string downloadURL, string changeLog, object parent = null);
+										string downloadURL, string changeLog, object parent = null);
 
 		Task<object> ChooseOption (Dictionary<string, object> options, string title = null, object parent = null);
 
@@ -44,22 +45,28 @@ namespace VAS.Core
 
 		/* Files/Folders IO */
 		string SaveFile (string title, string defaultName, string defaultFolder,
-		                 string filterName, string[] extensionFilter);
+						 string filterName, string [] extensionFilter);
 
 		string OpenFile (string title, string defaultName, string defaultFolder,
-		                 string filterName = null, string[] extensionFilter = null);
+						 string filterName = null, string [] extensionFilter = null);
 
 		List<string> OpenFiles (string title, string defaultName, string defaultFolder,
-		                        string filterName, string[] extensionFilter);
+								string filterName, string [] extensionFilter);
 
 		string SelectFolder (string title, string defaultName, string defaultFolder,
-		                     string filterName, string[] extensionFilter);
+							 string filterName, string [] extensionFilter);
 
 		int ButtonsMessage (string message, List<string> textButtons, int? focusIndex, object parent = null);
 
 		/* Utils */
 		Task<DateTime> SelectDate (DateTime date, object widget);
 
+		/// <summary>
+		/// Selects a supported media file from the filesystem.
+		/// </summary>
+		/// <returns>The file.</returns>
+		/// <param name="parent">Parent widget.</param>
+		MediaFile OpenMediaFile (object parent);
 	}
 }
 
