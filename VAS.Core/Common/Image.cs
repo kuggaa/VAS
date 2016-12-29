@@ -19,12 +19,11 @@ using System;
 using System.IO;
 using System.Runtime.Serialization;
 using Gdk;
-using VAS.Core.Common;
 
 namespace VAS.Core.Common
 {
 	[Serializable]
-	public class Image: BaseImage<Pixbuf>
+	public class Image : BaseImage<Pixbuf>
 	{
 		public Image (int width, int height)
 		{
@@ -47,7 +46,7 @@ namespace VAS.Core.Common
 		public Image (SerializationInfo info, StreamingContext context)
 		{
 			try {
-				Value = Deserialize ((byte[])info.GetValue (BUF_PROPERTY, typeof(byte[]))).Value;
+				Value = Deserialize ((byte [])info.GetValue (BUF_PROPERTY, typeof (byte []))).Value;
 			} catch {
 				Value = null;
 			}
@@ -63,14 +62,14 @@ namespace VAS.Core.Common
 			return new Pixbuf (stream);
 		}
 
-		public override byte[] Serialize ()
+		public override byte [] Serialize ()
 		{
 			if (Value == null)
 				return null;
 			return Value.SaveToBuffer ("png");
 		}
 
-		public static Image Deserialize (byte[] ser)
+		public static Image Deserialize (byte [] ser)
 		{
 			return new Image (new Pixbuf (ser));
 		}
@@ -92,9 +91,9 @@ namespace VAS.Core.Common
 		protected override Pixbuf Scale (Pixbuf pix, int maxWidth, int maxHeight)
 		{
 			int width, height;
-			
+
 			ComputeScale (pix.Width, pix.Height, maxWidth, maxHeight, ScaleMode.AspectFit, out width, out height);
-			return pix.ScaleSimple (width, height, Gdk.InterpType.Bilinear);	
+			return pix.ScaleSimple (width, height, Gdk.InterpType.Bilinear);
 		}
 
 		public override void Save (string filename)
@@ -121,6 +120,6 @@ namespace VAS.Core.Common
 				Gdk.InterpType.Bilinear, 255);
 			return new Image (dest);
 		}
-		
+
 	}
 }
