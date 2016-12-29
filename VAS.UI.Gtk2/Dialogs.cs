@@ -40,7 +40,7 @@ namespace VAS.UI
 			}
 		}
 
-		Gtk.Window MainWindow { 
+		Gtk.Window MainWindow {
 			get {
 				return GetParentWidget (null) as Gtk.Window;
 			}
@@ -78,7 +78,7 @@ namespace VAS.UI
 		public Task<bool> NewVersionAvailable (Version currentVersion, Version latestVersion, string downloadURL, string changeLog, object parent = null)
 		{
 			bool res = MessagesHelpers.NewVersionAvailable (currentVersion, latestVersion, downloadURL,
-				           changeLog, GetParentWidget (parent));
+						   changeLog, GetParentWidget (parent));
 			return AsyncHelpers.Return (res);
 		}
 
@@ -121,27 +121,27 @@ namespace VAS.UI
 				parentWindow = MainWindow;
 			}
 			dialog = new BusyDialog (parentWindow);
-			dialog.Message = message; 
+			dialog.Message = message;
 			return dialog;
 		}
 
-		public string SaveFile (string title, string defaultName, string defaultFolder, string filterName, string[] extensionFilter)
+		public string SaveFile (string title, string defaultName, string defaultFolder, string filterName, string [] extensionFilter)
 		{
-			return FileChooserHelper.SaveFile (MainWindow, title, defaultName,	
+			return FileChooserHelper.SaveFile (MainWindow, title, defaultName,
 				defaultFolder, filterName, extensionFilter);
 		}
 
-		public string OpenFile (string title, string defaultName, string defaultFolder, string filterName = null, string[] extensionFilter = null)
+		public string OpenFile (string title, string defaultName, string defaultFolder, string filterName = null, string [] extensionFilter = null)
 		{
 			return FileChooserHelper.OpenFile (MainWindow, title, defaultName, defaultFolder, filterName, extensionFilter);
 		}
 
-		public List<string> OpenFiles (string title, string defaultName, string defaultFolder, string filterName, string[] extensionFilter)
+		public List<string> OpenFiles (string title, string defaultName, string defaultFolder, string filterName, string [] extensionFilter)
 		{
-			return FileChooserHelper.OpenFiles (MainWindow,	title, defaultName, defaultFolder, filterName, extensionFilter);
+			return FileChooserHelper.OpenFiles (MainWindow, title, defaultName, defaultFolder, filterName, extensionFilter);
 		}
 
-		public string SelectFolder (string title, string defaultName, string defaultFolder, string filterName, string[] extensionFilter)
+		public string SelectFolder (string title, string defaultName, string defaultFolder, string filterName, string [] extensionFilter)
 		{
 			return FileChooserHelper.SelectFolder (MainWindow, title, defaultName, defaultFolder, filterName, extensionFilter);
 		}
