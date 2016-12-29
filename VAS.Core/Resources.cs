@@ -28,13 +28,25 @@ namespace VAS.Core
 		/// </summary>
 		public static bool TEST_MODE = false;
 
-		public static Image LoadImage (string name)
+		/// <summary>
+		/// Loads an icon <see cref="Image"/> using the icon name. If <paramref name="width"/> or <paramref name="height"/>
+		/// are <c>null</c> it uses the size of the image. This is particularly useful with scalar images to
+		/// scale them to the requeried size without loosing quality in the up/down scaling.
+		/// </summary>
+		/// <returns>The image.</returns>
+		/// <param name="name">Name.</param>
+		/// <param name="width">Width.</param>
+		/// <param name="height">Height.</param>
+		public static Image LoadImage (string name, int width = 0, int height = 0)
 		{
 			if (TEST_MODE) {
 				string svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16px\" height=\"16px\"/>";
 				using (Stream s = new MemoryStream (Encoding.UTF8.GetBytes (svg))) {
 					return new Image (s);
 				}
+			}
+			if (width != 0 && height != 0) {
+				return new Image (Utils.GetDataFilePath (name), width, height);
 			}
 			return new Image (Utils.GetDataFilePath (name));
 		}

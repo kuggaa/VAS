@@ -42,6 +42,11 @@ namespace VAS.Core.Common
 			Value = LoadFromFile (filename);
 		}
 
+		public BaseImage (string filename, int width, int height)
+		{
+			Value = LoadFromFile (filename, width, height);
+		}
+
 		public BaseImage (Stream stream)
 		{
 			Value = LoadFromStream (stream);
@@ -148,6 +153,8 @@ namespace VAS.Core.Common
 		public abstract Image Composite (Image image2);
 
 		protected abstract T LoadFromFile (string filename);
+
+		protected abstract T LoadFromFile (string filename, int width, int height);
 
 		protected abstract T LoadFromStream (Stream stream);
 
