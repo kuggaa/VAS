@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using Gtk;
 using VAS.Core;
 using VAS.Core.Interfaces.GUI;
+using VAS.Core.Store;
 using VAS.UI.Dialog;
 using VAS.UI.Helpers;
 
@@ -166,6 +167,11 @@ namespace VAS.UI
 		Widget GetParentWidget (object parent = null)
 		{
 			return ((GUIToolkitBase)App.Current.GUIToolkit).GetParentWidget (parent);
+		}
+
+		public MediaFile OpenMediaFile (object parent)
+		{
+			return Helpers.Misc.OpenFile (parent);
 		}
 	}
 }
