@@ -50,8 +50,17 @@ namespace VAS.Core
 			}
 			return new Image (Utils.GetDataFilePath (name));
 		}
+
+		/// <summary>
+		/// Loads an icon <see cref="Image"/> using the icon name. If <paramref name="size"/>
+		/// is <c>null</c> it uses the original size of the image.
+		/// </summary>
+		/// <returns>The icon.</returns>
+		/// <param name="name">Name.</param>
+		/// <param name="size">Desired size.</param>
+		public static Image LoadIcon (string name, int size = 0)
+		{
+			return LoadImage ("icons/hicolor/scalable/actions/" + name + StyleConf.IMAGE_EXT, size, size);
+		}
 	}
-
-
 }
-
