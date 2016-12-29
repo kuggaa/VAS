@@ -47,7 +47,6 @@
     <Compile Include="..\AssemblyInfo\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Bindings.cs" />
     <Compile Include="ButtonHelper.cs" />
   </ItemGroup>
   <ItemGroup>
