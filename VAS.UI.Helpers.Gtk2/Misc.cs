@@ -38,11 +38,6 @@ namespace VAS.UI.Helpers
 		public static string lastFilename;
 		public static Hashtable missingIcons = new Hashtable ();
 
-		/// <summary>
-		/// Set this value to <c>true</c> in unit test to create dummy images.
-		/// </summary>
-		public static bool TEST_MODE = false;
-
 		public static FileFilter GetFileFilter ()
 		{
 			FileFilter filter = new FileFilter ();
@@ -222,13 +217,6 @@ namespace VAS.UI.Helpers
 		public static Gdk.Pixbuf LoadIcon (string name, int size, IconLookupFlags flags = IconLookupFlags.ForceSvg)
 		{
 			try {
-				if (TEST_MODE) {
-					string svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16px\" height=\"16px\"/>";
-					using (Stream s = new MemoryStream (Encoding.UTF8.GetBytes (svg))) {
-						return new Gdk.Pixbuf (s);
-					}
-				}
-
 				IconInfo icon_info = Gtk.IconTheme.Default.LookupIcon (name, size, flags);
 				Gdk.Pixbuf res = new Gdk.Pixbuf (icon_info.Filename, size, size, true);
 				return res;
