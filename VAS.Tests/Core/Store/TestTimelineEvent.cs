@@ -106,7 +106,7 @@ namespace VAS.Tests.Core.Store
 			Assert.AreEqual (evt.TagsDescription (), "test");
 			evt.Tags.Add (new Tag ("test2"));
 			Assert.AreEqual (evt.TagsDescription (), "test-test2");
-			evt.Tags = new ObservableCollection<Tag> ();
+			evt.Tags.Replace (new ObservableCollection<Tag> ());
 			Assert.AreEqual (evt.TagsDescription (), "");
 		}
 
@@ -226,9 +226,6 @@ namespace VAS.Tests.Core.Store
 			Assert.IsTrue (evt.IsChanged);
 			evt.IsChanged = false;
 			evt.Tags.Add (new Tag ("2"));
-			Assert.IsTrue (evt.IsChanged);
-			evt.IsChanged = false;
-			evt.Tags = null;
 			Assert.IsTrue (evt.IsChanged);
 			evt.IsChanged = false;
 			evt.CamerasConfig.Add (new CameraConfig (2));
