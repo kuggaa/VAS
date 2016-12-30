@@ -379,12 +379,12 @@ namespace VAS.Services
 				e.EventType.Name));
 			/* Add the new created play to the project and update the GUI */
 			var play = openedProject.AddEvent (e.EventType, e.Start, e.Stop, e.EventTime, null);
-			play.Teams = e.Teams;
+			play.Teams.Replace (e.Teams);
 			if (e.Players != null) {
-				play.Players = new ObservableCollection<Player> (e.Players);
+				play.Players.Replace (e.Players);
 			}
 			if (e.Tags != null) {
-				play.Tags = new ObservableCollection<Tag> (e.Tags);
+				play.Tags.Replace (e.Tags);
 			}
 			AddNewPlay (play);
 		}

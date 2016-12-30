@@ -45,13 +45,13 @@ namespace VAS.Core.Store
 		public TimelineEvent ()
 		{
 			IsLoaded = true;
-			Drawings = new ObservableCollection<FrameDrawing> ();
-			Tags = new ObservableCollection<Tag> ();
+			Drawings = new RangeObservableCollection<FrameDrawing> ();
+			Tags = new RangeObservableCollection<Tag> ();
 			Rate = 1.0f;
 			ID = Guid.NewGuid ();
 			CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
-			Players = new ObservableCollection<Player> ();
-			Teams = new ObservableCollection<Team> ();
+			Players = new RangeObservableCollection<Player> ();
+			Teams = new RangeObservableCollection<Team> ();
 		}
 
 		protected override void Dispose (bool disposing)
@@ -222,26 +222,29 @@ namespace VAS.Core.Store
 		/// List of players tagged in this event.
 		/// </summary>
 		[PropertyIndex (0)]
-		public ObservableCollection<Player> Players {
+		[JsonProperty]
+		public RangeObservableCollection<Player> Players {
 			get;
-			set;
+			private set;
 		}
 
 		/// <summary>
 		/// A list of teams tagged in this event.
 		/// </summary>
 		[PropertyIndex (3)]
-		public ObservableCollection<Team> Teams {
+		[JsonProperty]
+		public RangeObservableCollection<Team> Teams {
 			get;
-			set;
+			private set;
 		}
 
 		/// <summary>
 		/// List of drawings for this event
 		/// </summary>
-		public ObservableCollection<FrameDrawing> Drawings {
+		[JsonProperty]
+		public RangeObservableCollection<FrameDrawing> Drawings {
 			get;
-			set;
+			private set;
 		}
 
 		/// <summary>
@@ -350,9 +353,10 @@ namespace VAS.Core.Store
 		/// List of tags describing this event.
 		/// </summary>
 		/// <value>The tags.</value>
-		public ObservableCollection<Tag> Tags {
+		[JsonProperty]
+		public RangeObservableCollection<Tag> Tags {
 			get;
-			set;
+			private set;
 		}
 
 		public string TagsDescription ()
