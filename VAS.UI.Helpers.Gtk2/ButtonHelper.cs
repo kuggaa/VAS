@@ -8,6 +8,9 @@ using Gtk;
 using VAS.Core.Common;
 using VAS.Core.MVVMC;
 using Image = Gtk.Image;
+using VAS.UI.Helpers.Gtk2;
+using System.ComponentModel;
+using VAS.Core;
 
 namespace VAS.UI.Helpers
 {
@@ -59,9 +62,9 @@ namespace VAS.UI.Helpers
 		public static void ApplyStyleNormal (this Button button, Command command = null)
 		{
 			if (command != null) {
-				button.Bind (command);
+				button.Bind (command, App.Current.Style.IconMediumWidth);
 			}
-			button.ApplyStyle (StyleConf.ButtonNormal, App.Current.Style.ButtonNormalWidth, App.Current.Style.IconLargeWidth);
+			button.ApplyStyle (StyleConf.ButtonNormal, App.Current.Style.ButtonNormalWidth, App.Current.Style.IconMediumWidth);
 		}
 
 		/// <summary>
@@ -72,9 +75,10 @@ namespace VAS.UI.Helpers
 		public static void ApplyStyleTab (this Button button, Command command = null)
 		{
 			if (command != null) {
-				button.Bind (command);
+				button.Bind (command, App.Current.Style.IconLargeWidth);
 			}
 			button.ApplyStyle (StyleConf.ButtonTab, App.Current.Style.ButtonTabWidth, App.Current.Style.IconLargeWidth);
+			button.ImagePosition = PositionType.Left;
 		}
 
 		/// <summary>
@@ -85,9 +89,9 @@ namespace VAS.UI.Helpers
 		public static void ApplyStyleDialog (this Button button, Command command = null)
 		{
 			if (command != null) {
-				button.Bind (command);
+				button.Bind (command, App.Current.Style.IconMediumWidth);
 			}
-			button.HeightRequest = App.Current.Style.ButtonDialogHeight;
+			button.ApplyStyle (StyleConf.ButtonDialog, App.Current.Style.ButtonDialogHeight, App.Current.Style.IconMediumWidth);
 		}
 
 		/// <summary>
@@ -95,15 +99,15 @@ namespace VAS.UI.Helpers
 		/// </summary>
 		/// <param name="button">Button.</param>
 		/// <param name="icon">Icon.</param>
-		static public void SetImage (this Button button, Pixbuf icon)
+		static public void SetImage (this Button button, VAS.Core.Common.Image icon)
 		{
 			if (icon == null) {
 				return;
 			}
 
-			Image image = new Image ();
+			AspectImage image = new AspectImage ();
+			image.Image = icon;
 			button.Image = image;
-			image.Pixbuf = icon;
 		}
 
 		/// <summary>
@@ -114,7 +118,7 @@ namespace VAS.UI.Helpers
 		/// <param name="text">Text.</param>
 		/// <param name="tooltipText">Tooltip text.</param>
 		/// <param name="callback">Callback.</param>
-		public static void Configure (this Button button, Pixbuf icon, string text, string tooltipText, EventHandler callback)
+		public static void Configure (this Button button, VAS.Core.Common.Image icon, string text, string tooltipText, EventHandler callback)
 		{
 			button.SetImage (icon);
 			if (text != null) {
@@ -130,9 +134,10 @@ namespace VAS.UI.Helpers
 		/// <param name="button">Button.</param>
 		/// <param name="command">Command.</param>
 		/// <param name="parameter">Parameter.</param>
-		public static void Bind (this Button button, Command command, object parameter = null)
+		public static void Bind (this Button button, Command command, int iconSize, object parameter = null)
 		{
-			button.SetImage (command.Icon.Value);
+			var image = Resources.LoadIcon (command.IconName, iconSize);
+			button.SetImage (image);
 			button.Label = command.Text;
 			button.TooltipText = command.ToolTipText;
 
@@ -159,7 +164,9 @@ namespace VAS.UI.Helpers
 			button.WidthRequest = buttonSize;
 			button.HeightRequest = buttonSize;
 			if (button.Image != null) {
-				button.ImagePosition = PositionType.Left;
+				button.Image.Name = buttonStyle;
+				button.Image.WidthRequest = imageSize;
+				button.Image.HeightRequest = imageSize;
 			}
 		}
 	}

@@ -75,7 +75,12 @@ namespace VAS.Core.MVVMC
 		/// Gets or sets the icon related to that command
 		/// </summary>
 		/// <value>The icon.</value>
-		public Image Icon {
+		public Image Icon2 {
+			get;
+			set;
+		}
+
+		public string IconName {
 			get;
 			set;
 		}

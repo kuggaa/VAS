@@ -24,12 +24,15 @@ namespace VAS
 {
 	public static class GtkGlue
 	{
-		
+
 		[DllImport ("libgtk-2.0.dll") /* willfully unmapped */]
 		static extern void gtk_menu_item_set_label (IntPtr menu, IntPtr label);
 
 		[DllImport ("libgtk-2.0.dll") /* willfully unmapped */]
 		static extern IntPtr gtk_message_dialog_get_message_area (IntPtr dialog);
+
+		[DllImport ("libgtk-2.0.dll") /* willfully unmapped */]
+		static extern void gtk_widget_set_has_window (IntPtr widget, bool hasWindow);
 
 		[DllImport ("libvas.dll")]
 		static extern void lgm_gtk_glue_gdk_event_button_set_button (IntPtr evt, uint button);
@@ -60,6 +63,11 @@ namespace VAS
 			pango_layout_set_height (layout.Handle, height);
 		}
 
+		public static void SetHasWindow (this Widget widget, bool hasWindow)
+		{
+			gtk_widget_set_has_window (widget.Handle, hasWindow);
+		}
+
 		/// <summary>
 		/// Sets the link handler for a given GtkLabel.
 		/// </summary>
@@ -88,7 +96,7 @@ namespace VAS
 
 			public void ConnectTo (Gtk.Label label)
 			{
-				var signal = GLib.Signal.Lookup (label, "activate-link", typeof(ActivateLinkEventArgs));
+				var signal = GLib.Signal.Lookup (label, "activate-link", typeof (ActivateLinkEventArgs));
 				signal.AddDelegate (new EventHandler<ActivateLinkEventArgs> (HandleLink));
 			}
 

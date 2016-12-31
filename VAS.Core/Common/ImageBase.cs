@@ -23,7 +23,7 @@ using VAS.Core.MVVMC;
 namespace VAS.Core.Common
 {
 	[Serializable]
-	public abstract class BaseImage<T>: BindableBase, ISerializable, IDisposable where T: IDisposable
+	public abstract class BaseImage<T> : BindableBase, ISerializable, IDisposable where T : IDisposable
 	{
 
 		protected const string BUF_PROPERTY = "pngbuf";
@@ -59,15 +59,24 @@ namespace VAS.Core.Common
 
 		public int Width {
 			get {
-				return GetWidth ();
+				return GetWidth () / DeviceScale;
 			}
 		}
 
 		public int Height {
 			get {
-				return GetHeight ();
+				return GetHeight () / DeviceScale;
 			}
 		}
+
+		/// <summary>
+		/// Gets or sets the scale of the image when used in HiDPI monitors.
+		/// </summary>
+		/// <value>The scale.</value>
+		public int DeviceScale {
+			get;
+			set;
+		} = 1;
 
 		public void Dispose ()
 		{
@@ -80,13 +89,13 @@ namespace VAS.Core.Common
 		}
 
 		public void ScaleFactor (int destWidth, int destHeight, ScaleMode mode,
-		                         out double scaleX, out double scaleY, out Point offset)
+								 out double scaleX, out double scaleY, out Point offset)
 		{
 			ScaleFactor (Width, Height, destWidth, destHeight, mode, out scaleX, out scaleY, out offset);
 		}
 
 		public static void ScaleFactor (int imgWidth, int imgHeight, int destWidth, int destHeight,
-		                                ScaleMode mode, out double scaleX, out double scaleY, out Point offset)
+										ScaleMode mode, out double scaleX, out double scaleY, out Point offset)
 		{
 			int oWidth = 0;
 			int oHeight = 0;
@@ -98,7 +107,7 @@ namespace VAS.Core.Common
 		}
 
 		public static void ComputeScale (int inWidth, int inHeight, int reqOutWidth, int reqOutHeight,
-		                                 ScaleMode mode, out int outWidth, out int outHeight)
+										 ScaleMode mode, out int outWidth, out int outHeight)
 		{
 			outWidth = reqOutWidth;
 			outHeight = reqOutHeight;
@@ -146,7 +155,7 @@ namespace VAS.Core.Common
 
 		public abstract Image Scale (int maxWidth, int maxHeight);
 
-		public abstract byte[] Serialize ();
+		public abstract byte [] Serialize ();
 
 		public abstract void Save (string filename);
 

@@ -46,7 +46,7 @@ namespace VAS.Core
 				}
 			}
 			if (width != 0 && height != 0) {
-				return new Image (Utils.GetDataFilePath (name), width, height);
+				return new Image (Utils.GetDataFilePath (name), width * 2, height * 2);
 			}
 			return new Image (Utils.GetDataFilePath (name));
 		}
@@ -60,7 +60,7 @@ namespace VAS.Core
 		/// <param name="size">Desired size.</param>
 		public static Image LoadIcon (string name, int size = 0)
 		{
-			return LoadImage ("icons/hicolor/scalable/actions/" + name + StyleConf.IMAGE_EXT, size, size);
+			return LoadImage ("icons/hicolor/scalable/actions/" + name + StyleConf.IMAGE_EXT, size * 2, size * 2);
 		}
 	}
 }

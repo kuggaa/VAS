@@ -23,7 +23,7 @@ using VAS.Core.Interfaces.Drawing;
 namespace VAS.Drawing
 {
 
-	public abstract class BackgroundCanvas : SelectionCanvas
+	public class BackgroundCanvas : SelectionCanvas
 	{
 		public event EventHandler RegionOfInterestChanged;
 
@@ -101,7 +101,7 @@ namespace VAS.Drawing
 		{
 			// Draw the background before any translation or scalling is applied to the canvas.
 			tk.Context = context;
-			DrawBackground ();
+			//DrawBackground ();
 
 			Begin (context);
 			if (Background != null) {

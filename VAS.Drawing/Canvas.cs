@@ -254,7 +254,7 @@ namespace VAS.Drawing
 			}
 		}
 
-		void HandleRedrawEvent (ICanvasObject co, Area area)
+		protected virtual void HandleRedrawEvent (ICanvasObject co, Area area)
 		{
 			if (!IgnoreRedraws) {
 				widget?.ReDraw (area);
