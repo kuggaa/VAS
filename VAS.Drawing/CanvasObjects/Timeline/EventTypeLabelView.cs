@@ -106,8 +106,6 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			tk.StrokeColor = App.Current.Style.PaletteWidgets;
 			tk.DrawText (new Point (TextOffset, scrolledY), Width - TextOffset, Height, Name);
 			//Draw playButton
-			playButton.Position = new Point (Width - RectSize - TIMELINE_BUTTON_MARGIN,
-											 scrolledY + TIMELINE_BUTTON_MARGIN);
 			playButton.Draw (tk, area);
 			tk.End ();
 		}
@@ -126,6 +124,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			base.HandleSizeChanged ();
 			playButton.Width = (int)RectSize;
 			playButton.Height = (int)RectSize;
+			playButton.Position = new Point (Width - RectSize - TIMELINE_BUTTON_MARGIN,
+											 scrolledY + TIMELINE_BUTTON_MARGIN);
 		}
 
 		void PlayButtonClickedEvent (ICanvasObject co)
