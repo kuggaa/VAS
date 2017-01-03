@@ -39,6 +39,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 					viewModel.ViewModels.CollectionChanged -= HandleEventsCollectionChanged;
 				}
 				viewModel = value;
+				ClearObjects ();
 				if (viewModel != null) {
 					viewModel.ViewModels.CollectionChanged += HandleEventsCollectionChanged;
 					foreach (TimelineEventVM eventVM in viewModel.ViewModels) {

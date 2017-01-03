@@ -34,15 +34,31 @@ using VAS.Core.Serialization;
 using VAS.Core.Store;
 using VAS.Core.Store.Templates;
 using VAS.Core.ViewModel;
+using VAS.Drawing.CanvasObjects.Timeline;
 using VAS.Services;
 using VAS.Services.Controller;
 using VAS.Services.ViewModel;
 
 namespace VAS.Tests
 {
+
 	public class DummyUserStatisticsService : UserStatisticsService
 	{
+	}
 
+	public class DummyAnalysisVM : IAnalysisViewModel
+	{
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		public ProjectVM Project {
+			get;
+			set;
+		}
+
+		public VideoPlayerVM VideoPlayer {
+			get;
+			set;
+		}
 	}
 
 	public class DummyView : IView
@@ -137,6 +153,13 @@ namespace VAS.Tests
 		protected override bool SaveValidations (DummyTeam model)
 		{
 			throw new NotImplementedException ();
+		}
+	}
+
+	public class DummyTimelineEventView : TimelineEventView, IView
+	{
+		public void SetViewModel (object viewModel)
+		{
 		}
 	}
 
