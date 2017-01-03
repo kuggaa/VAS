@@ -26,11 +26,14 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 	public class NeedleView : CanvasObject, ICanvasSelectableObject
 	{
 		static ISurface needle;
-		static bool surfacesInitialized = false;
+
+		static NeedleView ()
+		{
+			needle = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.TimelineNeedleResource, false);
+		}
 
 		public NeedleView ()
 		{
-			LoadSurfaces ();
 			Width = needle.Width;
 			X = 0;
 			TimelineHeight = 0;
@@ -79,14 +82,6 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		Area Area {
 			get {
 				return new Area (TopLeft, Width, Height);
-			}
-		}
-
-		static public void LoadSurfaces ()
-		{
-			if (!surfacesInitialized) {
-				needle = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.TimelineNeedleResource, false);
-				surfacesInitialized = true;
 			}
 		}
 
