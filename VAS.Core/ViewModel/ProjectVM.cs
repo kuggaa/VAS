@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System.Threading.Tasks;
+using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
@@ -122,6 +123,32 @@ namespace VAS.Core.ViewModel
 		public bool Edited {
 			get {
 				return Model?.IsChanged == true;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the type of the project.
+		/// </summary>
+		/// <value>The type of the project.</value>
+		public ProjectType ProjectType {
+			get {
+				return Model.ProjectType;
+			}
+			set {
+				Model.ProjectType = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="T:VAS.Core.ViewModel.ProjectVM"/> is live.
+		/// </summary>
+		/// <value><c>true</c> if is live; otherwise, <c>false</c>.</value>
+		public bool IsLive {
+			get {
+				return ProjectType == ProjectType.CaptureProject ||
+												 ProjectType == ProjectType.URICaptureProject ||
+												 ProjectType == ProjectType.FakeCaptureProject;
+
 			}
 		}
 
