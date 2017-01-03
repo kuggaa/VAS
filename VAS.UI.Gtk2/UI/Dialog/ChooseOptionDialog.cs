@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using Gtk;
 using System.Linq;
+using Misc = VAS.UI.Helpers.Misc;
 
 namespace VAS.UI.Dialog
 {
@@ -29,6 +30,7 @@ namespace VAS.UI.Dialog
 		{
 			TransientFor = parent;
 			this.Build ();
+			Icon = Misc.LoadIcon (App.Current.SoftwareIconName, IconSize.Button, 0);
 		}
 
 		public Dictionary<string, object> Options {

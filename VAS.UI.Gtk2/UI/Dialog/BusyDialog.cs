@@ -41,12 +41,12 @@ namespace VAS.UI.Dialog
 			box.PackStart (progressBar, true, true, 0);
 			box.ShowAll ();
 			VBox.PackStart (box);
-			Icon = Helpers.Misc.LoadIcon ("longomatch", 28);
+			Icon = Helpers.Misc.LoadIcon (App.Current.SoftwareIconName, 28);
 			TypeHint = Gdk.WindowTypeHint.Dialog;
 			WindowPosition = WindowPosition.Center;
 			Modal = true;
 			Resizable = false;
-			Gravity = Gdk.Gravity.Center; 
+			Gravity = Gdk.Gravity.Center;
 			SkipPagerHint = true;
 			SkipTaskbarHint = true;
 			DefaultWidth = 300;
