@@ -35,7 +35,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 	public abstract class TimelineView : CanvasObject, ICanvasSelectableObject
 	{
 		double secondsPerPixel;
-		protected List<TimeNodeView> nodes;
+		internal protected List<TimeNodeView> nodes;
 		Time duration;
 		protected ISurface selectionBorderL, selectionBorderR;
 
@@ -123,7 +123,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		/// <value>The width.</value>
 		public double Width {
 			set;
-			protected get;
+			get;
 		}
 
 		/// <summary>
