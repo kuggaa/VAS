@@ -49,17 +49,17 @@ namespace VAS.UI.Helpers
 		static public bool QuestionMessage (Widget parent, string question, string title = null)
 		{
 			Window toplevel;
-			
+
 			if (parent != null)
 				toplevel = parent.Toplevel as Window;
 			else
 				toplevel = null;
-				
+
 			MessageDialog md = new MessageDialog (toplevel, DialogFlags.Modal,
-				                   MessageType.Question, ButtonsType.YesNo,
-				                   question);
-				
-			md.Icon = Misc.LoadIcon ("longomatch", IconSize.Button, 0);
+								   MessageType.Question, ButtonsType.YesNo,
+								   question);
+
+			md.Icon = Misc.LoadIcon (App.Current.SoftwareIconName, IconSize.Button, 0);
 			md.Title = title;
 			var res = md.Run ();
 			md.Destroy ();
@@ -76,10 +76,10 @@ namespace VAS.UI.Helpers
 				toplevel = null;
 
 			MessageDialog md = new MessageDialog (toplevel, DialogFlags.Modal,
-				                   MessageType.Question, ButtonsType.None,
-				                   question);
+								   MessageType.Question, ButtonsType.None,
+								   question);
 
-			md.Icon = Misc.LoadIcon ("longomatch", IconSize.Button, 0);
+			md.Icon = Misc.LoadIcon (App.Current.SoftwareIconName, IconSize.Button, 0);
 			md.Title = title;
 
 			for (int i = 0; i < textButtons.Count; i++) {
@@ -98,22 +98,22 @@ namespace VAS.UI.Helpers
 		}
 
 		public static int PopupMessage (Widget sender, MessageType type, String errorMessage,
-		                                CustomizeDialog customize = null)
+										CustomizeDialog customize = null)
 		{
 			Window toplevel;
 			int ret;
-			
+
 			if (sender != null)
 				toplevel = sender.Toplevel as Window;
 			else
 				toplevel = null;
 
 			MessageDialog md = new MessageDialog (toplevel,
-				                   DialogFlags.Modal,
-				                   type,
-				                   ButtonsType.Ok,
-				                   errorMessage);
-			md.Icon = Misc.LoadIcon ("longomatch", Gtk.IconSize.Dialog, 0);
+								   DialogFlags.Modal,
+								   type,
+								   ButtonsType.Ok,
+								   errorMessage);
+			md.Icon = Misc.LoadIcon (App.Current.SoftwareIconName, Gtk.IconSize.Dialog, 0);
 			try {
 				var vbox = md.MessageDialogGetMessageArea ();
 				var label = (Label)vbox.Children [0];
@@ -143,12 +143,12 @@ namespace VAS.UI.Helpers
 		{
 			string ret = null;
 			Window parent;
-			
+
 			if (sender != null)
 				parent = sender.Toplevel as Window;
 			else
 				parent = null;
-				
+
 			Label label = new Label (key);
 			Entry entry = new Entry (value);
 			Gtk.Dialog dialog = new Gtk.Dialog (title, parent, DialogFlags.DestroyWithParent);
@@ -157,7 +157,7 @@ namespace VAS.UI.Helpers
 			dialog.AddButton (Catalog.GetString ("Add"), ResponseType.Ok);
 			dialog.VBox.PackStart (label, false, false, 0);
 			dialog.VBox.PackStart (entry, true, true, 0);
-			dialog.Icon = Misc.LoadIcon ("longomatch", Gtk.IconSize.Dialog, 0);
+			dialog.Icon = Misc.LoadIcon (App.Current.SoftwareIconName, Gtk.IconSize.Dialog, 0);
 			dialog.ShowAll ();
 			if (dialog.Run () == (int)ResponseType.Ok) {
 				ret = entry.Text;
@@ -167,13 +167,13 @@ namespace VAS.UI.Helpers
 		}
 
 		static public bool NewVersionAvailable (Version currentVersion, Version latestVersion,
-		                                        string downloadURL, string changeLog, Widget parent = null)
+												string downloadURL, string changeLog, Widget parent = null)
 		{
 			string message = string.Format (
-				                 Catalog.GetString ("Version {0} is available!\n" +
-				                 "(You are using version {1})\n" +
-				                 "<a href=\"{2}\">Click here to get it.</a>"),
-				                 latestVersion, currentVersion, downloadURL);
+								 Catalog.GetString ("Version {0} is available!\n" +
+								 "(You are using version {1})\n" +
+								 "<a href=\"{2}\">Click here to get it.</a>"),
+								 latestVersion, currentVersion, downloadURL);
 
 			bool checkState = false;
 

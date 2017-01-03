@@ -166,7 +166,6 @@
   <widget class="Gtk.Dialog" id="VAS.UI.Dialog.ChooseOptionDialog" design-size="504 191">
     <property name="MemberName" />
     <property name="Title" translatable="yes" />
-    <property name="Icon">stock:longomatch Menu</property>
     <property name="TypeHint">Dialog</property>
     <property name="WindowPosition">CenterOnParent</property>
     <property name="Modal">True</property>
@@ -311,7 +310,6 @@
   <widget class="Gtk.Dialog" id="VAS.UI.Dialog.CalendarDialog" design-size="259 258">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Calendar</property>
-    <property name="Icon">stock:longomatch Menu</property>
     <property name="TypeHint">Dialog</property>
     <property name="WindowPosition">Mouse</property>
     <property name="Gravity">Center</property>
@@ -467,7 +465,6 @@
                             <property name="Tooltip" translatable="yes">Angle tool</property>
                             <property name="CanFocus">True</property>
                             <property name="Label" translatable="yes" />
-                            <property name="Active">True</property>
                             <property name="DrawIndicator">False</property>
                             <property name="HasLabel">False</property>
                             <property name="UseUnderline">True</property>
@@ -1628,7 +1625,6 @@
   <widget class="Gtk.Dialog" id="VAS.UI.Dialog.VideoEditionProperties" design-size="633 379">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Video Properties</property>
-    <property name="Icon">stock:longomatch Dialog</property>
     <property name="WindowPosition">CenterOnParent</property>
     <property name="Modal">True</property>
     <property name="Gravity">Center</property>
