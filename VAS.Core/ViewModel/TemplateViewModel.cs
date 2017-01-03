@@ -91,7 +91,7 @@ namespace VAS.Core.ViewModel
 			}
 			set {
 				base.Model = value;
-				SubViewModel.Model = Model.List;
+				SubViewModel.Model = Model?.List;
 			}
 		}
 

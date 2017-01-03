@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -33,6 +34,8 @@ using VAS.Core.Store;
 using VAS.Core.Store.Templates;
 using VAS.Core.ViewModel;
 using VAS.Services;
+using VAS.Services.Controller;
+using VAS.Services.ViewModel;
 
 namespace VAS.Tests
 {
@@ -123,6 +126,18 @@ namespace VAS.Tests
 		}
 	}
 
+	public class DummyTemplatesController : TemplatesController<DummyTeam, DummyTeamVM, Utils.PlayerDummy, DummyPlayerVM>
+	{
+		public DummyTemplatesController ()
+		{
+			ViewModel = new TemplatesManagerViewModel<DummyTeam, DummyTeamVM, Utils.PlayerDummy, DummyPlayerVM> ();
+		}
+
+		protected override bool SaveValidations (DummyTeam model)
+		{
+			throw new NotImplementedException ();
+		}
+	}
 
 	public static class Utils
 	{
