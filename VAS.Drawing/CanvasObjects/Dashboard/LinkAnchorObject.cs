@@ -25,20 +25,27 @@ using VAS.Drawing.CanvasObjects;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
-	public class LinkAnchorObject: CanvasObject, ICanvasSelectableObject
+	public class LinkAnchorObject : CanvasObject, ICanvasSelectableObject
 	{
 
 		static ISurface OutIcon;
 		static ISurface OutPrelightIcon;
 		static ISurface InIcon;
 		static ISurface InPrelightIcon;
-		static bool surfacesCached = false;
 
 		readonly int iconWidth;
 		readonly int iconHeight;
 		const int radius = 5;
 		double width;
 		double height;
+
+		static LinkAnchorObject ()
+		{
+			InIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.LinkIn, false);
+			InPrelightIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.LinkInPrelight, false);
+			OutIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.LinkOut, false);
+			OutPrelightIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.LinkOutPrelight, false);
+		}
 
 		public LinkAnchorObject (DashboardButtonObject button, List<Tag> tags, Point relPos)
 		{
@@ -48,7 +55,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			if (tags == null)
 				tags = new List<Tag> ();
 			Tags = tags;
-			LoadSurfaces ();
 			iconHeight = InIcon.Height;
 			iconWidth = InIcon.Width;
 		}
@@ -171,17 +177,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			tk.DrawSurface (inPoint, StyleConf.LinkInWidth, StyleConf.LinkInHeight, linkIn, ScaleMode.AspectFit);
 			tk.DrawSurface (outPoint, StyleConf.LinkOutWidth, StyleConf.LinkOutHeight, linkOut, ScaleMode.AspectFit);
 			tk.End ();
-		}
-
-		void LoadSurfaces ()
-		{
-			if (!surfacesCached) {
-				InIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.LinkIn, false);
-				InPrelightIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.LinkInPrelight, false);
-				OutIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.LinkOut, false);
-				OutPrelightIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.LinkOutPrelight, false);
-				surfacesCached = true;
-			}
 		}
 	}
 }

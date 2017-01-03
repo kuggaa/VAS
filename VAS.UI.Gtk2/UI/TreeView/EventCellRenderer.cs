@@ -49,12 +49,18 @@ namespace VAS.UI.Component
 		static ISurface BtnNormalBackgroundActive = null;
 		static ISurface BtnNormalBackgroundInsensitive = null;
 
-		bool surfacesCached = false;
+		static EventCellRenderer ()
+		{
+			PlayIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.PlayButton, false);
+			BtnNormalBackground = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.NormalButtonNormalTheme, false);
+			BtnNormalBackgroundPrelight = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.NormalButtonPrelightTheme, false);
+			BtnNormalBackgroundActive = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.NormalButtonActiveTheme, false);
+			BtnNormalBackgroundInsensitive = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.NormalButtonInsensititveTheme, false);
+		}
 
 		public EventCellRenderer ()
 		{
 			cursor = new Point (0, 0);
-			LoadSurfaces ();
 		}
 
 		public IViewModel ViewModel {
@@ -221,18 +227,6 @@ namespace VAS.UI.Component
 			}
 			tk.DrawSurface (p, App.Current.Style.ButtonNormalWidth, App.Current.Style.ButtonNormalHeight, background, ScaleMode.AspectFit);
 			tk.DrawSurface (p, App.Current.Style.IconLargeHeight, App.Current.Style.IconLargeHeight, PlayIcon, ScaleMode.AspectFit);
-		}
-
-		void LoadSurfaces ()
-		{
-			if (!surfacesCached) {
-				PlayIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.PlayButton, false);
-				BtnNormalBackground = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.NormalButtonNormalTheme, false);
-				BtnNormalBackgroundPrelight = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.NormalButtonPrelightTheme, false);
-				BtnNormalBackgroundActive = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.NormalButtonActiveTheme, false);
-				BtnNormalBackgroundInsensitive = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.NormalButtonInsensititveTheme, false);
-				surfacesCached = true;
-			}
 		}
 	}
 }
