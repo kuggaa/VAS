@@ -351,7 +351,7 @@ namespace VAS.Services
 
 		public void SetViewModel (IViewModel viewModel)
 		{
-			playerVM = (VideoPlayerVM)viewModel;
+			playerVM = (VideoPlayerVM)(viewModel as dynamic);
 			playerVM.Player = this;
 		}
 

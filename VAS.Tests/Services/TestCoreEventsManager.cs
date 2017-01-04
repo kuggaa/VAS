@@ -22,15 +22,17 @@ using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Store;
-using VAS.Services;
+using VAS.Core.ViewModel;
+using VAS.Services.Controller;
+using VAS.Services.ViewModel;
 
 namespace VAS.Tests.Services
 {
 	[TestFixture]
 	public class TestCoreEventsManager
 	{
-		CoreEventsManager controller;
-		Project project;
+		CoreEventsController controller;
+		ProjectVM projectVM;
 
 		[SetUp]
 		public void Setup ()
@@ -42,29 +44,26 @@ namespace VAS.Tests.Services
 			mtkMock.Setup (m => m.GetFramesCapturer ()).Returns (capturerMock.Object);
 			App.Current.MultimediaToolkit = mtkMock.Object;
 
-			controller = new CoreEventsManager ();
-			project = Utils.CreateProject (true);
+			controller = new CoreEventsController ();
+			projectVM = new ProjectVM { Model = Utils.CreateProject (true) };
+			controller.SetViewModel (new ProjectAnalysisVM<ProjectVM> { Project = projectVM });
 			controller.Start ();
-			App.Current.EventsBroker.Publish (new OpenedProjectEvent {
-				Project = project, ProjectType = ProjectType.FileProject, Filter = new Utils.EventsFilterDummy (project),
-			});
 		}
 
 		[TearDown ()]
 		public void TearDown ()
 		{
 			controller.Stop ();
-			project.Dispose ();
 		}
 
 		[Test]
 		public void TestMoveToEventType ()
 		{
-			EventType e1 = project.EventTypes [0];
-			EventType e2 = project.EventTypes [1];
-			var eventsToMove = project.Timeline.Where (e => e.EventType == e1).ToList ();
+			EventType e1 = projectVM.Model.EventTypes [0];
+			EventType e2 = projectVM.Model.EventTypes [1];
+			var eventsToMove = projectVM.Model.Timeline.Where (e => e.EventType == e1).ToList ();
 			Assert.AreEqual (1, eventsToMove.Count);
-			Assert.AreEqual (1, project.Timeline.Count (e => e.EventType == e2));
+			Assert.AreEqual (1, projectVM.Model.Timeline.Count (e => e.EventType == e2));
 
 			App.Current.EventsBroker.Publish (
 				new MoveToEventTypeEvent {
@@ -73,8 +72,8 @@ namespace VAS.Tests.Services
 				}
 			);
 
-			Assert.AreEqual (0, project.Timeline.Count (e => e.EventType == e1));
-			Assert.AreEqual (2, project.Timeline.Count (e => e.EventType == e2));
+			Assert.AreEqual (0, projectVM.Timeline.FullTimeline.Count (e => e.Model.EventType == e1));
+			Assert.AreEqual (2, projectVM.Timeline.FullTimeline.Count (e => e.Model.EventType == e2));
 		}
 	}
 }

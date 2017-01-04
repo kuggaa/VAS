@@ -16,7 +16,6 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
@@ -25,11 +24,11 @@ using VAS.Core;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
-using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
 using VAS.Services.Controller;
+using VAS.Services.ViewModel;
 
 namespace VAS.Tests.Services
 {
@@ -69,8 +68,6 @@ namespace VAS.Tests.Services
 			videoPlayerVM = new VideoPlayerVM ();
 			videoController.SetViewModel (videoPlayerVM);
 			controller = new PlaylistController ();
-			controller.PlayerVM = videoPlayerVM;
-			controller.Start ();
 			mockDialogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
 													 It.IsAny<object> ())).Returns (AsyncHelpers.Return (name));
 		}
@@ -82,16 +79,16 @@ namespace VAS.Tests.Services
 			storageMock.ResetCalls ();
 			storageManagerMock.ResetCalls ();
 			mockGuiToolkit.ResetCalls ();
-
-			App.Current.EventsBroker.Publish (new OpenedProjectEvent {
-				Project = null,
-			});
 		}
 
 		void SetupWithStorage ()
 		{
 			playlistCollectionVM = new PlaylistCollectionVM ();
-			controller.SetViewModel (playlistCollectionVM);
+			controller.SetViewModel (new DummyPlaylistsManagerVM {
+				Playlists = playlistCollectionVM,
+				Player = videoPlayerVM
+			});
+			controller.Start ();
 		}
 
 		void SetupWithProject ()
@@ -99,7 +96,9 @@ namespace VAS.Tests.Services
 			Project project = Utils.CreateProject (true);
 			projectVM = new ProjectVM { Model = project };
 			playlistCollectionVM = projectVM.Playlists;
-			controller.SetViewModel (projectVM);
+			var viewModel = new ProjectAnalysisVM<ProjectVM> { Project = projectVM, VideoPlayer = videoPlayerVM };
+			controller.SetViewModel (viewModel);
+			controller.Start ();
 		}
 
 		[Test]
@@ -119,6 +118,7 @@ namespace VAS.Tests.Services
 
 			Assert.AreEqual (1, playlistCollectionVM.ViewModels.Count);
 			Assert.AreEqual (name, playlistCollectionVM.ViewModels [0].Name);
+			// FIXME: Should be one when we fix the issues with events re-forwarded
 			storageMock.Verify (s => s.Store<Playlist> (It.IsAny<Playlist> (), true), Times.AtLeastOnce ());
 			Assert.AreEqual (1, playlistCollectionVM.ViewModels.First ().Model.Elements.Count);
 		}

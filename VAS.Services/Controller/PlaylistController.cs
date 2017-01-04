@@ -35,8 +35,8 @@ namespace VAS.Services.Controller
 {
 	public class PlaylistController : DisposableBase, IController
 	{
-		PlaylistCollectionVM playlistViewModel;
-		ProjectVM projectViewModel;
+		protected PlaylistCollectionVM playlistViewModel;
+		protected ProjectVM projectViewModel;
 
 		protected override void Dispose (bool disposing)
 		{
@@ -44,19 +44,14 @@ namespace VAS.Services.Controller
 			Stop ();
 		}
 
-		public VideoPlayerVM PlayerVM {
-			get;
-			set;
-		}
-
-		protected EventsFilter Filter {
+		protected VideoPlayerVM PlayerVM {
 			get;
 			set;
 		}
 
 		#region IController implementation
 
-		public void Start ()
+		public virtual void Start ()
 		{
 			App.Current.EventsBroker.SubscribeAsync<AddPlaylistElementEvent> (HandleAddPlaylistElement);
 			App.Current.EventsBroker.SubscribeAsync<CreateEvent<Playlist>> (HandleNewPlaylist);
@@ -68,7 +63,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Subscribe<MoveElementsEvent<PlaylistVM, PlaylistElementVM>> (HandleMoveElements);
 		}
 
-		public void Stop ()
+		public virtual void Stop ()
 		{
 			App.Current.EventsBroker.UnsubscribeAsync<AddPlaylistElementEvent> (HandleAddPlaylistElement);
 			App.Current.EventsBroker.UnsubscribeAsync<CreateEvent<Playlist>> (HandleNewPlaylist);
@@ -85,11 +80,12 @@ namespace VAS.Services.Controller
 			if (viewModel == null) {
 				return;
 			}
+
+			playlistViewModel = (PlaylistCollectionVM)(viewModel as dynamic);
+			PlayerVM = (VideoPlayerVM)(viewModel as dynamic);
 			try {
-				playlistViewModel = (PlaylistCollectionVM)(viewModel as dynamic);
-			} catch (RuntimeBinderException) {
 				projectViewModel = (ProjectVM)(viewModel as dynamic);
-				playlistViewModel = projectViewModel.Playlists;
+			} catch (RuntimeBinderException) {
 			}
 		}
 
@@ -219,7 +215,6 @@ namespace VAS.Services.Controller
 		{
 			if (e.TimeNode is TimelineEvent) {
 				LoadPlay (e.TimeNode as TimelineEvent, e.Time, false);
-				Filter?.Update ();
 			}
 		}
 
