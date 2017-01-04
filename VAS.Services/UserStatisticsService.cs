@@ -301,6 +301,7 @@ namespace VAS.Services
 			DataDictionary.Add ("Total playlists", TotalUserPlaylists);
 			DataDictionary.Add ("Total time spent", ((int)generalTimer.ElapsedMilliseconds) / 1000);
 			App.Current.KPIService.TrackEvent ("Session data", null, DataDictionary);
+			App.Current.KPIService.Flush ();
 		}
 
 		#region Handlers
