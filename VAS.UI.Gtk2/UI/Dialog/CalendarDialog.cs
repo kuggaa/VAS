@@ -18,6 +18,7 @@
 
 using System;
 using Gtk;
+using Misc = VAS.UI.Helpers.Misc;
 
 namespace VAS.UI.Dialog
 {
@@ -28,6 +29,7 @@ namespace VAS.UI.Dialog
 		public CalendarDialog (DateTime date)
 		{
 			this.Build ();
+			Icon = Misc.LoadIcon (App.Current.SoftwareIconName, IconSize.Button, 0);
 			SkipPagerHint = true;
 			SkipTaskbarHint = true;
 			//Decorated = false;
