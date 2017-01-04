@@ -30,44 +30,151 @@ namespace VAS.Services
 	/// </summary>
 	public abstract class UserStatisticsService : IService
 	{
-		protected List<string> StatesToTrack;
-		protected int TotalUserTeams;
-		protected int TotalUserProjects;
-		public int TeamsAmount;
-		public int PlayListsAmount;
-		public int RendersAmount;
-		public int ManualTagsAmount;
-		public int DrawingsAmount;
-		public int CreatedProjects;
-		public Dictionary<Guid, Tuple<int, int>> ProjectDictionary;
-		public List<Tuple<string, int>> TimerList;
-		int TotalUserPlaylists;
-		string CurrentState;
-		Stopwatch StateTimer;
-		Stopwatch GeneralTimer;
+		string currentState;
+		Stopwatch stateTimer;
+		Stopwatch generalTimer;
+
+		/// <summary>
+		/// Gets or sets the states to track.
+		/// </summary>
+		/// <value>The states to track.</value>
+		protected List<string> StatesToTrack {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the total user teams.
+		/// </summary>
+		/// <value>The total user teams.</value>
+		protected int TotalUserTeams {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the total user projects.
+		/// </summary>
+		/// <value>The total user projects.</value>
+		protected int TotalUserProjects {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the total user playlists.
+		/// </summary>
+		/// <value>The total user playlists.</value>
+		protected int TotalUserPlaylists {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the teams amount.
+		/// </summary>
+		/// <value>The teams amount.</value>
+		public int TeamsAmount {
+			get;
+			protected set;
+		}
+
+		/// <summary>
+		/// Gets the playlists amount.
+		/// </summary>
+		/// <value>The playlists amount.</value>
+		public int PlaylistsAmount {
+			get;
+			private set;
+		}
+
+		/// <summary>
+		/// Gets the renders amount.
+		/// </summary>
+		/// <value>The renders amount.</value>
+		public int RendersAmount {
+			get;
+			private set;
+		}
+
+		/// <summary>
+		/// Gets the manual tags amount.
+		/// </summary>
+		/// <value>The manual tags amount.</value>
+		public int ManualTagsAmount {
+			get;
+			private set;
+		}
+
+		/// <summary>
+		/// Gets the drawings amount.
+		/// </summary>
+		/// <value>The drawings amount.</value>
+		public int DrawingsAmount {
+			get;
+			private set;
+		}
+
+		/// <summary>
+		/// Gets the created projects.
+		/// </summary>
+		/// <value>The created projects.</value>
+		public int CreatedProjects {
+			get;
+			private set;
+		}
+
+		/// <summary>
+		/// Gets the project dictionary.
+		/// </summary>
+		/// <value>The project dictionary.</value>
+		public Dictionary<Guid, Tuple<int, int>> ProjectDictionary {
+			get;
+			private set;
+		}
+
+		/// <summary>
+		/// Gets the timer list.
+		/// </summary>
+		/// <value>The timer list.</value>
+		public List<Tuple<string, int>> TimerList {
+			get;
+			private set;
+		}
 
 		#region IService implementation
 
 		public UserStatisticsService ()
 		{
 			ProjectDictionary = new Dictionary<Guid, Tuple<int, int>> ();
-			StateTimer = new Stopwatch ();
-			GeneralTimer = new Stopwatch ();
+			stateTimer = new Stopwatch ();
+			generalTimer = new Stopwatch ();
 			TimerList = new List<Tuple<string, int>> ();
 		}
 
+		/// <summary>
+		/// Gets the level of the service. Services are started in ascending level order and stopped in descending level order.
+		/// </summary>
+		/// <value>The level.</value>
 		public int Level {
 			get {
 				return 21; //Always set a higher level than DatabaseManager
 			}
 		}
 
+		/// <summary>
+		/// Gets the name of the service
+		/// </summary>
+		/// <value>The name of the service.</value>
 		public string Name {
 			get {
 				return "UserStatistics";
 			}
 		}
 
+		/// <summary>
+		/// Starts the service.
+		/// </summary>
 		public virtual bool Start ()
 		{
 			App.Current.EventsBroker.Subscribe<NewPlaylistEvent> (HandleNewPlaylistEvent);
@@ -77,11 +184,14 @@ namespace VAS.Services
 			App.Current.EventsBroker.Subscribe<CreateProjectEvent> (HandleNewProject);
 			App.Current.EventsBroker.Subscribe<OpenedProjectEvent> (HandleOpenProject);
 			App.Current.EventsBroker.Subscribe<NavigationEvent> (HandleNavigationEvent);
-			GeneralTimer.Start ();
+			generalTimer.Start ();
 
 			return true;
 		}
 
+		/// <summary>
+		/// Stops the service.
+		/// </summary>
 		public virtual bool Stop ()
 		{
 			SaveTimer ();
@@ -92,7 +202,7 @@ namespace VAS.Services
 			App.Current.EventsBroker.Unsubscribe<CreateProjectEvent> (HandleNewProject);
 			App.Current.EventsBroker.Unsubscribe<OpenedProjectEvent> (HandleOpenProject);
 			App.Current.EventsBroker.Unsubscribe<NavigationEvent> (HandleNavigationEvent);
-			GeneralTimer.Stop ();
+			generalTimer.Stop ();
 			RetrieveUserData ();
 			SendData ();
 
@@ -107,6 +217,35 @@ namespace VAS.Services
 		public virtual void RetrieveUserData ()
 		{
 			TotalUserPlaylists = App.Current.DatabaseManager.ActiveDB.Count<Playlist> ();
+		}
+
+		/// <summary>
+		/// Tracks the service collected data to HockeyApp.
+		/// </summary>
+		public virtual void SendData ()
+		{
+			TrackProjects ();
+			TrackTimers ();
+			TrackEvent ("Teams amount", "Teams", TeamsAmount);
+			TrackEvent ("Renders amount", "Renders", RendersAmount);
+			TrackEvent ("Playlists amount", "Playlists", PlaylistsAmount);
+			TrackEvent ("Projects amount", "Projects", CreatedProjects);
+			TrackEvent ("Total playlists", "Playlists", TotalUserPlaylists);
+			TrackEvent ("Total time spent", "Time", ((int)generalTimer.ElapsedMilliseconds) / 1000);
+		}
+
+		/// <summary>
+		/// Tracks an event to HockeyApp.
+		/// </summary>
+		/// <param name="eventName">Event name.</param>
+		/// <param name="key">Key.</param>
+		/// <param name="value">Value.</param>
+		public virtual void TrackEvent (string eventName, string key, double value)
+		{
+			Dictionary<string, double> dict = new Dictionary<string, double> {
+				{key, value}
+			};
+			App.Current.KPIService.TrackEvent (eventName, null, dict);
 		}
 
 		/// <summary>
@@ -129,9 +268,9 @@ namespace VAS.Services
 		/// </summary>
 		void SaveTimer ()
 		{
-			StateTimer.Stop ();
-			TimerList.Add (new Tuple<string, int> (CurrentState, ((int)StateTimer.ElapsedMilliseconds) / 1000));
-			StateTimer.Reset ();
+			stateTimer.Stop ();
+			TimerList.Add (new Tuple<string, int> (currentState, ((int)stateTimer.ElapsedMilliseconds) / 1000));
+			stateTimer.Reset ();
 		}
 
 		/// <summary>
@@ -169,34 +308,7 @@ namespace VAS.Services
 			}
 		}
 
-		/// <summary>
-		/// Tracks the service collected data to HockeyApp.
-		/// </summary>
-		public virtual void SendData ()
-		{
-			TrackProjects ();
-			TrackTimers ();
-			TrackEvent ("Teams amount", "Teams", TeamsAmount);
-			TrackEvent ("Renders amount", "Renders", RendersAmount);
-			TrackEvent ("Playlists amount", "Playlists", PlayListsAmount);
-			TrackEvent ("Projects amount", "Projects", CreatedProjects);
-			TrackEvent ("Total playlists", "Playlists", TotalUserPlaylists);
-			TrackEvent ("Total time spent", "Time", ((int)GeneralTimer.ElapsedMilliseconds) / 1000);
-		}
-
-		/// <summary>
-		/// Tracks an event to HockeyApp.
-		/// </summary>
-		/// <param name="eventName">Event name.</param>
-		/// <param name="key">Key.</param>
-		/// <param name="value">Value.</param>
-		public virtual void TrackEvent (string eventName, string key, double value)
-		{
-			Dictionary<string, double> dict = new Dictionary<string, double> {
-				{key, value}
-			};
-			App.Current.KPIService.TrackEvent (eventName, null, dict);
-		}
+		#region Handlers
 
 		/// <summary>
 		/// Handles when navigation event has been thrown.
@@ -206,12 +318,12 @@ namespace VAS.Services
 		{
 			string NextEvent = evt.Name;
 
-			if (!string.IsNullOrEmpty (CurrentState) && (NextEvent != CurrentState)) {
+			if (!string.IsNullOrEmpty (currentState) && (NextEvent != currentState)) {
 				SaveTimer ();
 			}
 			if (StatesToTrack.Contains (NextEvent)) {
-				StateTimer.Start ();
-				CurrentState = NextEvent;
+				stateTimer.Start ();
+				currentState = NextEvent;
 			}
 		}
 
@@ -261,7 +373,7 @@ namespace VAS.Services
 		/// <param name="evt">Evt.</param>
 		void HandleNewPlaylistEvent (NewPlaylistEvent evt)
 		{
-			PlayListsAmount++;
+			PlaylistsAmount++;
 		}
 
 		/// <summary>
@@ -272,5 +384,7 @@ namespace VAS.Services
 		{
 			RendersAmount++;
 		}
+
+		#endregion
 	}
 }

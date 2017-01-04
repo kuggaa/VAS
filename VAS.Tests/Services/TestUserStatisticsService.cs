@@ -59,7 +59,7 @@ namespace VAS.Tests.Services
 			App.Current.EventsBroker.Publish (new NewPlaylistEvent ());
 
 			// Assert
-			Assert.AreEqual (1, Service.PlayListsAmount);
+			Assert.AreEqual (1, Service.PlaylistsAmount);
 		}
 
 		[Test]
