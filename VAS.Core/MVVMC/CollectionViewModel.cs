@@ -51,15 +51,19 @@ namespace VAS.Core.MVVMC
 				if (ViewModels != null) {
 					ViewModels.CollectionChanged -= HandleViewModelsCollectionChanged;
 				}
-				if (Model != null) {
-					Model.CollectionChanged -= HandleModelsCollectionChanged;
+				if (model != null) {
+					model.CollectionChanged -= HandleModelsCollectionChanged;
 				}
 				ViewModels.Clear ();
 				modelToViewModel = new Dictionary<TModel, TViewModel> ();
 				model = value;
 				AddViewModels (0, model);
-				ViewModels.CollectionChanged += HandleViewModelsCollectionChanged;
-				model.CollectionChanged += HandleModelsCollectionChanged;
+				if (ViewModels != null) {
+					ViewModels.CollectionChanged += HandleViewModelsCollectionChanged;
+				}
+				if (model != null) {
+					model.CollectionChanged += HandleModelsCollectionChanged;
+				}
 			}
 			get {
 				return model;
@@ -85,11 +89,15 @@ namespace VAS.Core.MVVMC
 
 		void AddViewModels (int index, IEnumerable<TModel> models)
 		{
+			if (models == null) {
+				return;
+			}
+
 			var viewModels = new List<TViewModel> ();
-			foreach (TModel model in models) {
-				var viewModel = CreateInstance (model);
+			foreach (TModel tModel in models) {
+				var viewModel = CreateInstance (tModel);
 				viewModels.Add (viewModel);
-				modelToViewModel [model] = viewModel;
+				modelToViewModel [tModel] = viewModel;
 			}
 			ViewModels.InsertRange (index, viewModels);
 		}
