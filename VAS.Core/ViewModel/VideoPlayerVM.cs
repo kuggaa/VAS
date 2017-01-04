@@ -254,9 +254,9 @@ namespace VAS.Core.ViewModel
 			Player.Play ();
 		}
 
-		public void Pause ()
+		public void Pause (bool synchronous = false)
 		{
-			Player.Pause ();
+			Player.Pause (synchronous);
 		}
 
 		public void Stop ()
