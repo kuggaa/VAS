@@ -18,7 +18,6 @@ namespace VAS.UI.Dialog
 			// Widget VAS.UI.Dialog.ChooseOptionDialog
 			this.Name = "VAS.UI.Dialog.ChooseOptionDialog";
 			this.Title = "";
-			this.Icon = global::Stetic.IconLoader.LoadIcon(this, "longomatch", global::Gtk.IconSize.Menu);
 			this.TypeHint = ((global::Gdk.WindowTypeHint)(1));
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			this.Modal = true;

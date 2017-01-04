@@ -38,6 +38,7 @@ namespace VAS.UI.Dialog
 		{
 			TransientFor = parent;
 			this.Build ();
+			Icon = VASMisc.LoadIcon (App.Current.SoftwareIconName, IconSize.Button, 0);
 			encSettings = new EncodingSettings ();
 			stdStore = VASMisc.FillImageFormat (sizecombobox, VideoStandards.Rendering,
 				App.Current.Config.RenderVideoStandard);
