@@ -87,6 +87,7 @@ namespace VAS.UI.Helpers
 			if (command != null) {
 				button.Bind (command);
 			}
+			button.Name = StyleConf.ButtonDialog;
 			button.HeightRequest = App.Current.Style.ButtonDialogHeight;
 		}
 
