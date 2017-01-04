@@ -44,7 +44,10 @@ namespace VAS.Services.Controller
 		protected override void Dispose (bool disposing)
 		{
 			base.Dispose (disposing);
-			Stop ();
+			if (started) {
+				Log.Error ($"The controller {this} was not stopped correctly.");
+				Stop ();
+			}
 		}
 
 		protected ProjectsManagerVM<TModel, TViewModel> ViewModel {

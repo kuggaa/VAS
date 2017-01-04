@@ -42,6 +42,26 @@ using VAS.Services.ViewModel;
 namespace VAS.Tests
 {
 
+	public class DummyPlaylistsManagerVM : IViewModel
+	{
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		public static implicit operator VideoPlayerVM (DummyPlaylistsManagerVM viewModel)
+		{
+			return viewModel.Player;
+		}
+
+		public static implicit operator PlaylistCollectionVM (DummyPlaylistsManagerVM viewModel)
+		{
+			return viewModel.Playlists;
+		}
+
+		public VideoPlayerVM Player { get; set; }
+
+		public PlaylistCollectionVM Playlists { get; set; }
+
+	}
+
 	public class DummyUserStatisticsService : UserStatisticsService
 	{
 	}

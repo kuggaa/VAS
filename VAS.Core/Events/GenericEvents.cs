@@ -94,5 +94,29 @@ namespace VAS.Core.Events
 	public class ClearEvent<T> : ReturningValueEvent
 	{
 	}
+
+	/// <summary>
+	/// Event sent to request closing a <typeparam name="T">.
+	/// </summary>
+	public class CloseEvent<T> : ReturningValueEvent
+	{
+		/// <summary>
+		/// Gets or sets the object to close.
+		/// </summary>
+		/// <value>The object.</value>
+		public T Object { get; set; }
+	}
+
+	/// <summary>
+	/// Event sent to request saving a <typeparam name="T">.
+	/// </summary>
+	public class SaveEvent<T> : ReturningValueEvent
+	{
+		/// <summary>
+		/// Gets or sets the object to close.
+		/// </summary>
+		/// <value>The object.</value>
+		public T Object { get; set; }
+	}
 }
 

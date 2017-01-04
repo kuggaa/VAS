@@ -136,7 +136,9 @@ namespace VAS.Tests.Services
 			playlist.SetActive (playlist.Elements [0]);
 
 			plController = new PlaylistController ();
-			plController.PlayerVM = playerVM;
+			plController.SetViewModel (new DummyPlaylistsManagerVM {
+				Player = playerVM
+			});
 			plController.Start ();
 
 			streamLength = new Time { TotalSeconds = 5000 };
