@@ -133,6 +133,15 @@ namespace VAS.Services
 			private set;
 		}
 
+		/// <sumary>
+		/// Gets the data dictionary.
+		/// </summary>
+		/// <value>The data dictionary.</value>
+		public Dictionary<string, double> DataDictionary {
+			get;
+			protected set;
+		}
+
 		/// <summary>
 		/// Gets the timer list.
 		/// </summary>
@@ -147,6 +156,7 @@ namespace VAS.Services
 		public UserStatisticsService ()
 		{
 			ProjectDictionary = new Dictionary<Guid, Tuple<int, int>> ();
+			DataDictionary = new Dictionary<string, double> ();
 			stateTimer = new Stopwatch ();
 			generalTimer = new Stopwatch ();
 			TimerList = new List<Tuple<string, int>> ();
@@ -220,35 +230,6 @@ namespace VAS.Services
 		}
 
 		/// <summary>
-		/// Tracks the service collected data to HockeyApp.
-		/// </summary>
-		public virtual void SendData ()
-		{
-			TrackProjects ();
-			TrackTimers ();
-			TrackEvent ("Teams amount", "Teams", TeamsAmount);
-			TrackEvent ("Renders amount", "Renders", RendersAmount);
-			TrackEvent ("Playlists amount", "Playlists", PlaylistsAmount);
-			TrackEvent ("Projects amount", "Projects", CreatedProjects);
-			TrackEvent ("Total playlists", "Playlists", TotalUserPlaylists);
-			TrackEvent ("Total time spent", "Time", ((int)generalTimer.ElapsedMilliseconds) / 1000);
-		}
-
-		/// <summary>
-		/// Tracks an event to HockeyApp.
-		/// </summary>
-		/// <param name="eventName">Event name.</param>
-		/// <param name="key">Key.</param>
-		/// <param name="value">Value.</param>
-		public virtual void TrackEvent (string eventName, string key, double value)
-		{
-			Dictionary<string, double> dict = new Dictionary<string, double> {
-				{key, value}
-			};
-			App.Current.KPIService.TrackEvent (eventName, null, dict);
-		}
-
-		/// <summary>
 		/// Loads the current session project values.
 		/// </summary>
 		/// <param name="projectId">Project identifier.</param>
@@ -296,16 +277,30 @@ namespace VAS.Services
 		/// </summary>
 		void TrackTimers ()
 		{
-			Dictionary<string, string> dict = new Dictionary<string, string> ();
-			Dictionary<string, double> dict2 = new Dictionary<string, double> ();
-
 			foreach (var item in TimerList) {
-				dict.Add ("State", item.Item1);
-				dict2.Add ("Time", item.Item2);
-				App.Current.KPIService.TrackEvent ("Time spent", dict, dict2);
-				dict.Clear ();
-				dict2.Clear ();
+				string itemKey = "Time spent on " + item.Item1;
+				if (DataDictionary.ContainsKey (itemKey)) {
+					DataDictionary [itemKey] = item.Item2;
+				} else {
+					DataDictionary.Add (itemKey, item.Item2);
+				}
 			}
+		}
+
+		/// <summary>
+		/// Tracks the service collected data to HockeyApp.
+		/// </summary>
+		public virtual void SendData ()
+		{
+			TrackProjects ();
+			TrackTimers ();
+			DataDictionary.Add ("Teams amount", TeamsAmount);
+			DataDictionary.Add ("Renders amount", RendersAmount);
+			DataDictionary.Add ("Playlists amount", PlaylistsAmount);
+			DataDictionary.Add ("Projects amount", CreatedProjects);
+			DataDictionary.Add ("Total playlists", TotalUserPlaylists);
+			DataDictionary.Add ("Total time spent", ((int)generalTimer.ElapsedMilliseconds) / 1000);
+			App.Current.KPIService.TrackEvent ("Session data", null, DataDictionary);
 		}
 
 		#region Handlers
