@@ -54,6 +54,7 @@ namespace VAS.UI.Common
 		protected TargetList targets;
 		Point dragStart;
 		protected bool dragging, dragStarted, enableDragSource;
+		protected TreePath pathClicked;
 
 		public TreeViewBase () : this (new TreeStore (typeof (TViewModel)))
 		{
@@ -253,6 +254,7 @@ namespace VAS.UI.Common
 		protected override bool OnButtonPressEvent (Gdk.EventButton evnt)
 		{
 			bool ret = true;
+			pathClicked = null;
 			TreePath [] paths = Selection.GetSelectedRows ();
 
 			if (Misc.RightButtonClicked (evnt)) {
@@ -272,6 +274,7 @@ namespace VAS.UI.Common
 					dragStarted = false;
 					dragStart = new Point (evnt.X, evnt.Y);
 				}
+				GetPathAtPos ((int)evnt.X, (int)evnt.Y, out pathClicked);
 			}
 			return ret;
 		}
@@ -283,8 +286,22 @@ namespace VAS.UI.Common
 
 		protected override bool OnButtonReleaseEvent (EventButton evnt)
 		{
+			bool ret = true;
+			bool isExpanded;
+			if (pathClicked != null && !dragStarted) {
+				bool rowExpandedState = GetRowExpanded (pathClicked);
+				ret = base.OnButtonReleaseEvent (evnt);
+				if ((isExpanded = GetRowExpanded (pathClicked)) == rowExpandedState) {
+					if (isExpanded) {
+						CollapseRow (pathClicked);
+					} else {
+						ExpandRow (pathClicked, true);
+					}
+				}
+				pathClicked = null;
+			}
 			dragging = dragStarted = false;
-			return base.OnButtonReleaseEvent (evnt);
+			return ret;
 		}
 
 		protected override bool OnMotionNotifyEvent (EventMotion evnt)
