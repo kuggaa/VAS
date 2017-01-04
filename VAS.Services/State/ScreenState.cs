@@ -22,6 +22,7 @@ using VAS.Core;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.Common;
 
 
 namespace VAS.Services.State
@@ -99,11 +100,13 @@ namespace VAS.Services.State
 
 		public virtual Task<bool> LoadState (dynamic data)
 		{
+			Log.Debug ($"Loading state {Name}");
 			return Initialize (data);
 		}
 
 		public virtual Task<bool> UnloadState ()
 		{
+			Log.Debug ($"Unloading state {Name}");
 			foreach (var controller in Controllers) {
 				controller.Dispose ();
 			}
@@ -113,6 +116,7 @@ namespace VAS.Services.State
 
 		public virtual Task<bool> HideState ()
 		{
+			Log.Debug ($"Hiding state {Name}");
 			foreach (IController controller in Controllers) {
 				controller.Stop ();
 			}
@@ -122,6 +126,7 @@ namespace VAS.Services.State
 
 		public virtual Task<bool> ShowState ()
 		{
+			Log.Debug ($"Showing state {Name}");
 			foreach (IController controller in Controllers) {
 				controller.Start ();
 			}
