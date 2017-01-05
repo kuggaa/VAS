@@ -110,26 +110,20 @@ namespace VAS.Core.Common
 
 		public static Guid OSXDeviceID ()
 		{
-			try {
-				IntPtr ioKit = dlopen (IO_KIT, RTLD_NOW);
-				if (ioKit != IntPtr.Zero) {
-					IntPtr port = dlsym (ioKit, K_IO_MASTERPORT_DEFAULT);
-					IntPtr ioRegistryRoot = IORegistryEntryFromPath (Marshal.ReadIntPtr (port), IO_SERVICE);
-					if (ioRegistryRoot != IntPtr.Zero) {
-						IntPtr uuidCf = IORegistryEntryCreateCFProperty (ioRegistryRoot, GetCFString (IO_PLATFORM_UUIDCF), IntPtr.Zero, 0);
-						if (uuidCf != IntPtr.Zero) {
-							Log.Debug ("DeviceID returned is " + GetString (uuidCf));
-							deviceID = Guid.Parse (GetString (uuidCf));
-						}
-						IOObjectRelease (ioRegistryRoot);
+			IntPtr ioKit = dlopen (IO_KIT, RTLD_NOW);
+			if (ioKit != IntPtr.Zero) {
+				IntPtr port = dlsym (ioKit, K_IO_MASTERPORT_DEFAULT);
+				IntPtr ioRegistryRoot = IORegistryEntryFromPath (Marshal.ReadIntPtr (port), IO_SERVICE);
+				if (ioRegistryRoot != IntPtr.Zero) {
+					IntPtr uuidCf = IORegistryEntryCreateCFProperty (ioRegistryRoot, GetCFString (IO_PLATFORM_UUIDCF), IntPtr.Zero, 0);
+					if (uuidCf != IntPtr.Zero) {
+						deviceID = Guid.Parse (GetString (uuidCf));
 					}
-					dlclose (ioKit);
+					IOObjectRelease (ioRegistryRoot);
 				}
-				return deviceID;
-			} catch (Exception ex) {
-				Log.Exception (ex);
-				return Guid.Empty;
+				dlclose (ioKit);
 			}
+			return deviceID;
 		}
 
 		/// <summary>
@@ -139,23 +133,16 @@ namespace VAS.Core.Common
 		/// <returns>The device identifier.</returns>
 		public static Guid WindowsDeviceID ()
 		{
-			Log.Debug ("Getting deviceID");
-			try {
-				RegistryKey userKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey ("Software", true)
-											   .CreateSubKey (App.Current.SoftwareName);
-				string guid = userKey.GetValue ("MachineGuid") as string;
-				if (guid == null) {
-					Log.Debug ("CurrentUser MachineGuid is null");
-					Guid id = Guid.NewGuid ();
-					guid = id.ToString ();
-					userKey.SetValue ("MachineGuid", id);
-				}
-				Log.Debug ("DeviceID: " + guid);
-				return Guid.Parse (guid);
-			} catch (Exception ex) {
-				Log.Exception (ex);
-				return Guid.Empty;
+			RegistryKey userKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey ("Software", true)
+										   .CreateSubKey (App.Current.SoftwareName);
+			string guid = userKey.GetValue ("MachineGuid") as string;
+			if (guid == null) {
+				Log.Debug ("CurrentUser MachineGuid is null");
+				Guid id = Guid.NewGuid ();
+				guid = id.ToString ();
+				userKey.SetValue ("MachineGuid", id);
 			}
+			return Guid.Parse (guid);
 		}
 
 		public static Guid LinuxDeviceID ()
@@ -176,12 +163,7 @@ namespace VAS.Core.Common
 				break;
 			}
 
-			try {
-				return Guid.Parse (line);
-			} catch (Exception ex) {
-				Log.Exception (ex);
-				return Guid.Empty;
-			}
+			return Guid.Parse (line);
 		}
 	}
 }
