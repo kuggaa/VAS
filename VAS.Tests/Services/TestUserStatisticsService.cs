@@ -66,7 +66,7 @@ namespace VAS.Tests.Services
 		public void TestCountUsageEvents_RendersAmount ()
 		{
 			// Action
-			App.Current.EventsBroker.Publish (new CreateEvent<Job> ());
+			App.Current.EventsBroker.Publish (new JobRenderedEvent ());
 
 			// Assert
 			Assert.AreEqual (1, Service.RendersAmount);
