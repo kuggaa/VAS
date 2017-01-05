@@ -28,14 +28,14 @@ namespace VAS.Tests.Core.Common
 	public class TestStateController
 	{
 		StateController sc;
-		string lastTransition = null;
+		NavigationEvent lastNavigationEvent;
 
 		[SetUp]
 		public void InitializeStateController ()
 		{
 			sc = new StateController ();
 			App.Current.EventsBroker.Subscribe<NavigationEvent> (HandleTransitionEvent);
-			lastTransition = null;
+			lastNavigationEvent = null;
 		}
 
 		[TearDown]
@@ -46,7 +46,7 @@ namespace VAS.Tests.Core.Common
 
 		void HandleTransitionEvent (NavigationEvent evt)
 		{
-			lastTransition = evt.Name;
+			lastNavigationEvent = evt;
 		}
 
 		IScreenState GetScreenStateDummy (string transitionName)
@@ -118,7 +118,8 @@ namespace VAS.Tests.Core.Common
 
 			// Assert
 			Assert.IsTrue (moveTransition);
-			Assert.AreEqual ("newTransition", lastTransition);
+			Assert.AreEqual ("newTransition", lastNavigationEvent.Name);
+			Assert.IsFalse (lastNavigationEvent.IsModal);
 		}
 
 
@@ -137,7 +138,8 @@ namespace VAS.Tests.Core.Common
 
 			// Assert
 			Assert.IsTrue (moveTransition);
-			Assert.AreEqual ("newTransition", lastTransition);
+			Assert.AreEqual ("newTransition", lastNavigationEvent.Name);
+			Assert.IsFalse (lastNavigationEvent.IsModal);
 			bool moveBack = await sc.MoveBack ();
 			Assert.IsFalse (moveBack);
 		}
@@ -153,7 +155,8 @@ namespace VAS.Tests.Core.Common
 
 			// Assert
 			Assert.IsTrue (moveTransition);
-			Assert.AreEqual ("newTransition", lastTransition);
+			Assert.AreEqual ("newTransition", lastNavigationEvent.Name);
+			Assert.IsFalse (lastNavigationEvent.IsModal);
 		}
 
 		[Test]
@@ -168,7 +171,8 @@ namespace VAS.Tests.Core.Common
 
 			// Assert
 			Assert.IsTrue (moveTransition);
-			Assert.AreEqual ("newModalTransition", lastTransition);
+			Assert.AreEqual ("newModalTransition", lastNavigationEvent.Name);
+			Assert.IsTrue (lastNavigationEvent.IsModal);
 		}
 
 		[Test]
@@ -180,13 +184,16 @@ namespace VAS.Tests.Core.Common
 			sc.Register ("newModalTransition", () => GetScreenStateDummy ("newModalTransition"));
 			moveTransition = await sc.MoveTo ("newTransition", null);
 			Assert.IsTrue (moveTransition);
-			Assert.AreEqual ("newTransition", lastTransition);
+			Assert.AreEqual ("newTransition", lastNavigationEvent.Name);
+			Assert.IsFalse (lastNavigationEvent.IsModal);
 			moveTransition = await sc.MoveToModal ("newModalTransition", null);
 			Assert.IsTrue (moveTransition);
-			Assert.AreEqual ("newModalTransition", lastTransition);
+			Assert.AreEqual ("newModalTransition", lastNavigationEvent.Name);
+			Assert.IsTrue (lastNavigationEvent.IsModal);
 			moveTransition = await sc.MoveBack ();
 			Assert.IsTrue (moveTransition);
-			Assert.AreEqual ("newTransition", lastTransition);
+			Assert.AreEqual ("newTransition", lastNavigationEvent.Name);
+			Assert.IsFalse (lastNavigationEvent.IsModal);
 			moveTransition = await sc.MoveBack ();
 			Assert.IsFalse (moveTransition);
 		}
@@ -201,16 +208,20 @@ namespace VAS.Tests.Core.Common
 			sc.Register ("newModalTransition", () => GetScreenStateDummy ("newModalTransition"));
 			moveTransition = await sc.MoveTo ("Transition1", null);
 			Assert.IsTrue (moveTransition);
-			Assert.AreEqual ("Transition1", lastTransition);
+			Assert.AreEqual ("Transition1", lastNavigationEvent.Name);
+			Assert.IsFalse (lastNavigationEvent.IsModal);
 			moveTransition = await sc.MoveTo ("Transition2", null);
 			Assert.IsTrue (moveTransition);
-			Assert.AreEqual ("Transition2", lastTransition);
+			Assert.AreEqual ("Transition2", lastNavigationEvent.Name);
+			Assert.IsFalse (lastNavigationEvent.IsModal);
 			moveTransition = await sc.MoveToModal ("newModalTransition", null);
 			Assert.IsTrue (moveTransition);
-			Assert.AreEqual ("newModalTransition", lastTransition);
+			Assert.AreEqual ("newModalTransition", lastNavigationEvent.Name);
+			Assert.IsTrue (lastNavigationEvent.IsModal);
 			moveTransition = await sc.MoveBackTo ("Transition1");
 			Assert.IsTrue (moveTransition);
-			Assert.AreEqual ("Transition1", lastTransition);
+			Assert.AreEqual ("Transition1", lastNavigationEvent.Name);
+			Assert.IsFalse (lastNavigationEvent.IsModal);
 		}
 
 		[Test]
@@ -225,16 +236,20 @@ namespace VAS.Tests.Core.Common
 			await sc.SetHomeTransition ("Home", null);
 			moveTransition = await sc.MoveTo ("Transition1", null);
 			Assert.IsTrue (moveTransition);
-			Assert.AreEqual ("Transition1", lastTransition);
+			Assert.AreEqual ("Transition1", lastNavigationEvent.Name);
+			Assert.IsFalse (lastNavigationEvent.IsModal);
 			moveTransition = await sc.MoveTo ("Transition2", null);
 			Assert.IsTrue (moveTransition);
-			Assert.AreEqual ("Transition2", lastTransition);
+			Assert.AreEqual ("Transition2", lastNavigationEvent.Name);
+			Assert.IsFalse (lastNavigationEvent.IsModal);
 			moveTransition = await sc.MoveToModal ("newModalTransition", null);
 			Assert.IsTrue (moveTransition);
-			Assert.AreEqual ("newModalTransition", lastTransition);
+			Assert.AreEqual ("newModalTransition", lastNavigationEvent.Name);
+			Assert.IsTrue (lastNavigationEvent.IsModal);
 			moveTransition = await sc.MoveToHome ();
 			Assert.IsTrue (moveTransition);
-			Assert.AreEqual ("Home", lastTransition);
+			Assert.AreEqual ("Home", lastNavigationEvent.Name);
+			Assert.IsFalse (lastNavigationEvent.IsModal);
 		}
 
 		[Test]
