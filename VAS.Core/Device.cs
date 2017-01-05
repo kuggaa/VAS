@@ -29,19 +29,23 @@ namespace VAS.Core
 		public Guid ID {
 			get {
 				if (deviceID == Guid.Empty) {
-					switch (Utils.OS) {
-					case OperatingSystemID.Windows: {
-							deviceID = DeviceID.WindowsDeviceID ();
-							break;
+					try {
+						switch (Utils.OS) {
+						case OperatingSystemID.Windows: {
+								deviceID = DeviceID.WindowsDeviceID ();
+								break;
+							}
+						case OperatingSystemID.Linux: {
+								deviceID = DeviceID.LinuxDeviceID ();
+								break;
+							}
+						case OperatingSystemID.OSX: {
+								deviceID = DeviceID.OSXDeviceID ();
+								break;
+							}
 						}
-					case OperatingSystemID.Linux: {
-							deviceID = DeviceID.LinuxDeviceID ();
-							break;
-						}
-					case OperatingSystemID.OSX: {
-							deviceID = DeviceID.OSXDeviceID ();
-							break;
-						}
+					} catch (Exception ex) {
+						Log.Exception (ex);
 					}
 				}
 				return deviceID;
