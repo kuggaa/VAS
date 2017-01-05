@@ -143,6 +143,10 @@ namespace VAS.Core.Events
 		public HotKey Key;
 	}
 
+	public class JobRenderedEvent : Event
+	{
+	}
+
 	public class RenderPlaylistEvent : Event
 	{
 		public Playlist Playlist { get; set; }

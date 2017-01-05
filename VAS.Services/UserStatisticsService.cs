@@ -146,7 +146,7 @@ namespace VAS.Services
 		/// Gets the timer list.
 		/// </summary>
 		/// <value>The timer list.</value>
-		public List<Tuple<string, int>> TimerList {
+		public List<Tuple<string, long>> TimerList {
 			get;
 			private set;
 		}
@@ -159,7 +159,7 @@ namespace VAS.Services
 			DataDictionary = new Dictionary<string, double> ();
 			stateTimer = new Stopwatch ();
 			generalTimer = new Stopwatch ();
-			TimerList = new List<Tuple<string, int>> ();
+			TimerList = new List<Tuple<string, long>> ();
 		}
 
 		/// <summary>
@@ -188,7 +188,7 @@ namespace VAS.Services
 		public virtual bool Start ()
 		{
 			App.Current.EventsBroker.Subscribe<NewPlaylistEvent> (HandleNewPlaylistEvent);
-			App.Current.EventsBroker.Subscribe<CreateEvent<Job>> (HandleCreateJob);
+			App.Current.EventsBroker.Subscribe<JobRenderedEvent> (HandleCreateJob);
 			App.Current.EventsBroker.Subscribe<NewDashboardEvent> (HandleDashboardEvent);
 			App.Current.EventsBroker.Subscribe<DrawingSavedToProjectEvent> (HandleDrawingSavedToProject);
 			App.Current.EventsBroker.Subscribe<ProjectCreatedEvent> (HandleNewProject);
@@ -206,7 +206,7 @@ namespace VAS.Services
 		{
 			SaveTimer ();
 			App.Current.EventsBroker.Unsubscribe<NewPlaylistEvent> (HandleNewPlaylistEvent);
-			App.Current.EventsBroker.Unsubscribe<CreateEvent<Job>> (HandleCreateJob);
+			App.Current.EventsBroker.Unsubscribe<JobRenderedEvent> (HandleCreateJob);
 			App.Current.EventsBroker.Unsubscribe<NewDashboardEvent> (HandleDashboardEvent);
 			App.Current.EventsBroker.Unsubscribe<DrawingSavedToProjectEvent> (HandleDrawingSavedToProject);
 			App.Current.EventsBroker.Unsubscribe<ProjectCreatedEvent> (HandleNewProject);
@@ -249,7 +249,7 @@ namespace VAS.Services
 		void SaveTimer ()
 		{
 			stateTimer.Stop ();
-			TimerList.Add (new Tuple<string, int> (currentState, ((int)stateTimer.ElapsedMilliseconds) / 1000));
+			TimerList.Add (new Tuple<string, long> (currentState, stateTimer.ElapsedTicks));
 			stateTimer.Reset ();
 		}
 
@@ -258,17 +258,25 @@ namespace VAS.Services
 		/// </summary>
 		void TrackProjects ()
 		{
-			Dictionary<string, string> dict = new Dictionary<string, string> ();
-			Dictionary<string, double> dict2 = new Dictionary<string, double> ();
-
 			foreach (var item in ProjectDictionary) {
-				dict.Add ("Project_id", item.Key.ToString ());
-				dict2.Add ("Tags", item.Value.Item1);
-				dict2.Add ("Drawings", item.Value.Item2);
-				App.Current.KPIService.TrackEvent ("Project_usage", dict, dict2);
-				dict.Clear ();
-				dict2.Clear ();
+				TrackProject (item.Key.ToString (), item.Value.Item1, item.Value.Item2);
 			}
+		}
+
+		/// <summary>
+		/// Tracks the project given data.
+		/// </summary>
+		/// <param name="ProjectId">Project identifier.</param>
+		/// <param name="tags">Tags.</param>
+		/// <param name="drawings">Drawings.</param>
+		void TrackProject (string ProjectId, int tags, int drawings)
+		{
+			App.Current.KPIService.TrackEvent ("Project_usage",
+											   new Dictionary<string, string> () {
+				{ "Project_id", ProjectId } },
+											   new Dictionary<string, double> () {
+				{ "Tags", tags },
+				{ "Drawings" , drawings } });
 		}
 
 		/// <summary>
@@ -276,12 +284,9 @@ namespace VAS.Services
 		/// </summary>
 		void TrackTimers ()
 		{
-			Dictionary<string, double> TimersDictionary = new Dictionary<string, double> ();
-
 			foreach (var item in TimerList) {
-				TimersDictionary.Add ("Time", item.Item2);
-				App.Current.KPIService.TrackEvent ("PageView_" + item.Item1, null, TimersDictionary);
-				TimersDictionary.Clear ();
+				App.Current.KPIService.TrackEvent ("PageView_" + item.Item1, null,
+												   new Dictionary<string, double> () { { "Time", item.Item2 } });
 			}
 		}
 
@@ -374,7 +379,7 @@ namespace VAS.Services
 		/// Handles when a job/render has been created.
 		/// </summary>
 		/// <param name="evt">Evt.</param>
-		void HandleCreateJob (CreateEvent<Job> evt)
+		void HandleCreateJob (JobRenderedEvent evt)
 		{
 			RendersAmount++;
 		}
