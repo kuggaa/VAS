@@ -191,7 +191,7 @@ namespace VAS.Services
 			App.Current.EventsBroker.Subscribe<CreateEvent<Job>> (HandleCreateJob);
 			App.Current.EventsBroker.Subscribe<NewDashboardEvent> (HandleDashboardEvent);
 			App.Current.EventsBroker.Subscribe<DrawingSavedToProjectEvent> (HandleDrawingSavedToProject);
-			App.Current.EventsBroker.Subscribe<CreateProjectEvent> (HandleNewProject);
+			App.Current.EventsBroker.Subscribe<ProjectCreatedEvent> (HandleNewProject);
 			App.Current.EventsBroker.Subscribe<OpenedProjectEvent> (HandleOpenProject);
 			App.Current.EventsBroker.Subscribe<NavigationEvent> (HandleNavigationEvent);
 			generalTimer.Start ();
@@ -209,7 +209,7 @@ namespace VAS.Services
 			App.Current.EventsBroker.Unsubscribe<CreateEvent<Job>> (HandleCreateJob);
 			App.Current.EventsBroker.Unsubscribe<NewDashboardEvent> (HandleDashboardEvent);
 			App.Current.EventsBroker.Unsubscribe<DrawingSavedToProjectEvent> (HandleDrawingSavedToProject);
-			App.Current.EventsBroker.Unsubscribe<CreateProjectEvent> (HandleNewProject);
+			App.Current.EventsBroker.Unsubscribe<ProjectCreatedEvent> (HandleNewProject);
 			App.Current.EventsBroker.Unsubscribe<OpenedProjectEvent> (HandleOpenProject);
 			App.Current.EventsBroker.Unsubscribe<NavigationEvent> (HandleNavigationEvent);
 			generalTimer.Stop ();
@@ -238,9 +238,8 @@ namespace VAS.Services
 			if (!ProjectDictionary.ContainsKey (projectId)) {
 				ProjectDictionary.Add (projectId, new Tuple<int, int> (ManualTagsAmount, DrawingsAmount));
 			} else {
-				Tuple<int, int> tuple = ProjectDictionary [projectId];
-				ManualTagsAmount = tuple.Item1;
-				DrawingsAmount = tuple.Item2;
+				ManualTagsAmount = ProjectDictionary [projectId].Item1;
+				DrawingsAmount = ProjectDictionary [projectId].Item2;
 			}
 		}
 
@@ -263,10 +262,10 @@ namespace VAS.Services
 			Dictionary<string, double> dict2 = new Dictionary<string, double> ();
 
 			foreach (var item in ProjectDictionary) {
-				dict.Add ("ProjectId", item.Key.ToString ());
+				dict.Add ("Project_id", item.Key.ToString ());
 				dict2.Add ("Tags", item.Value.Item1);
 				dict2.Add ("Drawings", item.Value.Item2);
-				App.Current.KPIService.TrackEvent ("Projects", dict, dict2);
+				App.Current.KPIService.TrackEvent ("Project_usage", dict, dict2);
 				dict.Clear ();
 				dict2.Clear ();
 			}
@@ -277,13 +276,12 @@ namespace VAS.Services
 		/// </summary>
 		void TrackTimers ()
 		{
+			Dictionary<string, double> TimersDictionary = new Dictionary<string, double> ();
+
 			foreach (var item in TimerList) {
-				string itemKey = "Time spent on " + item.Item1;
-				if (DataDictionary.ContainsKey (itemKey)) {
-					DataDictionary [itemKey] = item.Item2;
-				} else {
-					DataDictionary.Add (itemKey, item.Item2);
-				}
+				TimersDictionary.Add ("Time", item.Item2);
+				App.Current.KPIService.TrackEvent ("PageView_" + item.Item1, null, TimersDictionary);
+				TimersDictionary.Clear ();
 			}
 		}
 
@@ -294,13 +292,13 @@ namespace VAS.Services
 		{
 			TrackProjects ();
 			TrackTimers ();
-			DataDictionary.Add ("Teams amount", TeamsAmount);
-			DataDictionary.Add ("Renders amount", RendersAmount);
-			DataDictionary.Add ("Playlists amount", PlaylistsAmount);
-			DataDictionary.Add ("Projects amount", CreatedProjects);
-			DataDictionary.Add ("Total playlists", TotalUserPlaylists);
-			DataDictionary.Add ("Total time spent", ((int)generalTimer.ElapsedMilliseconds) / 1000);
-			App.Current.KPIService.TrackEvent ("Session data", null, DataDictionary);
+			DataDictionary.Add ("Teams", TeamsAmount);
+			DataDictionary.Add ("Renders", RendersAmount);
+			DataDictionary.Add ("Playlists", PlaylistsAmount);
+			DataDictionary.Add ("Projects", CreatedProjects);
+			DataDictionary.Add ("Total_playlists", TotalUserPlaylists);
+			DataDictionary.Add ("Time", ((int)generalTimer.ElapsedMilliseconds) / 1000);
+			App.Current.KPIService.TrackEvent ("Sessions", null, DataDictionary);
 			App.Current.KPIService.Flush ();
 		}
 
@@ -327,7 +325,7 @@ namespace VAS.Services
 		/// Handles when a new project has been created.
 		/// </summary>
 		/// <param name="evt">Evt.</param>
-		void HandleNewProject (CreateProjectEvent evt)
+		void HandleNewProject (ProjectCreatedEvent evt)
 		{
 			CreatedProjects++;
 			ManualTagsAmount = 0;

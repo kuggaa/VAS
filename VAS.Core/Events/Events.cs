@@ -277,7 +277,7 @@ namespace VAS.Core.Events
 		public IVideoPlayerController Player { get; set; }
 	}
 
-	public class CreateProjectEvent : Event
+	public class ProjectCreatedEvent : Event
 	{
 		public Guid ProjectId { get; set; }
 	}
