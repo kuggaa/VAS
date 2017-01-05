@@ -364,6 +364,12 @@ namespace VAS.Core.Events
 		/// <value>The name.</value>
 		public string Name { get; set; }
 
+		/// <summary>
+		/// Gets or sets a value indicating if we are navigating to a modal state.
+		/// </summary>
+		/// <value><c>true</c> if it is a modal state; otherwise, <c>false</c>.</value>
+		public bool IsModal { get; set; }
+
 	}
 
 	public class LoadTimelineEvent<T> : Event
