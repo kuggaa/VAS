@@ -106,7 +106,7 @@ namespace VAS.Tests.Services
 			);
 
 			// Action
-			App.Current.EventsBroker.Publish (new CreateProjectEvent ());
+			App.Current.EventsBroker.Publish (new ProjectCreatedEvent ());
 
 			// Assert
 			Assert.AreEqual (0, Service.ManualTagsAmount,
@@ -155,7 +155,7 @@ namespace VAS.Tests.Services
 			);
 
 			// Action
-			App.Current.EventsBroker.Publish (new CreateProjectEvent ());
+			App.Current.EventsBroker.Publish (new ProjectCreatedEvent ());
 
 			// Assert
 			Assert.AreEqual (0, Service.DrawingsAmount,
@@ -174,7 +174,7 @@ namespace VAS.Tests.Services
 		public void TestCountUsageEvents_CreateProject ()
 		{
 			// Action
-			App.Current.EventsBroker.Publish (new CreateProjectEvent ());
+			App.Current.EventsBroker.Publish (new ProjectCreatedEvent ());
 
 			// Assert
 			Assert.AreEqual (1, Service.CreatedProjects);
