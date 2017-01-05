@@ -117,5 +117,23 @@ namespace VAS.Tests.Core.ViewModel
 			Assert.AreEqual (0, viewModel.ViewModels.Count);
 			Assert.AreEqual (0, viewModel.FullTimeline.ViewModels.Count);
 		}
+
+		[Test]
+		public void TestRenameEventType ()
+		{
+			Project project = Utils.CreateProject (true);
+			ProjectVM projectVM = new ProjectVM { Model = project };
+			TimelineVM viewModel = new TimelineVM ();
+			viewModel.CreateEventTypeTimelines (projectVM.EventTypes);
+			viewModel.Model = project.Timeline;
+			string expected = "New Name";
+
+			EventType et = viewModel.Model.FirstOrDefault ().EventType;
+			et.Name = expected;
+			viewModel.Model.Add (new TimelineEvent { EventType = et });
+
+			Assert.AreEqual (5, viewModel.ViewModels.Count);
+			Assert.AreEqual (expected, viewModel.ViewModels.FirstOrDefault ().Model.Name);
+		}
 	}
 }
