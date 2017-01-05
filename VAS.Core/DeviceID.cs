@@ -110,20 +110,26 @@ namespace VAS.Core.Common
 
 		public static Guid OSXDeviceID ()
 		{
-			IntPtr ioKit = dlopen (IO_KIT, RTLD_NOW);
-			if (ioKit != IntPtr.Zero) {
-				IntPtr port = dlsym (ioKit, K_IO_MASTERPORT_DEFAULT);
-				IntPtr ioRegistryRoot = IORegistryEntryFromPath (Marshal.ReadIntPtr (port), IO_SERVICE);
-				if (ioRegistryRoot != IntPtr.Zero) {
-					IntPtr uuidCf = IORegistryEntryCreateCFProperty (ioRegistryRoot, GetCFString (IO_PLATFORM_UUIDCF), IntPtr.Zero, 0);
-					if (uuidCf != IntPtr.Zero) {
-						deviceID = Guid.Parse (GetString (uuidCf));
+			try {
+				IntPtr ioKit = dlopen (IO_KIT, RTLD_NOW);
+				if (ioKit != IntPtr.Zero) {
+					IntPtr port = dlsym (ioKit, K_IO_MASTERPORT_DEFAULT);
+					IntPtr ioRegistryRoot = IORegistryEntryFromPath (Marshal.ReadIntPtr (port), IO_SERVICE);
+					if (ioRegistryRoot != IntPtr.Zero) {
+						IntPtr uuidCf = IORegistryEntryCreateCFProperty (ioRegistryRoot, GetCFString (IO_PLATFORM_UUIDCF), IntPtr.Zero, 0);
+						if (uuidCf != IntPtr.Zero) {
+							Log.Debug ("DeviceID returned is " + GetString (uuidCf));
+							deviceID = Guid.Parse (GetString (uuidCf));
+						}
+						IOObjectRelease (ioRegistryRoot);
 					}
-					IOObjectRelease (ioRegistryRoot);
+					dlclose (ioKit);
 				}
-				dlclose (ioKit);
+				return deviceID;
+			} catch (Exception ex) {
+				Log.Exception (ex);
+				return Guid.Empty;
 			}
-			return deviceID;
 		}
 
 		/// <summary>
