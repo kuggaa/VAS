@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using Newtonsoft.Json;
 using VAS.Core.Common;
@@ -171,6 +172,19 @@ namespace VAS.Core.ViewModel
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
 		protected virtual void HandleEventTypesCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		{
+			RecreateInternalDictionary ();
+		}
+
+		protected override void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			base.ForwardPropertyChanged (sender, e);
+			if (e.PropertyName == "Name") {
+				RecreateInternalDictionary ();
+			}
+		}
+
+		void RecreateInternalDictionary ()
 		{
 			eventTypeToTimeline.Clear ();
 			foreach (EventTypeTimelineVM timeline in ViewModels) {
