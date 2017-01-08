@@ -78,6 +78,7 @@ namespace VAS.Services
 		TimeNode visibleRegion;
 		VideoPlayerOperationMode mode;
 		Playlist loadedPlaylist;
+		object camerasLayout;
 
 		protected struct Segment
 		{
@@ -135,6 +136,7 @@ namespace VAS.Services
 			set {
 				Log.Debug ("Updating cameras configuration: ", string.Join ("-", value));
 				camerasConfig = value;
+				ViewModel.CamerasConfig = camerasConfig;
 				if (defaultCamerasConfig == null) {
 					defaultCamerasConfig = value;
 				}
@@ -161,8 +163,14 @@ namespace VAS.Services
 		}
 
 		public virtual object CamerasLayout {
-			get;
-			set;
+			get {
+				return camerasLayout;
+			}
+
+			set {
+				camerasLayout = value;
+				ViewModel.CamerasLayout = value;
+			}
 		}
 
 		public virtual List<IViewPort> ViewPorts {
