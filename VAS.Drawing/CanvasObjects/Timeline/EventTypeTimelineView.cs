@@ -101,7 +101,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 					break;
 				}
 			}
-			EmitRedrawEvent (this, null);
+			ReDraw ();
 		}
 	}
 }
