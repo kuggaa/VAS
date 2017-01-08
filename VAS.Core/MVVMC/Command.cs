@@ -137,7 +137,7 @@ namespace VAS.Core.MVVMC
 			}
 		}
 
-		public void Execute (object parameter)
+		public void Execute (object parameter = null)
 		{
 			execute (parameter);
 		}
