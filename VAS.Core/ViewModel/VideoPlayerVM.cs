@@ -225,6 +225,16 @@ namespace VAS.Core.ViewModel
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets the cameras layout.
+		/// </summary>
+		/// <value>The cameras layout.</value>
+		public object CamerasLayout {
+			get;
+			set;
+		}
+
+
 		[PropertyChanged.DoNotNotify]
 		public bool Opened {
 			get {
