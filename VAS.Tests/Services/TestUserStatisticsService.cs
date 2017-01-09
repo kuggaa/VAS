@@ -15,10 +15,9 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System.Linq;
+using System.Collections.Generic;
 using Moq;
 using NUnit.Framework;
-using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
 using VAS.Core.Store;
@@ -31,6 +30,7 @@ namespace VAS.Tests.Services
 		DummyUserStatisticsService Service;
 		Mock<IStorageManager> storageManagerMock;
 		Mock<IStorage> storageMock;
+		Mock<IKpiService> kpiServiceMock;
 		Project Project;
 
 		[SetUp]
@@ -44,12 +44,8 @@ namespace VAS.Tests.Services
 			storageMock = new Mock<IStorage> ();
 			storageManagerMock.Object.ActiveDB = storageMock.Object;
 			App.Current.DatabaseManager = storageManagerMock.Object;
-		}
-
-		[TearDown ()]
-		public void TearDown ()
-		{
-			Service.Stop ();
+			kpiServiceMock = new Mock<IKpiService> ();
+			App.Current.KPIService = kpiServiceMock.Object;
 		}
 
 		[Test]
@@ -59,7 +55,9 @@ namespace VAS.Tests.Services
 			App.Current.EventsBroker.Publish (new NewPlaylistEvent ());
 
 			// Assert
-			Assert.AreEqual (1, Service.PlaylistsAmount);
+			Service.Stop ();
+			kpiServiceMock.Verify (m => m.TrackEvent ("Sessions", null, It.Is<Dictionary<string, double>> (
+				d => d ["Playlists"] == 1)), Times.Once ());
 		}
 
 		[Test]
@@ -69,7 +67,9 @@ namespace VAS.Tests.Services
 			App.Current.EventsBroker.Publish (new JobRenderedEvent ());
 
 			// Assert
-			Assert.AreEqual (1, Service.RendersAmount);
+			Service.Stop ();
+			kpiServiceMock.Verify (m => m.TrackEvent ("Sessions", null, It.Is<Dictionary<string, double>> (
+				d => d ["Renders"] == 1)), Times.Once ());
 		}
 
 		[Test]
@@ -83,42 +83,13 @@ namespace VAS.Tests.Services
 			);
 
 			// Assert
-			Assert.AreEqual (1, Service.ManualTagsAmount,
-							 $"Manual tags amount was {Service.ManualTagsAmount} and expected 1");
-			Assert.AreEqual (1, Service.ProjectDictionary.Count,
-							 $"Project dictionary has {Service.ProjectDictionary.Count} entrace and expected 1");
-			Assert.AreEqual (Project.ID, Service.ProjectDictionary.FirstOrDefault ().Key,
-							 $"Project dictionary key was {Service.ProjectDictionary.FirstOrDefault ().Key} and expected {Project.ID}");
-			Assert.AreEqual (1, Service.ProjectDictionary.FirstOrDefault ().Value.Item1,
-							 $"Project dictionary manual tags value was {Service.ProjectDictionary.FirstOrDefault ().Value.Item1} and expected 1");
-			Assert.AreEqual (0, Service.ProjectDictionary.FirstOrDefault ().Value.Item2,
-							 $"Project dictionary drawings value was {Service.ProjectDictionary.FirstOrDefault ().Value.Item2} and expected 0");
-		}
-
-		[Test]
-		public void TestCountUsageEvents_NewDashboard_Reset ()
-		{
-			// Arrange
-			App.Current.EventsBroker.Publish (
-				new NewDashboardEvent {
-					ProjectId = Project.ID
-				}
-			);
-
-			// Action
-			App.Current.EventsBroker.Publish (new ProjectCreatedEvent ());
-
-			// Assert
-			Assert.AreEqual (0, Service.ManualTagsAmount,
-							 $"Manual tags amount was {Service.ManualTagsAmount} and expected 0");
-			Assert.AreEqual (1, Service.ProjectDictionary.Count,
-							 $"Project dictionary has {Service.ProjectDictionary.Count} entrace and expected 1");
-			Assert.AreEqual (Project.ID, Service.ProjectDictionary.FirstOrDefault ().Key,
-							 $"Project dictionary key was {Service.ProjectDictionary.FirstOrDefault ().Key} and expected {Project.ID}");
-			Assert.AreEqual (1, Service.ProjectDictionary.FirstOrDefault ().Value.Item1,
-							 $"Project dictionary manual tags value was {Service.ProjectDictionary.FirstOrDefault ().Value.Item1} and expected 1");
-			Assert.AreEqual (0, Service.ProjectDictionary.FirstOrDefault ().Value.Item2,
-							 $"Project dictionary drawings value was {Service.ProjectDictionary.FirstOrDefault ().Value.Item2} and expected 0");
+			Service.Stop ();
+			kpiServiceMock.Verify (m => m.TrackEvent ("Project_usage",
+													  It.Is<Dictionary<string, string>> (
+														  d => d ["Project_id"] == Project.ID.ToString ()),
+													  It.Is<Dictionary<string, double>> (
+														  d => (d ["Tags"] == 1) && (d ["Drawings"] == 0))),
+								  Times.Once);
 		}
 
 		[Test]
@@ -131,43 +102,13 @@ namespace VAS.Tests.Services
 				}
 			);
 
-			// Assert
-			Assert.AreEqual (1, Service.DrawingsAmount,
-							 $"Drawing amount was {Service.DrawingsAmount} and expected 1");
-			Assert.AreEqual (1, Service.ProjectDictionary.Count,
-							 $"Project dictionary has {Service.ProjectDictionary.Count} entrace and expected 1");
-			Assert.AreEqual (Project.ID, Service.ProjectDictionary.FirstOrDefault ().Key,
-							 $"Project dictionary key was {Service.ProjectDictionary.FirstOrDefault ().Key} and expected {Project.ID}");
-			Assert.AreEqual (0, Service.ProjectDictionary.FirstOrDefault ().Value.Item1,
-							 $"Project dictionary manual tags value was {Service.ProjectDictionary.FirstOrDefault ().Value.Item1} and expected 0");
-			Assert.AreEqual (1, Service.ProjectDictionary.FirstOrDefault ().Value.Item2,
-							 $"Project dictionary drawings value was {Service.ProjectDictionary.FirstOrDefault ().Value.Item2} and expected 1");
-		}
-
-		[Test]
-		public void TestCountUsageEvents_DrawingSavedToProject_Reset ()
-		{
-			// Arrange
-			App.Current.EventsBroker.Publish (
-				new DrawingSavedToProjectEvent {
-					ProjectId = Project.ID
-				}
-			);
-
-			// Action
-			App.Current.EventsBroker.Publish (new ProjectCreatedEvent ());
-
-			// Assert
-			Assert.AreEqual (0, Service.DrawingsAmount,
-							 $"Drawing amount was {Service.DrawingsAmount} and expected 0");
-			Assert.AreEqual (1, Service.ProjectDictionary.Count,
-							 $"Project dictionary has {Service.ProjectDictionary.Count} entrace and expected 1");
-			Assert.AreEqual (Project.ID, Service.ProjectDictionary.FirstOrDefault ().Key,
-							 $"Project dictionary key was {Service.ProjectDictionary.FirstOrDefault ().Key} and expected {Project.ID}");
-			Assert.AreEqual (0, Service.ProjectDictionary.FirstOrDefault ().Value.Item1,
-							 $"Project dictionary manual tags value was {Service.ProjectDictionary.FirstOrDefault ().Value.Item1} and expected 0");
-			Assert.AreEqual (1, Service.ProjectDictionary.FirstOrDefault ().Value.Item2,
-							 $"Project dictionary drawings value was {Service.ProjectDictionary.FirstOrDefault ().Value.Item2} and expected 1");
+			Service.Stop ();
+			kpiServiceMock.Verify (m => m.TrackEvent ("Project_usage",
+													  It.Is<Dictionary<string, string>> (
+														  d => d ["Project_id"] == Project.ID.ToString ()),
+													  It.Is<Dictionary<string, double>> (
+														  d => (d ["Tags"] == 0) && (d ["Drawings"] == 1))),
+								  Times.Once);
 		}
 
 		[Test]
@@ -177,7 +118,9 @@ namespace VAS.Tests.Services
 			App.Current.EventsBroker.Publish (new ProjectCreatedEvent ());
 
 			// Assert
-			Assert.AreEqual (1, Service.CreatedProjects);
+			Service.Stop ();
+			kpiServiceMock.Verify (m => m.TrackEvent ("Sessions", null, It.Is<Dictionary<string, double>> (
+				d => d ["Projects"] == 1)), Times.Once ());
 		}
 	}
 }
