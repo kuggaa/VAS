@@ -383,7 +383,7 @@ namespace VAS.Core
 			if (!await state.ShowState ()) {
 				return false;
 			}
-			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = transition });
+			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = transition, IsModal = true });
 			await App.Current.Navigation.PushModal (state.Panel, current.Panel);
 			return true;
 		}
@@ -398,7 +398,7 @@ namespace VAS.Core
 				return false;
 			}
 			modalStateStack.RemoveAt (modalStateStack.Count - 1);
-			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = Current });
+			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = Current, IsModal = modalStateStack.Any () });
 			await App.Current.Navigation.PopModal (screenToPop.Panel);
 			screenToPop.Dispose ();
 			return true;
