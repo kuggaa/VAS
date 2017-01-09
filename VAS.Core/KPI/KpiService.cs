@@ -47,5 +47,12 @@ namespace VAS.KPI
 			HockeyClient.Current.TrackException (ex, properties);
 #endif
 		}
+
+		public void Flush ()
+		{
+#if !DEBUG
+			HockeyClient.Current.Flush ();
+#endif
+		}
 	}
 }
