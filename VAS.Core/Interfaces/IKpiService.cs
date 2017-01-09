@@ -43,5 +43,10 @@ namespace VAS.Core.Interfaces
 		/// </summary>
 		/// <param name="ex">Ex.</param>
 		void TrackException (Exception ex, IDictionary<string, string> properties = null);
+
+		/// <summary>
+		/// Flush on current HockeyCLient when called.
+		/// </summary>
+		void Flush ();
 	}
 }

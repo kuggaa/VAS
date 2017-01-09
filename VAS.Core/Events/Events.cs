@@ -143,6 +143,10 @@ namespace VAS.Core.Events
 		public HotKey Key;
 	}
 
+	public class JobRenderedEvent : Event
+	{
+	}
+
 	public class RenderPlaylistEvent : Event
 	{
 		public Playlist Playlist { get; set; }
@@ -277,7 +281,7 @@ namespace VAS.Core.Events
 		public IVideoPlayerController Player { get; set; }
 	}
 
-	public class CreateProjectEvent : Event
+	public class ProjectCreatedEvent : Event
 	{
 		public Guid ProjectId { get; set; }
 	}

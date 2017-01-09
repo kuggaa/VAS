@@ -74,7 +74,7 @@ namespace VAS.Services
 		/// Gets or sets the teams amount.
 		/// </summary>
 		/// <value>The teams amount.</value>
-		public int TeamsAmount {
+		public int TeamsCount {
 			get;
 			protected set;
 		}
@@ -83,7 +83,7 @@ namespace VAS.Services
 		/// Gets the playlists amount.
 		/// </summary>
 		/// <value>The playlists amount.</value>
-		public int PlaylistsAmount {
+		public int PlaylistsCount {
 			get;
 			private set;
 		}
@@ -92,7 +92,7 @@ namespace VAS.Services
 		/// Gets the renders amount.
 		/// </summary>
 		/// <value>The renders amount.</value>
-		public int RendersAmount {
+		public int RendersCount {
 			get;
 			private set;
 		}
@@ -101,7 +101,7 @@ namespace VAS.Services
 		/// Gets the manual tags amount.
 		/// </summary>
 		/// <value>The manual tags amount.</value>
-		public int ManualTagsAmount {
+		public int ManualEventsCount {
 			get;
 			private set;
 		}
@@ -110,7 +110,7 @@ namespace VAS.Services
 		/// Gets the drawings amount.
 		/// </summary>
 		/// <value>The drawings amount.</value>
-		public int DrawingsAmount {
+		public int DrawingsCount {
 			get;
 			private set;
 		}
@@ -133,11 +133,20 @@ namespace VAS.Services
 			private set;
 		}
 
+		/// <sumary>
+		/// Gets the data dictionary.
+		/// </summary>
+		/// <value>The data dictionary.</value>
+		public Dictionary<string, double> DataDictionary {
+			get;
+			protected set;
+		}
+
 		/// <summary>
 		/// Gets the timer list.
 		/// </summary>
 		/// <value>The timer list.</value>
-		public List<Tuple<string, int>> TimerList {
+		public List<Tuple<string, long>> TimerList {
 			get;
 			private set;
 		}
@@ -147,9 +156,10 @@ namespace VAS.Services
 		public UserStatisticsService ()
 		{
 			ProjectDictionary = new Dictionary<Guid, Tuple<int, int>> ();
+			DataDictionary = new Dictionary<string, double> ();
 			stateTimer = new Stopwatch ();
 			generalTimer = new Stopwatch ();
-			TimerList = new List<Tuple<string, int>> ();
+			TimerList = new List<Tuple<string, long>> ();
 		}
 
 		/// <summary>
@@ -178,10 +188,10 @@ namespace VAS.Services
 		public virtual bool Start ()
 		{
 			App.Current.EventsBroker.Subscribe<NewPlaylistEvent> (HandleNewPlaylistEvent);
-			App.Current.EventsBroker.Subscribe<CreateEvent<Job>> (HandleCreateJob);
+			App.Current.EventsBroker.Subscribe<JobRenderedEvent> (HandleCreateJob);
 			App.Current.EventsBroker.Subscribe<NewDashboardEvent> (HandleDashboardEvent);
 			App.Current.EventsBroker.Subscribe<DrawingSavedToProjectEvent> (HandleDrawingSavedToProject);
-			App.Current.EventsBroker.Subscribe<CreateProjectEvent> (HandleNewProject);
+			App.Current.EventsBroker.Subscribe<ProjectCreatedEvent> (HandleNewProject);
 			App.Current.EventsBroker.Subscribe<OpenedProjectEvent> (HandleOpenProject);
 			App.Current.EventsBroker.Subscribe<NavigationEvent> (HandleNavigationEvent);
 			generalTimer.Start ();
@@ -196,10 +206,10 @@ namespace VAS.Services
 		{
 			SaveTimer ();
 			App.Current.EventsBroker.Unsubscribe<NewPlaylistEvent> (HandleNewPlaylistEvent);
-			App.Current.EventsBroker.Unsubscribe<CreateEvent<Job>> (HandleCreateJob);
+			App.Current.EventsBroker.Unsubscribe<JobRenderedEvent> (HandleCreateJob);
 			App.Current.EventsBroker.Unsubscribe<NewDashboardEvent> (HandleDashboardEvent);
 			App.Current.EventsBroker.Unsubscribe<DrawingSavedToProjectEvent> (HandleDrawingSavedToProject);
-			App.Current.EventsBroker.Unsubscribe<CreateProjectEvent> (HandleNewProject);
+			App.Current.EventsBroker.Unsubscribe<ProjectCreatedEvent> (HandleNewProject);
 			App.Current.EventsBroker.Unsubscribe<OpenedProjectEvent> (HandleOpenProject);
 			App.Current.EventsBroker.Unsubscribe<NavigationEvent> (HandleNavigationEvent);
 			generalTimer.Stop ();
@@ -220,46 +230,16 @@ namespace VAS.Services
 		}
 
 		/// <summary>
-		/// Tracks the service collected data to HockeyApp.
-		/// </summary>
-		public virtual void SendData ()
-		{
-			TrackProjects ();
-			TrackTimers ();
-			TrackEvent ("Teams amount", "Teams", TeamsAmount);
-			TrackEvent ("Renders amount", "Renders", RendersAmount);
-			TrackEvent ("Playlists amount", "Playlists", PlaylistsAmount);
-			TrackEvent ("Projects amount", "Projects", CreatedProjects);
-			TrackEvent ("Total playlists", "Playlists", TotalUserPlaylists);
-			TrackEvent ("Total time spent", "Time", ((int)generalTimer.ElapsedMilliseconds) / 1000);
-		}
-
-		/// <summary>
-		/// Tracks an event to HockeyApp.
-		/// </summary>
-		/// <param name="eventName">Event name.</param>
-		/// <param name="key">Key.</param>
-		/// <param name="value">Value.</param>
-		public virtual void TrackEvent (string eventName, string key, double value)
-		{
-			Dictionary<string, double> dict = new Dictionary<string, double> {
-				{key, value}
-			};
-			App.Current.KPIService.TrackEvent (eventName, null, dict);
-		}
-
-		/// <summary>
 		/// Loads the current session project values.
 		/// </summary>
 		/// <param name="projectId">Project identifier.</param>
 		void LoadSessionProjectValues (Guid projectId)
 		{
 			if (!ProjectDictionary.ContainsKey (projectId)) {
-				ProjectDictionary.Add (projectId, new Tuple<int, int> (ManualTagsAmount, DrawingsAmount));
+				ProjectDictionary.Add (projectId, new Tuple<int, int> (ManualEventsCount, DrawingsCount));
 			} else {
-				Tuple<int, int> tuple = ProjectDictionary [projectId];
-				ManualTagsAmount = tuple.Item1;
-				DrawingsAmount = tuple.Item2;
+				ManualEventsCount = ProjectDictionary [projectId].Item1;
+				DrawingsCount = ProjectDictionary [projectId].Item2;
 			}
 		}
 
@@ -269,7 +249,7 @@ namespace VAS.Services
 		void SaveTimer ()
 		{
 			stateTimer.Stop ();
-			TimerList.Add (new Tuple<string, int> (currentState, ((int)stateTimer.ElapsedMilliseconds) / 1000));
+			TimerList.Add (new Tuple<string, long> (currentState, stateTimer.ElapsedTicks));
 			stateTimer.Reset ();
 		}
 
@@ -278,17 +258,25 @@ namespace VAS.Services
 		/// </summary>
 		void TrackProjects ()
 		{
-			Dictionary<string, string> dict = new Dictionary<string, string> ();
-			Dictionary<string, double> dict2 = new Dictionary<string, double> ();
-
 			foreach (var item in ProjectDictionary) {
-				dict.Add ("ProjectId", item.Key.ToString ());
-				dict2.Add ("Tags", item.Value.Item1);
-				dict2.Add ("Drawings", item.Value.Item2);
-				App.Current.KPIService.TrackEvent ("Projects", dict, dict2);
-				dict.Clear ();
-				dict2.Clear ();
+				TrackProject (item.Key.ToString (), item.Value.Item1, item.Value.Item2);
 			}
+		}
+
+		/// <summary>
+		/// Tracks the project given data.
+		/// </summary>
+		/// <param name="ProjectId">Project identifier.</param>
+		/// <param name="tags">Tags.</param>
+		/// <param name="drawings">Drawings.</param>
+		void TrackProject (string ProjectId, int events, int drawings)
+		{
+			App.Current.KPIService.TrackEvent ("Project_usage",
+											   new Dictionary<string, string> () {
+				{ "Project_id", ProjectId } },
+											   new Dictionary<string, double> () {
+				{ "Events", events },
+				{ "Drawings" , drawings } });
 		}
 
 		/// <summary>
@@ -296,16 +284,27 @@ namespace VAS.Services
 		/// </summary>
 		void TrackTimers ()
 		{
-			Dictionary<string, string> dict = new Dictionary<string, string> ();
-			Dictionary<string, double> dict2 = new Dictionary<string, double> ();
-
 			foreach (var item in TimerList) {
-				dict.Add ("State", item.Item1);
-				dict2.Add ("Time", item.Item2);
-				App.Current.KPIService.TrackEvent ("Time spent", dict, dict2);
-				dict.Clear ();
-				dict2.Clear ();
+				App.Current.KPIService.TrackEvent ("PageView_" + item.Item1, null,
+												   new Dictionary<string, double> () { { "Time", item.Item2 } });
 			}
+		}
+
+		/// <summary>
+		/// Tracks the service collected data to HockeyApp.
+		/// </summary>
+		public virtual void SendData ()
+		{
+			TrackProjects ();
+			TrackTimers ();
+			DataDictionary.Add ("Teams", TeamsCount);
+			DataDictionary.Add ("Renders", RendersCount);
+			DataDictionary.Add ("Playlists", PlaylistsCount);
+			DataDictionary.Add ("Projects", CreatedProjects);
+			DataDictionary.Add ("Total_playlists", TotalUserPlaylists);
+			DataDictionary.Add ("Time", ((int)generalTimer.ElapsedMilliseconds) / 1000);
+			App.Current.KPIService.TrackEvent ("Sessions", null, DataDictionary);
+			App.Current.KPIService.Flush ();
 		}
 
 		#region Handlers
@@ -331,11 +330,11 @@ namespace VAS.Services
 		/// Handles when a new project has been created.
 		/// </summary>
 		/// <param name="evt">Evt.</param>
-		void HandleNewProject (CreateProjectEvent evt)
+		void HandleNewProject (ProjectCreatedEvent evt)
 		{
 			CreatedProjects++;
-			ManualTagsAmount = 0;
-			DrawingsAmount = 0;
+			ManualEventsCount = 0;
+			DrawingsCount = 0;
 		}
 
 		/// <summary>
@@ -353,8 +352,8 @@ namespace VAS.Services
 		/// <param name="evt">Evt.</param>
 		void HandleDashboardEvent (NewDashboardEvent evt)
 		{
-			ManualTagsAmount++;
-			ProjectDictionary [evt.ProjectId] = new Tuple<int, int> (ManualTagsAmount, DrawingsAmount);
+			ManualEventsCount++;
+			ProjectDictionary [evt.ProjectId] = new Tuple<int, int> (ManualEventsCount, DrawingsCount);
 		}
 
 		/// <summary>
@@ -363,8 +362,8 @@ namespace VAS.Services
 		/// <param name="evt">Evt.</param>
 		void HandleDrawingSavedToProject (DrawingSavedToProjectEvent evt)
 		{
-			DrawingsAmount++;
-			ProjectDictionary [evt.ProjectId] = new Tuple<int, int> (ManualTagsAmount, DrawingsAmount);
+			DrawingsCount++;
+			ProjectDictionary [evt.ProjectId] = new Tuple<int, int> (ManualEventsCount, DrawingsCount);
 		}
 
 		/// <summary>
@@ -373,16 +372,16 @@ namespace VAS.Services
 		/// <param name="evt">Evt.</param>
 		void HandleNewPlaylistEvent (NewPlaylistEvent evt)
 		{
-			PlaylistsAmount++;
+			PlaylistsCount++;
 		}
 
 		/// <summary>
 		/// Handles when a job/render has been created.
 		/// </summary>
 		/// <param name="evt">Evt.</param>
-		void HandleCreateJob (CreateEvent<Job> evt)
+		void HandleCreateJob (JobRenderedEvent evt)
 		{
-			RendersAmount++;
+			RendersCount++;
 		}
 
 		#endregion

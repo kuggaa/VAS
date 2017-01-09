@@ -392,6 +392,7 @@ namespace VAS.Services
 				videoEditor.Progress -= OnProgress;
 				ViewModel.CurrentJob.Progress = progress;
 				ViewModel.CurrentJob.State = JobState.Finished;
+				App.Current.EventsBroker.Publish (new JobRenderedEvent ());
 				StartNextJob ();
 			} else {
 				if (progress > ViewModel.CurrentJob.Progress) {
