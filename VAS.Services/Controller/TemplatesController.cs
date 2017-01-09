@@ -290,7 +290,8 @@ namespace VAS.Services.Controller
 		async protected virtual Task HandleOpen (OpenEvent<TModel> evt)
 		{
 			dynamic properties = new ExpandoObject ();
-			properties.Object = evt.Object.Clone ();
+			properties.Template = evt.Object.Clone ();
+			properties.Templates = ViewModel;
 			await App.Current.StateController.MoveToModal (OpenTransitionName, properties);
 		}
 
