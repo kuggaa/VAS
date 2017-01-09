@@ -74,7 +74,7 @@ namespace VAS.Services
 		/// Gets or sets the teams amount.
 		/// </summary>
 		/// <value>The teams amount.</value>
-		public int TeamsAmount {
+		public int TeamsCount {
 			get;
 			protected set;
 		}
@@ -83,7 +83,7 @@ namespace VAS.Services
 		/// Gets the playlists amount.
 		/// </summary>
 		/// <value>The playlists amount.</value>
-		public int PlaylistsAmount {
+		public int PlaylistsCount {
 			get;
 			private set;
 		}
@@ -92,7 +92,7 @@ namespace VAS.Services
 		/// Gets the renders amount.
 		/// </summary>
 		/// <value>The renders amount.</value>
-		public int RendersAmount {
+		public int RendersCount {
 			get;
 			private set;
 		}
@@ -101,7 +101,7 @@ namespace VAS.Services
 		/// Gets the manual tags amount.
 		/// </summary>
 		/// <value>The manual tags amount.</value>
-		public int ManualTagsAmount {
+		public int ManualEventsCount {
 			get;
 			private set;
 		}
@@ -110,7 +110,7 @@ namespace VAS.Services
 		/// Gets the drawings amount.
 		/// </summary>
 		/// <value>The drawings amount.</value>
-		public int DrawingsAmount {
+		public int DrawingsCount {
 			get;
 			private set;
 		}
@@ -236,10 +236,10 @@ namespace VAS.Services
 		void LoadSessionProjectValues (Guid projectId)
 		{
 			if (!ProjectDictionary.ContainsKey (projectId)) {
-				ProjectDictionary.Add (projectId, new Tuple<int, int> (ManualTagsAmount, DrawingsAmount));
+				ProjectDictionary.Add (projectId, new Tuple<int, int> (ManualEventsCount, DrawingsCount));
 			} else {
-				ManualTagsAmount = ProjectDictionary [projectId].Item1;
-				DrawingsAmount = ProjectDictionary [projectId].Item2;
+				ManualEventsCount = ProjectDictionary [projectId].Item1;
+				DrawingsCount = ProjectDictionary [projectId].Item2;
 			}
 		}
 
@@ -269,13 +269,13 @@ namespace VAS.Services
 		/// <param name="ProjectId">Project identifier.</param>
 		/// <param name="tags">Tags.</param>
 		/// <param name="drawings">Drawings.</param>
-		void TrackProject (string ProjectId, int tags, int drawings)
+		void TrackProject (string ProjectId, int events, int drawings)
 		{
 			App.Current.KPIService.TrackEvent ("Project_usage",
 											   new Dictionary<string, string> () {
 				{ "Project_id", ProjectId } },
 											   new Dictionary<string, double> () {
-				{ "Tags", tags },
+				{ "Events", events },
 				{ "Drawings" , drawings } });
 		}
 
@@ -297,9 +297,9 @@ namespace VAS.Services
 		{
 			TrackProjects ();
 			TrackTimers ();
-			DataDictionary.Add ("Teams", TeamsAmount);
-			DataDictionary.Add ("Renders", RendersAmount);
-			DataDictionary.Add ("Playlists", PlaylistsAmount);
+			DataDictionary.Add ("Teams", TeamsCount);
+			DataDictionary.Add ("Renders", RendersCount);
+			DataDictionary.Add ("Playlists", PlaylistsCount);
 			DataDictionary.Add ("Projects", CreatedProjects);
 			DataDictionary.Add ("Total_playlists", TotalUserPlaylists);
 			DataDictionary.Add ("Time", ((int)generalTimer.ElapsedMilliseconds) / 1000);
@@ -333,8 +333,8 @@ namespace VAS.Services
 		void HandleNewProject (ProjectCreatedEvent evt)
 		{
 			CreatedProjects++;
-			ManualTagsAmount = 0;
-			DrawingsAmount = 0;
+			ManualEventsCount = 0;
+			DrawingsCount = 0;
 		}
 
 		/// <summary>
@@ -352,8 +352,8 @@ namespace VAS.Services
 		/// <param name="evt">Evt.</param>
 		void HandleDashboardEvent (NewDashboardEvent evt)
 		{
-			ManualTagsAmount++;
-			ProjectDictionary [evt.ProjectId] = new Tuple<int, int> (ManualTagsAmount, DrawingsAmount);
+			ManualEventsCount++;
+			ProjectDictionary [evt.ProjectId] = new Tuple<int, int> (ManualEventsCount, DrawingsCount);
 		}
 
 		/// <summary>
@@ -362,8 +362,8 @@ namespace VAS.Services
 		/// <param name="evt">Evt.</param>
 		void HandleDrawingSavedToProject (DrawingSavedToProjectEvent evt)
 		{
-			DrawingsAmount++;
-			ProjectDictionary [evt.ProjectId] = new Tuple<int, int> (ManualTagsAmount, DrawingsAmount);
+			DrawingsCount++;
+			ProjectDictionary [evt.ProjectId] = new Tuple<int, int> (ManualEventsCount, DrawingsCount);
 		}
 
 		/// <summary>
@@ -372,7 +372,7 @@ namespace VAS.Services
 		/// <param name="evt">Evt.</param>
 		void HandleNewPlaylistEvent (NewPlaylistEvent evt)
 		{
-			PlaylistsAmount++;
+			PlaylistsCount++;
 		}
 
 		/// <summary>
@@ -381,7 +381,7 @@ namespace VAS.Services
 		/// <param name="evt">Evt.</param>
 		void HandleCreateJob (JobRenderedEvent evt)
 		{
-			RendersAmount++;
+			RendersCount++;
 		}
 
 		#endregion
