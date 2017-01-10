@@ -29,6 +29,7 @@ using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.DB;
 using VAS.DB.Views;
+using PlayerDummy = VAS.Tests.Utils.PlayerDummy;
 
 namespace VAS.Tests.DB
 {
@@ -166,7 +167,7 @@ namespace VAS.Tests.DB
 		[Test]
 		public void TestStoreError ()
 		{
-			Assert.Throws<StorageException> (() => storage.Store<Project> (null));
+			Assert.Throws<StorageException> (() => storage.Store<Project> ((Project)null));
 		}
 
 		[Test ()]
@@ -466,6 +467,28 @@ namespace VAS.Tests.DB
 
 			// Assert
 			Assert.AreEqual (1, db.DocumentCount);
+		}
+
+		[Test ()]
+		public void TestStorableEnumerable ()
+		{
+			// Arrange
+			PlayerDummy p1 = new PlayerDummy { Name = "P1" };
+			PlayerDummy p2 = new PlayerDummy { Name = "P2" };
+			List<PlayerDummy> list = new List<PlayerDummy> { p1, p2 };
+
+			// Action
+			storage.Store<PlayerDummy> (list);
+			PlayerDummy p1o = storage.Retrieve<PlayerDummy> (p1.ID);
+			PlayerDummy p2o = storage.Retrieve<PlayerDummy> (p2.ID);
+
+			// Assett
+			Assert.IsNotNull (p1o);
+			Assert.AreEqual (p1.ID, p1o.ID);
+			Assert.AreEqual (p1.Name, p1o.Name);
+			Assert.IsNotNull (p2o);
+			Assert.AreEqual (p2.ID, p2o.ID);
+			Assert.AreEqual (p2.Name, p2o.Name);
 		}
 	}
 }
