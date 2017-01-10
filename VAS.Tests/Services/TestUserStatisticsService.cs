@@ -88,7 +88,7 @@ namespace VAS.Tests.Services
 													  It.Is<Dictionary<string, string>> (
 														  d => d ["Project_id"] == Project.ID.ToString ()),
 													  It.Is<Dictionary<string, double>> (
-														  d => (d ["Tags"] == 1) && (d ["Drawings"] == 0))),
+														  d => (d ["Events"] == 1) && (d ["Drawings"] == 0))),
 								  Times.Once);
 		}
 
@@ -107,7 +107,7 @@ namespace VAS.Tests.Services
 													  It.Is<Dictionary<string, string>> (
 														  d => d ["Project_id"] == Project.ID.ToString ()),
 													  It.Is<Dictionary<string, double>> (
-														  d => (d ["Tags"] == 0) && (d ["Drawings"] == 1))),
+														  d => (d ["Events"] == 0) && (d ["Drawings"] == 1))),
 								  Times.Once);
 		}
 
