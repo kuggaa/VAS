@@ -72,6 +72,14 @@ namespace VAS.Core.Interfaces
 		void Store<T> (T t, bool forceUpdate = false) where T : IStorable;
 
 		/// <summary>
+		/// Store a collection of specified objects
+		/// </summary>
+		/// <param name="storableEnumerable">The objects collection to store.</param>
+		/// <param name="forceUpdate">Update all children  ignoring the <see cref="IStorable.IsChanged"/> flag.</param>
+		/// <typeparam name="T">The type of the objects to store.</typeparam>
+		void Store<T> (IEnumerable<T> storableEnumerable, bool forceUpdate = false) where T : IStorable;
+
+		/// <summary>
 		/// Delete the specified object.
 		/// </summary>
 		/// <param name="t">The object to delete.</param>

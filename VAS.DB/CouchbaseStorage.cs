@@ -155,7 +155,7 @@ namespace VAS.DB
 		public IEnumerable<T> RetrieveAll<T> () where T : IStorable
 		{
 			lock (mutex) {
-				IQueryView<T> qview = views [typeof(T)] as IQueryView <T>;
+				IQueryView<T> qview = views [typeof (T)] as IQueryView<T>;
 				return qview.Query (null);
 			}
 		}
@@ -163,14 +163,14 @@ namespace VAS.DB
 		public T Retrieve<T> (Guid id) where T : IStorable
 		{
 			lock (mutex) {
-				return (T)Retrieve (typeof(T), id);
+				return (T)Retrieve (typeof (T), id);
 			}
 		}
 
 		public IEnumerable<T> Retrieve<T> (QueryFilter filter) where T : IStorable
 		{
 			lock (mutex) {
-				IQueryView<T> qview = views [typeof(T)] as IQueryView <T>;
+				IQueryView<T> qview = views [typeof (T)] as IQueryView<T>;
 				return qview.Query (filter);
 			}
 		}
@@ -178,39 +178,46 @@ namespace VAS.DB
 		public IEnumerable<T> RetrieveFull<T> (QueryFilter filter, IStorableObjectsCache cache) where T : IStorable
 		{
 			lock (mutex) {
-				IQueryView<T> qview = views [typeof(T)] as IQueryView <T>;
+				IQueryView<T> qview = views [typeof (T)] as IQueryView<T>;
 				return qview.QueryFull (filter, cache);
 			}
 		}
 
 		public void Store<T> (T t, bool forceUpdate = false) where T : IStorable
 		{
+			Store<T> (t.ToEnumerable (), forceUpdate);
+		}
+
+		public void Store<T> (IEnumerable<T> storableEnumerable, bool forceUpdate = false) where T : IStorable
+		{
 			lock (mutex) {
 				bool success = db.RunInTransaction (() => {
-					documentUpdated = false;
-					try {
-						StorableNode node;
-						ObjectChangedParser parser = new ObjectChangedParser ();
-						parser.Parse (out node, t, Serializer.JsonSettings);
+					foreach (var t in storableEnumerable) {
+						documentUpdated = false;
+						try {
+							StorableNode node;
+							ObjectChangedParser parser = new ObjectChangedParser ();
+							parser.Parse (out node, t, Serializer.JsonSettings);
 
-						if (!forceUpdate) {
-							Update (node);
-						} 
-						if (forceUpdate) {
-							DocumentsSerializer.SaveObject (t, db, saveChildren: true);
+							if (!forceUpdate) {
+								Update (node);
+							}
+							if (forceUpdate) {
+								DocumentsSerializer.SaveObject (t, db, saveChildren: true);
+							}
+							if (t.ID != Info.ID && (forceUpdate || documentUpdated)) {
+								Info.LastModified = DateTime.UtcNow;
+								DocumentsSerializer.SaveObject (Info, db);
+							}
+							foreach (IStorable storable in node.OrphanChildren) {
+								db.GetDocument (DocumentsSerializer.StringFromID (storable.ID, t.ID)).Delete ();
+							}
+						} catch (Exception ex) {
+							Log.Exception (ex);
+							return false;
 						}
-						if (t.ID != Info.ID && (forceUpdate || documentUpdated)) {
-							Info.LastModified = DateTime.UtcNow;
-							DocumentsSerializer.SaveObject (Info, db);
-						}
-						foreach (IStorable storable in node.OrphanChildren) {
-							db.GetDocument (DocumentsSerializer.StringFromID (storable.ID, t.ID)).Delete ();
-						}
-						return true;
-					} catch (Exception ex) {
-						Log.Exception (ex);
-						return false;
 					}
+					return true;
 				});
 				if (!success) {
 					throw new StorageException (Catalog.GetString ("Error storing object from the storage"));
@@ -332,12 +339,12 @@ namespace VAS.DB
 
 		protected virtual void InitializeViews ()
 		{
-			AddView (typeof(Dashboard), new DashboardsView (this));
-			AddView (typeof(Project), new ProjectsView (this));
-			AddView (typeof(Player), new PlayersView (this));
-			AddView (typeof(TimelineEvent), new TimelineEventsView (this));
-			AddView (typeof(EventType), new EventTypeView (this));
-			AddView (typeof(Playlist), new PlaylistView (this));
+			AddView (typeof (Dashboard), new DashboardsView (this));
+			AddView (typeof (Project), new ProjectsView (this));
+			AddView (typeof (Player), new PlayersView (this));
+			AddView (typeof (TimelineEvent), new TimelineEventsView (this));
+			AddView (typeof (EventType), new EventTypeView (this));
+			AddView (typeof (Playlist), new PlaylistView (this));
 		}
 
 		protected virtual void InitializeDocumentTypeMappings ()
@@ -353,13 +360,13 @@ namespace VAS.DB
 		{
 			// Recursively add sub-folders
 			if (recurse) {
-				string[] directories = Directory.GetDirectories (sourceDirectory);
+				string [] directories = Directory.GetDirectories (sourceDirectory);
 				foreach (string directory in directories)
 					AddDirectoryFilesToTar (tarArchive, directory, recurse);
 			}
 
 			// Add files
-			string[] filenames = Directory.GetFiles (sourceDirectory);
+			string [] filenames = Directory.GetFiles (sourceDirectory);
 			foreach (string filename in filenames) {
 				TarEntry tarEntry = TarEntry.CreateEntryFromFile (filename);
 				tarArchive.WriteEntry (tarEntry, true);
