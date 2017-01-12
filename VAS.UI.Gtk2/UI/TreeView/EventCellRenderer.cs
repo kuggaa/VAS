@@ -40,8 +40,8 @@ namespace VAS.UI.Component
 		protected const int LEFT_OFFSET = 5;
 
 		protected static Point cursor;
+		protected static double offsetX, offsetY = 0;
 		static bool playButtonPrelighted = false;
-		static double offsetX, offsetY = 0;
 
 		static ISurface PlayIcon = null;
 		static ISurface BtnNormalBackground = null;
