@@ -326,6 +326,13 @@ namespace VAS.Core.Common
 		Center,
 	}
 
+	public enum ToolbarAlignemt
+	{
+		Left,
+		Right,
+		Center
+	}
+
 	public enum ButtonType
 	{
 		None,
