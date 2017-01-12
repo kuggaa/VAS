@@ -47,7 +47,7 @@ namespace VAS.Services.Controller
 			get {
 				return playerVM;
 			}
-			set {
+			protected set {
 				if (playerVM != null) {
 					playerVM.PropertyChanged -= HandlePlayerVMPropertyChanged;
 				}
@@ -62,7 +62,7 @@ namespace VAS.Services.Controller
 			get {
 				return viewModel;
 			}
-			set {
+			protected set {
 				if (viewModel != null) {
 					viewModel.Filters.PropertyChanged -= HandlePropertyChanged;
 				}
@@ -92,9 +92,8 @@ namespace VAS.Services.Controller
 
 		public virtual void SetViewModel (IViewModel viewModel)
 		{
-			if (viewModel is IAnalysisViewModel) {
-				PlayerVM = (viewModel as IAnalysisViewModel).VideoPlayer;
-			}
+			PlayerVM = (VideoPlayerVM)(viewModel as dynamic);
+			ViewModel = (TimelineVM)(viewModel as dynamic);
 		}
 
 		public virtual IEnumerable<KeyAction> GetDefaultKeyActions ()
