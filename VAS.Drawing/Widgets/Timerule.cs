@@ -348,8 +348,8 @@ namespace VAS.Drawing.Widgets
 
 		void HandlePropertyChangedEventHandler (object sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == "IsStretched" || e.PropertyName == "Collection") {
-				Duration = ViewModel.Project.FileSet.VirtualDuration;
+			if (e.PropertyName == "Duration") {
+				Duration = ViewModel.Duration;
 			}
 		}
 	}
