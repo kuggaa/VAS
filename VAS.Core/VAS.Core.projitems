@@ -213,6 +213,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\StorableVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\ControllerBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IAppUpdater.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)License\LicenseLimitation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\LicenseLimitationVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ILicenseLimitationsService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\LimitedCollectionViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Events\StorageEvents.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
@@ -234,6 +239,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)Services\ViewModels\" />
     <Folder Include="$(MSBuildThisFileDirectory)Prism\" />
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />
+    <Folder Include="$(MSBuildThisFileDirectory)License\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)VAS.Core.dll.config">

@@ -30,6 +30,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controller\CoreEventsController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectAnalysisVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\TaggingController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LicenseLimitationsService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />
