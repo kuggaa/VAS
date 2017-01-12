@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,6 +38,10 @@ namespace VAS.Services.Controller
 	{
 		protected PlaylistCollectionVM playlistViewModel;
 		protected ProjectVM projectViewModel;
+		string confirmDeletePlaylist =
+			Catalog.GetString ("Do you really want to delete the selected playlist/s?");
+		string confirmDeletePlaylistElements =
+			Catalog.GetString ("Do you really want to delete the selected playlist element/s");
 
 		protected override void Dispose (bool disposing)
 		{
@@ -56,6 +61,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.SubscribeAsync<AddPlaylistElementEvent> (HandleAddPlaylistElement);
 			App.Current.EventsBroker.SubscribeAsync<CreateEvent<Playlist>> (HandleNewPlaylist);
 			App.Current.EventsBroker.SubscribeAsync<DeletePlaylistEvent> (HandleDeletePlaylist);
+			App.Current.EventsBroker.SubscribeAsync<DeleteEvent<Playlist>> (HandleDeleteSelectedItems);
 			App.Current.EventsBroker.Subscribe<RenderPlaylistEvent> (HandleRenderPlaylist);
 			App.Current.EventsBroker.Subscribe<LoadPlaylistElementEvent> (HandleLoadPlaylistElement);
 			App.Current.EventsBroker.Subscribe<LoadEventEvent> (HandleLoadPlayEvent);
@@ -68,6 +74,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.UnsubscribeAsync<AddPlaylistElementEvent> (HandleAddPlaylistElement);
 			App.Current.EventsBroker.UnsubscribeAsync<CreateEvent<Playlist>> (HandleNewPlaylist);
 			App.Current.EventsBroker.UnsubscribeAsync<DeletePlaylistEvent> (HandleDeletePlaylist);
+			App.Current.EventsBroker.UnsubscribeAsync<DeleteEvent<Playlist>> (HandleDeleteSelectedItems);
 			App.Current.EventsBroker.Unsubscribe<RenderPlaylistEvent> (HandleRenderPlaylist);
 			App.Current.EventsBroker.Unsubscribe<LoadPlaylistElementEvent> (HandleLoadPlaylistElement);
 			App.Current.EventsBroker.Unsubscribe<LoadEventEvent> (HandleLoadPlayEvent);
@@ -80,8 +87,15 @@ namespace VAS.Services.Controller
 			if (viewModel == null) {
 				return;
 			}
-
+			
+			if (playlistViewModel != null) {
+				playlistViewModel.PropertyChanged -= HandlePropertyChanged;
+			}
 			playlistViewModel = (PlaylistCollectionVM)(viewModel as dynamic);
+			if (playlistViewModel != null) {
+				playlistViewModel.PropertyChanged += HandlePropertyChanged;
+			}
+
 			PlayerVM = (VideoPlayerVM)(viewModel as dynamic);
 			try {
 				projectViewModel = (ProjectVM)(viewModel as dynamic);
@@ -210,6 +224,51 @@ namespace VAS.Services.Controller
 			}
 		}
 
+		async Task HandleDeleteSelectedItems (DeleteEvent<Playlist> e)
+		{
+			bool removed = false;
+			bool questioned = false;
+			bool shouldRemove = true;
+
+			foreach (var playlistVM in playlistViewModel.Selection.ToList ()) {
+				if (!questioned) {
+					if (!await App.Current.Dialogs.QuestionMessage (confirmDeletePlaylist, null)) {
+						break;
+					}
+					questioned = true;
+				}
+				App.Current.DatabaseManager.ActiveDB.Delete (playlistVM.Model);
+				playlistViewModel.ViewModels.Remove (playlistVM);
+				removed = true;
+			}
+			if (!removed) {
+				foreach (var playlistVM in playlistViewModel.ViewModels) {
+					if (!shouldRemove) {
+						break;
+					}
+					foreach (var playlistElementVM in playlistVM.Selection.ToList ()) {
+						if (!questioned) {
+							if (!await App.Current.Dialogs.QuestionMessage (confirmDeletePlaylistElements, null)) {
+								shouldRemove = false;
+								break;
+							}
+							questioned = true;
+						}
+						playlistVM.ViewModels.Remove (playlistElementVM);
+						removed = true;
+					}
+					if (removed) {
+						Save (playlistVM.Model, false);
+						playlistVM.Selection.Clear ();
+						removed = false;
+					}
+				}
+			} else {
+				playlistViewModel.Selection.Clear ();
+			}
+			e.ReturnValue = true;
+		}
+
 		//FIXME: this should be in Player controller when decoupled from PalyerVM
 		void HandlePlayChanged (TimeNodeChangedEvent e)
 		{
@@ -233,6 +292,13 @@ namespace VAS.Services.Controller
 			e.Index = e.Index.Clamp (0, e.ElementsToAdd.Key.ViewModels.Count);
 			e.ElementsToAdd.Key.ViewModels.InsertRange (e.Index, e.ElementsToAdd.Value);
 			Save (e.ElementsToAdd.Key.Model, true);
+		}
+
+		void HandlePropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "Selection") {
+				playlistViewModel.DeleteCommand.EmitCanExecuteChanged ();
+			}
 		}
 	}
 }
