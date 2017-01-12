@@ -61,7 +61,7 @@ namespace VAS.UI.Helpers
 			if (command != null) {
 				button.Bind (command);
 			}
-			button.ApplyStyle (StyleConf.ButtonNormal, App.Current.Style.ButtonNormalWidth, App.Current.Style.IconLargeWidth);
+			button.ApplyStyle (StyleConf.ButtonNormal, App.Current.Style.ButtonNormalWidth);
 		}
 
 		/// <summary>
@@ -74,7 +74,7 @@ namespace VAS.UI.Helpers
 			if (command != null) {
 				button.Bind (command);
 			}
-			button.ApplyStyle (StyleConf.ButtonTab, App.Current.Style.ButtonTabWidth, App.Current.Style.IconLargeWidth);
+			button.ApplyStyle (StyleConf.ButtonTab, App.Current.Style.ButtonTabWidth);
 		}
 
 		/// <summary>
@@ -154,7 +154,7 @@ namespace VAS.UI.Helpers
 			};
 		}
 
-		static void ApplyStyle (this Button button, string buttonStyle, int buttonSize, int imageSize)
+		static void ApplyStyle (this Button button, string buttonStyle, int buttonSize)
 		{
 			button.Name = buttonStyle;
 			button.WidthRequest = buttonSize;
