@@ -24,6 +24,7 @@ using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
 using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Filters;
 using VAS.Core.Interfaces;
 using VAS.Core.Serialization;
@@ -83,6 +84,9 @@ namespace VAS.DB
 			}
 		}
 
+		/// <summary>
+		/// Gets the storage information.
+		/// </summary>
 		public StorageInfo Info {
 			get;
 			set;
@@ -97,12 +101,9 @@ namespace VAS.DB
 			}
 		}
 
-		public int Count<T> () where T : IStorable
-		{
-			List<T> lista = RetrieveAll<T> ().ToList ();
-			return lista.Count;
-		}
-
+		/// <summary>
+		/// Backup this storage to a sigle compressed file.
+		/// </summary>
 		public bool Backup ()
 		{
 			try {
@@ -123,6 +124,11 @@ namespace VAS.DB
 			return true;
 		}
 
+		/// <summary>
+		/// Check whether the object of type T exists in the storage.
+		/// </summary>
+		/// <param name="t">Object to check.</param>
+		/// <typeparam name="T">Type of the object to check.</typeparam>
 		public bool Exists<T> (T t) where T : IStorable
 		{
 			// FIXME: add faster API to storage for that or index ID's
@@ -134,6 +140,10 @@ namespace VAS.DB
 			return DocumentsSerializer.LoadObject (type, id, db);
 		}
 
+		/// <summary>
+		/// Fills a partial storable object returned from a query.
+		/// </summary>
+		/// <param name="storable">the object to fill.</param>
 		public void Fill (IStorable storable)
 		{
 			lock (mutex) {
@@ -152,6 +162,10 @@ namespace VAS.DB
 			}
 		}
 
+		/// <summary>
+		/// Retrieve every object of type T, where T must implement IStorable
+		/// </summary>
+		/// <typeparam name="T">The type of IStorable you want to retrieve.</typeparam>
 		public IEnumerable<T> RetrieveAll<T> () where T : IStorable
 		{
 			lock (mutex) {
@@ -160,6 +174,11 @@ namespace VAS.DB
 			}
 		}
 
+		/// <summary>
+		/// Retrieve an object with the specified id.
+		/// </summary>
+		/// <param name="id">The object unique identifier.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public T Retrieve<T> (Guid id) where T : IStorable
 		{
 			lock (mutex) {
@@ -167,6 +186,11 @@ namespace VAS.DB
 			}
 		}
 
+		/// <summary>
+		/// Retrieve every object of type T, where T must implement IStorable using on the dictionary as a filter on its properties
+		/// </summary>
+		/// <typeparam name="T">The type of IStorable you want to retrieve.</typeparam>
+		/// <param name="filter">The filter used to retrieve the objects</param>
 		public IEnumerable<T> Retrieve<T> (QueryFilter filter) where T : IStorable
 		{
 			lock (mutex) {
@@ -175,6 +199,12 @@ namespace VAS.DB
 			}
 		}
 
+		/// <summary>
+		/// Retrieve every object of type T, where T must implement IStorable using on the dictionary as a filter on its properties
+		/// </summary>
+		/// <typeparam name="T">The type of IStorable you want to retrieve.</typeparam>
+		/// <param name="filter">The filter used to retrieve the objects</param>
+		/// <param name="cache">An objects cache to reuse existing retrieved objects</param>
 		public IEnumerable<T> RetrieveFull<T> (QueryFilter filter, IStorableObjectsCache cache) where T : IStorable
 		{
 			lock (mutex) {
@@ -183,13 +213,48 @@ namespace VAS.DB
 			}
 		}
 
+		/// <summary>
+		/// Count all the instances of T in the storage.
+		/// </summary>
+		/// <typeparam name="T">The type to count in the storage.</typeparam>
+		public int Count<T> () where T : IStorable
+		{
+			return Count<T> (null);
+		}
+
+		/// <summary>
+		/// Count the instances of T in the storage using the specified filter.
+		/// </summary>
+		/// <param name="filter">Filter.</param>
+		/// <typeparam name="T">The type to count in the storage.</typeparam>
+		public int Count<T> (QueryFilter filter) where T : IStorable
+		{
+			lock (mutex) {
+				IQueryView<T> qview = views [typeof (T)] as IQueryView<T>;
+				return qview.Count (filter);
+			}
+		}
+
+		/// <summary>
+		/// Store the specified object
+		/// </summary>
+		/// <param name="t">The object to store.</param>
+		/// <param name="forceUpdate">Update all children  ignoring the <see cref="!:IStorable.IsChanged" /> flag.</param>
+		/// <typeparam name="T">The type of the object to store.</typeparam>
 		public void Store<T> (T t, bool forceUpdate = false) where T : IStorable
 		{
 			Store<T> (t.ToEnumerable (), forceUpdate);
 		}
 
+		/// <summary>
+		/// Store a collection of specified objects
+		/// </summary>
+		/// <param name="storableEnumerable">The objects collection to store.</param>
+		/// <param name="forceUpdate">Update all children  ignoring the <see cref="!:IStorable.IsChanged" /> flag.</param>
+		/// <typeparam name="T">The type of the objects to store.</typeparam>
 		public void Store<T> (IEnumerable<T> storableEnumerable, bool forceUpdate = false) where T : IStorable
 		{
+			List<T> newDBObjects = new List<T> ();
 			lock (mutex) {
 				bool success = db.RunInTransaction (() => {
 					foreach (var t in storableEnumerable) {
@@ -199,6 +264,7 @@ namespace VAS.DB
 							var doc = db.GetExistingDocument (t.ID.ToString ());
 							if (doc == null) {
 								forceUpdate = true;
+								newDBObjects.Add (t);
 							}
 							StorableNode node;
 							ObjectChangedParser parser = new ObjectChangedParser ();
@@ -227,6 +293,9 @@ namespace VAS.DB
 				if (!success) {
 					throw new StorageException (Catalog.GetString ("Error storing object from the storage"));
 				}
+			}
+			foreach (var newObject in newDBObjects) {
+				App.Current.EventsBroker.Publish (new StorageAddedEvent<T> { Object = newObject, Sender = this });
 			}
 		}
 
@@ -268,12 +337,18 @@ namespace VAS.DB
 				if (success) {
 					Info.LastModified = DateTime.UtcNow;
 					DocumentsSerializer.SaveObject (Info, db, null, false);
+					App.Current.EventsBroker.Publish (new StorageDeletedEvent<T> { Object = storable, Sender = this });
 				} else {
 					throw new StorageException (Catalog.GetString ("Error deleting object from the storage"));
 				}
 			}
 		}
 
+		/// <summary>
+		/// Reset this instance. Basically will reset the storage to its initial state.
+		/// On a FS it can mean to remove every file. On a DB it can mean to remove every entry.
+		/// Make sure you know what you are doing before using this.
+		/// </summary>
 		public void Reset ()
 		{
 			lock (mutex) {

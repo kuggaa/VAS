@@ -29,6 +29,7 @@ using VAS.Core.Filters;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.License;
 using VAS.Core.MVVMC;
 using VAS.Core.Serialization;
 using VAS.Core.Store;
@@ -578,6 +579,10 @@ namespace VAS.Tests
 				return x.Index.CompareTo (y.Index);
 			}
 		}
+	}
+
+	class DummyLicenseLimitationsService : LicenseLimitationsService
+	{
 	}
 }
 

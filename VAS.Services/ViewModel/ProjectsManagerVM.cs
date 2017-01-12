@@ -19,13 +19,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using VAS.Core;
 using VAS.Core.Events;
+using VAS.Core.License;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
 
 namespace VAS.Services.ViewModel
 {
-	public class ProjectsManagerVM<TModel, TViewModel> : CollectionViewModel<TModel, TViewModel>
+	public class ProjectsManagerVM<TModel, TViewModel> : LimitedCollectionViewModel<TModel, TViewModel>
 		where TModel : Project
 		where TViewModel : ProjectVM<TModel>, new()
 	{
@@ -35,6 +36,18 @@ namespace VAS.Services.ViewModel
 			NewCommand = new Command (New, () => true);
 			OpenCommand = new Command<TViewModel> (Open, (arg) => Selection.Count == 1);
 			DeleteCommand = new Command (Delete, () => Selection.Any ());
+		}
+
+		public override LicenseLimitationVM Limitation {
+			set {
+				if (Limitation != null) {
+					Limitation.PropertyChanged -= HandleLimitationChanged;
+				}
+				base.Limitation = value;
+				if (Limitation != null) {
+					Limitation.PropertyChanged += HandleLimitationChanged;
+				}
+			}
 		}
 
 		[PropertyChanged.DoNotNotify]
