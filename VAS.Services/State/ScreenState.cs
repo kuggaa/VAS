@@ -137,11 +137,11 @@ namespace VAS.Services.State
 		protected Task<bool> Initialize (dynamic data)
 		{
 			CreateViewModel (data);
-			Panel.SetViewModel (ViewModel);
 			CreateControllers (data);
 			foreach (IController controller in Controllers) {
 				controller.SetViewModel (ViewModel);
 			}
+			Panel.SetViewModel (ViewModel);
 			return AsyncHelpers.Return (true);
 		}
 
