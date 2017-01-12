@@ -263,7 +263,9 @@ namespace VAS.UI.Common
 					dragStarted = false;
 					dragStart = new Point (evnt.X, evnt.Y);
 				}
-				GetPathAtPos ((int)evnt.X, (int)evnt.Y, out pathClicked);
+				if (evnt.State == ModifierType.None) {
+					GetPathAtPos ((int)evnt.X, (int)evnt.Y, out pathClicked);
+				}
 			}
 			return ret;
 		}
@@ -533,7 +535,7 @@ namespace VAS.UI.Common
 			if (GetDestRowAtPos (x, y, out path, out pos)) {
 				int destIndex;
 				store.GetIter (out iter, path);
-				FillParentAndChild (iter, path, pos, out destParentVM, out destChildVM);
+				FillParentAndChild (iter, out destParentVM, out destChildVM);
 				store.GetIter (out iter, path);
 				int [] Indices = store.GetPath (iter).Indices;
 				if (pos == TreeViewDropPosition.Before ||
@@ -575,6 +577,20 @@ namespace VAS.UI.Common
 			return false;
 		}
 
+		protected void FillParentAndChild (TreeIter iter, out IViewModel parentVM, out IViewModel childVM)
+		{
+			TreeIter parent;
+
+			IViewModel obj = Model.GetValue (iter, 0) as IViewModel;
+			if (Model.IterParent (out parent, iter)) {
+				parentVM = Model.GetValue (parent, 0) as IViewModel;
+				childVM = obj;
+			} else {
+				parentVM = obj;
+				childVM = null;
+			}
+		}
+		
 		#endregion
 		void ClearSubViewModels ()
 		{
@@ -633,20 +649,6 @@ namespace VAS.UI.Common
 			}
 			TreeIter iter = dictionaryStore [senderVM];
 			store.EmitRowChanged (store.GetPath (iter), iter);
-		}
-
-		void FillParentAndChild (TreeIter iter, TreePath path, TreeViewDropPosition pos, out IViewModel parentVM, out IViewModel childVM)
-		{
-			TreeIter parent;
-
-			IViewModel obj = Model.GetValue (iter, 0) as IViewModel;
-			if (Model.IterParent (out parent, iter)) {
-				parentVM = Model.GetValue (parent, 0) as IViewModel;
-				childVM = obj;
-			} else {
-				parentVM = obj;
-				childVM = null;
-			}
 		}
 
 		void DisableDragInto (TreePath path, Gdk.DragContext context, uint time, TreeViewDropPosition pos)
