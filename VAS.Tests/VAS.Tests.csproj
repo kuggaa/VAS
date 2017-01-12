@@ -152,6 +152,7 @@
     <Compile Include="Services\TestEventsController.cs" />
     <Compile Include="Drawing\TestEventTypeLabelView.cs" />
     <Compile Include="Core\TestExtensionMethods.cs" />
+    <Compile Include="Core\License\TestLicenseLimitations.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\packages\SQLitePCL.native.sqlite3.v110_xp.0.9.1\build\SQLitePCL.native.sqlite3.v110_xp.targets" Condition="Exists('$(SolutionDir)\packages\SQLitePCL.native.sqlite3.v110_xp.0.9.1\build\SQLitePCL.native.sqlite3.v110_xp.targets')" />
@@ -207,6 +208,7 @@
     <Folder Include="Core\Hotkeys\" />
     <Folder Include="Core\ViewModel\" />
     <Folder Include="Drawing\" />
+    <Folder Include="Core\License\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Core\dibujo.svg">

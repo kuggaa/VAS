@@ -203,6 +203,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\DragContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\Command.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\DashboardButtonVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)License\LicenseLimitation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)License\ILicenseLimitations.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)License\LicenseLimitations.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\LicenseLimitationVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
@@ -224,6 +228,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)Services\ViewModels\" />
     <Folder Include="$(MSBuildThisFileDirectory)Prism\" />
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />
+    <Folder Include="$(MSBuildThisFileDirectory)License\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)VAS.Core.dll.config">
