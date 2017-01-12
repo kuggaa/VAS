@@ -32,7 +32,6 @@ namespace VAS.Core.Store
 	/// <summary>
 	/// Represents a tagged event in the game at a specific position in the timeline.
 	/// </summary>
-
 	[Serializable]
 	public class TimelineEvent : PixbufTimeNode, IStorable, IDisposable
 	{
@@ -212,7 +211,6 @@ namespace VAS.Core.Store
 		/// Whether this event is currently playing.
 		/// </summary>
 		[JsonIgnore]
-		[PropertyChanged.DoNotNotifyAttribute]
 		public bool Playing {
 			get;
 			set;
