@@ -35,6 +35,11 @@ namespace VAS.Core.MVVMC
 			set;
 			get;
 		}
+
+		protected override void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			base.ForwardPropertyChanged (this, e);
+		}
 	}
 }
 
