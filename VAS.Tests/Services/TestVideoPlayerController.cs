@@ -985,6 +985,20 @@ namespace VAS.Tests.Services
 		}
 
 		[Test ()]
+		public void TestUnloadEvent_CheckPlayingIsReset ()
+		{
+			// Arrange
+			PreparePlayer ();
+			player.LoadEvent (evt, new Time (0), true);
+
+			// Action
+			player.UnloadCurrentEvent ();
+
+			// Assert
+			Assert.IsFalse (evt.Playing);
+		}
+
+		[Test ()]
 		public void TestCamerasVisibleValidation ()
 		{
 			// Create an event referencing unknown MediaFiles in the set.

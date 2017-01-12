@@ -654,33 +654,30 @@ namespace VAS.Services
 			player.Expose ();
 		}
 
-		public virtual void Switch (TimelineEvent play, Playlist playlist, IPlaylistElement element)
+		public void UpdatePlayingState (bool playing)
 		{
 			if (loadedPlaylistElement != null) {
-				loadedPlaylistElement.Selected = false;
+				loadedPlaylistElement.Selected = playing;
 				var playElement = (loadedPlaylistElement as PlaylistPlayElement);
 				if (playElement != null) {
-					playElement.Play.Playing = false;
+					playElement.Play.Playing = playing;
 				}
 			}
+
 			if (loadedEvent != null) {
-				loadedEvent.Playing = false;
+				loadedEvent.Playing = playing;
 			}
+		}
+
+		public virtual void Switch (TimelineEvent play, Playlist playlist, IPlaylistElement element)
+		{
+			UpdatePlayingState (false);
 
 			loadedEvent = play;
 			LoadedPlaylist = playlist;
 			loadedPlaylistElement = element;
 
-			if (element != null) {
-				element.Selected = true;
-				var playElement = (element as PlaylistPlayElement);
-				if (playElement != null) {
-					playElement.Play.Playing = true;
-				}
-			}
-			if (play != null) {
-				play.Playing = true;
-			}
+			UpdatePlayingState (true);
 		}
 
 		public virtual void LoadPlaylistEvent (Playlist playlist, IPlaylistElement element, bool playing)
@@ -1191,6 +1188,7 @@ namespace VAS.Services
 		/// </summary>
 		protected virtual void Reset ()
 		{
+			UpdatePlayingState (false);
 			SetRate (1);
 			StillImageLoaded = false;
 			loadedSegment.Start = new Time (-1);

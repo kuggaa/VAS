@@ -18,8 +18,6 @@
 //
 
 using System.Collections.Generic;
-using System.Linq;
-using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.MVVMC;
 using VAS.Core.Store.Playlists;

@@ -17,7 +17,6 @@
 //
 using System.ComponentModel;
 using VAS.Core.Common;
-using VAS.Core.Interfaces;
 using VAS.Core.Store;
 
 namespace VAS.Core.Interfaces
@@ -25,7 +24,7 @@ namespace VAS.Core.Interfaces
 	/// <summary>
 	/// Each of the items in a playlist.
 	/// </summary>
-	public interface IPlaylistElement: IChanged, INotifyPropertyChanged
+	public interface IPlaylistElement : IChanged, INotifyPropertyChanged
 	{
 		string Description {
 			get;
