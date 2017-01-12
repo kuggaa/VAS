@@ -25,22 +25,29 @@ namespace VAS.Tests.MVVMC
 	public class TestViewModelBase
 	{
 		[Test]
-		public void TextForwardProperty ()
+		public void TestForwardProperty ()
 		{
+			// Arrange
 			int eventCount = 0;
+			bool senderIsTimeNodeVM = false;
 			TimeNode timeNode = new TimeNode ();
 			TimeNodeVM viewModel = new TimeNodeVM ();
 			viewModel.Model = timeNode;
-			viewModel.PropertyChanged += (sender, e) => eventCount++;
+			viewModel.PropertyChanged += (sender, e) => {
+				eventCount++;
+				senderIsTimeNodeVM = sender is TimeNodeVM;
+			};
 
-
+			// Action
 			timeNode.EventTime = new Time (0);
 
-			Assert.AreEqual (1, eventCount);
+			// Assert
+			Assert.AreEqual (1, eventCount, $"PropertyChanged was called {eventCount} instead of once");
+			Assert.IsTrue (senderIsTimeNodeVM, "Sender is not a ViewModel");
 		}
 
 		[Test]
-		public void TextChangeModel ()
+		public void TestChangeModel ()
 		{
 			int eventCount = 0;
 			TimeNode timeNode = new TimeNode ();
