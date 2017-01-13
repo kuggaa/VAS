@@ -271,12 +271,14 @@ namespace VAS.Services
 		/// <param name="drawings">Drawings.</param>
 		void TrackProject (string ProjectId, int events, int drawings)
 		{
+			Log.Information ("Tracking projects");
 			App.Current.KPIService.TrackEvent ("Project_usage",
 											   new Dictionary<string, string> () {
 				{ "Project_id", ProjectId } },
 											   new Dictionary<string, double> () {
 				{ "Events", events },
 				{ "Drawings" , drawings } });
+			Log.Information ("Project tracked");
 		}
 
 		/// <summary>
@@ -284,9 +286,11 @@ namespace VAS.Services
 		/// </summary>
 		void TrackTimers ()
 		{
+			Log.Information ("Tracking events Pageview");
 			foreach (var item in TimerList) {
 				App.Current.KPIService.TrackEvent ("PageView_" + item.Item1, null,
 												   new Dictionary<string, double> () { { "Time", item.Item2 } });
+				Log.Information ("Pageview tracked");
 			}
 		}
 
@@ -303,7 +307,9 @@ namespace VAS.Services
 			DataDictionary.Add ("Projects", CreatedProjects);
 			DataDictionary.Add ("Total_playlists", TotalUserPlaylists);
 			DataDictionary.Add ("Time", ((int)generalTimer.ElapsedMilliseconds) / 1000);
+			Log.Information ("Tracking event sessions");
 			App.Current.KPIService.TrackEvent ("Sessions", null, DataDictionary);
+			Log.Information ("Tracked event sessions");
 			App.Current.KPIService.Flush ();
 		}
 
