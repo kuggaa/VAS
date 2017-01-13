@@ -306,7 +306,6 @@ namespace VAS.UI.Helpers
 					throw new Exception (Catalog.GetString ("This file contains a video stream but its length is 0."));
 				}
 			} catch (Exception ex) {
-				busy.Destroy ();
 				App.Current.Dialogs.ErrorMessage (ex.Message, parent);
 				return null;
 			}
