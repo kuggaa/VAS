@@ -70,6 +70,7 @@ namespace VAS.Tests.Services
 			controller = new PlaylistController ();
 			mockDialogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
 													 It.IsAny<object> ())).Returns (AsyncHelpers.Return (name));
+			mockDialogs.Setup (m => m.QuestionMessage (It.IsAny<string> (), null, null)).Returns (AsyncHelpers.Return (true));
 		}
 
 		[TearDown]
@@ -272,6 +273,60 @@ namespace VAS.Tests.Services
 			storageMock.Verify (s => s.Delete<Playlist> (It.IsAny<Playlist> ()), Times.Never ());
 			Assert.AreEqual (0, playlistCollectionVM.ViewModels.Count);
 			Assert.AreEqual (0, projectVM.Model.Playlists.Count);
+		}
+
+		[Test]
+		public void TestDeleteSelectedPlaylistWithStorage ()
+		{
+			SetupWithStorage ();
+			var newPlaylist = new Playlist ();
+			newPlaylist.Elements.Add (new PlaylistPlayElement (new TimelineEvent ()));
+			playlistCollectionVM.Model.Add (newPlaylist);
+
+			playlistCollectionVM.SelectionReplace (playlistCollectionVM.ViewModels);
+			App.Current.EventsBroker.Publish (new DeleteEvent<Playlist> ());
+
+			Assert.AreEqual (0, playlistCollectionVM.ViewModels.Count);
+			Assert.AreEqual (0, playlistCollectionVM.Selection.Count);
+		}
+
+		[Test]
+		public void TestDeleteSelectedPlaylistWithProject ()
+		{
+			SetupWithProject ();
+			var newPlaylist = new Playlist ();
+			newPlaylist.Elements.Add (new PlaylistPlayElement (new TimelineEvent ()));
+			projectVM.Playlists.Model.Add (newPlaylist);
+
+			playlistCollectionVM.SelectionReplace (playlistCollectionVM.ViewModels);
+			App.Current.EventsBroker.Publish (new DeleteEvent<Playlist> ());
+
+			storageMock.Verify (s => s.Delete<Playlist> (It.IsAny<Playlist> ()), Times.Never ());
+			Assert.AreEqual (0, playlistCollectionVM.ViewModels.Count);
+			Assert.AreEqual (0, projectVM.Model.Playlists.Count);
+		}
+
+		[Test]
+		public void TestDeleteSelectedPlaylistElements ()
+		{
+			SetupWithStorage ();
+			IPlaylistElement element1 = new PlaylistPlayElement (new TimelineEvent { Name = "element1" });
+			IPlaylistElement element2 = new PlaylistPlayElement (new TimelineEvent { Name = "element2" });
+			IPlaylistElement element3 = new PlaylistPlayElement (new TimelineEvent { Name = "element3" });
+			var newPlaylist = new Playlist ();
+			newPlaylist.Elements.AddRange (new List<IPlaylistElement> {
+				element1, element2, element3 });
+			playlistCollectionVM.Model.Add (newPlaylist);
+
+			playlistCollectionVM.ViewModels [0].SelectionReplace (new List<PlaylistElementVM> {
+				playlistCollectionVM.ViewModels [0].ViewModels[0],
+				playlistCollectionVM.ViewModels [0].ViewModels[2]
+			});
+			App.Current.EventsBroker.Publish (new DeleteEvent<Playlist> ());
+
+			Assert.AreEqual (1, playlistCollectionVM.ViewModels [0].ViewModels.Count);
+			Assert.AreEqual (0, playlistCollectionVM.ViewModels [0].Selection.Count);
+
 		}
 
 		[Test]

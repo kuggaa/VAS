@@ -87,7 +87,7 @@ namespace VAS.Services.Controller
 			if (viewModel == null) {
 				return;
 			}
-			
+
 			if (playlistViewModel != null) {
 				playlistViewModel.PropertyChanged -= HandlePropertyChanged;
 			}
@@ -237,7 +237,9 @@ namespace VAS.Services.Controller
 					}
 					questioned = true;
 				}
-				App.Current.DatabaseManager.ActiveDB.Delete (playlistVM.Model);
+				if (projectViewModel == null) {
+					App.Current.DatabaseManager.ActiveDB.Delete (playlistVM.Model);
+				}
 				playlistViewModel.ViewModels.Remove (playlistVM);
 				removed = true;
 			}
