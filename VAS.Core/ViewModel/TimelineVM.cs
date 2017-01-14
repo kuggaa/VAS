@@ -15,13 +15,13 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using Newtonsoft.Json;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Filters;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
@@ -126,6 +126,73 @@ namespace VAS.Core.ViewModel
 		{
 			ViewModels.Clear ();
 			ViewModels.AddRange (eventTypes.Select (e => new EventTypeTimelineVM (e)));
+		}
+
+
+		/// <summary>
+		/// Load a TimelineEvent to the player to start playing it. The EventsController should be the responsible
+		/// to Add the Events to the player
+		/// </summary>
+		/// <param name="viewModel">RATimelineEventVM ViewModel</param>
+		/// <param name="playing">If set to <c>true</c> playing. Else starts paused</param>
+		public void LoadEvent (TimelineEventVM viewModel, bool playing)
+		{
+			App.Current.EventsBroker.Publish (new LoadTimelineEventEvent<TimelineEventVM> {
+				Object = viewModel,
+				Playing = playing
+			});
+		}
+
+		/// <summary>
+		/// Loads a List of Events to the player in order to start playing them, The EventsController should be the responsible
+		/// to Add the Events to the player
+		/// </summary>
+		/// <param name="viewModels">A list of RATimelineEventVM</param>
+		/// <param name="playing">If set to <c>true</c> playing. Else starts paused</param>
+		public void LoadEvents (IEnumerable<TimelineEventVM> viewModels, bool playing)
+		{
+			App.Current.EventsBroker.Publish (new LoadTimelineEventEvent<IEnumerable<TimelineEventVM>> {
+				Object = viewModels,
+				Playing = playing
+			});
+		}
+
+		/// <summary>
+		/// Unloads the events from the player
+		/// </summary>
+		public void UnloadEvents ()
+		{
+			App.Current.EventsBroker.Publish (new LoadTimelineEventEvent<TimelineEventVM> {
+				Object = null,
+				Playing = false
+			});
+		}
+
+		/// <summary>
+		/// Unselects everything from the selection as well as its children
+		/// </summary>
+		public void UnselectAll ()
+		{
+			SelectionReplace (new RangeObservableCollection<EventTypeTimelineVM> ());
+			foreach (var eventType in ViewModels) {
+				eventType.SelectionReplace (new RangeObservableCollection<TimelineEventVM> ());
+				foreach (var timelineEvent in eventType.ViewModels) {
+					timelineEvent.Selected = false;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Selects all childs ViewModels <see cref="TimelineEventVM"/> of a <see cref="EventTypeTimelineVM"/>
+		/// </summary>
+		/// <param name="vm">The EventTypeTimelineVM element in the collection</param>
+		public void SelectAllFrom (EventTypeTimelineVM vm)
+		{
+			Select (vm);
+			vm.SelectionReplace (vm.ViewModels);
+			foreach (var timelineEvent in vm.Selection) {
+				timelineEvent.Selected = true;
+			}
 		}
 
 		/// <summary>
