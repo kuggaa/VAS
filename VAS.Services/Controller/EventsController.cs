@@ -22,7 +22,6 @@ using VAS.Core.Events;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
-using VAS.Core.Store;
 using VAS.Core.ViewModel;
 
 namespace VAS.Services.Controller
@@ -30,12 +29,10 @@ namespace VAS.Services.Controller
 	/// <summary>
 	/// Events controller, base class of the Events Controller.
 	/// </summary>
-	public class EventsController<TModel, TViewModel> : DisposableBase, IController
-		where TModel : TimelineEvent
-		where TViewModel : TimelineEventVM<TModel>, new()
+	public class EventsController : DisposableBase, IController
 	{
 		VideoPlayerVM playerVM;
-		TimelineVM viewModel;
+		TimelineVM timelineVM;
 
 		protected override void Dispose (bool disposing)
 		{
@@ -47,7 +44,7 @@ namespace VAS.Services.Controller
 			get {
 				return playerVM;
 			}
-			protected set {
+			set {
 				if (playerVM != null) {
 					playerVM.PropertyChanged -= HandlePlayerVMPropertyChanged;
 				}
@@ -58,18 +55,18 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		public virtual TimelineVM ViewModel {
+		public virtual TimelineVM Timeline {
 			get {
-				return viewModel;
+				return timelineVM;
 			}
-			protected set {
-				if (viewModel != null) {
-					viewModel.Filters.PropertyChanged -= HandlePropertyChanged;
+			set {
+				if (timelineVM != null) {
+					timelineVM.Filters.PropertyChanged -= HandlePropertyChanged;
 				}
-				viewModel = value;
-				if (viewModel != null) {
+				timelineVM = value;
+				if (timelineVM != null) {
 					HandleFiltersChanged ();
-					viewModel.Filters.PropertyChanged += HandlePropertyChanged;
+					timelineVM.Filters.PropertyChanged += HandlePropertyChanged;
 				}
 			}
 		}
@@ -78,22 +75,22 @@ namespace VAS.Services.Controller
 
 		public virtual void Start ()
 		{
-			App.Current.EventsBroker.Subscribe<LoadTimelineEvent<TModel>> (HandleLoadEvent);
-			App.Current.EventsBroker.Subscribe<LoadTimelineEvent<IEnumerable<TModel>>> (HandleLoadEventsList);
-			App.Current.EventsBroker.Subscribe<LoadTimelineEvent<EventTypeTimelineVM>> (HandleLoadEventType);
+			App.Current.EventsBroker.Subscribe<LoadTimelineEventEvent<TimelineEventVM>> (HandleLoadEvent);
+			App.Current.EventsBroker.Subscribe<LoadTimelineEventEvent<IEnumerable<TimelineEventVM>>> (HandleLoadEventsList);
+			App.Current.EventsBroker.Subscribe<LoadTimelineEventEvent<EventTypeTimelineVM>> (HandleLoadEventType);
 		}
 
 		public virtual void Stop ()
 		{
-			App.Current.EventsBroker.Unsubscribe<LoadTimelineEvent<TModel>> (HandleLoadEvent);
-			App.Current.EventsBroker.Unsubscribe<LoadTimelineEvent<IEnumerable<TModel>>> (HandleLoadEventsList);
-			App.Current.EventsBroker.Unsubscribe<LoadTimelineEvent<EventTypeTimelineVM>> (HandleLoadEventType);
+			App.Current.EventsBroker.Unsubscribe<LoadTimelineEventEvent<TimelineEventVM>> (HandleLoadEvent);
+			App.Current.EventsBroker.Unsubscribe<LoadTimelineEventEvent<IEnumerable<TimelineEventVM>>> (HandleLoadEventsList);
+			App.Current.EventsBroker.Unsubscribe<LoadTimelineEventEvent<EventTypeTimelineVM>> (HandleLoadEventType);
 		}
 
 		public virtual void SetViewModel (IViewModel viewModel)
 		{
 			PlayerVM = (VideoPlayerVM)(viewModel as dynamic);
-			ViewModel = (TimelineVM)(viewModel as dynamic);
+			Timeline = (TimelineVM)(viewModel as dynamic);
 		}
 
 		public virtual IEnumerable<KeyAction> GetDefaultKeyActions ()
@@ -107,17 +104,17 @@ namespace VAS.Services.Controller
 		{
 		}
 
-		void HandleLoadEvent (LoadTimelineEvent<TModel> e)
+		void HandleLoadEvent (LoadTimelineEventEvent<TimelineEventVM> e)
 		{
-			PlayerVM.LoadEvent (e.Object, e.Playing);
+			PlayerVM.LoadEvent (e.Object.Model, e.Playing);
 		}
 
-		void HandleLoadEventsList (LoadTimelineEvent<IEnumerable<TModel>> e)
+		void HandleLoadEventsList (LoadTimelineEventEvent<IEnumerable<TimelineEventVM>> e)
 		{
-			PlayerVM.LoadEvents (e.Object.OfType<TimelineEvent> (), e.Playing);
+			PlayerVM.LoadEvents (e.Object.Select (vm => vm.Model), e.Playing);
 		}
 
-		void HandleLoadEventType (LoadTimelineEvent<EventTypeTimelineVM> e)
+		void HandleLoadEventType (LoadTimelineEventEvent<EventTypeTimelineVM> e)
 		{
 			var timelineEvents = e.Object.ViewModels.Where ((arg) => arg.Visible == true)
 													.Select ((arg) => arg.Model);
@@ -133,8 +130,8 @@ namespace VAS.Services.Controller
 
 		void HandleFiltersChanged ()
 		{
-			foreach (var eventVM in ViewModel.SelectMany (eventTypeVM => eventTypeVM.ViewModels)) {
-				eventVM.Visible = ViewModel.Filters.Filter (eventVM);
+			foreach (var eventVM in Timeline.SelectMany (eventTypeVM => eventTypeVM.ViewModels)) {
+				eventVM.Visible = Timeline.Filters.Filter (eventVM);
 			}
 		}
 	}

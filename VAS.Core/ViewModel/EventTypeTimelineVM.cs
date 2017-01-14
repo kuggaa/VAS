@@ -16,7 +16,6 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 
-using System;
 using System.Linq;
 using VAS.Core.Events;
 using VAS.Core.Interfaces.GUI;
@@ -71,7 +70,7 @@ namespace VAS.Core.ViewModel
 
 		public void LoadEventType ()
 		{
-			App.Current.EventsBroker.Publish (new LoadTimelineEvent<EventTypeTimelineVM> {
+			App.Current.EventsBroker.Publish (new LoadTimelineEventEvent<EventTypeTimelineVM> {
 				Object = this,
 				Playing = true
 			});
