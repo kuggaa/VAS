@@ -20,7 +20,6 @@ using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store.Drawables;
 using VAS.Core.Common;
 using VAS.Core.Store;
-using VAS.Drawing.CanvasObjects;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
@@ -28,9 +27,8 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 	{
 		protected LinkAnchorObject anchor;
 
-		public DashboardButtonObject (DashboardButton tagger)
+		public DashboardButtonObject ()
 		{
-			Button = tagger;
 			SupportsLinks = true;
 			anchor = new LinkAnchorObject (this, null, new Point (0, 0));
 			anchor.RedrawEvent += (co, area) => {
@@ -201,17 +199,23 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 	public class TimedTaggerObject : DashboardButtonObject
 	{
 		Time currentTime;
+		TimedDashboardButton timedButton;
 
-		public TimedTaggerObject (TimedDashboardButton button) : base (button)
+		public TimedTaggerObject () : base ()
 		{
-			TimedButton = button;
 			currentTime = new Time (0);
 			Start = null;
 		}
 
+
 		public TimedDashboardButton TimedButton {
-			get;
-			set;
+			get {
+				return timedButton;
+			}
+			set {
+				timedButton = value;
+				Button = value;
+			}
 		}
 
 		public Time CurrentTime {
