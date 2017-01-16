@@ -41,16 +41,6 @@ namespace Microsoft.HockeyApp
 		public void Initialize ()
 		{
 			if (!initialized) {
-				GLib.ExceptionManager.UnhandledException += (e) => {
-					TargetInvocationException invException = e.ExceptionObject as TargetInvocationException;
-					if (invException != null) {
-						HockeyClient.Current.HandleException (invException.InnerException);
-					} else {
-						HockeyClient.Current.HandleException ((Exception)e.ExceptionObject);
-					}
-
-					HockeyClient.Current.SendCrashesAsync ().ConfigureAwait (false);
-				};
 
 				initialized = true;
 			}
