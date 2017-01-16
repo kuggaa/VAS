@@ -29,6 +29,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\JobsManagerVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\DrawingToolVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UserStatisticsService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LicenseLimitationsService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />
