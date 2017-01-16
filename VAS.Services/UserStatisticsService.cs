@@ -31,16 +31,23 @@ namespace VAS.Services
 	public abstract class UserStatisticsService : IService
 	{
 		string currentState;
-		Stopwatch stateTimer;
-		Stopwatch generalTimer;
 
-		public UserStatisticsService ()
-		{
-			ProjectDictionary = new Dictionary<Guid, Tuple<int, int>> ();
-			DataDictionary = new Dictionary<string, double> ();
-			stateTimer = new Stopwatch ();
-			generalTimer = new Stopwatch ();
-			TimerList = new List<Tuple<string, long>> ();
+		/// <summary>
+		/// Gets the state timer.
+		/// </summary>
+		/// <value>The state timer.</value>
+		public Stopwatch StateTimer {
+			get;
+			private set;
+		}
+
+		/// <summary>
+		/// Gets the general timer.
+		/// </summary>
+		/// <value>The general timer.</value>
+		public Stopwatch GeneralTimer {
+			get;
+			private set;
 		}
 
 		/// <summary>
@@ -162,6 +169,15 @@ namespace VAS.Services
 
 		#region IService implementation
 
+		public UserStatisticsService ()
+		{
+			ProjectDictionary = new Dictionary<Guid, Tuple<int, int>> ();
+			DataDictionary = new Dictionary<string, double> ();
+			StateTimer = new Stopwatch ();
+			GeneralTimer = new Stopwatch ();
+			TimerList = new List<Tuple<string, long>> ();
+		}
+		
 		/// <summary>
 		/// Gets the level of the service. Services are started in ascending level order and stopped in descending level order.
 		/// </summary>
@@ -194,7 +210,7 @@ namespace VAS.Services
 			App.Current.EventsBroker.Subscribe<ProjectCreatedEvent> (HandleNewProject);
 			App.Current.EventsBroker.Subscribe<OpenedProjectEvent> (HandleOpenProject);
 			App.Current.EventsBroker.Subscribe<NavigationEvent> (HandleNavigationEvent);
-			generalTimer.Start ();
+			GeneralTimer.Start ();
 
 			return true;
 		}
@@ -212,7 +228,7 @@ namespace VAS.Services
 			App.Current.EventsBroker.Unsubscribe<ProjectCreatedEvent> (HandleNewProject);
 			App.Current.EventsBroker.Unsubscribe<OpenedProjectEvent> (HandleOpenProject);
 			App.Current.EventsBroker.Unsubscribe<NavigationEvent> (HandleNavigationEvent);
-			generalTimer.Stop ();
+			GeneralTimer.Stop ();
 			RetrieveUserData ();
 			SendData ();
 
@@ -248,9 +264,11 @@ namespace VAS.Services
 		/// </summary>
 		void SaveTimer ()
 		{
-			stateTimer.Stop ();
-			TimerList.Add (new Tuple<string, long> (currentState, stateTimer.ElapsedTicks));
-			stateTimer.Reset ();
+			StateTimer.Stop ();
+			if (StateTimer.ElapsedMilliseconds >= 1000) {
+				TimerList.Add (new Tuple<string, long> (currentState, StateTimer.ElapsedTicks));
+			}
+			StateTimer.Reset ();
 		}
 
 		/// <summary>
@@ -302,7 +320,7 @@ namespace VAS.Services
 			DataDictionary.Add ("Playlists", PlaylistsCount);
 			DataDictionary.Add ("Projects", CreatedProjects);
 			DataDictionary.Add ("Total_playlists", TotalUserPlaylists);
-			DataDictionary.Add ("Time", ((int)generalTimer.ElapsedMilliseconds) / 1000);
+			DataDictionary.Add ("Time", ((int)GeneralTimer.ElapsedTicks));
 			App.Current.KPIService.TrackEvent ("Sessions", null, DataDictionary);
 			App.Current.KPIService.Flush ();
 		}
@@ -321,9 +339,9 @@ namespace VAS.Services
 				SaveTimer ();
 			}
 			if (StatesToTrack.Contains (NextEvent)) {
-				stateTimer.Start ();
-				currentState = NextEvent;
+				StateTimer.Start ();
 			}
+			currentState = NextEvent;
 		}
 
 		/// <summary>

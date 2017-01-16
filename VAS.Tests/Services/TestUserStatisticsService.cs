@@ -27,7 +27,7 @@ namespace VAS.Tests.Services
 	[TestFixture]
 	public class TestUserStatisticsService
 	{
-		DummyUserStatisticsService Service;
+		DummyUserStatisticsService service;
 		Mock<IStorageManager> storageManagerMock;
 		Mock<IStorage> storageMock;
 		Mock<IKpiService> kpiServiceMock;
@@ -36,8 +36,8 @@ namespace VAS.Tests.Services
 		[SetUp]
 		public void Setup ()
 		{
-			Service = new DummyUserStatisticsService ();
-			Service.Start ();
+			service = new DummyUserStatisticsService ();
+			service.Start ();
 			Project = Utils.CreateProject (true);
 			storageManagerMock = new Mock<IStorageManager> ();
 			storageManagerMock.SetupAllProperties ();
@@ -55,7 +55,7 @@ namespace VAS.Tests.Services
 			App.Current.EventsBroker.Publish (new NewPlaylistEvent ());
 
 			// Assert
-			Service.Stop ();
+			service.Stop ();
 			kpiServiceMock.Verify (m => m.TrackEvent ("Sessions", null, It.Is<Dictionary<string, double>> (
 				d => d ["Playlists"] == 1)), Times.Once ());
 		}
@@ -67,7 +67,7 @@ namespace VAS.Tests.Services
 			App.Current.EventsBroker.Publish (new JobRenderedEvent ());
 
 			// Assert
-			Service.Stop ();
+			service.Stop ();
 			kpiServiceMock.Verify (m => m.TrackEvent ("Sessions", null, It.Is<Dictionary<string, double>> (
 				d => d ["Renders"] == 1)), Times.Once ());
 		}
@@ -83,7 +83,7 @@ namespace VAS.Tests.Services
 			);
 
 			// Assert
-			Service.Stop ();
+			service.Stop ();
 			kpiServiceMock.Verify (m => m.TrackEvent ("Project_usage",
 													  It.Is<Dictionary<string, string>> (
 														  d => d ["Project_id"] == Project.ID.ToString ()),
@@ -102,7 +102,7 @@ namespace VAS.Tests.Services
 				}
 			);
 
-			Service.Stop ();
+			service.Stop ();
 			kpiServiceMock.Verify (m => m.TrackEvent ("Project_usage",
 													  It.Is<Dictionary<string, string>> (
 														  d => d ["Project_id"] == Project.ID.ToString ()),
@@ -118,7 +118,7 @@ namespace VAS.Tests.Services
 			App.Current.EventsBroker.Publish (new ProjectCreatedEvent ());
 
 			// Assert
-			Service.Stop ();
+			service.Stop ();
 			kpiServiceMock.Verify (m => m.TrackEvent ("Sessions", null, It.Is<Dictionary<string, double>> (
 				d => d ["Projects"] == 1)), Times.Once ());
 		}
