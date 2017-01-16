@@ -16,40 +16,22 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using VAS.Core.Common;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
-using VAS.Core.Store.Templates;
 
 namespace VAS.Core.ViewModel
 {
-	public class DashboardVM : TemplateViewModel<Dashboard, DashboardButton, DashboardButtonVM>
+	public class DashboardButtonCollectionVM : CollectionViewModel<DashboardButton, DashboardButtonVM>
 	{
-		public override Image Icon {
-			get {
-				throw new NotImplementedException ();
-			}
-
-			set {
-				throw new NotImplementedException ();
-			}
-		}
-
-		public int CanvasWidth {
-			get {
-				return Model.CanvasWidth;
-			}
-		}
-
-		public int CanvasHeight {
-			get {
-				return Model.CanvasHeight;
-			}
-		}
-
-		public override CollectionViewModel<DashboardButton, DashboardButtonVM> CreateSubViewModel ()
+		protected override DashboardButtonVM CreateInstance (DashboardButton model)
 		{
-			return new DashboardButtonCollectionVM ();
+			if (model is AnalysisEventButton) {
+				return new AnalysisEventButtonVM { Model = (AnalysisEventButton)model };
+			} else if (model is TagButton) {
+				return new TagButtonVM { Model = (TagButton)model };
+			} else {
+				return new TimerButtonVM { Model = (TimerButton)model };
+			}
 		}
 	}
 }
