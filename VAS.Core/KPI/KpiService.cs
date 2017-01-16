@@ -44,7 +44,7 @@ namespace VAS.KPI
 		public void TrackException (Exception ex, IDictionary<string, string> properties)
 		{
 #if !DEBUG
-			HockeyClient.Current.TrackException (ex, properties);
+			HockeyClient.Current.HandleException (ex);
 #endif
 		}
 
@@ -52,6 +52,7 @@ namespace VAS.KPI
 		{
 #if !DEBUG
 			HockeyClient.Current.Flush ();
+			HockeyClient.Current.SendCrashesAsync ().ConfigureAwait (false);
 #endif
 		}
 	}
