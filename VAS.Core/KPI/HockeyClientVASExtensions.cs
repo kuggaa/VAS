@@ -36,7 +36,7 @@ namespace VAS.KPI
 		/// <param name="identifier">Identfier.</param>
 		/// <param name="keepRunningAfterException">Keep running after exception.</param>
 		/// <returns>Instance object.</returns>
-		public static IHockeyClientConfigurable Configure (this IHockeyClient @this, string identifier)
+		public async static Task<IHockeyClientConfigurable> Configure (this IHockeyClient @this, string identifier)
 		{
 			@this.AsInternal ().PlatformHelper = new HockeyPlatformHelperMono ();
 			@this.AsInternal ().AppIdentifier = identifier;
@@ -49,7 +49,7 @@ namespace VAS.KPI
 			ServiceLocator.AddService<IHttpService> (new HttpClientTransmission ());
 			ServiceLocator.AddService<IUnhandledExceptionTelemetryModule> (new UnhandledExceptionTelemetryModule ());
 
-			WindowsAppInitializer.InitializeAsync (identifier);
+			await WindowsAppInitializer.InitializeAsync (identifier);
 			return (IHockeyClientConfigurable)@this;
 		}
 
