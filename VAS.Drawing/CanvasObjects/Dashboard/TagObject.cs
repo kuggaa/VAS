@@ -15,19 +15,25 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Interfaces.Drawing;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
+using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
-	public class TagObject: DashboardButtonObject
+	[ViewAttribute ("TagButtonView")]
+	public class TagObject : DashboardButtonObject, ICanvasObjectView<TagButtonVM>
 	{
 		static Image iconImage;
+		TagButton tagButton;
+		TagButtonVM viewModel;
 
-		public TagObject (TagButton tagger) : base (tagger)
+		public TagObject () : base ()
 		{
-			TagButton = tagger;
 			Toggle = true;
 			SupportsLinks = false;
 			if (iconImage == null) {
@@ -36,8 +42,13 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		}
 
 		public TagButton TagButton {
-			get;
-			set;
+			get {
+				return tagButton;
+			}
+			set {
+				tagButton = value;
+				Button = value;
+			}
 		}
 
 		public override Image Icon {
@@ -50,6 +61,23 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			get {
 				return TagButton.Tag.Value;
 			}
+		}
+
+		public TagButtonVM ViewModel {
+			get {
+				return viewModel;
+			}
+			set {
+				viewModel = value;
+				if (viewModel != null) {
+					TagButton = viewModel.Model;
+				}
+			}
+		}
+
+		public void SetViewModel (object viewModel)
+		{
+			ViewModel = (TagButtonVM)viewModel;
 		}
 	}
 }

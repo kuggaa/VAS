@@ -15,24 +15,24 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Handlers;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
-using VAS.Core.Store.Templates;
-using VAS.Drawing;
-using VASDrawing = VAS.Drawing;
+using VAS.Core.ViewModel;
 using VAS.Drawing.CanvasObjects.Dashboard;
+using VASDrawing = VAS.Drawing;
 
 namespace VAS.Drawing.Widgets
 {
-	public class DashboardCanvas: SelectionCanvas
+	public class DashboardCanvas : SelectionCanvas, IView<DashboardVM>
 	{
-
 		public event ButtonsSelectedHandler ButtonsSelectedEvent;
 		public event ButtonSelectedHandler EditButtonTagsEvent;
 		public event ActionLinksSelectedHandler ActionLinksSelectedEvent;
@@ -40,7 +40,6 @@ namespace VAS.Drawing.Widgets
 		public event ShowDashboardMenuHandler ShowMenuEvent;
 		public event NewEventHandler NewTagEvent;
 
-		protected Dashboard template;
 		protected DashboardMode mode;
 		protected Time currentTime;
 		protected int templateWidth, templateHeight;
@@ -49,6 +48,8 @@ namespace VAS.Drawing.Widgets
 		protected ActionLinkObject movingLink;
 		protected LinkAnchorObject destAnchor;
 		protected Dictionary<DashboardButton, DashboardButtonObject> buttonsDict;
+
+		DashboardVM viewModel;
 
 		public DashboardCanvas (IWidget widget) : base (widget)
 		{
@@ -65,21 +66,6 @@ namespace VAS.Drawing.Widgets
 		{
 		}
 
-		public Project Project {
-			get;
-			set;
-		}
-
-		public Dashboard Template {
-			set {
-				template = value;
-				LoadTemplate ();
-			}
-			get {
-				return template;
-			}
-		}
-
 		public Tag AddTag {
 			get;
 			set;
@@ -93,10 +79,10 @@ namespace VAS.Drawing.Widgets
 		public Time CurrentTime {
 			set {
 				currentTime = value;
-				foreach (TimerObject to in Objects.OfType<TimerObject>()) {
+				foreach (TimerObject to in Objects.OfType<TimerObject> ()) {
 					to.CurrentTime = value;
 				}
-				foreach (TimedTaggerObject to in Objects.OfType<TimedTaggerObject>()) {
+				foreach (TimedTaggerObject to in Objects.OfType<TimedTaggerObject> ()) {
 					if (to.TimedButton.TagMode == TagMode.Free) {
 						to.CurrentTime = value;
 					}
@@ -152,6 +138,26 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
+		public DashboardVM ViewModel {
+			get {
+				return viewModel;
+			}
+
+			set {
+				ClearObjects ();
+				buttonsDict.Clear ();
+				viewModel = value;
+				if (viewModel != null) {
+					LoadViews ();
+				}
+			}
+		}
+
+		public void SetViewModel (object viewModel)
+		{
+			ViewModel = (DashboardVM)viewModel;
+		}
+
 		public void Click (DashboardButton b, Tag tag = null)
 		{
 			DashboardButtonObject co = Objects.OfType<DashboardButtonObject> ().FirstOrDefault (o => o.Button == b);
@@ -174,11 +180,11 @@ namespace VAS.Drawing.Widgets
 		{
 			DashboardButtonObject to;
 
-			if (Template == null) {
+			if (ViewModel == null) {
 				return;
 			}
 
-			LoadTemplate ();
+			LoadViews ();
 			to = Objects.OfType<DashboardButtonObject> ().
 				FirstOrDefault (o => o.Button == b);
 			if (to != null) {
@@ -243,7 +249,7 @@ namespace VAS.Drawing.Widgets
 				Selection destSel;
 
 				destSel = GetSelection (MoveStart, true, true);
-				if (destSel != null && destSel.Drawable is LinkAnchorObject) { 
+				if (destSel != null && destSel.Drawable is LinkAnchorObject) {
 					anchor = destSel.Drawable as LinkAnchorObject;
 				}
 				/* Toggled highlited state */
@@ -301,7 +307,7 @@ namespace VAS.Drawing.Widgets
 				ActionLink link = new ActionLink {
 					SourceButton = anchor.Button.Button,
 					SourceTags = new ObservableCollection<Tag> (anchor.Tags)
-				}; 
+				};
 				movingLink = new ActionLinkObject (anchor, null, link);
 				AddObject (movingLink);
 				ClearSelection ();
@@ -382,27 +388,24 @@ namespace VAS.Drawing.Widgets
 			buttonsDict.Add (button.Button, button);
 		}
 
-		protected virtual void LoadTemplate ()
+		protected virtual void LoadViews ()
 		{
 			ClearObjects ();
 			buttonsDict.Clear ();
 
-			foreach (TagButton tag in template.List.OfType<TagButton>()) {
-				TagObject to = new TagObject (tag);
-				to.ClickedEvent += HandleTaggerClickedEvent;
-				to.Mode = Mode;
-				AddButton (to);
-			}
-
-			foreach (AnalysisEventButton cat in template.List.OfType<AnalysisEventButton>()) {
-				CategoryObject co = new CategoryObject (cat);
-				co.ClickedEvent += HandleTaggerClickedEvent;
-				co.EditButtonTagsEvent += (t) => {
-					if (EditButtonTagsEvent != null)
-						EditButtonTagsEvent (t);
-				};
-				co.Mode = Mode;
-				AddButton (co);
+			foreach (DashboardButtonVM vm in ViewModel.ViewModels) {
+				IView view = App.Current.ViewLocator.Retrieve (vm.View);
+				view.SetViewModel (vm);
+				var viewButton = view as DashboardButtonObject;
+				viewButton.ClickedEvent += HandleTaggerClickedEvent;
+				viewButton.Mode = Mode;
+				if (viewButton is CategoryObject) {
+					((CategoryObject)viewButton).EditButtonTagsEvent += (t) => {
+						if (EditButtonTagsEvent != null)
+							EditButtonTagsEvent (t);
+					};
+				}
+				AddButton (viewButton);
 			}
 
 			foreach (DashboardButtonObject buttonObject in buttonsDict.Values) {
@@ -429,15 +432,15 @@ namespace VAS.Drawing.Widgets
 
 		protected override void HandleSizeChangedEvent ()
 		{
-			if (Template == null || widget == null) {
+			if (ViewModel == null || widget == null) {
 				return;
 			}
 
 			base.HandleSizeChangedEvent ();
 
 			FitMode prevFitMode = FitMode;
-			templateHeight = template.CanvasHeight + 10;
-			templateWidth = template.CanvasWidth + 10;
+			templateHeight = ViewModel.CanvasHeight + 10;
+			templateWidth = ViewModel.CanvasWidth + 10;
 			/* When going from Original to Fill or Fit, we can't know the new 
 			 * size of the shrinked object until we have a resize */
 			if (FitMode == FitMode.Original) {
@@ -479,7 +482,7 @@ namespace VAS.Drawing.Widgets
 				TagObject tag = tagger as TagObject;
 				if (tag.Active) {
 					/* All tag buttons from the same group that are active */
-					foreach (TagObject to in Objects.OfType<TagObject>().
+					foreach (TagObject to in Objects.OfType<TagObject> ().
 						Where (t => t.TagButton.Tag.Group == tag.TagButton.Tag.Group &&
 							t.Active && t != tagger)) {
 						to.Active = false;
@@ -512,7 +515,7 @@ namespace VAS.Drawing.Widgets
 			if (tagger is CategoryObject) {
 				tags.AddRange ((tagger as CategoryObject).SelectedTags);
 			}
-			foreach (TagObject to in Objects.OfType<TagObject>()) {
+			foreach (TagObject to in Objects.OfType<TagObject> ()) {
 				if (to.Active) {
 					tags.Add (to.TagButton.Tag);
 				}
