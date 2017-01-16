@@ -15,25 +15,30 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using VAS.Core.Interfaces.Drawing;
-using VAS.Core.Store.Drawables;
-using VAS.Core.Common;
-using VAS.Core.Store;
+using System;
 using VAS.Core;
+using VAS.Core.Common;
+using VAS.Core.Interfaces.Drawing;
+using VAS.Core.MVVMC;
+using VAS.Core.Store;
+using VAS.Core.Store.Drawables;
+using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
-	public class TimerObject: DashboardButtonObject
+	[ViewAttribute ("TimerButtonView")]
+	public class TimerObject : DashboardButtonObject, ICanvasObjectView<TimerButtonVM>
 	{
 		Time currentTime;
 		static Image iconImage;
 		static Image cancelImage;
 		Rectangle cancelRect;
 		bool cancelPressed;
+		TimerButton timerButton;
+		TimerButtonVM viewModel;
 
-		public TimerObject (TimerButton timer) : base (timer)
+		public TimerObject () : base ()
 		{
-			TimerButton = timer;
 			Toggle = true;
 			CurrentTime = new Time (0);
 			if (iconImage == null) {
@@ -47,9 +52,15 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			cancelRect = new Rectangle ();
 		}
 
+
 		public TimerButton TimerButton {
-			get;
-			set;
+			get {
+				return timerButton;
+			}
+			set {
+				timerButton = value;
+				Button = value;
+			}
 		}
 
 		public override Image Icon {
@@ -84,7 +95,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				}
 
 				if (value != null && currentTime != null &&
-				    currentTime.TotalSeconds != value.TotalSeconds) {
+					currentTime.TotalSeconds != value.TotalSeconds) {
 					update = true;
 				}
 
@@ -145,6 +156,20 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
+
+		public TimerButtonVM ViewModel {
+			get {
+				return viewModel;
+			}
+
+			set {
+				viewModel = value;
+				if (viewModel != null) {
+					TimerButton = viewModel.Model;
+				}
+			}
+		}
+
 		int HeaderHeight {
 			get {
 				return iconImage.Height + 5;
@@ -155,6 +180,11 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			get {
 				return iconImage.Width + 5 * 2;
 			}
+		}
+
+		public void SetViewModel (object viewModel)
+		{
+			ViewModel = (TimerButtonVM)viewModel;
 		}
 
 		public override void Draw (IDrawingToolkit tk, Area area)
@@ -198,7 +228,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				DrawText (tk);
 				Text = null;
 			}
-			
+
 			if (TeamImage != null) {
 				tk.DrawImage (new Point (Position.X + Width - 40, Position.Y + 5), 40,
 					iconImage.Height, TeamImage, ScaleMode.AspectFit);

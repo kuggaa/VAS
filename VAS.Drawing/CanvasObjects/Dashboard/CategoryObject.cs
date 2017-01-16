@@ -22,12 +22,15 @@ using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Handlers;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
+using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
-	public class CategoryObject : TimedTaggerObject
+	[ViewAttribute ("AnalysisEventButtonView")]
+	public class CategoryObject : TimedTaggerObject, ICanvasObjectView<AnalysisEventButtonVM>
 	{
 		public event ButtonSelectedHandler EditButtonTagsEvent;
 
@@ -49,10 +52,11 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		Rectangle editRect, cancelRect, applyRect;
 		double catWidth, heightPerRow;
 		Dictionary<Tag, LinkAnchorObject> subcatAnchors, cachedAnchors;
+		AnalysisEventButton button;
+		AnalysisEventButtonVM viewModel;
 
-		public CategoryObject (AnalysisEventButton category) : base (category)
+		public CategoryObject () : base ()
 		{
-			Button = category;
 			rects = new Dictionary<Rectangle, object> ();
 			buttonsRects = new Dictionary<Rectangle, object> ();
 			SelectedTags = new List<Tag> ();
@@ -77,9 +81,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			MinWidth = 100;
 			MinHeight = HeaderHeight * 2;
 			subcatAnchors = new Dictionary<Tag, LinkAnchorObject> ();
-			foreach (Tag tag in category.AnalysisEventType.Tags) {
-				AddSubcatAnchor (tag, new Point (0, 0), 100, HeaderHeight);
-			}
 		}
 
 		protected override void Dispose (bool disposing)
@@ -97,9 +98,17 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			base.Dispose (disposing);
 		}
 
-		public AnalysisEventButton Button {
-			get;
-			set;
+		AnalysisEventButton Button {
+			get {
+				return button;
+			}
+			set {
+				button = value;
+				TimedButton = value;
+				foreach (Tag tag in button.AnalysisEventType.Tags) {
+					AddSubcatAnchor (tag, new Point (0, 0), 100, HeaderHeight);
+				}
+			}
 		}
 
 		public override Image Icon {
@@ -255,6 +264,24 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		public List<Tag> SelectedTags {
 			get;
 			set;
+		}
+
+		public AnalysisEventButtonVM ViewModel {
+			get {
+				return viewModel;
+			}
+
+			set {
+				viewModel = value;
+				if (viewModel != null) {
+					Button = viewModel.Model;
+				}
+			}
+		}
+
+		public void SetViewModel (object viewModel)
+		{
+			ViewModel = (AnalysisEventButtonVM)viewModel;
 		}
 
 		void AddSubcatAnchor (Tag tag, Point point, double width, double height)
