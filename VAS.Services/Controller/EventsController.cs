@@ -106,7 +106,7 @@ namespace VAS.Services.Controller
 
 		void HandleLoadEvent (LoadTimelineEventEvent<TimelineEventVM> e)
 		{
-			PlayerVM.LoadEvent (e.Object.Model, e.Playing);
+			PlayerVM.LoadEvent (e.Object?.Model, e.Playing);
 		}
 
 		void HandleLoadEventsList (LoadTimelineEventEvent<IEnumerable<TimelineEventVM>> e)
