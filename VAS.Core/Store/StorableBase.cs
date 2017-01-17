@@ -22,6 +22,7 @@ using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
+using VAS.Core.Serialization;
 
 namespace VAS.Core.Store
 {
@@ -34,6 +35,7 @@ namespace VAS.Core.Store
 		public StorableBase ()
 		{
 			IsLoaded = true;
+			CreationDate = DateTime.UtcNow;
 		}
 
 		#region IStorable implementation
@@ -97,6 +99,16 @@ namespace VAS.Core.Store
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Gets or sets the creation date. It's stored in order to have a sorting condition.
+		/// </summary>
+		/// <value>The creation date.</value>
+		[PropertyPreload]
+		public DateTime CreationDate {
+			get;
+			set;
+		}
 
 		/// <summary>
 		/// Set to <c>true</c> while the object is being loaded. Used internally
