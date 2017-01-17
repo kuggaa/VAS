@@ -213,6 +213,33 @@ namespace VAS.DB.Views
 			return Query (filter, cache, true);
 		}
 
+		/// <summary>
+		/// Performs a Count on the view with a <see cref="QueryFilter"/> whose keys
+		/// must be in the list of <see cref="FilterProperties"/> returning the count.
+		/// </summary>
+		/// <param name="filter">Filter.</param>
+		public int Count (QueryFilter filter)
+		{
+			View view = GetView ();
+
+			view.SetMapReduce (GetMap (DocumentType), (keys, values, rereduce) => {
+				return values.ToList ().Count;
+			}, ViewVersion);
+
+			Query q = view.CreateQuery ();
+			q.MapOnly = false;
+
+			q.SQLSearch = QueryFilterToSql (filter);
+			QueryEnumerator ret = q.Run ();
+			int count = 0;
+			if (ret.Count > 0) {
+				count = Convert.ToInt32 (ret.ElementAt (0).Value);
+			}
+
+			view.SetMap (GetMap (DocumentType), ViewVersion);
+			return count;
+		}
+
 		string KeyToKeyIndex (string key)
 		{
 			int index = 0;

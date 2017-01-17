@@ -99,8 +99,7 @@ namespace VAS.DB
 
 		public int Count<T> () where T : IStorable
 		{
-			List<T> lista = RetrieveAll<T> ().ToList ();
-			return lista.Count;
+			return Count<T> (null);
 		}
 
 		public bool Backup ()
@@ -180,6 +179,14 @@ namespace VAS.DB
 			lock (mutex) {
 				IQueryView<T> qview = views [typeof(T)] as IQueryView <T>;
 				return qview.QueryFull (filter, cache);
+			}
+		}
+
+		public int Count<T> (QueryFilter filter) where T : IStorable
+		{
+			lock (mutex) {
+				IQueryView<T> qview = views [typeof (T)] as IQueryView<T>;
+				return qview.Count (filter);
 			}
 		}
 

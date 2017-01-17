@@ -36,6 +36,8 @@ namespace VAS.DB.Views
 		IEnumerable<T> Query (QueryFilter filter);
 
 		IEnumerable<T> QueryFull (QueryFilter filter, IStorableObjectsCache cache);
+
+		int Count (QueryFilter filter);
 	}
 
 }
