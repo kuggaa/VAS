@@ -67,7 +67,6 @@ namespace VAS.UI.Common
 			dictionaryStore = new Dictionary<IViewModel, TreeIter> ();
 			dictionaryNestedParent = new Dictionary<INotifyCollectionChanged, TreeIter> ();
 			Selection.SelectFunction = SelectFunction;
-			Selection.Changed += HandleTreeviewSelectionChanged;
 			RowActivated += HandleTreeviewRowActivated;
 		}
 
@@ -84,16 +83,20 @@ namespace VAS.UI.Common
 			}
 			set {
 				if (viewModel != null) {
+					Selection.Changed -= HandleTreeviewSelectionChanged;
 					viewModel.ViewModels.CollectionChanged -= ViewModelCollectionChanged;
 					ClearSubViewModels ();
 				}
 				viewModel = value;
-				int i = 0;
-				foreach (TViewModel item in viewModel.ViewModels) {
-					AddSubViewModel (item, TreeIter.Zero, i);
-					i++;
+				if (viewModel != null) {
+					int i = 0;
+					foreach (TViewModel item in viewModel.ViewModels) {
+						AddSubViewModel (item, TreeIter.Zero, i);
+						i++;
+					}
+					viewModel.ViewModels.CollectionChanged += ViewModelCollectionChanged;
+					Selection.Changed += HandleTreeviewSelectionChanged;
 				}
-				viewModel.ViewModels.CollectionChanged += ViewModelCollectionChanged;
 			}
 		}
 
