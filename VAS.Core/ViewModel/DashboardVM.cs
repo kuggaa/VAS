@@ -35,6 +35,26 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		public DashboardMode Mode {
+			get;
+			set;
+		}
+
+		public bool ShowLinks {
+			get;
+			set;
+		}
+
+		public Time CurrentTime {
+			get;
+			set;
+		} = new Time (0);
+
+		public FitMode FitMode {
+			get;
+			set;
+		}
+
 		public int CanvasWidth {
 			get {
 				return Model.CanvasWidth;
