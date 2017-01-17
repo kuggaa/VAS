@@ -127,7 +127,7 @@ namespace VAS.Tests.DB
 		{
 			TestView view = new TestView (storage);
 
-			Assert.AreEqual (new List<string> { "Key1", "Key3" }, view.PreloadProperties);
+			Assert.AreEqual (new List<string> { "Key1", "Key3", "CreationDate" }, view.PreloadProperties);
 
 			PropertiesTest test = new PropertiesTest { Key1 = "key1", Key2 = "key2", Key3 = "key3" };
 			test.IsChanged = true;
