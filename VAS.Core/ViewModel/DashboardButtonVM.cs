@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.ObjectModel;
 using VAS.Core.Common;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
@@ -31,12 +32,39 @@ namespace VAS.Core.ViewModel
 			get;
 		}
 
-		public bool ShowIcon {
+		public virtual string Name {
 			get {
-				return Model.ShowIcon;
+				return Model.Name;
 			}
 			set {
-				Model.ShowIcon = value;
+				Model.Name = value;
+			}
+		}
+
+		public Point Position {
+			get {
+				return Model.Position;
+			}
+			set {
+				Model.Position = value;
+			}
+		}
+
+		public int Width {
+			get {
+				return Model.Width;
+			}
+			set {
+				Model.Width = value;
+			}
+		}
+
+		public int Height {
+			get {
+				return Model.Height;
+			}
+			set {
+				Model.Height = value;
 			}
 		}
 
@@ -48,19 +76,151 @@ namespace VAS.Core.ViewModel
 				Model.BackgroundColor = value;
 			}
 		}
+
+		public Color TextColor {
+			get {
+				return Model.TextColor;
+			}
+			set {
+				Model.TextColor = value;
+			}
+		}
+
+		public virtual HotKey HotKey {
+			get {
+				return Model.HotKey;
+			}
+			set {
+				Model.HotKey = value;
+			}
+		}
+
+		public virtual Image BackgroundImage {
+			get {
+				return Model.BackgroundImage;
+			}
+			set {
+				Model.BackgroundImage = value;
+			}
+		}
+
+		public bool ShowHotkey {
+			get {
+				return Model.ShowHotkey;
+			}
+			set {
+				Model.ShowHotkey = value;
+			}
+		}
+
+		public bool ShowSettingIcon {
+			get {
+				return Model.ShowSettingIcon;
+			}
+			set {
+				Model.ShowSettingIcon = value;
+			}
+		}
+
+		/// <summary>
+		/// A list with all the outgoing links of this button
+		/// </summary>
+		public ObservableCollection<ActionLink> ActionLinks {
+			get {
+				return Model.ActionLinks;
+			}
+			set {
+				Model.ActionLinks = value;
+			}
+		}
+
+		public Color LightColor {
+			get {
+				return Model.LightColor;
+			}
+		}
+
+		public Color DarkColor {
+			get {
+				return Model.DarkColor;
+			}
+		}
+
+		public bool ShowIcon {
+			get {
+				return Model.ShowIcon;
+			}
+			set {
+				Model.ShowIcon = value;
+			}
+		}
 	}
 
-	public class AnalysisEventButtonVM : DashboardButtonVM
+	public class TimedDashboardButtonVM : DashboardButtonVM
 	{
-		AnalysisEventButton model;
+		public new TimedDashboardButton Model {
+			get {
+				return (TimedDashboardButton)base.Model;
+			}
+			set {
+				base.Model = value;
+			}
+		}
 
+		public TagMode TagMode {
+			get {
+				return Model.TagMode;
+			}
+			set {
+				Model.TagMode = value;
+			}
+		}
+
+		public Time Start {
+			get {
+				return Model.Start;
+			}
+			set {
+				Model.Start = value;
+			}
+		}
+
+		public Time Stop {
+			get {
+				return Model.Stop;
+			}
+			set {
+				Model.Stop = value;
+			}
+		}
+	}
+
+	public class EventButtonVM : TimedDashboardButtonVM
+	{
+		public new EventButton Model {
+			get {
+				return (EventButton)base.Model;
+			}
+			set {
+				base.Model = value;
+				EventType = new EventTypeVM { Model = Model.EventType };
+			}
+		}
+
+		public EventTypeVM EventType {
+			get;
+			private set;
+		}
+	}
+
+	public class AnalysisEventButtonVM : EventButtonVM
+	{
 		public new AnalysisEventButton Model {
 			get {
 				return (AnalysisEventButton)base.Model;
 			}
 			set {
 				base.Model = value;
-				model = value;
 			}
 		}
 
@@ -70,27 +230,33 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
-		public TagMode TagMode {
+		public bool ShowSubcategories {
 			get {
-				return model.TagMode;
+				return Model.ShowSubcategories;
 			}
 			set {
-				model.TagMode = value;
+				Model.ShowSubcategories = value;
+			}
+		}
+
+		public int TagsPerRow {
+			get {
+				return Model.TagsPerRow;
+			}
+			set {
+				Model.TagsPerRow = value;
 			}
 		}
 	}
 
 	public class TagButtonVM : DashboardButtonVM
 	{
-		TagButton model;
-
 		public new TagButton Model {
 			get {
 				return (TagButton)base.Model;
 			}
 			set {
 				base.Model = value;
-				model = value;
 			}
 		}
 
@@ -99,25 +265,40 @@ namespace VAS.Core.ViewModel
 				return "TagButtonView";
 			}
 		}
+
+		public Tag Tag {
+			get {
+				return Model.Tag;
+			}
+			set {
+				Model.Tag = value;
+			}
+		}
 	}
 
 	public class TimerButtonVM : DashboardButtonVM
 	{
-		TimerButton model;
-
 		public new TimerButton Model {
 			get {
 				return (TimerButton)base.Model;
 			}
 			set {
 				base.Model = value;
-				model = value;
 			}
 		}
 
 		public override string View {
 			get {
 				return "TimerButtonView";
+			}
+		}
+
+		public Timer Timer {
+			get {
+				return Model.Timer;
+			}
+			set {
+				Model.Timer = value;
 			}
 		}
 	}
