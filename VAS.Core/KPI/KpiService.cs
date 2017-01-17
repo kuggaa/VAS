@@ -18,6 +18,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.HockeyApp;
 using VAS.Core.Interfaces;
 
@@ -25,12 +26,13 @@ namespace VAS.KPI
 {
 	public class KpiService : IKpiService
 	{
-		public void Init (string appId, string user, string email)
+		public async Task Init (string appId, string user, string email)
 		{
 #if !DEBUG
-			HockeyClient.Current.Configure (appId)
+			(await HockeyClient.Current.Configure (appId))
 						.SetContactInfo (user, email);
-			HockeyClient.Current.SendCrashesAsync ().ConfigureAwait (false);
+			await HockeyClient.Current.SendCrashesAsync ();
+			TrackEvent ("Session_Start", null, null);
 #endif
 		}
 
@@ -44,7 +46,7 @@ namespace VAS.KPI
 		public void TrackException (Exception ex, IDictionary<string, string> properties)
 		{
 #if !DEBUG
-			HockeyClient.Current.TrackException (ex, properties);
+			HockeyClient.Current.HandleException (ex);
 #endif
 		}
 
@@ -52,6 +54,7 @@ namespace VAS.KPI
 		{
 #if !DEBUG
 			HockeyClient.Current.Flush ();
+			HockeyClient.Current.SendCrashesAsync ().ConfigureAwait (false);
 #endif
 		}
 	}

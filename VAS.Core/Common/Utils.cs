@@ -25,8 +25,9 @@ namespace VAS.Core.Common
 	{
 		static Random randomGen;
 		static OperatingSystemID operatingSystem = OperatingSystemID.None;
+		static string osVersion = null;
 
-		public static string SanitizePath (string path, params char[] replaceChars)
+		public static string SanitizePath (string path, params char [] replaceChars)
 		{
 			path = path.Trim ();
 			foreach (char c in Path.GetInvalidFileNameChars ()) {
@@ -46,7 +47,7 @@ namespace VAS.Core.Common
 					App.Current.Version,
 					App.Current.BuildVersion,
 					Utils.OS,
-					Environment.OSVersion.VersionString,
+					OSVersion,
 					App.Current.Device.ID
 				);
 			}
@@ -84,6 +85,22 @@ namespace VAS.Core.Common
 					#endif
 				}
 				return operatingSystem;
+			}
+		}
+
+		/// <summary>
+		///     Returns the OS version number for this computer.
+		/// </summary>
+		public static string OSVersion {
+			get {
+				if (osVersion == null) {
+					if (OS == OperatingSystemID.Windows) {
+						osVersion = GetWindowsVersion ();
+					} else {
+						osVersion = GetOSVersionFallback ();
+					}
+				}
+				return osVersion;
 			}
 		}
 
@@ -129,6 +146,58 @@ namespace VAS.Core.Common
 		{
 			var assembly = Assembly.GetCallingAssembly ();
 			return assembly.GetManifestResourceStream (resourceId);
+		}
+
+		/// <summary>
+		///     Returns the Windows version number for this computer.
+		///     Adapted from http://stackoverflow.com/a/37716269/1324984
+		/// </summary>
+		static string GetWindowsVersion ()
+		{
+			Log.Debug ("Getting windows version");
+			string version = null;
+			int majorVersion, minorVersion;
+			// The 'CurrentMajorVersionNumber' and 'CurrentMinorVersionNumber' string values in the CurrentVersion key is new for Windows 10, 
+			// and will most likely (hopefully) be there for some time before MS decides to change this - again...
+			string versionRegistryPath = @"SOFTWARE\Microsoft\Windows NT\CurrentVersion";
+			string majorRegistryKey = "CurrentMajorVersionNumber";
+			string minorRegistryKey = "CurrentMinorVersionNumber";
+
+			try {
+				var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey (versionRegistryPath);
+				if (key != null) {
+					object val = key.GetValue (majorRegistryKey);
+					if (val != null) {
+						majorVersion = (int)val;
+						Log.Debug ("major version = " + majorVersion);
+						object valMinor = key.GetValue (minorRegistryKey);
+						minorVersion = (int)valMinor;
+						Log.Debug ("minor version = " + valMinor);
+						version = majorVersion + "." + minorVersion;
+					} else {
+						// When the 'CurrentMajorVersionNumber' value is not present we fallback to reading the previous key used for this: 'CurrentVersion'
+						version = key.GetValue ("CurrentVersion") as string;
+						Log.Debug ("CurrentVersion = " + version);
+					}
+				}
+			} catch (Exception e) {
+				Log.Exception (e);
+			}
+
+			// When we can't access the version correctly, we fallback to the old (bad) way of getting the OS.
+			// In windows systems greater than Windows 8 without a manifest, this will always return Windows 8.
+			if (version == null) {
+				Log.Warning ("Failed getting OS version. Falling back to Environment");
+				version = GetOSVersionFallback ();
+			}
+			Log.Debug ("version = " + version);
+
+			return version;
+		}
+
+		static string GetOSVersionFallback ()
+		{
+			return $"{OS} {Environment.OSVersion.Version} {Environment.OSVersion.ServicePack}";
 		}
 	}
 }
