@@ -70,6 +70,18 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
+		public void TestLoadNullTimelineEvent ()
+		{
+			App.Current.EventsBroker.Publish (new LoadTimelineEventEvent<TimelineEventVM> {
+				Object = null
+			});
+
+			playerController.Verify (p => p.LoadEvent (It.IsAny<TimelineEvent> (),
+													   It.IsAny<Time> (), It.IsAny<bool> ()), Times.Never);
+			playerController.Verify (p => p.UnloadCurrentEvent (), Times.Once);
+		}
+
+		[Test]
 		public void TestLoadTimelineEvents ()
 		{
 			IEnumerable<TimelineEventVM> eventList = new List<TimelineEventVM> { evVM1, evVM2 };
