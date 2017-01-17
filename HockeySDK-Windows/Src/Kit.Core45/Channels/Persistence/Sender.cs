@@ -286,34 +286,9 @@ namespace Microsoft.HockeyApp.Channel
         /// </summary>
         private static bool IsRetryable(int? httpStatusCode, WebExceptionStatus webExceptionStatus)
         {
-            // ToDo: Handle correctly this for NET45
-//#if NET40 || NET45 // WINRT doesn't support ProxyNameResolutionFailure/NameResolutionFailure/Timeout/ConnectFailure, for WinPhone this seems like a corner scenario and we don't want to spend the effot to test it now.
-//            switch (webExceptionStatus)
-//            {
-//                case WebExceptionStatus.ProxyNameResolutionFailure:
-//                case WebExceptionStatus.NameResolutionFailure:
-//                case WebExceptionStatus.Timeout:
-//                case WebExceptionStatus.ConnectFailure:
-//                    return true;
-//            }
-//#endif 
-            if (httpStatusCode == null)
-            {
-                return false;
-            }
-
-            switch (httpStatusCode.Value)
-            {
-                case 503: // Server in maintance. 
-                case 408: // invalid request
-                case 500: // Internal Server Error                                                
-                case 502: // Bad Gateway, can be common when there is no network. 
-                case 511: // Network Authentication Required
+			// We don't want to lose any event. We will retry (and keep stored) every event until we reach the max.
                     return true;
             }
-
-            return false;
-        }
 
         /// <summary>
         /// Calculates the next interval using exponential back-off algorithm (with the exceptions of few error codes that reset the interval to <see cref="SendingInterval"/>.
