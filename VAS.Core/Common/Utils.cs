@@ -189,9 +189,11 @@ namespace VAS.Core.Common
 			if (version == null) {
 				Log.Warning ("Failed getting OS version. Falling back to Environment");
 				version = GetOSVersionFallback ();
+			} else {
+				version = $"{OS} {version}";
 			}
-			Log.Debug ("version = " + version);
 
+			Log.Debug ("version = " + version);
 			return version;
 		}
 
