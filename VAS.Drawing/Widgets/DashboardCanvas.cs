@@ -40,11 +40,7 @@ namespace VAS.Drawing.Widgets
 		public event ShowDashboardMenuHandler ShowMenuEvent;
 		public event NewEventHandler NewTagEvent;
 
-		protected DashboardMode mode;
-		protected Time currentTime;
 		protected int templateWidth, templateHeight;
-		protected FitMode fitMode;
-		protected bool modeChanged, showLinks;
 		protected ActionLinkObject movingLink;
 		protected LinkAnchorObject destAnchor;
 		protected Dictionary<DashboardButton, DashboardButtonObject> buttonsDict;
@@ -54,10 +50,6 @@ namespace VAS.Drawing.Widgets
 		public DashboardCanvas (IWidget widget) : base (widget)
 		{
 			Accuracy = 5;
-			Mode = DashboardMode.Edit;
-			FitMode = FitMode.Fit;
-			CurrentTime = new Time (0);
-			AddTag = new Tag ("", "");
 			BackgroundColor = App.Current.Style.PaletteBackground;
 			buttonsDict = new Dictionary<DashboardButton, DashboardButtonObject> ();
 		}
@@ -66,89 +58,20 @@ namespace VAS.Drawing.Widgets
 		{
 		}
 
-		public Tag AddTag {
-			get;
-			set;
-		}
-
-		public bool Edited {
-			get;
-			set;
-		}
-
-		public Time CurrentTime {
-			set {
-				currentTime = value;
-				foreach (TimerObject to in Objects.OfType<TimerObject> ()) {
-					to.CurrentTime = value;
-				}
-				foreach (TimedTaggerObject to in Objects.OfType<TimedTaggerObject> ()) {
-					if (to.TimedButton.TagMode == TagMode.Free) {
-						to.CurrentTime = value;
-					}
-				}
-			}
-			get {
-				return currentTime;
-			}
-		}
-
-		public DashboardMode Mode {
-			set {
-				modeChanged = true;
-				mode = value;
-				ObjectsCanMove = mode == DashboardMode.Edit;
-				foreach (DashboardButtonObject to in Objects.OfType<DashboardButtonObject> ()) {
-					to.Mode = value;
-				}
-				ClearSelection ();
-			}
-			get {
-				return mode;
-			}
-		}
-
-		public bool ShowLinks {
-			set {
-				showLinks = value;
-				foreach (DashboardButtonObject to in Objects.OfType<DashboardButtonObject> ()) {
-					to.ShowLinks = showLinks;
-					to.ResetDrawArea ();
-				}
-				foreach (ActionLinkObject ao in Objects.OfType<ActionLinkObject> ()) {
-					ao.Visible = showLinks;
-					ao.ResetDrawArea ();
-				}
-				ClearSelection ();
-				widget?.ReDraw ();
-			}
-			get {
-				return showLinks;
-			}
-		}
-
-		public FitMode FitMode {
-			set {
-				fitMode = value;
-				HandleSizeChangedEvent ();
-				modeChanged = true;
-			}
-			get {
-				return fitMode;
-			}
-		}
-
 		public DashboardVM ViewModel {
 			get {
 				return viewModel;
 			}
 
 			set {
-				ClearObjects ();
-				buttonsDict.Clear ();
+				if (viewModel != null) {
+					viewModel.PropertyChanged -= HandlePropertyChanged;
+				}
+				ClearCanvas ();
 				viewModel = value;
 				if (viewModel != null) {
-					LoadViews ();
+					FillCanvas ();
+					viewModel.PropertyChanged += HandlePropertyChanged;
 				}
 			}
 		}
@@ -183,8 +106,8 @@ namespace VAS.Drawing.Widgets
 			if (ViewModel == null) {
 				return;
 			}
-
-			LoadViews ();
+			ClearCanvas ();
+			FillCanvas ();
 			to = Objects.OfType<DashboardButtonObject> ().
 				FirstOrDefault (o => o.Button == b);
 			if (to != null) {
@@ -219,7 +142,7 @@ namespace VAS.Drawing.Widgets
 			Selection selected = null;
 
 			/* Regular GetSelection */
-			if (!ShowLinks)
+			if (!ViewModel.ShowLinks)
 				return base.GetSelection (coords, inMotion, skipSelected);
 
 			/* With ShowLinks, only links and anchor can be selected */
@@ -242,7 +165,6 @@ namespace VAS.Drawing.Widgets
 		{
 			if (sel.Drawable is DashboardButtonObject) {
 				HandleSizeChangedEvent ();
-				Edited = true;
 			} else if (sel.Drawable is ActionLinkObject) {
 				ActionLinkObject link = sel.Drawable as ActionLinkObject;
 				LinkAnchorObject anchor = null;
@@ -282,7 +204,7 @@ namespace VAS.Drawing.Widgets
 				List<DashboardButton> buttons;
 
 				buttons = sel.Select (s => (s.Drawable as DashboardButtonObject).Button).ToList ();
-				if (Mode == DashboardMode.Edit) {
+				if (ViewModel.Mode == DashboardMode.Edit) {
 					if (ButtonsSelectedEvent != null) {
 						ButtonsSelectedEvent (buttons);
 					}
@@ -291,7 +213,7 @@ namespace VAS.Drawing.Widgets
 				List<ActionLink> links;
 
 				links = sel.Select (s => (s.Drawable as ActionLinkObject).Link).ToList ();
-				if (Mode == DashboardMode.Edit) {
+				if (ViewModel.Mode == DashboardMode.Edit) {
 					if (ActionLinksSelectedEvent != null) {
 						ActionLinksSelectedEvent (links);
 					}
@@ -331,7 +253,6 @@ namespace VAS.Drawing.Widgets
 					if (ActionLinkCreatedEvent != null) {
 						ActionLinkCreatedEvent (link);
 					}
-					Edited = true;
 				} else {
 					RemoveObject (movingLink);
 					widget.ReDraw ();
@@ -363,7 +284,7 @@ namespace VAS.Drawing.Widgets
 			tk.Context = context;
 			DrawBackground ();
 			Begin (context);
-			if (Mode != DashboardMode.Code) {
+			if (ViewModel.Mode != DashboardMode.Code) {
 				/* Draw grid */
 				tk.LineWidth = 1;
 				tk.StrokeColor = Color.Grey1;
@@ -383,22 +304,25 @@ namespace VAS.Drawing.Widgets
 
 		public void AddButton (DashboardButtonObject button)
 		{
-			button.ShowLinks = ShowLinks;
+			button.ShowLinks = ViewModel.ShowLinks;
 			AddObject (button);
 			buttonsDict.Add (button.Button, button);
 		}
 
-		protected virtual void LoadViews ()
+		protected virtual void ClearCanvas ()
 		{
 			ClearObjects ();
 			buttonsDict.Clear ();
+		}
 
+		protected virtual void FillCanvas ()
+		{
 			foreach (DashboardButtonVM vm in ViewModel.ViewModels) {
 				IView view = App.Current.ViewLocator.Retrieve (vm.View);
 				view.SetViewModel (vm);
 				var viewButton = view as DashboardButtonObject;
 				viewButton.ClickedEvent += HandleTaggerClickedEvent;
-				viewButton.Mode = Mode;
+				viewButton.Mode = ViewModel.Mode;
 				if (viewButton is CategoryObject) {
 					((CategoryObject)viewButton).EditButtonTagsEvent += (t) => {
 						if (EditButtonTagsEvent != null)
@@ -422,11 +346,10 @@ namespace VAS.Drawing.Widgets
 					}
 					linkObject = new ActionLinkObject (sourceAnchor, destAnchor, link);
 					link.SourceButton = buttonObject.Button;
-					linkObject.Visible = ShowLinks;
+					linkObject.Visible = ViewModel.ShowLinks;
 					AddObject (linkObject);
 				}
 			}
-			Edited = false;
 			HandleSizeChangedEvent ();
 		}
 
@@ -438,21 +361,21 @@ namespace VAS.Drawing.Widgets
 
 			base.HandleSizeChangedEvent ();
 
-			FitMode prevFitMode = FitMode;
+			FitMode prevFitMode = ViewModel.FitMode;
 			templateHeight = ViewModel.CanvasHeight + 10;
 			templateWidth = ViewModel.CanvasWidth + 10;
 			/* When going from Original to Fill or Fit, we can't know the new 
 			 * size of the shrinked object until we have a resize */
-			if (FitMode == FitMode.Original) {
+			if (ViewModel.FitMode == FitMode.Original) {
 				widget.Width = templateWidth;
 				widget.Height = templateHeight;
 				ScaleX = ScaleY = 1;
 				Translation = new Point (0, 0);
-			} else if (FitMode == FitMode.Fill) {
+			} else if (ViewModel.FitMode == FitMode.Fill) {
 				ScaleX = (double)widget.Width / templateWidth;
 				ScaleY = (double)widget.Height / templateHeight;
 				Translation = new Point (0, 0);
-			} else if (FitMode == FitMode.Fit) {
+			} else if (ViewModel.FitMode == FitMode.Fit) {
 				double scaleX, scaleY;
 				Point translation;
 				Image.ScaleFactor (templateWidth, templateHeight,
@@ -461,9 +384,6 @@ namespace VAS.Drawing.Widgets
 				ScaleX = scaleX;
 				ScaleY = scaleY;
 				Translation = translation;
-			}
-			if (modeChanged) {
-				modeChanged = false;
 			}
 
 			widget.ReDraw ();
@@ -497,16 +417,16 @@ namespace VAS.Drawing.Widgets
 
 			button = tagger.Button as EventButton;
 
-			if (Mode == DashboardMode.Edit) {
+			if (ViewModel.Mode == DashboardMode.Edit) {
 				return;
 			}
 
 			if (button.TagMode == TagMode.Predefined) {
-				stop = CurrentTime + button.Stop;
-				start = CurrentTime - button.Start;
-				eventTime = CurrentTime;
+				stop = ViewModel.CurrentTime + button.Stop;
+				start = ViewModel.CurrentTime - button.Start;
+				eventTime = ViewModel.CurrentTime;
 			} else {
-				stop = CurrentTime;
+				stop = ViewModel.CurrentTime;
 				start = tagger.Start - button.Start;
 				eventTime = tagger.Start;
 			}
@@ -522,6 +442,59 @@ namespace VAS.Drawing.Widgets
 				to.Active = false;
 			}
 			NewTagEvent (button.EventType, null, null, tags, start, stop, eventTime, button);
+		}
+
+		void HandlePropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if (sender != ViewModel) {
+				return;
+			}
+			if (e.PropertyName == "Mode") {
+				HandleModeChanged ();
+			} else if (e.PropertyName == "ShowLinks") {
+				HandleShowLinksChanged ();
+			} else if (e.PropertyName == "CurrentTime") {
+				HandleCurrentTimeChanged ();
+			} else if (e.PropertyName == "FitMode") {
+				HandleSizeChangedEvent ();
+			}
+		}
+
+		void HandleModeChanged ()
+		{
+			ObjectsCanMove = ViewModel.Mode == DashboardMode.Edit;
+			foreach (DashboardButtonObject to in Objects.OfType<DashboardButtonObject> ()) {
+				to.Mode = ViewModel.Mode;
+			}
+			ClearSelection ();
+		}
+
+		void HandleShowLinksChanged ()
+		{
+			foreach (DashboardButtonObject to in Objects.OfType<DashboardButtonObject> ()) {
+				to.ShowLinks = ViewModel.ShowLinks;
+				to.ResetDrawArea ();
+			}
+			foreach (ActionLinkObject ao in Objects.OfType<ActionLinkObject> ()) {
+				ao.Visible = ViewModel.ShowLinks;
+				ao.ResetDrawArea ();
+			}
+			ClearSelection ();
+			widget?.ReDraw ();
+		}
+
+		void HandleCurrentTimeChanged ()
+		{
+			//FIXME: This can easily be treated at the DashboardVM by proxying
+			// the CurrentTime to its Childs ViewModels
+			foreach (TimerObject to in Objects.OfType<TimerObject> ()) {
+				to.CurrentTime = ViewModel.CurrentTime;
+			}
+			foreach (TimedTaggerObject to in Objects.OfType<TimedTaggerObject> ()) {
+				if (to.TimedButton.TagMode == TagMode.Free) {
+					to.CurrentTime = ViewModel.CurrentTime;
+				}
+			}
 		}
 	}
 }
