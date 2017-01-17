@@ -34,6 +34,15 @@ namespace VAS.Services
 		Stopwatch stateTimer;
 		Stopwatch generalTimer;
 
+		public UserStatisticsService ()
+		{
+			ProjectDictionary = new Dictionary<Guid, Tuple<int, int>> ();
+			DataDictionary = new Dictionary<string, double> ();
+			stateTimer = new Stopwatch ();
+			generalTimer = new Stopwatch ();
+			TimerList = new List<Tuple<string, long>> ();
+		}
+
 		/// <summary>
 		/// Gets or sets the states to track.
 		/// </summary>
@@ -152,15 +161,6 @@ namespace VAS.Services
 		}
 
 		#region IService implementation
-
-		public UserStatisticsService ()
-		{
-			ProjectDictionary = new Dictionary<Guid, Tuple<int, int>> ();
-			DataDictionary = new Dictionary<string, double> ();
-			stateTimer = new Stopwatch ();
-			generalTimer = new Stopwatch ();
-			TimerList = new List<Tuple<string, long>> ();
-		}
 
 		/// <summary>
 		/// Gets the level of the service. Services are started in ascending level order and stopped in descending level order.

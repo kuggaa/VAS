@@ -17,6 +17,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace VAS.Core.Interfaces
 {
@@ -28,7 +29,7 @@ namespace VAS.Core.Interfaces
 		/// <param name="appId">App identifier.</param>
 		/// <param name="user">User.</param>
 		/// <param name="email">Email.</param>
-		void Init (string appId, string user, string email);
+		Task Init (string appId, string user, string email);
 
 		/// <summary>
 		/// Tracks the event.
