@@ -19,8 +19,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using VAS.Core.Events;
 using System.Reflection;
+using VAS.Core.Events;
+using VAS.Core.Store;
 
 namespace VAS.Core.Common
 {
@@ -29,7 +30,7 @@ namespace VAS.Core.Common
 		public static void Swap<T> (this IList<T> list, T e1, T e2)
 		{
 			int index1, index2;
-			
+
 			index1 = list.IndexOf (e1);
 			index2 = list.IndexOf (e2);
 			T temp = list [index1];
@@ -37,11 +38,11 @@ namespace VAS.Core.Common
 			list [index2] = temp;
 		}
 
-		public static T[] Merge<T> (this List<T[]> list)
+		public static T [] Merge<T> (this List<T []> list)
 		{
 			var res = new List<T> ();
-			
-			foreach (T[] t in list) {
+
+			foreach (T [] t in list) {
 				res.AddRange (t);
 			}
 			return res.ToArray ();
@@ -52,9 +53,9 @@ namespace VAS.Core.Common
 			return dict.SingleOrDefault (x => x.Value.Equals (value)).Key;
 		}
 
-		public static void  RemoveKeysByValue<TKey, TValue> (this Dictionary<TKey, TValue> dict, TValue value)
+		public static void RemoveKeysByValue<TKey, TValue> (this Dictionary<TKey, TValue> dict, TValue value)
 		{
-			foreach (var item in dict.Where(k => k.Value.Equals(value)).ToList()) {
+			foreach (var item in dict.Where (k => k.Value.Equals (value)).ToList ()) {
 				try {
 					dict.Remove (item.Key);
 				} catch {
@@ -161,7 +162,7 @@ namespace VAS.Core.Common
 					return;
 				}
 				object srcConvertedVal;
-				if (srcValue is DateTime && destProperty.PropertyType.IsAssignableFrom (typeof(long))) {
+				if (srcValue is DateTime && destProperty.PropertyType.IsAssignableFrom (typeof (long))) {
 					srcConvertedVal = ((DateTime)srcValue).ToUnixTime ();
 				} else {
 					srcConvertedVal = Convert.ChangeType (srcValue, destProperty.PropertyType);
@@ -171,7 +172,7 @@ namespace VAS.Core.Common
 				}
 				destProperty.GetSetMethod ()?.Invoke (
 					destObject,
-					new[] { srcConvertedVal }
+					new [] { srcConvertedVal }
 				);
 			}
 		}
@@ -184,8 +185,9 @@ namespace VAS.Core.Common
 		public static void PublishNewEvent<T> (this object sourceObject) where T : Event, new()
 		{
 			App.Current.EventsBroker.Publish<T> (new T { Sender = sourceObject });
-                }
-                
+		}
+
+		/// <summary>
 		/// Convert datime to unix time.
 		/// </summary>
 		/// <returns>The unix time.</returns>
@@ -194,6 +196,32 @@ namespace VAS.Core.Common
 		{
 			var epoch = new DateTime (1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 			return Convert.ToInt64 ((date.ToUniversalTime () - epoch).TotalSeconds);
+		}
+
+		/// <summary>
+		/// Sorts the IEnumerable<StorableBase> elements by creation date.
+		/// </summary>
+		/// <returns>A sorted IEnumerable<StorableBase>.</returns>
+		/// <param name="source">Source.</param>
+		/// <param name="descending">If set to <c>true</c> sorting is descending, else ascending.</param>
+		public static IEnumerable<T> SortByCreationDate<T> (this IEnumerable<T> source, bool descending)
+			where T : StorableBase
+		{
+			return source.Sort (s => s.CreationDate, descending);
+		}
+
+		/// <summary>
+		/// Sort the specified source using a keySelector and ordering flag.
+		/// </summary>
+		/// <param name="source">Source.</param>
+		/// <param name="keySelector">Key selector.</param>
+		/// <param name="descending">If set to <c>true</c> descending, else ascending.</param>
+		/// <typeparam name="TSource">The 1st type parameter.</typeparam>
+		/// <typeparam name="TKey">The 2nd type parameter.</typeparam>
+		public static IEnumerable<TSource> Sort<TSource, TKey>
+			(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, bool descending)
+		{
+			return descending ? source.OrderByDescending (keySelector) : source.OrderBy (keySelector);
 		}
 	}
 }
