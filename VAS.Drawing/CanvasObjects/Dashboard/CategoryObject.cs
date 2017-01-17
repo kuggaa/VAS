@@ -179,6 +179,24 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
+		public AnalysisEventButtonVM ViewModel {
+			get {
+				return viewModel;
+			}
+
+			set {
+				viewModel = value;
+				if (viewModel != null) {
+					Button = viewModel.Model;
+				}
+			}
+		}
+
+		public void SetViewModel (object viewModel)
+		{
+			ViewModel = (AnalysisEventButtonVM)viewModel;
+		}
+
 		public void ClickTag (Tag tag)
 		{
 			SelectedTags.Add (tag);
@@ -264,24 +282,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		public List<Tag> SelectedTags {
 			get;
 			set;
-		}
-
-		public AnalysisEventButtonVM ViewModel {
-			get {
-				return viewModel;
-			}
-
-			set {
-				viewModel = value;
-				if (viewModel != null) {
-					Button = viewModel.Model;
-				}
-			}
-		}
-
-		public void SetViewModel (object viewModel)
-		{
-			ViewModel = (AnalysisEventButtonVM)viewModel;
 		}
 
 		void AddSubcatAnchor (Tag tag, Point point, double width, double height)
