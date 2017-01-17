@@ -15,7 +15,6 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using System.Collections.Generic;
 using Moq;
 using NUnit.Framework;
@@ -31,23 +30,26 @@ namespace VAS.Tests.Services
 	[TestFixture]
 	public class TestEventsController
 	{
-		EventsController<TimelineEvent, TimelineEventVM<TimelineEvent>> controller;
+		EventsController controller;
 		Mock<IVideoPlayerController> playerController;
 		TimelineEvent ev1, ev2;
+		TimelineEventVM evVM1, evVM2;
 
 		[SetUp]
 		public void Setup ()
 		{
-			controller = new EventsController<TimelineEvent, TimelineEventVM<TimelineEvent>> ();
+			controller = new EventsController ();
 			playerController = new Mock<IVideoPlayerController> ();
-			controller.PlayerVM = new VideoPlayerVM (playerController.Object);
+			controller.PlayerVM = new VideoPlayerVM { Player = playerController.Object };
 			controller.Start ();
 			ev1 = new TimelineEvent ();
 			ev1.Start = new Time (0);
 			ev1.Stop = new Time (1000);
+			evVM1 = new TimelineEventVM { Model = ev1, Visible = true };
 			ev2 = new TimelineEvent ();
 			ev2.Start = new Time (2000);
 			ev2.Stop = new Time (3000);
+			evVM2 = new TimelineEventVM { Model = ev2, Visible = true };
 		}
 
 		[TearDown]
@@ -59,8 +61,8 @@ namespace VAS.Tests.Services
 		[Test]
 		public void TestLoadTimelineEvent ()
 		{
-			App.Current.EventsBroker.Publish (new LoadTimelineEvent<TimelineEvent> {
-				Object = ev1
+			App.Current.EventsBroker.Publish (new LoadTimelineEventEvent<TimelineEventVM> {
+				Object = evVM1
 			});
 
 			playerController.Verify (p => p.LoadEvent (It.Is<TimelineEvent> (tle => tle == ev1),
@@ -70,9 +72,9 @@ namespace VAS.Tests.Services
 		[Test]
 		public void TestLoadTimelineEvents ()
 		{
-			IEnumerable<TimelineEvent> eventList = new List<TimelineEvent> { ev1, ev2 };
+			IEnumerable<TimelineEventVM> eventList = new List<TimelineEventVM> { evVM1, evVM2 };
 
-			App.Current.EventsBroker.Publish (new LoadTimelineEvent<IEnumerable<TimelineEvent>> {
+			App.Current.EventsBroker.Publish (new LoadTimelineEventEvent<IEnumerable<TimelineEventVM>> {
 				Object = eventList
 			});
 
@@ -85,14 +87,8 @@ namespace VAS.Tests.Services
 		public void TestLoadEventTypeTimelineVM ()
 		{
 			EventTypeTimelineVM eTypeVM = new EventTypeTimelineVM ();
-			eTypeVM.ViewModels.Add (new TimelineEventVM {
-				Model = ev1,
-				Visible = true
-			});
-			eTypeVM.ViewModels.Add (new TimelineEventVM {
-				Model = ev2,
-				Visible = true
-			});
+			eTypeVM.ViewModels.Add (evVM1);
+			eTypeVM.ViewModels.Add (evVM2);
 
 			eTypeVM.LoadEventType ();
 
@@ -105,14 +101,9 @@ namespace VAS.Tests.Services
 		public void TestLoadEventTypeTimelineVMWithOnlyOneVisible ()
 		{
 			EventTypeTimelineVM eTypeVM = new EventTypeTimelineVM ();
-			eTypeVM.ViewModels.Add (new TimelineEventVM {
-				Model = ev1,
-				Visible = false
-			});
-			eTypeVM.ViewModels.Add (new TimelineEventVM {
-				Model = ev2,
-				Visible = true
-			});
+			eTypeVM.ViewModels.Add (evVM1);
+			eTypeVM.ViewModels.Add (evVM2);
+			evVM1.Visible = false;
 
 			eTypeVM.LoadEventType ();
 
