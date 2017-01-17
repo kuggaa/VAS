@@ -32,14 +32,14 @@ namespace VAS.KPI
 		/// <summary>
 		/// Configures HockeyClient.
 		/// </summary>
-		/// <param name="this">HockeyClient object.</param>
+		/// <param name="client">HockeyClient object.</param>
 		/// <param name="identifier">Identfier.</param>
 		/// <param name="keepRunningAfterException">Keep running after exception.</param>
 		/// <returns>Instance object.</returns>
-		public async static Task<IHockeyClientConfigurable> Configure (this IHockeyClient @this, string identifier)
+		public async static Task<IHockeyClientConfigurable> Configure (this IHockeyClient client, string identifier)
 		{
-			@this.AsInternal ().PlatformHelper = new HockeyPlatformHelperMono ();
-			@this.AsInternal ().AppIdentifier = identifier;
+			client.AsInternal ().PlatformHelper = new HockeyPlatformHelperMono ();
+			client.AsInternal ().AppIdentifier = identifier;
 
 			ServiceLocator.AddService<IPlatformService> (new PlatformService ());
 
@@ -50,7 +50,7 @@ namespace VAS.KPI
 			ServiceLocator.AddService<IUnhandledExceptionTelemetryModule> (new UnhandledExceptionTelemetryModule ());
 
 			await WindowsAppInitializer.InitializeAsync (identifier);
-			return (IHockeyClientConfigurable)@this;
+			return (IHockeyClientConfigurable)client;
 		}
 
 		/// <summary>
@@ -95,12 +95,12 @@ namespace VAS.KPI
 		/// <summary>
 		/// Send crashes to the HockeyApp server
 		/// </summary>
-		/// <param name="this"></param>
+		/// <param name="client"></param>
 		/// <returns></returns>
-		public static async Task<bool> SendCrashesAsync (this IHockeyClient @this)
+		public static async Task<bool> SendCrashesAsync (this IHockeyClient client)
 		{
-			@this.AsInternal ().CheckForInitialization ();
-			bool result = await @this.AsInternal ().SendCrashesAndDeleteAfterwardsAsync ().ConfigureAwait (false);
+			client.AsInternal ().CheckForInitialization ();
+			bool result = await client.AsInternal ().SendCrashesAndDeleteAfterwardsAsync ().ConfigureAwait (false);
 			return result;
 		}
 
