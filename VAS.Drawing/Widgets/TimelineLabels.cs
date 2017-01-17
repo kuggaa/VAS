@@ -58,7 +58,7 @@ namespace VAS.Drawing.Widgets
 			}
 			set {
 				if (viewModel != null) {
-					viewModel.Project.Timeline.ViewModels.CollectionChanged -= HandleCollectionChanged;
+					viewModel.Project.Timeline.EventTypesTimeline.ViewModels.CollectionChanged -= HandleCollectionChanged;
 					viewModel.Project.EventTypes.PropertyChanged -= HandleEventTypesPropertyChanged;
 				}
 				viewModel = value;
@@ -113,7 +113,7 @@ namespace VAS.Drawing.Widgets
 				i++;
 			}
 			eventTypesStartIndex = i;
-			foreach (var eventTypeVM in ViewModel.Project.Timeline.ViewModels) {
+			foreach (var eventTypeVM in ViewModel.Project.Timeline.EventTypesTimeline.ViewModels) {
 				AddEventType (eventTypeVM, i);
 				i++;
 			}
@@ -123,7 +123,7 @@ namespace VAS.Drawing.Widgets
 		protected virtual void UpdateLabelOffsets ()
 		{
 			int i = eventTypesStartIndex;
-			foreach (EventTypeTimelineVM eventTypeVM in ViewModel.Project.Timeline.ViewModels) {
+			foreach (EventTypeTimelineVM eventTypeVM in ViewModel.Project.Timeline.EventTypesTimeline.ViewModels) {
 				LabelView label = eventTypeToLabel [eventTypeVM];
 				if (label.Visible) {
 					label.OffsetY = i * label.Height;

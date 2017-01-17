@@ -55,7 +55,7 @@ namespace VAS.UI.Component
 			set {
 				viewModel = value;
 				if (viewModel != null) {
-					base.ViewModel = (NestedViewModel<TViewModel>)(viewModel as dynamic);
+					base.ViewModel = GetSubTimeline (viewModel);
 				}
 				filter?.Refilter ();
 			}
@@ -65,6 +65,13 @@ namespace VAS.UI.Component
 		{
 			ViewModel = viewModel as TimelineVM;
 		}
+
+		/// <summary>
+		/// Return the subtimeline used by this treeview, like the event types's or the player's treeview.
+		/// </summary>
+		/// <returns>The sub timeline.</returns>
+		/// <param name="viewModel">View model.</param>
+		protected abstract NestedViewModel<TViewModel> GetSubTimeline (TimelineVM viewModel);
 
 		/// <summary>
 		/// Creates the cell renderer used in this tree view.
