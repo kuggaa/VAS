@@ -120,6 +120,21 @@ namespace VAS.Core.Events
 	{
 	}
 
+	#region Participant card events
+
+	public class ClickedPCardEvent : Event
+	{
+		public PlayerVM ClickedPlayer { get; set; }
+
+		public ButtonModifier Modifier { get; set; }
+	}
+
+	public class ResetPCardEvent : Event
+	{
+	}
+
+	#endregion
+
 	public class TimeNodeStartedEvent : Event
 	{
 		public TimeNode TimeNode { get; set; }
