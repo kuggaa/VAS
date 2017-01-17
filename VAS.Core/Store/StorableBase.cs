@@ -32,6 +32,8 @@ namespace VAS.Core.Store
 		[NonSerialized]
 		IStorage storage;
 
+		DateTime creationDate;
+
 		public StorableBase ()
 		{
 			IsLoaded = true;
@@ -106,8 +108,12 @@ namespace VAS.Core.Store
 		/// <value>The creation date.</value>
 		[PropertyPreload]
 		public DateTime CreationDate {
-			get;
-			set;
+			get {
+				return creationDate;
+			}
+			set {
+				creationDate = value.ToUniversalTime ();
+			}
 		}
 
 		/// <summary>
