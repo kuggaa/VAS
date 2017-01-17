@@ -115,13 +115,6 @@ namespace VAS.Core.ViewModel
 			set;
 		}
 
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		protected bool Disposed {
-			get;
-			private set;
-		}
-
 		public void Clear ()
 		{
 			EventTypesTimeline.ViewModels.Clear ();
