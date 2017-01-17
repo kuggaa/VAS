@@ -31,7 +31,7 @@ namespace VAS.Core.Store.Playlists
 	[Serializable]
 	public class Playlist : StorableBase
 	{
-		DateTime creationDate, lastModified;
+		DateTime lastModified;
 		int indexSelection = 0;
 		RangeObservableCollection<IPlaylistElement> elements;
 
@@ -95,21 +95,6 @@ namespace VAS.Core.Store.Playlists
 			get;
 			set;
 		}
-
-		/// <summary>
-		/// Gets the creation date. Set on creation to DateTime.Now.
-		/// </summary>
-		/// <value>The creation date.</value>
-		[PropertyPreload]
-		public DateTime CreationDate {
-			get {
-				return creationDate;
-			}
-			set {
-				creationDate = value.ToUniversalTime ();
-			}
-		}
-
 
 		/// <summary>
 		/// Gets or sets the last modified.
