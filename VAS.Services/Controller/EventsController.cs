@@ -130,7 +130,7 @@ namespace VAS.Services.Controller
 
 		void HandleFiltersChanged ()
 		{
-			foreach (var eventVM in Timeline.SelectMany (eventTypeVM => eventTypeVM.ViewModels)) {
+			foreach (var eventVM in Timeline.EventTypesTimeline.SelectMany (eventTypeVM => eventTypeVM.ViewModels)) {
 				eventVM.Visible = Timeline.Filters.Filter (eventVM);
 			}
 		}

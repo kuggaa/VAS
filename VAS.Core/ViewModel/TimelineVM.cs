@@ -38,7 +38,7 @@ namespace VAS.Core.ViewModel
 	/// timeline widget where each row show the timeline events for a given a event type.
 	/// This timeline also contains a <see cref="CollectionViewModel`1"/> with all the timeline events.
 	/// </summary>
-	public class TimelineVM : NestedViewModel<EventTypeTimelineVM>, IViewModel<RangeObservableCollection<TimelineEvent>>
+	public class TimelineVM : BindableBase, IViewModel<RangeObservableCollection<TimelineEvent>>
 	{
 		RangeObservableCollection<TimelineEvent> model;
 		Dictionary<string, EventTypeTimelineVM> eventTypeToTimeline;
@@ -47,7 +47,8 @@ namespace VAS.Core.ViewModel
 		{
 			Filters = new AndPredicate<TimelineEventVM> ();
 			eventTypeToTimeline = new Dictionary<string, EventTypeTimelineVM> ();
-			ViewModels.CollectionChanged += HandleEventTypesCollectionChanged;
+			EventTypesTimeline = new NestedViewModel<EventTypeTimelineVM> ();
+			EventTypesTimeline.ViewModels.CollectionChanged += HandleEventTypesCollectionChanged;
 			FullTimeline = CreateFullTimeline ();
 			FullTimeline.ViewModels.CollectionChanged += HandleTimelineCollectionChanged;
 		}
@@ -58,7 +59,7 @@ namespace VAS.Core.ViewModel
 				return;
 			base.Dispose (disposing);
 			FullTimeline.ViewModels.CollectionChanged -= HandleTimelineCollectionChanged;
-			ViewModels.CollectionChanged -= HandleEventTypesCollectionChanged;
+			EventTypesTimeline.ViewModels.CollectionChanged -= HandleEventTypesCollectionChanged;
 		}
 
 		public RangeObservableCollection<TimelineEvent> Model {
@@ -76,6 +77,15 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		/// <value>The full timeline.</value>
 		public CollectionViewModel<TimelineEvent, TimelineEventVM> FullTimeline {
+			get;
+			protected set;
+		}
+
+		/// <summary>
+		/// Gets or sets the event types timeline.
+		/// </summary>
+		/// <value>The event types timeline.</value>
+		public NestedViewModel<EventTypeTimelineVM> EventTypesTimeline {
 			get;
 			protected set;
 		}
@@ -114,7 +124,7 @@ namespace VAS.Core.ViewModel
 
 		public void Clear ()
 		{
-			ViewModels.Clear ();
+			EventTypesTimeline.ViewModels.Clear ();
 			FullTimeline.ViewModels.Clear ();
 		}
 
@@ -124,8 +134,8 @@ namespace VAS.Core.ViewModel
 		/// <param name="eventTypes">Event types.</param>
 		public void CreateEventTypeTimelines (CollectionViewModel<EventType, EventTypeVM> eventTypes)
 		{
-			ViewModels.Clear ();
-			ViewModels.AddRange (eventTypes.Select (e => new EventTypeTimelineVM (e)));
+			EventTypesTimeline.ViewModels.Clear ();
+			EventTypesTimeline.ViewModels.AddRange (eventTypes.Select (e => new EventTypeTimelineVM (e)));
 		}
 
 
@@ -173,8 +183,8 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		public void UnselectAll ()
 		{
-			SelectionReplace (new RangeObservableCollection<EventTypeTimelineVM> ());
-			foreach (var eventType in ViewModels) {
+			EventTypesTimeline.SelectionReplace (new RangeObservableCollection<EventTypeTimelineVM> ());
+			foreach (var eventType in EventTypesTimeline.ViewModels) {
 				eventType.SelectionReplace (new RangeObservableCollection<TimelineEventVM> ());
 				foreach (var timelineEvent in eventType.ViewModels) {
 					timelineEvent.Selected = false;
@@ -188,7 +198,7 @@ namespace VAS.Core.ViewModel
 		/// <param name="vm">The EventTypeTimelineVM element in the collection</param>
 		public void SelectAllFrom (EventTypeTimelineVM vm)
 		{
-			Select (vm);
+			EventTypesTimeline.Select (vm);
 			vm.SelectionReplace (vm.ViewModels);
 			foreach (var timelineEvent in vm.Selection) {
 				timelineEvent.Selected = true;
@@ -225,7 +235,7 @@ namespace VAS.Core.ViewModel
 					break;
 				}
 			case NotifyCollectionChangedAction.Reset: {
-					foreach (var viewModel in ViewModels) {
+					foreach (var viewModel in EventTypesTimeline.ViewModels) {
 						viewModel.ViewModels.Clear ();
 					}
 					break;
@@ -243,18 +253,10 @@ namespace VAS.Core.ViewModel
 			RecreateInternalDictionary ();
 		}
 
-		protected override void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
-		{
-			base.ForwardPropertyChanged (sender, e);
-			if (e.PropertyName == "Name") {
-				RecreateInternalDictionary ();
-			}
-		}
-
 		void RecreateInternalDictionary ()
 		{
 			eventTypeToTimeline.Clear ();
-			foreach (EventTypeTimelineVM timeline in ViewModels) {
+			foreach (EventTypeTimelineVM timeline in EventTypesTimeline.ViewModels) {
 				eventTypeToTimeline [timeline.Model.Name] = timeline;
 			}
 		}
@@ -262,8 +264,7 @@ namespace VAS.Core.ViewModel
 		void AddTimelineEventVM (TimelineEventVM viewModel)
 		{
 			if (!eventTypeToTimeline.ContainsKey (viewModel.Model.EventType.Name)) {
-
-				ViewModels.Add (new EventTypeTimelineVM { Model = viewModel.Model.EventType });
+				EventTypesTimeline.ViewModels.Add (new EventTypeTimelineVM { Model = viewModel.Model.EventType });
 			}
 			eventTypeToTimeline [viewModel.Model.EventType.Name].ViewModels.Add (viewModel);
 		}

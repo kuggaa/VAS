@@ -66,7 +66,7 @@ namespace VAS.Tests.Drawing.Widgets
 		[Test]
 		public void TestAddEventType ()
 		{
-			projectVM.Timeline.ViewModels.Add (new EventTypeTimelineVM { Model = new EventType { Name = "EV" } });
+			projectVM.Timeline.EventTypesTimeline.ViewModels.Add (new EventTypeTimelineVM { Model = new EventType { Name = "EV" } });
 
 			Assert.AreEqual (6, timeline.Objects.OfType<EventTypeTimelineView> ().Count ());
 		}
@@ -74,7 +74,7 @@ namespace VAS.Tests.Drawing.Widgets
 		[Test]
 		public void TestRemoveEventType ()
 		{
-			projectVM.Timeline.ViewModels.Remove (projectVM.Timeline.ViewModels.First ());
+			projectVM.Timeline.EventTypesTimeline.ViewModels.Remove (projectVM.Timeline.EventTypesTimeline.ViewModels.First ());
 
 			Assert.AreEqual (4, timeline.Objects.OfType<EventTypeTimelineView> ().Count ());
 		}

@@ -71,13 +71,13 @@ namespace VAS.Drawing.Widgets
 			}
 			protected set {
 				if (viewModel != null) {
-					viewModel.Project.Timeline.ViewModels.CollectionChanged -= HandleEventTypesCollectionChanged;
+					viewModel.Project.Timeline.EventTypesTimeline.ViewModels.CollectionChanged -= HandleEventTypesCollectionChanged;
 					viewModel.Project.FileSet.PropertyChanged -= HandleFileSetChanged; ;
 				}
 				viewModel = value;
 				ClearObjects ();
 				if (viewModel != null) {
-					viewModel.Project.Timeline.ViewModels.CollectionChanged += HandleEventTypesCollectionChanged;
+					viewModel.Project.Timeline.EventTypesTimeline.ViewModels.CollectionChanged += HandleEventTypesCollectionChanged;
 					viewModel.Project.FileSet.PropertyChanged += HandleFileSetChanged; ;
 					duration = viewModel.Project.FileSet.Duration;
 					int i = 0;
@@ -222,7 +222,7 @@ namespace VAS.Drawing.Widgets
 
 		protected virtual void FillCanvasForEventTypes (ref int line)
 		{
-			foreach (EventTypeTimelineVM timelineVM in ViewModel.Project.Timeline) {
+			foreach (EventTypeTimelineVM timelineVM in ViewModel.Project.Timeline.EventTypesTimeline) {
 				EventTypeTimelineView timelineView = AddEventTypeTimeline (timelineVM);
 				timelineView.OffsetY = line * StyleConf.TimelineCategoryHeight;
 				timelineView.BackgroundColor = Utils.ColorForRow (line);

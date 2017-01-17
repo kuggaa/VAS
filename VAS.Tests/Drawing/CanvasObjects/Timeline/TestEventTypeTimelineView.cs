@@ -50,7 +50,7 @@ namespace VAS.Tests.Drawing.CanvasObjects.Timeline
 			widgetMock = new Mock<IWidget> ();
 			widgetMock.SetupAllProperties ();
 			timeline = new EventTypeTimelineView ();
-			timeline.ViewModel = projectVM.Timeline.ViewModels.First ();
+			timeline.ViewModel = projectVM.Timeline.EventTypesTimeline.ViewModels.First ();
 		}
 
 		[Test]
