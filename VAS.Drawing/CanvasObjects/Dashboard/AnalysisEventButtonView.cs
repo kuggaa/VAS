@@ -39,7 +39,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		static Image editImage;
 		static Image cancelImage;
 		static Image applyImage;
-		Dictionary<Rectangle, object> rects, buttonsRects;
+		protected Dictionary<Rectangle, object> rects, buttonsRects;
 		Dictionary<string, List<Tag>> tagsByGroup;
 		bool emitEvent, delayEvent, editClicked;
 		bool cancelClicked, applyClicked, moved;
@@ -134,7 +134,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
-		bool ShowTags {
+		protected bool ShowTags {
 			get {
 				return (Button.ShowSubcategories || ShowLinks) && Button.AnalysisEventType.Tags.Count != 0;
 			}
@@ -457,7 +457,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			yptr += heightPerRow * (row + 1);
 		}
 
-		void DrawHeader (IDrawingToolkit tk)
+		protected virtual void DrawHeader (IDrawingToolkit tk)
 		{
 			Color textColor;
 			Point pos;
@@ -646,7 +646,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
-		new void DrawButton (IDrawingToolkit tk)
+		protected override void DrawButton (IDrawingToolkit tk)
 		{
 			if (!ShowTags) {
 				base.DrawButton (tk);
@@ -719,25 +719,19 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			if (!ShowHotkey)
 				return;
 
-			Color textColor;
 			Point pos;
 			double width, height;
-			int fontSize;
 
-			if (Active) {
-				textColor = BackgroundColor;
-			} else {
-				textColor = TextColor;
-			}
-			fontSize = StyleConf.ButtonHeaderFontSize;
 			width = 30;
-			height = fontSize;
-			pos = new Point (Position.X + 2, Position.Y + (Height - (fontSize + 4)));
-			tk.FontSize = fontSize;
-			tk.StrokeColor = BackgroundColor;
-			tk.StrokeColor = textColor;
-			tk.FontWeight = FontWeight.Light;
-			tk.DrawText (pos, width, height, "(" + Button.HotKey.ToString () + ")", false, false);
+			height = App.Current.Style.TitlesFontSize;
+			pos = new Point (Position.X + 3, Position.Y + 3);
+			tk.FontFamily = App.Current.Style.NamesFontFamily;
+			tk.FontSize = App.Current.Style.NamesFontSize;
+			tk.StrokeColor = App.Current.Style.Text_DarkColor;
+			tk.StrokeColor = App.Current.Style.Text_DarkColor;
+			tk.FontWeight = FontWeight.Bold;
+			tk.FontAlignment = FontAlignment.Left;
+			tk.DrawText (pos, width, height, Button.HotKey.ToString (), false, false);
 		}
 
 		void CreateBackBufferSurface ()
