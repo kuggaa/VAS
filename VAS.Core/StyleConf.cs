@@ -156,8 +156,8 @@ namespace VAS.Core.Common
 		public const int ButtonHeaderHeight = 20;
 		public const int ButtonHeaderWidth = 20;
 		public const int ButtonRecWidth = 40;
-		public const int ButtonLineWidth = 2;
-		public const int ButtonActiveLineWidth = 4;
+		public const int ButtonLineWidth = 1;
+		public const int ButtonActiveLineWidth = 2;
 		public const int ButtonHeaderFontSize = 14;
 		public const int ButtonNameFontSize = 18;
 		public const int ButtonTimerFontSize = 24;
