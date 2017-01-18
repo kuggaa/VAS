@@ -1473,7 +1473,7 @@ namespace VAS.Services
 
 		void UpdateDuration ()
 		{
-			if (mode == VideoPlayerOperationMode.Presentation) {
+			if (Mode == VideoPlayerOperationMode.Presentation) {
 				duration = LoadedPlaylist.Duration;
 			} else {
 				if (StillImageLoaded) {
@@ -1481,7 +1481,7 @@ namespace VAS.Services
 				} else if (SegmentLoaded) {
 					duration = loadedSegment.Stop - loadedSegment.Start;
 				} else {
-					if (mode == VideoPlayerOperationMode.Stretched) {
+					if (Mode == VideoPlayerOperationMode.Stretched) {
 						duration = FileSet?.VisibleRegion.Duration;
 					} else {
 						duration = FileSet?.Duration;
@@ -1616,7 +1616,7 @@ namespace VAS.Services
 
 		void HandlePlaylistDurationChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if (mode == VideoPlayerOperationMode.Presentation) {
+			if (Mode == VideoPlayerOperationMode.Presentation) {
 				UpdateDuration ();
 			}
 		}
