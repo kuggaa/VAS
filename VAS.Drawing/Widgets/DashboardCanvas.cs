@@ -72,6 +72,7 @@ namespace VAS.Drawing.Widgets
 				if (viewModel != null) {
 					FillCanvas ();
 					viewModel.PropertyChanged += HandlePropertyChanged;
+					HandlePropertyChanged (viewModel, null);
 				}
 			}
 		}
@@ -449,13 +450,14 @@ namespace VAS.Drawing.Widgets
 			if (sender != ViewModel) {
 				return;
 			}
-			if (e.PropertyName == "Mode") {
+
+			if (e == null || e.PropertyName == "Mode") {
 				HandleModeChanged ();
-			} else if (e.PropertyName == "ShowLinks") {
+			} else if (e == null || e.PropertyName == "ShowLinks") {
 				HandleShowLinksChanged ();
-			} else if (e.PropertyName == "CurrentTime") {
+			} else if (e == null || e.PropertyName == "CurrentTime") {
 				HandleCurrentTimeChanged ();
-			} else if (e.PropertyName == "FitMode") {
+			} else if (e == null || e.PropertyName == "FitMode") {
 				HandleSizeChangedEvent ();
 			}
 		}
