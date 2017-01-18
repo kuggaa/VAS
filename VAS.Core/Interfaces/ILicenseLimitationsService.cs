@@ -15,14 +15,12 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using VAS.Core.Interfaces;
+using System;
 using VAS.Core.License;
 
-namespace VAS.Services
+namespace VAS.Core.Interfaces
 {
-	public abstract class LicenseLimitationsService<T> : ILicenseLimitationsService<T>
-		where T : LicenseLimitation
+	public interface ILicenseLimitationsService<T> where T : LicenseLimitation
 	{
-		public ILicenseLimitations<T> LicenseLimitations { get; protected set; }
 	}
 }

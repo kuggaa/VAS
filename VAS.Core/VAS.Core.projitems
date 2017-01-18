@@ -207,6 +207,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)License\ILicenseLimitations.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)License\LicenseLimitations.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\LicenseLimitationVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ILicenseLimitationsService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
