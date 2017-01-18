@@ -26,15 +26,15 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 	/// <summary>
 	/// Represents an <see cref="ActionLink"/> in the canvas.
 	/// </summary>
-	public class ActionLinkObject: CanvasObject, ICanvasSelectableObject
+	public class ActionLinkView : CanvasObject, ICanvasSelectableObject
 	{
 		readonly Line line;
 		const int selectionSize = 4;
 		Point stop;
 
-		public ActionLinkObject (LinkAnchorObject source,
-		                         LinkAnchorObject destination,
-		                         ActionLink link)
+		public ActionLinkView (LinkAnchorView source,
+								 LinkAnchorView destination,
+								 ActionLink link)
 		{
 			Link = link;
 			Source = source;
@@ -49,7 +49,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			line.Stop = stop;
 		}
 
-		public LinkAnchorObject Source {
+		public LinkAnchorView Source {
 			get;
 			set;
 		}
@@ -59,7 +59,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			set;
 		}
 
-		public LinkAnchorObject Destination {
+		public LinkAnchorView Destination {
 			get;
 			set;
 		}
@@ -96,7 +96,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			stop = line.Stop;
 		}
 
-		public bool CanLink (LinkAnchorObject dest)
+		public bool CanLink (LinkAnchorView dest)
 		{
 			/* Check if the link is possible between the 2 types of anchors */
 			if (!Source.CanLink (dest)) {
@@ -106,8 +106,8 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			/* Check if this link will result into a duplicated link */
 			foreach (ActionLink link in Source.Button.Button.ActionLinks) {
 				if (link.DestinationButton == dest.Button.Button &&
-				    link.SourceTags.SequenceEqualSafe (Source.Tags) &&
-				    link.DestinationTags.SequenceEqualSafe (dest.Tags)) {
+					link.SourceTags.SequenceEqualSafe (Source.Tags) &&
+					link.DestinationTags.SequenceEqualSafe (dest.Tags)) {
 					return false;
 				}
 			}
