@@ -195,6 +195,11 @@ namespace VAS.DB
 					foreach (var t in storableEnumerable) {
 						documentUpdated = false;
 						try {
+
+							var doc = db.GetExistingDocument (t.ID.ToString ());
+							if (doc == null) {
+								forceUpdate = true;
+							}
 							StorableNode node;
 							ObjectChangedParser parser = new ObjectChangedParser ();
 							parser.Parse (out node, t, Serializer.JsonSettings);
