@@ -27,7 +27,7 @@ using VAS.Core.ViewModel;
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
 	[ViewAttribute ("TimerButtonView")]
-	public class TimerObject : DashboardButtonObject, ICanvasObjectView<TimerButtonVM>
+	public class TimerButtonView : DashboardButtonView, ICanvasObjectView<TimerButtonVM>
 	{
 		Time currentTime;
 		static Image iconImage;
@@ -37,7 +37,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		TimerButton timerButton;
 		TimerButtonVM viewModel;
 
-		public TimerObject () : base ()
+		public TimerButtonView () : base ()
 		{
 			Toggle = true;
 			if (iconImage == null) {

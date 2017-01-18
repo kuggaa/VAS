@@ -26,13 +26,13 @@ using VAS.Core.ViewModel;
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
 	[ViewAttribute ("TagButtonView")]
-	public class TagObject : DashboardButtonObject, ICanvasObjectView<TagButtonVM>
+	public class TagButtonView : DashboardButtonView, ICanvasObjectView<TagButtonVM>
 	{
 		static Image iconImage;
 		TagButton tagButton;
 		TagButtonVM viewModel;
 
-		public TagObject () : base ()
+		public TagButtonView () : base ()
 		{
 			Toggle = true;
 			SupportsLinks = false;

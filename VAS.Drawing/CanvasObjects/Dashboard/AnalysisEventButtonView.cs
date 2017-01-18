@@ -30,7 +30,7 @@ using VAS.Core.ViewModel;
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
 	[ViewAttribute ("AnalysisEventButtonView")]
-	public class CategoryObject : TimedTaggerObject, ICanvasObjectView<AnalysisEventButtonVM>
+	public class AnalysisEventButtonView : TimedTaggerObject, ICanvasObjectView<AnalysisEventButtonVM>
 	{
 		public event ButtonSelectedHandler EditButtonTagsEvent;
 
@@ -51,11 +51,11 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		object applyButton = new object ();
 		Rectangle editRect, cancelRect, applyRect;
 		double catWidth, heightPerRow;
-		Dictionary<Tag, LinkAnchorObject> subcatAnchors, cachedAnchors;
+		Dictionary<Tag, LinkAnchorView> subcatAnchors, cachedAnchors;
 		AnalysisEventButton button;
 		AnalysisEventButtonVM viewModel;
 
-		public CategoryObject () : base ()
+		public AnalysisEventButtonView () : base ()
 		{
 			rects = new Dictionary<Rectangle, object> ();
 			buttonsRects = new Dictionary<Rectangle, object> ();
@@ -80,7 +80,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 			MinWidth = 100;
 			MinHeight = HeaderHeight * 2;
-			subcatAnchors = new Dictionary<Tag, LinkAnchorObject> ();
+			subcatAnchors = new Dictionary<Tag, LinkAnchorView> ();
 		}
 
 		protected override void Dispose (bool disposing)
@@ -92,7 +92,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				timer.Dispose ();
 				timer = null;
 			}
-			foreach (LinkAnchorObject anchor in subcatAnchors.Values.ToList ()) {
+			foreach (LinkAnchorView anchor in subcatAnchors.Values.ToList ()) {
 				RemoveAnchor (anchor);
 			}
 			base.Dispose (disposing);
@@ -211,7 +211,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			SelectedTags.Clear ();
 		}
 
-		void RemoveAnchor (LinkAnchorObject anchor)
+		void RemoveAnchor (LinkAnchorView anchor)
 		{
 			anchor.Dispose ();
 			subcatAnchors.RemoveKeysByValue (anchor);
@@ -286,13 +286,13 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		void AddSubcatAnchor (Tag tag, Point point, double width, double height)
 		{
-			LinkAnchorObject anchor;
+			LinkAnchorView anchor;
 
 			if (subcatAnchors.ContainsKey (tag)) {
 				anchor = subcatAnchors [tag];
 				anchor.RelativePosition = point;
 			} else {
-				anchor = new LinkAnchorObject (this, new List<Tag> { tag }, point);
+				anchor = new LinkAnchorView (this, new List<Tag> { tag }, point);
 				anchor.RedrawEvent += (co, area) => {
 					EmitRedrawEvent (anchor, area);
 				};
@@ -333,7 +333,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				Selection sel = anchor.GetSelection (p, precision, inMotion);
 				if (sel != null)
 					return sel;
-				foreach (LinkAnchorObject subcatAnchor in subcatAnchors.Values) {
+				foreach (LinkAnchorView subcatAnchor in subcatAnchors.Values) {
 					sel = subcatAnchor.GetSelection (p, precision, inMotion);
 					if (sel != null)
 						return sel;
@@ -342,7 +342,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			return base.GetSelection (p, precision, inMotion);
 		}
 
-		public override LinkAnchorObject GetAnchor (IList<Tag> sourceTags)
+		public override LinkAnchorView GetAnchor (IList<Tag> sourceTags)
 		{
 			/* Only one tag is supported for now */
 			if (sourceTags == null || sourceTags.Count == 0) {
@@ -641,7 +641,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 			anchor.Height = HeaderHeight;
 			DrawAnchor (tk, null);
-			foreach (LinkAnchorObject a in subcatAnchors.Values) {
+			foreach (LinkAnchorView a in subcatAnchors.Values) {
 				a.Draw (tk, null);
 			}
 		}
