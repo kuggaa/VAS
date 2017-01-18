@@ -210,7 +210,7 @@ namespace VAS.Drawing.CanvasObjects
 				SELECTION_SIZE, SELECTION_SIZE);
 		}
 
-		protected void DrawButton (IDrawingToolkit tk)
+		protected virtual void DrawButton (IDrawingToolkit tk)
 		{
 			Color front, back;
 
