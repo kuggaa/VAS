@@ -27,11 +27,11 @@ namespace VAS.Core.ViewModel
 	{
 		public override Image Icon {
 			get {
-				throw new NotImplementedException ();
+				return Model.Image;
 			}
 
 			set {
-				throw new NotImplementedException ();
+				Model.Image = value;
 			}
 		}
 
