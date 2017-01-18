@@ -61,7 +61,7 @@ namespace VAS.DB
 		/// <param name="context">Serialization context.</param>
 		/// <param name="saveChildren">If set to <c>false</c>, <see cref="IStorable"/> children are not saved.</param>
 		internal static void SaveObject (IStorable obj, Database db, SerializationContext context = null,
-										 bool saveChildren = true)
+										 bool saveChildren = true, Document doc = null)
 		{
 			if (context == null) {
 				context = new SerializationContext (db, obj.GetType ());
@@ -69,7 +69,9 @@ namespace VAS.DB
 			}
 			context.SaveChildren = saveChildren;
 			context.Stack.Push (obj);
-			Document doc = db.GetDocument (DocumentsSerializer.StringFromID (obj.ID, context.RootID));
+			if (doc == null) {
+				doc = db.GetDocument (DocumentsSerializer.StringFromID (obj.ID, context.RootID));
+			}
 			doc.Update ((UnsavedRevision rev) => {
 				JObject jo = SerializeObject (obj, rev, context);
 				IDictionary<string, object> props = jo.ToObject<IDictionary<string, object>> ();

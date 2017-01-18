@@ -195,6 +195,11 @@ namespace VAS.DB
 					foreach (var t in storableEnumerable) {
 						documentUpdated = false;
 						try {
+
+							var doc = db.GetExistingDocument (t.ID.ToString ());
+							if (doc == null) {
+								forceUpdate = true;
+							}
 							StorableNode node;
 							ObjectChangedParser parser = new ObjectChangedParser ();
 							parser.Parse (out node, t, Serializer.JsonSettings);
@@ -203,11 +208,11 @@ namespace VAS.DB
 								Update (node);
 							}
 							if (forceUpdate) {
-								DocumentsSerializer.SaveObject (t, db, saveChildren: true);
+								DocumentsSerializer.SaveObject (t, db, saveChildren: true, doc: doc);
 							}
 							if (t.ID != Info.ID && (forceUpdate || documentUpdated)) {
 								Info.LastModified = DateTime.UtcNow;
-								DocumentsSerializer.SaveObject (Info, db);
+								DocumentsSerializer.SaveObject (Info, db, doc: doc);
 							}
 							foreach (IStorable storable in node.OrphanChildren) {
 								db.GetDocument (DocumentsSerializer.StringFromID (storable.ID, t.ID)).Delete ();
