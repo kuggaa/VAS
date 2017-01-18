@@ -29,7 +29,7 @@ using VAS.Services.ViewModel;
 namespace VAS.Tests.Services
 {
 	[TestFixture]
-	public class TestCoreEventsManager
+	public class TestCoreEventsController
 	{
 		CoreEventsController controller;
 		ProjectVM projectVM;
