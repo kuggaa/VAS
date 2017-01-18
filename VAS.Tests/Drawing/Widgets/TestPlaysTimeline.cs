@@ -18,6 +18,7 @@
 using System.Linq;
 using Moq;
 using NUnit.Framework;
+using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
@@ -90,6 +91,23 @@ namespace VAS.Tests.Drawing.Widgets
 				Assert.AreEqual (width, view.Width);
 				Assert.AreEqual (project.FileSet.Duration, view.Duration);
 			}
+		}
+
+		[Test]
+		public void TestClear ()
+		{
+			projectVM.Timeline.EventTypesTimeline.ViewModels.Clear ();
+
+			Assert.AreEqual (0, timeline.Objects.Count ());
+		}
+
+		[Test]
+		public void TestReplace ()
+		{
+			projectVM.Timeline.EventTypesTimeline.ViewModels.Replace (
+				new EventTypeTimelineVM (new EventTypeVM { Model = new EventType () }).ToEnumerable ());
+
+			Assert.AreEqual (0, timeline.Objects.Count ());
 		}
 	}
 }

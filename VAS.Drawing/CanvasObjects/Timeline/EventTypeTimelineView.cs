@@ -97,7 +97,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 					break;
 				}
 			case NotifyCollectionChangedAction.Reset: {
-					ClearObjects ();
+					ViewModel = ViewModel;
 					break;
 				}
 			}

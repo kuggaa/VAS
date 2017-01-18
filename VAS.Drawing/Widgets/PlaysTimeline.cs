@@ -402,9 +402,7 @@ namespace VAS.Drawing.Widgets
 					break;
 				}
 			case NotifyCollectionChangedAction.Reset: {
-					foreach (EventTypeTimelineVM viewModel in Objects.OfType<EventTypeTimelineVM> ()) {
-						RemoveEventTypeTimeline (viewModel);
-					}
+					ViewModel = ViewModel;
 					break;
 				}
 			}
