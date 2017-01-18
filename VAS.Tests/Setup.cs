@@ -21,6 +21,7 @@ using Moq;
 using NUnit.Framework;
 using VAS.Core;
 using VAS.Core.Interfaces;
+using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.GUI;
 using VAS.DB;
 
