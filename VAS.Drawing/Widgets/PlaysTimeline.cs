@@ -70,22 +70,7 @@ namespace VAS.Drawing.Widgets
 				return viewModel;
 			}
 			protected set {
-				if (viewModel != null) {
-					viewModel.Project.Timeline.EventTypesTimeline.ViewModels.CollectionChanged -= HandleEventTypesCollectionChanged;
-					viewModel.Project.FileSet.PropertyChanged -= HandleFileSetChanged; ;
-				}
-				viewModel = value;
-				ClearObjects ();
-				if (viewModel != null) {
-					viewModel.Project.Timeline.EventTypesTimeline.ViewModels.CollectionChanged += HandleEventTypesCollectionChanged;
-					viewModel.Project.FileSet.PropertyChanged += HandleFileSetChanged; ;
-					duration = viewModel.Project.FileSet.Duration;
-					int i = 0;
-					FillCanvas (ref i);
-					if (widget != null) {
-						widget.Height = Objects.Count * StyleConf.TimelineCategoryHeight;
-					}
-				}
+				UpdateModel (value);
 			}
 		}
 
@@ -402,13 +387,31 @@ namespace VAS.Drawing.Widgets
 					break;
 				}
 			case NotifyCollectionChangedAction.Reset: {
-					foreach (EventTypeTimelineVM viewModel in Objects.OfType<EventTypeTimelineVM> ()) {
-						RemoveEventTypeTimeline (viewModel);
-					}
+					UpdateModel (ViewModel);
 					break;
 				}
 			}
 			UpdateRowsOffsets ();
+		}
+
+		void UpdateModel (IAnalysisViewModel value)
+		{
+			if (viewModel != null) {
+				viewModel.Project.Timeline.EventTypesTimeline.ViewModels.CollectionChanged -= HandleEventTypesCollectionChanged;
+				viewModel.Project.FileSet.PropertyChanged -= HandleFileSetChanged; ;
+			}
+			viewModel = value;
+			ClearObjects ();
+			if (viewModel != null) {
+				viewModel.Project.Timeline.EventTypesTimeline.ViewModels.CollectionChanged += HandleEventTypesCollectionChanged;
+				viewModel.Project.FileSet.PropertyChanged += HandleFileSetChanged; ;
+				duration = viewModel.Project.FileSet.Duration;
+				int i = 0;
+				FillCanvas (ref i);
+				if (widget != null) {
+					widget.Height = Objects.Count * StyleConf.TimelineCategoryHeight;
+				}
+			}
 		}
 
 		void HandleFileSetChanged (object sender, PropertyChangedEventArgs e)
