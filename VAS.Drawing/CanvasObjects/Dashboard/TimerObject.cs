@@ -40,7 +40,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		public TimerObject () : base ()
 		{
 			Toggle = true;
-			CurrentTime = new Time (0);
 			if (iconImage == null) {
 				iconImage = Resources.LoadImage (StyleConf.ButtonTimerIcon);
 			}
@@ -166,6 +165,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				viewModel = value;
 				if (viewModel != null) {
 					TimerButton = viewModel.Model;
+					CurrentTime = new Time (0);
 				}
 			}
 		}
