@@ -36,12 +36,12 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)CanvasFromDrawableObjectRegistry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\ButtonObject.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\DashboardButtonObject.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\LinkAnchorObject.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\ActionLinkObject.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\CategoryObject.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\TagObject.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\TimerObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\DashboardButtonView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\LinkAnchorView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\ActionLinkView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\AnalysisEventButtonView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\TagButtonView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\TimerButtonView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Widgets\DashboardCanvas.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Teams\PlayerView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Blackboard\CounterObject.cs" />

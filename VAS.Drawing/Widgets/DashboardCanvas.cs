@@ -41,9 +41,9 @@ namespace VAS.Drawing.Widgets
 		public event NewEventHandler NewTagEvent;
 
 		protected int templateWidth, templateHeight;
-		protected ActionLinkObject movingLink;
-		protected LinkAnchorObject destAnchor;
-		protected Dictionary<DashboardButton, DashboardButtonObject> buttonsDict;
+		protected ActionLinkView movingLink;
+		protected LinkAnchorView destAnchor;
+		protected Dictionary<DashboardButton, DashboardButtonView> buttonsDict;
 
 		DashboardVM viewModel;
 
@@ -51,7 +51,7 @@ namespace VAS.Drawing.Widgets
 		{
 			Accuracy = 5;
 			BackgroundColor = App.Current.Style.PaletteBackground;
-			buttonsDict = new Dictionary<DashboardButton, DashboardButtonObject> ();
+			buttonsDict = new Dictionary<DashboardButton, DashboardButtonView> ();
 		}
 
 		public DashboardCanvas () : this (null)
@@ -84,9 +84,9 @@ namespace VAS.Drawing.Widgets
 
 		public void Click (DashboardButton b, Tag tag = null)
 		{
-			DashboardButtonObject co = Objects.OfType<DashboardButtonObject> ().FirstOrDefault (o => o.Button == b);
-			if (tag != null && co is CategoryObject) {
-				(co as CategoryObject).ClickTag (tag);
+			DashboardButtonView co = Objects.OfType<DashboardButtonView> ().FirstOrDefault (o => o.Button == b);
+			if (tag != null && co is AnalysisEventButtonView) {
+				(co as AnalysisEventButtonView).ClickTag (tag);
 			} else {
 				co.Click ();
 			}
@@ -94,7 +94,7 @@ namespace VAS.Drawing.Widgets
 
 		public void RedrawButton (DashboardButton b)
 		{
-			DashboardButtonObject co = Objects.OfType<DashboardButtonObject> ().FirstOrDefault (o => o.Button == b);
+			DashboardButtonView co = Objects.OfType<DashboardButtonView> ().FirstOrDefault (o => o.Button == b);
 			if (co != null) {
 				co.ReDraw ();
 			}
@@ -102,14 +102,14 @@ namespace VAS.Drawing.Widgets
 
 		public void Refresh (DashboardButton b = null)
 		{
-			DashboardButtonObject to;
+			DashboardButtonView to;
 
 			if (ViewModel == null) {
 				return;
 			}
 			ClearCanvas ();
 			FillCanvas ();
-			to = Objects.OfType<DashboardButtonObject> ().
+			to = Objects.OfType<DashboardButtonView> ().
 				FirstOrDefault (o => o.Button == b);
 			if (to != null) {
 				UpdateSelection (new Selection (to, SelectionPosition.All, 0));
@@ -130,10 +130,10 @@ namespace VAS.Drawing.Widgets
 			if (ShowMenuEvent == null || Selections.Count == 0)
 				return;
 
-			buttons = Selections.Where (s => s.Drawable is DashboardButtonObject).
-				Select (s => (s.Drawable as DashboardButtonObject).Button).ToList ();
-			links = Selections.Where (s => s.Drawable is ActionLinkObject).
-				Select (s => (s.Drawable as ActionLinkObject).Link).ToList ();
+			buttons = Selections.Where (s => s.Drawable is DashboardButtonView).
+				Select (s => (s.Drawable as DashboardButtonView).Button).ToList ();
+			links = Selections.Where (s => s.Drawable is ActionLinkView).
+				Select (s => (s.Drawable as ActionLinkView).Link).ToList ();
 			ShowMenuEvent (buttons, links);
 		}
 
@@ -153,7 +153,7 @@ namespace VAS.Drawing.Widgets
 
 			foreach (ICanvasSelectableObject co in Objects) {
 				sel = co.GetSelection (coords, Accuracy, inMotion);
-				if (sel == null || sel.Drawable is DashboardButtonObject)
+				if (sel == null || sel.Drawable is DashboardButtonView)
 					continue;
 				if (skipSelected && selected != null && sel.Drawable == selected.Drawable)
 					continue;
@@ -164,16 +164,16 @@ namespace VAS.Drawing.Widgets
 
 		protected override void SelectionMoved (Selection sel)
 		{
-			if (sel.Drawable is DashboardButtonObject) {
+			if (sel.Drawable is DashboardButtonView) {
 				HandleSizeChangedEvent ();
-			} else if (sel.Drawable is ActionLinkObject) {
-				ActionLinkObject link = sel.Drawable as ActionLinkObject;
-				LinkAnchorObject anchor = null;
+			} else if (sel.Drawable is ActionLinkView) {
+				ActionLinkView link = sel.Drawable as ActionLinkView;
+				LinkAnchorView anchor = null;
 				Selection destSel;
 
 				destSel = GetSelection (MoveStart, true, true);
-				if (destSel != null && destSel.Drawable is LinkAnchorObject) {
-					anchor = destSel.Drawable as LinkAnchorObject;
+				if (destSel != null && destSel.Drawable is LinkAnchorView) {
+					anchor = destSel.Drawable as LinkAnchorView;
 				}
 				/* Toggled highlited state */
 				if (anchor != destAnchor) {
@@ -201,19 +201,19 @@ namespace VAS.Drawing.Widgets
 				return;
 			}
 
-			if (sel [0].Drawable is DashboardButtonObject) {
+			if (sel [0].Drawable is DashboardButtonView) {
 				List<DashboardButton> buttons;
 
-				buttons = sel.Select (s => (s.Drawable as DashboardButtonObject).Button).ToList ();
+				buttons = sel.Select (s => (s.Drawable as DashboardButtonView).Button).ToList ();
 				if (ViewModel.Mode == DashboardMode.Edit) {
 					if (ButtonsSelectedEvent != null) {
 						ButtonsSelectedEvent (buttons);
 					}
 				}
-			} else if (sel [0].Drawable is ActionLinkObject) {
+			} else if (sel [0].Drawable is ActionLinkView) {
 				List<ActionLink> links;
 
-				links = sel.Select (s => (s.Drawable as ActionLinkObject).Link).ToList ();
+				links = sel.Select (s => (s.Drawable as ActionLinkView).Link).ToList ();
 				if (ViewModel.Mode == DashboardMode.Edit) {
 					if (ActionLinksSelectedEvent != null) {
 						ActionLinksSelectedEvent (links);
@@ -225,13 +225,13 @@ namespace VAS.Drawing.Widgets
 
 		protected override void StartMove (Selection sel)
 		{
-			if (sel != null && sel.Drawable is LinkAnchorObject) {
-				LinkAnchorObject anchor = sel.Drawable as LinkAnchorObject;
+			if (sel != null && sel.Drawable is LinkAnchorView) {
+				LinkAnchorView anchor = sel.Drawable as LinkAnchorView;
 				ActionLink link = new ActionLink {
 					SourceButton = anchor.Button.Button,
 					SourceTags = new ObservableCollection<Tag> (anchor.Tags)
 				};
-				movingLink = new ActionLinkObject (anchor, null, link);
+				movingLink = new ActionLinkView (anchor, null, link);
 				AddObject (movingLink);
 				ClearSelection ();
 				UpdateSelection (new Selection (movingLink, SelectionPosition.LineStop, 0), false);
@@ -265,15 +265,15 @@ namespace VAS.Drawing.Widgets
 			}
 
 			if (sel != null && moved) {
-				if (sel.Drawable is DashboardButtonObject) {
+				if (sel.Drawable is DashboardButtonView) {
 					/* Round the position of the button to match a corner in the grid */
 					int i = VASDrawing.Constants.CATEGORY_TPL_GRID;
-					DashboardButton tb = (sel.Drawable as DashboardButtonObject).Button;
+					DashboardButton tb = (sel.Drawable as DashboardButtonView).Button;
 					tb.Position.X = VASDrawing.Utils.Round (tb.Position.X, i);
 					tb.Position.Y = VASDrawing.Utils.Round (tb.Position.Y, i);
 					tb.Width = (int)VASDrawing.Utils.Round (tb.Width, i);
 					tb.Height = (int)VASDrawing.Utils.Round (tb.Height, i);
-					(sel.Drawable as DashboardButtonObject).ResetDrawArea ();
+					(sel.Drawable as DashboardButtonView).ResetDrawArea ();
 					widget.ReDraw ();
 				}
 			}
@@ -303,7 +303,7 @@ namespace VAS.Drawing.Widgets
 			End ();
 		}
 
-		public void AddButton (DashboardButtonObject button)
+		public void AddButton (DashboardButtonView button)
 		{
 			button.ShowLinks = ViewModel.ShowLinks;
 			AddObject (button);
@@ -321,11 +321,11 @@ namespace VAS.Drawing.Widgets
 			foreach (DashboardButtonVM vm in ViewModel.ViewModels) {
 				IView view = App.Current.ViewLocator.Retrieve (vm.View);
 				view.SetViewModel (vm);
-				var viewButton = view as DashboardButtonObject;
+				var viewButton = view as DashboardButtonView;
 				viewButton.ClickedEvent += HandleTaggerClickedEvent;
 				viewButton.Mode = ViewModel.Mode;
-				if (viewButton is CategoryObject) {
-					((CategoryObject)viewButton).EditButtonTagsEvent += (t) => {
+				if (viewButton is AnalysisEventButtonView) {
+					((AnalysisEventButtonView)viewButton).EditButtonTagsEvent += (t) => {
 						if (EditButtonTagsEvent != null)
 							EditButtonTagsEvent (t);
 					};
@@ -333,10 +333,10 @@ namespace VAS.Drawing.Widgets
 				AddButton (viewButton);
 			}
 
-			foreach (DashboardButtonObject buttonObject in buttonsDict.Values) {
+			foreach (DashboardButtonView buttonObject in buttonsDict.Values) {
 				foreach (ActionLink link in buttonObject.Button.ActionLinks) {
-					LinkAnchorObject sourceAnchor, destAnchor;
-					ActionLinkObject linkObject;
+					LinkAnchorView sourceAnchor, destAnchor;
+					ActionLinkView linkObject;
 
 					sourceAnchor = buttonObject.GetAnchor (link.SourceTags);
 					try {
@@ -345,7 +345,7 @@ namespace VAS.Drawing.Widgets
 						Log.Error ("Skipping link with invalid destination tags");
 						continue;
 					}
-					linkObject = new ActionLinkObject (sourceAnchor, destAnchor, link);
+					linkObject = new ActionLinkView (sourceAnchor, destAnchor, link);
 					link.SourceButton = buttonObject.Button;
 					linkObject.Visible = ViewModel.ShowLinks;
 					AddObject (linkObject);
@@ -392,18 +392,18 @@ namespace VAS.Drawing.Widgets
 
 		protected virtual void HandleTaggerClickedEvent (ICanvasObject co)
 		{
-			DashboardButtonObject tagger;
+			DashboardButtonView tagger;
 			EventButton button;
 			Time start = null, stop = null, eventTime = null;
 			List<Tag> tags = null;
 
-			tagger = co as DashboardButtonObject;
+			tagger = co as DashboardButtonView;
 
-			if (tagger is TagObject) {
-				TagObject tag = tagger as TagObject;
+			if (tagger is TagButtonView) {
+				TagButtonView tag = tagger as TagButtonView;
 				if (tag.Active) {
 					/* All tag buttons from the same group that are active */
-					foreach (TagObject to in Objects.OfType<TagObject> ().
+					foreach (TagButtonView to in Objects.OfType<TagButtonView> ().
 						Where (t => t.TagButton.Tag.Group == tag.TagButton.Tag.Group &&
 							t.Active && t != tagger)) {
 						to.Active = false;
@@ -433,10 +433,10 @@ namespace VAS.Drawing.Widgets
 			}
 
 			tags = new List<Tag> ();
-			if (tagger is CategoryObject) {
-				tags.AddRange ((tagger as CategoryObject).SelectedTags);
+			if (tagger is AnalysisEventButtonView) {
+				tags.AddRange ((tagger as AnalysisEventButtonView).SelectedTags);
 			}
-			foreach (TagObject to in Objects.OfType<TagObject> ()) {
+			foreach (TagButtonView to in Objects.OfType<TagButtonView> ()) {
 				if (to.Active) {
 					tags.Add (to.TagButton.Tag);
 				}
@@ -465,7 +465,7 @@ namespace VAS.Drawing.Widgets
 		void HandleModeChanged ()
 		{
 			ObjectsCanMove = ViewModel.Mode == DashboardMode.Edit;
-			foreach (DashboardButtonObject to in Objects.OfType<DashboardButtonObject> ()) {
+			foreach (DashboardButtonView to in Objects.OfType<DashboardButtonView> ()) {
 				to.Mode = ViewModel.Mode;
 			}
 			ClearSelection ();
@@ -473,11 +473,11 @@ namespace VAS.Drawing.Widgets
 
 		void HandleShowLinksChanged ()
 		{
-			foreach (DashboardButtonObject to in Objects.OfType<DashboardButtonObject> ()) {
+			foreach (DashboardButtonView to in Objects.OfType<DashboardButtonView> ()) {
 				to.ShowLinks = ViewModel.ShowLinks;
 				to.ResetDrawArea ();
 			}
-			foreach (ActionLinkObject ao in Objects.OfType<ActionLinkObject> ()) {
+			foreach (ActionLinkView ao in Objects.OfType<ActionLinkView> ()) {
 				ao.Visible = ViewModel.ShowLinks;
 				ao.ResetDrawArea ();
 			}
@@ -489,7 +489,7 @@ namespace VAS.Drawing.Widgets
 		{
 			//FIXME: This can easily be treated at the DashboardVM by proxying
 			// the CurrentTime to its Childs ViewModels
-			foreach (TimerObject to in Objects.OfType<TimerObject> ()) {
+			foreach (TimerButtonView to in Objects.OfType<TimerButtonView> ()) {
 				to.CurrentTime = ViewModel.CurrentTime;
 			}
 			foreach (TimedTaggerObject to in Objects.OfType<TimedTaggerObject> ()) {

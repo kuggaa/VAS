@@ -23,14 +23,14 @@ using VAS.Core.Store;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
-	public class DashboardButtonObject : ButtonObject, ICanvasSelectableObject
+	public class DashboardButtonView : ButtonObject, ICanvasSelectableObject
 	{
-		protected LinkAnchorObject anchor;
+		protected LinkAnchorView anchor;
 
-		public DashboardButtonObject ()
+		public DashboardButtonView ()
 		{
 			SupportsLinks = true;
-			anchor = new LinkAnchorObject (this, null, new Point (0, 0));
+			anchor = new LinkAnchorView (this, null, new Point (0, 0));
 			anchor.RedrawEvent += (co, area) => {
 				EmitRedrawEvent (anchor, area);
 			};
@@ -161,7 +161,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
-		public virtual LinkAnchorObject GetAnchor (IList<Tag> sourceTags)
+		public virtual LinkAnchorView GetAnchor (IList<Tag> sourceTags)
 		{
 			return anchor;
 		}
@@ -196,7 +196,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		}
 	}
 
-	public class TimedTaggerObject : DashboardButtonObject
+	public class TimedTaggerObject : DashboardButtonView
 	{
 		Time currentTime;
 		TimedDashboardButton timedButton;
