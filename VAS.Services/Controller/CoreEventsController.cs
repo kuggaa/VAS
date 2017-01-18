@@ -49,8 +49,6 @@ namespace VAS.Services.Controller
 		protected ICapturerBin capturer;
 		protected IFramesCapturer framesCapturer;
 
-		IAnalysisViewModel viewModel;
-
 		protected override void Dispose (bool disposing)
 		{
 			if (Disposed) {
@@ -184,7 +182,7 @@ namespace VAS.Services.Controller
 				App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Error capturing video frame"));
 			} else {
 				dynamic properties = new ExpandoObject ();
-				properties.project = project;
+				properties.project = project.Model;
 				properties.timelineEvent = e.Play;
 				properties.frame = pixbuf;
 				properties.drawing = drawing;
