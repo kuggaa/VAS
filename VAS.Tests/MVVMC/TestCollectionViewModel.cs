@@ -15,8 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
-using System.Collections.ObjectModel;
+using System.Linq;
 using NUnit.Framework;
 using VAS.Core.Common;
 using VAS.Core.MVVMC;
@@ -104,6 +103,24 @@ namespace VAS.Tests.MVVMC
 			viewModel.PropertyChanged += (sender, e) => eventCount++;
 			viewModel.Select (model [0]);
 			Assert.AreEqual (1, eventCount);
+		}
+
+		[Test]
+		public void TestReplaceWithNull ()
+		{
+			model.Replace (null);
+
+			Assert.AreEqual (0, model.Count);
+			Assert.AreEqual (0, viewModel.Count ());
+		}
+
+		[Test]
+		public void TestReplace ()
+		{
+			model.Replace (new BindableBase ().ToEnumerable ());
+
+			Assert.AreEqual (1, model.Count);
+			Assert.AreEqual (1, viewModel.Count ());
 		}
 	}
 }

@@ -102,9 +102,7 @@ namespace VAS.UI.Common
 				break;
 
 			case NotifyCollectionChangedAction.Reset:
-				ClearSubViewModelListeners (viewModel.ViewModels);
-				store.Clear ();
-				dictionaryStore.Clear ();
+				ViewModel = ViewModel;
 				break;
 
 			case NotifyCollectionChangedAction.Move:
