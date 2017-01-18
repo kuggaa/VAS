@@ -151,6 +151,7 @@
     <Compile Include="LocalDatabaseManager.cs" />
     <Compile Include="Services\TestEventsController.cs" />
     <Compile Include="Drawing\TestEventTypeLabelView.cs" />
+    <Compile Include="Core\TestExtensionMethods.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\packages\SQLitePCL.native.sqlite3.v110_xp.0.9.1\build\SQLitePCL.native.sqlite3.v110_xp.targets" Condition="Exists('$(SolutionDir)\packages\SQLitePCL.native.sqlite3.v110_xp.0.9.1\build\SQLitePCL.native.sqlite3.v110_xp.targets')" />

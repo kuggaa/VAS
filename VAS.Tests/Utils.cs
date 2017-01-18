@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -407,6 +408,65 @@ namespace VAS.Tests
 				}
 			}
 			return result;
+		}
+	}
+
+	class CustomDummyClassForTest
+	{
+		public int Index { get; set; }
+	}
+
+	class StorableBaseComparer : IComparer<StorableBase>, IComparer
+	{
+		bool descending;
+
+		public StorableBaseComparer (bool descending)
+		{
+			this.descending = descending;
+		}
+
+		public int Compare (object x, object y)
+		{
+			if ((x == null) || !(x is StorableBase) || (y == null) || !(y is StorableBase)) {
+				return 0;
+			}
+			return Compare (x as StorableBase, y as StorableBase);
+		}
+
+		public int Compare (StorableBase x, StorableBase y)
+		{
+			if (descending) {
+				return y.CreationDate.CompareTo (x.CreationDate);
+			} else {
+				return x.CreationDate.CompareTo (y.CreationDate);
+			}
+		}
+	}
+
+	class CustomDummyClassForTestComparer : IComparer<CustomDummyClassForTest>, IComparer
+	{
+		bool descending;
+
+		public CustomDummyClassForTestComparer (bool descending)
+		{
+			this.descending = descending;
+		}
+
+		public int Compare (object x, object y)
+		{
+			if ((x == null) || !(x is CustomDummyClassForTest) || (y == null) || !(y is CustomDummyClassForTest)) {
+				return 0;
+			}
+			return Compare (x as CustomDummyClassForTest, y as CustomDummyClassForTest);
+		}
+
+		public int Compare (CustomDummyClassForTest x, CustomDummyClassForTest y)
+		{
+			if (descending) {
+				return y.Index.CompareTo (x.Index);
+			} else {
+				return x.Index.CompareTo (y.Index);
+			}
 		}
 	}
 }

@@ -115,6 +115,9 @@ namespace VAS.UI.Common
 
 		protected override void HandleTreeviewSelectionChanged (object sender, EventArgs e)
 		{
+			if (ViewModel == null) {
+				return;
+			}
 			TreeIter iter;
 			TreeIter parent;
 			base.HandleTreeviewSelectionChanged (sender, e);
