@@ -118,13 +118,6 @@ namespace VAS.Services
 
 		#endregion
 
-		// FIXME: remove when PlaylistManager is ported to MVVM
-		public VideoPlayerVM ViewModel {
-			get {
-				return playerVM;
-			}
-		}
-
 		#region IPlayerController implementation
 
 		public virtual bool IgnoreTicks {
@@ -136,7 +129,7 @@ namespace VAS.Services
 			set {
 				Log.Debug ("Updating cameras configuration: ", string.Join ("-", value));
 				camerasConfig = value;
-				ViewModel.CamerasConfig = camerasConfig;
+				playerVM.CamerasConfig = camerasConfig;
 				if (defaultCamerasConfig == null) {
 					defaultCamerasConfig = value;
 				}
@@ -169,7 +162,7 @@ namespace VAS.Services
 
 			set {
 				camerasLayout = value;
-				ViewModel.CamerasLayout = value;
+				playerVM.CamerasLayout = value;
 			}
 		}
 
