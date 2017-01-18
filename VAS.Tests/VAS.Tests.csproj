@@ -123,7 +123,7 @@
     <Compile Include="Core\Hotkeys\TestHotKeysContexts.cs" />
     <Compile Include="Core\Common\TestStateController.cs" />
     <Compile Include="Core\Common\TestRegistry.cs" />
-    <Compile Include="Services\TestCoreEventsManager.cs" />
+    <Compile Include="Services\TestCoreEventsController.cs" />
     <Compile Include="Services\TestPlaylistController.cs" />
     <Compile Include="Services\TestScreenState.cs" />
     <Compile Include="Core\Filters\TestPredicates.cs" />
