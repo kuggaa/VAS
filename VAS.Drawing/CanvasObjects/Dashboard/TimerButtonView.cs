@@ -41,10 +41,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		{
 			Toggle = true;
 			if (iconImage == null) {
-				iconImage = Resources.LoadImage (StyleConf.ButtonTimerIcon);
+				iconImage = Resources.LoadImage (StyleConf.ButtonTimerIcon, StyleConf.ButtonHeaderWidth * 2, StyleConf.ButtonHeaderHeight * 2);
 			}
 			if (cancelImage == null) {
-				cancelImage = Resources.LoadImage (StyleConf.CancelButton);
+				cancelImage = Resources.LoadImage (StyleConf.CancelButton, StyleConf.ButtonHeaderWidth * 2, StyleConf.ButtonHeaderHeight * 2);
 			}
 			MinWidth = StyleConf.ButtonMinWidth;
 			MinHeight = iconImage.Height + StyleConf.ButtonTimerFontSize;
@@ -215,12 +215,12 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				tk.FontSize = StyleConf.ButtonHeaderFontSize;
 				tk.FontAlignment = FontAlignment.Left;
 				tk.DrawText (new Point (Position.X + TextHeaderX, Position.Y),
-					TimerButton.Width - TextHeaderX, iconImage.Height, TimerButton.Timer.Name);
+							 TimerButton.Width - TextHeaderX, StyleConf.ButtonHeaderHeight, TimerButton.Timer.Name);
 				tk.FontWeight = FontWeight.Bold;
 				tk.FontSize = StyleConf.ButtonTimerFontSize;
 				tk.FontAlignment = FontAlignment.Center;
-				tk.DrawText (new Point (Position.X, Position.Y + iconImage.Height),
-					Button.Width, Button.Height - iconImage.Height,
+				tk.DrawText (new Point (Position.X, Position.Y + StyleConf.ButtonHeaderHeight),
+					Button.Width, Button.Height - StyleConf.ButtonHeaderHeight,
 					PartialTime.ToSecondsString (), false, true);
 
 				tk.FillColor = tk.StrokeColor = BackgroundColor;
