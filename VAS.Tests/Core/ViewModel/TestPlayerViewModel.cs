@@ -30,7 +30,7 @@ namespace VAS.Tests.Core.ViewModel
 		{
 			var playerController = new Mock<IVideoPlayerController> ();
 			playerController.SetupAllProperties ();
-			var viewModel = new VideoPlayerVM (playerController.Object);
+			var viewModel = new VideoPlayerVM { Player = playerController.Object };
 
 			viewModel.SetRate (3);
 
@@ -42,7 +42,7 @@ namespace VAS.Tests.Core.ViewModel
 		{
 			var playerController = new Mock<IVideoPlayerController> ();
 			playerController.SetupAllProperties ();
-			var viewModel = new VideoPlayerVM (playerController.Object);
+			var viewModel = new VideoPlayerVM { Player = playerController.Object };
 
 			// Rate changes the VM property but not the actual playback rate
 			viewModel.Rate = 3;
@@ -55,7 +55,7 @@ namespace VAS.Tests.Core.ViewModel
 		{
 			var playerController = new Mock<IVideoPlayerController> ();
 			playerController.SetupAllProperties ();
-			var viewModel = new VideoPlayerVM (playerController.Object);
+			var viewModel = new VideoPlayerVM { Player = playerController.Object };
 
 			viewModel.SetVolume (3);
 
@@ -67,7 +67,7 @@ namespace VAS.Tests.Core.ViewModel
 		{
 			var playerController = new Mock<IVideoPlayerController> ();
 			playerController.SetupAllProperties ();
-			var viewModel = new VideoPlayerVM (playerController.Object);
+			var viewModel = new VideoPlayerVM { Player = playerController.Object };
 
 			// Volume changes the VM property but not the actual volume
 			viewModel.Volume = 5;

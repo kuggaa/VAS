@@ -18,6 +18,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using VAS.Core.Common;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
@@ -33,6 +34,7 @@ namespace VAS.Tests.Core.ViewModel
 			var model = Utils.CreateProject (true);
 			model.Timers.Add (new Timer ());
 			model.Playlists.Add (new Playlist ());
+			model.Periods.Add (new Period ());
 			var viewModel = new ProjectVM<Project> {
 				Model = model
 			};
@@ -40,18 +42,21 @@ namespace VAS.Tests.Core.ViewModel
 			Assert.AreEqual (1, viewModel.Timers.Count ());
 			Assert.AreEqual (5, viewModel.EventTypes.Count ());
 			Assert.AreEqual (1, model.Playlists.Count ());
+			Assert.AreEqual (1, model.Periods.Count ());
 		}
 
 		[Test]
 		public void TestProperties ()
 		{
 			var model = Utils.CreateProject (true);
+			model.ProjectType = ProjectType.CaptureProject;
 			var viewModel = new ProjectVM<Project> {
 				Model = model
 			};
 
 			Assert.AreEqual (model.FileSet, viewModel.FileSet.Model);
 			Assert.AreEqual (model.ShortDescription, viewModel.ShortDescription);
+			Assert.AreEqual (model.ProjectType, viewModel.ProjectType);
 		}
 
 		[Test]
@@ -85,5 +90,22 @@ namespace VAS.Tests.Core.ViewModel
 
 			Assert.IsTrue (viewModel.Edited);
 		}
+
+		[Test]
+		public void TestIsLive ()
+		{
+			var captureProject = new ProjectVM { Model = new Utils.ProjectDummy { ProjectType = ProjectType.CaptureProject } };
+			var fakeProject = new ProjectVM { Model = new Utils.ProjectDummy { ProjectType = ProjectType.FakeCaptureProject } };
+			var uriProject = new ProjectVM { Model = new Utils.ProjectDummy { ProjectType = ProjectType.URICaptureProject } };
+			var fileProject = new ProjectVM { Model = new Utils.ProjectDummy { ProjectType = ProjectType.FileProject } };
+			var editProject = new ProjectVM { Model = new Utils.ProjectDummy { ProjectType = ProjectType.EditProject } };
+
+			Assert.IsTrue (captureProject.IsLive);
+			Assert.IsTrue (fakeProject.IsLive);
+			Assert.IsTrue (uriProject.IsLive);
+			Assert.IsFalse (fileProject.IsLive);
+			Assert.IsFalse (editProject.IsLive);
+		}
+
 	}
 }

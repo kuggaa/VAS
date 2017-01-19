@@ -34,7 +34,7 @@ namespace VAS.Tests.Core.ViewModel
 
 			viewModel.CreateEventTypeTimelines (projectVM.EventTypes);
 
-			Assert.AreEqual (5, viewModel.ViewModels.Count);
+			Assert.AreEqual (5, viewModel.EventTypesTimeline.ViewModels.Count);
 		}
 
 		[Test]
@@ -47,11 +47,11 @@ namespace VAS.Tests.Core.ViewModel
 			viewModel.CreateEventTypeTimelines (projectVM.EventTypes);
 			viewModel.Model = project.Timeline;
 
-			Assert.AreEqual (5, viewModel.ViewModels.Count);
+			Assert.AreEqual (5, viewModel.EventTypesTimeline.ViewModels.Count);
 			Assert.AreEqual (3, viewModel.FullTimeline.ViewModels.Count);
-			Assert.AreEqual (1, viewModel.ViewModels [0].Count ());
-			Assert.AreEqual (1, viewModel.ViewModels [1].Count ());
-			Assert.AreEqual (1, viewModel.ViewModels [2].Count ());
+			Assert.AreEqual (1, viewModel.EventTypesTimeline.ViewModels [0].Count ());
+			Assert.AreEqual (1, viewModel.EventTypesTimeline.ViewModels [1].Count ());
+			Assert.AreEqual (1, viewModel.EventTypesTimeline.ViewModels [2].Count ());
 		}
 
 
@@ -65,12 +65,12 @@ namespace VAS.Tests.Core.ViewModel
 			viewModel.Model = project.Timeline;
 			EventType eventType = project.EventTypes [0];
 			Assert.AreEqual (3, viewModel.FullTimeline.ViewModels.Count);
-			Assert.AreEqual (1, viewModel.ViewModels.First (e => e.EventTypeVM.Model == eventType).Count ());
+			Assert.AreEqual (1, viewModel.EventTypesTimeline.ViewModels.First (e => e.EventTypeVM.Model == eventType).Count ());
 
 			project.AddEvent (eventType, new Time (0), new Time (10), new Time (5), null);
 
 			Assert.AreEqual (4, viewModel.FullTimeline.ViewModels.Count);
-			Assert.AreEqual (2, viewModel.ViewModels.First (e => e.EventTypeVM.Model == eventType).Count ());
+			Assert.AreEqual (2, viewModel.EventTypesTimeline.ViewModels.First (e => e.EventTypeVM.Model == eventType).Count ());
 		}
 
 		[Test]
@@ -83,12 +83,12 @@ namespace VAS.Tests.Core.ViewModel
 			viewModel.Model = project.Timeline;
 			EventType eventType = project.EventTypes [4];
 			Assert.AreEqual (3, viewModel.FullTimeline.ViewModels.Count);
-			Assert.AreEqual (0, viewModel.ViewModels.First (e => e.EventTypeVM.Model == eventType).Count ());
+			Assert.AreEqual (0, viewModel.EventTypesTimeline.ViewModels.First (e => e.EventTypeVM.Model == eventType).Count ());
 
 			project.AddEvent (eventType, new Time (0), new Time (10), new Time (5), null);
 
 			Assert.AreEqual (4, viewModel.FullTimeline.ViewModels.Count);
-			Assert.AreEqual (1, viewModel.ViewModels.First (e => e.EventTypeVM.Model == eventType).Count ());
+			Assert.AreEqual (1, viewModel.EventTypesTimeline.ViewModels.First (e => e.EventTypeVM.Model == eventType).Count ());
 		}
 
 		[Test]
@@ -100,7 +100,7 @@ namespace VAS.Tests.Core.ViewModel
 			viewModel.FullTimeline.ViewModels.Add (new TimelineEventVM { Model = project.Timeline [0] });
 
 			Assert.AreEqual (project.Timeline [0], viewModel.FullTimeline.ViewModels [0].Model);
-			Assert.IsTrue (viewModel.ViewModels.Count == 1);
+			Assert.IsTrue (viewModel.EventTypesTimeline.ViewModels.Count == 1);
 		}
 
 		[Test]
@@ -114,7 +114,7 @@ namespace VAS.Tests.Core.ViewModel
 
 			viewModel.Clear ();
 
-			Assert.AreEqual (0, viewModel.ViewModels.Count);
+			Assert.AreEqual (0, viewModel.EventTypesTimeline.ViewModels.Count);
 			Assert.AreEqual (0, viewModel.FullTimeline.ViewModels.Count);
 		}
 
@@ -132,8 +132,8 @@ namespace VAS.Tests.Core.ViewModel
 			et.Name = expected;
 			viewModel.Model.Add (new TimelineEvent { EventType = et });
 
-			Assert.AreEqual (5, viewModel.ViewModels.Count);
-			Assert.AreEqual (expected, viewModel.ViewModels.FirstOrDefault ().Model.Name);
+			Assert.AreEqual (5, viewModel.EventTypesTimeline.ViewModels.Count);
+			Assert.AreEqual (expected, viewModel.EventTypesTimeline.ViewModels.FirstOrDefault ().Model.Name);
 		}
 	}
 }

@@ -23,6 +23,7 @@ using System.ComponentModel;
 using System.Linq;
 using Gdk;
 using Gtk;
+using VAS.Core.Common;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using Misc = VAS.UI.Helpers.Misc;
@@ -66,7 +67,6 @@ namespace VAS.UI.Common
 			dictionaryStore = new Dictionary<IViewModel, TreeIter> ();
 			dictionaryNestedParent = new Dictionary<INotifyCollectionChanged, TreeIter> ();
 			Selection.SelectFunction = SelectFunction;
-			Selection.Changed += HandleTreeviewSelectionChanged;
 			RowActivated += HandleTreeviewRowActivated;
 		}
 
@@ -77,26 +77,87 @@ namespace VAS.UI.Common
 			this.ViewModel = viewModel as TCollectionViewModel;
 		}
 
-		public TCollectionViewModel ViewModel {
+		public virtual TCollectionViewModel ViewModel {
 			get {
 				return viewModel;
 			}
 			set {
 				if (viewModel != null) {
+					Selection.Changed -= HandleTreeviewSelectionChanged;
 					viewModel.ViewModels.CollectionChanged -= ViewModelCollectionChanged;
 					ClearSubViewModels ();
 				}
 				viewModel = value;
-				int i = 0;
-				foreach (TViewModel item in viewModel.ViewModels) {
-					AddSubViewModel (item, TreeIter.Zero, i);
-					i++;
+				if (viewModel != null) {
+					int i = 0;
+					foreach (TViewModel item in viewModel.ViewModels) {
+						AddSubViewModel (item, TreeIter.Zero, i);
+						i++;
+					}
+					viewModel.ViewModels.CollectionChanged += ViewModelCollectionChanged;
+					Selection.Changed += HandleTreeviewSelectionChanged;
 				}
-				viewModel.ViewModels.CollectionChanged += ViewModelCollectionChanged;
 			}
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Gets an enumeration of the selected <see cref="IViewModel"/> in the treeview.
+		/// </summary>
+		/// <returns>The selected view models.</returns>
+		protected IEnumerable<IViewModel> GetSelectedViewModels ()
+		{
+			return Selection.GetSelectedRows ().Select (GetViewModelAtPath);
+		}
+
+		/// <summary>
+		/// Gets the <see cref="IViewModel"/> at path the given path.
+		/// </summary>
+		/// <returns>The view model at path.</returns>
+		/// <param name="path">Path.</param>
+		protected IViewModel GetViewModelAtPath (TreePath path)
+		{
+			TreeIter iter;
+			Model.GetIter (out iter, path);
+			return Model.GetValue (iter, COL_DATA) as IViewModel;
+		}
+
+		/// <summary>
+		/// Gets the view model at a given position returning info about the column and the cell.
+		/// </summary>
+		/// <returns>The view model at position.</returns>
+		/// <param name="x">The x coordinate.</param>
+		/// <param name="y">The y coordinate.</param>
+		/// <param name="column">Column.</param>
+		/// <param name="cellX">Cell x.</param>
+		/// <param name="cellY">Cell y.</param>
+		protected IViewModel GetViewModelAtPosition (int x, int y, out TreeViewColumn column, out int cellX, out int cellY)
+		{
+			TreePath path;
+			TreeIter iter;
+
+			GetPathAtPos (x, y, out path, out column, out cellX, out cellY);
+			if (path == null) {
+				return null;
+			}
+			Model.GetIter (out iter, path);
+			return Model.GetValue (iter, COL_DATA) as IViewModel;
+		}
+
+		/// <summary>
+		/// Gets the view model at a given position.
+		/// </summary>
+		/// <returns>The view model at position.</returns>
+		/// <param name="x">The x coordinate.</param>
+		/// <param name="y">The y coordinate.</param>
+		protected IViewModel GetViewModelAtPosition (int x, int y)
+		{
+			TreeViewColumn column;
+			int cellX, cellY;
+
+			return GetViewModelAtPosition (x, y, out column, out cellX, out cellY);
+		}
 
 		protected void CreateFilterAndSort ()
 		{
@@ -118,42 +179,6 @@ namespace VAS.UI.Common
 		protected void CreateDragDest (TargetEntry [] targetEntries)
 		{
 			EnableModelDragDest (targetEntries, DragAction.Default);
-		}
-
-		void ViewModelCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
-		{
-			TreeIter parent = TreeIter.Zero;
-			INotifyCollectionChanged sen = (sender as INotifyCollectionChanged);
-			if (dictionaryNestedParent.ContainsKey (sen)) {
-				parent = dictionaryNestedParent [sen];
-			}
-			switch (e.Action) {
-			case NotifyCollectionChangedAction.Add:
-				int i = 0;
-				foreach (IViewModel item in e.NewItems) {
-					AddSubViewModel (item, parent, e.NewStartingIndex + i);
-					i++;
-				}
-				break;
-
-			case NotifyCollectionChangedAction.Remove:
-				foreach (IViewModel item in e.OldItems) {
-					RemoveSubViewModel (item);
-				}
-				break;
-
-			case NotifyCollectionChangedAction.Reset:
-				ViewModel = viewModel;
-				break;
-
-			case NotifyCollectionChangedAction.Move:
-				break;
-
-			case NotifyCollectionChangedAction.Replace:
-				break;
-			}
-
-			filter?.Refilter ();
 		}
 
 		protected virtual void AddSubViewModel (IViewModel subViewModel, TreeIter parent, int index)
@@ -180,50 +205,6 @@ namespace VAS.UI.Common
 			}
 		}
 
-		void ClearSubViewModels ()
-		{
-			ClearSubViewModelListeners (viewModel.ViewModels);
-			store.Clear ();
-			dictionaryStore.Clear ();
-			dictionaryNestedParent.Clear ();
-		}
-
-		void ClearSubViewModelListeners (IEnumerable<TViewModel> collection)
-		{
-			foreach (IViewModel item in collection) {
-				RemoveSubViewModelListener (item);
-				if (item is INestedViewModel) {
-					ClearAllNestedViewModelsListeners (item);
-				}
-			}
-		}
-
-		void ClearAllNestedViewModelsListeners (IViewModel subViewModel)
-		{
-			RemoveSubViewModelListener (subViewModel);
-			if (subViewModel is IEnumerable) {
-				foreach (var v in (subViewModel as IEnumerable)) {
-					ClearAllNestedViewModelsListeners (v as IViewModel);
-				}
-				(subViewModel as INestedViewModel).GetNotifyCollection ().CollectionChanged -= ViewModelCollectionChanged;
-			}
-		}
-
-		void RemoveAllNestedSubViewModels (IViewModel subViewModel)
-		{
-			if (subViewModel is IEnumerable) {
-				foreach (var v in (subViewModel as IEnumerable)) {
-					RemoveAllNestedSubViewModels (v as IViewModel);
-				}
-				(subViewModel as INestedViewModel).GetNotifyCollection ().CollectionChanged -= ViewModelCollectionChanged;
-				dictionaryNestedParent.Remove ((subViewModel as INestedViewModel).GetNotifyCollection ());
-			}
-			subViewModel.PropertyChanged -= PropertyChangedItem;
-			TreeIter iter = dictionaryStore [subViewModel];
-			store.Remove (ref iter);
-			dictionaryStore.Remove (subViewModel);
-		}
-
 		protected virtual void RemoveSubViewModel (IViewModel subViewModel)
 		{
 			RemoveSubViewModelListener (subViewModel);
@@ -236,25 +217,33 @@ namespace VAS.UI.Common
 			}
 		}
 
-		void RemoveSubViewModelListener (IViewModel vm)
+		protected override bool OnQueryTooltip (int x, int y, bool keyboard_tooltip, Tooltip tooltip)
 		{
-			vm.PropertyChanged -= PropertyChangedItem;
-		}
-
-		void PropertyChangedItem (object sender, PropertyChangedEventArgs e)
-		{
-			var senderVM = sender as IViewModel;
-			if (senderVM == null || Model == null || !dictionaryStore.ContainsKey (senderVM)) {
-				return;
+			TreeViewColumn column;
+			int cellX, cellY;
+			IViewModel viewModel = GetViewModelAtPosition (x, y, out column, out cellX, out cellY);
+			if (viewModel != null) {
+				string text = GetCellTooltip (cellX, cellY, viewModel);
+				if (text != null) {
+					tooltip.Text = text;
+					return true;
+				}
 			}
-			TreeIter iter = dictionaryStore [senderVM];
-			store.EmitRowChanged (store.GetPath (iter), iter);
+			return base.OnQueryTooltip (x, y, keyboard_tooltip, tooltip);
 		}
 
 		protected override bool OnButtonPressEvent (Gdk.EventButton evnt)
 		{
 			bool ret = true;
 			pathClicked = null;
+			TreeViewColumn column;
+			int cellX, cellY;
+
+			IViewModel viewModel = GetViewModelAtPosition ((int)evnt.X, (int)evnt.Y, out column, out cellX, out cellY);
+			if (ProcessViewModelClicked (viewModel, (int)evnt.X, (int)evnt.Y, column.Width, evnt.State)) {
+				return true;
+			}
+
 			TreePath [] paths = Selection.GetSelectedRows ();
 
 			if (Misc.RightButtonClicked (evnt)) {
@@ -288,6 +277,7 @@ namespace VAS.UI.Common
 		{
 			bool ret = true;
 			bool isExpanded;
+
 			if (pathClicked != null && !dragStarted) {
 				bool rowExpandedState = GetRowExpanded (pathClicked);
 				ret = base.OnButtonReleaseEvent (evnt);
@@ -311,11 +301,23 @@ namespace VAS.UI.Common
 					Gtk.Drag.Begin (this, targets, DragAction.Default, 1, evnt);
 					dragStarted = true;
 				}
+			} else {
+				TreeViewColumn column;
+				int cellX, cellY;
+				IViewModel vm = GetViewModelAtPosition ((int)evnt.X, (int)evnt.Y, out column, out cellX, out cellY);
+				if (vm != null) {
+					Area areaToDraw = GetCellRedrawArea (cellX, cellY, evnt.X, evnt.Y, column.Width, vm);
+					if (areaToDraw != null) {
+						QueueDrawArea ((int)areaToDraw.TopLeft.X, (int)areaToDraw.TopLeft.Y, (int)areaToDraw.Width,
+										   (int)areaToDraw.Height);
+						return true;
+					}
+				}
 			}
 			return base.OnMotionNotifyEvent (evnt);
 		}
 
-		protected override void OnDragBegin (DragContext context)
+		protected override void OnDragBegin (Gdk.DragContext context)
 		{
 			base.OnDragBegin (context);
 			TreePath [] paths = Selection.GetSelectedRows ();
@@ -325,7 +327,7 @@ namespace VAS.UI.Common
 			App.Current.DragContext.SourceDataType = firstDraggedElement.GetType ();
 		}
 
-		protected override void OnDragDataGet (DragContext context, SelectionData selectionData, uint info, uint time)
+		protected override void OnDragDataGet (Gdk.DragContext context, SelectionData selectionData, uint info, uint time)
 		{
 			List<IViewModel> draggedViewModels = new List<IViewModel> ();
 			var paths = Selection.GetSelectedRows ();
@@ -340,14 +342,14 @@ namespace VAS.UI.Common
 			App.Current.DragContext.SourceData = draggedViewModels;
 		}
 
-		protected override void OnDragDataReceived (DragContext context, int x, int y, SelectionData selectionData, uint info, uint time)
+		protected override void OnDragDataReceived (Gdk.DragContext context, int x, int y, SelectionData selectionData, uint info, uint time)
 		{
 			List<IViewModel> draggedElements = App.Current.DragContext.SourceData as List<IViewModel>;
 			bool success = HandleDragReceived (draggedElements, x, y, Gtk.Drag.GetSourceWidget (context) == this);
 			Gtk.Drag.Finish (context, success, false, time);
 		}
 
-		protected override bool OnDragMotion (DragContext context, int x, int y, uint time)
+		protected override bool OnDragMotion (Gdk.DragContext context, int x, int y, uint time)
 		{
 			TreeIter iter;
 			TreePath path;
@@ -369,14 +371,14 @@ namespace VAS.UI.Common
 			return false;
 		}
 
-		protected override void OnDragEnd (DragContext context)
+		protected override void OnDragEnd (Gdk.DragContext context)
 		{
 			App.Current.DragContext.SourceDataType = null;
 			App.Current.DragContext.SourceData = null;
 			base.OnDragEnd (context);
 		}
 
-		protected override bool OnDragFailed (DragContext drag_context, DragResult drag_result)
+		protected override bool OnDragFailed (Gdk.DragContext drag_context, DragResult drag_result)
 		{
 			App.Current.DragContext.SourceDataType = null;
 			App.Current.DragContext.SourceData = null;
@@ -384,6 +386,48 @@ namespace VAS.UI.Common
 		}
 
 		#region Virtual methods
+
+		/// <summary>
+		/// Gets the cell tooltip for a cell at a given position.
+		/// </summary>
+		/// <returns>The cell tooltip.</returns>
+		/// <param name="x">X coordinates.</param>
+		/// <param name="y">Y coordinates.</param>
+		/// <param name="viewModel">View model.</param>
+		protected virtual string GetCellTooltip (int x, int y, IViewModel viewModel)
+		{
+			return null;
+		}
+
+		/// <summary>
+		/// Returns the area that needs to be redrawn after a mouse-over in a cell.
+		/// </summary>
+		/// <returns>The cell redraw area.</returns>
+		/// <param name="cellX">Cell x.</param>
+		/// <param name="cellY">Cell y.</param>
+		/// <param name="y">Y coordinate.</param>
+		/// <param name="x">X coordinate.</param>
+		/// <param name="width">Width.</param>
+		/// <param name="viewModel">View model.</param>
+		protected virtual Area GetCellRedrawArea (int cellX, int cellY, double x, double y, int width, IViewModel viewModel)
+		{
+			return null;
+		}
+
+		/// <summary>
+		/// Handles clicks in a cell with a ViewModel. It delegates the click the View and if not handled continues with
+		/// the regular chain.
+		/// </summary>
+		/// <returns><c>true</c>, if view model clicked was processed, <c>false</c> otherwise.</returns>
+		/// <param name="viewModel">View model.</param>
+		/// <param name="x">The x coordinate.</param>
+		/// <param name="y">The y coordinate.</param>
+		/// <param name="colWidth">The column width.</param>
+		/// <param name="state">State.</param>
+		protected virtual bool ProcessViewModelClicked (IViewModel viewModel, int x, int y, int colWidth, ModifierType state)
+		{
+			return false;
+		}
 
 		protected virtual void ShowMenu ()
 		{
@@ -532,9 +576,66 @@ namespace VAS.UI.Common
 		}
 
 		#endregion
+		void ClearSubViewModels ()
+		{
+			ClearSubViewModelListeners (viewModel.ViewModels);
+			store.Clear ();
+			dictionaryStore.Clear ();
+			dictionaryNestedParent.Clear ();
+		}
+
+		void ClearSubViewModelListeners (IEnumerable<TViewModel> collection)
+		{
+			foreach (IViewModel item in collection) {
+				RemoveSubViewModelListener (item);
+				if (item is INestedViewModel) {
+					ClearAllNestedViewModelsListeners (item);
+				}
+			}
+		}
+
+		void ClearAllNestedViewModelsListeners (IViewModel subViewModel)
+		{
+			RemoveSubViewModelListener (subViewModel);
+			if (subViewModel is IEnumerable) {
+				foreach (var v in (subViewModel as IEnumerable)) {
+					ClearAllNestedViewModelsListeners (v as IViewModel);
+				}
+				(subViewModel as INestedViewModel).GetNotifyCollection ().CollectionChanged -= ViewModelCollectionChanged;
+			}
+		}
+
+		void RemoveAllNestedSubViewModels (IViewModel subViewModel)
+		{
+			if (subViewModel is IEnumerable) {
+				foreach (var v in (subViewModel as IEnumerable)) {
+					RemoveAllNestedSubViewModels (v as IViewModel);
+				}
+				(subViewModel as INestedViewModel).GetNotifyCollection ().CollectionChanged -= ViewModelCollectionChanged;
+				dictionaryNestedParent.Remove ((subViewModel as INestedViewModel).GetNotifyCollection ());
+			}
+			subViewModel.PropertyChanged -= PropertyChangedItem;
+			TreeIter iter = dictionaryStore [subViewModel];
+			store.Remove (ref iter);
+			dictionaryStore.Remove (subViewModel);
+		}
+
+		void RemoveSubViewModelListener (IViewModel vm)
+		{
+			vm.PropertyChanged -= PropertyChangedItem;
+		}
+
+		void PropertyChangedItem (object sender, PropertyChangedEventArgs e)
+		{
+			var senderVM = sender as IViewModel;
+			if (senderVM == null || Model == null || !dictionaryStore.ContainsKey (senderVM)) {
+				return;
+			}
+			TreeIter iter = dictionaryStore [senderVM];
+			store.EmitRowChanged (store.GetPath (iter), iter);
+		}
 
 		void FillParentAndChild (TreeIter iter, TreePath path, TreeViewDropPosition pos, out IViewModel parentVM, out IViewModel childVM)
-
 		{
 			TreeIter parent;
 
@@ -548,7 +649,7 @@ namespace VAS.UI.Common
 			}
 		}
 
-		void DisableDragInto (TreePath path, DragContext context, uint time, TreeViewDropPosition pos)
+		void DisableDragInto (TreePath path, Gdk.DragContext context, uint time, TreeViewDropPosition pos)
 		{
 			if (pos == TreeViewDropPosition.IntoOrAfter) {
 				pos = TreeViewDropPosition.After;
@@ -558,6 +659,43 @@ namespace VAS.UI.Common
 			SetDragDestRow (path, pos);
 			Gdk.Drag.Status (context, context.SuggestedAction, time);
 		}
+
+		void ViewModelCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		{
+			TreeIter parent = TreeIter.Zero;
+			INotifyCollectionChanged sen = (sender as INotifyCollectionChanged);
+			if (dictionaryNestedParent.ContainsKey (sen)) {
+				parent = dictionaryNestedParent [sen];
+			}
+			switch (e.Action) {
+			case NotifyCollectionChangedAction.Add:
+				int i = 0;
+				foreach (IViewModel item in e.NewItems) {
+					AddSubViewModel (item, parent, e.NewStartingIndex + i);
+					i++;
+				}
+				break;
+
+			case NotifyCollectionChangedAction.Remove:
+				foreach (IViewModel item in e.OldItems) {
+					RemoveSubViewModel (item);
+				}
+				break;
+
+			case NotifyCollectionChangedAction.Reset:
+				ViewModel = viewModel;
+				break;
+
+			case NotifyCollectionChangedAction.Move:
+				break;
+
+			case NotifyCollectionChangedAction.Replace:
+				break;
+			}
+
+			filter?.Refilter ();
+		}
+
 	}
 }
 

@@ -19,19 +19,17 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using VAS.Core.Common;
-using VAS.Core.Events;
-using VAS.Core.Handlers;
 using VAS.Core.Interfaces.Drawing;
-using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
+using VAS.Core.ViewModel;
 using VAS.Drawing.CanvasObjects.Timeline;
-using VAS.Core.MVVMC;
 
 namespace VAS.Drawing.Widgets
 {
 	[View ("TimeruleView")]
-	public class Timerule : SelectionCanvas, ICanvasView<IAnalysisViewModel>
+	public class Timerule : SelectionCanvas, ICanvasView<VideoPlayerVM>
 	{
 		public event EventHandler CenterPlayheadClicked;
 
@@ -46,7 +44,7 @@ namespace VAS.Drawing.Widgets
 		double timeSpacing = 100.0;
 		Time currentTime;
 		Time duration;
-		IAnalysisViewModel viewModel;
+		VideoPlayerVM viewModel;
 
 		public Timerule (IWidget widget) : base (widget)
 		{
@@ -65,20 +63,20 @@ namespace VAS.Drawing.Widgets
 		{
 		}
 
-		public IAnalysisViewModel ViewModel {
+		public VideoPlayerVM ViewModel {
 			get {
 				return viewModel;
 			}
 
 			set {
 				if (viewModel != null) {
-					viewModel.Project.FileSet.PropertyChanged -= HandlePropertyChangedEventHandler;
+					viewModel.PropertyChanged -= HandlePropertyChangedEventHandler;
 				}
 				viewModel = value;
 				if (viewModel != null) {
-					viewModel.Project.FileSet.PropertyChanged += HandlePropertyChangedEventHandler;
+					viewModel.PropertyChanged += HandlePropertyChangedEventHandler;
 				}
-				Duration = viewModel.Project.FileSet.VirtualDuration;
+				Duration = viewModel.Duration;
 			}
 		}
 
@@ -207,12 +205,6 @@ namespace VAS.Drawing.Widgets
 			set;
 		}
 
-		bool PlayingState {
-			get {
-				return ViewModel.VideoPlayer.Playing;
-			}
-		}
-
 		bool WasPlaying {
 			get;
 			set;
@@ -220,7 +212,7 @@ namespace VAS.Drawing.Widgets
 
 		public void SetViewModel (object viewModel)
 		{
-			ViewModel = (IAnalysisViewModel)viewModel;
+			ViewModel = (VideoPlayerVM)viewModel;
 		}
 
 		public override void Draw (IContext context, Area area)
@@ -303,18 +295,18 @@ namespace VAS.Drawing.Widgets
 
 		protected override void StartMove (Selection sel)
 		{
-			WasPlaying = PlayingState;
-			ViewModel.VideoPlayer.LoadEvent (null, false);
+			WasPlaying = ViewModel.Playing;
+			ViewModel.LoadEvent (null, false);
 		}
 
 		protected override void StopMove (bool moved)
 		{
 			if (moved && !ContinuousSeek) {
-				ViewModel.VideoPlayer.Seek (
+				ViewModel.Seek (
 					Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel), true);
 			}
 			if (WasPlaying) {
-				ViewModel.VideoPlayer.Play ();
+				ViewModel.Play ();
 			}
 		}
 
@@ -326,7 +318,7 @@ namespace VAS.Drawing.Widgets
 					needle.X = Utils.TimeToPos (Duration, SecondsPerPixel);
 					return;
 				}
-				ViewModel.VideoPlayer.Seek (Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel),
+				ViewModel.Seek (Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel),
 						   false, throttled: true);
 			}
 		}
@@ -339,7 +331,7 @@ namespace VAS.Drawing.Widgets
 				return;
 			}
 			needle.X = coords.X;
-			ViewModel.VideoPlayer.Seek (clickTime, true);
+			ViewModel.Seek (clickTime, true);
 			needle.ReDraw ();
 		}
 
@@ -356,8 +348,8 @@ namespace VAS.Drawing.Widgets
 
 		void HandlePropertyChangedEventHandler (object sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == "IsStretched" || e.PropertyName == "Collection") {
-				Duration = ViewModel.Project.FileSet.VirtualDuration;
+			if (e.PropertyName == "Duration") {
+				Duration = ViewModel.Duration;
 			}
 		}
 	}

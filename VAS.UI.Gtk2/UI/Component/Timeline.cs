@@ -22,15 +22,13 @@ using Gtk;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
-using VAS.Core.Filters;
-using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
+using VAS.Core.ViewModel;
 using VAS.Drawing.Cairo;
 using VAS.Drawing.Widgets;
 using VAS.UI.Menus;
 using VASDrawing = VAS.Drawing;
-using VAS.Core.ViewModel;
 
 namespace VAS.UI.Component
 {
@@ -42,9 +40,9 @@ namespace VAS.UI.Component
 	{
 		protected TimelineLabels labels;
 		protected PlaysMenu menu;
+		protected PlaysTimeline timeline;
 		const uint TIMEOUT_MS = 100;
 		Timerule timerule;
-		PlaysTimeline timeline;
 		double secondsPerPixel;
 		uint timeoutID;
 		Time currentTime, nextCurrentTime;
@@ -126,7 +124,7 @@ namespace VAS.UI.Component
 
 				labels.SetViewModel (viewModel);
 				timeline.SetViewModel (viewModel);
-				timerule.SetViewModel (viewModel);
+				timerule.ViewModel = viewModel?.VideoPlayer;
 
 				if (viewModel == null) {
 					if (timeoutID != 0) {

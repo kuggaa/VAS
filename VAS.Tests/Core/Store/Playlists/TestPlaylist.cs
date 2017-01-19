@@ -100,6 +100,24 @@ namespace VAS.Tests.Core.Store.Playlists
 		}
 
 		[Test ()]
+		public void TestDurationChangedWhenElementChanged ()
+		{
+			Playlist pl = new Playlist ();
+			pl.IsLoaded = false;
+			Assert.AreEqual (new Time (0), pl.Duration);
+			Assert.IsFalse (pl.IsLoaded);
+			pl.IsLoaded = true;
+			var event1 = new TimelineEvent ();
+			event1.Start = new Time (10);
+			event1.Stop = new Time (20);
+			var playlistPlayElement = new PlaylistPlayElement (event1);
+			pl.Elements.Add (playlistPlayElement);
+
+			event1.Stop = new Time (30);
+			Assert.AreEqual (new Time (20), pl.Duration);
+		}
+
+		[Test ()]
 		public void TestGetStartTime ()
 		{
 			Playlist pl = new Playlist ();

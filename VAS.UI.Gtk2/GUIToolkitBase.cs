@@ -30,6 +30,7 @@ using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
 using VAS.Core.Store.Playlists;
+using VAS.Core.ViewModel;
 using VAS.Drawing;
 using VAS.Drawing.CanvasObjects.Blackboard;
 using VAS.UI.Dialog;
@@ -158,10 +159,6 @@ namespace VAS.UI
 		public abstract void ShowProjectStats (Project project);
 
 		public abstract string RemuxFile (string inputFile, string outputFile, VideoMuxerType muxer);
-
-		public abstract void OpenProject (Project project, ProjectType projectType,
-										  CaptureSettings props, EventsFilter filter,
-										  out IAnalysisWindowBase analysisWindow);
 
 		public abstract EndCaptureResponse EndCapture (bool isCapturing);
 

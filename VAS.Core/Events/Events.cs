@@ -25,6 +25,7 @@ using VAS.Core.Interfaces.GUI;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Core.Store.Templates;
+using VAS.Core.ViewModel;
 
 namespace VAS.Core.Events
 {
@@ -33,9 +34,37 @@ namespace VAS.Core.Events
 		public bool ReturnValue { get; set; }
 	}
 
+	// FIXME: this event should be replaced with the one using the ViewModel
 	public class LoadEventEvent : Event
 	{
+		/// <summary>
+		/// Gets or sets the timeline event to load.
+		/// </summary>
+		/// <value>The timeline event.</value>
 		public TimelineEvent TimelineEvent { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.Events.LoadEventEvent"/> will
+		/// start playing when it's loaded.
+		/// </summary>
+		/// <value><c>true</c> if playing; otherwise, <c>false</c>.</value>
+		public bool Playing { get; set; }
+	}
+
+	public class LoadTimelineEventEvent<T> : Event
+	{
+		/// <summary>
+		/// Gets or sets the timeline event to load.
+		/// </summary>
+		/// <value>The timeline event.</value>
+		public T Object { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.Events.LoadEventEvent"/> will
+		/// start playing when it's loaded.
+		/// </summary>
+		/// <value><c>true</c> if playing; otherwise, <c>false</c>.</value>
+		public bool Playing { get; set; }
 	}
 
 	public class EventCreatedEvent : Event
@@ -309,8 +338,6 @@ namespace VAS.Core.Events
 		public ProjectType ProjectType { get; set; }
 
 		public EventsFilter Filter { get; set; }
-
-		public IAnalysisWindowBase AnalysisWindow { get; set; }
 	}
 
 	public class NewDashboardEvent : Event
@@ -374,13 +401,6 @@ namespace VAS.Core.Events
 		/// <value><c>true</c> if it is a modal state; otherwise, <c>false</c>.</value>
 		public bool IsModal { get; set; }
 
-	}
-
-	public class LoadTimelineEvent<T> : Event
-	{
-		public T Object { get; set; }
-
-		public bool Playing { get; set; }
 	}
 
 	/// <summary>

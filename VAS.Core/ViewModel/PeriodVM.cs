@@ -1,5 +1,5 @@
-//
-//  Copyright (C) 2014 Andoni Morales Alastruey <ylatuya@gmail.com>
+﻿//
+//  Copyright (C) 2016 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,39 +15,24 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using VAS.Core.Interfaces.Drawing;
-using VAS.Core.MVVMC;
-using VAS.Core.ViewModel;
+using System;
+using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.Store;
 
-namespace VAS.Drawing.CanvasObjects.Timeline
+namespace VAS.Core.ViewModel
 {
 	/// <summary>
-	/// A view for <see cref="Timer"/> in a timeline row.
+	/// A ViewModel for <see cref="Period"/>
 	/// </summary>
-	[View ("TimerTimeNodeView")]
-	public class TimerTimeNodeView : TimeNodeView, ICanvasObjectView<TimeNodeVM>
+	public class PeriodVM : TimerVM, IViewModel<Period>
 	{
-		public TimeNodeVM ViewModel {
-			get {
-				return TimeNode;
-			}
+		public new Period Model {
 			set {
-				TimeNode = value;
+				base.Model = value;
 			}
-		}
-
-		/// <summary>
-		/// The timer that holds the time node used in this view.
-		/// </summary>
-		/// <value>The timer.</value>
-		public TimerVM Timer {
-			get;
-			set;
-		}
-
-		public void SetViewModel (object viewModel)
-		{
-			ViewModel = (TimeNodeVM)viewModel;
+			get {
+				return (Period)base.Model;
+			}
 		}
 	}
 }

@@ -16,8 +16,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using System.Windows.Input;
 using System.Diagnostics.Contracts;
+using System.Threading.Tasks;
+using System.Windows.Input;
 using VAS.Core.Common;
 
 namespace VAS.Core.MVVMC
@@ -26,14 +27,29 @@ namespace VAS.Core.MVVMC
 	{
 		public event EventHandler CanExecuteChanged;
 		protected Func<object, bool> canExecute;
-		readonly Action<object> execute;
+		readonly Func<object, Task> execute;
 		bool executable;
+
+		public Command (Func<object, Task> execute)
+		{
+			Contract.Requires (execute != null);
+
+			this.execute = execute;
+		}
 
 		public Command (Action<object> execute)
 		{
 			Contract.Requires (execute != null);
 
-			this.execute = execute;
+			this.execute = (o) => {
+				execute (o);
+				return AsyncHelpers.Return ();
+			};
+		}
+
+		public Command (Func<Task> execute) : this (o => execute ())
+		{
+			Contract.Requires (execute != null);
 		}
 
 		public Command (Action execute) : this (o => execute ())
@@ -49,6 +65,20 @@ namespace VAS.Core.MVVMC
 			this.canExecute = canExecute;
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:VAS.Core.MVVMC.Command"/> class with an async function.
+		/// </summary>
+		public Command (Func<object, Task> execute, Func<object, bool> canExecute) : this (execute)
+		{
+			Contract.Requires (execute != null);
+			Contract.Requires (canExecute != null);
+
+			this.canExecute = canExecute;
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:VAS.Core.MVVMC.Command"/> class with an async function.
+		/// </summary>
 		public Command (Action execute, Func<bool> canExecute) : this (o => execute (), o => canExecute ())
 		{
 			Contract.Requires (execute != null);
@@ -107,9 +137,19 @@ namespace VAS.Core.MVVMC
 			}
 		}
 
-		public void Execute (object parameter)
+		public void Execute (object parameter = null)
 		{
 			execute (parameter);
+		}
+
+		/// <summary>
+		/// Executes the command asynchronously.
+		/// </summary>
+		/// <returns>The task.</returns>
+		/// <param name="parameter">Parameter.</param>
+		public Task ExecuteAsync (object parameter = null)
+		{
+			return execute (parameter);
 		}
 
 		public void EmitCanExecuteChanged ()
@@ -128,6 +168,23 @@ namespace VAS.Core.MVVMC
 		}
 
 		public Command (Action<T> execute, Func<T, bool> canExecute) : base (o => execute ((T)o), o => canExecute ((T)o))
+		{
+			Contract.Requires (execute != null);
+			Contract.Requires (canExecute != null);
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:VAS.Core.MVVMC.Command`1"/> class with an async function.
+		/// </summary>
+		public Command (Func<T, Task> execute) : base (o => execute ((T)o))
+		{
+			Contract.Requires (execute != null);
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:VAS.Core.MVVMC.Command`1"/> class with an async function.
+		/// </summary>
+		public Command (Func<T, Task> execute, Func<T, bool> canExecute) : base (o => execute ((T)o), o => canExecute ((T)o))
 		{
 			Contract.Requires (execute != null);
 			Contract.Requires (canExecute != null);

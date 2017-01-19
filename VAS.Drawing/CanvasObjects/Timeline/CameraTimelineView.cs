@@ -36,6 +36,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				return viewModel;
 			}
 			set {
+				viewModel = value;
 				SetMediaFile (value);
 			}
 		}
@@ -62,6 +63,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 		public void SetMediaFile (MediaFileVM mediaFile)
 		{
+			Duration = mediaFile.Duration;
 			var cameraNodeView = new CameraView ();
 			cameraNodeView.ViewModel = mediaFile;
 			cameraNodeView.OffsetY = OffsetY;

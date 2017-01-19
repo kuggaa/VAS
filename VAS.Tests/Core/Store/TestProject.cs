@@ -355,9 +355,6 @@ namespace VAS.Tests.Core.Store
 			p.Timeline.Add (new TimelineEvent ());
 			Assert.IsTrue (p.IsChanged);
 			p.IsChanged = false;
-			p.Timeline = null;
-			Assert.IsTrue (p.IsChanged);
-			p.IsChanged = false;
 			p.EventTypes.Add (new EventType ());
 			Assert.IsTrue (p.IsChanged);
 			p.IsChanged = false;
@@ -367,19 +364,10 @@ namespace VAS.Tests.Core.Store
 			p.Playlists.Add (new Playlist ());
 			Assert.IsTrue (p.IsChanged);
 			p.IsChanged = false;
-			p.Playlists = null;
-			Assert.IsTrue (p.IsChanged);
-			p.IsChanged = false;
 			p.Periods.Add (new Period ());
 			Assert.IsTrue (p.IsChanged);
 			p.IsChanged = false;
-			p.Periods = null;
-			Assert.IsTrue (p.IsChanged);
-			p.IsChanged = false;
 			p.Timers.Add (new Timer ());
-			Assert.IsTrue (p.IsChanged);
-			p.IsChanged = false;
-			p.Timers = null;
 			Assert.IsTrue (p.IsChanged);
 			p.IsChanged = false;
 		}
