@@ -11,9 +11,9 @@ VAS.Core/Store/Templates/Dashboard.cs
 VAS.DB/CouchbaseStorage.cs
 VAS.Multimedia/Capturer/FakeCapturer.cs
 VAS.Multimedia/Utils/GstDiscoverer.cs
-VAS.Services/CoreEventsManager.cs
 VAS.Services/VideoPlayerController.cs
 VAS.Services/RenderingJobsController.cs
+VAS.Services/Controller/CoreEventsController.cs
 VAS.Services/Controller/PlaylistController.cs
 VAS.Services/Controller/ProjectsController.cs
 VAS.Services/Controller/TemplatesController.cs
