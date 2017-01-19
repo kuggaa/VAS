@@ -134,7 +134,7 @@ namespace VAS.UI.Common
 					}
 				}
 			}
-			UpdatePlaylistELementsSelection ();
+			UpdatePlaylistElementsSelection ();
 		}
 
 		protected override void ShowMenu ()
@@ -159,7 +159,7 @@ namespace VAS.UI.Common
 			return false;
 		}
 
-		void UpdatePlaylistELementsSelection ()
+		void UpdatePlaylistElementsSelection ()
 		{
 			TreeIter iter;
 			Dictionary<PlaylistVM, List<PlaylistElementVM>> selected =
@@ -187,6 +187,12 @@ namespace VAS.UI.Common
 			}
 			foreach (var selections in selected) {
 				selections.Key.SelectionReplace (selections.Value);
+			}
+
+			if (!selected.Any ()) {
+				foreach (var playlist in ViewModel.ViewModels.Where ((arg) => arg.Selection.Any ())) {
+					playlist.Selection.Clear ();
+				}
 			}
 		}
 	}
