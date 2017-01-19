@@ -253,6 +253,14 @@ namespace VAS.Core.ViewModel
 			RecreateInternalDictionary ();
 		}
 
+		protected override void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			base.ForwardPropertyChanged (sender, e);
+			if (sender is AnalysisEventType && e.PropertyName == nameof (EventType.Name)) {
+				RecreateInternalDictionary ();
+			}
+		}
+
 		void RecreateInternalDictionary ()
 		{
 			eventTypeToTimeline.Clear ();
