@@ -163,7 +163,7 @@ namespace VAS.Core.Common
 		public const int ButtonTimerFontSize = 24;
 		public const int ButtonButtonsFontSize = 10;
 		public const int ButtonMinWidth = 100;
-		public const string ButtonTimerIcon = "images/dashboard/longomatch-timer" + IMAGE_EXT;
+		public const string ButtonTimerIcon = "images/dashboard/vas-timer" + IMAGE_EXT;
 		public const string ButtonTagIcon = "images/dashboard/longomatch-tag" + IMAGE_EXT;
 		public const string ButtonScoreIcon = "images/dashboard/longomatch-score" + IMAGE_EXT;
 		public const string ButtonEventIcon = "images/dashboard/longomatch-event" + IMAGE_EXT;

@@ -31,8 +31,8 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 	{
 		Time currentTime;
 		static Image iconImage;
-		static Image cancelImage;
-		Rectangle cancelRect;
+		protected static Image cancelImage;
+		protected Rectangle cancelRect;
 		bool cancelPressed;
 		TimerButton timerButton;
 		TimerButtonVM viewModel;
@@ -111,7 +111,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
-		Time PartialTime {
+		protected Time PartialTime {
 			get {
 				if (TimerButton.StartTime == null) {
 					return new Time (0);
@@ -129,6 +129,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		public override void ClickPressed (Point p, ButtonModifier modif)
 		{
 			cancelPressed = cancelRect.GetSelection (p) != null;
+			base.ClickPressed (p, modif);
 		}
 
 		public override void ClickReleased ()
@@ -170,13 +171,13 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
-		int HeaderHeight {
+		protected int HeaderHeight {
 			get {
 				return iconImage.Height + 5;
 			}
 		}
 
-		int TextHeaderX {
+		protected int TextHeaderX {
 			get {
 				return iconImage.Width + 5 * 2;
 			}
@@ -196,7 +197,12 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			base.Draw (tk, area);
 
 			tk.Begin ();
+			DrawTimer (tk);
+			tk.End ();
+		}
 
+		protected virtual void DrawTimer (IDrawingToolkit tk)
+		{
 			cancelRect = new Rectangle (
 				new Point ((Position.X + Width) - StyleConf.ButtonRecWidth, Position.Y),
 				StyleConf.ButtonRecWidth, HeaderHeight);
@@ -233,7 +239,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				tk.DrawImage (new Point (Position.X + Width - 40, Position.Y + 5), 40,
 					iconImage.Height, TeamImage, ScaleMode.AspectFit);
 			}
-			tk.End ();
 		}
 	}
 }
