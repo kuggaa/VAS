@@ -37,6 +37,7 @@ namespace VAS.Drawing.CanvasObjects
 			BackgroundColorActive = App.Current.Style.PaletteActive;
 			BorderColor = App.Current.Style.PaletteBackgroundDark;
 			TextColor = App.Current.Style.PaletteText;
+			UseBackBufferSurface = true;
 			MinWidth = 20;
 			MinHeight = 20;
 		}
@@ -114,6 +115,15 @@ namespace VAS.Drawing.CanvasObjects
 			get {
 				return true;
 			}
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="T:VAS.Drawing.CanvasObjects.ButtonObject"/> use back buffer surface.
+		/// </summary>
+		/// <value><c>true</c> if use back buffer surface; otherwise, <c>false</c>.</value>
+		public bool UseBackBufferSurface {
+			get;
+			set;
 		}
 
 		public virtual Area Area {
@@ -271,12 +281,23 @@ namespace VAS.Drawing.CanvasObjects
 			backBufferSurface = tk.CreateSurface ((int)Width, (int)Height);
 			using (IContext c = backBufferSurface.Context) {
 				tk.Context = c;
-				tk.TranslateAndScale (new Point (-Position.X, -Position.Y),
-					new Point (1, 1));
-				DrawButton (tk);
-				DrawImage (tk);
-				DrawText (tk);
+				DrawBackBuffer (tk);
 			}
+		}
+
+		/// <summary>
+		/// Draws the back buffer depending on the property UseBackBufferSurface
+		/// </summary>
+		/// <param name="tk">Tk.</param>
+		void DrawBackBuffer (IDrawingToolkit tk)
+		{
+			if (UseBackBufferSurface) {
+				tk.TranslateAndScale (new Point (-Position.X, -Position.Y),
+						new Point (1, 1));
+			}
+			DrawButton (tk);
+			DrawImage (tk);
+			DrawText (tk);
 		}
 
 		public override void Draw (IDrawingToolkit tk, Area area)
@@ -286,12 +307,16 @@ namespace VAS.Drawing.CanvasObjects
 			if (!UpdateDrawArea (tk, area, Area)) {
 				return;
 			}
-			if (backBufferSurface == null) {
+			if (UseBackBufferSurface && backBufferSurface == null) {
 				CreateBackBufferSurface ();
 			}
 			tk.Context = ctx;
 			tk.Begin ();
-			tk.DrawSurface (backBufferSurface, Position);
+			if (UseBackBufferSurface) {
+				tk.DrawSurface (backBufferSurface, Position);
+			} else {
+				DrawBackBuffer (tk);
+			}
 			DrawSelectionArea (tk);
 			tk.End ();
 		}
