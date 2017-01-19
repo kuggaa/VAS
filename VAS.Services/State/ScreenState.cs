@@ -118,6 +118,7 @@ namespace VAS.Services.State
 		{
 			Log.Debug ($"Hiding state {Name}");
 			foreach (IController controller in Controllers) {
+				Log.Debug ($"Stoping controller {controller}");
 				controller.Stop ();
 			}
 			App.Current.KeyContextManager.RemoveContext (KeyContext);
@@ -128,6 +129,7 @@ namespace VAS.Services.State
 		{
 			Log.Debug ($"Showing state {Name}");
 			foreach (IController controller in Controllers) {
+				Log.Debug ($"Starting controller {controller}");
 				controller.Start ();
 			}
 			App.Current.KeyContextManager.AddContext (KeyContext);
