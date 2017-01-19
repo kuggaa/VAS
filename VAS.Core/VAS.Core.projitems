@@ -207,6 +207,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TeamVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\DashboardVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\DashboardButtonCollectionVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IStopwatch.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\Stopwatch.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

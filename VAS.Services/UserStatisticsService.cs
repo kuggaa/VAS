@@ -16,7 +16,6 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using System.Diagnostics;
 using System.Collections.Generic;
 using VAS.Core.Common;
 using VAS.Core.Events;
@@ -36,7 +35,7 @@ namespace VAS.Services
 		/// Gets the state timer.
 		/// </summary>
 		/// <value>The state timer.</value>
-		public Stopwatch StateTimer {
+		public IStopwatch StateTimer {
 			get;
 			private set;
 		}
@@ -45,7 +44,7 @@ namespace VAS.Services
 		/// Gets the general timer.
 		/// </summary>
 		/// <value>The general timer.</value>
-		public Stopwatch GeneralTimer {
+		public IStopwatch GeneralTimer {
 			get;
 			private set;
 		}
@@ -173,11 +172,11 @@ namespace VAS.Services
 		{
 			ProjectDictionary = new Dictionary<Guid, Tuple<int, int>> ();
 			DataDictionary = new Dictionary<string, double> ();
-			StateTimer = new Stopwatch ();
-			GeneralTimer = new Stopwatch ();
+			StateTimer = App.Current.DependencyRegistry.Retrieve<IStopwatch> (InstanceType.Default);
+			GeneralTimer = App.Current.DependencyRegistry.Retrieve<IStopwatch> (InstanceType.New);
 			TimerList = new List<Tuple<string, long>> ();
 		}
-		
+
 		/// <summary>
 		/// Gets the level of the service. Services are started in ascending level order and stopped in descending level order.
 		/// </summary>
