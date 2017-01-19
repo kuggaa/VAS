@@ -492,7 +492,7 @@ namespace VAS.Drawing.Widgets
 			foreach (TimerButtonView to in Objects.OfType<TimerButtonView> ()) {
 				to.CurrentTime = ViewModel.CurrentTime;
 			}
-			foreach (TimedTaggerObject to in Objects.OfType<TimedTaggerObject> ()) {
+			foreach (TimedTaggerButtonView to in Objects.OfType<TimedTaggerButtonView> ()) {
 				if (to.TimedButton.TagMode == TagMode.Free) {
 					to.CurrentTime = ViewModel.CurrentTime;
 				}

@@ -30,7 +30,7 @@ using VAS.Core.ViewModel;
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
 	[ViewAttribute ("AnalysisEventButtonView")]
-	public class AnalysisEventButtonView : TimedTaggerObject, ICanvasObjectView<AnalysisEventButtonVM>
+	public class AnalysisEventButtonView : TimedTaggerButtonView, ICanvasObjectView<AnalysisEventButtonVM>
 	{
 		public event ButtonSelectedHandler EditButtonTagsEvent;
 

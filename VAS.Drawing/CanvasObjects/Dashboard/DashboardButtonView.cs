@@ -196,12 +196,12 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		}
 	}
 
-	public class TimedTaggerObject : DashboardButtonView
+	public class TimedTaggerButtonView : DashboardButtonView
 	{
 		Time currentTime;
 		TimedDashboardButton timedButton;
 
-		public TimedTaggerObject () : base ()
+		public TimedTaggerButtonView () : base ()
 		{
 			currentTime = new Time (0);
 			Start = null;
