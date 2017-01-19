@@ -679,8 +679,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			pos = Position;
 
 			tk.Begin ();
-			tk.TranslateAndScale (new Point (-Position.X, -Position.Y),
-				new Point (1, 1));
+			if (UseBackBufferSurface) {
+				tk.TranslateAndScale (new Point (-Position.X, -Position.Y),
+					new Point (1, 1));
+			}
 			tk.FontWeight = FontWeight.Bold;
 
 			/* Draw Rectangle */
@@ -741,12 +743,18 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			if (!UpdateDrawArea (tk, area, Area)) {
 				return;
 			}
-			if (backBufferSurface == null) {
+			if (UseBackBufferSurface && backBufferSurface == null) {
 				CreateBackBufferSurface ();
 			}
 			tk.Context = ctx;
 			tk.Begin ();
-			tk.DrawSurface (backBufferSurface, Position);
+
+			if (UseBackBufferSurface) {
+				tk.DrawSurface (backBufferSurface, Position);
+			} else {
+				DrawBackbuffer (tk);
+			}
+
 			DrawSelectedTags (tk);
 			DrawRecordTime (tk);
 			DrawApplyButton (tk);

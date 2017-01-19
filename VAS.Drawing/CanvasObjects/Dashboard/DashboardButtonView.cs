@@ -180,7 +180,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 			Point pos;
 
-			pos = new Point (Position.X + 3, Position.Y + 3);
+			pos = new Point (Position.X + 5, Position.Y + 5);
 			tk.FontFamily = App.Current.Style.NamesFontFamily;
 			tk.FontSize = App.Current.Style.NamesFontSize;
 			tk.StrokeColor = App.Current.Style.Text_DarkColor;
