@@ -55,6 +55,7 @@ namespace VAS.Core.Store
 			EventTypes = new RangeObservableCollection<EventType> ();
 			Version = Constants.DB_VERSION;
 			LastModified = DateTime.Now;
+			ProjectType = ProjectType.FileProject;
 		}
 
 		[OnDeserialized ()]
