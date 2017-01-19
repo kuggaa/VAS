@@ -17,6 +17,7 @@
 //
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Events;
@@ -24,7 +25,6 @@ using VAS.Core.Handlers;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.MVVMC;
-using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
 using VAS.Core.ViewModel;
@@ -71,22 +71,20 @@ namespace VAS.Drawing.Widgets
 			}
 			protected set {
 				if (viewModel != null) {
-					viewModel.Project.EventTypes.ViewModels.CollectionChanged -= HandleEventTypesCollectionChanged;
-					viewModel.Project.EventTypes.PropertyChanged -= HandleEventTypesPropertyChanged;
-					viewModel.Project.FileSet.ViewModels.CollectionChanged -= HandleFileSetCollectionChanged; ;
+					viewModel.Project.Timeline.EventTypesTimeline.ViewModels.CollectionChanged -= HandleEventTypesCollectionChanged;
+					viewModel.Project.FileSet.PropertyChanged -= HandleFileSetChanged; ;
 				}
 				viewModel = value;
 				ClearObjects ();
 				if (viewModel != null) {
-					viewModel.Project.EventTypes.ViewModels.CollectionChanged += HandleEventTypesCollectionChanged;
-					viewModel.Project.EventTypes.PropertyChanged += HandleEventTypesPropertyChanged;
+					viewModel.Project.Timeline.EventTypesTimeline.ViewModels.CollectionChanged += HandleEventTypesCollectionChanged;
+					viewModel.Project.FileSet.PropertyChanged += HandleFileSetChanged; ;
 					duration = viewModel.Project.FileSet.Duration;
 					int i = 0;
 					FillCanvas (ref i);
 					if (widget != null) {
 						widget.Height = Objects.Count * StyleConf.TimelineCategoryHeight;
 					}
-					viewModel.Project.FileSet.ViewModels.CollectionChanged += HandleFileSetCollectionChanged; ;
 				}
 			}
 		}
@@ -168,6 +166,7 @@ namespace VAS.Drawing.Widgets
 			widget.Width = width + 10;
 			foreach (TimelineView tl in Objects) {
 				tl.Width = width + 10;
+				tl.Duration = duration;
 				tl.SecondsPerPixel = SecondsPerPixel;
 			}
 		}
@@ -203,43 +202,27 @@ namespace VAS.Drawing.Widgets
 			HeightRequest = Objects.Count * StyleConf.TimelineCategoryHeight;
 		}
 
-		/// <summary>
-		/// Sets the periods time line.
-		/// </summary>
-		// FIXME: Should be moved to longomatch, which is the one using it
-		protected void CreatePeriodsTimeline ()
-		{
-			PeriodsTimeline = new TimerTimelineView {
-				ShowLine = false,
-				ShowName = false,
-				DraggingMode = NodeDraggingMode.Borders,
-				LineColor = Color.Blue1,
-			};
-			PeriodsTimeline.ViewModel = ViewModel.Project.Timers;
-		}
-
 		protected virtual void FillCanvasForTimers (ref int line)
 		{
 			foreach (TimerVM timerVM in ViewModel.Project.Timers) {
 				var timelineView = new TimerTimelineView {
-					ShowLine = false,
 					ShowName = false,
 					DraggingMode = NodeDraggingMode.All,
 					Duration = duration,
 					OffsetY = line * StyleConf.TimelineCategoryHeight,
-					LineColor = Utils.ColorForRow (line),
-					BackgroundColor = App.Current.Style.PaletteBackgroundDark,
+					Height = StyleConf.TimelineCategoryHeight,
+					LineColor = App.Current.Style.PaletteBackgroundDark,
+					BackgroundColor = Utils.ColorForRow (line),
 				};
-				var timersVM = new NestedViewModel<TimerVM> ();
-				timersVM.ViewModels.Add (timerVM);
-				timelineView.ViewModel = timersVM;
+				timelineView.ViewModel = timerVM;
 				AddTimeline (timelineView, timerVM);
+				line++;
 			}
 		}
 
 		protected virtual void FillCanvasForEventTypes (ref int line)
 		{
-			foreach (EventTypeTimelineVM timelineVM in ViewModel.Project.Timeline) {
+			foreach (EventTypeTimelineVM timelineVM in ViewModel.Project.Timeline.EventTypesTimeline) {
 				EventTypeTimelineView timelineView = AddEventTypeTimeline (timelineVM);
 				timelineView.OffsetY = line * StyleConf.TimelineCategoryHeight;
 				timelineView.BackgroundColor = Utils.ColorForRow (line);
@@ -395,7 +378,7 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
-		protected virtual void HandleEventTypesPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		protected virtual void HandleEventTypesPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName != "Visible") {
 				return;
@@ -407,14 +390,14 @@ namespace VAS.Drawing.Widgets
 		{
 			switch (e.Action) {
 			case NotifyCollectionChangedAction.Add: {
-					foreach (EventTypeTimelineVM viewModel in e.OldItems.OfType<EventTypeTimelineVM> ()) {
-						RemoveEventTypeTimeline (viewModel);
+					foreach (EventTypeTimelineVM viewModel in e.NewItems.OfType<EventTypeTimelineVM> ()) {
+						AddEventTypeTimeline (viewModel);
 					}
 					break;
 				}
 			case NotifyCollectionChangedAction.Remove: {
-					foreach (EventTypeTimelineVM viewModel in e.NewItems.OfType<EventTypeTimelineVM> ()) {
-						AddEventTypeTimeline (viewModel);
+					foreach (EventTypeTimelineVM viewModel in e.OldItems.OfType<EventTypeTimelineVM> ()) {
+						RemoveEventTypeTimeline (viewModel);
 					}
 					break;
 				}
@@ -428,12 +411,12 @@ namespace VAS.Drawing.Widgets
 			UpdateRowsOffsets ();
 		}
 
-		void HandleFileSetCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		void HandleFileSetChanged (object sender, PropertyChangedEventArgs e)
 		{
-			ClearObjects ();
-			duration = ViewModel.Project.FileSet.Duration;
-			int i = 0;
-			FillCanvas (ref i);
+			if (ViewModel.Project.FileSet.Duration != duration) {
+				duration = ViewModel.Project.FileSet.Duration;
+				Update ();
+			}
 		}
 	}
 }

@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System.Threading.Tasks;
+using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
@@ -38,6 +39,7 @@ namespace VAS.Core.ViewModel
 			Playlists = new PlaylistCollectionVM ();
 			EventTypes = new CollectionViewModel<EventType, EventTypeVM> ();
 			FileSet = new MediaFileSetVM ();
+			Periods = new CollectionViewModel<Period, PeriodVM> ();
 		}
 
 		public override Project Model {
@@ -48,6 +50,15 @@ namespace VAS.Core.ViewModel
 				model = value;
 				UpdateModels ();
 			}
+		}
+
+		/// <summary>
+		/// Gets the collection of periods in the project.
+		/// </summary>
+		/// <value>The timers.</value>
+		public CollectionViewModel<Period, PeriodVM> Periods {
+			get;
+			private set;
 		}
 
 		/// <summary>
@@ -116,6 +127,32 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
+		/// Gets or sets the type of the project.
+		/// </summary>
+		/// <value>The type of the project.</value>
+		public ProjectType ProjectType {
+			get {
+				return Model.ProjectType;
+			}
+			set {
+				Model.ProjectType = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="T:VAS.Core.ViewModel.ProjectVM"/> is live.
+		/// </summary>
+		/// <value><c>true</c> if is live; otherwise, <c>false</c>.</value>
+		public bool IsLive {
+			get {
+				return ProjectType == ProjectType.CaptureProject ||
+												 ProjectType == ProjectType.URICaptureProject ||
+												 ProjectType == ProjectType.FakeCaptureProject;
+
+			}
+		}
+
+		/// <summary>
 		/// Updates the model in the child ViewModel. Super classes should override this function to update their
 		/// own child ViewModel.
 		/// </summary>
@@ -124,6 +161,7 @@ namespace VAS.Core.ViewModel
 			Playlists.Model = Model.Playlists;
 			EventTypes.Model = Model.EventTypes;
 			Timers.Model = Model.Timers;
+			Periods.Model = Model.Periods;
 			Timeline.CreateEventTypeTimelines (EventTypes);
 			Timeline.Model = Model.Timeline;
 			FileSet.Model = Model.FileSet;

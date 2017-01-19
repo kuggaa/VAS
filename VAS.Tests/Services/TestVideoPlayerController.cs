@@ -131,11 +131,14 @@ namespace VAS.Tests.Services
 			currentTime = new Time (0);
 
 			player = new VideoPlayerController ();
-			playerVM = new VideoPlayerVM (player);
-			(player as IController).SetViewModel (playerVM);
+			playerVM = new VideoPlayerVM ();
+			player.SetViewModel (playerVM);
 			playlist.SetActive (playlist.Elements [0]);
 
-			plController = new PlaylistController (playerVM);
+			plController = new PlaylistController ();
+			plController.SetViewModel (new DummyPlaylistsManagerVM {
+				Player = playerVM
+			});
 			plController.Start ();
 
 			streamLength = new Time { TotalSeconds = 5000 };
@@ -765,7 +768,6 @@ namespace VAS.Tests.Services
 					Project = new Utils.ProjectDummy (),
 					ProjectType = ProjectType.FileProject,
 					Filter = null,
-					AnalysisWindow = null
 				}
 			);
 			EventToken et = App.Current.EventsBroker.Subscribe<LoadPlaylistElementEvent> ((e) => playlistElementSelected++);
@@ -1692,6 +1694,53 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (new Time (5000), relativeTime);
 			Assert.AreEqual (new Time (13000), playerVM.Duration);
 			Assert.AreEqual (new Time (5000), playerVM.CurrentTime);
+		}
+
+		[Test]
+		public void TestDurationUpdatedWhenPresentationChanged ()
+		{
+			Playlist localPlaylist = new Playlist ();
+			PlaylistPlayElement element1 = new PlaylistPlayElement (evt.Clone ());
+			PlaylistPlayElement element2 = new PlaylistPlayElement (evt.Clone ());
+			element1.Play.Start = new Time (10);
+			element1.Play.Stop = new Time (20);
+			element2.Play.Start = new Time (0);
+			element2.Play.Stop = new Time (10);
+			localPlaylist.Elements.Add (element1);
+			localPlaylist.Elements.Add (element2);
+			PreparePlayer ();
+			playerMock.ResetCalls ();
+			player.LoadPlaylistEvent (localPlaylist, element1, false);
+			player.Mode = VideoPlayerOperationMode.Presentation;
+
+			PlaylistPlayElement element3 = new PlaylistPlayElement (evt.Clone ());
+			element3.Play.Start = new Time (0);
+			element3.Play.Stop = new Time (10);
+			localPlaylist.Elements.Add (element3);
+
+			Assert.AreEqual (new Time (30), playerVM.Duration);
+		}
+
+		[Test]
+		public void TestDurationUpdatedWhenPresentationElementChanged ()
+		{
+			Playlist localPlaylist = new Playlist ();
+			PlaylistPlayElement element1 = new PlaylistPlayElement (evt.Clone ());
+			PlaylistPlayElement element2 = new PlaylistPlayElement (evt.Clone ());
+			element1.Play.Start = new Time (10);
+			element1.Play.Stop = new Time (20);
+			element2.Play.Start = new Time (0);
+			element2.Play.Stop = new Time (10);
+			localPlaylist.Elements.Add (element1);
+			localPlaylist.Elements.Add (element2);
+			PreparePlayer ();
+			playerMock.ResetCalls ();
+			player.LoadPlaylistEvent (localPlaylist, element1, false);
+			player.Mode = VideoPlayerOperationMode.Presentation;
+
+			element2.Play.Stop = new Time (20);
+
+			Assert.AreEqual (new Time (30), playerVM.Duration);
 		}
 
 		void HandleElementLoadedEvent (object element, bool hasNext)

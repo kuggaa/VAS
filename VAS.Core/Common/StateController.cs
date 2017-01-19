@@ -135,7 +135,6 @@ namespace VAS.Core
 			}
 
 			try {
-				Log.Debug ("Moving to " + transition + " in modal mode");
 				IScreenState state = destination [transition] ();
 
 				NavigationState lastState = LastState ();

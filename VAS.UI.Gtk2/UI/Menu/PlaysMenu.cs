@@ -52,12 +52,12 @@ namespace VAS.UI.Menus
 
 		public void ShowMenu (Project project, List<TimelineEvent> plays)
 		{
-			ShowMenu (project, plays, null, null, null, false);
+			ShowMenu (project, plays, null, null, project.EventTypes, false);
 		}
 
 		public void ShowTimelineMenu (Project project, List<TimelineEvent> plays, EventType eventType, Time time)
 		{
-			ShowMenu (project, plays, eventType, time, null, false);
+			ShowMenu (project, plays, eventType, time, project.EventTypes, false);
 		}
 
 		protected void ShowMenu (Project project, IEnumerable<TimelineEvent> plays, EventType eventType, Time time,

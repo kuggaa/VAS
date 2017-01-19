@@ -223,5 +223,15 @@ namespace VAS.Core.Common
 		{
 			return descending ? source.OrderByDescending (keySelector) : source.OrderBy (keySelector);
 		}
+
+		/// <summary>
+		/// Converts an item into an enumerable consisting in this single item.
+		/// </summary>
+		/// <param name="item">Item.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public static IEnumerable<T> ToEnumerable<T> (this T item)
+		{
+			yield return item;
+		}
 	}
 }

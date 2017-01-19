@@ -177,6 +177,9 @@ namespace Weavers
 					) {
 					continue;
 				}
+				if (property.PropertyType.IsArray) {
+					continue;
+				}
 
 				var setMethod = property.SetMethod;
 				if (setMethod == null) {

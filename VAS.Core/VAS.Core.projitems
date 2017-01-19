@@ -108,7 +108,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IViewPort.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IMainController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IBusyDialog.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IAnalysisWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\ICapturerBin.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Multimedia\ICapturer.cs" />
@@ -203,6 +202,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\DragContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\Command.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\DashboardButtonVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PeriodVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

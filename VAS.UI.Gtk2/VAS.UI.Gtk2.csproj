@@ -49,6 +49,7 @@
     </Reference>
     <Reference Include="Mono.Posix" />
     <Reference Include="Mono.Cairo" />
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -97,6 +98,7 @@
     <Compile Include="UI\TreeView\StringObject.cs" />
     <Compile Include="UI\Common\NestedTreeViewBase.cs" />
     <Compile Include="UI\TreeView\EventCellRenderer.cs" />
+    <Compile Include="UI\TreeView\TimelineEventsTreeView.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

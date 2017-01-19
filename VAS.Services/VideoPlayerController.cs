@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using VAS.Core;
@@ -76,6 +77,8 @@ namespace VAS.Services
 		VideoPlayerVM playerVM;
 		TimeNode visibleRegion;
 		VideoPlayerOperationMode mode;
+		Playlist loadedPlaylist;
+		object camerasLayout;
 
 		protected struct Segment
 		{
@@ -126,6 +129,7 @@ namespace VAS.Services
 			set {
 				Log.Debug ("Updating cameras configuration: ", string.Join ("-", value));
 				camerasConfig = value;
+				playerVM.CamerasConfig = camerasConfig;
 				if (defaultCamerasConfig == null) {
 					defaultCamerasConfig = value;
 				}
@@ -152,8 +156,14 @@ namespace VAS.Services
 		}
 
 		public virtual object CamerasLayout {
-			get;
-			set;
+			get {
+				return camerasLayout;
+			}
+
+			set {
+				camerasLayout = value;
+				playerVM.CamerasLayout = value;
+			}
 		}
 
 		public virtual List<IViewPort> ViewPorts {
@@ -245,10 +255,14 @@ namespace VAS.Services
 				return mediafileSet;
 			}
 			protected set {
+				if (mediafileSet != null) {
+					mediafileSet.PropertyChanged -= HandleMediaFileSetPropertyChanged;
+				}
 				mediafileSet = value;
 				mediaFileSetCopy = value.Clone ();
 				if (mediafileSet != null) {
 					visibleRegion = FileSet.VisibleRegion;
+					mediafileSet.PropertyChanged += HandleMediaFileSetPropertyChanged;
 				} else {
 					visibleRegion = null;
 				}
@@ -277,8 +291,19 @@ namespace VAS.Services
 		}
 
 		public virtual Playlist LoadedPlaylist {
-			get;
-			set;
+			get {
+				return loadedPlaylist;
+			}
+
+			set {
+				if (loadedPlaylist != null) {
+					loadedPlaylist.PropertyChanged -= HandlePlaylistDurationChanged;
+				}
+				loadedPlaylist = value;
+				if (loadedPlaylist != null) {
+					loadedPlaylist.PropertyChanged += HandlePlaylistDurationChanged;
+				}
+			}
 		}
 
 		public virtual VideoPlayerOperationMode Mode {
@@ -299,8 +324,8 @@ namespace VAS.Services
 						LoadSegment (mediafileSet, visibleRegion.Start, visibleRegion.Stop,
 									 CurrentTime.Clamp (visibleRegion.Start, visibleRegion.Stop), (float)Rate,
 									 CamerasConfig, CamerasLayout, Playing);
-						UpdateDuration ();
 					}
+					UpdateDuration ();
 				}
 			}
 		}
@@ -327,7 +352,8 @@ namespace VAS.Services
 
 		public void SetViewModel (IViewModel viewModel)
 		{
-			playerVM = (VideoPlayerVM)viewModel;
+			playerVM = (VideoPlayerVM)(viewModel as dynamic);
+			playerVM.Player = this;
 		}
 
 		public virtual void Ready (bool ready)
@@ -754,10 +780,12 @@ namespace VAS.Services
 
 		public virtual void UnloadCurrentEvent ()
 		{
+			Log.Debug ("Unload current event");
 			if (loadedPlaylistElement == null && loadedEvent == null) {
+				Reset ();
+				UpdateDuration ();
 				return;
 			}
-			Log.Debug ("Unload current event");
 			Reset ();
 			if (defaultFileSet != null && !defaultFileSet.Equals (FileSet)) {
 				UpdateCamerasConfig (defaultCamerasConfig, defaultCamerasLayout);
@@ -1438,7 +1466,7 @@ namespace VAS.Services
 
 		void UpdateDuration ()
 		{
-			if (mode == VideoPlayerOperationMode.Presentation) {
+			if (Mode == VideoPlayerOperationMode.Presentation) {
 				duration = LoadedPlaylist.Duration;
 			} else {
 				if (StillImageLoaded) {
@@ -1446,7 +1474,7 @@ namespace VAS.Services
 				} else if (SegmentLoaded) {
 					duration = loadedSegment.Stop - loadedSegment.Start;
 				} else {
-					if (mode == VideoPlayerOperationMode.Stretched) {
+					if (Mode == VideoPlayerOperationMode.Stretched) {
 						duration = FileSet?.VisibleRegion.Duration;
 					} else {
 						duration = FileSet?.Duration;
@@ -1570,6 +1598,20 @@ namespace VAS.Services
 					AbsoluteSeek (start, type == SeekType.Accurate, false, false);
 				}
 			});
+		}
+
+		protected void HandleMediaFileSetPropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "IsStretched" || e.PropertyName == "Collection") {
+				UpdateDuration ();
+			}
+		}
+
+		void HandlePlaylistDurationChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (Mode == VideoPlayerOperationMode.Presentation) {
+				UpdateDuration ();
+			}
 		}
 
 		#endregion
