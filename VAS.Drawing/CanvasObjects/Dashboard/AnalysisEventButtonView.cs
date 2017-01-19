@@ -140,12 +140,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
-		bool ShowHotkey {
-			get {
-				return (Button.ShowHotkey && Button.HotKey.Key != -1);
-			}
-		}
-
 		int HeaderHeight {
 			get {
 				return StyleConf.ButtonHeaderHeight + 5;
@@ -712,26 +706,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 
 			tk.End ();
-		}
-
-		void DrawHotkey (IDrawingToolkit tk)
-		{
-			if (!ShowHotkey)
-				return;
-
-			Point pos;
-			double width, height;
-
-			width = 30;
-			height = App.Current.Style.TitlesFontSize;
-			pos = new Point (Position.X + 3, Position.Y + 3);
-			tk.FontFamily = App.Current.Style.NamesFontFamily;
-			tk.FontSize = App.Current.Style.NamesFontSize;
-			tk.StrokeColor = App.Current.Style.Text_DarkColor;
-			tk.StrokeColor = App.Current.Style.Text_DarkColor;
-			tk.FontWeight = FontWeight.Bold;
-			tk.FontAlignment = FontAlignment.Left;
-			tk.DrawText (pos, width, height, Button.HotKey.ToString (), false, false);
 		}
 
 		void CreateBackBufferSurface ()
