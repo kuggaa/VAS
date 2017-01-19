@@ -246,7 +246,7 @@ namespace VAS.Drawing.CanvasObjects
 			}
 		}
 
-		protected void DrawText (IDrawingToolkit tk)
+		protected virtual void DrawText (IDrawingToolkit tk)
 		{
 			if (Text != null) {
 				if (Active) {
