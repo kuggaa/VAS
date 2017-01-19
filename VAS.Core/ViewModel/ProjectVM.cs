@@ -119,6 +119,7 @@ namespace VAS.Core.ViewModel
 
 		public virtual IEnumerable<PlayerVM> Players {
 			get;
+			internal set;
 		}
 
 		/// <summary>
