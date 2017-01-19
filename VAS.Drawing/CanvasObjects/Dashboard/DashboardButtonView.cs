@@ -26,6 +26,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 	public class DashboardButtonView : ButtonObject, ICanvasSelectableObject
 	{
 		protected LinkAnchorView anchor;
+		protected const int HOTKEY_WIDTH = 5;
 
 		public DashboardButtonView ()
 		{
@@ -161,9 +162,32 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
+		bool ShowHotkey {
+			get {
+				return (Button.ShowHotkey && Button.HotKey.Key != -1);
+			}
+		}
+
 		public virtual LinkAnchorView GetAnchor (IList<Tag> sourceTags)
 		{
 			return anchor;
+		}
+
+		protected virtual void DrawHotkey (IDrawingToolkit tk)
+		{
+			if (!ShowHotkey)
+				return;
+
+			Point pos;
+
+			pos = new Point (Position.X + 3, Position.Y + 3);
+			tk.FontFamily = App.Current.Style.NamesFontFamily;
+			tk.FontSize = App.Current.Style.NamesFontSize;
+			tk.StrokeColor = App.Current.Style.Text_DarkColor;
+			tk.StrokeColor = App.Current.Style.Text_DarkColor;
+			tk.FontWeight = FontWeight.Bold;
+			tk.FontAlignment = FontAlignment.Left;
+			tk.DrawText (pos, HOTKEY_WIDTH, App.Current.Style.TitlesFontSize, Button.HotKey.ToString (), false, false);
 		}
 
 		protected void DrawAnchor (IDrawingToolkit tk, Area area)
