@@ -200,7 +200,17 @@ namespace VAS.Tests
 					var evtType = dashboard.AddDefaultItem (i);
 					dashboard.AddDefaultTags (evtType.AnalysisEventType);
 				}
+				dashboard.InsertTimer ();
 				return dashboard;
+			}
+
+			public void InsertTimer ()
+			{
+				var timerButton = new TimerButton {
+					Timer = new Timer { Name = "Ball playing" },
+					Position = new Point (10 + (10 + CAT_WIDTH) * 6, 10)
+				};
+				List.Add (timerButton);
 			}
 		}
 
