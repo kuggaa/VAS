@@ -134,6 +134,7 @@ namespace VAS.UI.Common
 					}
 				}
 			}
+			UpdatePlaylistElementsSelection ();
 		}
 
 		protected override void ShowMenu ()
@@ -156,6 +157,43 @@ namespace VAS.UI.Common
 				return true;
 			}
 			return false;
+		}
+
+		void UpdatePlaylistElementsSelection ()
+		{
+			TreeIter iter;
+			Dictionary<PlaylistVM, List<PlaylistElementVM>> selected =
+					new Dictionary<PlaylistVM, List<PlaylistElementVM>> ();
+			IViewModel parentVM, childVM;
+			foreach (var path in Selection.GetSelectedRows ()) {
+				parentVM = childVM = null;
+				Model.GetIterFromString (out iter, path.ToString ());
+				FillParentAndChild (iter, out parentVM, out childVM);
+				PlaylistElementVM selectedViewModel = childVM as PlaylistElementVM;
+				if (selectedViewModel != null) {
+					PlaylistVM playlist = parentVM as PlaylistVM;
+					if (!selected.ContainsKey (playlist)) {
+						selected.Add (playlist, new List<PlaylistElementVM> ());
+					}
+					selected [playlist].Add (selectedViewModel);
+				}
+			}
+
+			IEnumerable<PlaylistVM> unselected = ViewModel.Selection.Except (selected.Keys);
+			foreach (var playlist in unselected) {
+				if (playlist.Selection.Any ()) {
+					playlist.Selection.Clear ();
+				}
+			}
+			foreach (var selections in selected) {
+				selections.Key.SelectionReplace (selections.Value);
+			}
+
+			if (!selected.Any ()) {
+				foreach (var playlist in ViewModel.ViewModels.Where ((arg) => arg.Selection.Any ())) {
+					playlist.Selection.Clear ();
+				}
+			}
 		}
 	}
 }
