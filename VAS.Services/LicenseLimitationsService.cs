@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using VAS.Core.Interfaces;
 using VAS.Core.License;
+using VAS.Core.MVVMC;
 using VAS.Core.ViewModel;
 
 namespace VAS.Services
@@ -101,6 +102,9 @@ namespace VAS.Services
 			LicenseLimitationVM viewModel = new LicenseLimitationVM {
 				Model = limitation,
 			};
+			if (command != null) {
+				viewModel.UpgradeCommand = command;
+			}
 			// FIXME: Should we overwrite it?
 			Limitations [limitation.Name] = viewModel;
 		}
