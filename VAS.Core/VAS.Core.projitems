@@ -101,6 +101,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Drawing\ICanvas.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Handlers\Drawing.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Filters\EventsFilter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IAnalysisWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IGUIToolkit.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IVideoPlayerView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IVideoPlayerController.cs" />
