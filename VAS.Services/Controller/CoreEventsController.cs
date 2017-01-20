@@ -103,7 +103,7 @@ namespace VAS.Services.Controller
 			} catch {
 			}
 
-			if (project.ProjectType == ProjectType.FileProject) {
+			if (project.ProjectType == ProjectType.FileProject && project.FileSet.Any ()) {
 				framesCapturer = App.Current.MultimediaToolkit.GetFramesCapturer ();
 				framesCapturer.Open (project.FileSet.First ().FilePath);
 			}
