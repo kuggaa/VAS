@@ -18,6 +18,8 @@
 //
 
 using System.Collections.Generic;
+using System.Linq;
+using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.MVVMC;
 using VAS.Core.Store.Playlists;
@@ -29,6 +31,43 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class PlaylistCollectionVM : CollectionViewModel<Playlist, PlaylistVM>
 	{
+		static Image deleteIcon;
+		static Image newIcon;
+
+		static PlaylistCollectionVM ()
+		{
+			deleteIcon = Resources.LoadIcon ("vas-delete", App.Current.Style.IconSmallWidth);
+			newIcon = Resources.LoadIcon ("vas-new-playlist", App.Current.Style.IconSmallWidth);
+		}
+
+		public PlaylistCollectionVM ()
+		{
+			DeleteCommand = new Command (Delete, () => HasItemsSelected ());
+			DeleteCommand.Icon = deleteIcon;
+			DeleteCommand.ToolTipText = Catalog.GetString ("Delete Playlists");
+			NewCommand = new Command (New, () => true);
+			NewCommand.Icon = newIcon;
+			NewCommand.ToolTipText = Catalog.GetString ("New Playlist");
+		}
+		/// <summary>
+		/// Gets or sets the command to create playlists
+		/// </summary>
+		/// <value>The new command.</value>
+		[PropertyChanged.DoNotNotify]
+		public Command NewCommand {
+			get;
+			protected set;
+		}
+
+		/// <summary>
+		/// Gets or sets the command to delete playlists
+		/// </summary>
+		/// <value>The delete command.</value>
+		[PropertyChanged.DoNotNotify]
+		public Command DeleteCommand {
+			get;
+			protected set;
+		}
 		/// <summary>
 		/// Loads the playlist into the VideoPlayer
 		/// </summary>
@@ -58,6 +97,32 @@ namespace VAS.Core.ViewModel
 				ElementsToRemove = elementsToRemove,
 				Index = index
 			});
+		}
+
+		protected bool HasItemsSelected ()
+		{
+			bool selection = false;
+
+			selection = Selection.Any ();
+			if (!selection) {
+				foreach (var playlist in ViewModels) {
+					if (playlist.Selection.Any ()) {
+						selection = true;
+						break;
+					}
+				}
+			}
+			return selection;
+		}
+
+		void New ()
+		{
+			App.Current.EventsBroker.Publish (new CreateEvent<Playlist> ());
+		}
+
+		void Delete ()
+		{
+			App.Current.EventsBroker.Publish (new DeleteEvent<Playlist> ());
 		}
 	}
 }

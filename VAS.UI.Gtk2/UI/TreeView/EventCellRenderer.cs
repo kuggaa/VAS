@@ -153,8 +153,32 @@ namespace VAS.UI.Component
 				} else if (ViewModel is PlaylistVM) {
 					var vm = (PlaylistVM)ViewModel;
 					RenderType (vm.Name, vm.Count (), App.Current.Style.PaletteText, App.Current.DrawingToolkit, context, bkg, cell, state);
+					RenderSelection (App.Current.DrawingToolkit, context, bkg, cell, state, false);
 				}
 			}
+		}
+
+		protected void RenderSelection (IDrawingToolkit tk, IContext context,
+							  Area backgroundArea, Area cellArea, CellState state, bool isChildElement)
+		{
+			int selectionLineWidth = 1;
+			Point pos = new Point (backgroundArea.Left, backgroundArea.Start.Y + selectionLineWidth);
+			if (isChildElement) {
+				pos.X += LEFT_OFFSET + COLOR_RECTANGLE_WIDTH;
+			}
+			double width = backgroundArea.Width - pos.X;
+			double height = backgroundArea.Height - selectionLineWidth;
+
+			tk.Context = context;
+			tk.Begin ();
+			tk.FillColor = Color.Transparent;
+			tk.StrokeColor = Color.Transparent;
+			if (state.HasFlag (CellState.Selected)) {
+				tk.StrokeColor = Color.Orange;
+			}
+			tk.LineWidth = selectionLineWidth;
+			tk.DrawRectangle (pos, width, height);
+			tk.StrokeColor = App.Current.Style.PaletteText;
 		}
 
 		void RenderType (string name, int childsCount, Color color, IDrawingToolkit tk, IContext context,

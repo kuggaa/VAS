@@ -192,7 +192,7 @@ namespace VAS.Core.Common
 
 		public const string ButtonAlert = "icons/hicolor/scalable/actions/longomatch-alert" + IMAGE_EXT;
 		public const string DownloadButton = "icons/hicolor/scalable/actions/longomatch-import" + IMAGE_EXT;
-		public const string DeleteButton = "icons/hicolor/scalable/actions/longomatch-delete" + IMAGE_EXT;
+		public const string DeleteButton = "icons/hicolor/scalable/actions/vas-delete" + IMAGE_EXT;
 		public const string PlayButton = "icons/hicolor/scalable/actions/video_c_play" + IMAGE_EXT;
 
 		public const int FilterTreeViewToogleWidth = 30;
@@ -338,6 +338,8 @@ namespace VAS.Core.Common
 		public int ContainerTightPadding { get; set; }
 
 		public int MainToolbarHeight { get; set; }
+
+		public int SubToolbarHeight { get; set; } = 40;
 
 		//Fonts
 
