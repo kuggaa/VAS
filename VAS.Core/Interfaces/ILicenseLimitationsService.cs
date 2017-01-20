@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using VAS.Core.License;
+using VAS.Core.MVVMC;
 using VAS.Core.ViewModel;
 
 namespace VAS.Core.Interfaces
@@ -45,6 +46,6 @@ namespace VAS.Core.Interfaces
 		/// Add the specified limitation by name.
 		/// </summary>
 		/// <param name="limitation">Limitation.</param>
-		void Add (LicenseLimitation limitation);
+		void Add (LicenseLimitation limitation, Command command = null);
 	}
 }

@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.ComponentModel;
 using VAS.Core.License;
 using VAS.Core.MVVMC;
 
@@ -26,13 +27,31 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class LicenseLimitationVM : ViewModelBase<LicenseLimitation>
 	{
+		Command upgradeCommand;
+
+		/// <summary>
+		/// Gets or sets the model.
+		/// </summary>
+		/// <value>The model.</value>
+		public override LicenseLimitation Model {
+			get {
+				return base.Model;
+			}
+			set {
+				base.Model = value;
+				if (UpgradeCommand != null) {
+					UpgradeCommand.Executable = Model.Enabled;
+				}
+			}
+		}
+
 		/// <summary>
 		/// Proxy property for LimitationNmae.
 		/// </summary>
 		/// <value>The name of the limitation.</value>
 		public string LimitationName {
 			get {
-				return Model?.LimitationName;
+				return Model?.Name;
 			}
 		}
 
@@ -43,6 +62,9 @@ namespace VAS.Core.ViewModel
 		public int Count {
 			get {
 				return Model?.Count ?? 0;
+			}
+			set {
+				Model.Count = value;
 			}
 		}
 
@@ -64,6 +86,30 @@ namespace VAS.Core.ViewModel
 			get {
 				return Model?.Enabled ?? false;
 			}
+		}
+
+		/// <summary>
+		/// Command to upgrade away from this limitation.
+		/// </summary>
+		/// <value>The upgrade command.</value>
+		public Command UpgradeCommand {
+			get {
+				return upgradeCommand;
+			}
+			set {
+				upgradeCommand = value;
+				upgradeCommand.Executable = Enabled;
+			}
+		}
+
+		protected override void RaisePropertyChanged (PropertyChangedEventArgs args, object sender = null)
+		{
+			if (args.PropertyName == nameof (Model.Enabled)) {
+				if (UpgradeCommand != null) {
+					UpgradeCommand.Executable = Enabled;
+				}
+			}
+			base.RaisePropertyChanged (args, sender);
 		}
 	}
 }
