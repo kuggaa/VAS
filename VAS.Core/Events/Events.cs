@@ -129,10 +129,6 @@ namespace VAS.Core.Events
 		public ButtonModifier Modifier { get; set; }
 	}
 
-	public class ResetPCardEvent : Event
-	{
-	}
-
 	#endregion
 
 	public class TimeNodeStartedEvent : Event
