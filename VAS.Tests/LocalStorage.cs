@@ -81,6 +81,13 @@ namespace Tests
 			localStorage [t.ID] = t;
 		}
 
+		public void Store<T> (IEnumerable<T> storableEnumerable, bool forceUpdate = false) where T : IStorable
+		{
+			foreach (var t in storableEnumerable) {
+				Store (t, forceUpdate);
+			}
+		}
+
 		public void Delete<T> (T t) where T : IStorable
 		{
 			localStorage.Remove (t.ID);

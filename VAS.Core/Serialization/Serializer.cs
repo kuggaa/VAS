@@ -162,7 +162,6 @@ namespace VAS.Core.Serialization
 				settings.ObjectCreationHandling = ObjectCreationHandling.Replace;
 				settings.Converters.Add (new VersionConverter ());
 				settings.Converters.Add (new VASConverter (true));
-				//settings.ReferenceResolver = new IdReferenceResolver ();
 				settings.Binder = new MigrationBinder (Serializer.TypesMappings, Serializer.NamespacesReplacements);
 				return settings;
 			}
