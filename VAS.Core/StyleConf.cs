@@ -338,6 +338,10 @@ namespace VAS.Core.Common
 
 		public int ButtonDialogHeight { get; set; }
 
+		public int ButtonLimitWidth { get; set; }
+
+		public int ButtonLimitHeight { get; set; }
+
 		public int ContainerBigPadding { get; set; }
 
 		public int ContainerRegularPadding { get; set; }
