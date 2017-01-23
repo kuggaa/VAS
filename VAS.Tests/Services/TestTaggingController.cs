@@ -21,6 +21,7 @@ using Moq;
 using NUnit.Framework;
 using VAS.Core.Common;
 using VAS.Core.Events;
+using VAS.Core.Store;
 using VAS.Core.ViewModel;
 using VAS.Services.Controller;
 
@@ -57,7 +58,7 @@ namespace VAS.Tests.Services
 			player2 = new PlayerVM ();
 			player3 = new PlayerVM ();
 			players = new RangeObservableCollection<PlayerVM> () { player1, player2, player3 };
-			project = new ProjectVM { Players = players };
+			project = new ProjectVM { Players = players, Model = new Utils.ProjectDummy () };
 
 			controller.SetViewModel (project);
 		}
@@ -167,7 +168,14 @@ namespace VAS.Tests.Services
 			player1.Tagged = true;
 			player2.Tagged = true;
 			player3.Tagged = true;
-			var pCardEvent = new ResetPCardEvent ();
+			var pCardEvent = new NewTagEvent {
+				EventType = new EventType { Name = "test" },
+				Start = new Time (0),
+				Stop = new Time (10),
+				Tags = new List<Tag> (),
+				EventTime = new Time (9),
+				Button = null
+			};
 
 			// Action
 			App.Current.EventsBroker.Publish (pCardEvent);
@@ -186,7 +194,14 @@ namespace VAS.Tests.Services
 			player2.Locked = true;
 			player2.Tagged = true;
 			player3.Tagged = true;
-			var pCardEvent = new ResetPCardEvent ();
+			var pCardEvent = new NewTagEvent {
+				EventType = new EventType { Name = "test" },
+				Start = new Time (0),
+				Stop = new Time (10),
+				Tags = new List<Tag> (),
+				EventTime = new Time (9),
+				Button = null
+			};
 
 			// Action
 			App.Current.EventsBroker.Publish (pCardEvent);

@@ -48,7 +48,6 @@ namespace VAS.Services.Controller
 		public void Start ()
 		{
 			App.Current.EventsBroker.Subscribe<ClickedPCardEvent> (HandleClickedPCardEvent);
-			App.Current.EventsBroker.Subscribe<ResetPCardEvent> (HandleResetPCardEvent);
 			App.Current.EventsBroker.Subscribe<NewTagEvent> (HandleNewTagEvent);
 		}
 
@@ -58,7 +57,6 @@ namespace VAS.Services.Controller
 		public void Stop ()
 		{
 			App.Current.EventsBroker.Unsubscribe<ClickedPCardEvent> (HandleClickedPCardEvent);
-			App.Current.EventsBroker.Unsubscribe<ResetPCardEvent> (HandleResetPCardEvent);
 			App.Current.EventsBroker.Unsubscribe<NewTagEvent> (HandleNewTagEvent);
 		}
 
@@ -107,15 +105,6 @@ namespace VAS.Services.Controller
 			}
 
 			// Right now we don't care about selections and moving pcards
-		}
-
-		/// <summary>
-		/// Handles reseting the Participant Card.
-		/// </summary>
-		/// <param name="e">Event.</param>
-		protected void HandleResetPCardEvent (ResetPCardEvent e)
-		{
-			Reset ();
 		}
 
 		protected void HandleNewTagEvent (NewTagEvent e)
