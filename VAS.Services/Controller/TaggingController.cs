@@ -109,7 +109,7 @@ namespace VAS.Services.Controller
 
 		protected void HandleNewTagEvent (NewTagEvent e)
 		{
-			//FIXME: This is using the Model of the ViewModel
+			//FIXME: This is using the Model of the ViewModel, that method should be moved here
 			// Reception of the event Button
 			var play = ViewModel.Model.AddEvent (e.EventType, e.Start, e.Stop, e.EventTime, null, false) as TimelineEvent;
 

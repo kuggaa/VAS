@@ -191,9 +191,11 @@ namespace VAS.Core.Store
 
 		#region Public Methods
 
+		//FIXME: This should go to a controller
 		public abstract TimelineEvent AddEvent (EventType type, Time start, Time stop, Time eventTime, Image miniature,
 												bool addToTimeline = true);
 
+		//FIXME: This should go to a controller
 		public abstract void AddEvent (TimelineEvent play);
 
 		/// <summary>
