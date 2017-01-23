@@ -86,8 +86,8 @@ namespace VAS.Services.Controller
 		{
 			if (e.ClickedPlayer != null) {
 				if (e.Modifier == ButtonModifier.Control) {
+					e.ClickedPlayer.Tagged = !e.ClickedPlayer.Locked;
 					e.ClickedPlayer.Locked = !e.ClickedPlayer.Locked;
-					e.ClickedPlayer.Tagged = !e.ClickedPlayer.Tagged;
 				} else {
 					if (!e.ClickedPlayer.Locked) {
 						e.ClickedPlayer.Tagged = !e.ClickedPlayer.Tagged;

@@ -64,7 +64,7 @@ namespace VAS.Tests.Services
 		}
 
 		[Test ()]
-		public void Test_HandleClicked_PlayerIsLocked ()
+		public void TestHandleClickedWhenPlayerIsLocked ()
 		{
 			// Arrange
 			player2.Tagged = false;
@@ -83,7 +83,7 @@ namespace VAS.Tests.Services
 		}
 
 		[Test ()]
-		public void Test_HandleClicked_PlayerIsTagged ()
+		public void TestHandleClickedWhenPlayerIsTagged ()
 		{
 			// Arrange
 			player2.Tagged = false;
@@ -102,7 +102,26 @@ namespace VAS.Tests.Services
 		}
 
 		[Test ()]
-		public void Test_HandleClicked_TwoPlayersAreSelected ()
+		public void TestHandleClickedWhenPlayerIsTaggedAndLocked ()
+		{
+			// Arrange
+			player2.Tagged = true;
+			player2.Locked = false;
+			var pCardEvent = new ClickedPCardEvent () {
+				ClickedPlayer = player2,
+				Modifier = ButtonModifier.Control
+			};
+
+			// Action
+			App.Current.EventsBroker.Publish (pCardEvent);
+
+			// Assert
+			Assert.IsTrue (player2.Tagged, "Player 2 should be tagged");
+			Assert.IsTrue (player2.Locked, "Player 2 should be locked");
+		}
+
+		[Test ()]
+		public void TestHandleClickedWhenTwoPlayersAreSelected ()
 		{
 			// Arrange
 			player1.Tagged = false;
@@ -132,7 +151,7 @@ namespace VAS.Tests.Services
 		}
 
 		[Test ()]
-		public void Test_HandleClicked_TwoPlayersAreLocked ()
+		public void TestHandleClickedWhenTwoPlayersAreLocked ()
 		{
 			// Arrange
 			player1.Tagged = false;
@@ -162,7 +181,7 @@ namespace VAS.Tests.Services
 		}
 
 		[Test ()]
-		public void Test_HandleReset_ResetAll ()
+		public void TestHandleResetWhenResetAll ()
 		{
 			// Arrange
 			player1.Tagged = true;
@@ -187,7 +206,7 @@ namespace VAS.Tests.Services
 		}
 
 		[Test ()]
-		public void Test_HandleReset_WithALockedPlayer ()
+		public void TestHandleResetWhenAPlayerIsLocked ()
 		{
 			// Arrange
 			player1.Tagged = true;
