@@ -65,6 +65,19 @@ namespace VAS.UI.Helpers
 		}
 
 		/// <summary>
+		/// Applies the limit style to the given button and binds it to a command.
+		/// </summary>
+		/// <param name="button">Button.</param>
+		/// <param name="command">Command.</param>
+		public static void ApplyStyleLimit (this Button button, Command command = null)
+		{
+			if (command != null) {
+				button.Bind (command);
+			}
+			button.ApplyStyle (StyleConf.ButtonLimit, App.Current.Style.ButtonLimitWidth);
+		}
+
+		/// <summary>
 		/// Applies the normal style normal to the given button and binds it to a command.
 		/// </summary>
 		/// <param name="button">Button.</param>
