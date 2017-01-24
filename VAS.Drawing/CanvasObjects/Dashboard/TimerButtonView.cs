@@ -26,6 +26,9 @@ using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
+	/// <summary>
+	/// Class for the TimerButton View
+	/// </summary>
 	[ViewAttribute ("TimerButtonView")]
 	public class TimerButtonView : DashboardButtonView, ICanvasObjectView<TimerButtonVM>
 	{
@@ -51,7 +54,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			cancelRect = new Rectangle ();
 		}
 
-
+		/// <summary>
+		/// Gets or sets the timer button.
+		/// </summary>
+		/// <value>The timer button.</value>
 		public TimerButton TimerButton {
 			get {
 				return timerButton;
@@ -62,6 +68,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
+		/// <summary>
+		/// Gets the icon.
+		/// </summary>
+		/// <value>The icon.</value>
 		public override Image Icon {
 			get {
 				return iconImage;
@@ -111,6 +121,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
+		/// <summary>
+		/// Gets the partial time.
+		/// </summary>
+		/// <value>The partial time.</value>
 		protected Time PartialTime {
 			get {
 				if (TimerButton.StartTime == null) {
@@ -156,7 +170,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
-
+		/// <summary>
+		/// Gets or sets the view model.
+		/// </summary>
+		/// <value>The view model.</value>
 		public TimerButtonVM ViewModel {
 			get {
 				return viewModel;
@@ -171,23 +188,40 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
+		/// <summary>
+		/// Gets the height of the header.
+		/// </summary>
+		/// <value>The height of the header.</value>
 		protected int HeaderHeight {
 			get {
 				return iconImage.Height + 5;
 			}
 		}
 
+		/// <summary>
+		/// Gets the text header x.
+		/// </summary>
+		/// <value>The text header x.</value>
 		protected int TextHeaderX {
 			get {
 				return iconImage.Width + 5 * 2;
 			}
 		}
 
+		/// <summary>
+		/// Sets the view model.
+		/// </summary>
+		/// <param name="viewModel">View model.</param>
 		public void SetViewModel (object viewModel)
 		{
 			ViewModel = (TimerButtonVM)viewModel;
 		}
 
+		/// <summary>
+		/// Draw the specified tk and area.
+		/// </summary>
+		/// <param name="tk">Tk.</param>
+		/// <param name="area">Area.</param>
 		public override void Draw (IDrawingToolkit tk, Area area)
 		{
 			if (!UpdateDrawArea (tk, area, Area)) {
@@ -201,6 +235,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			tk.End ();
 		}
 
+		/// <summary>
+		/// Draws the timer.
+		/// </summary>
+		/// <param name="tk">Tk.</param>
 		protected virtual void DrawTimer (IDrawingToolkit tk)
 		{
 			cancelRect = new Rectangle (

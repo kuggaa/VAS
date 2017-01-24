@@ -23,6 +23,9 @@ using VAS.Core.Store;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
+	/// <summary>
+	/// Class for the DashboardButton View.
+	/// </summary>
 	public class DashboardButtonView : ButtonObject, ICanvasSelectableObject
 	{
 		protected LinkAnchorView anchor;
@@ -162,6 +165,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="T:VAS.Drawing.CanvasObjects.Dashboard.DashboardButtonView"/> show hotkey.
+		/// </summary>
+		/// <value><c>true</c> if show hotkey; otherwise, <c>false</c>.</value>
 		bool ShowHotkey {
 			get {
 				return (Button.ShowHotkey && Button.HotKey.Key != -1);
@@ -173,6 +180,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			return anchor;
 		}
 
+		/// <summary>
+		/// Draws the hotkey.
+		/// </summary>
+		/// <param name="tk">Tk.</param>
 		protected virtual void DrawHotkey (IDrawingToolkit tk)
 		{
 			if (!ShowHotkey)
@@ -220,6 +231,9 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		}
 	}
 
+	/// <summary>
+	/// Class for the TimedTaggerButton View
+	/// </summary>
 	public class TimedTaggerButtonView : DashboardButtonView
 	{
 		Time currentTime;
@@ -231,7 +245,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			Start = null;
 		}
 
-
+		/// <summary>
+		/// Gets or sets the timed button.
+		/// </summary>
+		/// <value>The timed button.</value>
 		public TimedDashboardButton TimedButton {
 			get {
 				return timedButton;
