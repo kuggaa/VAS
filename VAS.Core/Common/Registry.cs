@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,7 +24,7 @@ namespace VAS.Core.Common
 {
 	public class Registry
 	{
-		Dictionary<Type, List<RegistryElement>> elements;
+		ConcurrentDictionary<Type, List<RegistryElement>> elements;
 		string name;
 
 		internal class RegistryElement
@@ -53,7 +54,7 @@ namespace VAS.Core.Common
 		public Registry (string name)
 		{
 			this.name = name;
-			elements = new Dictionary<Type, List<RegistryElement>> ();
+			elements = new ConcurrentDictionary<Type, List<RegistryElement>> ();
 		}
 
 		/// <summary>
