@@ -17,6 +17,7 @@
 //
 using System;
 using NUnit.Framework;
+using VAS.Core.ViewModel;
 
 namespace VAS.Tests.Services
 {
@@ -38,7 +39,7 @@ namespace VAS.Tests.Services
 			Utils.PlayerDummy player = new Utils.PlayerDummy ();
 			DummyTeam team = new DummyTeam ();
 			team.List.Add (player);
-			DummyTeamVM teamVM = new DummyTeamVM () { Model = team };
+			TeamVM teamVM = new TeamVM () { Model = team };
 
 			templatesController.ViewModel.ViewModels.Add (teamVM);
 
@@ -59,7 +60,7 @@ namespace VAS.Tests.Services
 			Utils.PlayerDummy player = new Utils.PlayerDummy ();
 			DummyTeam team = new DummyTeam ();
 			team.List.Add (player);
-			DummyTeamVM teamVM = new DummyTeamVM () { Model = team };
+			TeamVM teamVM = new TeamVM () { Model = team };
 
 			templatesController.ViewModel.ViewModels.Add (teamVM);
 			templatesController.ViewModel.SelectionReplace (templatesController.ViewModel.ViewModels);

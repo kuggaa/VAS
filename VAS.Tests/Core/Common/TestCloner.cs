@@ -50,7 +50,7 @@ namespace VAS.Tests.Core.Common
 		public void TestClone_IsBindableBase_ChangeCollectionProperty ()
 		{
 			// Arrange
-			var team = new Team<Utils.PlayerDummy> ();
+			var team = new DummyTeam ();
 			var clonedTeam = team.Clone ();
 
 			team.IsChanged = false;
