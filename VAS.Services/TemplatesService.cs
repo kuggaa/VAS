@@ -155,6 +155,10 @@ namespace VAS.Services
 			return t;
 		}
 
+		/// <summary>
+		/// Converts to system template.
+		/// </summary>
+		/// <param name="template">Template.</param>
 		protected void ConvertToSystemTemplate (T template)
 		{
 			Log.Information ("Setting new system template " + template.Name);

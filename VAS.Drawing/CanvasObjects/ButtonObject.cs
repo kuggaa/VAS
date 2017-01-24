@@ -220,6 +220,10 @@ namespace VAS.Drawing.CanvasObjects
 				SELECTION_SIZE, SELECTION_SIZE);
 		}
 
+		/// <summary>
+		/// Draws the button.
+		/// </summary>
+		/// <param name="tk">Tk.</param>
 		protected virtual void DrawButton (IDrawingToolkit tk)
 		{
 			Color front, back;
@@ -256,6 +260,10 @@ namespace VAS.Drawing.CanvasObjects
 			}
 		}
 
+		/// <summary>
+		/// Draws the text.
+		/// </summary>
+		/// <param name="tk">Tk.</param>
 		protected virtual void DrawText (IDrawingToolkit tk)
 		{
 			if (Text != null) {

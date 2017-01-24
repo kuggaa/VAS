@@ -165,6 +165,10 @@ namespace VAS.Core.ViewModel
 			Selection.Replace (selection);
 		}
 
+		/// <summary>
+		/// Creates the sub view model.
+		/// </summary>
+		/// <returns>The sub view model.</returns>
 		public virtual CollectionViewModel<TChildModel, TChildViewModel> CreateSubViewModel ()
 		{
 			return new CollectionViewModel<TChildModel, TChildViewModel> ();

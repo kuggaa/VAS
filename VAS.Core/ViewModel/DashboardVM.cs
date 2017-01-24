@@ -23,8 +23,15 @@ using VAS.Core.Store.Templates;
 
 namespace VAS.Core.ViewModel
 {
+	/// <summary>
+	/// Class for the Dashboard ViewModel.
+	/// </summary>
 	public class DashboardVM : TemplateViewModel<Dashboard, DashboardButton, DashboardButtonVM>
 	{
+		/// <summary>
+		/// Gets or sets the icon.
+		/// </summary>
+		/// <value>The icon.</value>
 		public override Image Icon {
 			get {
 				return Model.Image;
@@ -35,38 +42,66 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the mode.
+		/// </summary>
+		/// <value>The mode.</value>
 		public DashboardMode Mode {
 			get;
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating to showing or not the links.
+		/// </summary>
+		/// <value><c>true</c> if show links; otherwise, <c>false</c>.</value>
 		public bool ShowLinks {
 			get;
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets the current time.
+		/// </summary>
+		/// <value>The current time.</value>
 		public Time CurrentTime {
 			get;
 			set;
 		} = new Time (0);
 
+		/// <summary>
+		/// Gets or sets the fit mode.
+		/// </summary>
+		/// <value>The fit mode.</value>
 		public FitMode FitMode {
 			get;
 			set;
 		}
 
+		/// <summary>
+		/// Gets the width of the canvas.
+		/// </summary>
+		/// <value>The width of the canvas.</value>
 		public int CanvasWidth {
 			get {
 				return Model.CanvasWidth;
 			}
 		}
 
+		/// <summary>
+		/// Gets the height of the canvas.
+		/// </summary>
+		/// <value>The height of the canvas.</value>
 		public int CanvasHeight {
 			get {
 				return Model.CanvasHeight;
 			}
 		}
 
+		/// <summary>
+		/// Creates the sub view model.
+		/// </summary>
+		/// <returns>The sub view model.</returns>
 		public override CollectionViewModel<DashboardButton, DashboardButtonVM> CreateSubViewModel ()
 		{
 			return new DashboardButtonCollectionVM ();

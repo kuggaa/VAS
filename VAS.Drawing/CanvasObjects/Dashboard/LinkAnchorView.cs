@@ -16,15 +16,16 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System.Collections.Generic;
-using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
-using VAS.Drawing.CanvasObjects;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
+	/// <summary>
+	/// Class for the LinkAnchorButtonView.
+	/// </summary>
 	public class LinkAnchorView : CanvasObject, ICanvasSelectableObject
 	{
 
@@ -59,6 +60,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			iconWidth = InIcon.Width;
 		}
 
+		/// <summary>
+		/// Gets or sets the button.
+		/// </summary>
+		/// <value>The button.</value>
 		public DashboardButtonView Button {
 			get;
 			set;
@@ -126,6 +131,11 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
+		/// <summary>
+		/// Check if the button can link.
+		/// </summary>
+		/// <returns><c>true</c>, if link was caned, <c>false</c> otherwise.</returns>
+		/// <param name="anchor">Anchor.</param>
 		public bool CanLink (LinkAnchorView anchor)
 		{
 			if (anchor == null)
