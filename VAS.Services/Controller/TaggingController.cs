@@ -113,7 +113,15 @@ namespace VAS.Services.Controller
 			// Reception of the event Button
 			var play = ViewModel.Model.AddEvent (e.EventType, e.Start, e.Stop, e.EventTime, null, false) as TimelineEvent;
 
-			//Here we can set the players if necessary, then send to events aggregator
+			var players = ViewModel.Players.Where (p => p.Tagged);
+			foreach (var playerVM in players) {
+				play.Players.Add (playerVM.Model);
+			}
+
+			var teams = ViewModel.Teams.Where (team => players.Any (player => team.Contains (player))).Select (vm => vm.Model);
+			play.Teams.AddRange (teams);
+
+			// Here we can set the players if necessary, then send to events aggregator
 			App.Current.EventsBroker.Publish (
 				new NewDashboardEvent {
 					TimelineEvent = play,
@@ -124,17 +132,6 @@ namespace VAS.Services.Controller
 				}
 			);
 			Reset ();
-		}
-
-		/// <summary>
-		/// Helper method that fills data needed for a new tag event
-		/// </summary>
-		/// <param name="play">Play.</param>
-		protected virtual void AddNewTagData (TimelineEvent play)
-		{
-			foreach (var playerVM in ViewModel.Players.Where (p => p.Tagged)) {
-				play.Players.Add (playerVM.Model);
-			}
 		}
 
 		/// <summary>
