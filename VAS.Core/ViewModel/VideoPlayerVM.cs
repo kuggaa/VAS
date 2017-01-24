@@ -40,6 +40,11 @@ namespace VAS.Core.ViewModel
 	{
 		PlayerViewOperationMode mode;
 
+		public VideoPlayerVM ()
+		{
+			CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+		}
+
 		public bool ControlsSensitive {
 			get;
 			set;
