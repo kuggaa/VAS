@@ -122,6 +122,11 @@ namespace VAS.Core.ViewModel
 			internal set;
 		}
 
+		public virtual IEnumerable<TeamVM> Teams {
+			get;
+			internal set;
+		}
+
 		/// <summary>
 		/// Gets a value indicating whether the project has been edited.
 		/// </summary>
