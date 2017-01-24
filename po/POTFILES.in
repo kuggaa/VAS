@@ -48,3 +48,5 @@ VAS.UI.Multimedia.Gtk2/gtk-gui/VAS.UI.VideoWindow.cs
 VAS.UI.Gtk2/UI/TreeView/FilterTreeViewBase.cs
 VAS.UI.Gtk2/UI/TreeView/JobsTreeView.cs
 libvas/lgm-video-player.c
+VAS.Core/ViewModel/TeamVM.cs
+VAS.DB/Views/TeamsView.cs
