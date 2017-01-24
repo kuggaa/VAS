@@ -29,6 +29,9 @@ using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
+	/// <summary>
+	/// Class for the AnalysisEventButton View
+	/// </summary>
 	[ViewAttribute ("AnalysisEventButtonView")]
 	public class AnalysisEventButtonView : TimedTaggerButtonView, ICanvasObjectView<AnalysisEventButtonVM>
 	{
@@ -98,6 +101,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			base.Dispose (disposing);
 		}
 
+		/// <summary>
+		/// Gets or sets the button.
+		/// </summary>
+		/// <value>The button.</value>
 		AnalysisEventButton Button {
 			get {
 				return button;
@@ -134,6 +141,11 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="T:VAS.Drawing.CanvasObjects.Dashboard.AnalysisEventButtonView"/>
+		/// show tags.
+		/// </summary>
+		/// <value><c>true</c> if show tags; otherwise, <c>false</c>.</value>
 		protected bool ShowTags {
 			get {
 				return (Button.ShowSubcategories || ShowLinks) && Button.AnalysisEventType.Tags.Count != 0;
@@ -173,6 +185,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the view model.
+		/// </summary>
+		/// <value>The view model.</value>
 		public AnalysisEventButtonVM ViewModel {
 			get {
 				return viewModel;
@@ -186,6 +202,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
+		/// <summary>
+		/// Sets the view model.
+		/// </summary>
+		/// <param name="viewModel">View model.</param>
 		public void SetViewModel (object viewModel)
 		{
 			ViewModel = (AnalysisEventButtonVM)viewModel;
@@ -336,6 +356,11 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			return base.GetSelection (p, precision, inMotion);
 		}
 
+		/// <summary>
+		/// Gets the anchor.
+		/// </summary>
+		/// <returns>The anchor.</returns>
+		/// <param name="sourceTags">Source tags.</param>
 		public override LinkAnchorView GetAnchor (IList<Tag> sourceTags)
 		{
 			/* Only one tag is supported for now */
@@ -451,6 +476,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			yptr += heightPerRow * (row + 1);
 		}
 
+		/// <summary>
+		/// Draws the header.
+		/// </summary>
+		/// <param name="tk">Tk.</param>
 		protected virtual void DrawHeader (IDrawingToolkit tk)
 		{
 			Color textColor;
@@ -640,6 +669,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
+		/// <summary>
+		/// Draws the button.
+		/// </summary>
+		/// <param name="tk">Tk.</param>
 		protected override void DrawButton (IDrawingToolkit tk)
 		{
 			if (!ShowTags) {

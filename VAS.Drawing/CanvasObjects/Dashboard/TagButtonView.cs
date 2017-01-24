@@ -25,6 +25,9 @@ using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
+	/// <summary>
+	/// Class for the TagButton View
+	/// </summary>
 	[ViewAttribute ("TagButtonView")]
 	public class TagButtonView : DashboardButtonView, ICanvasObjectView<TagButtonVM>
 	{
@@ -41,6 +44,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the button.
+		/// </summary>
+		/// <value>The tag button.</value>
 		public TagButton TagButton {
 			get {
 				return tagButton;
@@ -63,6 +70,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the view model.
+		/// </summary>
+		/// <value>The view model.</value>
 		public TagButtonVM ViewModel {
 			get {
 				return viewModel;
@@ -75,6 +86,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
+		/// <summary>
+		/// Sets the view model.
+		/// </summary>
+		/// <param name="viewModel">View model.</param>
 		public void SetViewModel (object viewModel)
 		{
 			ViewModel = (TagButtonVM)viewModel;

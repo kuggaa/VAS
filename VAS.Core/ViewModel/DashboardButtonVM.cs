@@ -28,10 +28,18 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class DashboardButtonVM : ViewModelBase<DashboardButton>
 	{
+		/// <summary>
+		/// Gets the DashboardButtonView.
+		/// </summary>
+		/// <value>The view.</value>
 		public virtual string View {
 			get;
 		}
 
+		/// <summary>
+		/// Gets or sets the name.
+		/// </summary>
+		/// <value>The name.</value>
 		public virtual string Name {
 			get {
 				return Model.Name;
@@ -41,6 +49,10 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the position.
+		/// </summary>
+		/// <value>The position.</value>
 		public Point Position {
 			get {
 				return Model.Position;
@@ -50,6 +62,10 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the width.
+		/// </summary>
+		/// <value>The width.</value>
 		public int Width {
 			get {
 				return Model.Width;
@@ -59,6 +75,10 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the height.
+		/// </summary>
+		/// <value>The height.</value>
 		public int Height {
 			get {
 				return Model.Height;
@@ -68,6 +88,10 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the color of the background.
+		/// </summary>
+		/// <value>The color of the background.</value>
 		public Color BackgroundColor {
 			get {
 				return Model.BackgroundColor;
@@ -77,6 +101,10 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the color of the text.
+		/// </summary>
+		/// <value>The color of the text.</value>
 		public Color TextColor {
 			get {
 				return Model.TextColor;
@@ -86,6 +114,10 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the hot key.
+		/// </summary>
+		/// <value>The hot key.</value>
 		public virtual HotKey HotKey {
 			get {
 				return Model.HotKey;
@@ -95,6 +127,10 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the background image.
+		/// </summary>
+		/// <value>The background image.</value>
 		public virtual Image BackgroundImage {
 			get {
 				return Model.BackgroundImage;
@@ -104,6 +140,10 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating to showing or not the hotkey.
+		/// </summary>
+		/// <value><c>true</c> if show hotkey; otherwise, <c>false</c>.</value>
 		public bool ShowHotkey {
 			get {
 				return Model.ShowHotkey;
@@ -113,6 +153,10 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating to showing or not the setting icon.
+		/// </summary>
+		/// <value><c>true</c> if show setting icon; otherwise, <c>false</c>.</value>
 		public bool ShowSettingIcon {
 			get {
 				return Model.ShowSettingIcon;
@@ -134,18 +178,30 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets the LightColor.
+		/// </summary>
+		/// <value>The color of the light.</value>
 		public Color LightColor {
 			get {
 				return Model.LightColor;
 			}
 		}
 
+		/// <summary>
+		/// Gets the DarkColor.
+		/// </summary>
+		/// <value>The color of the dark.</value>
 		public Color DarkColor {
 			get {
 				return Model.DarkColor;
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating to showing or not the icon.
+		/// </summary>
+		/// <value><c>true</c> if show icon; otherwise, <c>false</c>.</value>
 		public bool ShowIcon {
 			get {
 				return Model.ShowIcon;
@@ -156,8 +212,15 @@ namespace VAS.Core.ViewModel
 		}
 	}
 
+	/// <summary>
+	/// Class for the TimedDashBoardButton ViewModel.
+	/// </summary>
 	public class TimedDashboardButtonVM : DashboardButtonVM
 	{
+		/// <summary>
+		/// Gets or sets the model.
+		/// </summary>
+		/// <value>The model.</value>
 		public new TimedDashboardButton Model {
 			get {
 				return (TimedDashboardButton)base.Model;
@@ -167,6 +230,10 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the tag mode.
+		/// </summary>
+		/// <value>The tag mode.</value>
 		public TagMode TagMode {
 			get {
 				return Model.TagMode;
@@ -176,6 +243,10 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the start time.
+		/// </summary>
+		/// <value>The start.</value>
 		public Time Start {
 			get {
 				return Model.Start;
@@ -185,6 +256,10 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the stop time.
+		/// </summary>
+		/// <value>The stop.</value>
 		public Time Stop {
 			get {
 				return Model.Stop;
@@ -195,8 +270,15 @@ namespace VAS.Core.ViewModel
 		}
 	}
 
+	/// <summary>
+	/// Class for the EventButton ViewModel
+	/// </summary>
 	public class EventButtonVM : TimedDashboardButtonVM
 	{
+		/// <summary>
+		/// Gets or sets the model.
+		/// </summary>
+		/// <value>The model.</value>
 		public new EventButton Model {
 			get {
 				return (EventButton)base.Model;
@@ -207,14 +289,25 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets the type of the event.
+		/// </summary>
+		/// <value>The type of the event.</value>
 		public EventTypeVM EventType {
 			get;
 			private set;
 		}
 	}
 
+	/// <summary>
+	/// Class for the AnalysisEventButton ViewModel.
+	/// </summary>
 	public class AnalysisEventButtonVM : EventButtonVM
 	{
+		/// <summary>
+		/// Gets or sets the model.
+		/// </summary>
+		/// <value>The model.</value>
 		public new AnalysisEventButton Model {
 			get {
 				return (AnalysisEventButton)base.Model;
@@ -224,12 +317,20 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets the view.
+		/// </summary>
+		/// <value>The view.</value>
 		public override string View {
 			get {
 				return "AnalysisEventButtonView";
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating to showing or not the subcategories.
+		/// </summary>
+		/// <value><c>true</c> if show subcategories; otherwise, <c>false</c>.</value>
 		public bool ShowSubcategories {
 			get {
 				return Model.ShowSubcategories;
@@ -239,6 +340,10 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the tags per row.
+		/// </summary>
+		/// <value>The tags per row.</value>
 		public int TagsPerRow {
 			get {
 				return Model.TagsPerRow;
@@ -249,8 +354,15 @@ namespace VAS.Core.ViewModel
 		}
 	}
 
+	/// <summary>
+	/// Class for the TagButton ViewModel
+	/// </summary>
 	public class TagButtonVM : DashboardButtonVM
 	{
+		/// <summary>
+		/// Gets or sets the model.
+		/// </summary>
+		/// <value>The model.</value>
 		public new TagButton Model {
 			get {
 				return (TagButton)base.Model;
@@ -260,12 +372,20 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets the view.
+		/// </summary>
+		/// <value>The view.</value>
 		public override string View {
 			get {
 				return "TagButtonView";
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the tag.
+		/// </summary>
+		/// <value>The tag.</value>
 		public Tag Tag {
 			get {
 				return Model.Tag;
@@ -276,8 +396,15 @@ namespace VAS.Core.ViewModel
 		}
 	}
 
+	/// <summary>
+	/// Class for the TimerButton ViewModel.
+	/// </summary>
 	public class TimerButtonVM : DashboardButtonVM
 	{
+		/// <summary>
+		/// Gets or sets the model.
+		/// </summary>
+		/// <value>The model.</value>
 		public new TimerButton Model {
 			get {
 				return (TimerButton)base.Model;
@@ -287,12 +414,20 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets the view.
+		/// </summary>
+		/// <value>The view.</value>
 		public override string View {
 			get {
 				return "TimerButtonView";
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the timer.
+		/// </summary>
+		/// <value>The timer.</value>
 		public Timer Timer {
 			get {
 				return Model.Timer;

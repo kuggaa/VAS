@@ -21,6 +21,9 @@ using VAS.Core.Store;
 
 namespace VAS.Core.ViewModel
 {
+	/// <summary>
+	/// Collection of DashboardButtonVM's.
+	/// </summary>
 	public class DashboardButtonCollectionVM : CollectionViewModel<DashboardButton, DashboardButtonVM>
 	{
 		protected override DashboardButtonVM CreateInstance (DashboardButton model)
