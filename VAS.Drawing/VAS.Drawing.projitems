@@ -43,7 +43,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\TagObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\TimerObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Widgets\DashboardCanvas.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Teams\PlayerObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Teams\PlayerView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Blackboard\CounterObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Blackboard\CrossObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Blackboard\EllipseObject.cs" />
