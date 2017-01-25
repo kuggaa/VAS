@@ -239,8 +239,8 @@ namespace VAS.UI.Common
 			TreeViewColumn column;
 			int cellX, cellY;
 
-			IViewModel viewModel = GetViewModelAtPosition ((int)evnt.X, (int)evnt.Y, out column, out cellX, out cellY);
-			if (ProcessViewModelClicked (viewModel, (int)evnt.X, (int)evnt.Y, column.Width, evnt.State)) {
+			IViewModel vm = GetViewModelAtPosition ((int)evnt.X, (int)evnt.Y, out column, out cellX, out cellY);
+			if (vm != null && ProcessViewModelClicked (vm, (int)evnt.X, (int)evnt.Y, column.Width, evnt.State)) {
 				return true;
 			}
 
@@ -590,7 +590,7 @@ namespace VAS.UI.Common
 				childVM = null;
 			}
 		}
-		
+
 		#endregion
 		void ClearSubViewModels ()
 		{
