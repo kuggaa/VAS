@@ -24,18 +24,18 @@ using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Teams
 {
-	public class PlayerObject : CanvasButtonObject, ICanvasSelectableObject
+	public class PlayerView : CanvasButtonObject, ICanvasSelectableObject
 	{
 		protected static ISurface DefaultPhoto;
 		static bool surfacesCached = false;
 		PlayerVM player;
 
-		public PlayerObject ()
+		public PlayerView ()
 		{
 			Init ();
 		}
 
-		public PlayerObject (PlayerVM player, Point position = null)
+		public PlayerView (PlayerVM player, Point position = null)
 		{
 			Player = player;
 			Init (position);
