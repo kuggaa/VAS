@@ -115,8 +115,8 @@ namespace VAS.Core.Interfaces
 		/// Creates a new template.
 		/// </summary>
 		/// <param name="templateName">Template name.</param>
-		/// <param name="list">Constructor parameters.</param>
-		T Create (string templateName, params object [] list);
+		/// <param name="count">Number of child items to create.</param>
+		T Create (string templateName, int count = 0);
 	}
 }
 
