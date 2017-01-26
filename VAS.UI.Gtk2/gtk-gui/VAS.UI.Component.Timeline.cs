@@ -88,7 +88,6 @@ namespace VAS.UI.Component
 			this.focusscale = new global::Gtk.HScale(null);
 			this.focusscale.CanFocus = true;
 			this.focusscale.Name = "focusscale";
-			this.focusscale.Inverted = true;
 			this.focusscale.Adjustment.Upper = 100;
 			this.focusscale.Adjustment.PageIncrement = 10;
 			this.focusscale.Adjustment.StepIncrement = 1;
