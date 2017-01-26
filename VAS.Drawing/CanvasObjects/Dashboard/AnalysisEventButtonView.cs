@@ -62,7 +62,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		{
 			rects = new Dictionary<Rectangle, object> ();
 			buttonsRects = new Dictionary<Rectangle, object> ();
-			SelectedTags = new List<Tag> ();
 			cancelRect = new Rectangle (new Point (0, 0), 0, 0);
 			editRect = new Rectangle (new Point (0, 0), 0, 0);
 			applyRect = new Rectangle (new Point (0, 0), 0, 0);
@@ -111,7 +110,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 			set {
 				button = value;
-				TimedButton = value;
 				foreach (Tag tag in button.AnalysisEventType.Tags) {
 					AddSubcatAnchor (tag, new Point (0, 0), 100, HeaderHeight);
 				}
@@ -209,6 +207,8 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		public void SetViewModel (object viewModel)
 		{
 			ViewModel = (AnalysisEventButtonVM)viewModel;
+			ViewModel.TagMode = TagMode.Free;
+			TimedButtonVM = (TimedDashboardButtonVM)viewModel;
 		}
 
 		public void ClickTag (Tag tag)
@@ -233,7 +233,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		void EmitCreateEvent ()
 		{
-			EmitClickEvent ();
+			ViewModel.Click ();
 			Clear ();
 		}
 
@@ -294,8 +294,9 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		}
 
 		public List<Tag> SelectedTags {
-			get;
-			set;
+			get {
+				return viewModel.SelectedTags;
+			}
 		}
 
 		void AddSubcatAnchor (Tag tag, Point point, double width, double height)
@@ -577,21 +578,21 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		void DrawRecordTime (IDrawingToolkit tk)
 		{
-			if (Recording && Mode != DashboardMode.Edit) {
+			if (Recording && Mode != DashboardMode.Edit && viewModel.ButtonTime != null) {
 				if (ShowTags) {
 					tk.FontSize = 12;
 					tk.FontWeight = FontWeight.Normal;
 					tk.StrokeColor = BackgroundColor;
 					tk.DrawText (new Point (Position.X + HeaderTextOffset, Position.Y),
 						HeaderTextWidth, HeaderHeight,
-						(CurrentTime - Start).ToSecondsString ());
+								 viewModel.ButtonTime.ToSecondsString ());
 				} else {
 					tk.FontSize = 24;
 					tk.FontWeight = FontWeight.Bold;
 					tk.StrokeColor = BackgroundColor;
 					tk.DrawText (new Point (Position.X, Position.Y + HeaderHeight),
 						Width, Height - HeaderHeight,
-						(CurrentTime - Start).ToSecondsString ());
+								 viewModel.ButtonTime.ToSecondsString ());
 				}
 			}
 		}

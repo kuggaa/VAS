@@ -16,8 +16,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
@@ -210,6 +212,15 @@ namespace VAS.Core.ViewModel
 				Model.ShowIcon = value;
 			}
 		}
+		/// <summary>
+		/// Gets or sets the dashboard mode.
+		/// </summary>
+		/// <value>The mode.</value>
+		[PropertyChanged.DoNotNotify]
+		public DashboardMode Mode {
+			get;
+			set;
+		}
 	}
 
 	/// <summary>
@@ -217,6 +228,8 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class TimedDashboardButtonVM : DashboardButtonVM
 	{
+		Time currentTime;
+
 		/// <summary>
 		/// Gets or sets the model.
 		/// </summary>
@@ -268,6 +281,36 @@ namespace VAS.Core.ViewModel
 				Model.Stop = value;
 			}
 		}
+
+		public Time RecordingStart {
+			get;
+			set;
+		}
+
+		[PropertyChanged.DoNotNotify]
+		public Time CurrentTime {
+			get {
+				return currentTime;
+			}
+			set {
+				if (value != null && Mode != DashboardMode.Edit
+					&& RecordingStart != null && TagMode != TagMode.Predefined) {
+					if (value.MSeconds + 100 < RecordingStart.MSeconds) {
+						ButtonTime = null;
+					}
+					if (currentTime != null &&
+						currentTime.TotalSeconds != value.TotalSeconds) {
+						ButtonTime = value - RecordingStart;
+					}
+				}
+				currentTime = value;
+			}
+		}
+
+		public Time ButtonTime {
+			get;
+			set;
+		}
 	}
 
 	/// <summary>
@@ -304,6 +347,11 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class AnalysisEventButtonVM : EventButtonVM
 	{
+
+		public AnalysisEventButtonVM ()
+		{
+			SelectedTags = new List<Tag> ();
+		}
 		/// <summary>
 		/// Gets or sets the model.
 		/// </summary>
@@ -351,6 +399,45 @@ namespace VAS.Core.ViewModel
 			set {
 				Model.TagsPerRow = value;
 			}
+		}
+
+		public List<Tag> SelectedTags {
+			get;
+			set;
+		}
+
+		public void Click ()
+		{
+			if (Mode == DashboardMode.Edit) {
+				return;
+			}
+
+			Time start, stop, eventTime;
+
+			if (TagMode == TagMode.Predefined || RecordingStart == null) {
+				start = CurrentTime + Stop;
+				stop = CurrentTime - Start;
+				eventTime = CurrentTime;
+			} else {
+				stop = CurrentTime;
+				start = RecordingStart - Start;
+				eventTime = RecordingStart;
+			}
+			var tags = new List<Tag> ();
+			tags.AddRange (SelectedTags);
+
+			App.Current.EventsBroker.Publish (
+				new NewTagEvent {
+					EventType = Model.EventType,
+					Start = start,
+					Stop = stop,
+					EventTime = eventTime,
+					Button = Model,
+					Tags = tags
+				}
+			);
+			RecordingStart = null;
+			ButtonTime = null;
 		}
 	}
 
@@ -446,7 +533,7 @@ namespace VAS.Core.ViewModel
 			}
 
 			set {
-				if (value != null && currentNode != null) {
+				if (value != null && currentNode != null && Mode != DashboardMode.Edit) {
 					if (currentTime < currentNode.Start) {
 						TimerTime = null;
 						currentNode = null;
@@ -468,7 +555,7 @@ namespace VAS.Core.ViewModel
 		public void Click (bool cancel)
 		{
 			//Cancel
-			if (cancel) {
+			if (cancel || Mode == DashboardMode.Edit) {
 				currentNode = null;
 				TimerTime = null;
 				return;

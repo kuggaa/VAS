@@ -240,6 +240,33 @@ namespace VAS.Tests
 			#endregion
 		}
 
+		public class DummyTaggingController : TaggingController
+		{
+			protected override TimelineEvent CreateTimelineEvent (EventType type, Time start, Time stop, Time eventTime, Image miniature)
+			{
+				TimelineEvent evt;
+				string count;
+				string name;
+
+				count = String.Format ("{0:000}", project.Model.EventsByType (type).Count + 1);
+				name = String.Format ("{0} {1}", type.Name, count);
+				evt = new TimelineEvent ();
+
+				evt.Name = name;
+				evt.Start = start;
+				evt.Stop = stop;
+				evt.EventTime = eventTime;
+				evt.EventType = type;
+				evt.Notes = "";
+				evt.Miniature = miniature;
+				evt.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+				evt.FileSet = project.Model.FileSet;
+				evt.Project = project.Model;
+
+				return evt;
+			}
+		}
+
 		//dummy class for abstract validation. Copied from LongoMatch and adapted to VAS.
 		public class ProjectDummy : Project
 		{

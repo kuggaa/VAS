@@ -28,6 +28,7 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class DashboardVM : TemplateViewModel<Dashboard, DashboardButton, DashboardButtonVM>
 	{
+		DashboardMode mode;
 		/// <summary>
 		/// Gets or sets the icon.
 		/// </summary>
@@ -42,13 +43,21 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+
 		/// <summary>
 		/// Gets or sets the mode.
 		/// </summary>
 		/// <value>The mode.</value>
 		public DashboardMode Mode {
-			get;
-			set;
+			get {
+				return mode;
+			}
+			set {
+				mode = value;
+				foreach (var vm in ViewModels) {
+					vm.Mode = mode;
+				}
+			}
 		}
 
 		/// <summary>
@@ -97,6 +106,29 @@ namespace VAS.Core.ViewModel
 				return Model.CanvasHeight;
 			}
 		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.DashboardVM"/> disable popup window.
+		/// </summary>
+		/// <value><c>true</c> if disable popup window; otherwise, <c>false</c>.</value>
+		public bool DisablePopupWindow {
+			get {
+				return Model.DisablePopupWindow;
+			}
+			set {
+				Model.DisablePopupWindow = value;
+			}
+		}
+
+		/// <summary>
+		/// Sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.DashboardVM"/> can edit plays.
+		/// </summary>
+		/// <value><c>true</c> if can edit; otherwise, <c>false</c>.</value>
+		public bool EditPlays {
+			get;
+			set;
+		}
+
 
 		/// <summary>
 		/// Creates the sub view model.
