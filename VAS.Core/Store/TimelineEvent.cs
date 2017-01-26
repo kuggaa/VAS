@@ -74,7 +74,6 @@ namespace VAS.Core.Store
 		#region IStorable
 
 		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
 		public bool IsLoaded {
 			get;
 			set;

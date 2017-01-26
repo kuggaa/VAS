@@ -205,6 +205,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PeriodVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlayerVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TeamVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\StorableVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
