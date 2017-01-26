@@ -44,7 +44,7 @@ namespace VAS.Tests.Services
 		public void SetUpOnce ()
 		{
 			SetupClass.Initialize ();
-			controller = new TaggingController ();
+			controller = new Utils.DummyTaggingController ();
 			controller.Start ();
 		}
 
