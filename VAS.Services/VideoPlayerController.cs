@@ -345,6 +345,7 @@ namespace VAS.Services
 				player.Eos -= HandleEndOfStream;
 				player.ReadyToSeek -= HandleReadyToSeek;
 				player.Dispose ();
+				player = null;
 				FileSet = null;
 			}
 			disposed = true;
@@ -380,7 +381,7 @@ namespace VAS.Services
 
 		public virtual void Open (MediaFileSet fileSet, bool play = false)
 		{
-			Log.Debug ("Openning file set");
+			Log.Debug ("Opening file set");
 			if (fileSet == null || !fileSet.Any ()) {
 				Stop ();
 				EmitTimeChanged (new Time (0), new Time (0));
