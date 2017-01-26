@@ -34,7 +34,10 @@ namespace VAS.Tests.Services
 		PlayerVM player1;
 		PlayerVM player2;
 		PlayerVM player3;
+		TeamVM team1;
+		TeamVM team2;
 		RangeObservableCollection<PlayerVM> players;
+		RangeObservableCollection<TeamVM> teams;
 		ProjectVM project;
 
 		[TestFixtureSetUp]
@@ -57,8 +60,17 @@ namespace VAS.Tests.Services
 			player1 = new PlayerVM ();
 			player2 = new PlayerVM ();
 			player3 = new PlayerVM ();
+
+			team1 = new TeamVM ();
+			team1.ViewModels.Add (player1);
+			team1.ViewModels.Add (player2);
+
+			team2 = new TeamVM ();
+			team2.ViewModels.Add (player3);
+
+			teams = new RangeObservableCollection<TeamVM> () { team1, team2 };
 			players = new RangeObservableCollection<PlayerVM> () { player1, player2, player3 };
-			project = new ProjectVM { Players = players, Model = new Utils.ProjectDummy () };
+			project = new ProjectVM { Players = players, Teams = teams, Model = new Utils.ProjectDummy () };
 
 			controller.SetViewModel (project);
 		}
@@ -213,6 +225,7 @@ namespace VAS.Tests.Services
 			player2.Locked = true;
 			player2.Tagged = true;
 			player3.Tagged = true;
+
 			var pCardEvent = new NewTagEvent {
 				EventType = new EventType { Name = "test" },
 				Start = new Time (0),
