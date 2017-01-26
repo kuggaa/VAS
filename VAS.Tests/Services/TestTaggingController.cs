@@ -30,7 +30,7 @@ namespace VAS.Tests.Services
 	[TestFixture]
 	public class TestTaggingController
 	{
-		TaggingController<DummyTeam, DummyTeamVM> controller;
+		TaggingController controller;
 		PlayerVM player1;
 		PlayerVM player2;
 		PlayerVM player3;
@@ -44,7 +44,7 @@ namespace VAS.Tests.Services
 		public void SetUpOnce ()
 		{
 			SetupClass.Initialize ();
-			controller = new TaggingController<DummyTeam, DummyTeamVM> ();
+			controller = new TaggingController ();
 			controller.Start ();
 		}
 

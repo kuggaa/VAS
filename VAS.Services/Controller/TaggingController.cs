@@ -29,9 +29,7 @@ using VAS.Core.ViewModel;
 
 namespace VAS.Services.Controller
 {
-	public class TaggingController<TModel, TViewModel> : DisposableBase, IController
-		where TModel : Team
-		where TViewModel : TemplateViewModel<TModel>, new()
+	public class TaggingController : DisposableBase, IController
 	{
 		/// <summary>
 		/// Gets or sets the view model.
