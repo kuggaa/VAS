@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using NUnit.Framework;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
 
@@ -59,6 +60,49 @@ namespace VAS.Tests.MVVMC
 			timeNode.EventTime = new Time (0);
 
 			Assert.AreEqual (1, eventCount);
+		}
+
+		[Test]
+		public void TestNeedsSyncWithNullPropertyName ()
+		{
+			var viewModel = new ViewModelBase<StorableBase> ();
+			Assert.IsTrue (viewModel.NeedsSync (null, null));
+
+		}
+
+		[Test]
+		public void TestNeedsSyncSameProperties ()
+		{
+			var viewModel = new ViewModelBase<StorableBase> ();
+			Assert.IsTrue (viewModel.NeedsSync ("Prop", "Prop"));
+		}
+
+		[Test]
+		public void TestNeedsSyncDifferentProperties ()
+		{
+			var viewModel = new ViewModelBase<StorableBase> ();
+			Assert.IsFalse (viewModel.NeedsSync ("Prop", "Prop1"));
+		}
+
+		[Test]
+		public void TestNeedsSyncSamePropertiesDifferentSender ()
+		{
+			var viewModel = new ViewModelBase<StorableBase> ();
+			Assert.IsFalse (viewModel.NeedsSync ("Prop1", "Prop1", new object (), new object ()));
+		}
+
+		[Test]
+		public void TestNeedsSyncSamePropertiesSameSender ()
+		{
+			var viewModel = new ViewModelBase<StorableBase> ();
+			Assert.IsTrue (viewModel.NeedsSync ("Prop1", "Prop1", this, this));
+		}
+
+		[Test]
+		public void TestNeedsSyncSamePropertiesNullSender ()
+		{
+			var viewModel = new ViewModelBase<StorableBase> ();
+			Assert.IsTrue (viewModel.NeedsSync ("Prop1", "Prop1", null, null));
 		}
 	}
 }

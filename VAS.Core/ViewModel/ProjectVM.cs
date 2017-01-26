@@ -17,10 +17,12 @@
 //
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
+using VAS.Core.Serialization;
 using VAS.Core.Store;
 
 namespace VAS.Core.ViewModel
@@ -29,9 +31,8 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// A ViewModel for <see cref="Project"/> objects.
 	/// </summary>
-	public class ProjectVM : ViewModelBase<Project>
+	public class ProjectVM : StorableVM<Project>
 	{
-		Project model;
 
 		public ProjectVM ()
 		{
@@ -42,16 +43,6 @@ namespace VAS.Core.ViewModel
 			FileSet = new MediaFileSetVM ();
 			Periods = new CollectionViewModel<Period, PeriodVM> ();
 			Dashboard = new DashboardVM ();
-		}
-
-		public override Project Model {
-			get {
-				return model;
-			}
-			set {
-				model = value;
-				UpdateModels ();
-			}
 		}
 
 		/// <summary>
@@ -173,11 +164,7 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
-		/// <summary>
-		/// Updates the model in the child ViewModel. Super classes should override this function to update their
-		/// own child ViewModel.
-		/// </summary>
-		protected virtual void UpdateModels ()
+		protected override void SyncLoadedModel ()
 		{
 			Playlists.Model = Model.Playlists;
 			EventTypes.Model = Model.EventTypes;
@@ -185,6 +172,10 @@ namespace VAS.Core.ViewModel
 			Periods.Model = Model.Periods;
 			Timeline.CreateEventTypeTimelines (EventTypes);
 			Timeline.Model = Model.Timeline;
+		}
+
+		protected override void SyncPreloadedModel ()
+		{
 			FileSet.Model = Model.FileSet;
 			Dashboard.Model = Model.Dashboard;
 		}
