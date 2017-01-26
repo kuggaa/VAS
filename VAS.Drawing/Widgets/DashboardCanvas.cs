@@ -455,8 +455,6 @@ namespace VAS.Drawing.Widgets
 				HandleModeChanged ();
 			} else if (e == null || e.PropertyName == "ShowLinks") {
 				HandleShowLinksChanged ();
-			} else if (e == null || e.PropertyName == "CurrentTime") {
-				HandleCurrentTimeChanged ();
 			} else if (e == null || e.PropertyName == "FitMode") {
 				HandleSizeChangedEvent ();
 			}
@@ -483,20 +481,6 @@ namespace VAS.Drawing.Widgets
 			}
 			ClearSelection ();
 			widget?.ReDraw ();
-		}
-
-		void HandleCurrentTimeChanged ()
-		{
-			//FIXME: This can easily be treated at the DashboardVM by proxying
-			// the CurrentTime to its Childs ViewModels
-			foreach (TimerButtonView to in Objects.OfType<TimerButtonView> ()) {
-				to.CurrentTime = ViewModel.CurrentTime;
-			}
-			foreach (TimedTaggerButtonView to in Objects.OfType<TimedTaggerButtonView> ()) {
-				if (to.TimedButton.TagMode == TagMode.Free) {
-					to.CurrentTime = ViewModel.CurrentTime;
-				}
-			}
 		}
 	}
 }

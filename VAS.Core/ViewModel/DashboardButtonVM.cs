@@ -401,6 +401,8 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class TimerButtonVM : DashboardButtonVM
 	{
+		TimeNode currentNode;
+		Time currentTime;
 		/// <summary>
 		/// Gets or sets the model.
 		/// </summary>
@@ -435,6 +437,55 @@ namespace VAS.Core.ViewModel
 			set {
 				Model.Timer = value;
 			}
+		}
+
+		[PropertyChanged.DoNotNotify]
+		public Time CurrentTime {
+			get {
+				return currentTime;
+			}
+
+			set {
+				if (value != null && currentNode != null) {
+					if (currentTime < currentNode.Start) {
+						TimerTime = null;
+						currentNode = null;
+					}
+					if (currentTime != null &&
+						currentTime.TotalSeconds != value.TotalSeconds) {
+						TimerTime = value - currentNode.Start;
+					}
+				}
+				currentTime = value;
+			}
+		}
+
+		public Time TimerTime {
+			get;
+			set;
+		}
+
+		public void Click (bool cancel)
+		{
+			//Cancel
+			if (cancel) {
+				currentNode = null;
+				TimerTime = null;
+				return;
+			}
+			//Start
+			if (currentNode == null) {
+				currentNode = new TimeNode { Name = Name, Start = CurrentTime };
+				TimerTime = new Time (0);
+				return;
+			}
+			//Stop
+			if (currentNode.Start.MSeconds != CurrentTime.MSeconds) {
+				currentNode.Stop = CurrentTime;
+				Model.Timer.Nodes.Add (currentNode);
+			}
+			currentNode = null;
+			TimerTime = null;
 		}
 	}
 }

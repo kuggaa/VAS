@@ -31,6 +31,28 @@ namespace VAS.Services.Controller
 {
 	public class TaggingController : DisposableBase, IController
 	{
+		VideoPlayerVM videoPlayer;
+
+		/// <summary>
+		/// Gets or sets the video player view model
+		/// </summary>
+		/// <value>The video player.</value>
+		protected VideoPlayerVM VideoPlayer {
+			get {
+				return videoPlayer;
+			}
+
+			set {
+				if (videoPlayer != null) {
+					videoPlayer.PropertyChanged -= HandleVideoPlayerPropertyChanged;
+				}
+				videoPlayer = value;
+				if (videoPlayer != null) {
+					videoPlayer.PropertyChanged += HandleVideoPlayerPropertyChanged;
+				}
+			}
+		}
+
 		/// <summary>
 		/// Gets or sets the view model.
 		/// </summary>
@@ -65,6 +87,7 @@ namespace VAS.Services.Controller
 		public void SetViewModel (IViewModel viewModel)
 		{
 			ViewModel = (ProjectVM)(viewModel as dynamic);
+			VideoPlayer = (VideoPlayerVM)(viewModel as dynamic);
 		}
 
 		/// <summary>
@@ -141,6 +164,21 @@ namespace VAS.Services.Controller
 				if (!player.Locked) {
 					player.Tagged = false;
 				}
+			}
+		}
+
+		void HandleVideoPlayerPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if (sender == videoPlayer && e.PropertyName == "CurrentTime") {
+				SetVideoCurrentTimeToTimerButtons ();
+			}
+		}
+
+		void SetVideoCurrentTimeToTimerButtons ()
+		{
+			ViewModel.Dashboard.CurrentTime = VideoPlayer.CurrentTime;
+			foreach (var timerVM in ViewModel.Dashboard.ViewModels.OfType<TimerButtonVM> ()) {
+				timerVM.CurrentTime = VideoPlayer.CurrentTime;
 			}
 		}
 	}
