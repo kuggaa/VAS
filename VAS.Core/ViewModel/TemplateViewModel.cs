@@ -82,7 +82,7 @@ namespace VAS.Core.ViewModel
 		public TemplateViewModel ()
 		{
 			Selection = new RangeObservableCollection<TChildViewModel> ();
-			SubViewModel = new CollectionViewModel<TChildModel, TChildViewModel> ();
+			SubViewModel = CreateSubViewModel ();
 		}
 
 		public override TModel Model {
@@ -163,6 +163,11 @@ namespace VAS.Core.ViewModel
 		public void SelectionReplace (IEnumerable<TChildViewModel> selection)
 		{
 			Selection.Replace (selection);
+		}
+
+		public virtual CollectionViewModel<TChildModel, TChildViewModel> CreateSubViewModel ()
+		{
+			return new CollectionViewModel<TChildModel, TChildViewModel> ();
 		}
 
 		#endregion

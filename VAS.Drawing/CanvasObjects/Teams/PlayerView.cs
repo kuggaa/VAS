@@ -20,28 +20,28 @@ using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
-using VAS.Drawing.CanvasObjects;
+using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Teams
 {
-	public class PlayerObject: CanvasButtonObject, ICanvasSelectableObject
+	public class PlayerView : CanvasButtonObject, ICanvasSelectableObject
 	{
 		protected static ISurface DefaultPhoto;
 		static bool surfacesCached = false;
-		Player player;
+		PlayerVM player;
 
-		public PlayerObject ()
+		public PlayerView ()
 		{
 			Init ();
 		}
 
-		public PlayerObject (Player player, Point position = null)
+		public PlayerView (PlayerVM player, Point position = null)
 		{
 			Player = player;
 			Init (position);
 		}
 
-		public Player Player {
+		public PlayerVM Player {
 			get {
 				return player;
 			}
@@ -135,7 +135,7 @@ namespace VAS.Drawing.CanvasObjects.Teams
 			tk.FillColor = App.Current.Style.PaletteBackgroundDark;
 			tk.LineWidth = 0;
 			tk.DrawRectangle (zero, StyleConf.PlayerSize, StyleConf.PlayerSize);
-			
+
 			/* Image */
 			if (Player.Photo != null) {
 				tk.DrawImage (zero, size, size, Player.Photo, ScaleMode.AspectFit);
@@ -154,7 +154,7 @@ namespace VAS.Drawing.CanvasObjects.Teams
 				tk.FillColor = c;
 				tk.DrawRectangle (zero, size, size);
 			}
-			
+
 			tk.End ();
 		}
 

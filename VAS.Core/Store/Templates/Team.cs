@@ -25,7 +25,7 @@ using VAS.Core.Serialization;
 namespace VAS.Core.Store.Templates
 {
 	[Serializable]
-	public abstract class Team : StorableBase, IDisposable, ITemplate
+	public abstract class Team : StorableBase, IDisposable, ITemplate<Player>
 	{
 		public const int CURRENT_VERSION = 1;
 
@@ -33,7 +33,9 @@ namespace VAS.Core.Store.Templates
 		{
 			ID = Guid.NewGuid ();
 			Version = Constants.DB_VERSION;
+			List = new RangeObservableCollection<Player> ();
 		}
+
 		protected override void Dispose (bool disposing)
 		{
 			if (Disposed)
@@ -41,6 +43,9 @@ namespace VAS.Core.Store.Templates
 			base.Dispose (disposing);
 			if (disposing) {
 				Shield?.Dispose ();
+				foreach (Player p in List) {
+					p.Dispose ();
+				}
 			}
 		}
 
@@ -83,32 +88,11 @@ namespace VAS.Core.Store.Templates
 		}
 
 		/// <summary>
-		/// Creates a deep copy of this team with new ID's for each player
+		/// Gets or sets the list of players.
 		/// </summary>
-		public abstract ITemplate Copy (string newName);
-	}
-
-	public class Team<TPlayer> : Team, ITemplate<TPlayer>
-		where TPlayer : StorableBase
-	{
-		public Team ()
-		{
-			List = new RangeObservableCollection<TPlayer> ();
-		}
-
-		protected override void Dispose (bool disposing)
-		{
-			if (Disposed) {
-				return;
-			}
-			base.Dispose (disposing);
-			foreach (TPlayer p in List) {
-				p.Dispose ();
-			}
-		}
-
+		/// <value>The list.</value>
 		[JsonProperty]
-		public RangeObservableCollection<TPlayer> List {
+		public RangeObservableCollection<Player> List {
 			get;
 			protected set;
 		}
@@ -116,14 +100,14 @@ namespace VAS.Core.Store.Templates
 		/// <summary>
 		/// Creates a deep copy of this team with new ID's for each player
 		/// </summary>
-		public override ITemplate Copy (string newName)
+		public virtual ITemplate Copy (string newName)
 		{
 			Load ();
-			ITemplate<TPlayer> newTeam = this.Clone ();
+			ITemplate<Player> newTeam = this.Clone ();
 			newTeam.ID = Guid.NewGuid ();
 			newTeam.DocumentID = null;
 			newTeam.Name = newName;
-			foreach (TPlayer player in newTeam.List) {
+			foreach (Player player in newTeam.List) {
 				player.ID = Guid.NewGuid ();
 			}
 			return newTeam;

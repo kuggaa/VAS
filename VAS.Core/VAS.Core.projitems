@@ -203,6 +203,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\Command.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\DashboardButtonVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PeriodVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlayerVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TeamVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
