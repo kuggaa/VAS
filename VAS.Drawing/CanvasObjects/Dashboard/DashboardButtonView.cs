@@ -20,6 +20,7 @@ using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store.Drawables;
 using VAS.Core.Common;
 using VAS.Core.Store;
+using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
@@ -236,46 +237,20 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 	/// </summary>
 	public class TimedTaggerButtonView : DashboardButtonView
 	{
-		Time currentTime;
-		TimedDashboardButton timedButton;
+		TimedDashboardButtonVM timedButtonVM;
 
-		public TimedTaggerButtonView () : base ()
-		{
-			currentTime = new Time (0);
-			Start = null;
-		}
-
-		/// <summary>
-		/// Gets or sets the timed button.
-		/// </summary>
-		/// <value>The timed button.</value>
-		public TimedDashboardButton TimedButton {
+		public TimedDashboardButtonVM TimedButtonVM {
 			get {
-				return timedButton;
+				return timedButtonVM;
 			}
 			set {
-				timedButton = value;
-				Button = value;
-			}
-		}
-
-		public Time CurrentTime {
-			get {
-				return currentTime;
-			}
-			set {
-				Time prevCurrentTime = currentTime;
-				currentTime = value;
-				if (Start != null) {
-					bool secsChanged = (prevCurrentTime - Start).TotalSeconds != (value - Start).TotalSeconds;
-					/* Add a tolerance of 100ms, as sometimes after pausing and restarting
-					 * the clocks goes backwards by a few ms. So if a event has started recording
-					 * with the player paused, resuming playback might cancel the event started */
-					if (currentTime.MSeconds + 100 < Start.MSeconds) {
-						Clear ();
-					} else if (secsChanged) {
-						ReDraw ();
-					}
+				if (timedButtonVM != null) {
+					timedButtonVM.PropertyChanged -= HandleTimedButtonVMPropertyChanged;
+				}
+				timedButtonVM = value;
+				if (timedButtonVM != null) {
+					Button = timedButtonVM.Model;
+					timedButtonVM.PropertyChanged += HandleTimedButtonVMPropertyChanged;
 				}
 			}
 		}
@@ -287,7 +262,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		public override void ClickReleased ()
 		{
-			if (TimedButton.TagMode == TagMode.Predefined) {
+			if (TimedButtonVM.TagMode == TagMode.Predefined) {
 				Active = !Active;
 				EmitClickEvent ();
 			} else if (!Recording) {
@@ -301,8 +276,8 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		protected void StartRecording ()
 		{
 			Recording = true;
-			if (Start == null) {
-				Start = CurrentTime;
+			if (TimedButtonVM.RecordingStart == null) {
+				TimedButtonVM.RecordingStart = TimedButtonVM.CurrentTime;
 			}
 			Active = true;
 			ReDraw ();
@@ -311,8 +286,15 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		protected virtual void Clear ()
 		{
 			Recording = false;
-			Start = null;
+			TimedButtonVM.RecordingStart = null;
 			Active = false;
+		}
+
+		void HandleTimedButtonVMPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if (sender == TimedButtonVM && e.PropertyName == "ButtonTime") {
+				ReDraw ();
+			}
 		}
 	}
 }
