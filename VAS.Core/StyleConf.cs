@@ -153,10 +153,11 @@ namespace VAS.Core.Common
 		public const int PresentationManagerHeaderIconSize = 54;
 		public const int PresentationManagerButtonIconSize = 34;
 
-		public const int ButtonHeaderHeight = 18;
-		public const int ButtonHeaderWidth = 18;
+		public const int ButtonHeaderHeight = 20;
+		public const int ButtonHeaderWidth = 20;
 		public const int ButtonRecWidth = 40;
 		public const int ButtonLineWidth = 2;
+		public const int ButtonActiveLineWidth = 4;
 		public const int ButtonHeaderFontSize = 14;
 		public const int ButtonNameFontSize = 18;
 		public const int ButtonTimerFontSize = 24;

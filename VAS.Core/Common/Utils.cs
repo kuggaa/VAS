@@ -56,11 +56,11 @@ namespace VAS.Core.Common
 		public static OperatingSystemID OS {
 			get {
 				if (operatingSystem == OperatingSystemID.None) {
-					#if OSTYPE_ANDROID
+#if OSTYPE_ANDROID
 					operatingSystem = OperatingSystemID.Android;
-					#elif OSTYPE_IOS
+#elif OSTYPE_IOS
 					operatingSystem = OperatingSystemID.iOS;
-					#else
+#else
 					switch (Environment.OSVersion.Platform) {
 					case PlatformID.MacOSX:
 						operatingSystem = OperatingSystemID.OSX;
@@ -68,9 +68,9 @@ namespace VAS.Core.Common
 					case PlatformID.Unix:
 						// OS X is detetected as a Unix system and needs an extra check using the filesystem layout
 						if (Directory.Exists ("/Applications")
-						    & Directory.Exists ("/System")
-						    & Directory.Exists ("/Users")
-						    & Directory.Exists ("/Volumes")) {
+							& Directory.Exists ("/System")
+							& Directory.Exists ("/Users")
+							& Directory.Exists ("/Volumes")) {
 							operatingSystem = OperatingSystemID.OSX;
 						} else {
 							operatingSystem = OperatingSystemID.Linux;
@@ -82,7 +82,7 @@ namespace VAS.Core.Common
 					default:
 						throw new NotSupportedException ();
 					}
-					#endif
+#endif
 				}
 				return operatingSystem;
 			}
@@ -110,6 +110,25 @@ namespace VAS.Core.Common
 				randomGen = new Random ();
 			return new Color (Convert.ToByte (randomGen.Next (0, 255)), Convert.ToByte (randomGen.Next (0, 255)),
 				Convert.ToByte (randomGen.Next (0, 255)));
+		}
+
+		/// <summary>
+		/// Return the corresponding FontSlant enum from the given string
+		/// </summary>
+		/// <returns>The font slant.</returns>
+		/// <param name="fontSlant">Font slant.</param>
+		public static FontSlant ParseFontSlant (string fontSlant)
+		{
+			switch (fontSlant.ToLower ()) {
+			case "italic":
+			case "italics":
+				return FontSlant.Italic;
+			case "oblique":
+			case "obliques":
+				return FontSlant.Oblique;
+			default:
+				return FontSlant.Normal;
+			}
 		}
 
 		public static string GetDataFilePath (string filename)

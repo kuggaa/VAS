@@ -147,7 +147,7 @@ namespace VAS.Tests
 		}
 	}
 
-	public class DummyTeam : Team<Utils.PlayerDummy>
+	public class DummyTeam : Team
 	{
 	}
 
@@ -155,7 +155,7 @@ namespace VAS.Tests
 	{
 	}
 
-	public class DummyTeamVM : TemplateViewModel<DummyTeam, Utils.PlayerDummy, DummyPlayerVM>
+	public class DummyTeamVM : TemplateViewModel<DummyTeam, Player, PlayerVM>
 	{
 		public override Image Icon {
 			get;
@@ -163,14 +163,14 @@ namespace VAS.Tests
 		}
 	}
 
-	public class DummyTemplatesController : TemplatesController<DummyTeam, DummyTeamVM, Utils.PlayerDummy, DummyPlayerVM>
+	public class DummyTemplatesController : TemplatesController<Team, TeamVM, Player, PlayerVM>
 	{
 		public DummyTemplatesController ()
 		{
-			ViewModel = new TemplatesManagerViewModel<DummyTeam, DummyTeamVM, Utils.PlayerDummy, DummyPlayerVM> ();
+			ViewModel = new TemplatesManagerViewModel<Team, TeamVM, Player, PlayerVM> ();
 		}
 
-		protected override bool SaveValidations (DummyTeam model)
+		protected override bool SaveValidations (Team model)
 		{
 			throw new NotImplementedException ();
 		}

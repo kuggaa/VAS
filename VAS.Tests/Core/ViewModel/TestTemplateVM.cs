@@ -17,6 +17,7 @@
 //
 using System.Linq;
 using NUnit.Framework;
+using VAS.Core.ViewModel;
 
 namespace VAS.Tests.Core.ViewModel
 {
@@ -70,7 +71,7 @@ namespace VAS.Tests.Core.ViewModel
 			};
 
 			Assert.AreEqual (3, viewModel.Count ());
-			Assert.IsInstanceOf (typeof (DummyPlayerVM), viewModel.First ());
+			Assert.IsInstanceOf (typeof (PlayerVM), viewModel.First ());
 		}
 
 		[Test]
@@ -89,7 +90,7 @@ namespace VAS.Tests.Core.ViewModel
 			model.List.Add (new Utils.PlayerDummy ());
 
 			Assert.AreEqual (4, viewModel.Count ());
-			Assert.IsInstanceOf (typeof (DummyPlayerVM), viewModel.Last ());
+			Assert.IsInstanceOf (typeof (PlayerVM), viewModel.Last ());
 		}
 
 		[Test]

@@ -15,6 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using VAS.Core.Common;
 using VAS.Core.Events;
@@ -114,6 +115,16 @@ namespace VAS.Core.ViewModel
 			get {
 				return Model.ShortDescription;
 			}
+		}
+
+		public virtual IEnumerable<PlayerVM> Players {
+			get;
+			internal set;
+		}
+
+		public virtual IEnumerable<TeamVM> Teams {
+			get;
+			internal set;
 		}
 
 		/// <summary>
