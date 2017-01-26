@@ -85,6 +85,7 @@ namespace VAS.Tests
 	{
 		public void Dispose ()
 		{
+			Log.Verbose ($"Disposing {GetType ()}");
 			throw new NotImplementedException ();
 		}
 
@@ -97,6 +98,7 @@ namespace VAS.Tests
 	{
 		public void Dispose ()
 		{
+			Log.Verbose ($"Disposing {GetType ()}");
 		}
 
 		public void Start ()
