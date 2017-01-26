@@ -28,7 +28,7 @@ using VAS.Core.MVVMC;
 namespace VAS.Core.Store
 {
 	[Serializable]
-	public class DashboardButton: BindableBase
+	public class DashboardButton : BindableBase
 	{
 
 		public DashboardButton ()
@@ -45,7 +45,7 @@ namespace VAS.Core.Store
 				TextColor = App.Current.Style.PaletteBackgroundLight.Copy (true);
 			}
 			HotKey = new HotKey { IsChanged = false };
-			ActionLinks = new ObservableCollection <ActionLink> ();
+			ActionLinks = new ObservableCollection<ActionLink> ();
 			ShowIcon = false;
 			ShowHotkey = false;
 			ShowSettingIcon = false;
@@ -146,7 +146,7 @@ namespace VAS.Core.Store
 	}
 
 	[Serializable]
-	public class TimedDashboardButton: DashboardButton
+	public class TimedDashboardButton : DashboardButton
 	{
 		public TimedDashboardButton ()
 		{
@@ -178,7 +178,7 @@ namespace VAS.Core.Store
 	}
 
 	[Serializable]
-	public class TagButton: DashboardButton
+	public class TagButton : DashboardButton
 	{
 		public TagButton ()
 		{
@@ -214,14 +214,11 @@ namespace VAS.Core.Store
 	}
 
 	[Serializable]
-	public class TimerButton: DashboardButton
+	public class TimerButton : DashboardButton
 	{
-		protected TimeNode currentNode;
-
 		public TimerButton ()
 		{
 			BackgroundColor = StyleConf.ButtonTimerColor.Copy (true);
-			currentNode = null;
 		}
 
 		virtual public Timer Timer {
@@ -239,63 +236,10 @@ namespace VAS.Core.Store
 				}
 			}
 		}
-
-		public virtual void Start (Time start, List<DashboardButton> from)
-		{
-			if (currentNode != null)
-				return;
-
-			if (Timer != null) {
-				currentNode = Timer.Start (start);
-				App.Current.EventsBroker.Publish<TimeNodeStartedEvent> (
-					new TimeNodeStartedEvent {
-						TimeNode = currentNode,
-						TimerButton = this,
-						DashboardButtons = from
-					}
-				);
-			}
-		}
-
-		public virtual void Stop (Time stop, List<DashboardButton> from)
-		{
-			if (currentNode == null)
-				return;
-
-			if (Timer != null) {
-				Timer.Stop (stop);
-				App.Current.EventsBroker.Publish<TimeNodeStoppedEvent> (
-					new TimeNodeStoppedEvent {
-						TimeNode = currentNode,
-						TimerButton = this,
-						DashboardButtons = from
-					}
-				);
-				currentNode = null;
-			}
-		}
-
-		public void Cancel ()
-		{
-			if (currentNode == null)
-				return;
-			if (Timer != null) {
-				Timer.CancelCurrent ();
-				currentNode = null;
-			}
-		}
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public Time StartTime {
-			get {
-				return currentNode == null ? null : currentNode.Start;
-			}
-		}
 	}
 
 	[Serializable]
-	public class EventButton: TimedDashboardButton
+	public class EventButton : TimedDashboardButton
 	{
 		public EventType EventType {
 			get;
@@ -334,7 +278,7 @@ namespace VAS.Core.Store
 	}
 
 	[Serializable]
-	public class AnalysisEventButton: EventButton
+	public class AnalysisEventButton : EventButton
 	{
 		public AnalysisEventButton ()
 		{

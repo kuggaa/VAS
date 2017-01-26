@@ -125,11 +125,15 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			if (e.Action == NotifyCollectionChangedAction.Reset) {
 				Reload ();
 			} else {
-				foreach (TimeNodeVM timenodeVM in e.OldItems) {
-					RemoveTimeNode (timenodeVM);
+				if (e.OldItems != null) {
+					foreach (TimeNodeVM timenodeVM in e.OldItems) {
+						RemoveTimeNode (timenodeVM);
+					}
 				}
-				foreach (TimeNodeVM timeNodeVM in e.NewItems) {
-					AddTimeNode (timeNodeVM);
+				if (e.NewItems != null) {
+					foreach (TimeNodeVM timeNodeVM in e.NewItems) {
+						AddTimeNode (timeNodeVM);
+					}
 				}
 			}
 		}
