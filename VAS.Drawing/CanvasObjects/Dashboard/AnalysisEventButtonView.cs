@@ -38,9 +38,9 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		public event ButtonSelectedHandler EditButtonTagsEvent;
 
 		static Image iconImage;
-		static Image recImage;
+		protected static Image recImage;
 		static Image editImage;
-		static Image cancelImage;
+		protected static Image cancelImage;
 		static Image applyImage;
 		protected Dictionary<Rectangle, object> rects, buttonsRects;
 		Dictionary<string, List<Tag>> tagsByGroup;
@@ -49,10 +49,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		int nrows;
 		const int TIMEOUT_MS = 800;
 		System.Threading.Timer timer;
-		object cancelButton = new object ();
+		protected object cancelButton = new object ();
 		object editbutton = new object ();
 		object applyButton = new object ();
-		Rectangle editRect, cancelRect, applyRect;
+		protected Rectangle editRect, cancelRect, applyRect;
 		double catWidth, heightPerRow;
 		Dictionary<Tag, LinkAnchorView> subcatAnchors, cachedAnchors;
 		AnalysisEventButton button;
@@ -207,7 +207,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		public void SetViewModel (object viewModel)
 		{
 			ViewModel = (AnalysisEventButtonVM)viewModel;
-			ViewModel.TagMode = TagMode.Free;
 			TimedButtonVM = (TimedDashboardButtonVM)viewModel;
 		}
 
@@ -576,7 +575,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
-		void DrawRecordTime (IDrawingToolkit tk)
+		protected virtual void DrawRecordTime (IDrawingToolkit tk)
 		{
 			if (Recording && Mode != DashboardMode.Edit && viewModel.ButtonTime != null) {
 				if (ShowTags) {
@@ -623,7 +622,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			tk.DrawImage (pos, width, height - 10, applyImage, ScaleMode.AspectFit, true);
 		}
 
-		void DrawRecordButton (IDrawingToolkit tk)
+		protected virtual void DrawRecordButton (IDrawingToolkit tk)
 		{
 			Point pos, bpos;
 			double width, height;
