@@ -415,8 +415,8 @@ namespace VAS.Core.ViewModel
 			Time start, stop, eventTime;
 
 			if (TagMode == TagMode.Predefined || RecordingStart == null) {
-				start = CurrentTime + Stop;
-				stop = CurrentTime - Start;
+				start = CurrentTime - Start;
+				stop = CurrentTime + Stop;
 				eventTime = CurrentTime;
 			} else {
 				stop = CurrentTime;
@@ -569,7 +569,7 @@ namespace VAS.Core.ViewModel
 			//Stop
 			if (currentNode.Start.MSeconds != CurrentTime.MSeconds) {
 				currentNode.Stop = CurrentTime;
-				Model.Timer.Nodes.Add (currentNode);
+				Timer.Nodes.Add (currentNode);
 			}
 			currentNode = null;
 			TimerTime = null;
