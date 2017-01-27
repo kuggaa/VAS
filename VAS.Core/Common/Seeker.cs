@@ -2,19 +2,19 @@ using System;
 using System.Threading;
 using VAS.Core.Common;
 using VAS.Core.Handlers;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using Timer = System.Threading.Timer;
 
 namespace VAS.Core.Common
 {
-	public class Seeker: IDisposable
+	public class Seeker : DisposableBase
 	{
 		public event SeekHandler SeekEvent;
 
 		uint timeout;
 		bool pendingSeek;
 		bool waiting;
-		bool disposed;
 		Time start;
 		float rate;
 		SeekType seekType;
@@ -26,7 +26,6 @@ namespace VAS.Core.Common
 		{
 			timeout = timeoutMS;
 			pendingSeek = false;
-			disposed = false;
 			seekType = SeekType.None;
 			timer = new Timer (HandleSeekTimeout);
 			TimerDisposed = new ManualResetEvent (false);
@@ -34,14 +33,12 @@ namespace VAS.Core.Common
 
 		#region IDisposable implementation
 
-		public void Dispose ()
+		protected override void DisposeManagedResources ()
 		{
-			if (!disposed) {
-				timer.Dispose (TimerDisposed);
-				TimerDisposed.WaitOne (200);
-				TimerDisposed.Dispose ();
-			}
-			disposed = true;
+			base.DisposeManagedResources ();
+			timer.Dispose (TimerDisposed);
+			TimerDisposed.WaitOne (200);
+			TimerDisposed.Dispose ();
 		}
 
 		#endregion
@@ -82,7 +79,7 @@ namespace VAS.Core.Common
 		/// <param name="state">State.</param>
 		void HandleSeekTimeout (object state)
 		{
-			if (disposed) {
+			if (Disposed) {
 				return;
 			}
 

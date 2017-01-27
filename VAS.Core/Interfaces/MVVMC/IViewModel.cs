@@ -25,7 +25,7 @@ using VAS.Core.ViewModel;
 
 namespace VAS.Core.Interfaces.MVVMC
 {
-	public interface IViewModel : INotifyPropertyChanged
+	public interface IViewModel : INotifyPropertyChanged, IDisposable
 	{
 	}
 

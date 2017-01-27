@@ -249,9 +249,11 @@ namespace VAS.Core.ViewModel
 
 		#region methods
 
-		public void Dispose ()
+		protected override void DisposeManagedResources ()
 		{
+			base.DisposeManagedResources ();
 			Player.Dispose ();
+			Player = null;
 		}
 
 		public void Expose ()

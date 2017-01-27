@@ -53,13 +53,14 @@ namespace VAS.Core.ViewModel
 			FullTimeline.ViewModels.CollectionChanged += HandleTimelineCollectionChanged;
 		}
 
-		protected override void Dispose (bool disposing)
+		protected override void DisposeManagedResources ()
 		{
-			if (Disposed)
-				return;
-			base.Dispose (disposing);
+			base.DisposeManagedResources ();
 			FullTimeline.ViewModels.CollectionChanged -= HandleTimelineCollectionChanged;
 			EventTypesTimeline.ViewModels.CollectionChanged -= HandleEventTypesCollectionChanged;
+			Filters.Dispose ();
+			EventTypesTimeline.Dispose ();
+			FullTimeline.Dispose ();
 		}
 
 		public RangeObservableCollection<TimelineEvent> Model {

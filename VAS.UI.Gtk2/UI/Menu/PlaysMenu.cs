@@ -45,6 +45,34 @@ namespace VAS.UI.Menus
 			CreateMenu ();
 		}
 
+		public override void Dispose ()
+		{
+			Dispose (true);
+			base.Dispose ();
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (Disposed) {
+				return;
+			}
+			if (disposing) {
+				Destroy ();
+			}
+			Disposed = true;
+		}
+
+		protected override void OnDestroyed ()
+		{
+			Log.Verbose ($"Destroying {GetType ()}");
+
+			base.OnDestroyed ();
+
+			Disposed = true;
+		}
+
+		protected bool Disposed { get; private set; } = false;
+
 		public void ShowListMenu (Project project, List<TimelineEvent> plays)
 		{
 			ShowMenu (project, plays, null, null, project.EventTypes, true);

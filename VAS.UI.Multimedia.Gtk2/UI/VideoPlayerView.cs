@@ -119,6 +119,37 @@ namespace VAS.UI
 
 		}
 
+		public override void Dispose ()
+		{
+			Dispose (true);
+			base.Dispose ();
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (Disposed) {
+				return;
+			}
+			if (disposing) {
+				Destroy ();
+			}
+			Disposed = true;
+		}
+
+		protected override void OnDestroyed ()
+		{
+			Log.Verbose ($"Destroying {GetType ()}");
+
+			playerVM = null;
+			blackboard.Dispose ();
+
+			base.OnDestroyed ();
+
+			Disposed = true;
+		}
+
+		protected bool Disposed { get; private set; } = false;
+
 		#endregion
 
 		protected override void OnRealized ()
@@ -127,13 +158,6 @@ namespace VAS.UI
 				playerVM.ViewPorts = viewPortsBackup;
 			}
 			base.OnRealized ();
-		}
-
-		protected override void OnDestroyed ()
-		{
-			blackboard.Dispose ();
-			playerVM.Dispose ();
-			base.OnDestroyed ();
 		}
 
 		protected override void OnUnrealized ()
@@ -147,8 +171,6 @@ namespace VAS.UI
 		public void SetViewModel (object viewModel)
 		{
 			ViewModel = (VideoPlayerVM)viewModel;
-			ViewModel.SupportsMultipleCameras = false;
-			SyncVMValues ();
 		}
 
 		public VideoPlayerVM ViewModel {
@@ -167,6 +189,8 @@ namespace VAS.UI
 					playerVM.ViewPorts = viewPortsBackup;
 					playerVM.SetCamerasConfig (new ObservableCollection<CameraConfig> { new CameraConfig (0) });
 					ResetGui ();
+					ViewModel.SupportsMultipleCameras = false;
+					SyncVMValues ();
 				}
 			}
 		}

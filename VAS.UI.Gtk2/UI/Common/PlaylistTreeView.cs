@@ -46,12 +46,13 @@ namespace VAS.UI.Common
 			CreateDragSource (new [] { new TargetEntry (Constants.PlaylistElementsDND, TargetFlags.App, 0) });
 		}
 
-		public override void Dispose ()
+		protected override void OnDestroyed ()
 		{
 			if (ViewModel != null) {
 				ViewModel.PropertyChanged -= HandleViewModelPropertyChanged;
 			}
-			base.Dispose ();
+			playlistMenu.Dispose ();
+			base.OnDestroyed ();
 		}
 
 		public override void SetViewModel (object viewModel)
@@ -60,7 +61,9 @@ namespace VAS.UI.Common
 				ViewModel.PropertyChanged -= HandleViewModelPropertyChanged;
 			}
 			base.SetViewModel (viewModel);
-			ViewModel.PropertyChanged += HandleViewModelPropertyChanged;
+			if (ViewModel != null) {
+				ViewModel.PropertyChanged += HandleViewModelPropertyChanged;
+			}
 		}
 
 		protected virtual void CreateMenu ()

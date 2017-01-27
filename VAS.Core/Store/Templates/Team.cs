@@ -36,16 +36,12 @@ namespace VAS.Core.Store.Templates
 			List = new RangeObservableCollection<Player> ();
 		}
 
-		protected override void Dispose (bool disposing)
+		protected override void DisposeManagedResources ()
 		{
-			if (Disposed)
-				return;
-			base.Dispose (disposing);
-			if (disposing) {
-				Shield?.Dispose ();
-				foreach (Player p in List) {
-					p.Dispose ();
-				}
+			base.DisposeManagedResources ();
+			Shield?.Dispose ();
+			foreach (Player p in List) {
+				p.Dispose ();
 			}
 		}
 

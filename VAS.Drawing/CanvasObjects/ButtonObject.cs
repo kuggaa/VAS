@@ -42,13 +42,10 @@ namespace VAS.Drawing.CanvasObjects
 			MinHeight = 20;
 		}
 
-		protected override void Dispose (bool disposing)
+		protected override void DisposeManagedResources ()
 		{
-			if (Disposed)
-				return;
-
+			base.DisposeManagedResources ();
 			ResetBackbuffer ();
-			base.Dispose (disposing);
 		}
 
 		public virtual string Text {

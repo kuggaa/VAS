@@ -51,17 +51,12 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			SecondsPerPixel = 0.1;
 		}
 
-		protected override void Dispose (bool disposing)
+		protected override void DisposeManagedResources ()
 		{
-			if (Disposed)
-				return;
-
-			base.Dispose (disposing);
-			if (disposing) {
-				ClearObjects ();
-				selectionBorderL?.Dispose ();
-				selectionBorderR?.Dispose ();
-			}
+			base.DisposeManagedResources ();
+			ClearObjects ();
+			selectionBorderL?.Dispose ();
+			selectionBorderR?.Dispose ();
 		}
 
 		public double SecondsPerPixel {

@@ -23,7 +23,7 @@ using VAS.Core.MVVMC;
 namespace VAS.Core.Common
 {
 	[Serializable]
-	public abstract class BaseImage<T>: BindableBase, ISerializable, IDisposable where T: IDisposable
+	public abstract class BaseImage<T> : BindableBase, ISerializable, IDisposable where T : IDisposable
 	{
 
 		protected const string BUF_PROPERTY = "pngbuf";
@@ -52,6 +52,12 @@ namespace VAS.Core.Common
 			Value = LoadFromStream (stream);
 		}
 
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			Value.Dispose ();
+		}
+
 		public virtual T Value {
 			get;
 			protected set;
@@ -69,24 +75,19 @@ namespace VAS.Core.Common
 			}
 		}
 
-		public void Dispose ()
-		{
-			Value.Dispose ();
-		}
-
 		public void ScaleInplace ()
 		{
 			ScaleInplace (Constants.MAX_THUMBNAIL_SIZE, Constants.MAX_THUMBNAIL_SIZE);
 		}
 
 		public void ScaleFactor (int destWidth, int destHeight, ScaleMode mode,
-		                         out double scaleX, out double scaleY, out Point offset)
+								 out double scaleX, out double scaleY, out Point offset)
 		{
 			ScaleFactor (Width, Height, destWidth, destHeight, mode, out scaleX, out scaleY, out offset);
 		}
 
 		public static void ScaleFactor (int imgWidth, int imgHeight, int destWidth, int destHeight,
-		                                ScaleMode mode, out double scaleX, out double scaleY, out Point offset)
+										ScaleMode mode, out double scaleX, out double scaleY, out Point offset)
 		{
 			int oWidth = 0;
 			int oHeight = 0;
@@ -98,7 +99,7 @@ namespace VAS.Core.Common
 		}
 
 		public static void ComputeScale (int inWidth, int inHeight, int reqOutWidth, int reqOutHeight,
-		                                 ScaleMode mode, out int outWidth, out int outHeight)
+										 ScaleMode mode, out int outWidth, out int outHeight)
 		{
 			outWidth = reqOutWidth;
 			outHeight = reqOutHeight;
@@ -146,7 +147,7 @@ namespace VAS.Core.Common
 
 		public abstract Image Scale (int maxWidth, int maxHeight);
 
-		public abstract byte[] Serialize ();
+		public abstract byte [] Serialize ();
 
 		public abstract void Save (string filename);
 

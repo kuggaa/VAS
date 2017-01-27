@@ -53,17 +53,12 @@ namespace VAS.Core.Store
 			Teams = new RangeObservableCollection<Team> ();
 		}
 
-		protected override void Dispose (bool disposing)
+		protected override void DisposeManagedResources ()
 		{
-			if (Disposed) {
-				return;
-			}
-			base.Dispose (disposing);
-			if (disposing) {
-				Miniature?.Dispose ();
-				foreach (var drawing in Drawings) {
-					drawing.Miniature?.Dispose ();
-				}
+			base.DisposeManagedResources ();
+			Miniature?.Dispose ();
+			foreach (var drawing in Drawings) {
+				drawing.Miniature?.Dispose ();
 			}
 		}
 
