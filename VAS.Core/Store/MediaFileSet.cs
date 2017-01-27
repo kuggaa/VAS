@@ -37,7 +37,6 @@ namespace VAS.Core.Store
 		public MediaFileSet ()
 		{
 			ID = Guid.NewGuid ();
-			IsLoaded = true;
 			VisibleRegion = null;
 			MediaFiles = new RangeObservableCollection<MediaFile> ();
 		}
@@ -245,19 +244,6 @@ namespace VAS.Core.Store
 				}
 			}
 			return false;
-		}
-
-		protected void CheckIsLoaded ()
-		{
-			if (!IsLoaded && !isLoading) {
-				isLoading = true;
-				if (Storage == null) {
-					throw new StorageException ("Storage not set in preloaded object");
-				}
-				Storage.Fill (this);
-				IsLoaded = true;
-				isLoading = false;
-			}
 		}
 
 		public override bool Equals (object obj)
