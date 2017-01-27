@@ -77,7 +77,6 @@
                   <widget class="Gtk.HScale" id="focusscale">
                     <property name="MemberName" />
                     <property name="CanFocus">True</property>
-                    <property name="Inverted">True</property>
                     <property name="Upper">100</property>
                     <property name="PageIncrement">10</property>
                     <property name="StepIncrement">1</property>
