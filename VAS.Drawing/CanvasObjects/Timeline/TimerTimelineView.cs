@@ -122,18 +122,22 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 		void HandleTimerCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
-			if (e.Action == NotifyCollectionChangedAction.Reset) {
-				Reload ();
-			} else {
-				if (e.OldItems != null) {
-					foreach (TimeNodeVM timenodeVM in e.OldItems) {
-						RemoveTimeNode (timenodeVM);
-					}
-				}
-				if (e.NewItems != null) {
+			switch (e.Action) {
+			case NotifyCollectionChangedAction.Add: {
 					foreach (TimeNodeVM timeNodeVM in e.NewItems) {
 						AddTimeNode (timeNodeVM);
 					}
+					break;
+				}
+			case NotifyCollectionChangedAction.Remove: {
+					foreach (TimeNodeVM timenodeVM in e.OldItems) {
+						RemoveTimeNode (timenodeVM);
+					}
+					break;
+				}
+			case NotifyCollectionChangedAction.Reset: {
+					Reload ();
+					break;
 				}
 			}
 		}

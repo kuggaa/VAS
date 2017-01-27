@@ -189,7 +189,7 @@ namespace VAS.Services
 		{
 			App.Current.EventsBroker.Subscribe<NewPlaylistEvent> (HandleNewPlaylistEvent);
 			App.Current.EventsBroker.Subscribe<JobRenderedEvent> (HandleCreateJob);
-			App.Current.EventsBroker.Subscribe<EventCreatedEvent> (HandleEventCreated);
+			App.Current.EventsBroker.Subscribe<NewDashboardEvent> (HandleDashboardEvent);
 			App.Current.EventsBroker.Subscribe<DrawingSavedToProjectEvent> (HandleDrawingSavedToProject);
 			App.Current.EventsBroker.Subscribe<ProjectCreatedEvent> (HandleNewProject);
 			App.Current.EventsBroker.Subscribe<OpenedProjectEvent> (HandleOpenProject);
@@ -207,7 +207,7 @@ namespace VAS.Services
 			SaveTimer ();
 			App.Current.EventsBroker.Unsubscribe<NewPlaylistEvent> (HandleNewPlaylistEvent);
 			App.Current.EventsBroker.Unsubscribe<JobRenderedEvent> (HandleCreateJob);
-			App.Current.EventsBroker.Unsubscribe<EventCreatedEvent> (HandleEventCreated);
+			App.Current.EventsBroker.Unsubscribe<NewDashboardEvent> (HandleDashboardEvent);
 			App.Current.EventsBroker.Unsubscribe<DrawingSavedToProjectEvent> (HandleDrawingSavedToProject);
 			App.Current.EventsBroker.Unsubscribe<ProjectCreatedEvent> (HandleNewProject);
 			App.Current.EventsBroker.Unsubscribe<OpenedProjectEvent> (HandleOpenProject);
@@ -350,10 +350,10 @@ namespace VAS.Services
 		/// Handles when a dashboard event has been throwed.
 		/// </summary>
 		/// <param name="evt">Evt.</param>
-		void HandleEventCreated (EventCreatedEvent evt)
+		void HandleDashboardEvent (NewDashboardEvent evt)
 		{
 			ManualEventsCount++;
-			ProjectDictionary [evt.TimelineEvent.Project.ID] = new Tuple<int, int> (ManualEventsCount, DrawingsCount);
+			ProjectDictionary [evt.ProjectId] = new Tuple<int, int> (ManualEventsCount, DrawingsCount);
 		}
 
 		/// <summary>
