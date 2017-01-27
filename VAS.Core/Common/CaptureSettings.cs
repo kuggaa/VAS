@@ -18,11 +18,10 @@
 
 namespace VAS.Core.Common
 {
-	public struct CaptureSettings
+	public class CaptureSettings
 	{
 		public Device Device;
 		public DeviceVideoFormat Format;
 		public EncodingSettings EncodingSettings;
 	}
-	
 }
