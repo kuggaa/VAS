@@ -20,11 +20,12 @@ using System.ComponentModel;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
 namespace VAS.Services.ViewModel
 {
-	public class DrawingToolVM : IViewModel
+	public class DrawingToolVM : DisposableBase, IViewModel
 	{
 		/// <summary>
 		/// Gets or sets the project.

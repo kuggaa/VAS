@@ -28,7 +28,7 @@ using VAS.UI.Common;
 
 namespace VAS.UI.Component
 {
-	public abstract class FilterTreeViewBase: TreeView
+	public abstract class FilterTreeViewBase : TreeView
 	{
 		protected const int COL_DESCRIPTION = 0;
 		protected const int COL_ACTIVE = 1;
@@ -42,7 +42,7 @@ namespace VAS.UI.Component
 			EnableGridLines = TreeViewGridLines.Horizontal;
 			SearchColumn = COL_DESCRIPTION;
 
-			Model = store = new TreeStore (typeof(string), typeof(bool), typeof(object));
+			Model = store = new TreeStore (typeof (string), typeof (bool), typeof (object));
 
 			TreeViewColumn filterColumn = new TreeViewColumn ();
 			CellRendererToggle filterCell = new CellRendererToggle ();
@@ -68,6 +68,33 @@ namespace VAS.UI.Component
 
 			ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteBackgroundLight));
 		}
+
+		public override void Dispose ()
+		{
+			Dispose (true);
+			base.Dispose ();
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (Disposed) {
+				return;
+			}
+			if (disposing) {
+				Destroy ();
+			}
+			Disposed = true;
+		}
+
+		protected override void OnDestroyed ()
+		{
+			Log.Verbose ($"Destroying {GetType ()}");
+			base.OnDestroyed ();
+
+			Disposed = true;
+		}
+
+		protected bool Disposed { get; private set; } = false;
 
 		public virtual void ToggleAll (bool active)
 		{

@@ -48,6 +48,12 @@ namespace VAS.UI.Component
 			CreateFilterAndSort ();
 		}
 
+		protected override void OnDestroyed ()
+		{
+			ViewModel = null;
+			base.OnDestroyed ();
+		}
+
 		public new TimelineVM ViewModel {
 			get {
 				return viewModel;

@@ -20,24 +20,25 @@ using System.Runtime.InteropServices;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Multimedia;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
 namespace VAS.Multimedia.Utils
 {
-	public class GstDiscoverer: IDiscoverer
+	public class GstDiscoverer : DisposableBase, IDiscoverer
 	{
 		const int THUMBNAIL_MAX_HEIGHT = 72;
 		const int THUMBNAIL_MAX_WIDTH = 96;
 
 		[DllImport ("libvas.dll")]
 		static extern unsafe uint lgm_discover_uri (string uri, out long duration,
-		                                            out uint width, out uint height,
-		                                            out uint fps_n, out uint fps_d,
-		                                            out uint par_n, out uint par_d,
-		                                            out IntPtr container,
-		                                            out IntPtr video_codec,
-		                                            out IntPtr audio_codec,
-		                                            out IntPtr err);
+													out uint width, out uint height,
+													out uint fps_n, out uint fps_d,
+													out uint par_n, out uint par_d,
+													out IntPtr container,
+													out IntPtr video_codec,
+													out IntPtr audio_codec,
+													out IntPtr err);
 
 		public MediaFile DiscoverFile (string filePath, bool takeScreenshot = true)
 		{
@@ -60,7 +61,7 @@ namespace VAS.Multimedia.Utils
 			if (ret != 0) {
 				throw new Exception (Catalog.GetString ("Could not parse file:") + filePath);
 			}
-			
+
 			has_audio = audio_codec_ptr != IntPtr.Zero;
 			has_video = video_codec_ptr != IntPtr.Zero;
 			container = GLib.Marshaller.PtrToStringGFree (container_ptr);
@@ -68,7 +69,7 @@ namespace VAS.Multimedia.Utils
 			video_codec = GLib.Marshaller.PtrToStringGFree (video_codec_ptr);
 			/* From nanoseconds to milliseconds */
 			duration = duration / (1000 * 1000);
-			
+
 			if (has_video) {
 				fps = fps_n / fps_d;
 				par = (float)par_n / par_d;
@@ -81,14 +82,10 @@ namespace VAS.Multimedia.Utils
 					thumbnailer.Dispose ();
 				}
 			}
-			
+
 			return new MediaFile (filePath, duration, (ushort)fps, has_audio, has_video,
 				container, video_codec, audio_codec, width, height,
 				par, preview, null);
-		}
-
-		public void Dispose ()
-		{
 		}
 	}
 }

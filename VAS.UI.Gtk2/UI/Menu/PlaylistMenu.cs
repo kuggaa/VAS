@@ -18,6 +18,7 @@
 using System;
 using Gtk;
 using VAS.Core;
+using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
@@ -36,6 +37,33 @@ namespace VAS.UI.Menus
 		{
 			CreateMenu ();
 		}
+
+		public override void Dispose ()
+		{
+			Dispose (true);
+			base.Dispose ();
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (Disposed) {
+				return;
+			}
+			if (disposing) {
+				Destroy ();
+			}
+			Disposed = true;
+		}
+
+		protected override void OnDestroyed ()
+		{
+			Log.Verbose ($"Destroying {GetType ()}");
+			base.OnDestroyed ();
+
+			Disposed = true;
+		}
+
+		protected bool Disposed { get; private set; } = false;
 
 		public void ShowMenu (Project project, Playlist playlist, bool editableName)
 		{

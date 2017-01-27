@@ -18,10 +18,11 @@
 using Gdk;
 using Pango;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.MVVMC;
 
 namespace VAS.Drawing.Cairo
 {
-	public class CairoContext: IContext
+	public class CairoContext : DisposableBase, IContext
 	{
 		public CairoContext (Drawable window)
 		{
@@ -49,8 +50,9 @@ namespace VAS.Drawing.Cairo
 			protected set;
 		}
 
-		public void Dispose ()
+		protected override void DisposeManagedResources ()
 		{
+			base.DisposeManagedResources ();
 			(Value as global::Cairo.Context).Dispose ();
 		}
 	}

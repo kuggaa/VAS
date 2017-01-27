@@ -54,15 +54,26 @@ namespace VAS.UI.Component
 			Initialize ();
 		}
 
-		~Timeline ()
+		public override void Dispose ()
 		{
-			Dispose (false);
+			Dispose (true);
+			base.Dispose ();
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (Disposed) {
+				return;
+			}
+			if (disposing) {
+				Destroy ();
+			}
+			Disposed = true;
 		}
 
 		protected override void OnDestroyed ()
 		{
-			if (Disposed)
-				return;
+			Log.Verbose ($"Destroying {GetType ()}");
 
 			if (timeoutID != 0) {
 				GLib.Source.Remove (timeoutID);
@@ -77,22 +88,6 @@ namespace VAS.UI.Component
 			menu?.Dispose ();
 
 			base.OnDestroyed ();
-
-			Disposed = true;
-		}
-
-		public override void Dispose ()
-		{
-			Dispose (true);
-			base.Dispose ();
-		}
-
-		protected virtual void Dispose (bool disposing)
-		{
-			if (Disposed)
-				return;
-
-			Destroy ();
 
 			Disposed = true;
 		}

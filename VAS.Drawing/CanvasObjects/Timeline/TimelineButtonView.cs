@@ -45,13 +45,10 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			insensitive = false;
 		}
 
-		protected override void Dispose (bool disposing)
+		protected override void DisposeManagedResources ()
 		{
-			if (Disposed)
-				return;
-
+			base.DisposeManagedResources ();
 			ResetBackbuffer ();
-			base.Dispose (disposing);
 		}
 
 		/// <summary>

@@ -61,7 +61,7 @@ namespace VAS.Core.MVVMC
 		{
 		}
 
-		protected virtual void Dispose (bool disposing)
+		protected void Dispose (bool disposing)
 		{
 			if (Disposed)
 				return;

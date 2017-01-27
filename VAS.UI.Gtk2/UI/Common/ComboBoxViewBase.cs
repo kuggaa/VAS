@@ -32,8 +32,8 @@ namespace VAS.UI.Common
 	/// Combo box view base implementation for MVVM.
 	/// </summary>
 	public class ComboBoxViewBase<T, M, VM> : ComboBox, IView<T>
-		where T : CollectionViewModel<M, VM> 
-		where VM: IViewModel<M>, new()
+		where T : CollectionViewModel<M, VM>
+		where VM : IViewModel<M>, new()
 	{
 		protected ListStore store;
 		T viewModel;
@@ -41,7 +41,7 @@ namespace VAS.UI.Common
 
 		public ComboBoxViewBase ()
 		{
-			Model = store = new Gtk.ListStore (typeof(VM));		
+			Model = store = new Gtk.ListStore (typeof (VM));
 			dictionaryStore = new Dictionary<VM, TreeIter> ();
 		}
 
@@ -61,10 +61,12 @@ namespace VAS.UI.Common
 					ClearSubViewModels ();
 				}
 				viewModel = value;
-				foreach (VM item in viewModel.ViewModels) {
-					AddSubViewModel (item);
+				if (viewModel != null) {
+					foreach (VM item in viewModel.ViewModels) {
+						AddSubViewModel (item);
+					}
+					viewModel.ViewModels.CollectionChanged += ViewModelCollectionChanged;
 				}
-				viewModel.ViewModels.CollectionChanged += ViewModelCollectionChanged;
 			}
 		}
 
@@ -107,7 +109,7 @@ namespace VAS.UI.Common
 
 			case NotifyCollectionChangedAction.Move:
 				break;
-				
+
 			case NotifyCollectionChangedAction.Replace:
 				break;
 			}

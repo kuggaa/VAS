@@ -61,6 +61,9 @@ namespace VAS.Tests
 
 		public PlaylistCollectionVM Playlists { get; set; }
 
+		public void Dispose ()
+		{
+		}
 	}
 
 	public class DummyUserStatisticsService : UserStatisticsService
@@ -79,6 +82,10 @@ namespace VAS.Tests
 		public VideoPlayerVM VideoPlayer {
 			get;
 			set;
+		}
+
+		public void Dispose ()
+		{
 		}
 	}
 
@@ -150,6 +157,10 @@ namespace VAS.Tests
 		}
 
 		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+		public void Dispose ()
+		{
+		}
 	}
 
 	public class DummyBindable : BindableBase

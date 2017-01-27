@@ -19,11 +19,12 @@ using System;
 using VAS.Core.Common;
 using VAS.Core.Handlers.Drawing;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.MVVMC;
 using VAS.Core.Store.Drawables;
 
 namespace VAS.Drawing.CanvasObjects
 {
-	public abstract class CanvasObject : ICanvasObject
+	public abstract class CanvasObject : DisposableBase, ICanvasObject
 	{
 		public event CanvasHandler ClickedEvent;
 		public event RedrawHandler RedrawEvent;
@@ -39,22 +40,8 @@ namespace VAS.Drawing.CanvasObjects
 		{
 			if (!Disposed) {
 				Log.Error (String.Format ("Canvas object {0} not disposed correctly", this));
-				Dispose (true);
+				Dispose (false);
 			}
-		}
-
-		public void Dispose ()
-		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
-		}
-
-		protected virtual void Dispose (bool disposing)
-		{
-			if (Disposed)
-				return;
-
-			Disposed = true;
 		}
 
 		public virtual string Description {
@@ -92,8 +79,6 @@ namespace VAS.Drawing.CanvasObjects
 				}
 			}
 		}
-
-		protected bool Disposed { get; private set; } = false;
 
 		public virtual void ResetDrawArea ()
 		{
