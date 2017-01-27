@@ -33,13 +33,13 @@ namespace VAS.Tests.Drawing.Widgets
 		[SetUp]
 		public void Setup ()
 		{
-			timerule = new Timerule (Mock.Of<IWidget> ());
-			videoPlayer = new VideoPlayerVM ();
-			timerule.SetViewModel (videoPlayer);
 			var drawingToolkitMock = new Mock<IDrawingToolkit> ();
 			drawingToolkitMock.Setup (d => d.CreateSurfaceFromResource (It.IsAny<string> (), It.IsAny<bool> ())).
 							  Returns (Mock.Of<ISurface> ());
 			App.Current.DrawingToolkit = drawingToolkitMock.Object;
+			timerule = new Timerule (Mock.Of<IWidget> ());
+			videoPlayer = new VideoPlayerVM ();
+			timerule.SetViewModel (videoPlayer);
 		}
 
 		[Test]
