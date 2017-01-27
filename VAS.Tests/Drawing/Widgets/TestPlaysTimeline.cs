@@ -98,16 +98,16 @@ namespace VAS.Tests.Drawing.Widgets
 		{
 			projectVM.Timeline.EventTypesTimeline.ViewModels.Clear ();
 
-			Assert.AreEqual (0, timeline.Objects.Count ());
+			Assert.AreEqual (0, timeline.Objects.OfType<EventTypeTimelineView> ().Count ());
 		}
 
 		[Test]
 		public void TestReplace ()
 		{
 			projectVM.Timeline.EventTypesTimeline.ViewModels.Replace (
-				new EventTypeTimelineVM (new EventTypeVM { Model = new EventType () }).ToEnumerable ());
+				new EventTypeTimelineVM (new EventTypeVM { Model = new EventType { Name = "TEST" } }).ToEnumerable ());
 
-			Assert.AreEqual (0, timeline.Objects.Count ());
+			Assert.AreEqual (1, timeline.Objects.OfType<EventTypeTimelineView> ().Count ());
 		}
 	}
 }
