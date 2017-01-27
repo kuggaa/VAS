@@ -105,9 +105,9 @@ namespace VAS.Tests.Drawing.Widgets
 		public void TestReplace ()
 		{
 			projectVM.Timeline.EventTypesTimeline.ViewModels.Replace (
-				new EventTypeTimelineVM (new EventTypeVM { Model = new EventType () }).ToEnumerable ());
+				new EventTypeTimelineVM (new EventTypeVM { Model = new EventType { Name = "TEST" } }).ToEnumerable ());
 
-			Assert.AreEqual (0, timeline.Objects.Count ());
+			Assert.AreEqual (1, timeline.Objects.Count ());
 		}
 	}
 }
