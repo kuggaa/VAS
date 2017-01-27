@@ -39,7 +39,7 @@ namespace VAS.Tests.Core.ViewModel
 				Model = model
 			};
 
-			Assert.AreEqual (2, viewModel.Timers.Count ());
+			Assert.AreEqual (3, viewModel.Timers.Count ());
 			Assert.AreEqual (5, viewModel.EventTypes.Count ());
 			Assert.AreEqual (1, model.Playlists.Count ());
 			Assert.AreEqual (1, model.Periods.Count ());

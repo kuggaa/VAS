@@ -271,6 +271,12 @@ namespace VAS.Tests
 		public class ProjectDummy : Project
 		{
 			#region implemented abstract members of Project
+			public ProjectDummy ()
+			{
+				Dashboard = DashboardDummy.Default ();
+				FileSet = new MediaFileSet ();
+				UpdateEventTypesAndTimers ();
+			}
 
 			public override TimelineEvent AddEvent (EventType type, Time start, Time stop, Time eventTime, Image miniature, bool addToTimeline = true)
 			{
