@@ -17,13 +17,14 @@
 //
 using System;
 using System.Collections.Generic;
-using Moq;
+using System.Collections.ObjectModel;
 using NUnit.Framework;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
 using VAS.Services.Controller;
+using VAS.Services.ViewModel;
 
 namespace VAS.Tests.Services
 {
@@ -39,13 +40,13 @@ namespace VAS.Tests.Services
 		RangeObservableCollection<PlayerVM> players;
 		RangeObservableCollection<TeamVM> teams;
 		ProjectVM project;
+		TimelineEvent sendedTimelineEvent;
+		bool hasSendedDashboardEvent;
 
 		[TestFixtureSetUp]
 		public void SetUpOnce ()
 		{
 			SetupClass.Initialize ();
-			controller = new TaggingController ();
-			controller.Start ();
 		}
 
 		[TestFixtureTearDown]
@@ -71,8 +72,26 @@ namespace VAS.Tests.Services
 			teams = new RangeObservableCollection<TeamVM> () { team1, team2 };
 			players = new RangeObservableCollection<PlayerVM> () { player1, player2, player3 };
 			project = new ProjectVM { Players = players, Teams = teams, Model = new Utils.ProjectDummy () };
+			var videoPlayer = new VideoPlayerVM {
+				CamerasConfig = new ObservableCollection<CameraConfig> ()
+			};
+			controller = new Utils.DummyTaggingController ();
+			controller.SetViewModel (new ProjectAnalysisVM<ProjectVM> {
+				Project = project,
+				VideoPlayer = videoPlayer
+			});
 
-			controller.SetViewModel (project);
+			controller.Start ();
+			sendedTimelineEvent = null;
+			hasSendedDashboardEvent = true;
+			App.Current.EventsBroker.Subscribe<NewDashboardEvent> (HandleNewDashboardEvent);
+		}
+
+		[TearDown]
+		public void TearDown ()
+		{
+			App.Current.EventsBroker.Unsubscribe<NewDashboardEvent> (HandleNewDashboardEvent);
+			controller.Stop ();
 		}
 
 		[Test ()]
@@ -199,7 +218,7 @@ namespace VAS.Tests.Services
 			player1.Tagged = true;
 			player2.Tagged = true;
 			player3.Tagged = true;
-			var pCardEvent = new NewTagEvent {
+			var newTagEvent = new NewTagEvent {
 				EventType = new EventType { Name = "test" },
 				Start = new Time (0),
 				Stop = new Time (10),
@@ -209,7 +228,7 @@ namespace VAS.Tests.Services
 			};
 
 			// Action
-			App.Current.EventsBroker.Publish (pCardEvent);
+			App.Current.EventsBroker.Publish (newTagEvent);
 
 			// Assert
 			Assert.IsFalse (player1.Tagged, "Player 1 should not be tagged");
@@ -226,7 +245,7 @@ namespace VAS.Tests.Services
 			player2.Tagged = true;
 			player3.Tagged = true;
 
-			var pCardEvent = new NewTagEvent {
+			var newTagEvent = new NewTagEvent {
 				EventType = new EventType { Name = "test" },
 				Start = new Time (0),
 				Stop = new Time (10),
@@ -236,13 +255,60 @@ namespace VAS.Tests.Services
 			};
 
 			// Action
-			App.Current.EventsBroker.Publish (pCardEvent);
+			App.Current.EventsBroker.Publish (newTagEvent);
 
 			// Assert
 			Assert.IsFalse (player1.Tagged, "Player 1 should not be tagged");
 			Assert.IsTrue (player2.Locked, "Player 2 should be locked");
 			Assert.IsTrue (player2.Tagged, "Player 2 should be tagged");
 			Assert.IsFalse (player3.Tagged, "Player 3 should not be tagged");
+		}
+
+		[Test]
+		public void TestNewTagEvent ()
+		{
+			var newTagEvent = new NewTagEvent {
+				EventType = project.Model.EventTypes [0],
+				Start = new Time (0),
+				Stop = new Time (10),
+				Tags = new List<Tag> (),
+				EventTime = new Time (9),
+				Button = null
+			};
+
+			// Action
+			App.Current.EventsBroker.Publish (newTagEvent);
+
+			Assert.AreEqual (new Time (9).MSeconds, sendedTimelineEvent.EventTime.MSeconds);
+			Assert.IsTrue (hasSendedDashboardEvent);
+		}
+
+		[Test]
+		public void TestNewTagEventWithPlayers ()
+		{
+			player1.Tagged = true;
+			player3.Tagged = true;
+
+			var newTagEvent = new NewTagEvent {
+				EventType = project.Model.EventTypes [0],
+				Start = new Time (0),
+				Stop = new Time (10),
+				Tags = new List<Tag> (),
+				EventTime = new Time (9),
+				Button = null
+			};
+
+			// Action
+			App.Current.EventsBroker.Publish (newTagEvent);
+
+			Assert.AreEqual (new Time (9).MSeconds, sendedTimelineEvent.EventTime.MSeconds);
+			Assert.AreEqual (2, sendedTimelineEvent.Players.Count);
+		}
+
+		void HandleNewDashboardEvent (NewDashboardEvent e)
+		{
+			sendedTimelineEvent = e.TimelineEvent;
+			hasSendedDashboardEvent = true;
 		}
 	}
 }

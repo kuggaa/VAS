@@ -22,40 +22,46 @@ using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Handlers;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
+using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
-	public class CategoryObject : TimedTaggerObject
+	/// <summary>
+	/// Class for the AnalysisEventButton View
+	/// </summary>
+	[ViewAttribute ("AnalysisEventButtonView")]
+	public class AnalysisEventButtonView : TimedTaggerButtonView, ICanvasObjectView<AnalysisEventButtonVM>
 	{
 		public event ButtonSelectedHandler EditButtonTagsEvent;
 
 		static Image iconImage;
-		static Image recImage;
+		protected static Image recImage;
 		static Image editImage;
-		static Image cancelImage;
+		protected static Image cancelImage;
 		static Image applyImage;
-		Dictionary<Rectangle, object> rects, buttonsRects;
+		protected Dictionary<Rectangle, object> rects, buttonsRects;
 		Dictionary<string, List<Tag>> tagsByGroup;
 		bool emitEvent, delayEvent, editClicked;
 		bool cancelClicked, applyClicked, moved;
 		int nrows;
 		const int TIMEOUT_MS = 800;
 		System.Threading.Timer timer;
-		object cancelButton = new object ();
+		protected object cancelButton = new object ();
 		object editbutton = new object ();
 		object applyButton = new object ();
-		Rectangle editRect, cancelRect, applyRect;
+		protected Rectangle editRect, cancelRect, applyRect;
 		double catWidth, heightPerRow;
-		Dictionary<Tag, LinkAnchorObject> subcatAnchors, cachedAnchors;
+		Dictionary<Tag, LinkAnchorView> subcatAnchors, cachedAnchors;
+		AnalysisEventButton button;
+		AnalysisEventButtonVM viewModel;
 
-		public CategoryObject (AnalysisEventButton category) : base (category)
+		public AnalysisEventButtonView () : base ()
 		{
-			Button = category;
 			rects = new Dictionary<Rectangle, object> ();
 			buttonsRects = new Dictionary<Rectangle, object> ();
-			SelectedTags = new List<Tag> ();
 			cancelRect = new Rectangle (new Point (0, 0), 0, 0);
 			editRect = new Rectangle (new Point (0, 0), 0, 0);
 			applyRect = new Rectangle (new Point (0, 0), 0, 0);
@@ -76,10 +82,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 			MinWidth = 100;
 			MinHeight = HeaderHeight * 2;
-			subcatAnchors = new Dictionary<Tag, LinkAnchorObject> ();
-			foreach (Tag tag in category.AnalysisEventType.Tags) {
-				AddSubcatAnchor (tag, new Point (0, 0), 100, HeaderHeight);
-			}
+			subcatAnchors = new Dictionary<Tag, LinkAnchorView> ();
 		}
 
 		protected override void Dispose (bool disposing)
@@ -91,15 +94,26 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				timer.Dispose ();
 				timer = null;
 			}
-			foreach (LinkAnchorObject anchor in subcatAnchors.Values.ToList ()) {
+			foreach (LinkAnchorView anchor in subcatAnchors.Values.ToList ()) {
 				RemoveAnchor (anchor);
 			}
 			base.Dispose (disposing);
 		}
 
-		public AnalysisEventButton Button {
-			get;
-			set;
+		/// <summary>
+		/// Gets or sets the button.
+		/// </summary>
+		/// <value>The button.</value>
+		AnalysisEventButton Button {
+			get {
+				return button;
+			}
+			set {
+				button = value;
+				foreach (Tag tag in button.AnalysisEventType.Tags) {
+					AddSubcatAnchor (tag, new Point (0, 0), 100, HeaderHeight);
+				}
+			}
 		}
 
 		public override Image Icon {
@@ -125,15 +139,14 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
-		bool ShowTags {
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="T:VAS.Drawing.CanvasObjects.Dashboard.AnalysisEventButtonView"/>
+		/// show tags.
+		/// </summary>
+		/// <value><c>true</c> if show tags; otherwise, <c>false</c>.</value>
+		protected bool ShowTags {
 			get {
 				return (Button.ShowSubcategories || ShowLinks) && Button.AnalysisEventType.Tags.Count != 0;
-			}
-		}
-
-		bool ShowHotkey {
-			get {
-				return (Button.ShowHotkey && Button.HotKey.Key != -1);
 			}
 		}
 
@@ -170,6 +183,33 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the view model.
+		/// </summary>
+		/// <value>The view model.</value>
+		public AnalysisEventButtonVM ViewModel {
+			get {
+				return viewModel;
+			}
+
+			set {
+				viewModel = value;
+				if (viewModel != null) {
+					Button = viewModel.Model;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets the view model.
+		/// </summary>
+		/// <param name="viewModel">View model.</param>
+		public void SetViewModel (object viewModel)
+		{
+			ViewModel = (AnalysisEventButtonVM)viewModel;
+			TimedButtonVM = (TimedDashboardButtonVM)viewModel;
+		}
+
 		public void ClickTag (Tag tag)
 		{
 			SelectedTags.Add (tag);
@@ -184,7 +224,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			SelectedTags.Clear ();
 		}
 
-		void RemoveAnchor (LinkAnchorObject anchor)
+		void RemoveAnchor (LinkAnchorView anchor)
 		{
 			anchor.Dispose ();
 			subcatAnchors.RemoveKeysByValue (anchor);
@@ -192,7 +232,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		void EmitCreateEvent ()
 		{
-			EmitClickEvent ();
+			ViewModel.Click ();
 			Clear ();
 		}
 
@@ -253,19 +293,20 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		}
 
 		public List<Tag> SelectedTags {
-			get;
-			set;
+			get {
+				return viewModel.SelectedTags;
+			}
 		}
 
 		void AddSubcatAnchor (Tag tag, Point point, double width, double height)
 		{
-			LinkAnchorObject anchor;
+			LinkAnchorView anchor;
 
 			if (subcatAnchors.ContainsKey (tag)) {
 				anchor = subcatAnchors [tag];
 				anchor.RelativePosition = point;
 			} else {
-				anchor = new LinkAnchorObject (this, new List<Tag> { tag }, point);
+				anchor = new LinkAnchorView (this, new List<Tag> { tag }, point);
 				anchor.RedrawEvent += (co, area) => {
 					EmitRedrawEvent (anchor, area);
 				};
@@ -306,7 +347,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				Selection sel = anchor.GetSelection (p, precision, inMotion);
 				if (sel != null)
 					return sel;
-				foreach (LinkAnchorObject subcatAnchor in subcatAnchors.Values) {
+				foreach (LinkAnchorView subcatAnchor in subcatAnchors.Values) {
 					sel = subcatAnchor.GetSelection (p, precision, inMotion);
 					if (sel != null)
 						return sel;
@@ -315,7 +356,12 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			return base.GetSelection (p, precision, inMotion);
 		}
 
-		public override LinkAnchorObject GetAnchor (IList<Tag> sourceTags)
+		/// <summary>
+		/// Gets the anchor.
+		/// </summary>
+		/// <returns>The anchor.</returns>
+		/// <param name="sourceTags">Source tags.</param>
+		public override LinkAnchorView GetAnchor (IList<Tag> sourceTags)
 		{
 			/* Only one tag is supported for now */
 			if (sourceTags == null || sourceTags.Count == 0) {
@@ -430,7 +476,11 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			yptr += heightPerRow * (row + 1);
 		}
 
-		void DrawHeader (IDrawingToolkit tk)
+		/// <summary>
+		/// Draws the header.
+		/// </summary>
+		/// <param name="tk">Tk.</param>
+		protected virtual void DrawHeader (IDrawingToolkit tk)
 		{
 			Color textColor;
 			Point pos;
@@ -525,23 +575,23 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
-		void DrawRecordTime (IDrawingToolkit tk)
+		protected virtual void DrawRecordTime (IDrawingToolkit tk)
 		{
-			if (Recording && Mode != DashboardMode.Edit) {
+			if (Recording && Mode != DashboardMode.Edit && viewModel.ButtonTime != null) {
 				if (ShowTags) {
 					tk.FontSize = 12;
 					tk.FontWeight = FontWeight.Normal;
 					tk.StrokeColor = BackgroundColor;
 					tk.DrawText (new Point (Position.X + HeaderTextOffset, Position.Y),
 						HeaderTextWidth, HeaderHeight,
-						(CurrentTime - Start).ToSecondsString ());
+								 viewModel.ButtonTime.ToSecondsString ());
 				} else {
 					tk.FontSize = 24;
 					tk.FontWeight = FontWeight.Bold;
 					tk.StrokeColor = BackgroundColor;
 					tk.DrawText (new Point (Position.X, Position.Y + HeaderHeight),
 						Width, Height - HeaderHeight,
-						(CurrentTime - Start).ToSecondsString ());
+								 viewModel.ButtonTime.ToSecondsString ());
 				}
 			}
 		}
@@ -572,7 +622,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			tk.DrawImage (pos, width, height - 10, applyImage, ScaleMode.AspectFit, true);
 		}
 
-		void DrawRecordButton (IDrawingToolkit tk)
+		protected virtual void DrawRecordButton (IDrawingToolkit tk)
 		{
 			Point pos, bpos;
 			double width, height;
@@ -614,12 +664,16 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 			anchor.Height = HeaderHeight;
 			DrawAnchor (tk, null);
-			foreach (LinkAnchorObject a in subcatAnchors.Values) {
+			foreach (LinkAnchorView a in subcatAnchors.Values) {
 				a.Draw (tk, null);
 			}
 		}
 
-		new void DrawButton (IDrawingToolkit tk)
+		/// <summary>
+		/// Draws the button.
+		/// </summary>
+		/// <param name="tk">Tk.</param>
+		protected override void DrawButton (IDrawingToolkit tk)
 		{
 			if (!ShowTags) {
 				base.DrawButton (tk);
@@ -658,8 +712,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			pos = Position;
 
 			tk.Begin ();
-			tk.TranslateAndScale (new Point (-Position.X, -Position.Y),
-				new Point (1, 1));
+			if (UseBackBufferSurface) {
+				tk.TranslateAndScale (new Point (-Position.X, -Position.Y),
+					new Point (1, 1));
+			}
 			tk.FontWeight = FontWeight.Bold;
 
 			/* Draw Rectangle */
@@ -685,32 +741,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 
 			tk.End ();
-		}
-
-		void DrawHotkey (IDrawingToolkit tk)
-		{
-			if (!ShowHotkey)
-				return;
-
-			Color textColor;
-			Point pos;
-			double width, height;
-			int fontSize;
-
-			if (Active) {
-				textColor = BackgroundColor;
-			} else {
-				textColor = TextColor;
-			}
-			fontSize = StyleConf.ButtonHeaderFontSize;
-			width = 30;
-			height = fontSize;
-			pos = new Point (Position.X + 2, Position.Y + (Height - (fontSize + 4)));
-			tk.FontSize = fontSize;
-			tk.StrokeColor = BackgroundColor;
-			tk.StrokeColor = textColor;
-			tk.FontWeight = FontWeight.Light;
-			tk.DrawText (pos, width, height, "(" + Button.HotKey.ToString () + ")", false, false);
 		}
 
 		void CreateBackBufferSurface ()
@@ -746,12 +776,18 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			if (!UpdateDrawArea (tk, area, Area)) {
 				return;
 			}
-			if (backBufferSurface == null) {
+			if (UseBackBufferSurface && backBufferSurface == null) {
 				CreateBackBufferSurface ();
 			}
 			tk.Context = ctx;
 			tk.Begin ();
-			tk.DrawSurface (backBufferSurface, Position);
+
+			if (UseBackBufferSurface) {
+				tk.DrawSurface (backBufferSurface, Position);
+			} else {
+				DrawBackbuffer (tk);
+			}
+
 			DrawSelectedTags (tk);
 			DrawRecordTime (tk);
 			DrawApplyButton (tk);

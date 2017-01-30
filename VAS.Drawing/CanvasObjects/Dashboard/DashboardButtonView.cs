@@ -20,19 +20,22 @@ using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store.Drawables;
 using VAS.Core.Common;
 using VAS.Core.Store;
-using VAS.Drawing.CanvasObjects;
+using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
-	public class DashboardButtonObject : ButtonObject, ICanvasSelectableObject
+	/// <summary>
+	/// Class for the DashboardButton View.
+	/// </summary>
+	public class DashboardButtonView : ButtonObject, ICanvasSelectableObject
 	{
-		protected LinkAnchorObject anchor;
+		protected LinkAnchorView anchor;
+		protected const int HOTKEY_WIDTH = 5;
 
-		public DashboardButtonObject (DashboardButton tagger)
+		public DashboardButtonView ()
 		{
-			Button = tagger;
 			SupportsLinks = true;
-			anchor = new LinkAnchorObject (this, null, new Point (0, 0));
+			anchor = new LinkAnchorView (this, null, new Point (0, 0));
 			anchor.RedrawEvent += (co, area) => {
 				EmitRedrawEvent (anchor, area);
 			};
@@ -163,9 +166,40 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
-		public virtual LinkAnchorObject GetAnchor (IList<Tag> sourceTags)
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="T:VAS.Drawing.CanvasObjects.Dashboard.DashboardButtonView"/> show hotkey.
+		/// </summary>
+		/// <value><c>true</c> if show hotkey; otherwise, <c>false</c>.</value>
+		bool ShowHotkey {
+			get {
+				return (Button.ShowHotkey && Button.HotKey.Key != -1);
+			}
+		}
+
+		public virtual LinkAnchorView GetAnchor (IList<Tag> sourceTags)
 		{
 			return anchor;
+		}
+
+		/// <summary>
+		/// Draws the hotkey.
+		/// </summary>
+		/// <param name="tk">Tk.</param>
+		protected virtual void DrawHotkey (IDrawingToolkit tk)
+		{
+			if (!ShowHotkey)
+				return;
+
+			Point pos;
+
+			pos = new Point (Position.X + 5, Position.Y + 5);
+			tk.FontFamily = App.Current.Style.NamesFontFamily;
+			tk.FontSize = App.Current.Style.NamesFontSize;
+			tk.StrokeColor = App.Current.Style.Text_DarkColor;
+			tk.StrokeColor = App.Current.Style.Text_DarkColor;
+			tk.FontWeight = FontWeight.Bold;
+			tk.FontAlignment = FontAlignment.Left;
+			tk.DrawText (pos, HOTKEY_WIDTH, App.Current.Style.TitlesFontSize, Button.HotKey.ToString (), false, false);
 		}
 
 		protected void DrawAnchor (IDrawingToolkit tk, Area area)
@@ -198,39 +232,25 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		}
 	}
 
-	public class TimedTaggerObject : DashboardButtonObject
+	/// <summary>
+	/// Class for the TimedTaggerButton View
+	/// </summary>
+	public class TimedTaggerButtonView : DashboardButtonView
 	{
-		Time currentTime;
+		TimedDashboardButtonVM timedButtonVM;
 
-		public TimedTaggerObject (TimedDashboardButton button) : base (button)
-		{
-			TimedButton = button;
-			currentTime = new Time (0);
-			Start = null;
-		}
-
-		public TimedDashboardButton TimedButton {
-			get;
-			set;
-		}
-
-		public Time CurrentTime {
+		public TimedDashboardButtonVM TimedButtonVM {
 			get {
-				return currentTime;
+				return timedButtonVM;
 			}
 			set {
-				Time prevCurrentTime = currentTime;
-				currentTime = value;
-				if (Start != null) {
-					bool secsChanged = (prevCurrentTime - Start).TotalSeconds != (value - Start).TotalSeconds;
-					/* Add a tolerance of 100ms, as sometimes after pausing and restarting
-					 * the clocks goes backwards by a few ms. So if a event has started recording
-					 * with the player paused, resuming playback might cancel the event started */
-					if (currentTime.MSeconds + 100 < Start.MSeconds) {
-						Clear ();
-					} else if (secsChanged) {
-						ReDraw ();
-					}
+				if (timedButtonVM != null) {
+					timedButtonVM.PropertyChanged -= HandleTimedButtonVMPropertyChanged;
+				}
+				timedButtonVM = value;
+				if (timedButtonVM != null) {
+					Button = timedButtonVM.Model;
+					timedButtonVM.PropertyChanged += HandleTimedButtonVMPropertyChanged;
 				}
 			}
 		}
@@ -242,7 +262,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		public override void ClickReleased ()
 		{
-			if (TimedButton.TagMode == TagMode.Predefined) {
+			if (TimedButtonVM.TagMode == TagMode.Predefined) {
 				Active = !Active;
 				EmitClickEvent ();
 			} else if (!Recording) {
@@ -256,8 +276,8 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		protected void StartRecording ()
 		{
 			Recording = true;
-			if (Start == null) {
-				Start = CurrentTime;
+			if (TimedButtonVM.RecordingStart == null) {
+				TimedButtonVM.RecordingStart = TimedButtonVM.CurrentTime;
 			}
 			Active = true;
 			ReDraw ();
@@ -266,8 +286,15 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		protected virtual void Clear ()
 		{
 			Recording = false;
-			Start = null;
+			TimedButtonVM.RecordingStart = null;
 			Active = false;
+		}
+
+		void HandleTimedButtonVMPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if (sender == TimedButtonVM && e.PropertyName == "ButtonTime") {
+				ReDraw ();
+			}
 		}
 	}
 }

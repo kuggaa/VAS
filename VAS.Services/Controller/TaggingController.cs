@@ -21,23 +21,37 @@ using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Hotkeys;
+using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
-using VAS.Core.Store.Templates;
 using VAS.Core.ViewModel;
 
 namespace VAS.Services.Controller
 {
-	public class TaggingController : DisposableBase, IController
+	public abstract class TaggingController : DisposableBase, IController
 	{
+		protected ProjectVM project;
+		protected VideoPlayerVM videoPlayer;
+
 		/// <summary>
-		/// Gets or sets the view model.
+		/// Gets or sets the video player view model
 		/// </summary>
-		/// <value>The view model.</value>
-		protected ProjectVM ViewModel {
-			get;
-			set;
+		/// <value>The video player.</value>
+		protected VideoPlayerVM VideoPlayer {
+			get {
+				return videoPlayer;
+			}
+
+			set {
+				if (videoPlayer != null) {
+					videoPlayer.PropertyChanged -= HandleVideoPlayerPropertyChanged;
+				}
+				videoPlayer = value;
+				if (videoPlayer != null) {
+					videoPlayer.PropertyChanged += HandleVideoPlayerPropertyChanged;
+				}
+			}
 		}
 
 		/// <summary>
@@ -64,7 +78,8 @@ namespace VAS.Services.Controller
 		/// <param name="viewModel">View model.</param>
 		public void SetViewModel (IViewModel viewModel)
 		{
-			ViewModel = (ProjectVM)(viewModel as dynamic);
+			project = (ProjectVM)(viewModel as dynamic);
+			VideoPlayer = (VideoPlayerVM)(viewModel as dynamic);
 		}
 
 		/// <summary>
@@ -95,7 +110,7 @@ namespace VAS.Services.Controller
 
 			// Without the Shift modifier, unselect the rest of players that are not locked.
 			if (e.Modifier != ButtonModifier.Shift) {
-				foreach (PlayerVM player in ViewModel.Players) {
+				foreach (PlayerVM player in project.Players) {
 					if (player != e.ClickedPlayer && !player.Locked) {
 						player.Tagged = false;
 					}
@@ -105,31 +120,40 @@ namespace VAS.Services.Controller
 			// Right now we don't care about selections and moving pcards
 		}
 
-		protected void HandleNewTagEvent (NewTagEvent e)
-		{
-			//FIXME: This is using the Model of the ViewModel, that method should be moved here
-			// Reception of the event Button
-			var play = ViewModel.Model.AddEvent (e.EventType, e.Start, e.Stop, e.EventTime, null, false) as TimelineEvent;
+		protected abstract TimelineEvent CreateTimelineEvent (EventType type, Time start, Time stop,
+															  Time eventTime, Image miniature);
 
-			var players = ViewModel.Players.Where (p => p.Tagged);
-			foreach (var playerVM in players) {
-				play.Players.Add (playerVM.Model);
+		void HandleNewTagEvent (NewTagEvent e)
+		{
+			if (project == null) {
+				return;
 			}
 
-			var teams = ViewModel.Teams.Where (team => players.Any (player => team.Contains (player))).Select (vm => vm.Model);
-			play.Teams.AddRange (teams);
+			var play = CreateTimelineEvent (e.EventType, e.Start, e.Stop, e.EventTime, null);
 
-			// Here we can set the players if necessary, then send to events aggregator
+			AddPlayersToEvent (play);
+
 			App.Current.EventsBroker.Publish (
 				new NewDashboardEvent {
 					TimelineEvent = play,
 					DashboardButton = e.Button,
 					Edit = false,
 					DashboardButtons = null,
-					ProjectId = ViewModel.Model.ID
+					ProjectId = project.Model.ID
 				}
 			);
 			Reset ();
+		}
+
+		void AddPlayersToEvent (TimelineEvent play)
+		{
+			var players = project.Players.Where (p => p.Tagged);
+			foreach (var playerVM in players) {
+				play.Players.Add (playerVM.Model);
+			}
+
+			var teams = project.Teams.Where (team => players.Any (player => team.Contains (player))).Select (vm => vm.Model);
+			play.Teams.AddRange (teams);
 		}
 
 		/// <summary>
@@ -137,10 +161,29 @@ namespace VAS.Services.Controller
 		/// </summary>
 		void Reset ()
 		{
-			foreach (PlayerVM player in ViewModel.Players) {
+			foreach (PlayerVM player in project.Players) {
 				if (!player.Locked) {
 					player.Tagged = false;
 				}
+			}
+		}
+
+		void HandleVideoPlayerPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if (sender == videoPlayer && e.PropertyName == "CurrentTime") {
+				SetVideoCurrentTimeToTimerButtons ();
+			}
+		}
+
+		void SetVideoCurrentTimeToTimerButtons ()
+		{
+			project.Dashboard.CurrentTime = VideoPlayer.CurrentTime;
+			foreach (var timerVM in project.Dashboard.ViewModels.OfType<TimerButtonVM> ()) {
+				timerVM.CurrentTime = VideoPlayer.CurrentTime;
+			}
+
+			foreach (var timedVM in project.Dashboard.ViewModels.OfType<TimedDashboardButtonVM> ()) {
+				timedVM.CurrentTime = VideoPlayer.CurrentTime;
 			}
 		}
 	}

@@ -15,99 +15,50 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using VAS.Core.Interfaces.Drawing;
-using VAS.Core.Store.Drawables;
-using VAS.Core.Common;
-using VAS.Core.Store;
+using System;
 using VAS.Core;
+using VAS.Core.Common;
+using VAS.Core.Interfaces.Drawing;
+using VAS.Core.MVVMC;
+using VAS.Core.Store;
+using VAS.Core.Store.Drawables;
+using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
-	public class TimerObject: DashboardButtonObject
+	/// <summary>
+	/// Class for the TimerButton View
+	/// </summary>
+	[ViewAttribute ("TimerButtonView")]
+	public class TimerButtonView : DashboardButtonView, ICanvasObjectView<TimerButtonVM>
 	{
-		Time currentTime;
 		static Image iconImage;
-		static Image cancelImage;
-		Rectangle cancelRect;
+		protected static Image cancelImage;
+		protected Rectangle cancelRect;
 		bool cancelPressed;
+		TimerButtonVM viewModel;
 
-		public TimerObject (TimerButton timer) : base (timer)
+		public TimerButtonView () : base ()
 		{
-			TimerButton = timer;
 			Toggle = true;
-			CurrentTime = new Time (0);
 			if (iconImage == null) {
-				iconImage = Resources.LoadImage (StyleConf.ButtonTimerIcon);
+				iconImage = Resources.LoadImage (StyleConf.ButtonTimerIcon, StyleConf.ButtonHeaderWidth * 2, StyleConf.ButtonHeaderHeight * 2);
 			}
 			if (cancelImage == null) {
-				cancelImage = Resources.LoadImage (StyleConf.CancelButton);
+				cancelImage = Resources.LoadImage (StyleConf.CancelButton, StyleConf.ButtonHeaderWidth * 2, StyleConf.ButtonHeaderHeight * 2);
 			}
 			MinWidth = StyleConf.ButtonMinWidth;
 			MinHeight = iconImage.Height + StyleConf.ButtonTimerFontSize;
 			cancelRect = new Rectangle ();
 		}
 
-		public TimerButton TimerButton {
-			get;
-			set;
-		}
-
+		/// <summary>
+		/// Gets the icon.
+		/// </summary>
+		/// <value>The icon.</value>
 		public override Image Icon {
 			get {
 				return iconImage;
-			}
-		}
-
-		public Time CurrentTime {
-			set {
-				bool update = false;
-				bool wasActive = Active;
-				bool isActive = wasActive;
-
-				if (!wasActive) {
-					if (TimerButton.StartTime != null) {
-						isActive = true;
-						update = true;
-					}
-				} else {
-					// In case the node is no longer valid, unactivate it
-					if (TimerButton.StartTime == null) {
-						isActive = false;
-						update = true;
-					} else if (value < TimerButton.StartTime) {
-						// In case the application seeks to a position before the moment
-						// the button was clicked, make sure to cancel such node
-						TimerButton.Cancel ();
-						update = true;
-						isActive = false;
-					}
-				}
-
-				if (value != null && currentTime != null &&
-				    currentTime.TotalSeconds != value.TotalSeconds) {
-					update = true;
-				}
-
-				currentTime = value;
-
-				if (update) {
-					// It is possible that the button is activated but not thtough a click
-					Active = isActive;
-					ReDraw ();
-				}
-			}
-			get {
-				return currentTime;
-			}
-		}
-
-		Time PartialTime {
-			get {
-				if (TimerButton.StartTime == null) {
-					return new Time (0);
-				} else {
-					return CurrentTime - TimerButton.StartTime;
-				}
 			}
 		}
 
@@ -119,6 +70,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		public override void ClickPressed (Point p, ButtonModifier modif)
 		{
 			cancelPressed = cancelRect.GetSelection (p) != null;
+			base.ClickPressed (p, modif);
 		}
 
 		public override void ClickReleased ()
@@ -127,36 +79,64 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				return;
 			}
 			base.ClickReleased ();
-			if (TimerButton.StartTime == null) {
-				Log.Debug ("Start timer at " + CurrentTime.ToMSecondsString ());
-				TimerButton.Start (CurrentTime, null);
-			} else {
-				if (cancelPressed) {
-					Log.Debug ("Cancel timer from button");
-					TimerButton.Cancel ();
-				} else {
-					Log.Debug ("Stop timer at " + CurrentTime.ToMSecondsString ());
-					if (TimerButton.StartTime.MSeconds != CurrentTime.MSeconds) {
-						TimerButton.Stop (CurrentTime, null);
-					} else {
-						TimerButton.Cancel ();
-					}
+			ViewModel.Click (cancelPressed);
+		}
+
+		/// <summary>
+		/// Gets or sets the view model.
+		/// </summary>
+		/// <value>The view model.</value>
+		public TimerButtonVM ViewModel {
+			get {
+				return viewModel;
+			}
+
+			set {
+				if (viewModel != null) {
+					viewModel.PropertyChanged -= HandleViewModelPropertyChanged;
+				}
+				viewModel = value;
+				if (viewModel != null) {
+					Button = viewModel.Model;
+					viewModel.PropertyChanged += HandleViewModelPropertyChanged;
 				}
 			}
 		}
 
-		int HeaderHeight {
+		/// <summary>
+		/// Gets the height of the header.
+		/// </summary>
+		/// <value>The height of the header.</value>
+		protected int HeaderHeight {
 			get {
 				return iconImage.Height + 5;
 			}
 		}
 
-		int TextHeaderX {
+		/// <summary>
+		/// Gets the text header x.
+		/// </summary>
+		/// <value>The text header x.</value>
+		protected int TextHeaderX {
 			get {
 				return iconImage.Width + 5 * 2;
 			}
 		}
 
+		/// <summary>
+		/// Sets the view model.
+		/// </summary>
+		/// <param name="viewModel">View model.</param>
+		public void SetViewModel (object viewModel)
+		{
+			ViewModel = (TimerButtonVM)viewModel;
+		}
+
+		/// <summary>
+		/// Draw the specified tk and area.
+		/// </summary>
+		/// <param name="tk">Tk.</param>
+		/// <param name="area">Area.</param>
 		public override void Draw (IDrawingToolkit tk, Area area)
 		{
 			if (!UpdateDrawArea (tk, area, Area)) {
@@ -166,12 +146,21 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			base.Draw (tk, area);
 
 			tk.Begin ();
+			DrawTimer (tk);
+			tk.End ();
+		}
 
+		/// <summary>
+		/// Draws the timer.
+		/// </summary>
+		/// <param name="tk">Tk.</param>
+		protected virtual void DrawTimer (IDrawingToolkit tk)
+		{
 			cancelRect = new Rectangle (
 				new Point ((Position.X + Width) - StyleConf.ButtonRecWidth, Position.Y),
 				StyleConf.ButtonRecWidth, HeaderHeight);
 
-			if (Active && Mode != DashboardMode.Edit) {
+			if (ViewModel.TimerTime != null && Mode != DashboardMode.Edit) {
 				tk.LineWidth = StyleConf.ButtonLineWidth;
 				tk.StrokeColor = Button.BackgroundColor;
 				tk.FillColor = Button.BackgroundColor;
@@ -179,13 +168,13 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				tk.FontSize = StyleConf.ButtonHeaderFontSize;
 				tk.FontAlignment = FontAlignment.Left;
 				tk.DrawText (new Point (Position.X + TextHeaderX, Position.Y),
-					TimerButton.Width - TextHeaderX, iconImage.Height, TimerButton.Timer.Name);
+							 Button.Width - TextHeaderX, StyleConf.ButtonHeaderHeight, ViewModel.Name);
 				tk.FontWeight = FontWeight.Bold;
 				tk.FontSize = StyleConf.ButtonTimerFontSize;
 				tk.FontAlignment = FontAlignment.Center;
-				tk.DrawText (new Point (Position.X, Position.Y + iconImage.Height),
-					Button.Width, Button.Height - iconImage.Height,
-					PartialTime.ToSecondsString (), false, true);
+				tk.DrawText (new Point (Position.X, Position.Y + StyleConf.ButtonHeaderHeight),
+					Button.Width, Button.Height - StyleConf.ButtonHeaderHeight,
+					ViewModel.TimerTime.ToSecondsString (), false, true);
 
 				tk.FillColor = tk.StrokeColor = BackgroundColor;
 				tk.DrawRectangle (cancelRect.TopLeft, cancelRect.Width, cancelRect.Height);
@@ -198,12 +187,21 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				DrawText (tk);
 				Text = null;
 			}
-			
+
 			if (TeamImage != null) {
 				tk.DrawImage (new Point (Position.X + Width - 40, Position.Y + 5), 40,
 					iconImage.Height, TeamImage, ScaleMode.AspectFit);
 			}
-			tk.End ();
+		}
+
+		void HandleViewModelPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if (sender == ViewModel && (
+				e.PropertyName == "Name" ||
+				e.PropertyName == "TimerTime" ||
+				e.PropertyName == "Hotkey")) {
+				ReDraw ();
+			}
 		}
 	}
 }

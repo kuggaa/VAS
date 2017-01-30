@@ -79,7 +79,9 @@ namespace VAS.Drawing.CanvasObjects
 		public override void ClickPressed (Point p, ButtonModifier modif)
 		{
 			if (IsClickInsideButton (p)) {
-				Active = !Active;
+				if (!Toggle) {
+					Active = !Active;
+				}
 				clicked = true;
 			}
 		}
@@ -87,9 +89,7 @@ namespace VAS.Drawing.CanvasObjects
 		public override void ClickReleased ()
 		{
 			if (clicked) {
-				if (!Toggle) {
-					Active = !Active;
-				}
+				Active = !Active;
 				EmitClickEvent ();
 				clicked = false;
 			}
