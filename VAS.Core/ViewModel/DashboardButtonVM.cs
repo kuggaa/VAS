@@ -295,7 +295,7 @@ namespace VAS.Core.ViewModel
 			set {
 				if (value != null && Mode != DashboardMode.Edit
 					&& RecordingStart != null && TagMode != TagMode.Predefined) {
-					if (value.MSeconds + 100 < RecordingStart.MSeconds) {
+					if (value.MSeconds + Constants.PLAYBACK_TOLERANCE < RecordingStart.MSeconds) {
 						ButtonTime = null;
 					}
 					if (currentTime != null &&
@@ -533,13 +533,13 @@ namespace VAS.Core.ViewModel
 			}
 
 			set {
-				if (value != null && currentNode != null && Mode != DashboardMode.Edit) {
-					if (currentTime < currentNode.Start) {
+				if (value != null && currentNode != null &&
+					Mode != DashboardMode.Edit && currentTime != null) {
+					if (currentTime + Constants.PLAYBACK_TOLERANCE < currentNode.Start) {
 						TimerTime = null;
 						currentNode = null;
 					}
-					if (currentTime != null &&
-						currentTime.TotalSeconds != value.TotalSeconds) {
+					if (currentTime.TotalSeconds != value.TotalSeconds) {
 						TimerTime = value - currentNode.Start;
 					}
 				}
