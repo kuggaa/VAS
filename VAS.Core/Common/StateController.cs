@@ -426,7 +426,7 @@ namespace VAS.Core
 			return null;
 		}
 
-		NavigationState LastState ()
+		internal NavigationState LastState ()
 		{
 			bool isModal;
 			return LastState (out isModal);

@@ -474,6 +474,7 @@ namespace VAS.UI.Dialog
 			}
 		}
 
+		//FIXME: We need to move the logic of this method to the ViewModel
 		async void OnSavetoprojectbuttonClicked (object sender, System.EventArgs e)
 		{
 			drawing.RegionOfInterest = blackboard.RegionOfInterest;

@@ -17,19 +17,20 @@
 //
 using System;
 using VAS.Core.Interfaces;
+using SystemStopwatch = System.Diagnostics.Stopwatch;
 
 namespace VAS.Core.Common
 {
 	/// <summary>
-	/// VAS Stopwatch class that inherits from IStopwatch
+	/// Wrapper for System.Diagnostics.Stopwatch
 	/// </summary>
 	public class Stopwatch : IStopwatch
 	{
-		System.Diagnostics.Stopwatch stopwatch;
+		SystemStopwatch stopwatch;
 
 		public Stopwatch ()
 		{
-			stopwatch = new System.Diagnostics.Stopwatch ();
+			stopwatch = new SystemStopwatch ();
 		}
 
 		/// <summary>
