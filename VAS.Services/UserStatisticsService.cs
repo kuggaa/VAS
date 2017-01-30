@@ -31,6 +31,15 @@ namespace VAS.Services
 	{
 		string currentState;
 
+		public UserStatisticsService ()
+		{
+			ProjectDictionary = new Dictionary<Guid, Tuple<int, int>> ();
+			DataDictionary = new Dictionary<string, double> ();
+			StateTimer = App.Current.DependencyRegistry.Retrieve<IStopwatch> (InstanceType.Default);
+			GeneralTimer = App.Current.DependencyRegistry.Retrieve<IStopwatch> (InstanceType.New);
+			TimerList = new List<Tuple<string, long>> ();
+		}
+
 		/// <summary>
 		/// Gets the state timer.
 		/// </summary>
@@ -167,15 +176,6 @@ namespace VAS.Services
 		}
 
 		#region IService implementation
-
-		public UserStatisticsService ()
-		{
-			ProjectDictionary = new Dictionary<Guid, Tuple<int, int>> ();
-			DataDictionary = new Dictionary<string, double> ();
-			StateTimer = App.Current.DependencyRegistry.Retrieve<IStopwatch> (InstanceType.Default);
-			GeneralTimer = App.Current.DependencyRegistry.Retrieve<IStopwatch> (InstanceType.New);
-			TimerList = new List<Tuple<string, long>> ();
-		}
 
 		/// <summary>
 		/// Gets the level of the service. Services are started in ascending level order and stopped in descending level order.
