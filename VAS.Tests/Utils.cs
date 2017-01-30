@@ -200,7 +200,17 @@ namespace VAS.Tests
 					var evtType = dashboard.AddDefaultItem (i);
 					dashboard.AddDefaultTags (evtType.AnalysisEventType);
 				}
+				dashboard.InsertTimer ();
 				return dashboard;
+			}
+
+			public void InsertTimer ()
+			{
+				var timerButton = new TimerButton {
+					Timer = new Timer { Name = "Ball playing" },
+					Position = new Point (10 + (10 + CAT_WIDTH) * 6, 10)
+				};
+				List.Add (timerButton);
 			}
 		}
 
@@ -230,10 +240,43 @@ namespace VAS.Tests
 			#endregion
 		}
 
+		public class DummyTaggingController : TaggingController
+		{
+			protected override TimelineEvent CreateTimelineEvent (EventType type, Time start, Time stop, Time eventTime, Image miniature)
+			{
+				TimelineEvent evt;
+				string count;
+				string name;
+
+				count = String.Format ("{0:000}", project.Model.EventsByType (type).Count + 1);
+				name = String.Format ("{0} {1}", type.Name, count);
+				evt = new TimelineEvent ();
+
+				evt.Name = name;
+				evt.Start = start;
+				evt.Stop = stop;
+				evt.EventTime = eventTime;
+				evt.EventType = type;
+				evt.Notes = "";
+				evt.Miniature = miniature;
+				evt.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+				evt.FileSet = project.Model.FileSet;
+				evt.Project = project.Model;
+
+				return evt;
+			}
+		}
+
 		//dummy class for abstract validation. Copied from LongoMatch and adapted to VAS.
 		public class ProjectDummy : Project
 		{
 			#region implemented abstract members of Project
+			public ProjectDummy ()
+			{
+				Dashboard = DashboardDummy.Default ();
+				FileSet = new MediaFileSet ();
+				UpdateEventTypesAndTimers ();
+			}
 
 			public override TimelineEvent AddEvent (EventType type, Time start, Time stop, Time eventTime, Image miniature, bool addToTimeline = true)
 			{

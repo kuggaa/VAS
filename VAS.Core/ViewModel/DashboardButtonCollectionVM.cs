@@ -1,5 +1,5 @@
-//
-//  Copyright (C) 2014 Andoni Morales Alastruey
+﻿//
+//  Copyright (C) 2017 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,40 +15,25 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using VAS.Core;
-using VAS.Core.Common;
+using System;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
-namespace VAS.Drawing.CanvasObjects.Dashboard
+namespace VAS.Core.ViewModel
 {
-	public class TagObject: DashboardButtonObject
+	/// <summary>
+	/// Collection of DashboardButtonVM's.
+	/// </summary>
+	public class DashboardButtonCollectionVM : CollectionViewModel<DashboardButton, DashboardButtonVM>
 	{
-		static Image iconImage;
-
-		public TagObject (TagButton tagger) : base (tagger)
+		protected override DashboardButtonVM CreateInstance (DashboardButton model)
 		{
-			TagButton = tagger;
-			Toggle = true;
-			SupportsLinks = false;
-			if (iconImage == null) {
-				iconImage = Resources.LoadImage (StyleConf.ButtonTagIcon);
-			}
-		}
-
-		public TagButton TagButton {
-			get;
-			set;
-		}
-
-		public override Image Icon {
-			get {
-				return iconImage;
-			}
-		}
-
-		public override string Text {
-			get {
-				return TagButton.Tag.Value;
+			if (model is AnalysisEventButton) {
+				return new AnalysisEventButtonVM { Model = (AnalysisEventButton)model };
+			} else if (model is TagButton) {
+				return new TagButtonVM { Model = (TagButton)model };
+			} else {
+				return new TimerButtonVM { Model = (TimerButton)model };
 			}
 		}
 	}

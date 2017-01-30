@@ -16,16 +16,17 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System.Collections.Generic;
-using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
-using VAS.Drawing.CanvasObjects;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
-	public class LinkAnchorObject : CanvasObject, ICanvasSelectableObject
+	/// <summary>
+	/// Class for the LinkAnchorButtonView.
+	/// </summary>
+	public class LinkAnchorView : CanvasObject, ICanvasSelectableObject
 	{
 
 		static ISurface OutIcon;
@@ -39,7 +40,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		double width;
 		double height;
 
-		static LinkAnchorObject ()
+		static LinkAnchorView ()
 		{
 			InIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.LinkIn, false);
 			InPrelightIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.LinkInPrelight, false);
@@ -47,7 +48,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			OutPrelightIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.LinkOutPrelight, false);
 		}
 
-		public LinkAnchorObject (DashboardButtonObject button, List<Tag> tags, Point relPos)
+		public LinkAnchorView (DashboardButtonView button, List<Tag> tags, Point relPos)
 		{
 			RelativePosition = relPos;
 			width = height = 0;
@@ -59,7 +60,11 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			iconWidth = InIcon.Width;
 		}
 
-		public DashboardButtonObject Button {
+		/// <summary>
+		/// Gets or sets the button.
+		/// </summary>
+		/// <value>The button.</value>
+		public DashboardButtonView Button {
 			get;
 			set;
 		}
@@ -126,7 +131,12 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
-		public bool CanLink (LinkAnchorObject anchor)
+		/// <summary>
+		/// Check if the button can link.
+		/// </summary>
+		/// <returns><c>true</c>, if link was caned, <c>false</c> otherwise.</returns>
+		/// <param name="anchor">Anchor.</param>
+		public bool CanLink (LinkAnchorView anchor)
 		{
 			if (anchor == null)
 				return false;
@@ -134,9 +144,9 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				return false;
 			else if (Button == anchor.Button)
 				return false;
-			else if (Button is TimerObject && anchor.Button is TimerObject)
+			else if (Button is TimerButtonView && anchor.Button is TimerButtonView)
 				return true;
-			else if (Button is TagObject && anchor.Button is TagObject)
+			else if (Button is TagButtonView && anchor.Button is TagButtonView)
 				return true;
 			else if (Button.Button is EventButton && anchor.Button.Button is EventButton)
 				return true;

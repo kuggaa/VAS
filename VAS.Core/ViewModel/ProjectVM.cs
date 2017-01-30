@@ -41,6 +41,7 @@ namespace VAS.Core.ViewModel
 			EventTypes = new CollectionViewModel<EventType, EventTypeVM> ();
 			FileSet = new MediaFileSetVM ();
 			Periods = new CollectionViewModel<Period, PeriodVM> ();
+			Dashboard = new DashboardVM ();
 		}
 
 		public override Project Model {
@@ -103,6 +104,15 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		/// <value>The file set.</value>
 		public MediaFileSetVM FileSet {
+			get;
+			protected set;
+		}
+
+		/// <summary>
+		/// Gets or sets the file set.
+		/// </summary>
+		/// <value>The file set.</value>
+		public DashboardVM Dashboard {
 			get;
 			protected set;
 		}
@@ -176,6 +186,7 @@ namespace VAS.Core.ViewModel
 			Timeline.CreateEventTypeTimelines (EventTypes);
 			Timeline.Model = Model.Timeline;
 			FileSet.Model = Model.FileSet;
+			Dashboard.Model = Model.Dashboard;
 		}
 	}
 

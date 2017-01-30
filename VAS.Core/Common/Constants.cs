@@ -54,5 +54,7 @@ namespace VAS.Core.Common
 
 		public const string TimelineEventsDND = "timeline-events-dnd";
 		public const string PlaylistElementsDND = "playlist-elements-dnd";
+
+		public const int PLAYBACK_TOLERANCE = 100;
 	}
 }

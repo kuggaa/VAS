@@ -48,7 +48,7 @@ namespace VAS.Services
 			get {
 				List<T> templates = storage.RetrieveAll<T> ().OrderBy (t => t.Name).ToList ();
 				// Now add the system templates, use a copy to prevent modification of system templates.
-				foreach (T stemplate in systemTemplates) {
+				foreach (T stemplate in systemTemplates.Except (templates)) {
 					T clonedTemplate = stemplate.Clone ();
 					clonedTemplate.Static = true;
 					templates.Add (clonedTemplate);
@@ -153,6 +153,17 @@ namespace VAS.Services
 			T t = (T)methodDefaultTemplate.Invoke (null, list);
 			t.Name = templateName;
 			return t;
+		}
+
+		/// <summary>
+		/// Converts to system template.
+		/// </summary>
+		/// <param name="template">Template.</param>
+		protected void ConvertToSystemTemplate (T template)
+		{
+			Log.Information ("Setting new system template " + template.Name);
+			template.Static = true;
+			systemTemplates.Add (template);
 		}
 
 		void CheckInvalidChars (string name)

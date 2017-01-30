@@ -26,15 +26,15 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 	/// <summary>
 	/// Represents an <see cref="ActionLink"/> in the canvas.
 	/// </summary>
-	public class ActionLinkObject: CanvasObject, ICanvasSelectableObject
+	public class ActionLinkView : CanvasObject, ICanvasSelectableObject
 	{
 		readonly Line line;
 		const int selectionSize = 4;
 		Point stop;
 
-		public ActionLinkObject (LinkAnchorObject source,
-		                         LinkAnchorObject destination,
-		                         ActionLink link)
+		public ActionLinkView (LinkAnchorView source,
+								 LinkAnchorView destination,
+								 ActionLink link)
 		{
 			Link = link;
 			Source = source;
@@ -49,21 +49,37 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			line.Stop = stop;
 		}
 
-		public LinkAnchorObject Source {
+		/// <summary>
+		/// Gets or sets the source.
+		/// </summary>
+		/// <value>The source.</value>
+		public LinkAnchorView Source {
 			get;
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets the link.
+		/// </summary>
+		/// <value>The link.</value>
 		public ActionLink Link {
 			get;
 			set;
 		}
 
-		public LinkAnchorObject Destination {
+		/// <summary>
+		/// Gets or sets the destination.
+		/// </summary>
+		/// <value>The destination.</value>
+		public LinkAnchorView Destination {
 			get;
 			set;
 		}
 
+		/// <summary>
+		/// Gets the area.
+		/// </summary>
+		/// <value>The area.</value>
 		public virtual Area Area {
 			get {
 				line.Start = Source.Out;
@@ -81,6 +97,13 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
+		/// <summary>
+		/// Gets the selection.
+		/// </summary>
+		/// <returns>The selection.</returns>
+		/// <param name="point">Point.</param>
+		/// <param name="precision">Precision.</param>
+		/// <param name="inMotion">If set to <c>true</c> in motion.</param>
 		public Selection GetSelection (Point point, double precision, bool inMotion = false)
 		{
 			Selection sel = line.GetSelection (point, precision, inMotion);
@@ -90,13 +113,24 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			return sel;
 		}
 
+		/// <summary>
+		/// Move the specified selection.
+		/// </summary>
+		/// <param name="s">S.</param>
+		/// <param name="dst">Dst.</param>
+		/// <param name="start">Start.</param>
 		public void Move (Selection s, Point dst, Point start)
 		{
 			line.Move (s, dst, start);
 			stop = line.Stop;
 		}
 
-		public bool CanLink (LinkAnchorObject dest)
+		/// <summary>
+		/// Cans the link.
+		/// </summary>
+		/// <returns><c>true</c>, if link was caned, <c>false</c> otherwise.</returns>
+		/// <param name="dest">Destination.</param>
+		public bool CanLink (LinkAnchorView dest)
 		{
 			/* Check if the link is possible between the 2 types of anchors */
 			if (!Source.CanLink (dest)) {
@@ -106,14 +140,19 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			/* Check if this link will result into a duplicated link */
 			foreach (ActionLink link in Source.Button.Button.ActionLinks) {
 				if (link.DestinationButton == dest.Button.Button &&
-				    link.SourceTags.SequenceEqualSafe (Source.Tags) &&
-				    link.DestinationTags.SequenceEqualSafe (dest.Tags)) {
+					link.SourceTags.SequenceEqualSafe (Source.Tags) &&
+					link.DestinationTags.SequenceEqualSafe (dest.Tags)) {
 					return false;
 				}
 			}
 			return true;
 		}
 
+		/// <summary>
+		/// Draw the specified tk and area.
+		/// </summary>
+		/// <param name="tk">Tk.</param>
+		/// <param name="area">Area.</param>
 		public override void Draw (IDrawingToolkit tk, Area area)
 		{
 			Color lineColor;
