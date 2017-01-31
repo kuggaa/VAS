@@ -19,6 +19,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace VAS.Core
@@ -55,18 +56,20 @@ namespace VAS.Core
 		/// <param name="source">Source.</param>
 		/// <param name="dop">Degree of parallelism.</param>
 		/// <param name="body">Body.</param>
+		/// <param name="ct">CancellationToken?, null if not used.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public static Task ForEachAsync<T> (this IEnumerable<T> source, int dop, Func<T, Task> body)
+		public static Task ForEachAsync<T> (this IEnumerable<T> source, int dop, Func<T, Task> body, CancellationToken ct = default (CancellationToken))
 		{
 			return Task.WhenAll (
 				Partitioner.Create (source).GetPartitions (dop).Select (partition => {
-					return Task.Run (async () => {
+					return Task.Factory.StartNew (async () => {
 						using (partition) {
 							while (partition.MoveNext ()) {
 								await body (partition.Current);
+								ct.ThrowIfCancellationRequested ();
 							}
 						}
-					});
+					}, ct).Unwrap ();
 				})
 			);
 		}
