@@ -51,3 +51,4 @@ libvas/lgm-video-player.c
 VAS.Core/ViewModel/TeamVM.cs
 VAS.DB/Views/TeamsView.cs
 VAS.Core/MVVMC/ControllerBase.cs
+VAS.Tests/Services/TestControllerBase.cs
