@@ -94,28 +94,50 @@ namespace VAS.Tests
 		}
 	}
 
-	public class DummyController : IController
+	public class DummyController : ControllerBase
 	{
-		public void Dispose ()
+		public event EventHandler managedDisposeCalled;
+		public event EventHandler unmanagedDisposeCalled;
+
+		protected override void DisposeManagedResources ()
 		{
-			Log.Verbose ($"Disposing {GetType ()}");
+			base.DisposeManagedResources ();
+			if (managedDisposeCalled != null) {
+				managedDisposeCalled (this, new EventArgs ());
+			}
 		}
 
-		public void Start ()
+		protected override void DisposeUnmanagedResources ()
+		{
+			base.DisposeUnmanagedResources ();
+			if (unmanagedDisposeCalled != null) {
+				unmanagedDisposeCalled (this, new EventArgs ());
+			}
+		}
+
+		public override void Start ()
+		{
+			base.Start ();
+		}
+
+		public override void Stop ()
+		{
+			base.Stop ();
+		}
+
+		public override void SetViewModel (IViewModel viewModel)
 		{
 		}
 
-		public void Stop ()
-		{
-		}
-
-		public void SetViewModel (IViewModel viewModel)
-		{
-		}
-
-		public IEnumerable<KeyAction> GetDefaultKeyActions ()
+		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
 		{
 			return Enumerable.Empty<KeyAction> ();
+		}
+
+		public bool Started {
+			get {
+				return started;
+			}
 		}
 	}
 
