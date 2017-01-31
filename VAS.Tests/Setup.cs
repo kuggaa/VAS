@@ -20,6 +20,7 @@ using ICSharpCode.SharpZipLib;
 using Moq;
 using NUnit.Framework;
 using VAS.Core;
+using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.DB;
@@ -45,6 +46,7 @@ namespace VAS.Tests
 			App.Current.Config = new ConfigDummy ();
 			SynchronizationContext.SetSynchronizationContext (new MockSynchronizationContext ());
 			App.Current.DependencyRegistry.Register<IStorageManager, CouchbaseManager> (1);
+			App.Current.DependencyRegistry.Register<IStopwatch, Stopwatch> (1);
 			App.Current.Dialogs = new Mock<IDialogs> ().Object;
 			var navigation = new Mock<INavigation> ();
 			navigation.Setup (x => x.Push (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
