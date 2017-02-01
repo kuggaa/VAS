@@ -163,6 +163,7 @@ namespace VAS.Core.Common
 		public const int ButtonTimerFontSize = 24;
 		public const int ButtonButtonsFontSize = 10;
 		public const int ButtonMinWidth = 100;
+		public const int ButtonDialogIconSize = 24;
 		public const string ButtonTimerIcon = "images/dashboard/vas-timer" + IMAGE_EXT;
 		public const string ButtonTagIcon = "images/dashboard/longomatch-tag" + IMAGE_EXT;
 		public const string ButtonScoreIcon = "images/dashboard/longomatch-score" + IMAGE_EXT;
@@ -208,6 +209,7 @@ namespace VAS.Core.Common
 		public const string NormalButtonNormalTheme = "theme/gtk-2.0/Button/button_n_n" + IMAGE_EXT;
 		public const string NormalButtonInsensititveTheme = "theme/gtk-2.0/Button/button_n_i" + IMAGE_EXT;
 		public const string NormalButtonPrelightTheme = "theme/gtk-2.0/Button/button_n_p" + IMAGE_EXT;
+		public const string QuitButtonImage = "icons/hicolor/scalable/actions/vas-quit" + IMAGE_EXT;
 
 		//Button Styles
 		public const string ButtonTimeline = "ButtonTimeline";
