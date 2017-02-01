@@ -121,12 +121,6 @@ namespace VAS.UI
 
 		#endregion
 
-		protected override void OnUnrealized ()
-		{
-			playerVM?.Stop ();
-			base.OnUnrealized ();
-		}
-
 		protected override void OnRealized ()
 		{
 			if (playerVM != null) {
@@ -140,6 +134,14 @@ namespace VAS.UI
 			blackboard.Dispose ();
 			playerVM.Dispose ();
 			base.OnDestroyed ();
+		}
+
+		protected override void OnUnrealized ()
+		{
+			if (ViewModel.Playing) {
+				Log.Error ("Player is playing on unrealized. This will crash");
+			}
+			base.OnUnrealized ();
 		}
 
 		public void SetViewModel (object viewModel)
@@ -509,7 +511,9 @@ namespace VAS.UI
 
 		void PlayerVMPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
-			SyncVMValues (e.PropertyName);
+			if (playerVM != null) {
+				SyncVMValues (e.PropertyName);
+			}
 		}
 
 		void HandlePlayerAttachedChanged ()
