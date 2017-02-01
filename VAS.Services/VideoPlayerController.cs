@@ -370,7 +370,7 @@ namespace VAS.Services
 			} else {
 				Log.Debug ("Player unready");
 				if (Playing) {
-					Stop ();
+					Stop (false);
 				}
 				this.ready = false;
 				delayedOpen = null;
@@ -381,7 +381,7 @@ namespace VAS.Services
 		{
 			Log.Debug ("Opening file set");
 			if (fileSet == null || !fileSet.Any ()) {
-				Stop ();
+				Stop (false);
 				EmitTimeChanged (new Time (0), new Time (0));
 				FileSet = fileSet;
 				IgnoreTicks = true;
@@ -403,7 +403,7 @@ namespace VAS.Services
 			}
 		}
 
-		public virtual void Stop (bool synchronous = false)
+		public virtual void Stop (bool synchronous)
 		{
 			Log.Debug ("Stop");
 			Pause (synchronous);
@@ -890,6 +890,7 @@ namespace VAS.Services
 		public override void Stop ()
 		{
 			base.Stop ();
+			Stop (false);
 		}
 
 		public override IEnumerable<KeyAction> GetDefaultKeyActions ()

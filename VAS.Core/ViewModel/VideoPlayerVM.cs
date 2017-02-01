@@ -276,7 +276,7 @@ namespace VAS.Core.ViewModel
 
 		public void Stop ()
 		{
-			((IPlayback)Player).Stop ();
+			Player.Stop (false);
 		}
 
 		public void Seek (double pos)
