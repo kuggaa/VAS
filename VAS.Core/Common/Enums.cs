@@ -569,4 +569,39 @@ namespace VAS.Core.Common
 		/// </summary>
 		Presentation
 	}
+
+	/// <summary>
+	/// The Application License Level
+	/// </summary>
+	[Flags]
+	public enum LicenseLevel
+	{
+		/// <summary>
+		/// No Licenses Found in the system
+		/// </summary>
+		NONE = 0,
+		/// <summary>
+		/// Freemium License Found
+		/// </summary>
+		FREEMIUM = 1,
+		/// <summary>
+		/// Pro Licenses Based on Subscription level
+		/// </summary>
+		LEVEL_1 = 3,
+		LEVEL_2 = 7,
+		LEVEL_3 = 15,
+		LEVEL_4 = 31,
+		LEVEL_5 = 63,
+		LEVEL_6 = 127,
+		LEVEL_7 = 255,
+		LEVEL_8 = 511,
+		LEVEL_9 = 1023,
+		LEVEL_10 = 2047,
+		LEVEL_11 = 4095,
+		LEVEL_12 = 8191,
+		LEVEL_13 = 16383,
+		LEVEL_14 = 32767,
+		LEVEL_15 = 65535
+	}
+
 }

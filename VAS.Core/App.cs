@@ -10,6 +10,7 @@ using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.GUI;
+using VAS.Core.Interfaces.License;
 using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.MVVMC;
 using VAS.KPI;
@@ -35,6 +36,7 @@ namespace VAS
 		public ViewLocator ViewLocator;
 		public ControllerLocator ControllerLocator;
 		public DragContext DragContext;
+		public ILicenseManager LicenseManager;
 
 		public string homeDirectory = ".";
 		public string baseDirectory = ".";
