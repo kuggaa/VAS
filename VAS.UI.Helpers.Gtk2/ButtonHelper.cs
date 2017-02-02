@@ -90,6 +90,16 @@ namespace VAS.UI.Helpers
 			button.ApplyStyle (StyleConf.ButtonTab, App.Current.Style.ButtonTabWidth);
 		}
 
+		public static void ApplyStyleRemove (this Button button, Command command = null)
+		{
+			if (command != null) {
+				button.Bind (command);
+			}
+			button.ApplyStyle (StyleConf.ButtonRemove, App.Current.Style.ButtonRemoveWidth);
+			button.HeightRequest = App.Current.Style.ButtonRemoveHeight;
+			button.SetAlignment (0.0f, 0.5f);
+		}
+
 		/// <summary>
 		/// Applies the dialog style to the given button and binds it to a command.
 		/// </summary>

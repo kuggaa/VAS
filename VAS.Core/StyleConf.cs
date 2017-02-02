@@ -216,6 +216,7 @@ namespace VAS.Core.Common
 		public const string ButtonNormal = "ButtonNormal";
 		public const string ButtonTab = "ButtonTab";
 		public const string ButtonRATab = "ButtonRATab";
+		public const string ButtonRemove = "ButtonRemove";
 		public const string ButtonFocus = "ButtonFocus";
 		public const string ButtonDialog = "ButtonDialog";
 
@@ -333,6 +334,10 @@ namespace VAS.Core.Common
 		public int ButtonTabHeight { get; set; }
 
 		public int ButtonTabWidth { get; set; }
+
+		public int ButtonRemoveHeight { get; set; }
+
+		public int ButtonRemoveWidth { get; set; }
 
 		public int ButtonFocusHeight { get; set; }
 
