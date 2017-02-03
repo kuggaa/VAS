@@ -15,6 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using VAS.Core;
@@ -33,7 +34,7 @@ namespace VAS.Services.ViewModel
 		public ProjectsManagerVM ()
 		{
 			LoadedProject = new TViewModel ();
-			NewCommand = new Command (New, () => true);
+			NewCommand = new Command (New);
 			OpenCommand = new Command<TViewModel> (Open, (arg) => Selection.Count == 1);
 			DeleteCommand = new Command (Delete, () => Selection.Any ());
 		}
@@ -158,6 +159,11 @@ namespace VAS.Services.ViewModel
 		protected virtual void Open (TViewModel viewModel)
 		{
 			App.Current.EventsBroker.Publish (new OpenEvent<TModel> { Object = viewModel?.Model });
+		}
+
+		void HandleLimitationChanged (object sender, PropertyChangedEventArgs e)
+		{
+			NewCommand.Executable = Limitation.Count < Limitation.Maximum;
 		}
 	}
 }
