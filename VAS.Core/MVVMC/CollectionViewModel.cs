@@ -116,7 +116,7 @@ namespace VAS.Core.MVVMC
 				model.RemoveRange (e.OldItems.OfType<TViewModel> ().Select ((arg) => arg.Model));
 				break;
 			case NotifyCollectionChangedAction.Reset:
-				model.Clear ();
+				model.Replace (ViewModels.Select (vm => vm.Model));
 				break;
 			}
 			editing = false;
@@ -140,7 +140,7 @@ namespace VAS.Core.MVVMC
 				break;
 			case NotifyCollectionChangedAction.Reset:
 				ViewModels.Clear ();
-				modelToViewModel.Clear ();
+				AddViewModels (0, Model);
 				break;
 			}
 			editing = false;

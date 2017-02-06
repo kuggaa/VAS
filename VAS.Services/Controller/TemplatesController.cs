@@ -405,12 +405,13 @@ namespace VAS.Services.Controller
 
 		protected virtual async void HandleSelectionChanged (object sender, PropertyChangedEventArgs e)
 		{
+
 			if (e.PropertyName != "Selection") {
 				return;
 			}
 
 			TViewModel selectedVM = ViewModel.Selection.FirstOrDefault ();
-			TModel loadedTemplate = default (TModel);
+			TModel loadedTemplate = null;
 
 			if (ViewModel.LoadedTemplate.Edited == true) {
 				await HandleSave (new UpdateEvent<TModel> { Force = false, Object = ViewModel.LoadedTemplate.Model });

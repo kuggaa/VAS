@@ -28,7 +28,7 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// Generic base class for <see cref="ITemplate"/> ViewModel.
 	/// </summary>
-	public abstract class TemplateViewModel<T> : ViewModelBase<T> where T : ITemplate
+	public abstract class TemplateViewModel<T> : StorableVM<T> where T : ITemplate
 	{
 		/// <summary>
 		/// Gets the name of the template.
@@ -83,16 +83,6 @@ namespace VAS.Core.ViewModel
 		{
 			Selection = new RangeObservableCollection<TChildViewModel> ();
 			SubViewModel = CreateSubViewModel ();
-		}
-
-		public override TModel Model {
-			get {
-				return base.Model;
-			}
-			set {
-				base.Model = value;
-				SubViewModel.Model = Model?.List;
-			}
 		}
 
 		public CollectionViewModel<TChildModel, TChildViewModel> SubViewModel {
@@ -175,5 +165,11 @@ namespace VAS.Core.ViewModel
 		}
 
 		#endregion
+
+		protected override void SyncLoadedModel ()
+		{
+			base.SyncLoadedModel ();
+			SubViewModel.Model = Model?.List;
+		}
 	}
 }

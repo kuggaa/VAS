@@ -36,6 +36,37 @@ namespace VAS.Core.MVVMC
 			get;
 		}
 
+		/// <summary>
+		/// Checks if sync is required from the name of the property that triggered a <see cref="PropertyChangedEventHandler"/>.
+		/// </summary>
+		/// <returns><c>true</c>, if sync was needed, <c>false</c> otherwise.</returns>
+		/// <param name="propertyNameChanged">Property name changed.</param>
+		/// <param name="propertyNameToCheck">Property name to check.</param>
+		public bool NeedsSync (string propertyNameChanged, string propertyNameToCheck)
+		{
+			return NeedsSync (propertyNameChanged, propertyNameToCheck, null, null);
+		}
+
+		/// <summary>
+		/// Checks if sync is required from the name of the property that triggered a <see cref="PropertyChangedEventHandler"/>
+		/// and the sender of the event.
+		/// </summary>
+		/// <returns><c>true</c>, if sync was needed, <c>false</c> otherwise.</returns>
+		/// <param name="sender">Sender.</param>
+		/// <param name="senderToCheck">Sender to check.</param>
+		public bool NeedsSync (string propertyNameChanged, string propertyNameToCheck, object sender, object senderToCheck)
+		{
+			if (propertyNameChanged == null) {
+				return true;
+			}
+			if (propertyNameChanged == propertyNameToCheck) {
+				if (sender == null || senderToCheck == null || sender == senderToCheck) {
+					return true;
+				}
+			}
+			return false;
+		}
+
 		protected override void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			base.ForwardPropertyChanged (this, e);
