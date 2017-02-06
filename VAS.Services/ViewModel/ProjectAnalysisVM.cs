@@ -22,6 +22,9 @@ using VAS.Core.ViewModel;
 
 namespace VAS.Services.ViewModel
 {
+	/// <summary>
+	/// A ViewModel used in analysis views where there is a video player, a timeline and playlists
+	/// </summary>
 	public class ProjectAnalysisVM<T> : BindableBase, IAnalysisViewModel
 		where T : ProjectVM
 	{
@@ -87,11 +90,19 @@ namespace VAS.Services.ViewModel
 			set;
 		}
 
+		/// <summary>
+		/// Close the current project.
+		/// </summary>
+		/// <value>The close command.</value>
 		public Command CloseCommand {
 			get;
 			set;
 		}
 
+		/// <summary>
+		/// Save the current project.
+		/// </summary>
+		/// <value>The save command.</value>
 		public Command SaveCommand {
 			get;
 			set;

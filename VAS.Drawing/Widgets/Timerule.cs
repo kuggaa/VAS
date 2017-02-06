@@ -80,6 +80,17 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Drawing.Widgets.Timerule"/> updates the
+		/// current time from the <see cref="VideoPlayerVM"/> instead of <see cref="CurrentTime"/>.
+		/// Some timerules need to do it from the property since the updates might be sampled from another component.
+		/// </summary>
+		/// <value><c>true</c> if updates the current time automatically; otherwise, <c>false</c>.</value>
+		public bool AutoUpdate {
+			get;
+			set;
+		}
+
 		public double Scroll {
 			set {
 				scroll = value;
@@ -348,8 +359,10 @@ namespace VAS.Drawing.Widgets
 
 		void HandlePropertyChangedEventHandler (object sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == "Duration") {
+			if (e.PropertyName == nameof (VideoPlayerVM.Duration)) {
 				Duration = ViewModel.Duration;
+			} else if (AutoUpdate && e.PropertyName == nameof (VideoPlayerVM.CurrentTime)) {
+				CurrentTime = ViewModel.CurrentTime;
 			}
 		}
 	}

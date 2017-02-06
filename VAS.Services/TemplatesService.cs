@@ -9,12 +9,11 @@ using System.Reflection;
 using VAS.Core.Common;
 using VAS.Core.Filters;
 using VAS.Core.Interfaces;
-using VAS.Core.Store.Templates;
 using VAS.DB;
 
 namespace VAS.Services
 {
-	public class TemplatesProvider<T> : ITemplateProvider<T>
+	public abstract class TemplatesProvider<T> : ITemplateProvider<T>
 		where T : ITemplate
 	{
 		public event NotifyCollectionChangedEventHandler CollectionChanged;
@@ -143,14 +142,10 @@ namespace VAS.Services
 			}
 		}
 
-		public T Create (string templateName, params object [] list)
+		public T Create (string templateName, int count = 0)
 		{
-			/* Some templates don't need a count as a parameter but we include
-			 * so that all of them match the same signature */
-			if (list.Length == 0)
-				list = new object [] { 0 };
 			Log.Information (String.Format ("Creating default {0} template", typeof (T)));
-			T t = (T)methodDefaultTemplate.Invoke (null, list);
+			T t = CreateDefaultTemplate (count);
 			t.Name = templateName;
 			return t;
 		}
@@ -165,6 +160,8 @@ namespace VAS.Services
 			template.Static = true;
 			systemTemplates.Add (template);
 		}
+
+		protected abstract T CreateDefaultTemplate (int count);
 
 		void CheckInvalidChars (string name)
 		{
