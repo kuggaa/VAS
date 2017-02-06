@@ -27,6 +27,8 @@ namespace VAS.Core.Interfaces.License
 			set;
 		}
 
+		Task Init ();
+
 		Task<bool> UpdateSubscriptionLicense (string ticketID);
 	}
 }
