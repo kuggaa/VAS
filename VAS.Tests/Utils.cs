@@ -183,6 +183,27 @@ namespace VAS.Tests
 		}
 	}
 
+	public class DummyProjectVM : ProjectVM<Project>
+	{
+		public IEnumerable<TeamVM> teams;
+
+		public DummyProjectVM ()
+		{
+			teams = new List<TeamVM> ();
+		}
+
+		public DummyProjectVM (IEnumerable<TeamVM> teams)
+		{
+			this.teams = teams;
+		}
+
+		public override IEnumerable<TeamVM> Teams {
+			get {
+				return teams;
+			}
+		}
+	}
+
 	public class DummyTeam : Team
 	{
 	}

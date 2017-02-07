@@ -37,8 +37,7 @@ namespace VAS.Tests.Services
 		PlayerVM player3;
 		TeamVM team1;
 		TeamVM team2;
-		RangeObservableCollection<PlayerVM> players;
-		RangeObservableCollection<TeamVM> teams;
+		List<TeamVM> teams;
 		ProjectVM project;
 		TimelineEvent sendedTimelineEvent;
 		bool hasSendedDashboardEvent;
@@ -69,9 +68,8 @@ namespace VAS.Tests.Services
 			team2 = new TeamVM ();
 			team2.ViewModels.Add (player3);
 
-			teams = new RangeObservableCollection<TeamVM> () { team1, team2 };
-			players = new RangeObservableCollection<PlayerVM> () { player1, player2, player3 };
-			project = new ProjectVM { Players = players, Teams = teams, Model = new Utils.ProjectDummy () };
+			teams = new List<TeamVM> { team1, team2 };
+			project = new DummyProjectVM (teams) { Model = new Utils.ProjectDummy () };
 			var videoPlayer = new VideoPlayerVM {
 				CamerasConfig = new ObservableCollection<CameraConfig> ()
 			};
