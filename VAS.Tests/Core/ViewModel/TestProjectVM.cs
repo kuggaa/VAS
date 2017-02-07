@@ -35,7 +35,7 @@ namespace VAS.Tests.Core.ViewModel
 			model.Timers.Add (new Timer ());
 			model.Playlists.Add (new Playlist ());
 			model.Periods.Add (new Period ());
-			var viewModel = new ProjectVM<Project> {
+			var viewModel = new DummyProjectVM {
 				Model = model
 			};
 
@@ -50,7 +50,7 @@ namespace VAS.Tests.Core.ViewModel
 		{
 			var model = Utils.CreateProject (true);
 			model.ProjectType = ProjectType.CaptureProject;
-			var viewModel = new ProjectVM<Project> {
+			var viewModel = new DummyProjectVM {
 				Model = model
 			};
 
@@ -66,7 +66,7 @@ namespace VAS.Tests.Core.ViewModel
 			var model = Utils.CreateProject (true);
 			model.Timers.Add (new Timer ());
 			model.Playlists.Add (new Playlist ());
-			var viewModel = new ProjectVM<Project> {
+			var viewModel = new DummyProjectVM {
 				Model = model
 			};
 
@@ -80,7 +80,7 @@ namespace VAS.Tests.Core.ViewModel
 		public void TestEdited ()
 		{
 			var model = Utils.CreateProject (true);
-			var viewModel = new ProjectVM<Project> {
+			var viewModel = new DummyProjectVM {
 				Model = model
 			};
 			model.IsChanged = false;
@@ -94,11 +94,11 @@ namespace VAS.Tests.Core.ViewModel
 		[Test]
 		public void TestIsLive ()
 		{
-			var captureProject = new ProjectVM { Model = new Utils.ProjectDummy { ProjectType = ProjectType.CaptureProject } };
-			var fakeProject = new ProjectVM { Model = new Utils.ProjectDummy { ProjectType = ProjectType.FakeCaptureProject } };
-			var uriProject = new ProjectVM { Model = new Utils.ProjectDummy { ProjectType = ProjectType.URICaptureProject } };
-			var fileProject = new ProjectVM { Model = new Utils.ProjectDummy { ProjectType = ProjectType.FileProject } };
-			var editProject = new ProjectVM { Model = new Utils.ProjectDummy { ProjectType = ProjectType.EditProject } };
+			var captureProject = new DummyProjectVM { Model = new Utils.ProjectDummy { ProjectType = ProjectType.CaptureProject } };
+			var fakeProject = new DummyProjectVM { Model = new Utils.ProjectDummy { ProjectType = ProjectType.FakeCaptureProject } };
+			var uriProject = new DummyProjectVM { Model = new Utils.ProjectDummy { ProjectType = ProjectType.URICaptureProject } };
+			var fileProject = new DummyProjectVM { Model = new Utils.ProjectDummy { ProjectType = ProjectType.FileProject } };
+			var editProject = new DummyProjectVM { Model = new Utils.ProjectDummy { ProjectType = ProjectType.EditProject } };
 
 			Assert.IsTrue (captureProject.IsLive);
 			Assert.IsTrue (fakeProject.IsLive);

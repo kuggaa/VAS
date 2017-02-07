@@ -98,7 +98,7 @@ namespace VAS.Tests.Services
 		{
 			controller = new PlaylistControllerWithProject ();
 			Project project = Utils.CreateProject (true);
-			projectVM = new ProjectVM { Model = project };
+			projectVM = new DummyProjectVM { Model = project };
 			playlistCollectionVM = projectVM.Playlists;
 			var viewModel = new ProjectAnalysisVM<ProjectVM> { Project = projectVM, VideoPlayer = videoPlayerVM };
 			controller.SetViewModel (viewModel);
