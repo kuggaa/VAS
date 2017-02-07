@@ -53,7 +53,7 @@ namespace Weavers
 	///        return element;
 	///    }
 	///    set {
-	///        ConnectChild (base.Element, value);
+	///        ConnectChild (base.Element, value, "Element");
 	///        element = value;
 	///    }
 	/// }
@@ -89,7 +89,7 @@ namespace Weavers
 			exceptionFinder.Execute ();
 
 			// Find the ConnectChild () method
-			var connectFinder = new MethodFinder (ModuleDefinition, CONNECT, 2);
+			var connectFinder = new MethodFinder (ModuleDefinition, CONNECT, 3);
 			connectMethod = connectFinder.Execute (bindableBaseType);
 
 			// Get a list of all the classes deriving from BindableBase
@@ -202,11 +202,11 @@ namespace Weavers
 				}
 
 				LogInfo ("\t\t" + property.PropertyType);
-				ProcessProperty (setMethod, getMethod);
+				ProcessProperty (setMethod, getMethod, property.Name);
 			}
 		}
 
-		void ProcessProperty (MethodDefinition setMethod, MethodDefinition getMethod)
+		void ProcessProperty (MethodDefinition setMethod, MethodDefinition getMethod, string propertyName)
 		{
 			int i = 0;
 			LogInfo ("\t\t" + setMethod.Name);
@@ -225,6 +225,7 @@ namespace Weavers
 				setMethod.Body.Instructions.Insert (i++, Instruction.Create (OpCodes.Call, getMethod));
 			}
 			setMethod.Body.Instructions.Insert (i++, Instruction.Create (OpCodes.Ldarg_1));
+			setMethod.Body.Instructions.Insert (i++, Instruction.Create (OpCodes.Ldstr, propertyName));
 			setMethod.Body.Instructions.Insert (i++, Instruction.Create (OpCodes.Call, connectMethod));
 
 			setMethod.Body.OptimizeMacros ();

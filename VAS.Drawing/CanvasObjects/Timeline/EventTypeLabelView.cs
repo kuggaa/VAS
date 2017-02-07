@@ -136,7 +136,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == nameof (TimelineEventVM.Visible) ||
-				e.PropertyName == "Collection") {
+				e.PropertyName == $"Collection_{nameof (EventTypeTimelineVM.ViewModels)}") {
 				playButton.Insensitive = ViewModel.VisibleEvents == 0;
 				ReDraw ();
 			} else if (e.PropertyName == nameof (EventTypeVM.Name)) {
