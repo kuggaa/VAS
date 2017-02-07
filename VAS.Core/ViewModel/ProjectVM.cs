@@ -16,13 +16,12 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
-using VAS.Core.Serialization;
 using VAS.Core.Store;
 
 namespace VAS.Core.ViewModel
@@ -130,13 +129,17 @@ namespace VAS.Core.ViewModel
 		}
 
 		public virtual IEnumerable<PlayerVM> Players {
-			get;
-			internal set;
+			get {
+				return Teams.SelectMany (t => t.ViewModels);
+			}
 		}
 
+		/// <summary>
+		/// Gets the teams in this project.
+		/// </summary>
+		/// <value>The teams.</value>
 		public virtual IEnumerable<TeamVM> Teams {
 			get;
-			internal set;
 		}
 
 		/// <summary>
