@@ -39,7 +39,7 @@ using VAS.Services.State;
 namespace VAS.Services.Controller
 {
 	// FIXME: Merge with the EventsController
-	public class CoreEventsController : DisposableBase, IController
+	public class CoreEventsController : ControllerBase
 	{
 		/* Current play loaded. null if no play is loaded */
 		protected TimelineEvent loadedPlay;
@@ -49,17 +49,15 @@ namespace VAS.Services.Controller
 		protected ICapturerBin capturer;
 		protected IFramesCapturer framesCapturer;
 
-		protected override void Dispose (bool disposing)
+		protected override void DisposeManagedResources ()
 		{
-			if (Disposed) {
-				return;
-			}
-			base.Dispose (disposing);
+			base.DisposeManagedResources ();
 			framesCapturer?.Dispose ();
 		}
 
-		public void Start ()
+		public override void Start ()
 		{
+			base.Start ();
 			App.Current.EventsBroker.Subscribe<EventsDeletedEvent> (HandleDeleteEvents);
 			App.Current.EventsBroker.Subscribe<EventLoadedEvent> (HandlePlayLoaded);
 			App.Current.EventsBroker.Subscribe<PlaylistElementLoadedEvent> (HandlePlaylistElementLoaded);
@@ -76,8 +74,9 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Subscribe<ShowFullScreenEvent> (HandleShowFullScreenEvent);
 		}
 
-		public void Stop ()
+		public override void Stop ()
 		{
+			base.Stop ();
 			App.Current.EventsBroker.Unsubscribe<EventsDeletedEvent> (HandleDeleteEvents);
 			App.Current.EventsBroker.Unsubscribe<EventLoadedEvent> (HandlePlayLoaded);
 			App.Current.EventsBroker.Unsubscribe<PlaylistElementLoadedEvent> (HandlePlaylistElementLoaded);
@@ -94,7 +93,7 @@ namespace VAS.Services.Controller
 			//App.Current.EventsBroker.Unsubscribe<DetachEvent> (HandleDetach);
 		}
 
-		public void SetViewModel (IViewModel viewModel)
+		public override void SetViewModel (IViewModel viewModel)
 		{
 			project = (ProjectVM)(viewModel as dynamic);
 			videoPlayer = (VideoPlayerVM)(viewModel as dynamic);
@@ -109,7 +108,7 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		public IEnumerable<KeyAction> GetDefaultKeyActions ()
+		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
 		{
 			return Enumerable.Empty<KeyAction> ();
 		}

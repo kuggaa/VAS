@@ -34,20 +34,16 @@ using VAS.Services.ViewModel;
 
 namespace VAS.Services.Controller
 {
-	public class ProjectsController<TModel, TViewModel> : DisposableBase, IController
+	public class ProjectsController<TModel, TViewModel> : ControllerBase
 		where TModel : Project
 		where TViewModel : ProjectVM<TModel>, new()
 	{
-		bool started;
 		ProjectsManagerVM<TModel, TViewModel> viewModel;
 
-		protected override void Dispose (bool disposing)
+		protected override void DisposeManagedResources ()
 		{
-			base.Dispose (disposing);
-			if (started) {
-				Log.Error ($"The controller {this} was not stopped correctly.");
-				Stop ();
-			}
+			base.DisposeManagedResources ();
+			ViewModel = null;
 		}
 
 		protected ProjectsManagerVM<TModel, TViewModel> ViewModel {
@@ -67,16 +63,14 @@ namespace VAS.Services.Controller
 
 		#region IController implementation
 
-		public virtual void SetViewModel (IViewModel viewModel)
+		public override void SetViewModel (IViewModel viewModel)
 		{
 			ViewModel = (ProjectsManagerVM<TModel, TViewModel>)viewModel;
 		}
 
-		public virtual void Start ()
+		public override void Start ()
 		{
-			if (started) {
-				throw new InvalidOperationException ("The controller is already running");
-			}
+			base.Start ();
 			App.Current.EventsBroker.SubscribeAsync<ExportEvent<TModel>> (HandleExport);
 			App.Current.EventsBroker.SubscribeAsync<ImportEvent<TModel>> (HandleImport);
 			App.Current.EventsBroker.SubscribeAsync<UpdateEvent<TModel>> (HandleSave);
@@ -85,14 +79,11 @@ namespace VAS.Services.Controller
 			if (viewModel != null) {
 				viewModel.Selection.CollectionChanged += HandleSelectionChanged;
 			}
-			started = true;
 		}
 
-		public virtual void Stop ()
+		public override void Stop ()
 		{
-			if (!started) {
-				throw new InvalidOperationException ("The controller is already stopped");
-			}
+			base.Stop ();
 			App.Current.EventsBroker.UnsubscribeAsync<ExportEvent<TModel>> (HandleExport);
 			App.Current.EventsBroker.UnsubscribeAsync<ImportEvent<TModel>> (HandleImport);
 			App.Current.EventsBroker.UnsubscribeAsync<UpdateEvent<TModel>> (HandleSave);
@@ -101,10 +92,9 @@ namespace VAS.Services.Controller
 			if (viewModel != null) {
 				viewModel.Selection.CollectionChanged -= HandleSelectionChanged;
 			}
-			started = false;
 		}
 
-		public virtual IEnumerable<KeyAction> GetDefaultKeyActions ()
+		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
 		{
 			return Enumerable.Empty<KeyAction> ();
 		}
