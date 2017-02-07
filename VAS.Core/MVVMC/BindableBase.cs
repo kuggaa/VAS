@@ -17,6 +17,7 @@
 //
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
@@ -32,11 +33,18 @@ namespace VAS.Core.MVVMC
 	[Serializable]
 	public class BindableBase : DisposableBase, INotifyPropertyChanged, IChanged
 	{
+		Dictionary<INotifyCollectionChanged, string> collectionToPropertyName;
+
 		// Don't serialize observers when cloning this object
 		[field: NonSerialized]
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		bool forwarding;
+
+		public BindableBase ()
+		{
+			collectionToPropertyName = new Dictionary<INotifyCollectionChanged, string> ();
+		}
 
 		#region IChanged implementation
 
@@ -112,11 +120,11 @@ namespace VAS.Core.MVVMC
 		/// </summary>
 		/// <param name="oldValue">Old value set.</param>
 		/// <param name="newValue">New value to set.</param>
-		protected void ConnectChild (object oldValue, object newValue)
+		protected void ConnectChild (object oldValue, object newValue, string propertyName = null)
 		{
 			// ObservableCollection also implements INotifyPropertyChanged so check first for INotifyCollectionChanged
 			if (oldValue is INotifyCollectionChanged || newValue is INotifyCollectionChanged) {
-				Connect (oldValue as INotifyCollectionChanged, newValue as INotifyCollectionChanged);
+				Connect (oldValue as INotifyCollectionChanged, newValue as INotifyCollectionChanged, propertyName);
 			} else if (oldValue is INotifyPropertyChanged || newValue is INotifyPropertyChanged) {
 				Connect (oldValue as INotifyPropertyChanged, newValue as INotifyPropertyChanged);
 			} else if (oldValue != null && oldValue != null) {
@@ -148,14 +156,17 @@ namespace VAS.Core.MVVMC
 		/// </summary>
 		/// <param name="oldValue">Old value.</param>
 		/// <param name="newValue">New value.</param>
-		void Connect (INotifyCollectionChanged oldValue, INotifyCollectionChanged newValue)
+		void Connect (INotifyCollectionChanged oldValue, INotifyCollectionChanged newValue, string propertyName)
 		{
+			if (newValue != null) {
+			}
 			// Disconnect the old collection and all its children
 			if (oldValue != null) {
 				oldValue.CollectionChanged -= CollectionChanged;
 				foreach (var element in (oldValue as IEnumerable).OfType<INotifyPropertyChanged> ()) {
 					element.PropertyChanged -= ForwardPropertyChanged;
 				}
+				collectionToPropertyName.Remove (oldValue);
 			}
 			// Connect the new collection and all its children
 			if (newValue != null) {
@@ -163,6 +174,7 @@ namespace VAS.Core.MVVMC
 				foreach (var element in (newValue as IEnumerable).OfType<INotifyPropertyChanged> ()) {
 					element.PropertyChanged += ForwardPropertyChanged;
 				}
+				collectionToPropertyName [newValue] = propertyName;
 			}
 		}
 
@@ -179,7 +191,7 @@ namespace VAS.Core.MVVMC
 					element.PropertyChanged += ForwardPropertyChanged;
 				}
 			}
-			RaisePropertyChanged ("Collection", this);
+			RaisePropertyChanged ($"Collection_{collectionToPropertyName [sender as INotifyCollectionChanged]}", this);
 		}
 
 		protected virtual void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
