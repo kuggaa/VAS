@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using VAS.Core.Common;
 
 namespace VAS.Core.MVVMC
 {
@@ -28,6 +29,13 @@ namespace VAS.Core.MVVMC
 	{
 		~DisposableBase ()
 		{
+#if DEBUG
+			if (!Disposed) {
+				if (Log.VerboseDebugging) {
+					Log.Warning ($"Object {GetType ()} was not disposed correctly");
+				}
+			}
+#endif
 			Dispose (false);
 		}
 
@@ -37,10 +45,31 @@ namespace VAS.Core.MVVMC
 			GC.SuppressFinalize (this);
 		}
 
+		/// <summary>
+		/// Disposes the managed resources.
+		/// This method is intended to be overriden.
+		/// </summary>
+		protected virtual void DisposeManagedResources ()
+		{
+		}
+
+		/// <summary>
+		/// Disposes the unmanaged resources.
+		/// This method is intended to be overriden.
+		/// </summary>
+		protected virtual void DisposeUnmanagedResources ()
+		{
+		}
+
 		protected virtual void Dispose (bool disposing)
 		{
 			if (Disposed)
 				return;
+			if (disposing) {
+				Log.Verbose ($"Disposing {GetType ()}");
+				DisposeManagedResources ();
+			}
+			DisposeUnmanagedResources ();
 			Disposed = true;
 		}
 
