@@ -194,7 +194,7 @@ namespace VAS.Tests.Core.Filters
 			filter.Add (new Predicate<string> { Expression = (ev) => true });
 
 			//Assert
-			Assert.AreEqual ("Collection", property);
+			Assert.AreEqual ("Collection_Elements", property);
 			Assert.AreEqual (1, count);
 		}
 
@@ -214,7 +214,7 @@ namespace VAS.Tests.Core.Filters
 			filter.Add (new Predicate<string> { Expression = (ev) => true });
 
 			//Assert
-			Assert.AreEqual ("Collection", property);
+			Assert.AreEqual ("Collection_Elements", property);
 			Assert.AreEqual (1, count);
 		}
 
@@ -319,7 +319,7 @@ namespace VAS.Tests.Core.Filters
 			container.Add (filter2);
 
 			//Assert
-			Assert.AreEqual ("Collection", property);
+			Assert.AreEqual ("Collection_Elements", property);
 			Assert.AreEqual (2, count);
 			Assert.AreEqual (count, countElements);
 		}
