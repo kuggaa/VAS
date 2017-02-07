@@ -185,6 +185,7 @@ namespace VAS.Core.ViewModel
 			Timers.Model = Model.Timers;
 			Periods.Model = Model.Periods;
 			Timeline.CreateEventTypeTimelines (EventTypes);
+			Timeline.CreateTeamsTimelines (Teams);
 			Timeline.Model = Model.Timeline;
 		}
 

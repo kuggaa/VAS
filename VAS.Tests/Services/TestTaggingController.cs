@@ -57,9 +57,9 @@ namespace VAS.Tests.Services
 		[SetUp]
 		public void Setup ()
 		{
-			player1 = new PlayerVM ();
-			player2 = new PlayerVM ();
-			player3 = new PlayerVM ();
+			player1 = new PlayerVM { Model = new Utils.PlayerDummy () };
+			player2 = new PlayerVM { Model = new Utils.PlayerDummy () };
+			player3 = new PlayerVM { Model = new Utils.PlayerDummy () };
 
 			team1 = new TeamVM ();
 			team1.ViewModels.Add (player1);
