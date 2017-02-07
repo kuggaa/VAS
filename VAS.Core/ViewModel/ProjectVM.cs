@@ -30,7 +30,7 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// A ViewModel for <see cref="Project"/> objects.
 	/// </summary>
-	public class ProjectVM : StorableVM<Project>
+	public abstract class ProjectVM : StorableVM<Project>
 	{
 
 		public ProjectVM ()
@@ -138,7 +138,7 @@ namespace VAS.Core.ViewModel
 		/// Gets the teams in this project.
 		/// </summary>
 		/// <value>The teams.</value>
-		public virtual IEnumerable<TeamVM> Teams {
+		public abstract IEnumerable<TeamVM> Teams {
 			get;
 		}
 
@@ -195,7 +195,7 @@ namespace VAS.Core.ViewModel
 		}
 	}
 
-	public class ProjectVM<TProject> : ProjectVM, IViewModel<TProject>
+	public abstract class ProjectVM<TProject> : ProjectVM, IViewModel<TProject>
 		where TProject : Project
 	{
 		public new TProject Model {

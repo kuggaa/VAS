@@ -29,7 +29,7 @@ namespace VAS.Tests.Core.ViewModel
 		public void TestCreateEventTypesTimeline ()
 		{
 			Project project = Utils.CreateProject (true);
-			ProjectVM projectVM = new ProjectVM { Model = project };
+			ProjectVM projectVM = new DummyProjectVM { Model = project };
 			TimelineVM viewModel = new TimelineVM ();
 
 			viewModel.CreateEventTypeTimelines (projectVM.EventTypes);
@@ -41,7 +41,7 @@ namespace VAS.Tests.Core.ViewModel
 		public void TestSetModel ()
 		{
 			Project project = Utils.CreateProject (true);
-			ProjectVM projectVM = new ProjectVM { Model = project };
+			ProjectVM projectVM = new DummyProjectVM { Model = project };
 			TimelineVM viewModel = new TimelineVM ();
 
 			viewModel.CreateEventTypeTimelines (projectVM.EventTypes);
@@ -54,12 +54,11 @@ namespace VAS.Tests.Core.ViewModel
 			Assert.AreEqual (1, viewModel.EventTypesTimeline.ViewModels [2].Count ());
 		}
 
-
 		[Test]
 		public void TestTimelineEvent ()
 		{
 			Project project = Utils.CreateProject (true);
-			ProjectVM projectVM = new ProjectVM { Model = project };
+			ProjectVM projectVM = new DummyProjectVM { Model = project };
 			TimelineVM viewModel = new TimelineVM ();
 			viewModel.CreateEventTypeTimelines (projectVM.EventTypes);
 			viewModel.Model = project.Timeline;
@@ -77,7 +76,7 @@ namespace VAS.Tests.Core.ViewModel
 		public void TestAddFirstTimelineEventInEventType ()
 		{
 			Project project = Utils.CreateProject (true);
-			ProjectVM projectVM = new ProjectVM { Model = project };
+			ProjectVM projectVM = new DummyProjectVM { Model = project };
 			TimelineVM viewModel = new TimelineVM ();
 			viewModel.CreateEventTypeTimelines (projectVM.EventTypes);
 			viewModel.Model = project.Timeline;
@@ -107,7 +106,7 @@ namespace VAS.Tests.Core.ViewModel
 		public void TestClearTimeline ()
 		{
 			Project project = Utils.CreateProject (true);
-			ProjectVM projectVM = new ProjectVM { Model = project };
+			ProjectVM projectVM = new DummyProjectVM { Model = project };
 			TimelineVM viewModel = new TimelineVM ();
 			viewModel.CreateEventTypeTimelines (projectVM.EventTypes);
 			viewModel.Model = project.Timeline;
@@ -122,7 +121,7 @@ namespace VAS.Tests.Core.ViewModel
 		public void TestRenameEventType ()
 		{
 			Project project = Utils.CreateProject (true);
-			ProjectVM projectVM = new ProjectVM { Model = project };
+			ProjectVM projectVM = new DummyProjectVM { Model = project };
 			TimelineVM viewModel = new TimelineVM ();
 			viewModel.CreateEventTypeTimelines (projectVM.EventTypes);
 			viewModel.Model = project.Timeline;
