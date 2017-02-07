@@ -15,10 +15,14 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
+using VAS.Core.Store.Templates;
+using VAS.Core.MVVMC;
+using VAS.Core.Common;
 
 namespace VAS.Tests.Core.ViewModel
 {
@@ -133,6 +137,150 @@ namespace VAS.Tests.Core.ViewModel
 
 			Assert.AreEqual (5, viewModel.EventTypesTimeline.ViewModels.Count);
 			Assert.AreEqual (expected, viewModel.EventTypesTimeline.ViewModels.FirstOrDefault ().Model.Name);
+		}
+
+		[Test]
+		public void TestAddNewEvent_WithPlayerFromOneTeam ()
+		{
+			TeamVM homeTeamVM, awayTeamVM;
+			TimelineVM timeline;
+
+			CreateTimelineWithTeams (out timeline, out homeTeamVM, out awayTeamVM);
+			PlayerVM player = homeTeamVM.ViewModels [0];
+			AddTimelineEventWithPlayers (timeline, player);
+
+			CheckPlayerEvents (timeline, player, 1);
+		}
+
+		[Test]
+		public void TestAddNewEvent_WithPlayerFromBothTeams ()
+		{
+			TeamVM homeTeamVM, awayTeamVM;
+			TimelineVM timeline;
+
+			CreateTimelineWithTeams (out timeline, out homeTeamVM, out awayTeamVM);
+			PlayerVM player1 = homeTeamVM.ViewModels [0];
+			PlayerVM player2 = awayTeamVM.ViewModels [0];
+			AddTimelineEventWithPlayers (timeline, player1, player2);
+
+			CheckPlayerEvents (timeline, player1, 1);
+			CheckPlayerEvents (timeline, player2, 1);
+		}
+
+		[Test]
+		public void TestAddNewEvent_WithPlayersFromOneTeam ()
+		{
+			TeamVM homeTeamVM, awayTeamVM;
+			TimelineVM timeline;
+
+			CreateTimelineWithTeams (out timeline, out homeTeamVM, out awayTeamVM);
+
+			PlayerVM player1 = homeTeamVM.ViewModels [0];
+			PlayerVM player2 = homeTeamVM.ViewModels [1];
+			AddTimelineEventWithPlayers (timeline, player1, player2);
+
+			CheckPlayerEvents (timeline, player1, 1);
+			CheckPlayerEvents (timeline, player2, 1);
+		}
+
+		[Test]
+		public void TestRemoveEvent_WithPlayerFromOneTeam ()
+		{
+			TeamVM homeTeamVM, awayTeamVM;
+			TimelineVM timeline;
+
+			CreateTimelineWithTeams (out timeline, out homeTeamVM, out awayTeamVM);
+			PlayerVM player1 = homeTeamVM.ViewModels [0];
+			var timelineEvnt = AddTimelineEventWithPlayers (timeline, player1);
+
+			timeline.Model.Remove (timelineEvnt);
+			CheckPlayerEvents (timeline, player1, 0);
+		}
+
+		[Test]
+		public void TestRemoveEvent_WithPlayerFromBothTeam ()
+		{
+			TeamVM homeTeamVM, awayTeamVM;
+			TimelineVM timeline;
+
+			CreateTimelineWithTeams (out timeline, out homeTeamVM, out awayTeamVM);
+			PlayerVM player1 = homeTeamVM.ViewModels [0];
+			PlayerVM player2 = awayTeamVM.ViewModels [0];
+			var timelineEvnt = AddTimelineEventWithPlayers (timeline, player1, player2);
+
+			timeline.Model.Remove (timelineEvnt);
+			CheckPlayerEvents (timeline, player1, 0);
+			CheckPlayerEvents (timeline, player2, 0);
+
+		}
+
+		[Test]
+		public void TestRemovePlayerTag ()
+		{
+			TeamVM homeTeamVM, awayTeamVM;
+			TimelineVM timeline;
+
+			CreateTimelineWithTeams (out timeline, out homeTeamVM, out awayTeamVM);
+			PlayerVM player1 = homeTeamVM.ViewModels [0];
+			PlayerVM player2 = awayTeamVM.ViewModels [0];
+			var timelineEvnt = AddTimelineEventWithPlayers (timeline, player1, player2);
+			timelineEvnt.Players.Clear ();
+
+			CheckPlayerEvents (timeline, player1, 0);
+			CheckPlayerEvents (timeline, player2, 0);
+		}
+
+		[Test]
+		public void TestAddPlayerTag ()
+		{
+			TeamVM homeTeamVM, awayTeamVM;
+			TimelineVM timeline;
+
+			CreateTimelineWithTeams (out timeline, out homeTeamVM, out awayTeamVM);
+			PlayerVM player1 = homeTeamVM.ViewModels [0];
+			PlayerVM player2 = awayTeamVM.ViewModels [0];
+			EventType evt = new EventType { Name = "Tests" };
+			TimelineEvent timelineEvnt = new TimelineEvent ();
+			timelineEvnt.EventType = evt;
+			timeline.Model.Add (timelineEvnt);
+			timelineEvnt.Players.Add (player1.Model);
+			timelineEvnt.Players.Add (player2.Model);
+
+			CheckPlayerEvents (timeline, player1, 1);
+			CheckPlayerEvents (timeline, player2, 1);
+		}
+
+		void CheckPlayerEvents (TimelineVM timeline, PlayerVM player, int count)
+		{
+			Assert.AreEqual (count, timeline.TeamsTimeline.ViewModels.SelectMany (p => p.ViewModels).
+							 Where (p => p.Player == player).SelectMany (p => p.ViewModels).Count ());
+		}
+
+		TimelineEvent AddTimelineEventWithPlayers (TimelineVM timeline, params PlayerVM [] players)
+		{
+			EventType evt = new EventType { Name = "Tests" };
+			TimelineEvent timelineEvnt = new TimelineEvent ();
+			timelineEvnt.EventType = evt;
+			foreach (PlayerVM p in players) {
+				timelineEvnt.Players.Add (p.Model);
+			}
+			timeline.Model.Add (timelineEvnt);
+			return timelineEvnt;
+		}
+
+		void CreateTimelineWithTeams (out TimelineVM timeline, out TeamVM homeTeamVM, out TeamVM awayTeamVM)
+		{
+			homeTeamVM = new TeamVM ();
+			awayTeamVM = new TeamVM ();
+			homeTeamVM.Model = new DummyTeam ();
+			awayTeamVM.Model = new DummyTeam ();
+			for (int i = 0; i < 5; i++) {
+				homeTeamVM.Model.List.Add (new Utils.PlayerDummy { Name = $"Player{i}" });
+				awayTeamVM.Model.List.Add (new Utils.PlayerDummy { Name = $"Player{i}" });
+			}
+			timeline = new TimelineVM ();
+			timeline.Model = new RangeObservableCollection<TimelineEvent> ();
+			timeline.CreateTeamsTimelines (new List<TeamVM> { homeTeamVM, awayTeamVM });
 		}
 	}
 }
