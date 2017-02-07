@@ -81,7 +81,7 @@ namespace VAS.Core.Filters
 			if (IgnoreEvents) {
 				return;
 			}
-			if (args.PropertyName == "Elements" || args.PropertyName == "Collection" || args.PropertyName == "Active") {
+			if (args.PropertyName == "Elements" || args.PropertyName == "Collection_Elements" || args.PropertyName == "Active") {
 				UpdatePredicate ();
 			}
 			base.RaisePropertyChanged (args, sender);
