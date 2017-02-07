@@ -50,6 +50,7 @@ namespace VAS.UI.Component
 
 		protected override void OnDestroyed ()
 		{
+			ViewModel?.Dispose ();
 			ViewModel = null;
 			base.OnDestroyed ();
 		}

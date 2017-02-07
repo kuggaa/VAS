@@ -52,6 +52,7 @@ namespace VAS.Services.State
 			base.DisposeManagedResources ();
 			Controllers?.ForEach ((c) => c.Dispose ());
 			Panel?.Dispose ();
+			ViewModel?.Dispose ();
 		}
 
 
