@@ -226,6 +226,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\GeneralUIHotkeys.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\DrawingToolHotkeys.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\KeyConfigVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlayerTimelineVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TeamTimelineVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
