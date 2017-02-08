@@ -22,14 +22,20 @@ namespace VAS.Core.Interfaces.License
 {
 	public interface ILicenseStatus
 	{
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="T:VAS.Core.Interfaces.License.ILicenseStatus"/> is valid.
+		/// </summary>
+		/// <value><c>true</c> if is valid; otherwise, <c>false</c>.</value>
 		bool IsValid {
 			get;
-			set;
 		}
 
+		/// <summary>
+		/// Gets the LicenseLevel of the License (None, freemium, level1, etc)
+		/// </summary>
+		/// <value>The level.</value>
 		LicenseLevel Level {
 			get;
-			set;
 		}
 	}
 }

@@ -22,13 +22,23 @@ namespace VAS.Core.Interfaces.License
 {
 	public interface ILicenseManager
 	{
+		/// <summary>
+		/// Gets the license status.
+		/// </summary>
+		/// <value>The license status.</value>
 		ILicenseStatus LicenseStatus {
 			get;
-			set;
 		}
-
+		/// <summary>
+		/// Init the license manager
+		/// </summary>
 		Task Init ();
 
+		/// <summary>
+		/// Updates the subscription license.
+		/// </summary>
+		/// <returns>The subscription license.</returns>
+		/// <param name="ticketID">Ticket identifier.</param>
 		Task<bool> UpdateSubscriptionLicense (string ticketID);
 	}
 }
