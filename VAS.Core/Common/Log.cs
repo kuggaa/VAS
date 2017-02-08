@@ -27,6 +27,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -120,6 +121,11 @@ namespace VAS.Core.Common
 			set {
 				debugging = value;
 			}
+		}
+
+		public static bool VerboseDebugging {
+			get;
+			set;
 		}
 
 		public static void SetLogFile (string filename)
@@ -311,6 +317,34 @@ namespace VAS.Core.Common
 				InformationFormat (message, d_message);
 			} else {
 				DebugFormat (message, d_message);
+			}
+		}
+
+		#endregion
+
+		#region Public DebugVerbose Methods
+
+		[Conditional ("DEBUG")]
+		public static void Verbose (string message, string details)
+		{
+			if (VerboseDebugging) {
+				Commit (LogEntryType.Debug, message, details, false);
+			}
+		}
+
+		[Conditional ("DEBUG")]
+		public static void Verbose (string message)
+		{
+			if (VerboseDebugging) {
+				Verbose (message, null);
+			}
+		}
+
+		[Conditional ("DEBUG")]
+		public static void VerboseFormat (string format, params object [] args)
+		{
+			if (VerboseDebugging) {
+				Verbose (String.Format (format, args));
 			}
 		}
 

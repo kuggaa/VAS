@@ -30,6 +30,7 @@ using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
@@ -37,7 +38,7 @@ using Timer = System.Threading.Timer;
 
 namespace VAS.Services
 {
-	public class VideoPlayerController : IVideoPlayerController
+	public class VideoPlayerController : ControllerBase, IVideoPlayerController
 	{
 		const int LONG_SEEK_SECONDS = 10;
 		const int SHORT_SEEK_SECONDS = 2;
@@ -114,6 +115,24 @@ namespace VAS.Services
 			CreatePlayer (supportMultipleCameras);
 			Active = true;
 			Mode = VideoPlayerOperationMode.Normal;
+		}
+
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			ReconfigureTimeout (0);
+			IgnoreTicks = true;
+			seeker.Dispose ();
+			timer.Dispose (TimerDisposed);
+			TimerDisposed.WaitOne (200);
+			TimerDisposed.Dispose ();
+			player.Error -= HandleError;
+			player.StateChange -= HandleStateChange;
+			player.Eos -= HandleEndOfStream;
+			player.ReadyToSeek -= HandleReadyToSeek;
+			player.Dispose ();
+			player = null;
+			FileSet = null;
 		}
 
 		#endregion
@@ -330,27 +349,7 @@ namespace VAS.Services
 			}
 		}
 
-		public virtual void Dispose ()
-		{
-			if (!disposed) {
-				Log.Debug ("Disposing PlayerController");
-				ReconfigureTimeout (0);
-				IgnoreTicks = true;
-				seeker.Dispose ();
-				timer.Dispose (TimerDisposed);
-				TimerDisposed.WaitOne (200);
-				TimerDisposed.Dispose ();
-				player.Error -= HandleError;
-				player.StateChange -= HandleStateChange;
-				player.Eos -= HandleEndOfStream;
-				player.ReadyToSeek -= HandleReadyToSeek;
-				player.Dispose ();
-				FileSet = null;
-			}
-			disposed = true;
-		}
-
-		public void SetViewModel (IViewModel viewModel)
+		public override void SetViewModel (IViewModel viewModel)
 		{
 			playerVM = (VideoPlayerVM)(viewModel as dynamic);
 			playerVM.Player = this;
@@ -371,7 +370,7 @@ namespace VAS.Services
 			} else {
 				Log.Debug ("Player unready");
 				if (Playing) {
-					Stop ();
+					Stop (false);
 				}
 				this.ready = false;
 				delayedOpen = null;
@@ -380,9 +379,9 @@ namespace VAS.Services
 
 		public virtual void Open (MediaFileSet fileSet, bool play = false)
 		{
-			Log.Debug ("Openning file set");
+			Log.Debug ("Opening file set");
 			if (fileSet == null || !fileSet.Any ()) {
-				Stop ();
+				Stop (false);
 				EmitTimeChanged (new Time (0), new Time (0));
 				FileSet = fileSet;
 				IgnoreTicks = true;
@@ -404,7 +403,7 @@ namespace VAS.Services
 			}
 		}
 
-		public virtual void Stop (bool synchronous = false)
+		public virtual void Stop (bool synchronous)
 		{
 			Log.Debug ("Stop");
 			Pause (synchronous);
@@ -883,17 +882,18 @@ namespace VAS.Services
 
 		#region IController
 
-		//FIXME: MVVMC to be implemented
-		void IController.Start ()
+		public override void Start ()
 		{
+			base.Start ();
 		}
 
-		//FIXME: MVVMC to be implemented
-		void IController.Stop ()
+		public override void Stop ()
 		{
+			base.Stop ();
+			Stop (false);
 		}
 
-		IEnumerable<KeyAction> IController.GetDefaultKeyActions ()
+		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
 		{
 			return new KeyAction [] {
 				new KeyAction (

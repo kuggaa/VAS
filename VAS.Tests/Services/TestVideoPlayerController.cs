@@ -150,9 +150,8 @@ namespace VAS.Tests.Services
 		[TearDown ()]
 		public void TearDown ()
 		{
-			player.Stop ();
 			player.Dispose ();
-			plController.Stop ();
+			plController.Dispose ();
 		}
 
 		void PreparePlayer (bool readyToSeek = true)
@@ -1219,7 +1218,7 @@ namespace VAS.Tests.Services
 
 			/* Load video from another playlist  (playlist is different than LoadedPlayList)*/
 			Playlist localPlaylist = new Playlist ();
-			player.Stop ();
+			player.Stop (false);
 			Assert.IsFalse (player.Playing);
 			player.LoadPlaylistEvent (localPlaylist, vid, true);
 			Assert.AreNotEqual (mfs, player.FileSet);

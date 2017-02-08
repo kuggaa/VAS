@@ -33,7 +33,7 @@ using VAS.Core.ViewModel;
 
 namespace VAS.Services
 {
-	public class RenderingJobsController : DisposableBase, IController, IService
+	public class RenderingJobsController : ControllerBase, IService
 	{
 		IVideoEditor videoEditor;
 		IFramesCapturer capturer;
@@ -44,11 +44,10 @@ namespace VAS.Services
 			ViewModel = viewModel;
 		}
 
-		protected override void Dispose (bool disposing)
+		protected override void DisposeManagedResources ()
 		{
+			base.DisposeManagedResources ();
 			CancelCurrentJob (false);
-			Stop ();
-			base.Dispose (disposing);
 		}
 
 		public JobsManagerVM ViewModel {
@@ -68,22 +67,19 @@ namespace VAS.Services
 			}
 		}
 
-		public void SetViewModel (IViewModel viewModel)
+		public override void SetViewModel (IViewModel viewModel)
 		{
 			ViewModel = viewModel as JobsManagerVM;
 		}
 
-		public IEnumerable<KeyAction> GetDefaultKeyActions ()
+		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
 		{
 			return Enumerable.Empty<KeyAction> ();
 		}
 
-		public void Start ()
+		public override void Start ()
 		{
-			if (status == ControllerStatus.Started) {
-				Log.Error ("Controller already started: " + this);
-				return;
-			}
+			base.Start ();
 			App.Current.EventsBroker.Subscribe<CreateEvent<Job>> (HandleAddJob);
 			App.Current.EventsBroker.Subscribe<RetryEvent<IEnumerable<Job>>> (HandleRetryJobs);
 			App.Current.EventsBroker.Subscribe<CancelEvent<IEnumerable<Job>>> (HandleCancelJobs);
@@ -91,12 +87,9 @@ namespace VAS.Services
 			status = ControllerStatus.Started;
 		}
 
-		public void Stop ()
+		public override void Stop ()
 		{
-			if (status == ControllerStatus.Stopped) {
-				Log.Error ("Controller already stoped: " + this);
-				return;
-			}
+			base.Stop ();
 			App.Current.EventsBroker.Unsubscribe<CreateEvent<Job>> (HandleAddJob);
 			App.Current.EventsBroker.Unsubscribe<RetryEvent<IEnumerable<Job>>> (HandleRetryJobs);
 			App.Current.EventsBroker.Unsubscribe<CancelEvent<IEnumerable<Job>>> (HandleCancelJobs);
