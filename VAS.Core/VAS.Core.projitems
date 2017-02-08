@@ -212,6 +212,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\Stopwatch.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\StorableVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\ControllerBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IAppUpdater.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
