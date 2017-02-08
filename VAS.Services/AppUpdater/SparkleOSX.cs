@@ -1,4 +1,5 @@
-﻿//
+﻿#if OSTYPE_OS_X
+//
 //  Copyright (C) 2017 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -93,3 +94,4 @@ namespace VAS.Services.AppUpdater
 		}
 	}
 }
+#endif
