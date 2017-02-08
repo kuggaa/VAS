@@ -110,6 +110,13 @@ namespace VAS.Core.Interfaces
 		/// </summary>
 		/// <typeparam name="T">The type to count in the storage.</typeparam>
 		int Count<T> () where T : IStorable;
+
+		/// <summary>
+		/// Count all the instances of T that match the filter in the storage.
+		/// </summary>
+		/// <typeparam name="T">The type to count in the storage.</typeparam>
+		/// <param name="filter">The filter used to retrieve the objects</param>
+		int Count<T> (QueryFilter filter) where T : IStorable;
 	}
 }
 
