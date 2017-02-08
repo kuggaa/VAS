@@ -29,7 +29,7 @@ using VAS.Core.ViewModel;
 
 namespace VAS.Services.Controller
 {
-	public abstract class TaggingController : DisposableBase, IController
+	public abstract class TaggingController : ControllerBase
 	{
 		protected ProjectVM project;
 		protected VideoPlayerVM videoPlayer;
@@ -57,8 +57,9 @@ namespace VAS.Services.Controller
 		/// <summary>
 		/// Start this instance.
 		/// </summary>
-		public void Start ()
+		public override void Start ()
 		{
+			base.Start ();
 			App.Current.EventsBroker.Subscribe<ClickedPCardEvent> (HandleClickedPCardEvent);
 			App.Current.EventsBroker.Subscribe<NewTagEvent> (HandleNewTagEvent);
 		}
@@ -66,8 +67,9 @@ namespace VAS.Services.Controller
 		/// <summary>
 		/// Stop this instance.
 		/// </summary>
-		public void Stop ()
+		public override void Stop ()
 		{
+			base.Stop ();
 			App.Current.EventsBroker.Unsubscribe<ClickedPCardEvent> (HandleClickedPCardEvent);
 			App.Current.EventsBroker.Unsubscribe<NewTagEvent> (HandleNewTagEvent);
 		}
@@ -76,7 +78,7 @@ namespace VAS.Services.Controller
 		/// Sets the view model.
 		/// </summary>
 		/// <param name="viewModel">View model.</param>
-		public void SetViewModel (IViewModel viewModel)
+		public override void SetViewModel (IViewModel viewModel)
 		{
 			project = (ProjectVM)(viewModel as dynamic);
 			VideoPlayer = (VideoPlayerVM)(viewModel as dynamic);
@@ -86,7 +88,7 @@ namespace VAS.Services.Controller
 		/// Gets the default key actions.
 		/// </summary>
 		/// <returns>The default key actions.</returns>
-		public IEnumerable<KeyAction> GetDefaultKeyActions ()
+		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
 		{
 			return Enumerable.Empty<KeyAction> ();
 		}

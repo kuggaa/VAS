@@ -40,7 +40,7 @@ namespace VAS.Services.Controller
 	/// <summary>
 	/// Base Controller for working with <see cref="ITemplate"/> like dashboards and teams.
 	/// </summary>
-	public abstract class TemplatesController<TModel, TViewModel, TChildModel, TChildViewModel> : DisposableBase, IController
+	public abstract class TemplatesController<TModel, TViewModel, TChildModel, TChildViewModel> : ControllerBase
 		where TModel : StorableBase, ITemplate<TChildModel>
 		where TViewModel : TemplateViewModel<TModel, TChildModel, TChildViewModel>, new()
 		where TChildModel : BindableBase
@@ -48,12 +48,11 @@ namespace VAS.Services.Controller
 	{
 		TemplatesManagerViewModel<TModel, TViewModel, TChildModel, TChildViewModel> viewModel;
 		ITemplateProvider<TModel> provider;
-		bool started;
 
-		protected override void Dispose (bool disposing)
+		protected override void DisposeManagedResources ()
 		{
-			base.Dispose (disposing);
-			Stop ();
+			base.DisposeManagedResources ();
+			ViewModel = null;
 		}
 
 		public TemplatesManagerViewModel<TModel, TViewModel, TChildModel, TChildViewModel> ViewModel {
@@ -66,10 +65,12 @@ namespace VAS.Services.Controller
 					viewModel.LoadedTemplate.PropertyChanged -= HandleTemplateChanged;
 				}
 				viewModel = value;
-				viewModel.PropertyChanged += HandleSelectionChanged;
-				viewModel.LoadedTemplate.PropertyChanged += HandleTemplateChanged;
-				if (viewModel.Selection.Count == 0) {
-					viewModel.Select (viewModel.Model.FirstOrDefault ());
+				if (viewModel != null) {
+					viewModel.PropertyChanged += HandleSelectionChanged;
+					viewModel.LoadedTemplate.PropertyChanged += HandleTemplateChanged;
+					if (viewModel.Selection.Count == 0) {
+						viewModel.Select (viewModel.Model.FirstOrDefault ());
+					}
 				}
 			}
 		}
@@ -127,16 +128,14 @@ namespace VAS.Services.Controller
 
 		#region IController implementation
 
-		public virtual void SetViewModel (IViewModel viewModel)
+		public override void SetViewModel (IViewModel viewModel)
 		{
 			ViewModel = (TemplatesManagerViewModel<TModel, TViewModel, TChildModel, TChildViewModel>)(viewModel as dynamic);
 		}
 
-		public virtual void Start ()
+		public override void Start ()
 		{
-			if (started) {
-				return;
-			}
+			base.Start ();
 			provider.CollectionChanged += HandleProviderCollectionChanged;
 			App.Current.EventsBroker.SubscribeAsync<ExportEvent<TModel>> (HandleExport);
 			App.Current.EventsBroker.SubscribeAsync<ImportEvent<TModel>> (HandleImport);
@@ -145,14 +144,11 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.SubscribeAsync<CreateEvent<TModel>> (HandleNew);
 			App.Current.EventsBroker.SubscribeAsync<ChangeNameEvent<TModel>> (HandleChangeName);
 			App.Current.EventsBroker.SubscribeAsync<DeleteEvent<ObservableCollection<TModel>>> (HandleDelete);
-			started = true;
 		}
 
-		public virtual void Stop ()
+		public override void Stop ()
 		{
-			if (!started) {
-				return;
-			}
+			base.Stop ();
 			provider.CollectionChanged -= HandleProviderCollectionChanged;
 			App.Current.EventsBroker.UnsubscribeAsync<ExportEvent<TModel>> (HandleExport);
 			App.Current.EventsBroker.UnsubscribeAsync<ImportEvent<TModel>> (HandleImport);
@@ -161,10 +157,9 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.UnsubscribeAsync<CreateEvent<TModel>> (HandleNew);
 			App.Current.EventsBroker.UnsubscribeAsync<ChangeNameEvent<TModel>> (HandleChangeName);
 			App.Current.EventsBroker.UnsubscribeAsync<DeleteEvent<ObservableCollection<TModel>>> (HandleDelete);
-			started = false;
 		}
 
-		public IEnumerable<KeyAction> GetDefaultKeyActions ()
+		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
 		{
 			return Enumerable.Empty<KeyAction> ();
 		}
@@ -357,7 +352,7 @@ namespace VAS.Services.Controller
 				} else {
 					string msg = GetDeleteChildrenQuestion (templates);
 					if (await App.Current.Dialogs.QuestionMessage (msg, null)) {
-						foreach (var vm in selectedViewModels) {
+						foreach (var vm in selectedViewModels.ToList ()) {
 							var updateEvent = new UpdateEvent<TModel> ();
 							RemoveSelectedChildren (vm);
 							updateEvent.Object = vm.Model;

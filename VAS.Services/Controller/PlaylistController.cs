@@ -33,7 +33,7 @@ using VAS.Core.ViewModel;
 
 namespace VAS.Services.Controller
 {
-	public class PlaylistController : DisposableBase, IController
+	public class PlaylistController : ControllerBase
 	{
 		protected PlaylistCollectionVM playlistViewModel;
 		protected ProjectVM projectViewModel;
@@ -42,12 +42,6 @@ namespace VAS.Services.Controller
 		string confirmDeletePlaylistElements =
 			Catalog.GetString ("Do you really want to delete the selected playlist element/s");
 
-		protected override void Dispose (bool disposing)
-		{
-			base.Dispose (disposing);
-			Stop ();
-		}
-
 		protected VideoPlayerVM PlayerVM {
 			get;
 			set;
@@ -55,8 +49,9 @@ namespace VAS.Services.Controller
 
 		#region IController implementation
 
-		public virtual void Start ()
+		public override void Start ()
 		{
+			base.Start ();
 			App.Current.EventsBroker.SubscribeAsync<AddPlaylistElementEvent> (HandleAddPlaylistElement);
 			App.Current.EventsBroker.SubscribeAsync<CreateEvent<Playlist>> (HandleNewPlaylist);
 			App.Current.EventsBroker.SubscribeAsync<DeletePlaylistEvent> (HandleDeletePlaylist);
@@ -68,8 +63,9 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Subscribe<MoveElementsEvent<PlaylistVM, PlaylistElementVM>> (HandleMoveElements);
 		}
 
-		public virtual void Stop ()
+		public override void Stop ()
 		{
+			base.Stop ();
 			App.Current.EventsBroker.UnsubscribeAsync<AddPlaylistElementEvent> (HandleAddPlaylistElement);
 			App.Current.EventsBroker.UnsubscribeAsync<CreateEvent<Playlist>> (HandleNewPlaylist);
 			App.Current.EventsBroker.UnsubscribeAsync<DeletePlaylistEvent> (HandleDeletePlaylist);
@@ -81,7 +77,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Unsubscribe<MoveElementsEvent<PlaylistVM, PlaylistElementVM>> (HandleMoveElements);
 		}
 
-		public void SetViewModel (IViewModel viewModel)
+		public override void SetViewModel (IViewModel viewModel)
 		{
 			if (viewModel == null) {
 				return;
@@ -102,7 +98,7 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		public IEnumerable<KeyAction> GetDefaultKeyActions ()
+		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
 		{
 			return Enumerable.Empty<KeyAction> ();
 		}

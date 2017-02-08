@@ -29,15 +29,16 @@ namespace VAS.Services.Controller
 	/// <summary>
 	/// Events controller, base class of the Events Controller.
 	/// </summary>
-	public class EventsController : DisposableBase, IController
+	public class EventsController : ControllerBase
 	{
 		VideoPlayerVM playerVM;
 		TimelineVM timelineVM;
 
-		protected override void Dispose (bool disposing)
+		protected override void DisposeManagedResources ()
 		{
-			base.Dispose (disposing);
-			Stop ();
+			base.DisposeManagedResources ();
+			PlayerVM = null;
+			Timeline = null;
 		}
 
 		public VideoPlayerVM PlayerVM {
@@ -73,27 +74,29 @@ namespace VAS.Services.Controller
 
 		#region IController implementation
 
-		public virtual void Start ()
+		public override void Start ()
 		{
+			base.Start ();
 			App.Current.EventsBroker.Subscribe<LoadTimelineEventEvent<TimelineEventVM>> (HandleLoadEvent);
 			App.Current.EventsBroker.Subscribe<LoadTimelineEventEvent<IEnumerable<TimelineEventVM>>> (HandleLoadEventsList);
 			App.Current.EventsBroker.Subscribe<LoadTimelineEventEvent<EventTypeTimelineVM>> (HandleLoadEventType);
 		}
 
-		public virtual void Stop ()
+		public override void Stop ()
 		{
+			base.Stop ();
 			App.Current.EventsBroker.Unsubscribe<LoadTimelineEventEvent<TimelineEventVM>> (HandleLoadEvent);
 			App.Current.EventsBroker.Unsubscribe<LoadTimelineEventEvent<IEnumerable<TimelineEventVM>>> (HandleLoadEventsList);
 			App.Current.EventsBroker.Unsubscribe<LoadTimelineEventEvent<EventTypeTimelineVM>> (HandleLoadEventType);
 		}
 
-		public virtual void SetViewModel (IViewModel viewModel)
+		public override void SetViewModel (IViewModel viewModel)
 		{
 			PlayerVM = (VideoPlayerVM)(viewModel as dynamic);
 			Timeline = (TimelineVM)(viewModel as dynamic);
 		}
 
-		public virtual IEnumerable<KeyAction> GetDefaultKeyActions ()
+		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
 		{
 			return Enumerable.Empty<KeyAction> ();
 		}

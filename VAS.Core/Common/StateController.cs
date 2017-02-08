@@ -323,11 +323,14 @@ namespace VAS.Core
 			if (!ishome) {
 				navigationStateStack.Add (new NavigationState (transition, state));
 			}
+			if (!await App.Current.Navigation.Push (state.Panel)) {
+				return false;
+			}
 			if (!await state.ShowState ()) {
 				return false;
 			}
 			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = transition });
-			return await App.Current.Navigation.Push (state.Panel);
+			return true;
 		}
 
 		async Task<bool> PopNavigationState ()
