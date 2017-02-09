@@ -99,13 +99,15 @@ namespace VAS.Services
 		/// <param name="limitation">Limitation.</param>
 		public void Add (LicenseLimitation limitation, Command command = null)
 		{
+			if (Limitations.ContainsKey (limitation.Name)) {
+				throw new InvalidOperationException ("Limitations cannot be overwritten");
+			}
 			LicenseLimitationVM viewModel = new LicenseLimitationVM {
 				Model = limitation,
 			};
 			if (command != null) {
 				viewModel.UpgradeCommand = command;
 			}
-			// FIXME: Should we overwrite it?
 			Limitations [limitation.Name] = viewModel;
 		}
 	}
