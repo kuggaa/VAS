@@ -31,12 +31,13 @@ namespace VAS.Core.MVVMC
 	public class NestedViewModel<VMChilds> : BindableBase, INestedViewModel<VMChilds>
 		where VMChilds : IViewModel
 	{
+		RangeObservableCollection<VMChilds> viewModels;
+		RangeObservableCollection<VMChilds> selection;
+
 		public NestedViewModel ()
 		{
 			ViewModels = new RangeObservableCollection<VMChilds> ();
 			Selection = new RangeObservableCollection<VMChilds> ();
-			Selection.CollectionChanged += HandleSelectionChanged;
-			ViewModels.CollectionChanged += HandleViewModelsChanged;
 		}
 
 		/// <summary>
@@ -44,8 +45,18 @@ namespace VAS.Core.MVVMC
 		/// </summary>
 		/// <value>The ViewModels collection.</value>
 		public virtual RangeObservableCollection<VMChilds> ViewModels {
-			private set;
-			get;
+			get {
+				return viewModels;
+			}
+			private set {
+				if (viewModels != null) {
+					viewModels.CollectionChanged -= HandleViewModelsChanged;
+				}
+				viewModels = value;
+				if (viewModels != null) {
+					viewModels.CollectionChanged += HandleViewModelsChanged;
+				}
+			}
 		}
 
 		/// <summary>
@@ -55,8 +66,18 @@ namespace VAS.Core.MVVMC
 		/// <value>The selection.</value>
 		[PropertyChanged.DoNotNotify]
 		public RangeObservableCollection<VMChilds> Selection {
-			get;
-			private set;
+			get {
+				return selection;
+			}
+			private set {
+				if (selection != null) {
+					selection.CollectionChanged -= HandleSelectionChanged;
+				}
+				selection = value;
+				if (selection != null) {
+					selection.CollectionChanged += HandleSelectionChanged;
+				}
+			}
 		}
 
 		/// <summary>
@@ -111,7 +132,7 @@ namespace VAS.Core.MVVMC
 		/// Gets the enumerator of the Child View Models Collection
 		/// </summary>
 		/// <returns>The enumerator.</returns>
-		public IEnumerator<VMChilds> GetEnumerator ()
+		public virtual IEnumerator<VMChilds> GetEnumerator ()
 		{
 			return ViewModels.GetEnumerator ();
 		}

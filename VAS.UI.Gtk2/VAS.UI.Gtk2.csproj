@@ -99,6 +99,8 @@
     <Compile Include="UI\Common\NestedTreeViewBase.cs" />
     <Compile Include="UI\TreeView\EventCellRenderer.cs" />
     <Compile Include="UI\TreeView\TimelineEventsTreeView.cs" />
+    <Compile Include="gtk-gui\VAS.UI.Component.LimitationWidget.cs" />
+    <Compile Include="UI\Component\LimitationWidget.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

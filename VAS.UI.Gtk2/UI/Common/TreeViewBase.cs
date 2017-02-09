@@ -90,7 +90,7 @@ namespace VAS.UI.Common
 				viewModel = value;
 				if (viewModel != null) {
 					int i = 0;
-					foreach (TViewModel item in viewModel.ViewModels) {
+					foreach (TViewModel item in viewModel) {
 						AddSubViewModel (item, TreeIter.Zero, i);
 						i++;
 					}
@@ -697,7 +697,6 @@ namespace VAS.UI.Common
 
 			filter?.Refilter ();
 		}
-
 	}
 }
 

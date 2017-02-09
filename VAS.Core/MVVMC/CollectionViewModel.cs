@@ -33,9 +33,9 @@ namespace VAS.Core.MVVMC
 	public class CollectionViewModel<TModel, TViewModel> : NestedViewModel<TViewModel>
 		where TViewModel : IViewModel<TModel>, new()
 	{
-		bool editing;
-		RangeObservableCollection<TModel> model;
-		Dictionary<TModel, TViewModel> modelToViewModel;
+		protected bool editing;
+		protected Dictionary<TModel, TViewModel> modelToViewModel;
+		protected RangeObservableCollection<TModel> model;
 
 		public CollectionViewModel ()
 		{
@@ -48,22 +48,7 @@ namespace VAS.Core.MVVMC
 		/// <value>The model.</value>
 		public RangeObservableCollection<TModel> Model {
 			set {
-				if (ViewModels != null) {
-					ViewModels.CollectionChanged -= HandleViewModelsCollectionChanged;
-				}
-				if (model != null) {
-					model.CollectionChanged -= HandleModelsCollectionChanged;
-				}
-				ViewModels.Clear ();
-				modelToViewModel = new Dictionary<TModel, TViewModel> ();
-				model = value;
-				AddViewModels (0, model);
-				if (ViewModels != null) {
-					ViewModels.CollectionChanged += HandleViewModelsCollectionChanged;
-				}
-				if (model != null) {
-					model.CollectionChanged += HandleModelsCollectionChanged;
-				}
+				SetModel (value);
 			}
 			get {
 				return model;
@@ -87,7 +72,27 @@ namespace VAS.Core.MVVMC
 			return new TViewModel { Model = model };
 		}
 
-		void AddViewModels (int index, IEnumerable<TModel> models)
+		protected virtual void SetModel (RangeObservableCollection<TModel> model)
+		{
+			if (ViewModels != null) {
+				ViewModels.CollectionChanged -= HandleViewModelsCollectionChanged;
+			}
+			if (this.model != null) {
+				this.model.CollectionChanged -= HandleModelsCollectionChanged;
+			}
+			ViewModels.Clear ();
+			modelToViewModel = new Dictionary<TModel, TViewModel> ();
+			this.model = model;
+			AddViewModels (0, this.model);
+			if (ViewModels != null) {
+				ViewModels.CollectionChanged += HandleViewModelsCollectionChanged;
+			}
+			if (this.model != null) {
+				this.model.CollectionChanged += HandleModelsCollectionChanged;
+			}
+		}
+
+		protected virtual void AddViewModels (int index, IEnumerable<TModel> models)
 		{
 			if (models == null) {
 				return;
@@ -102,7 +107,7 @@ namespace VAS.Core.MVVMC
 			ViewModels.InsertRange (index, viewModels);
 		}
 
-		void HandleViewModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		protected virtual void HandleViewModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
 			if (editing) {
 				return;
@@ -122,7 +127,7 @@ namespace VAS.Core.MVVMC
 			editing = false;
 		}
 
-		void HandleModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		protected virtual void HandleModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
 			if (editing) {
 				return;

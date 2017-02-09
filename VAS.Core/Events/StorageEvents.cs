@@ -1,5 +1,5 @@
 ﻿//
-//  Copyright (C) 2015 Fluendo S.A.
+//  Copyright (C) 2017 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,30 +15,27 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
-using System.Collections.Generic;
-using VAS.Core.Common;
-using VAS.Core.Filters;
-using VAS.Core.Interfaces;
 
-namespace VAS.DB.Views
+namespace VAS.Core.Events
 {
-
-	public interface IQueryView
+	/// <summary>
+	/// Event sent from the Storage.
+	/// </summary>
+	public abstract class StorageBaseEvent<T> : GenericEvent<T>
 	{
-		Type Type { get; }
-
-		string DocumentType { get; }
 	}
 
-	public interface IQueryView<T>: IQueryView
+	/// <summary>
+	/// Event to notify that an object of type T was added to the Storage.
+	/// </summary>
+	public class StorageAddedEvent<T> : StorageBaseEvent<T>
 	{
-		IEnumerable<T> Query (QueryFilter filter);
-
-		IEnumerable<T> QueryFull (QueryFilter filter, IStorableObjectsCache cache);
-
-		int Count (QueryFilter filter);
 	}
 
+	/// <summary>
+	/// Event to notify that an object of type T was deleted from the Storage.
+	/// </summary>
+	public class StorageDeletedEvent<T> : StorageBaseEvent<T>
+	{
+	}
 }
-
