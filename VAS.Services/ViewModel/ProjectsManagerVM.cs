@@ -15,26 +15,40 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using VAS.Core;
 using VAS.Core.Events;
+using VAS.Core.License;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
 
 namespace VAS.Services.ViewModel
 {
-	public class ProjectsManagerVM<TModel, TViewModel> : CollectionViewModel<TModel, TViewModel>
+	public class ProjectsManagerVM<TModel, TViewModel> : LimitedCollectionViewModel<TModel, TViewModel>
 		where TModel : Project
 		where TViewModel : ProjectVM<TModel>, new()
 	{
 		public ProjectsManagerVM ()
 		{
 			LoadedProject = new TViewModel ();
-			NewCommand = new Command (New, () => true);
+			NewCommand = new Command (New);
 			OpenCommand = new Command<TViewModel> (Open, (arg) => Selection.Count == 1);
 			DeleteCommand = new Command (Delete, () => Selection.Any ());
+		}
+
+		public override LicenseLimitationVM Limitation {
+			set {
+				if (Limitation != null) {
+					Limitation.PropertyChanged -= HandleLimitationChanged;
+				}
+				base.Limitation = value;
+				if (Limitation != null) {
+					Limitation.PropertyChanged += HandleLimitationChanged;
+				}
+			}
 		}
 
 		[PropertyChanged.DoNotNotify]
@@ -145,6 +159,11 @@ namespace VAS.Services.ViewModel
 		protected virtual void Open (TViewModel viewModel)
 		{
 			App.Current.EventsBroker.Publish (new OpenEvent<TModel> { Object = viewModel?.Model });
+		}
+
+		void HandleLimitationChanged (object sender, PropertyChangedEventArgs e)
+		{
+			NewCommand.Executable = Limitation.Count < Limitation.Maximum;
 		}
 	}
 }

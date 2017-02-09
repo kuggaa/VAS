@@ -217,6 +217,12 @@ namespace VAS.Core.Common
 		public const string ButtonFocus = "ButtonFocus";
 		public const string ButtonDialog = "ButtonDialog";
 
+		//Limits Styles
+		public const string LabelLimit = "LabelLimit";
+		public const string BoxLimit = "BoxLimit";
+		public const string ButtonLimit = "ButtonLimit";
+
+
 		public string Font = "Ubuntu";
 
 		public StyleConf ()
@@ -331,6 +337,10 @@ namespace VAS.Core.Common
 		public int ButtonFocusWidth { get; set; }
 
 		public int ButtonDialogHeight { get; set; }
+
+		public int ButtonLimitWidth { get; set; }
+
+		public int ButtonLimitHeight { get; set; }
 
 		public int ContainerBigPadding { get; set; }
 

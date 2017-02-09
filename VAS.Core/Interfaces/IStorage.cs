@@ -93,10 +93,22 @@ namespace VAS.Core.Interfaces
 		/// </summary>
 		void Reset ();
 
+		/// <summary>
+		/// Backup this storage to a single compressed file.
+		/// </summary>
 		bool Backup ();
 
+		/// <summary>
+		/// Check whether the object of type T exists in the storage.
+		/// </summary>
+		/// <param name="t">Object to check.</param>
+		/// <typeparam name="T">Type of the object to check.</typeparam>
 		bool Exists<T> (T t) where T : IStorable;
 
+		/// <summary>
+		/// Count all the instances of T in the storage.
+		/// </summary>
+		/// <typeparam name="T">The type to count in the storage.</typeparam>
 		int Count<T> () where T : IStorable;
 	}
 }
