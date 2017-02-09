@@ -209,7 +209,7 @@ namespace VAS.UI.Component
 		/// </summary>
 		public virtual void ZoomIn ()
 		{
-			focusscale.Adjustment.Value -= focusscale.Adjustment.StepIncrement;
+			focusscale.Adjustment.Value += focusscale.Adjustment.StepIncrement;
 		}
 
 		/// <summary>
@@ -217,7 +217,7 @@ namespace VAS.UI.Component
 		/// </summary>
 		public virtual void ZoomOut ()
 		{
-			focusscale.Adjustment.Value += focusscale.Adjustment.StepIncrement;
+			focusscale.Adjustment.Value -= focusscale.Adjustment.StepIncrement;
 		}
 
 		protected bool UpdateTime ()
@@ -274,7 +274,7 @@ namespace VAS.UI.Component
 		{
 			double secondsPer100Pixels, value;
 
-			value = Math.Round (focusscale.Value);
+			value = focusscale.Adjustment.Upper - Math.Round (focusscale.Value);
 			if (value == 0) {
 				secondsPer100Pixels = 1;
 			} else if (value <= 6) {
