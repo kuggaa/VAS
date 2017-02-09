@@ -47,6 +47,7 @@ namespace VAS.Services.ViewModel
 				base.Limitation = value;
 				if (Limitation != null) {
 					Limitation.PropertyChanged += HandleLimitationChanged;
+					CheckNewCommandEnabled ();
 				}
 			}
 		}
@@ -162,6 +163,11 @@ namespace VAS.Services.ViewModel
 		}
 
 		void HandleLimitationChanged (object sender, PropertyChangedEventArgs e)
+		{
+			CheckNewCommandEnabled ();
+		}
+
+		void CheckNewCommandEnabled ()
 		{
 			NewCommand.Executable = Limitation.Count < Limitation.Maximum;
 		}
