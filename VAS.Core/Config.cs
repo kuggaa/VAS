@@ -166,6 +166,11 @@ namespace VAS
 			set;
 		}
 
+		public string LicenseCode {
+			get;
+			set;
+		}
+
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		bool AutoSaveConfig {
