@@ -119,6 +119,15 @@ AM_CONDITIONAL(OSTYPE_LINUX, test x$ostype = xLinux)
 AC_SUBST(XBUILD_CONSTANTS, ["$XBUILD_CONSTANTS"])
 AC_MSG_RESULT($ostype)
 
+AC_ARG_WITH(devel,
+   AS_HELP_STRING([--with-devel],
+       [Adds devel constant to application]),
+       [with_devel_val="${withval}"], [with_devel_val="no"])
+
+if [test "x$with_devel_val" == "xyes"]; then
+  XBUILD_CONSTANTS="$XBUILD_CONSTANTS DEVEL"
+fi
+
 AC_CONFIG_FILES([
 .nuget/Makefile
 
