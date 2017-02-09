@@ -76,18 +76,8 @@ namespace VAS.Tests.Services
 		public void TestAddLimitationsRepeated ()
 		{
 			service.Add (limitationPlayers);
-			service.Add (limitationPlayers2);
-			service.Add (limitationTeams);
+			Assert.Throws<InvalidOperationException> (() => service.Add (limitationPlayers2));
 
-			LicenseLimitationVM testLimitationPlayers = service.Get ("RAPlayers");
-			LicenseLimitationVM testLimitationTeams = service.Get ("Teams");
-			IEnumerable<LicenseLimitationVM> allLimitations = (service as DummyLicenseLimitationsService).GetAll ();
-
-			Assert.AreEqual (2, allLimitations.Count ());
-			Assert.IsTrue (testLimitationPlayers.Enabled);
-			Assert.AreEqual (20, testLimitationPlayers.Maximum);
-			Assert.IsTrue (testLimitationTeams.Enabled);
-			Assert.AreEqual (5, testLimitationTeams.Maximum);
 		}
 
 		[Test]
