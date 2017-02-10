@@ -107,6 +107,11 @@ namespace VAS.Core.MVVMC
 			return LimitedViewModels.GetEnumerator ();
 		}
 
+		public override INotifyCollectionChanged GetNotifyCollection ()
+		{
+			return LimitedViewModels;
+		}
+
 		protected override void HandleViewModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
 			FillLimitedViewModels (base.ViewModels);
