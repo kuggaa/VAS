@@ -114,7 +114,7 @@ namespace VAS.Core.MVVMC
 		/// Gets the Interface INotifyCollectionChanged of the Child ViewModels
 		/// </summary>
 		/// <returns>The Collection as a INotifyCollectionChanged</returns>
-		public INotifyCollectionChanged GetNotifyCollection ()
+		public virtual INotifyCollectionChanged GetNotifyCollection ()
 		{
 			return ViewModels;
 		}
@@ -123,7 +123,7 @@ namespace VAS.Core.MVVMC
 		/// Gets the Interface INotifyCollectionChanged of the Selection collection
 		/// </summary>
 		/// <returns>The Collection as a INotifyCollectionChanged</returns>
-		public INotifyCollectionChanged GetSelectionNotifyCollection ()
+		public virtual INotifyCollectionChanged GetSelectionNotifyCollection ()
 		{
 			return Selection;
 		}

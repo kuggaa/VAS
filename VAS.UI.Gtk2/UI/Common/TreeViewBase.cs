@@ -84,7 +84,7 @@ namespace VAS.UI.Common
 			set {
 				if (viewModel != null) {
 					Selection.Changed -= HandleTreeviewSelectionChanged;
-					viewModel.ViewModels.CollectionChanged -= ViewModelCollectionChanged;
+					viewModel.GetNotifyCollection ().CollectionChanged -= ViewModelCollectionChanged;
 					ClearSubViewModels ();
 				}
 				viewModel = value;
@@ -94,7 +94,7 @@ namespace VAS.UI.Common
 						AddSubViewModel (item, TreeIter.Zero, i);
 						i++;
 					}
-					viewModel.ViewModels.CollectionChanged += ViewModelCollectionChanged;
+					viewModel.GetNotifyCollection ().CollectionChanged += ViewModelCollectionChanged;
 					Selection.Changed += HandleTreeviewSelectionChanged;
 				}
 			}
