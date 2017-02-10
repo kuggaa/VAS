@@ -25,6 +25,7 @@ using VAS.Core.Events;
 using VAS.Core.Interfaces;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
+using VAS.Core.ViewModel;
 using VAS.Services.ViewModel;
 
 namespace VAS.UI.Menus
@@ -82,6 +83,8 @@ namespace VAS.UI.Menus
 				};
 			}
 			item = new MenuItem (Catalog.GetString ("Create new playlist..."));
+			LicenseLimitationVM limitation = App.Current.LicenseLimitationsService.Get ("Presentations");
+			item.Sensitive = limitation.Count < limitation.Maximum;
 			plMenu.Append (item);
 			item.Activated += (sender, e) => {
 				IEnumerable<IPlaylistElement> elements = events.Select (p => new PlaylistPlayElement (p));
@@ -106,7 +109,7 @@ namespace VAS.UI.Menus
 													 string exportLabel)
 		{
 			string label;
-			exportMenu.Visible = events.Any () && 
+			exportMenu.Visible = events.Any () &&
 				((project == null) || ((project != null) && (project.ProjectType != ProjectType.FakeCaptureProject)));
 			label = string.Format ("{0} ({1})", exportLabel, events.Count ());
 			exportMenu.SetLabel (label);
