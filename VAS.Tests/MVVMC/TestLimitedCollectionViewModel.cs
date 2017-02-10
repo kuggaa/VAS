@@ -17,6 +17,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using NUnit.Framework;
 using VAS.Core.License;
@@ -226,6 +227,41 @@ namespace VAS.Tests.MVVMC
 			ll.Enabled = false;
 
 			CheckPlayersInLimitedCollectionBy (new int [] { 3, 0, 2, 1 }, players, col);
+		}
+
+		[Test]
+		public void TestNotifyCollection ()
+		{
+			// Arrange
+			NotifyCollectionChangedEventArgs receivedEvent = null;
+			bool limitedEqualsViewModel = false;
+			bool getNotifyEqualsViewModel = false;
+			bool secondViewModelEqualsViewModel = false;
+
+			LicenseLimitation ll = new LicenseLimitation { Enabled = true, Maximum = 3 };
+			col.Limitation.Model = ll;
+
+			col.ViewModels.CollectionChanged += (sender, e) => receivedEvent = e;
+			col.LimitedViewModels.CollectionChanged += (sender, e) =>
+				limitedEqualsViewModel = e == receivedEvent &&
+				sender == col.LimitedViewModels;
+			col.GetNotifyCollection ().CollectionChanged += (sender, e) =>
+				getNotifyEqualsViewModel = e == receivedEvent &&
+				sender == col.LimitedViewModels;
+			col.ViewModels.CollectionChanged += (sender, e) =>
+				secondViewModelEqualsViewModel = e == receivedEvent &&
+				sender == col.LimitedViewModels;
+
+			//Act
+			col.Model.AddRange (players);
+
+			// Assert
+			Assert.AreEqual (players.Count, col.LimitedViewModels.Count);
+			Assert.IsNotNull (receivedEvent);
+
+			Assert.IsTrue (limitedEqualsViewModel);
+			Assert.IsTrue (getNotifyEqualsViewModel);
+			Assert.IsTrue (secondViewModelEqualsViewModel);
 		}
 
 		List<Utils.PlayerDummy> CreateDummyPlayers ()
