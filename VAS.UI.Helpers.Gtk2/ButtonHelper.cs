@@ -96,8 +96,6 @@ namespace VAS.UI.Helpers
 				button.Bind (command);
 			}
 			button.ApplyStyle (StyleConf.ButtonRemove, App.Current.Style.ButtonRemoveWidth);
-			button.HeightRequest = App.Current.Style.ButtonRemoveHeight;
-			button.SetAlignment (0.0f, 0.5f);
 		}
 
 		/// <summary>
