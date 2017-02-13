@@ -32,9 +32,12 @@ namespace VAS.Services.AppUpdater
 		static extern void win_sparkle_set_app_details (string company_name, string app_name, string app_version);
 		[DllImport ("libsparkle.dll", CallingConvention = CallingConvention.Cdecl)]
 		static extern void win_sparkle_check_update_with_ui ();
+		[DllImport ("libsparkle.dll", CallingConvention = CallingConvention.Cdecl)]
+		static extern void win_sparkle_set_automatic_check_for_updates (int state);
 
 		public void Start (string companyName, string appName, string version, string feedURL, string libDir)
 		{
+			win_sparkle_set_automatic_check_for_updates (1);
 			win_sparkle_set_app_details (companyName, appName, version);
 			win_sparkle_set_appcast_url (feedURL);
 			win_sparkle_init ();
