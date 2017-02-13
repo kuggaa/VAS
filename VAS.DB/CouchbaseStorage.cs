@@ -421,7 +421,6 @@ namespace VAS.DB
 		{
 			AddView (typeof (Dashboard), new DashboardsView (this));
 			AddView (typeof (Project), new ProjectsView (this));
-			AddView (typeof (Player), new PlayersView (this));
 			AddView (typeof (TimelineEvent), new TimelineEventsView (this));
 			AddView (typeof (EventType), new EventTypeView (this));
 			AddView (typeof (Playlist), new PlaylistView (this));
