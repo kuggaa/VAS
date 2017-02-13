@@ -44,7 +44,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Xamarin.Mac">
       <HintPath>/Library/Frameworks/Xamarin.Mac.framework/Versions/Current/lib/mono/4.5/Xamarin.Mac.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="Sparkle">
