@@ -118,6 +118,11 @@ namespace Tests
 			return true;
 		}
 
+		public int Count<T> (QueryFilter filter) where T : IStorable
+		{
+			throw new NotImplementedException ();
+		}
+
 		#endregion
 	}
 }
