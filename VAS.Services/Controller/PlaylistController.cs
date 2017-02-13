@@ -235,7 +235,7 @@ namespace VAS.Services.Controller
 				if (projectViewModel == null) {
 					App.Current.DatabaseManager.ActiveDB.Delete (playlistVM.Model);
 				}
-				playlistViewModel.ViewModels.Remove (playlistVM);
+				playlistViewModel.Model.Remove (playlistVM.Model);
 				removed = true;
 			}
 			if (!removed) {
