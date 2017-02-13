@@ -146,7 +146,7 @@ namespace VAS.UI.Helpers
 		/// <param name="parameter">Parameter.</param>
 		public static void Bind (this Button button, Command command, object parameter = null)
 		{
-			button.SetImage (command.Icon.Value);
+			button.SetImage (command.Icon?.Value);
 			button.Label = command.Text;
 			button.TooltipText = command.ToolTipText;
 
