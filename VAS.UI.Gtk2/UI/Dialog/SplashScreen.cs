@@ -57,13 +57,14 @@ namespace VAS.UI.Dialog
 			}
 
 			statusDict = new Dictionary<Guid, ProgressStatus> ();
-			progress = new Progress <ProgressStatus> (ProcessUpdate);
+			progress = new Progress<ProgressStatus> (ProcessUpdate);
 		}
 
 		#region IProgressReport implementation
 
-		public void Report (float percent, string message, Guid id = default(Guid))
+		public void Report (float percent, string message, Guid id = default (Guid))
 		{
+			Log.Debug (message + ": " + percent + "%");
 			progress.Report (new ProgressStatus (percent, message, id));
 		}
 
