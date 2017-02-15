@@ -36,15 +36,10 @@ namespace VAS.Core.Store
 			ID = Guid.NewGuid ();
 		}
 
-		protected override void Dispose (bool disposing)
+		protected override void DisposeManagedResources ()
 		{
-			if (Disposed) {
-				return;
-			}
-			base.Dispose (disposing);
-			if (disposing) {
-				Photo?.Dispose ();
-			}
+			base.DisposeManagedResources ();
+			Photo?.Dispose ();
 		}
 
 		#endregion

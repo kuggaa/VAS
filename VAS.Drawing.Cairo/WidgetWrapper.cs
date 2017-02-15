@@ -19,11 +19,11 @@ using System;
 using System.IO;
 using Gdk;
 using Gtk;
-using VAS.Core.Handlers.Drawing;
-using VAS.Core.Interfaces.Drawing;
 using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Handlers.Drawing;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.MVVMC;
 using CursorType = VAS.Core.Common.CursorType;
 using GCursorType = Gdk.CursorType;
 using Image = VAS.Core.Common.Image;
@@ -33,7 +33,7 @@ using VASDrawing = VAS.Core.Handlers.Drawing;
 
 namespace VAS.Drawing.Cairo
 {
-	public class WidgetWrapper : IWidget
+	public class WidgetWrapper : DisposableBase, IWidget
 	{
 		public event DrawingHandler DrawEvent;
 		public event ButtonPressedHandler ButtonPressEvent;
@@ -62,30 +62,17 @@ namespace VAS.Drawing.Cairo
 			widget.MotionNotifyEvent += HandleMotionNotifyEvent;
 		}
 
-		public void Dispose ()
+		protected override void DisposeManagedResources ()
 		{
-			Dispose (true);
-			System.GC.SuppressFinalize (this);
-		}
-
-		protected virtual void Dispose (bool disposing)
-		{
-			if (Disposed)
-				return;
-
-			if (disposing) {
-				if (moveTimerID != 0) {
-					GLib.Source.Remove (moveTimerID);
-					moveTimerID = 0;
-				}
-				if (hoverTimerID != 0) {
-					GLib.Source.Remove (hoverTimerID);
-
-					hoverTimerID = 0;
-				}
+			base.DisposeManagedResources ();
+			if (moveTimerID != 0) {
+				GLib.Source.Remove (moveTimerID);
+				moveTimerID = 0;
 			}
-
-			Disposed = true;
+			if (hoverTimerID != 0) {
+				GLib.Source.Remove (hoverTimerID);
+				hoverTimerID = 0;
+			}
 		}
 
 		public uint MoveWaitMS {
@@ -110,8 +97,6 @@ namespace VAS.Drawing.Cairo
 				widget.HeightRequest = (int)value;
 			}
 		}
-
-		protected bool Disposed { get; private set; } = false;
 
 		public void ReDraw (Area area = null)
 		{

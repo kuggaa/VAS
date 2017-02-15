@@ -61,19 +61,14 @@ namespace VAS.Core.Store.Templates
 			Version = Constants.DB_VERSION;
 		}
 
-		protected override void Dispose (bool disposing)
+		protected override void DisposeManagedResources ()
 		{
-			if (Disposed) {
-				return;
-			}
-			base.Dispose (disposing);
-			if (disposing) {
-				FieldBackground?.Dispose ();
-				HalfFieldBackground?.Dispose ();
-				GoalBackground?.Dispose ();
-				foreach (var button in List) {
-					button.BackgroundImage?.Dispose ();
-				}
+			base.DisposeManagedResources ();
+			FieldBackground?.Dispose ();
+			HalfFieldBackground?.Dispose ();
+			GoalBackground?.Dispose ();
+			foreach (var button in List) {
+				button.BackgroundImage?.Dispose ();
 			}
 		}
 

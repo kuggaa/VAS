@@ -70,6 +70,34 @@ namespace VAS.UI.Common
 			RowActivated += HandleTreeviewRowActivated;
 		}
 
+		public override void Dispose ()
+		{
+			Dispose (true);
+			base.Dispose ();
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (Disposed) {
+				return;
+			}
+			if (disposing) {
+				Destroy ();
+			}
+			Disposed = true;
+		}
+
+		protected override void OnDestroyed ()
+		{
+			Log.Verbose ($"Destroying {GetType ()}");
+			ViewModel = null;
+			base.OnDestroyed ();
+
+			Disposed = true;
+		}
+
+		protected bool Disposed { get; private set; } = false;
+
 		#region IView implementation
 
 		public virtual void SetViewModel (object viewModel)

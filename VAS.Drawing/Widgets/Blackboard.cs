@@ -66,17 +66,13 @@ namespace VAS.Drawing.Widgets
 		{
 		}
 
-		protected override void Dispose (bool disposing)
+		protected override void DisposeManagedResources ()
 		{
-			if (Disposed)
-				return;
-
-			if (disposing) {
-				if (backbuffer != null)
-					backbuffer.Dispose ();
-				backbuffer = null;
+			base.DisposeManagedResources ();
+			if (backbuffer != null) {
+				backbuffer.Dispose ();
 			}
-			base.Dispose (disposing);
+			backbuffer = null;
 		}
 
 		/// <summary>

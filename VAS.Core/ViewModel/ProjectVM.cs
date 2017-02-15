@@ -45,6 +45,17 @@ namespace VAS.Core.ViewModel
 			Dashboard = new DashboardVM ();
 		}
 
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			Timers.Dispose ();
+			Timeline.Dispose ();
+			Playlists.Dispose ();
+			EventTypes.Dispose ();
+			FileSet.Dispose ();
+			Periods.Dispose ();
+		}
+		
 		/// <summary>
 		/// Gets the collection of periods in the project.
 		/// </summary>
@@ -184,7 +195,6 @@ namespace VAS.Core.ViewModel
 	public class ProjectVM<TProject> : ProjectVM, IViewModel<TProject>
 		where TProject : Project
 	{
-
 		public new TProject Model {
 			get {
 				return base.Model as TProject;

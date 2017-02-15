@@ -44,18 +44,14 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			ClippingMode = NodeClippingMode.Strict;
 		}
 
-		protected override void Dispose (bool disposing)
+		protected override void DisposeManagedResources ()
 		{
-			if (Disposed)
-				return;
-
-			base.Dispose (disposing);
-			if (disposing) {
-				if (needle != null) {
-					needle.Dispose ();
-					needle = null;
-				}
+			base.DisposeManagedResources ();
+			if (needle != null) {
+				needle.Dispose ();
+				needle = null;
 			}
+			TimeNode = null;
 		}
 
 		public override bool Visible {

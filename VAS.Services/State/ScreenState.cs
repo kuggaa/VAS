@@ -19,11 +19,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VAS.Core;
+using VAS.Core.Common;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
-using VAS.Core.Common;
-
+using VAS.Core.MVVMC;
 
 namespace VAS.Services.State
 {
@@ -31,7 +31,7 @@ namespace VAS.Services.State
 	/// Generic base class for <see cref="IScreenState"/> that takes care of the <see cref="IPanel"/>
 	/// <see cref="IViewModel"/> and <see cref="IController"/> creationg and wireup.
 	/// </summary>
-	public abstract class ScreenState<TViewModel> : IScreenState where TViewModel : IViewModel
+	public abstract class ScreenState<TViewModel> : DisposableBase, IScreenState where TViewModel : IViewModel
 	{
 		public ScreenState ()
 		{
@@ -47,28 +47,12 @@ namespace VAS.Services.State
 			}
 		}
 
-		public void Dispose ()
+		protected override void DisposeManagedResources ()
 		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
-		}
-
-		~ScreenState ()
-		{
-			Dispose (false);
-		}
-
-		protected virtual void Dispose (bool disposing)
-		{
-			if (Disposed)
-				return;
-
-			if (disposing) {
-				Controllers?.ForEach ((c) => c.Dispose ());
-				Panel?.Dispose ();
-			}
-
-			Disposed = true;
+			base.DisposeManagedResources ();
+			Controllers?.ForEach ((c) => c.Dispose ());
+			Panel?.Dispose ();
+			ViewModel?.Dispose ();
 		}
 
 
@@ -95,8 +79,6 @@ namespace VAS.Services.State
 			get;
 			protected set;
 		}
-
-		protected bool Disposed { get; private set; } = false;
 
 		public virtual Task<bool> LoadState (dynamic data)
 		{

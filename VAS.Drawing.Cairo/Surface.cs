@@ -19,10 +19,11 @@ using System;
 using Cairo;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.MVVMC;
 
 namespace VAS.Drawing.Cairo
 {
-	public class Surface : ISurface
+	public class Surface : DisposableBase, ISurface
 	{
 		ImageSurface surface;
 		bool warnOnDispose;
@@ -39,38 +40,26 @@ namespace VAS.Drawing.Cairo
 			}
 		}
 
+		public Surface (string filename)
+		{
+			surface = new ImageSurface (filename);
+		}
+
 		~Surface ()
 		{
 			if (!Disposed && warnOnDispose) {
 				Log.Error (String.Format ("Surface {0} was not disposed correctly", this));
-				Dispose (true);
+				Dispose (false);
 			}
 		}
 
-		public void Dispose ()
+		protected override void DisposeManagedResources ()
 		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
-		}
-
-		protected virtual void Dispose (bool disposing)
-		{
-			if (Disposed)
-				return;
-
-			if (disposing) {
-				if (surface != null) {
-					surface.Dispose ();
-				}
-				surface = null;
+			base.DisposeManagedResources ();
+			if (surface != null) {
+				surface.Dispose ();
 			}
-
-			Disposed = true;
-		}
-
-		public Surface (string filename)
-		{
-			surface = new ImageSurface (filename);
+			surface = null;
 		}
 
 		public object Value {
@@ -96,8 +85,6 @@ namespace VAS.Drawing.Cairo
 				return surface.Height;
 			}
 		}
-
-		protected bool Disposed { get; private set; } = false;
 
 		public Image Copy ()
 		{

@@ -38,10 +38,10 @@ namespace VAS.UI.TreeViews
 			CreateViews ();
 		}
 
-		public override void Dispose ()
+		protected override void OnDestroyed ()
 		{
 			SetViewModel (null);
-			base.Dispose ();
+			base.OnDestroyed ();
 		}
 
 		public override void SetViewModel (object viewModel)
