@@ -34,6 +34,19 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
+		/// Gets or sets the player name.
+		/// </summary>
+		/// <value>The name.</value>
+		public string Name {
+			get {
+				return Model.Name;
+			}
+			set {
+				Model.Name = value;
+			}
+		}
+
+		/// <summary>
 		/// Gets or sets a value indicating whether this <see cref="T:RiftAnalyst.Core.ViewModel.RAPlayerVM"/> is tagged.
 		/// </summary>
 		/// <value><c>true</c> if tagged; otherwise, <c>false</c>.</value>
