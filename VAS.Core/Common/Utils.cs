@@ -16,6 +16,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Specialized;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
@@ -165,6 +167,36 @@ namespace VAS.Core.Common
 		{
 			var assembly = Assembly.GetCallingAssembly ();
 			return assembly.GetManifestResourceStream (resourceId);
+		}
+
+		/// <summary>
+		/// Starts a process with output redirection.
+		/// </summary>
+		/// <returns>The started process.</returns>
+		/// <param name="filename">Filename without extension.</param>
+		/// <param name="arguments">Arguments.</param>
+		/// <param name="environmentVariables">Environment variables dictionary.</param>
+		public static Process StartProcess (string filename, string arguments = "", StringDictionary environmentVariables = default (StringDictionary))
+		{
+			Process proc = new Process ();
+			proc.EnableRaisingEvents = false;
+			proc.StartInfo.WorkingDirectory = Path.GetFullPath (Path.Combine (App.Current.baseDirectory, "bin"));
+
+			foreach (string variable in environmentVariables.Keys) {
+				proc.StartInfo.EnvironmentVariables [variable] = environmentVariables [variable];
+			}
+
+			if (Environment.OSVersion.Platform == PlatformID.Win32NT) {
+				proc.StartInfo.FileName = Path.Combine (proc.StartInfo.WorkingDirectory, $"{filename}.exe");
+			} else {
+				proc.StartInfo.FileName = filename;
+			}
+			proc.StartInfo.Arguments = arguments;
+			proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+			proc.StartInfo.RedirectStandardOutput = true;
+			proc.StartInfo.UseShellExecute = false;
+			proc.Start ();
+			return proc;
 		}
 
 		/// <summary>
