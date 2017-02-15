@@ -268,7 +268,7 @@ namespace VAS.UI.Common
 			int cellX, cellY;
 
 			IViewModel vm = GetViewModelAtPosition ((int)evnt.X, (int)evnt.Y, out column, out cellX, out cellY);
-			if (vm != null && ProcessViewModelClicked (vm, (int)evnt.X, (int)evnt.Y, column.Width, evnt.State)) {
+			if (vm != null && ProcessViewModelClicked (vm, cellX, cellY, column.Width, evnt.State)) {
 				return true;
 			}
 
