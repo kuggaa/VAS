@@ -19,12 +19,13 @@ using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Handlers;
 using VAS.Core.Interfaces.Multimedia;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using Image = VAS.Core.Common.Image;
 
 namespace VAS.Multimedia.Capturer
 {
-	public class FakeCapturer : ICapturer
+	public class FakeCapturer : DisposableBase, ICapturer
 	{
 		public event ReadyToCaptureHandler ReadyToCapture;
 		public event ElapsedTimeHandler ElapsedTime;
@@ -37,10 +38,16 @@ namespace VAS.Multimedia.Capturer
 		public FakeCapturer ()
 		{
 			timer = new LiveSourceTimer ();
-			timer.ElapsedTime += delegate(Time ellapsedTime) {
+			timer.ElapsedTime += delegate (Time ellapsedTime) {
 				if (ElapsedTime != null)
 					ElapsedTime (ellapsedTime);
 			};
+		}
+
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			Stop ();
 		}
 
 		public Time CurrentTime {
@@ -51,11 +58,6 @@ namespace VAS.Multimedia.Capturer
 
 		public void Configure (CaptureSettings settings, object window_handle)
 		{
-		}
-
-		public void Dispose ()
-		{
-			Stop ();
 		}
 
 		public void Run ()

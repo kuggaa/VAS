@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.MVVMC;
 using VAS.Drawing.CanvasObjects;
 
 namespace VAS.Drawing
@@ -27,7 +28,7 @@ namespace VAS.Drawing
 	/// <summary>
 	/// A canvas stores <see cref="ICanvasObject"/>'s and draws them.
 	/// </summary>
-	public class Canvas : ICanvas
+	public class Canvas : DisposableBase, ICanvas
 	{
 		protected IDrawingToolkit tk;
 		protected IWidget widget;
@@ -52,32 +53,17 @@ namespace VAS.Drawing
 		{
 			if (!Disposed) {
 				Log.Error (String.Format ("Canvas {0} was not disposed correctly", this));
-				Dispose (true);
+				Dispose (false);
 			}
 		}
 
-		public void Dispose ()
+		protected override void DisposeManagedResources ()
 		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
+			base.DisposeManagedResources ();
+			SetWidget (null);
+			ClearObjects ();
+			Objects = null;
 		}
-
-		protected virtual void Dispose (bool disposing)
-		{
-			if (Disposed)
-				return;
-
-			IgnoreRedraws = true;
-			if (disposing) {
-				SetWidget (null);
-				ClearObjects ();
-				Objects = null;
-			}
-
-			Disposed = true;
-		}
-
-		protected bool Disposed { get; private set; } = false;
 
 		public virtual void SetWidget (IWidget newWidget)
 		{

@@ -50,17 +50,34 @@ namespace VAS.UI.UI.Component
 			acceptButton.Clicked += async (sender, e) => await App.Current.StateController.MoveBack ();
 		}
 
-		protected override void OnDestroyed ()
-		{
-			OnUnload ();
-			base.OnDestroyed ();
-		}
-
 		public override void Dispose ()
 		{
-			Destroy ();
+			Dispose (true);
 			base.Dispose ();
 		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (Disposed) {
+				return;
+			}
+			if (disposing) {
+				Destroy ();
+			}
+			Disposed = true;
+		}
+
+		protected override void OnDestroyed ()
+		{
+			Log.Verbose ($"Destroying {GetType ()}");
+
+			OnUnload ();
+
+			base.OnDestroyed ();
+
+			Disposed = true;
+		}
+
 
 		public string Title {
 			get {
@@ -78,6 +95,8 @@ namespace VAS.UI.UI.Component
 				treeview.ViewModel = value;
 			}
 		}
+
+		protected bool Disposed { get; private set; } = false;
 
 		public void OnLoad ()
 		{

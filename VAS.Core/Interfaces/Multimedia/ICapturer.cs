@@ -17,14 +17,15 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 //
-using VAS.Core.Handlers;
+using System;
 using VAS.Core.Common;
+using VAS.Core.Handlers;
 using VAS.Core.Store;
 using Image = VAS.Core.Common.Image;
 
 namespace VAS.Core.Interfaces.Multimedia
 {
-	public interface ICapturer
+	public interface ICapturer : IDisposable
 	{
 		event ReadyToCaptureHandler ReadyToCapture;
 		event ElapsedTimeHandler ElapsedTime;
@@ -35,7 +36,7 @@ namespace VAS.Core.Interfaces.Multimedia
 		void Configure (CaptureSettings settings, object window_handle);
 
 		Time CurrentTime {
-			get ;
+			get;
 		}
 
 		Image CurrentFrame {
@@ -51,8 +52,6 @@ namespace VAS.Core.Interfaces.Multimedia
 		void Run ();
 
 		void Close ();
-
-		void Dispose ();
 
 		void Expose ();
 	}

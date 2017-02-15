@@ -68,6 +68,9 @@ namespace VAS.Core.MVVMC
 		/// <param name="sender">Sender of the event.</param>
 		protected void RaisePropertyChanged (string propertyName, object sender = null)
 		{
+			if (Disposed) {
+				return;
+			}
 			RaisePropertyChanged (new PropertyChangedEventArgs (propertyName), sender);
 		}
 
@@ -78,6 +81,9 @@ namespace VAS.Core.MVVMC
 		/// <param name="sender">Sender of the event</param>
 		protected virtual void RaisePropertyChanged (PropertyChangedEventArgs args, object sender = null)
 		{
+			if (Disposed) {
+				return;
+			}
 			IsChanged = true;
 
 			if (IgnoreEvents) {

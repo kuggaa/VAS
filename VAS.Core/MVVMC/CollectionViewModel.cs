@@ -42,6 +42,14 @@ namespace VAS.Core.MVVMC
 			Model = new RangeObservableCollection<TModel> ();
 		}
 
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			foreach (var viewModel in ViewModels) {
+				viewModel.Dispose ();
+			}
+		}
+
 		/// <summary>
 		/// Gets or sets the model used in this ViewModel.
 		/// </summary>

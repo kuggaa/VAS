@@ -39,14 +39,6 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			TimelineHeight = 0;
 		}
 
-		protected override void Dispose (bool disposing)
-		{
-			if (Disposed)
-				return;
-
-			base.Dispose (disposing);
-		}
-
 		public double X {
 			get;
 			set;

@@ -85,11 +85,9 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			subcatAnchors = new Dictionary<Tag, LinkAnchorView> ();
 		}
 
-		protected override void Dispose (bool disposing)
+		protected override void DisposeManagedResources ()
 		{
-			if (Disposed)
-				return;
-
+			base.DisposeManagedResources ();
 			if (timer != null) {
 				timer.Dispose ();
 				timer = null;
@@ -97,7 +95,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			foreach (LinkAnchorView anchor in subcatAnchors.Values.ToList ()) {
 				RemoveAnchor (anchor);
 			}
-			base.Dispose (disposing);
 		}
 
 		/// <summary>

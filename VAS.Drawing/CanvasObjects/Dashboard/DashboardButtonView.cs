@@ -41,13 +41,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			};
 		}
 
-		protected override void Dispose (bool disposing)
+		protected override void DisposeManagedResources ()
 		{
-			if (Disposed)
-				return;
-
+			base.DisposeManagedResources ();
 			anchor.Dispose ();
-			base.Dispose (disposing);
 		}
 
 		public DashboardMode Mode {

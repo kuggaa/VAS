@@ -55,7 +55,6 @@ namespace VAS.UI
 		protected Time duration;
 		List<double> rateList;
 		KeyContext keycontext;
-		List<IViewPort> viewPortsBackup;
 		VideoPlayerVM playerVM;
 
 		#region Constructors
@@ -119,22 +118,38 @@ namespace VAS.UI
 
 		}
 
-		#endregion
-
-		protected override void OnRealized ()
+		public override void Dispose ()
 		{
-			if (playerVM != null) {
-				playerVM.ViewPorts = viewPortsBackup;
+			Dispose (true);
+			base.Dispose ();
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (Disposed) {
+				return;
 			}
-			base.OnRealized ();
+			if (disposing) {
+				Destroy ();
+			}
+			Disposed = true;
 		}
 
 		protected override void OnDestroyed ()
 		{
+			Log.Verbose ($"Destroying {GetType ()}");
+
+			playerVM = null;
 			blackboard.Dispose ();
-			playerVM.Dispose ();
+
 			base.OnDestroyed ();
+
+			Disposed = true;
 		}
+
+		protected bool Disposed { get; private set; } = false;
+
+		#endregion
 
 		protected override void OnUnrealized ()
 		{
@@ -147,8 +162,6 @@ namespace VAS.UI
 		public void SetViewModel (object viewModel)
 		{
 			ViewModel = (VideoPlayerVM)viewModel;
-			ViewModel.SupportsMultipleCameras = false;
-			SyncVMValues ();
 		}
 
 		public VideoPlayerVM ViewModel {
@@ -164,14 +177,13 @@ namespace VAS.UI
 					playerVM.PropertyChanged += PlayerVMPropertyChanged;
 					playerVM.ViewMode = PlayerViewOperationMode.Analysis;
 					playerVM.Step = new Time { TotalSeconds = jumpspinbutton.ValueAsInt };
-					playerVM.ViewPorts = viewPortsBackup;
 					playerVM.SetCamerasConfig (new ObservableCollection<CameraConfig> { new CameraConfig (0) });
 					ResetGui ();
+					ViewModel.SupportsMultipleCameras = false;
+					SyncVMValues ();
 				}
 			}
 		}
-
-
 
 		#region Properties
 
@@ -497,14 +509,14 @@ namespace VAS.UI
 
 		protected virtual void HandleReady (object sender, EventArgs e)
 		{
-			viewPortsBackup = new List<IViewPort> { videowindow };
-			playerVM.ViewPorts = viewPortsBackup;
+			playerVM.ViewPorts = new List<IViewPort> { videowindow };
 			playerVM.Ready (true);
 		}
 
 		protected virtual void HandleUnReady (object sender, EventArgs e)
 		{
 			playerVM.Ready (false);
+			playerVM.ViewPorts = null;
 		}
 
 		#endregion
