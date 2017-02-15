@@ -194,14 +194,12 @@ namespace VAS.Services
 						multiPlayer.WindowHandles = value.Select (v => v.WindowHandle).ToList ();
 					}
 				} else {
-					if (multiPlayer == null) {
+					if (multiPlayer == null && player != null) {
 						player.WindowHandle = IntPtr.Zero;
-					} else {
-						if (viewPorts != null) {
-							List<object> nullWindowHandles = new List<object> ();
-							viewPorts.ForEach ((vp) => nullWindowHandles.Add (IntPtr.Zero));
-							multiPlayer.WindowHandles = nullWindowHandles;
-						}
+					} else if (multiPlayer != null && viewPorts != null) {
+						List<object> nullWindowHandles = new List<object> ();
+						viewPorts.ForEach ((vp) => nullWindowHandles.Add (IntPtr.Zero));
+						multiPlayer.WindowHandles = nullWindowHandles;
 					}
 				}
 				viewPorts = value;
