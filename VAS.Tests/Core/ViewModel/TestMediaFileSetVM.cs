@@ -28,7 +28,7 @@ namespace VAS.Tests.Core.ViewModel
 		MediaFileSet model;
 		MediaFileSetVM viewModel;
 
-		[Test]
+		[SetUp]
 		public void Setup ()
 		{
 			model = new MediaFileSet {
@@ -94,5 +94,33 @@ namespace VAS.Tests.Core.ViewModel
 			Assert.AreEqual (new Time (17000), viewModel.VisibleRegion.Stop);
 		}
 
+		[Test]
+		public void TestVisibleRegionModelIsNotNull ()
+		{
+			// Arrange
+			var newModel = new MediaFileSet ();
+			newModel.VisibleRegion = null;
+
+			// Action
+			viewModel.Model = newModel;
+
+			// Assert
+			Assert.IsNotNull (viewModel.VisibleRegion.Model);
+			Assert.AreEqual (new Time (0), viewModel.VisibleRegion.Model.Start);
+			Assert.AreEqual (new Time (0), viewModel.VisibleRegion.Model.Stop);
+		}
+
+		[Test]
+		public void TestDurationWithNullModel ()
+		{
+			// Arrange
+			MediaFileSetVM newVM = new MediaFileSetVM ();
+
+			// Action
+			Time duration = newVM.Duration;
+
+			// Assert
+			Assert.IsNull (duration);
+		}
 	}
 }
