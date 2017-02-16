@@ -36,13 +36,22 @@ namespace VAS.Services.Controller
 	public class PlaylistController : ControllerBase
 	{
 		protected PlaylistCollectionVM playlistViewModel;
-		protected ProjectVM projectViewModel;
 		string confirmDeletePlaylist =
 			Catalog.GetString ("Do you really want to delete the selected playlist/s?");
 		string confirmDeletePlaylistElements =
 			Catalog.GetString ("Do you really want to delete the selected playlist element/s");
 
 		protected VideoPlayerVM PlayerVM {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the project view model.
+		/// Set this ViewModel to make <see cref="PlaylistController"/> save the playlist to a project.
+		/// </summary>
+		/// <value>The project view model.</value>
+		protected ProjectVM ProjectViewModel {
 			get;
 			set;
 		}
@@ -92,10 +101,6 @@ namespace VAS.Services.Controller
 			}
 
 			PlayerVM = (VideoPlayerVM)(viewModel as dynamic);
-			try {
-				projectViewModel = (ProjectVM)(viewModel as dynamic);
-			} catch (RuntimeBinderException) {
-			}
 		}
 
 		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
@@ -162,7 +167,7 @@ namespace VAS.Services.Controller
 		{
 			Playlist playlist = e.Playlist;
 
-			if (playlist != null && projectViewModel == null) {
+			if (playlist != null && ProjectViewModel == null) {
 				App.Current.DatabaseManager.ActiveDB.Delete (e.Playlist);
 			}
 			playlistViewModel.Model.Remove (e.Playlist);
@@ -194,7 +199,7 @@ namespace VAS.Services.Controller
 
 		void Save (Playlist playlist, bool force = false)
 		{
-			if (playlist != null && projectViewModel == null) {
+			if (playlist != null && ProjectViewModel == null) {
 				App.Current.DatabaseManager.ActiveDB.Store (playlist, force);
 			}
 		}
@@ -232,10 +237,10 @@ namespace VAS.Services.Controller
 					}
 					questioned = true;
 				}
-				if (projectViewModel == null) {
+				if (ProjectViewModel == null) {
 					App.Current.DatabaseManager.ActiveDB.Delete (playlistVM.Model);
 				}
-				playlistViewModel.ViewModels.Remove (playlistVM);
+				playlistViewModel.Model.Remove (playlistVM.Model);
 				removed = true;
 			}
 			if (!removed) {

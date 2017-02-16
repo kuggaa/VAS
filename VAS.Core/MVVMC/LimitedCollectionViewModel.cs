@@ -63,6 +63,7 @@ namespace VAS.Core.MVVMC
 				limitation = value;
 				if (limitation != null) {
 					limitation.PropertyChanged += LimitationPropertyChanged;
+					FillLimitedViewModels (base.ViewModels);
 				}
 			}
 		}

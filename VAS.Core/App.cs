@@ -410,6 +410,11 @@ namespace VAS
 			set;
 		}
 
+		public ILicenseLimitationsService LicenseLimitationsService {
+			get;
+			set;
+		}
+
 		#endregion
 
 	}

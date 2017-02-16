@@ -18,6 +18,7 @@
 //
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Events;
@@ -29,7 +30,7 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// ViewModel for a collection of PlaylistVM, each with a Playlist as a Model.
 	/// </summary>
-	public class PlaylistCollectionVM : CollectionViewModel<Playlist, PlaylistVM>
+	public class PlaylistCollectionVM : LimitedCollectionViewModel<Playlist, PlaylistVM>
 	{
 		static Image deleteIcon;
 		static Image newIcon;
@@ -45,10 +46,28 @@ namespace VAS.Core.ViewModel
 			DeleteCommand = new Command (Delete, () => HasItemsSelected ());
 			DeleteCommand.Icon = deleteIcon;
 			DeleteCommand.ToolTipText = Catalog.GetString ("Delete Playlists");
-			NewCommand = new Command (New, () => true);
+			NewCommand = new Command (New, () => Limitation.Count < Limitation.Maximum);
 			NewCommand.Icon = newIcon;
 			NewCommand.ToolTipText = Catalog.GetString ("New Playlist");
 		}
+
+		/// <summary>
+		/// Sets the limitation view model.
+		/// </summary>
+		/// <value>The limitation.</value>
+		public override LicenseLimitationVM Limitation {
+			set {
+				if (Limitation != null) {
+					Limitation.PropertyChanged -= HandleLimitationChanged;
+				}
+				base.Limitation = value;
+				if (Limitation != null) {
+					Limitation.PropertyChanged += HandleLimitationChanged;
+					HandleLimitationChanged ();
+				}
+			}
+		}
+
 		/// <summary>
 		/// Gets or sets the command to create playlists
 		/// </summary>
@@ -123,6 +142,16 @@ namespace VAS.Core.ViewModel
 		void Delete ()
 		{
 			App.Current.EventsBroker.Publish (new DeleteEvent<Playlist> ());
+		}
+
+		/// <summary>
+		/// Handles a property changed in the limitation view model.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		void HandleLimitationChanged (object sender = null, PropertyChangedEventArgs e = null)
+		{
+			NewCommand.EmitCanExecuteChanged ();
 		}
 	}
 }
