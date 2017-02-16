@@ -889,7 +889,6 @@ namespace VAS.Services
 		{
 			base.Stop ();
 			Stop (true);
-			player.Close ();
 		}
 
 		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
