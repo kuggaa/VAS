@@ -176,14 +176,16 @@ namespace VAS.Core.Common
 		/// <param name="filename">Filename without extension.</param>
 		/// <param name="arguments">Arguments.</param>
 		/// <param name="environmentVariables">Environment variables dictionary.</param>
-		public static Process StartProcess (string filename, string arguments = "", StringDictionary environmentVariables = default (StringDictionary))
+		public static Process StartProcess (string filename, string arguments = "", StringDictionary environmentVariables = null)
 		{
 			Process proc = new Process ();
 			proc.EnableRaisingEvents = false;
 			proc.StartInfo.WorkingDirectory = Path.GetFullPath (Path.Combine (App.Current.baseDirectory, "bin"));
 
-			foreach (string variable in environmentVariables.Keys) {
-				proc.StartInfo.EnvironmentVariables [variable] = environmentVariables [variable];
+			if (environmentVariables != null) {
+				foreach (string variable in environmentVariables.Keys) {
+					proc.StartInfo.EnvironmentVariables [variable] = environmentVariables [variable];
+				}
 			}
 
 			if (Environment.OSVersion.Platform == PlatformID.Win32NT) {
