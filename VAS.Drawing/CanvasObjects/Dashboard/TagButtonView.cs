@@ -15,12 +15,10 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
-using VAS.Core.Store;
 using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
@@ -28,12 +26,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 	/// <summary>
 	/// Class for the TagButton View
 	/// </summary>
-	[ViewAttribute ("TagButtonView")]
+	[View ("TagButtonView")]
 	public class TagButtonView : DashboardButtonView, ICanvasObjectView<TagButtonVM>
 	{
 		static Image iconImage;
-		TagButton tagButton;
-		TagButtonVM viewModel;
 
 		public TagButtonView () : base ()
 		{
@@ -41,20 +37,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			SupportsLinks = false;
 			if (iconImage == null) {
 				iconImage = Resources.LoadImage (StyleConf.ButtonTagIcon);
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the button.
-		/// </summary>
-		/// <value>The tag button.</value>
-		public TagButton TagButton {
-			get {
-				return tagButton;
-			}
-			set {
-				tagButton = value;
-				Button = value;
 			}
 		}
 
@@ -66,7 +48,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		public override string Text {
 			get {
-				return TagButton.Tag.Value;
+				return ViewModel.Tag.Value;
 			}
 		}
 
@@ -76,13 +58,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		/// <value>The view model.</value>
 		public TagButtonVM ViewModel {
 			get {
-				return viewModel;
+				return ButtonVM as TagButtonVM;
 			}
 			set {
-				viewModel = value;
-				if (viewModel != null) {
-					TagButton = viewModel.Model;
-				}
+				ButtonVM = value;
 			}
 		}
 
