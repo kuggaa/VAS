@@ -66,7 +66,7 @@ namespace VAS.Tests.MVVMC
 		public void TestNeedsSyncWithNullPropertyName ()
 		{
 			var viewModel = new ViewModelBase<StorableBase> ();
-			Assert.IsTrue (viewModel.NeedsSync (null, null));
+			Assert.IsTrue (viewModel.NeedsSync (propertyNameChanged: null, propertyNameToCheck: null));
 
 		}
 
