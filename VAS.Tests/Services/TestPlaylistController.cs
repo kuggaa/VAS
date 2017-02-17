@@ -15,6 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,7 +33,7 @@ using VAS.Services.ViewModel;
 
 namespace VAS.Tests.Services
 {
-
+	[TestFixture]
 	public class TestPlaylistController
 	{
 		const string name = "name";
@@ -67,7 +68,6 @@ namespace VAS.Tests.Services
 			var videoController = new Mock<IVideoPlayerController> ().Object;
 			videoPlayerVM = new VideoPlayerVM ();
 			videoController.SetViewModel (videoPlayerVM);
-			controller = new PlaylistController ();
 			mockDialogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
 													 It.IsAny<object> ())).Returns (AsyncHelpers.Return (name));
 			mockDialogs.Setup (m => m.QuestionMessage (It.IsAny<string> (), null, null)).Returns (AsyncHelpers.Return (true));
@@ -77,6 +77,7 @@ namespace VAS.Tests.Services
 		public void TearDown ()
 		{
 			controller.Stop ();
+			controller = null;
 			storageMock.ResetCalls ();
 			storageManagerMock.ResetCalls ();
 			mockGuiToolkit.ResetCalls ();
@@ -84,6 +85,7 @@ namespace VAS.Tests.Services
 
 		void SetupWithStorage ()
 		{
+			controller = new PlaylistController ();
 			playlistCollectionVM = new PlaylistCollectionVM ();
 			controller.SetViewModel (new DummyPlaylistsManagerVM {
 				Playlists = playlistCollectionVM,
@@ -94,6 +96,7 @@ namespace VAS.Tests.Services
 
 		void SetupWithProject ()
 		{
+			controller = new PlaylistControllerWithProject ();
 			Project project = Utils.CreateProject (true);
 			projectVM = new ProjectVM { Model = project };
 			playlistCollectionVM = projectVM.Playlists;
@@ -500,6 +503,24 @@ namespace VAS.Tests.Services
 			// Assert
 			storageMock.Verify (s => s.Store<Playlist> (playlist, true), Times.Never ());
 			storageMock.Verify (s => s.Store<Playlist> (playlist2, true), Times.Never ());
+		}
+
+		class PlaylistControllerWithProject : PlaylistController
+		{
+			public override void SetViewModel (VAS.Core.Interfaces.MVVMC.IViewModel viewModel)
+			{
+				base.SetViewModel (viewModel);
+				ProjectViewModel = (ProjectVM)(viewModel as dynamic);
+			}
+
+			// For some reason, without this override, these 3 tests fail:
+			// TestAddEventsToExistingPlaylistWithStorage
+			// TestAddEventsToNewPlaylistWithProject
+			// TestAddEventsToNewPlaylistWithStorage
+			protected override Task HandleAddPlaylistElement (AddPlaylistElementEvent e)
+			{
+				return base.HandleAddPlaylistElement (e);
+			}
 		}
 	}
 }
