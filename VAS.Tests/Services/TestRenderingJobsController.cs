@@ -92,7 +92,7 @@ namespace VAS.Tests.Services
 			controller.Stop ();
 		}
 
-		[Test ()]
+		[Test]
 		public void TestRenderedCamera ()
 		{
 			Project p = Utils.CreateProject ();
@@ -141,7 +141,7 @@ namespace VAS.Tests.Services
 			}
 		}
 
-		[Test ()]
+		[Test]
 		public void TestLoadEditionJob ()
 		{
 			EditionJob job;
@@ -163,7 +163,20 @@ namespace VAS.Tests.Services
 			editorMock.Verify (m => m.AddSegment (file1, 86000, 4000, 1, null, false, new Area ()));
 		}
 
-		[Test ()]
+		[Test]
+		public void TestErrorHandlingInLoadEditionJob ()
+		{
+			editorMock.Setup (ed => ed.Start ()).Raises ((obj) => obj.Error += null, null, "");
+			EditionJob job;
+			job = PrepareEditon ();
+			AddTimelineEvent (job.Playlist, 30000, 31000, file1);
+
+			manager.Add (job);
+
+			editorMock.Verify (p => p.Cancel (), Times.Once);
+		}
+
+		[Test]
 		public void TestLoadEditionJobWithDrawingsInEvents ()
 		{
 			EditionJob job;
