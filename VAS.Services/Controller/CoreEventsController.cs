@@ -147,7 +147,7 @@ namespace VAS.Services.Controller
 			if (e.Play != null) {
 				if (e.DrawingIndex == -1) {
 					drawing = new FrameDrawing {
-						Render = videoPlayer.CurrentTime,
+						Render = videoPlayer.Player.CurrentTime,
 						CameraConfig = e.CamConfig,
 						RegionOfInterest = e.CamConfig.RegionOfInterest.Clone (),
 					};
@@ -156,7 +156,7 @@ namespace VAS.Services.Controller
 				}
 				pos = drawing.Render;
 			} else {
-				pos = videoPlayer.CurrentTime;
+				pos = videoPlayer.Player.CurrentTime;
 			}
 
 			if (framesCapturer != null && !e.Current) {
