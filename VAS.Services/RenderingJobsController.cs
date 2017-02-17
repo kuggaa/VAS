@@ -366,6 +366,7 @@ namespace VAS.Services
 			App.Current.Dialogs.ErrorMessage (Catalog.GetString ("An error has occurred in the video editor.")
 			+ Catalog.GetString ("Please, try again."));
 			ViewModel.CurrentJob.State = JobState.Error;
+			CleanVideoEditor (true);
 			StartNextJob ();
 		}
 

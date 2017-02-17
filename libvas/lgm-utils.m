@@ -288,14 +288,17 @@ lgm_create_video_encoder (VideoEncoderType type, guint quality,
           gst_object_unref (encoder);
         if (parse)
           gst_object_unref (parse);
-        stats_file = g_build_path (G_DIR_SEPARATOR_S, g_get_tmp_dir (),
-            "x264.log", NULL);
+        
         encoder = gst_element_factory_make ("x264enc", "video-encoder");
-        g_object_set (encoder, "key-int-max", 25, "pass", 17,
-            "speed-preset", 5, "stats-file", stats_file,
-            "bitrate", quality, NULL);
-        g_free (stats_file);
-        name = "X264 video encoder";
+        if(encoder != NULL) {
+          stats_file = g_build_path (G_DIR_SEPARATOR_S, g_get_tmp_dir (),
+              "x264.log", NULL);
+          g_object_set (encoder, "key-int-max", 25, "pass", 17,
+              "speed-preset", 5, "stats-file", stats_file,
+              "bitrate", quality, NULL);
+          g_free (stats_file);
+          name = "X264 video encoder";
+        }
       }
       break;
     }
