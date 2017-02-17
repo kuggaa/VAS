@@ -20,6 +20,7 @@ using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
+using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
@@ -148,7 +149,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				return true;
 			else if (Button is TagButtonView && anchor.Button is TagButtonView)
 				return true;
-			else if (Button.Button is EventButton && anchor.Button.Button is EventButton)
+			else if (Button.ButtonVM is AnalysisEventButtonVM && anchor.Button.ButtonVM is AnalysisEventButtonVM)
 				return true;
 			return false;
 		}

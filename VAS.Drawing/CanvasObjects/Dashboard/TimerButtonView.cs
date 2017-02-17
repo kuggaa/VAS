@@ -15,12 +15,11 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
+using System.ComponentModel;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
-using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
 using VAS.Core.ViewModel;
 
@@ -29,14 +28,13 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 	/// <summary>
 	/// Class for the TimerButton View
 	/// </summary>
-	[ViewAttribute ("TimerButtonView")]
+	[View ("TimerButtonView")]
 	public class TimerButtonView : DashboardButtonView, ICanvasObjectView<TimerButtonVM>
 	{
 		static Image iconImage;
 		protected static Image cancelImage;
 		protected Rectangle cancelRect;
 		bool cancelPressed;
-		TimerButtonVM viewModel;
 
 		public TimerButtonView () : base ()
 		{
@@ -88,18 +86,11 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		/// <value>The view model.</value>
 		public TimerButtonVM ViewModel {
 			get {
-				return viewModel;
+				return ButtonVM as TimerButtonVM;
 			}
 
 			set {
-				if (viewModel != null) {
-					viewModel.PropertyChanged -= HandleViewModelPropertyChanged;
-				}
-				viewModel = value;
-				if (viewModel != null) {
-					Button = viewModel.Model;
-					viewModel.PropertyChanged += HandleViewModelPropertyChanged;
-				}
+				ButtonVM = value;
 			}
 		}
 
@@ -194,7 +185,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
-		void HandleViewModelPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		protected override void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if (sender == ViewModel && (
 				e.PropertyName == "Name" ||
