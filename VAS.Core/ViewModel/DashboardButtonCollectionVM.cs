@@ -26,15 +26,12 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class DashboardButtonCollectionVM : CollectionViewModel<DashboardButton, DashboardButtonVM>
 	{
-		protected override DashboardButtonVM CreateInstance (DashboardButton model)
+
+		public DashboardButtonCollectionVM ()
 		{
-			if (model is AnalysisEventButton) {
-				return new AnalysisEventButtonVM { Model = (AnalysisEventButton)model };
-			} else if (model is TagButton) {
-				return new TagButtonVM { Model = (TagButton)model };
-			} else {
-				return new TimerButtonVM { Model = (TimerButton)model };
-			}
+			TypeMappings.Add (typeof (AnalysisEventButton), typeof (AnalysisEventButtonVM));
+			TypeMappings.Add (typeof (TagButton), typeof (TagButtonVM));
+			TypeMappings.Add (typeof (TimerButton), typeof (TimerButtonVM));
 		}
 	}
 }
