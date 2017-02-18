@@ -44,7 +44,10 @@ namespace VAS.Core.MVVMC
 			}
 		}
 
-		public abstract IEnumerable<KeyAction> GetDefaultKeyActions ();
+		public virtual IEnumerable<KeyAction> GetDefaultKeyActions ()
+		{
+			return Enumerable.Empty<KeyAction> ();
+		}
 
 		public abstract void SetViewModel (IViewModel viewModel);
 
