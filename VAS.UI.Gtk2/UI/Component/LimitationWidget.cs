@@ -17,12 +17,12 @@
 //
 
 using System.ComponentModel;
-using Gdk;
-using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.MVVMC;
 using VAS.Core.ViewModel;
 using VAS.UI.Helpers;
+using VAS.UI.Helpers.Bindings;
 
 namespace VAS.UI.Component
 {
@@ -33,6 +33,7 @@ namespace VAS.UI.Component
 	public partial class LimitationWidget : Gtk.Bin, IView<LicenseLimitationVM>
 	{
 		LicenseLimitationVM viewModel;
+		BindingContext ctx;
 
 		public LimitationWidget ()
 		{
@@ -42,6 +43,11 @@ namespace VAS.UI.Component
 			limit_label.Name = StyleConf.LabelLimit;
 			limit_box.Name = StyleConf.BoxLimit;
 			NoShowAll = true;
+			upgradeButton.ApplyStyleLimit ();
+			ctx = this.GetBindingContext ();
+			ctx.Add (upgradeButton.Bind (vm => ((LicenseLimitationVM)vm).UpgradeCommand));
+			ctx.Add (limit_label.Bind (vm => ((LicenseLimitationVM)vm).Maximum, new Int32Converter ()));
+			ctx.Add (count_label.Bind (vm => ((LicenseLimitationVM)vm).Count, new Int32Converter ()));
 		}
 
 		/// <summary>
@@ -58,13 +64,10 @@ namespace VAS.UI.Component
 					viewModel.PropertyChanged -= HandlePropertyChangedEventHandler;
 				}
 				viewModel = value;
+				ctx.UpdateViewModel (viewModel);
 				if (viewModel != null) {
-					Visible = viewModel.Enabled;
 					viewModel.PropertyChanged += HandlePropertyChangedEventHandler;
-					count_label.Text = ViewModel.Count.ToString ();
-					limit_label.Text = ViewModel.Maximum.ToString ();
-					upgradeButton.ApplyStyleLimit (ViewModel.UpgradeCommand);
-					CheckCount ();
+					viewModel.Sync ();
 				}
 			}
 		}
@@ -80,13 +83,10 @@ namespace VAS.UI.Component
 
 		void HandlePropertyChangedEventHandler (object sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == nameof (ViewModel.Count)) {
-				count_label.Text = ViewModel.Count.ToString ();
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.Count)) || ViewModel.NeedsSync (e, nameof (ViewModel.Maximum))) {
 				CheckCount ();
-			} else if (e.PropertyName == nameof (ViewModel.Maximum)) {
-				limit_label.Text = ViewModel.Maximum.ToString ();
-				CheckCount ();
-			} else if (e.PropertyName == nameof (ViewModel.Enabled)) {
+			}
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.Enabled))) {
 				Visible = ViewModel.Enabled;
 			}
 		}
