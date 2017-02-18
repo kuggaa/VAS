@@ -17,7 +17,6 @@
 //
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
@@ -43,6 +42,7 @@ namespace VAS.Core.Store
 		#region IStorable implementation
 
 		[JsonIgnore]
+		[PropertyChanged.DoNotSetChanged]
 		public bool IsLoaded {
 			get;
 			set;
