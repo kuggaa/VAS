@@ -40,6 +40,8 @@ namespace VAS.Core.MVVMC
 		public CollectionViewModel ()
 		{
 			Model = new RangeObservableCollection<TModel> ();
+			TypeMappings = new Dictionary<Type, Type> ();
+			TypeMappings.Add (typeof (TModel), typeof (TViewModel));
 		}
 
 		protected override void DisposeManagedResources ()
@@ -63,6 +65,11 @@ namespace VAS.Core.MVVMC
 			}
 		}
 
+		public Dictionary<Type, Type> TypeMappings {
+			get;
+			private set;
+		}
+
 		/// <summary>
 		/// Selects the specified item from the list.
 		/// </summary>
@@ -77,7 +84,16 @@ namespace VAS.Core.MVVMC
 
 		protected virtual TViewModel CreateInstance (TModel model)
 		{
-			return new TViewModel { Model = model };
+			Type viewModelType;
+			TViewModel viewModel;
+
+			if (TypeMappings.TryGetValue (model.GetType (), out viewModelType)) {
+				viewModel = (TViewModel)Activator.CreateInstance (viewModelType);
+			} else {
+				viewModel = new TViewModel ();
+			}
+			viewModel.Model = model;
+			return viewModel;
 		}
 
 		protected virtual void SetModel (RangeObservableCollection<TModel> model)
