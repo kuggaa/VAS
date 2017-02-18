@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using VAS.Core.Common;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Store;
 
@@ -67,6 +68,13 @@ namespace VAS.Core
 		/// <returns>The file.</returns>
 		/// <param name="parent">Parent widget.</param>
 		MediaFile OpenMediaFile (object parent);
+
+		/// <summary>
+		/// Selects a file containing an image from the filesystem.
+		/// </summary>
+		/// <returns>The image.</returns>
+		/// <param name="parent">Parent widget.</param>
+		Task<Image> OpenImage (object parent = null);
 	}
 }
 

@@ -24,6 +24,7 @@ using VAS.Core.Interfaces.GUI;
 using VAS.Core.Store;
 using VAS.UI.Dialog;
 using VAS.UI.Helpers;
+using Image = VAS.Core.Common.Image;
 
 namespace VAS.UI
 {
@@ -172,6 +173,11 @@ namespace VAS.UI
 		public MediaFile OpenMediaFile (object parent)
 		{
 			return Helpers.Misc.OpenFile (parent);
+		}
+
+		public Task<Image> OpenImage (object parent = null)
+		{
+			return Task.FromResult (new Image (Helpers.Misc.OpenImage (parent as Widget)));
 		}
 	}
 }
