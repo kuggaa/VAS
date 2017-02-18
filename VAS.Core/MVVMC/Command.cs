@@ -35,6 +35,7 @@ namespace VAS.Core.MVVMC
 			Contract.Requires (execute != null);
 
 			this.execute = execute;
+			Executable = true;
 		}
 
 		public Command (Action<object> execute)
@@ -45,6 +46,7 @@ namespace VAS.Core.MVVMC
 				execute (o);
 				return AsyncHelpers.Return ();
 			};
+			Executable = true;
 		}
 
 		public Command (Func<Task> execute) : this (o => execute ())
