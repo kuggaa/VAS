@@ -25,7 +25,7 @@ using Image = VAS.Core.Common.Image;
 
 namespace VAS.UI.Helpers.Bindings
 {
-	public static class BinginsExtensions
+	public static class BindingsExtensions
 	{
 
 		/// <summary>
