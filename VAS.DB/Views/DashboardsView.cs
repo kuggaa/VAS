@@ -19,7 +19,7 @@ using VAS.Core.Store.Templates;
 
 namespace VAS.DB.Views
 {
-	public class DashboardsView: GenericView <Dashboard>
+	public class DashboardsView : GenericView<Dashboard>
 	{
 		public DashboardsView (CouchbaseStorage storage) : base (storage)
 		{
