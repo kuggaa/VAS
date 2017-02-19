@@ -187,12 +187,12 @@ namespace VAS.Core.ViewModel
 			Timeline.CreateEventTypeTimelines (EventTypes);
 			Timeline.CreateTeamsTimelines (Teams);
 			Timeline.Model = Model.Timeline;
+			Dashboard.Model = Model.Dashboard;
 		}
 
 		protected override void SyncPreloadedModel ()
 		{
 			FileSet.Model = Model.FileSet;
-			Dashboard.Model = Model.Dashboard;
 		}
 	}
 
