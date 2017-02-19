@@ -222,6 +222,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\License\ILicenseStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlayerTimelineVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TeamTimelineVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Events\DashboardEditorEvents.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\PropertyBinding.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\BindingContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\Binding.cs" />
