@@ -32,6 +32,11 @@ namespace VAS.Services.ViewModel
 		{
 		}
 
+		public static implicit operator DashboardVM (ProjectAnalysisVM<T> projectAnalysisVM)
+		{
+			return projectAnalysisVM?.Project.Dashboard;
+		}
+
 		/// <summary>
 		/// Cast to PlaylistCollectionVM explicit operator.
 		/// </summary>
