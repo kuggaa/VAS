@@ -41,9 +41,14 @@ namespace VAS.Core.Common
 		public const int DB_VERSION = 1;
 
 		// FIXME: These are style constants, they should be somewhere style-specific
-		public const int MAX_THUMBNAIL_SIZE = 100;
 		public const int BUTTON_WIDTH = 120;
 		public const int BUTTON_HEIGHT = 80;
+
+		public const int MAX_THUMBNAIL_SIZE = 200;
+		public const int MAX_PLAYER_ICON_SIZE = 200;
+		public const int MAX_SHIELD_ICON_SIZE = 200;
+		public const int MAX_BACKGROUND_WIDTH = 800;
+		public const int MAX_BACKGROUND_HEIGHT = 800;
 
 		public const string LINE_NORMAL = "images/tools/line" + IMAGE_EXT;
 		public const string LINE_DASHED = "images/tools/dash-line" + IMAGE_EXT;
