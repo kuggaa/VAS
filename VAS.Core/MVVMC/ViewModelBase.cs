@@ -48,6 +48,17 @@ namespace VAS.Core.MVVMC
 		}
 
 		/// <summary>
+		/// Checks if sync is required from the event args that triggered a <see cref="PropertyChangedEventHandler"/>.
+		/// </summary>
+		/// <returns><c>true</c>, if sync was needsed, <c>false</c> otherwise.</returns>
+		/// <param name="eventArgs">Event arguments.</param>
+		/// <param name="propertyNameToCheck">Property name to check.</param>
+		public bool NeedsSync (PropertyChangedEventArgs eventArgs, string propertyNameToCheck)
+		{
+			return NeedsSync (eventArgs.PropertyName, propertyNameToCheck, null, null);
+		}
+
+		/// <summary>
 		/// Checks if sync is required from the name of the property that triggered a <see cref="PropertyChangedEventHandler"/>
 		/// and the sender of the event.
 		/// </summary>
@@ -65,6 +76,14 @@ namespace VAS.Core.MVVMC
 				}
 			}
 			return false;
+		}
+
+		/// <summary>
+		/// Force a sync of all properties as when the ViewModel is set for the first time in a View.
+		/// </summary>
+		public void Sync ()
+		{
+			RaisePropertyChanged (propertyName: null);
 		}
 
 		protected override void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
