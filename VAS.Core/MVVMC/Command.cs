@@ -124,6 +124,15 @@ namespace VAS.Core.MVVMC
 		}
 
 		/// <summary>
+		/// Gets or sets the icon related to that command when the command can't be executed
+		/// </summary>
+		/// <value>The icon.</value>
+		public Image IconInactive {
+			get;
+			set;
+		}
+
+		/// <summary>
 		/// Gets or sets the text related to that command
 		/// </summary>
 		/// <value>The text.</value>
