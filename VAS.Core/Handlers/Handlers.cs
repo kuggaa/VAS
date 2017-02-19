@@ -25,6 +25,7 @@ using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Templates;
+using VAS.Core.ViewModel;
 
 namespace VAS.Core.Handlers
 {
@@ -48,7 +49,7 @@ namespace VAS.Core.Handlers
 	public delegate void ActionLinkCreatedHandler (ActionLink actionLink);
 
 	/* Show dashboard menu */
-	public delegate void ShowDashboardMenuHandler (List<DashboardButton> selectedButtons, List<ActionLink> selectedLinks);
+	public delegate void ShowDashboardMenuHandler (List<DashboardButtonVM> selectedButtons, List<ActionLink> selectedLinks);
 
 	/* The plays filter was updated */
 	public delegate void FilterUpdatedHandler ();
