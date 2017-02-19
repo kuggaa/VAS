@@ -302,11 +302,11 @@ namespace VAS.Core.Store.Templates
 		}
 
 		/// <summary>
-		/// Adds a new <see cref="AnalysisEventButton"/> with the default values
+		/// Creates a new <see cref="AnalysisEventButton"/> with the default values
 		/// </summary>
 		/// <returns>A new button.</returns>
 		/// <param name="index">Index of this button used to name it</param>
-		public virtual AnalysisEventButton AddDefaultItem (int index)
+		public virtual AnalysisEventButton CreateDefaultItem (int index)
 		{
 			AnalysisEventButton button;
 			AnalysisEventType evtype;
@@ -330,6 +330,17 @@ namespace VAS.Core.Store.Templates
 				Width = CAT_WIDTH,
 				Height = CAT_HEIGHT,
 			};
+			return button;
+		}
+
+		/// <summary>
+		/// Adds a new <see cref="AnalysisEventButton"/> with the default values
+		/// </summary>
+		/// <returns>A new button.</returns>
+		/// <param name="index">Index of this button used to name it</param>
+		public AnalysisEventButton AddDefaultItem (int index)
+		{
+			AnalysisEventButton button = CreateDefaultItem (index);
 			List.Insert (index, button);
 			return button;
 		}
