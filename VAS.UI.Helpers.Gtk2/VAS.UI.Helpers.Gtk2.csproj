@@ -48,7 +48,7 @@
       <Link>AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="ButtonHelper.cs" />
-    <Compile Include="Bindings\BinginsExtensions.cs" />
+    <Compile Include="Bindings\BindingsExtensions.cs" />
     <Compile Include="Bindings\EntryBinding.cs" />
     <Compile Include="Bindings\LabelBinding.cs" />
     <Compile Include="Bindings\TextViewBinding.cs" />
