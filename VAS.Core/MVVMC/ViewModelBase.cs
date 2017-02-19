@@ -21,21 +21,8 @@ using System.ComponentModel;
 
 namespace VAS.Core.MVVMC
 {
-	public class ViewModelBase<T> : BindableBase, IViewModel<T> where T : INotifyPropertyChanged
+	public class ViewModelBase : BindableBase, IViewModel
 	{
-		/// <summary>
-		/// Gets or sets the model used by this ViewModel.
-		/// We disable Foody's equality check since we work sometimes with
-		/// copies of the template and replacing the model with the copies template after saving
-		/// it does not update the model because of the ID-based equality check 
-		/// </summary>
-		/// <value>The model.</value>
-		[PropertyChanged.DoNotCheckEquality]
-		public virtual T Model {
-			set;
-			get;
-		}
-
 		/// <summary>
 		/// Checks if sync is required from the name of the property that triggered a <see cref="PropertyChangedEventHandler"/>.
 		/// </summary>
@@ -89,6 +76,22 @@ namespace VAS.Core.MVVMC
 		protected override void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			base.ForwardPropertyChanged (this, e);
+		}
+	}
+
+	public class ViewModelBase<T> : ViewModelBase, IViewModel<T> where T : INotifyPropertyChanged
+	{
+		/// <summary>
+		/// Gets or sets the model used by this ViewModel.
+		/// We disable Foody's equality check since we work sometimes with
+		/// copies of the template and replacing the model with the copies template after saving
+		/// it does not update the model because of the ID-based equality check
+		/// </summary>
+		/// <value>The model.</value>
+		[PropertyChanged.DoNotCheckEquality]
+		public virtual T Model {
+			set;
+			get;
 		}
 	}
 }
