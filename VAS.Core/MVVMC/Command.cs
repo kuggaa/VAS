@@ -202,5 +202,14 @@ namespace VAS.Core.MVVMC
 			Contract.Requires (execute != null);
 			Contract.Requires (canExecute != null);
 		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:VAS.Core.MVVMC.Command`1"/> class with an async function.
+		/// </summary>
+		public Command (Func<T, Task> execute, Func<bool> canExecute) : base (o => execute ((T)o), o => canExecute ())
+		{
+			Contract.Requires (execute != null);
+			Contract.Requires (canExecute != null);
+		}
 	}
 }
