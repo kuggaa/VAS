@@ -15,6 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,7 +33,7 @@ using VAS.Services.ViewModel;
 
 namespace VAS.Tests.Services
 {
-
+	[TestFixture]
 	public class TestPlaylistController
 	{
 		const string name = "name";
@@ -67,7 +68,6 @@ namespace VAS.Tests.Services
 			var videoController = new Mock<IVideoPlayerController> ().Object;
 			videoPlayerVM = new VideoPlayerVM ();
 			videoController.SetViewModel (videoPlayerVM);
-			controller = new PlaylistController ();
 			mockDialogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
 													 It.IsAny<object> ())).Returns (AsyncHelpers.Return (name));
 			mockDialogs.Setup (m => m.QuestionMessage (It.IsAny<string> (), null, null)).Returns (AsyncHelpers.Return (true));
@@ -77,6 +77,7 @@ namespace VAS.Tests.Services
 		public void TearDown ()
 		{
 			controller.Stop ();
+			controller = null;
 			storageMock.ResetCalls ();
 			storageManagerMock.ResetCalls ();
 			mockGuiToolkit.ResetCalls ();
@@ -84,6 +85,7 @@ namespace VAS.Tests.Services
 
 		void SetupWithStorage ()
 		{
+			controller = new PlaylistController ();
 			playlistCollectionVM = new PlaylistCollectionVM ();
 			controller.SetViewModel (new DummyPlaylistsManagerVM {
 				Playlists = playlistCollectionVM,
@@ -94,6 +96,7 @@ namespace VAS.Tests.Services
 
 		void SetupWithProject ()
 		{
+			controller = new PlaylistControllerWithProject ();
 			Project project = Utils.CreateProject (true);
 			projectVM = new ProjectVM { Model = project };
 			playlistCollectionVM = projectVM.Playlists;
@@ -165,7 +168,7 @@ namespace VAS.Tests.Services
 			mockDialogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (), It.IsAny<string> (),
 																	   It.IsAny<string> (), It.IsAny<object> ()), Times.Never ());
 
-			storageMock.Verify (s => s.Store<Playlist> (newPlaylist, true), Times.AtLeastOnce ());
+			storageMock.Verify (s => s.Store<Playlist> (newPlaylist, true), Times.Once ());
 			Assert.AreEqual (1, playlistCollectionVM.ViewModels.Count);
 			Assert.AreEqual (2, playlistCollectionVM.ViewModels.First ().ViewModels.Count);
 		}
@@ -276,7 +279,7 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
-		public void TestDeleteSelectedPlaylistWithStorage ()
+		public async Task TestDeleteSelectedPlaylistWithStorage ()
 		{
 			SetupWithStorage ();
 			var newPlaylist = new Playlist ();
@@ -284,14 +287,14 @@ namespace VAS.Tests.Services
 			playlistCollectionVM.Model.Add (newPlaylist);
 
 			playlistCollectionVM.SelectionReplace (playlistCollectionVM.ViewModels);
-			App.Current.EventsBroker.Publish (new DeleteEvent<Playlist> ());
+			await App.Current.EventsBroker.Publish (new DeleteEvent<Playlist> ());
 
 			Assert.AreEqual (0, playlistCollectionVM.ViewModels.Count);
 			Assert.AreEqual (0, playlistCollectionVM.Selection.Count);
 		}
 
 		[Test]
-		public void TestDeleteSelectedPlaylistWithProject ()
+		public async Task TestDeleteSelectedPlaylistWithProject ()
 		{
 			SetupWithProject ();
 			var newPlaylist = new Playlist ();
@@ -299,7 +302,7 @@ namespace VAS.Tests.Services
 			projectVM.Playlists.Model.Add (newPlaylist);
 
 			playlistCollectionVM.SelectionReplace (playlistCollectionVM.ViewModels);
-			App.Current.EventsBroker.Publish (new DeleteEvent<Playlist> ());
+			await App.Current.EventsBroker.Publish (new DeleteEvent<Playlist> ());
 
 			storageMock.Verify (s => s.Delete<Playlist> (It.IsAny<Playlist> ()), Times.Never ());
 			Assert.AreEqual (0, playlistCollectionVM.ViewModels.Count);
@@ -307,7 +310,7 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
-		public void TestDeleteSelectedPlaylistElements ()
+		public async Task TestDeleteSelectedPlaylistElements ()
 		{
 			SetupWithStorage ();
 			IPlaylistElement element1 = new PlaylistPlayElement (new TimelineEvent { Name = "element1" });
@@ -322,7 +325,7 @@ namespace VAS.Tests.Services
 				playlistCollectionVM.ViewModels [0].ViewModels[0],
 				playlistCollectionVM.ViewModels [0].ViewModels[2]
 			});
-			App.Current.EventsBroker.Publish (new DeleteEvent<Playlist> ());
+			await App.Current.EventsBroker.Publish (new DeleteEvent<Playlist> ());
 
 			Assert.AreEqual (1, playlistCollectionVM.ViewModels [0].ViewModels.Count);
 			Assert.AreEqual (0, playlistCollectionVM.ViewModels [0].Selection.Count);
@@ -382,28 +385,28 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
-		public void TestSavePlaylistCreateWithProject ()
+		public async Task TestSavePlaylistCreateWithProject ()
 		{
 			// Arrange
 			SetupWithProject ();
 
 			// Act
 			var ev = new CreateEvent<Playlist> ();
-			App.Current.EventsBroker.Publish (ev);
+			await App.Current.EventsBroker.Publish (ev);
 
 			// Assert
 			storageMock.Verify (s => s.Store<Playlist> (ev.Object, true), Times.Never ());
 		}
 
 		[Test]
-		public void TestSavePlaylistMoveElementWithoutProject ()
+		public async Task TestSavePlaylistMoveElementWithoutProject ()
 		{
 			// Arrange
 			SetupWithStorage ();
 			Playlist playlist = new Playlist { Name = "playlist without a project" };
 			var playlist2 = new Playlist { Name = "playlist2 without a project" };
 
-			App.Current.EventsBroker.Publish (
+			await App.Current.EventsBroker.Publish (
 				new AddPlaylistElementEvent {
 					PlaylistElements = new List<IPlaylistElement> {
 						new PlaylistPlayElement (new TimelineEvent { Name = "event1" }),
@@ -416,7 +419,7 @@ namespace VAS.Tests.Services
 			mockDialogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
 										 It.IsAny<object> ())).Returns (AsyncHelpers.Return (name + "2"));
 
-			App.Current.EventsBroker.Publish (
+			await App.Current.EventsBroker.Publish (
 				new AddPlaylistElementEvent {
 					PlaylistElements = new List<IPlaylistElement> (),
 					Playlist = playlist2
@@ -441,7 +444,7 @@ namespace VAS.Tests.Services
 				ElementsToAdd = toAdd,
 				Index = 0,
 			};
-			App.Current.EventsBroker.Publish (ev);
+			await App.Current.EventsBroker.Publish (ev);
 
 			// Assert
 			storageMock.Verify (s => s.Store<Playlist> (playlist, true), Times.Once ());
@@ -449,7 +452,7 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
-		public void TestSavePlaylistMoveElementWithProject ()
+		public async Task TestSavePlaylistMoveElementWithProject ()
 		{
 			// Arrange
 			SetupWithProject ();
@@ -457,7 +460,7 @@ namespace VAS.Tests.Services
 			Playlist playlist = new Playlist { Name = "playlist without a project" };
 			var playlist2 = new Playlist { Name = "playlist2 without a project" };
 
-			App.Current.EventsBroker.Publish (
+			await App.Current.EventsBroker.Publish (
 				new AddPlaylistElementEvent {
 					PlaylistElements = new List<IPlaylistElement> {
 						new PlaylistPlayElement (new TimelineEvent { Name = "event1" }),
@@ -470,7 +473,7 @@ namespace VAS.Tests.Services
 			mockDialogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
 										 It.IsAny<object> ())).Returns (AsyncHelpers.Return (name + "2"));
 
-			App.Current.EventsBroker.Publish (
+			await App.Current.EventsBroker.Publish (
 				new AddPlaylistElementEvent {
 					PlaylistElements = new List<IPlaylistElement> (),
 					Playlist = playlist2
@@ -495,11 +498,29 @@ namespace VAS.Tests.Services
 				ElementsToAdd = toAdd,
 				Index = 0,
 			};
-			App.Current.EventsBroker.Publish (ev);
+			await App.Current.EventsBroker.Publish (ev);
 
 			// Assert
 			storageMock.Verify (s => s.Store<Playlist> (playlist, true), Times.Never ());
 			storageMock.Verify (s => s.Store<Playlist> (playlist2, true), Times.Never ());
+		}
+
+		class PlaylistControllerWithProject : PlaylistController
+		{
+			public override void SetViewModel (VAS.Core.Interfaces.MVVMC.IViewModel viewModel)
+			{
+				base.SetViewModel (viewModel);
+				ProjectViewModel = (ProjectVM)(viewModel as dynamic);
+			}
+
+			// For some reason, without this override, these 3 tests fail:
+			// TestAddEventsToExistingPlaylistWithStorage
+			// TestAddEventsToNewPlaylistWithProject
+			// TestAddEventsToNewPlaylistWithStorage
+			protected override Task HandleAddPlaylistElement (AddPlaylistElementEvent e)
+			{
+				return base.HandleAddPlaylistElement (e);
+			}
 		}
 	}
 }
