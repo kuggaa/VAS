@@ -1592,10 +1592,12 @@ namespace VAS.Tests.Services
 
 			Assert.AreEqual (evt.FileSet, player.FileSet);
 
-			evt.FileSet = evt.FileSet.Clone ();
-			evt.FileSet [0].FilePath = "test3";
+			var fileSet = evt.FileSet.Clone ();
+			fileSet [0].FilePath = "test3";
+			fileSet.ID = Guid.NewGuid ();
+			evt.FileSet = fileSet;
 
-			Assert.IsTrue (player.FileSet.CheckMediaFilesModified (evt.FileSet));
+			Assert.IsTrue (player.FileSet.CheckMediaFilesModified (fileSet));
 
 			player.LoadPlaylistEvent (localPlaylist, element0, false);
 
