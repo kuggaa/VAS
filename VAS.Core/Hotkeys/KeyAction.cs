@@ -14,16 +14,10 @@ namespace VAS.Core.Hotkeys
 		public string guid;
 
 		/// <summary>
-		/// Gets or sets the name of the action
+		/// Gets or sets the key configuration
 		/// </summary>
-		/// <value>The name of the action.</value>
-		public string ActionName { get; set; }
-
-		/// <summary>
-		/// Gets or sets the key that performs the action
-		/// </summary>
-		/// <value>The key.</value>
-		public HotKey Key { get; set; }
+		/// <value>The key config.</value>
+		public KeyConfig KeyConfig { get; set; }
 
 		/// <summary>
 		/// Gets or sets the action to perform
@@ -45,10 +39,9 @@ namespace VAS.Core.Hotkeys
 		/// <value><c>true</c> if continue chain; otherwise, <c>false</c>.</value>
 		public bool ContinueChain { get; set; }
 
-		public KeyAction (string actionName, HotKey key, Action action, int priority = 999, bool continueChain = true)
+		public KeyAction (KeyConfig keyConfig, Action action, int priority = 999, bool continueChain = true)
 		{
-			this.ActionName = actionName;
-			this.Key = key;
+			this.KeyConfig = keyConfig;
 			this.Action = action;
 			this.Priority = priority;
 			this.ContinueChain = continueChain;

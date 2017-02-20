@@ -45,13 +45,13 @@ namespace VAS.Tests.Core.HotKeys
 
 		void InitKeyActions ()
 		{
-			play = new KeyAction (PLAY_ACTION, spaceHotkey,
+			play = new KeyAction (new KeyConfig { Name = PLAY_ACTION, Key = spaceHotkey },
 				() => countPlay++);
-			forward = new KeyAction (FORWARD_ACTION, rightHotkey,
+			forward = new KeyAction (new KeyConfig { Name = FORWARD_ACTION, Key = rightHotkey },
 				() => countForward++);
-			fastForward = new KeyAction (FAST_FORWARD_ACTION, shiftRightHotkey,
+			fastForward = new KeyAction (new KeyConfig { Name = FAST_FORWARD_ACTION, Key = shiftRightHotkey },
 				() => countFastForward++);
-			globalAction = new KeyAction (GLOBAL_ACTION, globalHotkey,
+			globalAction = new KeyAction (new KeyConfig { Name = GLOBAL_ACTION, Key = globalHotkey },
 				() => countGlobal++);
 
 		}
@@ -189,7 +189,7 @@ namespace VAS.Tests.Core.HotKeys
 		public void TestContextPriorities2 ()
 		{
 			int countPlay2 = 0;
-			KeyAction play2 = new KeyAction ("PLAY_2", spaceHotkey,
+			KeyAction play2 = new KeyAction (new KeyConfig { Name = "PLAY_2", Key = spaceHotkey },
 								  () => countPlay2++);
 
 			KeyContext context = new KeyContext ();
