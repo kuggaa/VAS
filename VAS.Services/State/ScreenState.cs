@@ -35,6 +35,7 @@ namespace VAS.Services.State
 	{
 		public ScreenState ()
 		{
+			ViewModelOwner = true;
 			Panel = App.Current.ViewLocator.Retrieve (Name) as IPanel;
 			Controllers = App.Current.ControllerLocator.RetrieveAll (Name);
 			KeyContext = new KeyContext ();
@@ -52,9 +53,20 @@ namespace VAS.Services.State
 			base.DisposeManagedResources ();
 			Controllers?.ForEach ((c) => c.Dispose ());
 			Panel?.Dispose ();
-			ViewModel?.Dispose ();
+			if (ViewModelOwner) {
+				ViewModel?.Dispose ();
+			}
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Services.State.ScreenState`1"/> is the
+		/// view model owner.
+		/// </summary>
+		/// <value><c>true</c> if view model owner; otherwise, <c>false</c>.</value>
+		public bool ViewModelOwner {
+			get;
+			set;
+		}
 
 		public abstract string Name {
 			get;
