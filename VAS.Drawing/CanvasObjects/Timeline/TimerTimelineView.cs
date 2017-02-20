@@ -140,6 +140,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 					break;
 				}
 			}
+			ReDraw ();
 		}
 	}
 }
