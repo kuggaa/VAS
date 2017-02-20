@@ -19,6 +19,7 @@ using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
+using System.Net.NetworkInformation;
 using System.Reflection;
 
 namespace VAS.Core.Common
@@ -200,6 +201,25 @@ namespace VAS.Core.Common
 			proc.StartInfo.UseShellExecute = false;
 			proc.Start ();
 			return proc;
+		}
+
+		/// <summary>
+		/// Checks the network connection.
+		/// </summary>
+		/// <returns><c>true</c>, if internet connection is OK, <c>false</c> otherwise.</returns>
+		public static bool CheckNetworkConnection ()
+		{
+			try {
+				Ping myPing = new Ping ();
+				String host = "8.8.8.8";
+				byte [] buffer = new byte [32];
+				int timeout = 1000;
+				PingOptions pingOptions = new PingOptions ();
+				PingReply reply = myPing.Send (host, timeout, buffer, pingOptions);
+				return (reply.Status == IPStatus.Success);
+			} catch (Exception) {
+				return false;
+			}
 		}
 
 		/// <summary>
