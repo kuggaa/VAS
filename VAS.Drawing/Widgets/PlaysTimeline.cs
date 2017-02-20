@@ -147,7 +147,7 @@ namespace VAS.Drawing.Widgets
 
 		protected void Update ()
 		{
-			double width = duration.TotalSeconds / SecondsPerPixel;
+			double width = duration == null ? 0 : duration.TotalSeconds / SecondsPerPixel;
 			widget.Width = width + 10;
 			foreach (TimelineView tl in Objects) {
 				tl.Width = width + 10;
@@ -404,7 +404,7 @@ namespace VAS.Drawing.Widgets
 			ClearObjects ();
 			if (viewModel != null) {
 				viewModel.Project.Timeline.EventTypesTimeline.ViewModels.CollectionChanged += HandleEventTypesCollectionChanged;
-				viewModel.Project.FileSet.PropertyChanged += HandleFileSetChanged; ;
+				viewModel.Project.FileSet.PropertyChanged += HandleFileSetChanged;
 				duration = viewModel.Project.FileSet.Duration;
 				int i = 0;
 				FillCanvas (ref i);

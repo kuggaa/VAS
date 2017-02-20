@@ -42,7 +42,8 @@ namespace VAS.Core.ViewModel
 			set {
 				model = value;
 				base.Model = model.MediaFiles;
-				VisibleRegion.Model = Model?.VisibleRegion;
+				VisibleRegion.Model = model?.VisibleRegion ??
+					new TimeNode () { Start = new Time (0), Stop = new Time (0) };
 			}
 		}
 
@@ -52,7 +53,7 @@ namespace VAS.Core.ViewModel
 		/// <value>The duration.</value>
 		public Time Duration {
 			get {
-				return Model.Duration;
+				return Model?.Duration;
 			}
 		}
 
