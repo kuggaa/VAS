@@ -97,10 +97,10 @@ namespace VAS.Core.Hotkeys
 		public void HandleKeyPressed (HotKey key)
 		{
 			bool handled = false;
-		
+
 			for (int i = currentKeyContexts.Count - 1; i >= 0; i--) {
-				foreach (KeyAction ka in currentKeyContexts[i].KeyActions) {
-					if (ka.Key == key) {
+				foreach (KeyAction ka in currentKeyContexts [i].KeyActions) {
+					if (ka.KeyConfig.Key == key) {
 						ka.Action ();
 						handled = true;
 						if (!ka.ContinueChain) {
@@ -115,7 +115,7 @@ namespace VAS.Core.Hotkeys
 
 			if (!handled && EnableGlobalContext) {
 				foreach (KeyAction ka in globalKeyContext.KeyActions) {
-					if (ka.Key == key) {
+					if (ka.KeyConfig.Key == key) {
 						ka.Action ();
 						handled = true;
 						if (!ka.ContinueChain) {

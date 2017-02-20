@@ -895,47 +895,47 @@ namespace VAS.Services
 		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
 		{
 			return new KeyAction [] {
-				new KeyAction (
-					"PLAYER_RATE_INCREMENT",
-					App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Right"),
+				new KeyAction (new KeyConfig {
+					Name = "PLAYER_RATE_INCREMENT",
+					Key = App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Right")},
 					FramerateUp
 				),
-				new KeyAction (
-					"PLAYER_RATE_DECREMENT",
-					App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Left"),
+				new KeyAction (new KeyConfig {
+					Name = "PLAYER_RATE_DECREMENT",
+					Key = App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Left")},
 					FramerateDown
 				),
-				new KeyAction (
-					"PLAYER_RATE_MAX",
-					App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Up"),
+				new KeyAction (new KeyConfig {
+					Name = "PLAYER_RATE_MAX",
+					Key = App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Up")},
 					FramerateUpper
 				),
-				new KeyAction (
-					"PLAYER_RATE_DEFAULT",
-					App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Down"),
+				new KeyAction (new KeyConfig {
+					Name = "PLAYER_RATE_DEFAULT",
+					Key = App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Down")},
 					FramerateLower
 				),
 
-				new KeyAction (
-					"PLAYER_TOGGLE_PLAY",
-					App.Current.Keyboard.ParseName ("space"),
+				new KeyAction (new KeyConfig {
+					Name = "PLAYER_TOGGLE_PLAY",
+					Key = App.Current.Keyboard.ParseName ("space")},
 					TogglePlay
 				),
-				new KeyAction (
-					"PLAYER_SEEK_LEFT_SHORT",
-					App.Current.Keyboard.ParseName ("Left"),
+				new KeyAction (new KeyConfig {
+					Name = "PLAYER_SEEK_LEFT_SHORT",
+					Key = App.Current.Keyboard.ParseName ("Left")},
 					() => PerformStep(new Time { TotalSeconds = -SHORT_SEEK_SECONDS })),
-				new KeyAction (
-					"PLAYER_SEEK_LEFT_LONG",
-					App.Current.Keyboard.ParseName ("<Shift_L>+Left"),
+				new KeyAction (new KeyConfig {
+					Name = "PLAYER_SEEK_LEFT_LONG",
+					Key = App.Current.Keyboard.ParseName ("<Shift_L>+Left")},
 					() => PerformStep(new Time { TotalSeconds = -LONG_SEEK_SECONDS })),
-				new KeyAction (
-					"PLAYER_SEEK_RIGHT_SHORT",
-					App.Current.Keyboard.ParseName ("Right"),
+				new KeyAction (new KeyConfig {
+					Name = "PLAYER_SEEK_RIGHT_SHORT",
+					Key = App.Current.Keyboard.ParseName ("Right")},
 					() => PerformStep(new Time { TotalSeconds = SHORT_SEEK_SECONDS })),
-				new KeyAction (
-					"PLAYER_SEEK_RIGHT_LONG",
-					App.Current.Keyboard.ParseName ("<Shift_L>+Right"),
+				new KeyAction (new KeyConfig {
+					Name = "PLAYER_SEEK_RIGHT_LONG",
+					Key = App.Current.Keyboard.ParseName ("<Shift_L>+Right")},
 					() => PerformStep(new Time { TotalSeconds = LONG_SEEK_SECONDS }))
 			};
 		}
