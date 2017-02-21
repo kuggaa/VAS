@@ -195,6 +195,7 @@ namespace VAS.Core.Common
 			}
 			proc.StartInfo.Arguments = arguments;
 			proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+			proc.StartInfo.CreateNoWindow = true;
 			proc.StartInfo.RedirectStandardOutput = true;
 			proc.StartInfo.UseShellExecute = false;
 			proc.Start ();
