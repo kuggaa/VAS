@@ -225,9 +225,6 @@ namespace VAS.Core.Common
 		public const string BoxLimit = "BoxLimit";
 		public const string ButtonLimit = "ButtonLimit";
 
-
-		public string Font = "Ubuntu";
-
 		public StyleConf ()
 		{
 			HomeTeamColor = Color.Red;
@@ -360,6 +357,11 @@ namespace VAS.Core.Common
 		public int SubToolbarHeight { get; set; } = 40;
 
 		//Fonts
+
+		public string Font {
+			get;
+			protected set;
+		} = "Ubuntu";
 
 		public string BigScoresFontFamily { get; set; }
 
