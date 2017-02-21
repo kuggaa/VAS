@@ -142,6 +142,12 @@ namespace VAS.Drawing.Widgets
 		protected override void ClearObjects ()
 		{
 			base.ClearObjects ();
+			foreach (var vm in viewModelToView.Keys) {
+				var nestedVM = vm as INestedViewModel;
+				if (nestedVM != null) {
+					nestedVM.GetNotifyCollection ().CollectionChanged -= HandleChildsVMCollectionChanged;
+				}
+			}
 			viewModelToView.Clear ();
 		}
 
@@ -200,6 +206,7 @@ namespace VAS.Drawing.Widgets
 					BackgroundColor = Utils.ColorForRow (line),
 				};
 				timelineView.ViewModel = timerVM;
+				timerVM.ViewModels.CollectionChanged += HandleChildsVMCollectionChanged;
 				AddTimeline (timelineView, timerVM);
 				line++;
 			}
@@ -223,12 +230,14 @@ namespace VAS.Drawing.Widgets
 				Height = StyleConf.TimelineCategoryHeight,
 			};
 			timelineView.ViewModel = timelineVM;
+			timelineVM.ViewModels.CollectionChanged += HandleChildsVMCollectionChanged;
 			AddTimeline (timelineView, timelineVM);
 			return timelineView;
 		}
 
 		protected virtual void RemoveEventTypeTimeline (EventTypeTimelineVM timelineVM)
 		{
+			timelineVM.ViewModels.CollectionChanged -= HandleChildsVMCollectionChanged;
 			RemoveObject (viewModelToView [timelineVM]);
 			UpdateRowsOffsets ();
 		}
@@ -419,6 +428,15 @@ namespace VAS.Drawing.Widgets
 			if (ViewModel.Project.FileSet.Duration != duration) {
 				duration = ViewModel.Project.FileSet.Duration;
 				Update ();
+			}
+		}
+
+		void HandleChildsVMCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (e.Action == NotifyCollectionChangedAction.Remove) {
+				foreach (TimeNodeVM viewModel in e.OldItems.OfType<TimeNodeVM> ()) {
+					Selections.RemoveAll (s => (s.Drawable as TimeNodeView).TimeNode == viewModel);
+				}
 			}
 		}
 	}
