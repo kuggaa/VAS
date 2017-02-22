@@ -63,5 +63,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\CanvasButtonObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\TimedTaggerButtonView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Init.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\PinCanvasObject.cs" />
   </ItemGroup>
 </Project>

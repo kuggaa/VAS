@@ -16,5 +16,8 @@ nobase_dist_icons_DATA = hicolor/index.theme \
 	hicolor/scalable/actions/longomatch-stop.svg \
 	hicolor/scalable/actions/vas-delete.svg \
 	hicolor/scalable/actions/vas-limit-upgrade.svg \
+	hicolor/scalable/actions/vas-location-moving.svg \
+	hicolor/scalable/actions/vas-location-notset.svg \
+	hicolor/scalable/actions/vas-location-set.svg \
 	hicolor/scalable/actions/vas-quit.svg \
 	hicolor/scalable/actions/video_c_play.svg
