@@ -84,7 +84,10 @@ namespace VAS.UI.Menus
 			}
 			item = new MenuItem (Catalog.GetString ("Create new playlist..."));
 			LicenseLimitationVM limitation = App.Current.LicenseLimitationsService.Get ("Presentations");
-			item.Sensitive = limitation.Count < limitation.Maximum;
+			if (limitation != null) {
+				item.Sensitive = limitation.Count < limitation.Maximum;
+			}
+
 			plMenu.Append (item);
 			item.Activated += (sender, e) => {
 				IEnumerable<IPlaylistElement> elements = events.Select (p => new PlaylistPlayElement (p));

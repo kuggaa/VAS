@@ -169,7 +169,7 @@ namespace VAS.Services.ViewModel
 
 		void CheckNewCommandEnabled ()
 		{
-			NewCommand.Executable = Limitation.Count < Limitation.Maximum;
+			NewCommand.Executable = Limitation == null || Limitation.Count < Limitation.Maximum;
 		}
 	}
 }
