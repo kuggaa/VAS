@@ -73,7 +73,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		public override void ClickReleased ()
 		{
-			if (Mode == DashboardMode.Edit) {
+			if (ButtonVM.Mode == DashboardMode.Edit) {
 				return;
 			}
 			base.ClickReleased ();
@@ -151,7 +151,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				new Point ((Position.X + Width) - StyleConf.ButtonRecWidth, Position.Y),
 				StyleConf.ButtonRecWidth, HeaderHeight);
 
-			if (ViewModel.TimerTime != null && Mode != DashboardMode.Edit) {
+			if (ViewModel.TimerTime != null && ButtonVM.Mode != DashboardMode.Edit) {
 				tk.LineWidth = StyleConf.ButtonLineWidth;
 				tk.StrokeColor = Button.BackgroundColor;
 				tk.FillColor = Button.BackgroundColor;
