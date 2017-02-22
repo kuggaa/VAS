@@ -41,6 +41,7 @@ namespace VAS.UI.Component
 			limit_label.SetPadding (5, 0);
 			limit_label.Name = StyleConf.LabelLimit;
 			limit_box.Name = StyleConf.BoxLimit;
+			NoShowAll = true;
 		}
 
 		/// <summary>
