@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System.Collections.ObjectModel;
+using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.MVVMC;
@@ -30,6 +31,7 @@ namespace VAS.Core.ViewModel
 	public class DashboardVM : TemplateViewModel<Dashboard, DashboardButton, DashboardButtonVM>
 	{
 		DashboardMode mode;
+		Time currentTime;
 
 		public DashboardVM ()
 		{
@@ -197,8 +199,15 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		/// <value>The current time.</value>
 		public Time CurrentTime {
-			get;
-			set;
+			get {
+				return currentTime;
+			}
+			set {
+				currentTime = value;
+				foreach (var timedVM in ViewModels.OfType<TimedDashboardButtonVM> ()) {
+					timedVM.CurrentTime = value;
+				}
+			}
 		}
 
 		/// <summary>
