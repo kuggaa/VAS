@@ -225,6 +225,11 @@ namespace VAS.Core.Common
 		public const string BoxLimit = "BoxLimit";
 		public const string ButtonLimit = "ButtonLimit";
 
+		// Location Pins
+		public const string LocationPinNotSet = "icons/hicolor/scalable/actions/vas-location-notset" + IMAGE_EXT;
+		public const string LocationSet = "icons/hicolor/scalable/actions/vas-location-set" + IMAGE_EXT;
+		public const string LocationPinMoving = "icons/hicolor/scalable/actions/vas-location-moving" + IMAGE_EXT;
+
 		public StyleConf ()
 		{
 			HomeTeamColor = Color.Red;
