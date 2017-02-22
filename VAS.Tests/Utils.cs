@@ -314,7 +314,8 @@ namespace VAS.Tests
 				UpdateEventTypesAndTimers ();
 			}
 
-			public override TimelineEvent AddEvent (EventType type, Time start, Time stop, Time eventTime, Image miniature, bool addToTimeline = true)
+			public override TimelineEvent CreateEvent (EventType type, Time start, Time stop, Time eventTime,
+													   Image miniature, int index)
 			{
 				TimelineEvent evt;
 				string count;
@@ -334,10 +335,6 @@ namespace VAS.Tests
 				evt.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
 				evt.FileSet = FileSet;
 				evt.Project = this;
-
-				if (addToTimeline) {
-					Timeline.Add (evt);
-				}
 
 				return evt;
 			}
