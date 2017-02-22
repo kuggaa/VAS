@@ -47,12 +47,13 @@ namespace VAS.Core.Common
 		/// <param name="items">Items to add</param>
 		public void AddRange (IEnumerable<T> items)
 		{
-			if (items.Any ()) {
-				int index = Items.Count;
-				foreach (T item in items) {
+			int index = Items.Count;
+			var itemsList = items.ToList ();
+			if (itemsList.Any ()) {
+				foreach (T item in itemsList) {
 					Items.Add (item);
 				}
-				NotifyCollectionChangedEventArgs e = new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Add, items.ToList (), index);
+				NotifyCollectionChangedEventArgs e = new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Add, itemsList, index);
 				OnCollectionChanged (e);
 			}
 		}
@@ -63,11 +64,14 @@ namespace VAS.Core.Common
 		/// <param name="items">Items to remove</param>
 		public void RemoveRange (IEnumerable<T> items)
 		{
-			foreach (var item in items) {
-				Items.Remove (item);
+			var itemsList = items.ToList ();
+			if (itemsList.Any ()) {
+				foreach (var item in itemsList) {
+					Items.Remove (item);
+				}
+				NotifyCollectionChangedEventArgs e = new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Remove, itemsList);
+				OnCollectionChanged (e);
 			}
-			NotifyCollectionChangedEventArgs e = new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Remove, items.ToList ());
-			OnCollectionChanged (e);
 		}
 
 		/// <summary>
@@ -77,12 +81,13 @@ namespace VAS.Core.Common
 		/// <param name="items">Items to add</param>
 		public void InsertRange (int index, IEnumerable<T> items)
 		{
-			if (items.Any ()) {
+			var itemsList = items.ToList ();
+			if (itemsList.Any ()) {
 				int indexCopy = index;
-				foreach (var item in items) {
+				foreach (var item in itemsList) {
 					Items.Insert (index++, item);
 				}
-				NotifyCollectionChangedEventArgs e = new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Add, items.ToList (), indexCopy);
+				NotifyCollectionChangedEventArgs e = new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Add, itemsList, indexCopy);
 				OnCollectionChanged (e);
 			}
 		}

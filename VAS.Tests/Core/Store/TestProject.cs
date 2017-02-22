@@ -117,8 +117,8 @@ namespace VAS.Tests.Core.Store
 		public void TestAddEvent ()
 		{
 			Utils.ProjectDummy p = CreateProject (false);
-			TimelineEvent evt = p.AddEvent (p.EventTypes [0], new Time (1000), new Time (2000),
-									null, null, false);
+			TimelineEvent evt = p.CreateEvent (p.EventTypes [0], new Time (1000), new Time (2000),
+									null, null, 0);
 			Assert.AreEqual (p, evt.Project);
 
 			Assert.AreEqual (p.Timeline.Count, 0);

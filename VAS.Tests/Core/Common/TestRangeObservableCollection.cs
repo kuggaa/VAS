@@ -30,10 +30,12 @@ namespace VAS.Tests.Core.Common
 		RangeObservableCollection<int> collection;
 		int index;
 		NotifyCollectionChangedAction actionPerformed;
+		int counter;
 
 		[SetUp ()]
 		public void SetUp ()
 		{
+			counter = 0;
 			if (collection != null) {
 				collection.CollectionChanged -= CollectionChanged;
 			}
@@ -49,8 +51,10 @@ namespace VAS.Tests.Core.Common
 			int indexToVerify;
 
 			indexToVerify = collection.Count;
-			collection.AddRange (new List<int> { 5, 6 });
+			List<int> list = new List<int> { 5, 6 };
+			collection.AddRange (list.Select ((arg) => IncrementCounter (arg)).Where (arg => arg >= 0));
 
+			Assert.AreEqual (2, counter);
 			Assert.AreEqual (indexToVerify, index);
 			Assert.AreEqual (7, collection.Count);
 			Assert.AreEqual (6, collection.Last ());
@@ -60,8 +64,10 @@ namespace VAS.Tests.Core.Common
 		[Test ()]
 		public void TestRemoveRange ()
 		{
-			collection.RemoveRange (new List<int> { 1, 3 });
+			List<int> list = new List<int> { 1, 3 };
+			collection.RemoveRange (list.Select ((arg) => IncrementCounter (arg)).Where (arg => arg >= 0));
 
+			Assert.AreEqual (2, counter);
 			Assert.AreEqual (3, collection.Count);
 			Assert.AreEqual (2, collection [1]);
 			Assert.AreEqual (actionPerformed, NotifyCollectionChangedAction.Remove);
@@ -70,8 +76,10 @@ namespace VAS.Tests.Core.Common
 		[Test ()]
 		public void TestInsertRange ()
 		{
-			collection.InsertRange (2, new List<int> { 5, 6 });
+			List<int> list = new List<int> { 5, 6 };
+			collection.InsertRange (2, list.Select ((arg) => IncrementCounter (arg)).Where (arg => arg >= 0));
 
+			Assert.AreEqual (2, counter);
 			Assert.AreEqual (2, index);
 			Assert.AreEqual (5, collection [index]);
 			Assert.AreEqual (actionPerformed, NotifyCollectionChangedAction.Add);
@@ -81,8 +89,9 @@ namespace VAS.Tests.Core.Common
 		public void TestReplace ()
 		{
 			RangeObservableCollection<int> collectionToReplace = new RangeObservableCollection<int> (new List<int> { 5, 6, 7 });
-			collection.Replace (collectionToReplace);
+			collection.Replace (collectionToReplace.Select ((arg) => IncrementCounter (arg)).Where (arg => arg >= 0));
 
+			Assert.AreEqual (3, counter);
 			Assert.AreEqual (collection, collectionToReplace);
 			Assert.AreEqual (actionPerformed, NotifyCollectionChangedAction.Reset);
 		}
@@ -93,6 +102,17 @@ namespace VAS.Tests.Core.Common
 				index = e.NewStartingIndex;
 			}
 			actionPerformed = e.Action;
+		}
+
+		/// <summary>
+		/// Increments the counter.
+		/// </summary>
+		/// <returns>The counter.</returns>
+		/// <param name="value">Value.</param>
+		public int IncrementCounter (int value)
+		{
+			counter++;
+			return value;
 		}
 	}
 }
