@@ -356,7 +356,7 @@ namespace VAS.Core.Common
 
 		public int SubToolbarHeight { get; set; } = 40;
 
-		//Fonts
+		// Fonts
 
 		public string Font {
 			get;
@@ -369,7 +369,7 @@ namespace VAS.Core.Common
 
 		public string BigScoresFont {
 			get {
-				return string.Concat (BigScoresFontFamily, " ", BigScoresFontSize);
+				return string.Concat (BigScoresFontFamily, " ", BigScoresFontSize, "px");
 			}
 		}
 
@@ -379,7 +379,7 @@ namespace VAS.Core.Common
 
 		public string TightScoresFont {
 			get {
-				return string.Concat (TightScoresFontFamily, " ", TightScoresFontSize);
+				return string.Concat (TightScoresFontFamily, " ", TightScoresFontSize, "px");
 			}
 		}
 
@@ -391,7 +391,7 @@ namespace VAS.Core.Common
 
 		public string TitlesFont {
 			get {
-				return string.Concat (TitlesFontFamily, " ", TitlesFontSlant, " ", TitlesFontSize);
+				return string.Concat (TitlesFontFamily, " ", TitlesFontSlant, " ", TitlesFontSize, "px");
 			}
 		}
 
@@ -401,7 +401,7 @@ namespace VAS.Core.Common
 
 		public string SubTitleFont {
 			get {
-				return string.Concat (SubTitleFontFamily, " ", SubTitleFontSize);
+				return string.Concat (SubTitleFontFamily, " ", SubTitleFontSize, "px");
 			}
 		}
 
@@ -411,7 +411,7 @@ namespace VAS.Core.Common
 
 		public string NamesFont {
 			get {
-				return string.Concat (NamesFontFamily, " ", NamesFontSize);
+				return string.Concat (NamesFontFamily, " ", NamesFontSize, "px");
 			}
 		}
 
@@ -421,7 +421,7 @@ namespace VAS.Core.Common
 
 		public string ContentFont {
 			get {
-				return string.Concat (ContentFontFamily, " ", ContentFontSize);
+				return string.Concat (ContentFontFamily, " ", ContentFontSize, "px");
 			}
 		}
 
@@ -431,7 +431,7 @@ namespace VAS.Core.Common
 
 		public string LabelFont {
 			get {
-				return string.Concat (LabelFontFamily, " ", LabelFontSize);
+				return string.Concat (LabelFontFamily, " ", LabelFontSize, "px");
 			}
 		}
 
@@ -443,7 +443,7 @@ namespace VAS.Core.Common
 
 		public string LabelTightFont {
 			get {
-				return string.Concat (LabelTightFontFamily, " ", LabelTightFontSlant, " ", LabelTightFontSize);
+				return string.Concat (LabelTightFontFamily, " ", LabelTightFontSlant, " ", LabelTightFontSize, "px");
 			}
 		}
 
