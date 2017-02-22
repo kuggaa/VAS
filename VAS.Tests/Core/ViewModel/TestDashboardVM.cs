@@ -15,8 +15,9 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
+using System.Linq;
 using NUnit.Framework;
+using VAS.Core.Store;
 using VAS.Core.ViewModel;
 using VAS.Drawing;
 using VAS.Drawing.Cairo;
@@ -76,7 +77,17 @@ namespace VAS.Tests.Core.ViewModel
 
 			Assert.DoesNotThrow (() => analysisButtonView = (AnalysisEventButtonView)App.Current.ViewLocator.Retrieve (dashboard.ViewModels [0].View));
 			Assert.DoesNotThrow (() => timerButtonView = (TimerButtonView)App.Current.ViewLocator.Retrieve (dashboard.ViewModels [5].View));
+		}
 
+		[Test]
+		public void TestProgateCurrentTime ()
+		{
+			Time time = new Time (5000);
+			dashboard.CurrentTime = time;
+
+			foreach (var button in dashboard.ViewModels.OfType<TimedDashboardButtonVM> ()) {
+				Assert.AreEqual (time, button.CurrentTime);
+			}
 		}
 	}
 }
