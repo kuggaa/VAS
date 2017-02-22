@@ -436,7 +436,6 @@ namespace VAS.Drawing.Widgets
 			view.SetViewModel (vm);
 			var viewButton = view as DashboardButtonView;
 			viewButton.ClickedEvent += HandleTaggerClickedEvent;
-			viewButton.Mode = ViewModel.Mode;
 			if (viewButton is AnalysisEventButtonView) {
 				((AnalysisEventButtonView)viewButton).EditButtonTagsEvent += (t) => {
 					if (EditButtonTagsEvent != null)
@@ -452,6 +451,26 @@ namespace VAS.Drawing.Widgets
 		{
 			RemoveObject (buttonsDict [vm.Model]);
 			buttonsDict.Remove (vm.Model);
+		}
+
+		void UpdateMode ()
+		{
+			ObjectsCanMove = ViewModel.Mode == DashboardMode.Edit;
+			ClearSelection ();
+		}
+
+		void UpdateShowLinks ()
+		{
+			foreach (DashboardButtonView to in Objects.OfType<DashboardButtonView> ()) {
+				to.ShowLinks = ViewModel.ShowLinks;
+				to.ResetDrawArea ();
+			}
+			foreach (ActionLinkView ao in Objects.OfType<ActionLinkView> ()) {
+				ao.Visible = ViewModel.ShowLinks;
+				ao.ResetDrawArea ();
+			}
+			ClearSelection ();
+			widget?.ReDraw ();
 		}
 
 		void HandleViewModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
@@ -481,36 +500,14 @@ namespace VAS.Drawing.Widgets
 				return;
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Mode))) {
-				HandleModeChanged ();
-			} else if (ViewModel.NeedsSync (e, nameof (ViewModel.ShowLinks))) {
-				HandleShowLinksChanged ();
-			} else if (ViewModel.NeedsSync (e, nameof (ViewModel.FitMode))) {
+				UpdateMode ();
+			}
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.ShowLinks))) {
+				UpdateShowLinks ();
+			}
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.FitMode))) {
 				HandleSizeChangedEvent ();
 			}
 		}
-
-		void HandleModeChanged ()
-		{
-			ObjectsCanMove = ViewModel.Mode == DashboardMode.Edit;
-			foreach (DashboardButtonView to in Objects.OfType<DashboardButtonView> ()) {
-				to.Mode = ViewModel.Mode;
-			}
-			ClearSelection ();
-		}
-
-		void HandleShowLinksChanged ()
-		{
-			foreach (DashboardButtonView to in Objects.OfType<DashboardButtonView> ()) {
-				to.ShowLinks = ViewModel.ShowLinks;
-				to.ResetDrawArea ();
-			}
-			foreach (ActionLinkView ao in Objects.OfType<ActionLinkView> ()) {
-				ao.Visible = ViewModel.ShowLinks;
-				ao.ResetDrawArea ();
-			}
-			ClearSelection ();
-			widget?.ReDraw ();
-		}
 	}
 }
-
