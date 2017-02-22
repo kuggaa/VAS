@@ -30,6 +30,14 @@ namespace VAS.Core.Interfaces.Drawing
 		event SizeChangedHandler SizeChangedEvent;
 		event ShowTooltipHandler ShowTooltipEvent;
 
+		/// <summary>
+		/// Fast button clicks sometimes produced a small move that
+		/// should be ignored. Start moving only when the button has been
+		/// pressed for more than MoveWaitMS.
+		/// </summary>
+		/// <value>Milliseconds to wait before moving.</value>
+		uint MoveWaitMS { get; set; }
+
 		double Width { get; set; }
 
 		double Height { get; set; }
