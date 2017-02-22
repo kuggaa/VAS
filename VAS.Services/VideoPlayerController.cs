@@ -364,12 +364,13 @@ namespace VAS.Services
 					delayedOpen = null;
 				} else if (FileSet == null || !FileSet.Any ()) {
 					ShowMessageInViewPorts (Catalog.GetString ("No video available"), true);
+				} else {
+					Log.Debug ("Open previous fileset");
+					Open (FileSet, false);
 				}
 			} else {
-				Log.Debug ("Player unready");
-				if (Playing) {
-					Stop (false);
-				}
+				Log.Debug ("Player unready, closing player");
+				player?.Close ();
 				this.ready = false;
 				delayedOpen = null;
 			}
