@@ -18,7 +18,6 @@
 using System.ComponentModel;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
-using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
 using VAS.Core.ViewModel;
 
@@ -57,8 +56,9 @@ namespace VAS.Drawing.CanvasObjects.Teams
 		}
 
 		public int Size {
-			set;
-			get;
+			set {
+				Width = Height = value;
+			}
 		}
 
 		public bool DrawPhoto {
@@ -110,9 +110,8 @@ namespace VAS.Drawing.CanvasObjects.Teams
 
 		public override void Draw (IDrawingToolkit tk, Area area)
 		{
-			Point zero, start, p;
+			Point zero, p;
 			double size, scale;
-			ISurface arrowin, arrowout;
 
 			if (Player == null)
 				return;
@@ -123,8 +122,7 @@ namespace VAS.Drawing.CanvasObjects.Teams
 
 
 			tk.Begin ();
-			start = new Point (Size / 2, Size / 2);
-			tk.TranslateAndScale (Center - start, new Point (scale, scale));
+			tk.TranslateAndScale (Position, new Point (scale, scale));
 
 			if (!UpdateDrawArea (tk, area, new Area (zero, size, size))) {
 				tk.End ();
