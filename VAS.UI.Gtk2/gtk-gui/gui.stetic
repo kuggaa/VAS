@@ -464,6 +464,7 @@
                             <property name="Tooltip" translatable="yes">Angle tool</property>
                             <property name="CanFocus">True</property>
                             <property name="Label" translatable="yes" />
+                            <property name="Active">True</property>
                             <property name="DrawIndicator">False</property>
                             <property name="HasLabel">False</property>
                             <property name="UseUnderline">True</property>
@@ -2136,7 +2137,6 @@
           <widget class="Gtk.EventBox" id="limit_box">
             <property name="MemberName" />
             <property name="HeightRequest">24</property>
-            <property name="Visible">False</property>
             <child>
               <widget class="Gtk.HBox" id="hbox2">
                 <property name="MemberName" />

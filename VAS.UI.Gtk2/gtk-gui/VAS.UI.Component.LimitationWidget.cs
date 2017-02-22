@@ -85,7 +85,6 @@ namespace VAS.UI.Component
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
-			this.limit_box.Hide ();
 			this.Hide ();
 		}
 	}
