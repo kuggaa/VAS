@@ -124,9 +124,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
+		// FIXME: View accessing the Model/ <value>The button.</value>
 		new AnalysisEventButton Button {
 			get {
-				return base.Button as AnalysisEventButton;
+				return ViewModel.Model;
 			}
 		}
 
@@ -134,7 +135,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			get {
 				return ShowTags && tagsByGroup.Count > 1
 											  && ViewModel.TagMode == TagMode.Predefined
-				&& Mode != DashboardMode.Edit;
+											  && ButtonVM.Mode != DashboardMode.Edit;
 			}
 		}
 
@@ -226,7 +227,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		void DelayTagClicked ()
 		{
-			if (tagsByGroup.Keys.Count == 1 || Mode == DashboardMode.Edit) {
+			if (tagsByGroup.Keys.Count == 1 || ButtonVM.Mode == DashboardMode.Edit) {
 				TimerCallback (null);
 				return;
 			}
@@ -354,9 +355,9 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		public override void ClickPressed (Point p, ButtonModifier modif)
 		{
-			if (Mode == DashboardMode.Edit || Button.ShowSettingIcon) {
+			if (ButtonVM.Mode == DashboardMode.Edit || Button.ShowSettingIcon) {
 				editClicked = CheckRect (p, editRect, editbutton);
-				if (editClicked || Mode == DashboardMode.Edit)
+				if (editClicked || ButtonVM.Mode == DashboardMode.Edit)
 					return;
 			}
 
@@ -514,7 +515,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			Color c;
 			double width, height;
 
-			if ((Mode != DashboardMode.Edit || ShowLinks || !ViewModel.ShowSubcategories) && !Button.ShowSettingIcon) {
+			if ((ButtonVM.Mode != DashboardMode.Edit || ShowLinks || !ViewModel.ShowSubcategories) && !Button.ShowSettingIcon) {
 				return;
 			}
 
@@ -538,7 +539,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		void DrawSelectedTags (IDrawingToolkit tk)
 		{
-			if (Mode == DashboardMode.Edit) {
+			if (ButtonVM.Mode == DashboardMode.Edit) {
 				return;
 			}
 			foreach (Rectangle r in rects.Keys) {
@@ -558,7 +559,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		protected virtual void DrawRecordTime (IDrawingToolkit tk)
 		{
-			if (Recording && Mode != DashboardMode.Edit && ViewModel.ButtonTime != null) {
+			if (Recording && ButtonVM.Mode != DashboardMode.Edit && ViewModel.ButtonTime != null) {
 				if (ShowTags) {
 					tk.FontSize = 12;
 					tk.FontWeight = FontWeight.Normal;

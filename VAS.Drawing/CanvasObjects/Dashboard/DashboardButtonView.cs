@@ -49,11 +49,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			anchor.Dispose ();
 		}
 
-		public DashboardMode Mode {
-			get;
-			set;
-		}
-
 		public bool SupportsLinks {
 			get;
 			set;
@@ -93,7 +88,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		public override bool DrawsSelectionArea {
 			get {
-				return Mode == DashboardMode.Edit;
+				return ButtonVM.Mode == DashboardMode.Edit;
 			}
 		}
 
@@ -170,7 +165,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				return base.Active;
 			}
 			set {
-				if (Mode != DashboardMode.Edit) {
+				if (ButtonVM.Mode != DashboardMode.Edit) {
 					base.Active = value;
 				}
 			}
