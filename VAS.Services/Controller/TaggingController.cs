@@ -15,13 +15,11 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Hotkeys;
-using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
@@ -42,7 +40,6 @@ namespace VAS.Services.Controller
 			get {
 				return videoPlayer;
 			}
-
 			set {
 				if (videoPlayer != null) {
 					videoPlayer.PropertyChanged -= HandleVideoPlayerPropertyChanged;
@@ -173,19 +170,7 @@ namespace VAS.Services.Controller
 		void HandleVideoPlayerPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
 			if (sender == videoPlayer && e.PropertyName == "CurrentTime") {
-				SetVideoCurrentTimeToTimerButtons ();
-			}
-		}
-
-		void SetVideoCurrentTimeToTimerButtons ()
-		{
-			project.Dashboard.CurrentTime = VideoPlayer.CurrentTime;
-			foreach (var timerVM in project.Dashboard.ViewModels.OfType<TimerButtonVM> ()) {
-				timerVM.CurrentTime = VideoPlayer.CurrentTime;
-			}
-
-			foreach (var timedVM in project.Dashboard.ViewModels.OfType<TimedDashboardButtonVM> ()) {
-				timedVM.CurrentTime = VideoPlayer.CurrentTime;
+				project.Dashboard.CurrentTime = VideoPlayer.CurrentTime;
 			}
 		}
 	}

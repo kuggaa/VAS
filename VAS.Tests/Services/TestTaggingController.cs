@@ -15,7 +15,6 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
@@ -40,6 +39,7 @@ namespace VAS.Tests.Services
 		List<TeamVM> teams;
 		ProjectVM project;
 		TimelineEvent sendedTimelineEvent;
+		VideoPlayerVM videoPlayer;
 		bool hasSendedDashboardEvent;
 
 		[TestFixtureSetUp]
@@ -70,7 +70,7 @@ namespace VAS.Tests.Services
 
 			teams = new List<TeamVM> { team1, team2 };
 			project = new DummyProjectVM (teams) { Model = new Utils.ProjectDummy () };
-			var videoPlayer = new VideoPlayerVM {
+			videoPlayer = new VideoPlayerVM {
 				CamerasConfig = new ObservableCollection<CameraConfig> ()
 			};
 			controller = new Utils.DummyTaggingController ();
@@ -301,6 +301,15 @@ namespace VAS.Tests.Services
 
 			Assert.AreEqual (new Time (9).MSeconds, sendedTimelineEvent.EventTime.MSeconds);
 			Assert.AreEqual (2, sendedTimelineEvent.Players.Count);
+		}
+
+		[Test]
+		public void TestCurrenTimeUpdated ()
+		{
+			Time time = new Time (5000);
+			videoPlayer.CurrentTime = time;
+
+			Assert.AreEqual (time, project.Dashboard.CurrentTime);
 		}
 
 		void HandleNewDashboardEvent (NewDashboardEvent e)
