@@ -18,6 +18,8 @@
 using System.Linq;
 using NUnit.Framework;
 using VAS.Core.MVVMC;
+using VAS.Core.Store;
+using VAS.Core.ViewModel;
 
 namespace VAS.Tests.MVVMC
 {
@@ -87,5 +89,28 @@ namespace VAS.Tests.MVVMC
 			Assert.AreEqual ("Selection", propName);
 			Assert.AreEqual (0, viewModel.Selection.Count);
 		}
+
+		[Test]
+		public void TestVisibleEvents ()
+		{
+			// Arrange
+			var childVM1 = new TimelineEventVM ();
+			var childVM2 = new TimelineEventVM ();
+			var childVM3 = new TimelineEventVM ();
+			var viewModel = new NestedViewModel<TimelineEventVM> ();
+			viewModel.ViewModels.Add (childVM1);
+			viewModel.ViewModels.Add (childVM2);
+			viewModel.ViewModels.Add (childVM3);
+			// Assume
+			Assert.AreEqual (3, viewModel.VisibleChildrenCount);
+
+			// Act
+			childVM1.Visible = false;
+			childVM3.Visible = false;
+
+			// Assert
+			Assert.AreEqual (1, viewModel.VisibleChildrenCount);
+		}
+
 	}
 }
