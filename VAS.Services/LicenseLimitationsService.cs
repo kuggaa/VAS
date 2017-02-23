@@ -17,6 +17,9 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Interfaces;
 using VAS.Core.License;
 using VAS.Core.MVVMC;
@@ -61,6 +64,7 @@ namespace VAS.Services
 		/// </summary>
 		public virtual bool Start ()
 		{
+			App.Current.EventsBroker.Subscribe<LicenseChangeEvent> (HandleLicenseChangeEvent);
 			return true;
 		}
 
@@ -69,6 +73,7 @@ namespace VAS.Services
 		/// </summary>
 		public virtual bool Stop ()
 		{
+			App.Current.EventsBroker.Unsubscribe<LicenseChangeEvent> (HandleLicenseChangeEvent);
 			return true;
 		}
 
@@ -109,6 +114,14 @@ namespace VAS.Services
 				viewModel.UpgradeCommand = command;
 			}
 			Limitations [limitation.Name] = viewModel;
+		}
+
+		void HandleLicenseChangeEvent (LicenseChangeEvent e)
+		{
+			bool enable = App.Current.LicenseManager.LicenseStatus.Level < LicenseLevel.LEVEL_1;
+			foreach (var limitation in GetAll ().Select ((arg) => arg.Model)) {
+				limitation.Enabled = enable;
+			}
 		}
 	}
 }

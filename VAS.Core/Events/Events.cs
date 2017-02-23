@@ -423,4 +423,8 @@ namespace VAS.Core.Events
 		public KeyValuePair<TParent, IEnumerable<TChild>> ElementsToAdd { get; set; }
 		public int Index { get; set; }
 	}
+
+	public class LicenseChangeEvent : Event
+	{
+	}
 }
