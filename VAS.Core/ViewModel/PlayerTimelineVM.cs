@@ -15,13 +15,15 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System.Linq;
-using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
+
 namespace VAS.Core.ViewModel
 {
+	/// <summary>
+	/// A timeline ViewModel to list all the <see cref="TimelineEventVM"/>  of a given <see cref="Player"/>.
+	/// </summary>
 	public class PlayerTimelineVM : NestedViewModel<TimelineEventVM>, IViewModel<Player>
 	{
 		public PlayerTimelineVM ()
@@ -42,6 +44,10 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the player of the timeline.
+		/// </summary>
+		/// <value>The player.</value>
 		public PlayerVM Player {
 			get;
 			protected set;
