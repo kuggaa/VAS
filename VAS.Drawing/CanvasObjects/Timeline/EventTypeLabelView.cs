@@ -69,7 +69,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				viewModel = value;
 				if (viewModel != null) {
 					viewModel.PropertyChanged += HandlePropertyChanged;
-					playButton.Insensitive = viewModel.VisibleEvents == 0;
+					playButton.Insensitive = viewModel.VisibleChildrenCount == 0;
 				}
 			}
 		}
@@ -137,7 +137,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		{
 			if (e.PropertyName == nameof (TimelineEventVM.Visible) ||
 				e.PropertyName == $"Collection_{nameof (EventTypeTimelineVM.ViewModels)}") {
-				playButton.Insensitive = ViewModel.VisibleEvents == 0;
+				playButton.Insensitive = ViewModel.VisibleChildrenCount == 0;
 				ReDraw ();
 			} else if (e.PropertyName == nameof (EventTypeVM.Name)) {
 				ReDraw ();
