@@ -234,7 +234,7 @@ gve_create_video_encode_bin (GstVideoEditor * gve, GError ** err)
   gve->priv->video_encoder =
       lgm_create_video_encoder (gve->priv->video_encoder_type,
       gve->priv->video_quality, FALSE, GVE_ERROR, err);
-  if (err) {
+  if (*err) {
     return;
   }
 
@@ -268,11 +268,10 @@ gve_create_video_encode_bin (GstVideoEditor * gve, GError ** err)
 }
 
 static void
-gve_create_audio_encode_bin (GstVideoEditor * gve)
+gve_create_audio_encode_bin (GstVideoEditor * gve, GError ** err)
 {
   GstPad *sinkpad = NULL;
   GstPad *srcpad = NULL;
-  GError *error = NULL;
 
   if (gve->priv->aencode_bin != NULL)
     return;
@@ -283,10 +282,8 @@ gve_create_audio_encode_bin (GstVideoEditor * gve)
   gve->priv->audioqueue = gst_element_factory_make ("queue", "audio-queue");
   gve->priv->audioencoder =
       lgm_create_audio_encoder (gve->priv->audio_encoder_type,
-      gve->priv->audio_quality, GVE_ERROR, &error);
-  if (error) {
-    g_signal_emit (gve, gve_signals[SIGNAL_ERROR], 0, error->message);
-    g_error_free (error);
+      gve->priv->audio_quality, GVE_ERROR, err);
+  if (*err) {
     return;
   }
 
@@ -615,7 +612,12 @@ gst_video_editor_start (GstVideoEditor * gve)
       gve->priv->muxer, gve->priv->file_sink, NULL);
 
   if (gve->priv->audio_enabled) {
-    gve_create_audio_encode_bin (gve);
+    gve_create_audio_encode_bin (gve, &error);
+    if(error) {
+      g_signal_emit (gve, gve_signals[SIGNAL_ERROR], 0, error->message);
+      g_error_free (error);
+      return;
+    }
     gst_bin_add (GST_BIN (gve->priv->main_pipeline), gve->priv->aencode_bin);
     gst_element_link (gve->priv->aencode_bin, gve->priv->muxer);
   }
