@@ -15,7 +15,9 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Events;
@@ -73,6 +75,8 @@ namespace VAS.Core.ViewModel
 			};
 
 			ChangeFitMode = new Command<FitMode> ((p) => FitMode = p);
+
+			ViewModels.CollectionChanged += HandleCollectionChanged;
 		}
 
 		/// <summary>
@@ -288,16 +292,12 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
-		public string GamePeriods {
+		public ObservableCollection<string> GamePeriods {
 			get {
-				return string.Join ("-", Model.GamePeriods);
+				return Model.GamePeriods;
 			}
 			set {
-				try {
-					Model.GamePeriods = new ObservableCollection<string> (value.Split ('-'));
-				} catch {
-					App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Could not parse game periods."));
-				}
+				Model.GamePeriods = value;
 			}
 		}
 
@@ -309,5 +309,18 @@ namespace VAS.Core.ViewModel
 		{
 			return new DashboardButtonCollectionVM ();
 		}
+
+		void HandleCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (e.Action == NotifyCollectionChangedAction.Add) {
+				foreach (DashboardButtonVM buttonVM in e.NewItems) {
+					buttonVM.Mode = Mode;
+					if (buttonVM is TimedDashboardButtonVM) {
+						((TimedDashboardButtonVM)buttonVM).CurrentTime = CurrentTime;
+					}
+				}
+			}
+		}
+
 	}
 }
