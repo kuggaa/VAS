@@ -24,6 +24,7 @@ using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.GUI;
+using VAS.Core.Interfaces.License;
 using VAS.DB;
 
 namespace VAS.Tests
@@ -55,6 +56,11 @@ namespace VAS.Tests
 			navigation.Setup (x => x.PopModal (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
 			navigation.Setup (x => x.Pop (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
 			App.Current.Navigation = navigation.Object;
+			var mockLicenseManager = new Mock<ILicenseManager> ();
+			var mockLicenseStatus = new Mock<ILicenseStatus> ();
+			mockLicenseManager.SetupGet (obj => obj.LicenseStatus).Returns (mockLicenseStatus.Object);
+			mockLicenseStatus.SetupGet (obj => obj.Level).Returns (LicenseLevel.FREEMIUM);
+			App.Current.LicenseManager = mockLicenseManager.Object;
 		}
 	}
 
