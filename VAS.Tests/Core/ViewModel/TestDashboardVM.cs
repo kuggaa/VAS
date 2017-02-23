@@ -17,6 +17,7 @@
 //
 using System.Linq;
 using NUnit.Framework;
+using VAS.Core.Common;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
 using VAS.Drawing;
@@ -80,7 +81,7 @@ namespace VAS.Tests.Core.ViewModel
 		}
 
 		[Test]
-		public void TestProgateCurrentTime ()
+		public void TestPropagateCurrentTime ()
 		{
 			Time time = new Time (5000);
 			dashboard.CurrentTime = time;
@@ -88,6 +89,20 @@ namespace VAS.Tests.Core.ViewModel
 			foreach (var button in dashboard.ViewModels.OfType<TimedDashboardButtonVM> ()) {
 				Assert.AreEqual (time, button.CurrentTime);
 			}
+		}
+
+		[Test]
+		public void TestAddButton_PropertiesInSync ()
+		{
+			TimedDashboardButtonVM viewModel = new TimedDashboardButtonVM ();
+			viewModel.Mode = DashboardMode.Edit;
+			dashboard.Mode = DashboardMode.Code;
+			Time time = new Time (5000);
+			dashboard.CurrentTime = time;
+			dashboard.ViewModels.Add (viewModel);
+
+			Assert.AreEqual (DashboardMode.Code, viewModel.Mode);
+			Assert.AreEqual (time, viewModel.CurrentTime);
 		}
 	}
 }
