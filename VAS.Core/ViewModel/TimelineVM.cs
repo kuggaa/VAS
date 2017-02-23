@@ -296,13 +296,13 @@ namespace VAS.Core.ViewModel
 				EventTypesTimeline.ViewModels.Add (new EventTypeTimelineVM { Model = viewModel.Model.EventType });
 			}
 			eventTypeToTimeline [viewModel.Model.EventType.Name].ViewModels.Add (viewModel);
-			UpdatePlayersTimeline (viewModel);
+			AddToPlayersTimeline (viewModel);
 		}
 
-		void UpdatePlayersTimeline (TimelineEventVM viewModel)
+		void AddToPlayersTimeline (TimelineEventVM timelineEventVM)
 		{
-			foreach (Player player in viewModel.Model.Players) {
-				playerToTimeline [player].ViewModels.Add (viewModel);
+			foreach (Player player in timelineEventVM.Model.Players) {
+				playerToTimeline [player].ViewModels.Add (timelineEventVM);
 			}
 		}
 
@@ -318,12 +318,14 @@ namespace VAS.Core.ViewModel
 		{
 			TimelineEventVM timelineEvent = sender as TimelineEventVM;
 			if (timelineEvent != null && e.PropertyName == $"Collection_{nameof (TimelineEvent.Players)}") {
+				// It's a bit faster to remove all the existing events and add them again in AddToPlayersTimeline
+				// than traversing the whole tree to add only the new ones.
 				foreach (PlayerTimelineVM timeline in playerToTimeline.Values) {
 					if (timeline.ViewModels.Contains (timelineEvent)) {
 						timeline.ViewModels.Remove (timelineEvent);
 					}
 				}
-				UpdatePlayersTimeline (timelineEvent);
+				AddToPlayersTimeline (timelineEvent);
 			}
 		}
 	}
