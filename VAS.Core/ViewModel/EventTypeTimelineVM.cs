@@ -58,16 +58,6 @@ namespace VAS.Core.ViewModel
 			protected set;
 		}
 
-		/// <summary>
-		/// Gets the total visible events inside this EventType
-		/// </summary>
-		/// <value>The visible events.</value>
-		public int VisibleEvents {
-			get {
-				return ViewModels.OfType<IVisible> ().Count (vm => vm.Visible);
-			}
-		}
-
 		public void LoadEventType ()
 		{
 			App.Current.EventsBroker.Publish (new LoadTimelineEventEvent<EventTypeTimelineVM> {
