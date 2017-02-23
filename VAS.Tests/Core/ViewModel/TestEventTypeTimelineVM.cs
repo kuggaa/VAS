@@ -49,25 +49,5 @@ namespace VAS.Tests.Core.ViewModel
 			model.Name = "T";
 			Assert.AreEqual (2, count);
 		}
-
-		[Test]
-		public void TestVisibleEvents ()
-		{
-			var model = new EventType ();
-			var childVM1 = new TimelineEventVM ();
-			var childVM2 = new TimelineEventVM ();
-			var childVM3 = new TimelineEventVM ();
-			var viewModel = new EventTypeTimelineVM ();
-			viewModel.Model = model;
-			viewModel.ViewModels.Add (childVM1);
-			viewModel.ViewModels.Add (childVM2);
-			viewModel.ViewModels.Add (childVM3);
-			Assert.AreEqual (3, viewModel.VisibleEvents);
-
-			childVM1.Visible = false;
-			childVM3.Visible = false;
-
-			Assert.AreEqual (1, viewModel.VisibleEvents);
-		}
 	}
 }

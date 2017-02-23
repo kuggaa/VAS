@@ -176,8 +176,8 @@ namespace VAS.UI.Component
 
 				if (ViewModel is EventTypeTimelineVM) {
 					var vm = (EventTypeTimelineVM)ViewModel;
-					RenderType (vm.EventTypeVM.Name, vm.VisibleEvents, vm.EventTypeVM.Color, App.Current.DrawingToolkit, context, bkg, cell, state);
-					RenderPlayButton (App.Current.DrawingToolkit, cell, vm.VisibleEvents == 0, state);
+					RenderType (vm.EventTypeVM.Name, vm.VisibleChildrenCount, vm.EventTypeVM.Color, App.Current.DrawingToolkit, context, bkg, cell, state);
+					RenderPlayButton (App.Current.DrawingToolkit, cell, vm.VisibleChildrenCount == 0, state);
 				} else if (ViewModel is PlaylistVM) {
 					var vm = (PlaylistVM)ViewModel;
 					RenderType (vm.Name, vm.Count (), App.Current.Style.PaletteText, App.Current.DrawingToolkit, context, bkg, cell, state);
