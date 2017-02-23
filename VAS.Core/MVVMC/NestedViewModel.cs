@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using VAS.Core.Common;
+using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.MVVMC
@@ -79,6 +80,16 @@ namespace VAS.Core.MVVMC
 				}
 			}
 		}
+
+		/// <summary>
+		/// Gets the count of visible children
+		/// </summary>
+		public int VisibleChildrenCount {
+			get {
+				return ViewModels.OfType<IVisible> ().Count (vm => vm.Visible);
+			}
+		}
+
 
 		/// <summary>
 		/// Selects the specified child viewModel.
