@@ -32,6 +32,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controller\TaggingController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LicenseLimitationsService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HotkeysService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)State\PreferencesState.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />
