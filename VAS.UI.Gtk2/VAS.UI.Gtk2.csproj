@@ -1,148 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4F1F28AB-3D1F-4F3F-95A4-2E08B448317C}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>VAS.UI</RootNamespace>
-    <AssemblyName>VAS.UI</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\..\bin</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\bin</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="gtk-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="gdk-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="glib-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="glade-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="pango-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="atk-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="Mono.Posix" />
-    <Reference Include="Mono.Cairo" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="gtk-gui\gui.stetic">
-      <LogicalName>gui.stetic</LogicalName>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="gtk-gui\generated.cs" />
-    <Compile Include="UI\Component\Timeline.cs" />
-    <Compile Include="gtk-gui\VAS.UI.Component.Timeline.cs" />
-    <Compile Include="UI\Menu\PlaysMenu.cs" />
-    <Compile Include="..\AssemblyInfo\AssemblyInfo.cs">
-      <Link>AssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="UI\Dialog\SplashScreen.cs" />
-    <Compile Include="UI\TreeView\CellRendererButton.cs" />
-    <Compile Include="UI\TreeView\CellRendererButtonImage.cs" />
-    <Compile Include="UI\Dialog\ChooseOptionDialog.cs" />
-    <Compile Include="gtk-gui\VAS.UI.Dialog.ChooseOptionDialog.cs" />
-    <Compile Include="UI\Dialog\BusyDialog.cs" />
-    <Compile Include="gtk-gui\VAS.UI.Dialog.BusyDialog.cs" />
-    <Compile Include="UI\Dialog\CalendarDialog.cs" />
-    <Compile Include="gtk-gui\VAS.UI.Dialog.CalendarDialog.cs" />
-    <Compile Include="Dialogs.cs" />
-    <Compile Include="GUIToolkitBase.cs" />
-    <Compile Include="UI\Common\TreeViewBase.cs" />
-    <Compile Include="UI\Common\ComboBoxViewBase.cs" />
-    <Compile Include="UI\Menu\MenuHelpers.cs" />
-    <Compile Include="UI\Common\PlaylistTreeView.cs" />
-    <Compile Include="UI\Component\DatePicker.cs" />
-    <Compile Include="gtk-gui\VAS.UI.UI.Component.DatePicker.cs" />
-    <Compile Include="UI\Dialog\DrawingTool.cs" />
-	<Compile Include="gtk-gui\VAS.UI.Dialog.DrawingTool.cs" />
-	<Compile Include="UI\Component\RenderingStateBarView.cs" />
-	<Compile Include="gtk-gui\VAS.UI.Component.RenderingStateBarView.cs" />
-    <Compile Include="UI\Dialog\VideoEditionProperties.cs" />
-    <Compile Include="gtk-gui\VAS.UI.Dialog.VideoEditionProperties.cs" />
-    <Compile Include="UI\Component\MediaFileChooser.cs" />
-    <Compile Include="gtk-gui\VAS.UI.Component.MediaFileChooser.cs" />
-    <Compile Include="UI\Menu\EventsMenu.cs" />
-    <Compile Include="UI\Menu\PlaylistMenu.cs" />
-    <Compile Include="UI\Component\JobsManagerView.cs" />
-    <Compile Include="gtk-gui\VAS.UI.UI.Component.JobsManagerView.cs" />
-    <Compile Include="UI\TreeView\JobsTreeView.cs" />
-    <Compile Include="UI\TreeView\FilterTreeViewBase.cs" />
-    <Compile Include="UI\TreeView\StringObject.cs" />
-    <Compile Include="UI\Common\NestedTreeViewBase.cs" />
-    <Compile Include="UI\TreeView\EventCellRenderer.cs" />
-    <Compile Include="UI\TreeView\TimelineEventsTreeView.cs" />
-    <Compile Include="gtk-gui\VAS.UI.Component.LimitationWidget.cs" />
-    <Compile Include="UI\Component\LimitationWidget.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="UI\" />
-    <Folder Include="UI\Component\" />
-    <Folder Include="UI\Menu\" />
-    <Folder Include="UI\TreeView\" />
-    <Folder Include="UI\Common\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\VAS.Core\VAS.Core.Net45.csproj">
-      <Project>{08AE7734-B995-4E0D-AD8F-38F597E0D4DF}</Project>
-      <Name>VAS.Core.Net45</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VAS.Drawing.Cairo\VAS.Drawing.Cairo.csproj">
-      <Project>{AE98609B-353C-4CE4-A5B7-606BB4EE3576}</Project>
-      <Name>VAS.Drawing.Cairo</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VAS.UI.Helpers.Gtk2\VAS.UI.Helpers.Gtk2.csproj">
-      <Project>{E75E30DC-C1CF-4683-9A36-65B91EF10095}</Project>
-      <Name>VAS.UI.Helpers.Gtk2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VAS.Drawing\VAS.Drawing.Net45.csproj">
-      <Project>{F99F378C-8C75-4888-A173-C7B4EC2D37E0}</Project>
-      <Name>VAS.Drawing.Net45</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VAS.UI.Multimedia.Gtk2\VAS.UI.Multimedia.Gtk2.csproj">
-      <Project>{473E7B85-AF42-40E8-BE21-46FF6CCC34D0}</Project>
-      <Name>VAS.UI.Multimedia.Gtk2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VAS.Services\VAS.Services.Net45.csproj">
-      <Project>{153BFD3F-6E06-451B-AD79-6C207762BBBB}</Project>
-      <Name>VAS.Services.Net45</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ProjectExtensions>
-    <MonoDevelop>
-      <Properties>
-        <Policies>
-          <StandardHeader Text="&#xA; Copyright (C) ${Year} ${CopyrightHolder}&#xA;&#xA; This program is free software; you can redistribute it and/or modify&#xA; it under the terms of the GNU General Public License as published by&#xA; the Free Software Foundation; either version 2 of the License, or&#xA; (at your option) any later version.&#xA;&#xA; This program is distributed in the hope that it will be useful,&#xA; but WITHOUT ANY WARRANTY; without even the implied warranty of&#xA; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the&#xA; GNU General Public License for more details.&#xA; &#xA; You should have received a copy of the GNU General Public License&#xA; along with this program; if not, write to the Free Software&#xA; Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.&#xA;" IncludeInNewFiles="True" />
-        </Policies>
-      </Properties>
-    </MonoDevelop>
-  </ProjectExtensions>
+	<PropertyGroup>
+		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+		<ProjectGuid>{4F1F28AB-3D1F-4F3F-95A4-2E08B448317C}</ProjectGuid>
+		<OutputType>Library</OutputType>
+		<RootNamespace>VAS.UI</RootNamespace>
+		<AssemblyName>VAS.UI</AssemblyName>
+		<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>full</DebugType>
+		<Optimize>false</Optimize>
+		<OutputPath>..\..\bin</OutputPath>
+		<DefineConstants>DEBUG;</DefineConstants>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+		<ConsolePause>false</ConsolePause>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<DebugType>full</DebugType>
+		<Optimize>true</Optimize>
+		<OutputPath>..\..\bin</OutputPath>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+		<ConsolePause>false</ConsolePause>
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include="System" />
+		<Reference Include="gtk-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+			<SpecificVersion>False</SpecificVersion>
+		</Reference>
+		<Reference Include="gdk-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+			<SpecificVersion>False</SpecificVersion>
+		</Reference>
+		<Reference Include="glib-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+			<SpecificVersion>False</SpecificVersion>
+		</Reference>
+		<Reference Include="glade-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+			<SpecificVersion>False</SpecificVersion>
+		</Reference>
+		<Reference Include="pango-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+			<SpecificVersion>False</SpecificVersion>
+		</Reference>
+		<Reference Include="atk-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+			<SpecificVersion>False</SpecificVersion>
+		</Reference>
+		<Reference Include="Mono.Posix" />
+		<Reference Include="Mono.Cairo" />
+		<Reference Include="Microsoft.CSharp" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="gtk-gui\gui.stetic">
+			<LogicalName>gui.stetic</LogicalName>
+		</EmbeddedResource>
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Include="gtk-gui\generated.cs" />
+		<Compile Include="UI\Component\Timeline.cs" />
+		<Compile Include="gtk-gui\VAS.UI.Component.Timeline.cs" />
+		<Compile Include="UI\Menu\PlaysMenu.cs" />
+		<Compile Include="..\AssemblyInfo\AssemblyInfo.cs">
+			<Link>AssemblyInfo.cs</Link>
+		</Compile>
+		<Compile Include="UI\Dialog\SplashScreen.cs" />
+		<Compile Include="UI\TreeView\CellRendererButton.cs" />
+		<Compile Include="UI\TreeView\CellRendererButtonImage.cs" />
+		<Compile Include="UI\Dialog\ChooseOptionDialog.cs" />
+		<Compile Include="gtk-gui\VAS.UI.Dialog.ChooseOptionDialog.cs" />
+		<Compile Include="UI\Dialog\BusyDialog.cs" />
+		<Compile Include="gtk-gui\VAS.UI.Dialog.BusyDialog.cs" />
+		<Compile Include="UI\Dialog\CalendarDialog.cs" />
+		<Compile Include="gtk-gui\VAS.UI.Dialog.CalendarDialog.cs" />
+		<Compile Include="Dialogs.cs" />
+		<Compile Include="GUIToolkitBase.cs" />
+		<Compile Include="UI\Common\TreeViewBase.cs" />
+		<Compile Include="UI\Common\ComboBoxViewBase.cs" />
+		<Compile Include="UI\Menu\MenuHelpers.cs" />
+		<Compile Include="UI\Common\PlaylistTreeView.cs" />
+		<Compile Include="UI\Component\DatePicker.cs" />
+		<Compile Include="gtk-gui\VAS.UI.UI.Component.DatePicker.cs" />
+		<Compile Include="UI\Dialog\DrawingTool.cs" />
+		<Compile Include="gtk-gui\VAS.UI.Dialog.DrawingTool.cs" />
+		<Compile Include="UI\Component\RenderingStateBarView.cs" />
+		<Compile Include="gtk-gui\VAS.UI.Component.RenderingStateBarView.cs" />
+		<Compile Include="UI\Dialog\VideoEditionProperties.cs" />
+		<Compile Include="gtk-gui\VAS.UI.Dialog.VideoEditionProperties.cs" />
+		<Compile Include="UI\Component\MediaFileChooser.cs" />
+		<Compile Include="gtk-gui\VAS.UI.Component.MediaFileChooser.cs" />
+		<Compile Include="UI\Menu\EventsMenu.cs" />
+		<Compile Include="UI\Menu\PlaylistMenu.cs" />
+		<Compile Include="UI\Component\JobsManagerView.cs" />
+		<Compile Include="gtk-gui\VAS.UI.UI.Component.JobsManagerView.cs" />
+		<Compile Include="UI\TreeView\JobsTreeView.cs" />
+		<Compile Include="UI\TreeView\FilterTreeViewBase.cs" />
+		<Compile Include="UI\TreeView\StringObject.cs" />
+		<Compile Include="UI\Common\NestedTreeViewBase.cs" />
+		<Compile Include="UI\TreeView\EventCellRenderer.cs" />
+		<Compile Include="UI\TreeView\TimelineEventsTreeView.cs" />
+		<Compile Include="gtk-gui\VAS.UI.Component.LimitationWidget.cs" />
+		<Compile Include="UI\Component\LimitationWidget.cs" />
+		<Compile Include="UI\Panel\PreferencesPanel.cs" />
+		<Compile Include="gtk-gui\VAS.UI.Panel.PreferencesPanel.cs" />
+		<Compile Include="UI\Component\HotkeysConfiguration.cs" />
+		<Compile Include="gtk-gui\VAS.UI.Component.HotkeysConfiguration.cs" />
+	</ItemGroup>
+	<Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+	<ItemGroup>
+		<Folder Include="UI\" />
+		<Folder Include="UI\Component\" />
+		<Folder Include="UI\Menu\" />
+		<Folder Include="UI\TreeView\" />
+		<Folder Include="UI\Common\" />
+		<Folder Include="UI\Panel\" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\VAS.Core\VAS.Core.Net45.csproj">
+			<Project>{08AE7734-B995-4E0D-AD8F-38F597E0D4DF}</Project>
+			<Name>VAS.Core.Net45</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\VAS.Drawing.Cairo\VAS.Drawing.Cairo.csproj">
+			<Project>{AE98609B-353C-4CE4-A5B7-606BB4EE3576}</Project>
+			<Name>VAS.Drawing.Cairo</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\VAS.UI.Helpers.Gtk2\VAS.UI.Helpers.Gtk2.csproj">
+			<Project>{E75E30DC-C1CF-4683-9A36-65B91EF10095}</Project>
+			<Name>VAS.UI.Helpers.Gtk2</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\VAS.Drawing\VAS.Drawing.Net45.csproj">
+			<Project>{F99F378C-8C75-4888-A173-C7B4EC2D37E0}</Project>
+			<Name>VAS.Drawing.Net45</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\VAS.UI.Multimedia.Gtk2\VAS.UI.Multimedia.Gtk2.csproj">
+			<Project>{473E7B85-AF42-40E8-BE21-46FF6CCC34D0}</Project>
+			<Name>VAS.UI.Multimedia.Gtk2</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\VAS.Services\VAS.Services.Net45.csproj">
+			<Project>{153BFD3F-6E06-451B-AD79-6C207762BBBB}</Project>
+			<Name>VAS.Services.Net45</Name>
+		</ProjectReference>
+	</ItemGroup>
+	<ProjectExtensions>
+		<MonoDevelop>
+			<Properties>
+				<Policies>
+					<StandardHeader Text="&#xA; Copyright (C) ${Year} ${CopyrightHolder}&#xA;&#xA; This program is free software; you can redistribute it and/or modify&#xA; it under the terms of the GNU General Public License as published by&#xA; the Free Software Foundation; either version 2 of the License, or&#xA; (at your option) any later version.&#xA;&#xA; This program is distributed in the hope that it will be useful,&#xA; but WITHOUT ANY WARRANTY; without even the implied warranty of&#xA; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the&#xA; GNU General Public License for more details.&#xA; &#xA; You should have received a copy of the GNU General Public License&#xA; along with this program; if not, write to the Free Software&#xA; Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.&#xA;" IncludeInNewFiles="True" />
+				</Policies>
+			</Properties>
+		</MonoDevelop>
+	</ProjectExtensions>
 </Project>
