@@ -274,6 +274,9 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 			switch (sel.Position) {
 			case SelectionPosition.Left:
+				if (ClippingMode == NodeClippingMode.EventTime && !(newTime <= TimeNode.EventTime && TimeNode.EventTime <= TimeNode.Stop)) {
+					break;
+				}
 				if (newTime.MSeconds + MAX_TIME_SPAN > TimeNode.Stop.MSeconds) {
 					TimeNode.Start.MSeconds = TimeNode.Stop.MSeconds - MAX_TIME_SPAN;
 				} else {
@@ -281,6 +284,9 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				}
 				break;
 			case SelectionPosition.Right:
+				if (ClippingMode == NodeClippingMode.EventTime && !(TimeNode.Start <= TimeNode.EventTime && TimeNode.EventTime <= newTime)) {
+					break;
+				}
 				if (newTime.MSeconds - MAX_TIME_SPAN < TimeNode.Start.MSeconds) {
 					TimeNode.Stop.MSeconds = TimeNode.Start.MSeconds + MAX_TIME_SPAN;
 				} else {
@@ -310,6 +316,10 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 					break;
 				case NodeClippingMode.Strict:
 					ok = ((tstart + diff) >= new Time (0) && (tstop + diff) < MaxTime);
+					break;
+				case NodeClippingMode.EventTime:
+					ok = ((tstart + diff) <= TimeNode.EventTime && (tstop + diff) >= TimeNode.EventTime) &&
+						(tstop + diff) - (tstart + diff) >= new Time (MAX_TIME_SPAN);
 					break;
 				}
 

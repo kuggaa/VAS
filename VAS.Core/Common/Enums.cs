@@ -244,6 +244,10 @@ namespace VAS.Core.Common
 		/// The node cannot expand beyond its limits.
 		/// </summary>
 		Strict,
+		/// <summary>
+		/// The node can expand freely, without disappearing completely and cannot expand beyond Event Time
+		/// </summary>
+		EventTime,
 	}
 
 	/// <summary>
