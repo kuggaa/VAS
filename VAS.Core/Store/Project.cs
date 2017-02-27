@@ -187,7 +187,7 @@ namespace VAS.Core.Store
 
 		//FIXME: This should go to a controller
 		public abstract TimelineEvent CreateEvent (EventType type, Time start, Time stop, Time eventTime,
-												   Image miniature, int index);
+												   Image miniature, int index = 0);
 
 		//FIXME: This should go to a controller
 		public abstract void AddEvent (TimelineEvent play);
