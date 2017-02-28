@@ -20,7 +20,7 @@ using VAS.Core.Store;
 
 namespace VAS.Core.Hotkeys
 {
-	public class KeyConfig
+	public class KeyConfig : IEquatable<KeyConfig>
 	{
 		/// <summary>
 		/// Gets or sets the identifier name of the HotKey
@@ -45,5 +45,34 @@ namespace VAS.Core.Hotkeys
 		/// </summary>
 		/// <value>The description.</value>
 		public string Description { get; set; }
+
+		/// <summary>
+		/// Determines whether the specified <see cref="VAS.Core.Hotkeys.KeyConfig"/> is equal to the current <see cref="T:VAS.Core.Hotkeys.KeyConfig"/>.
+		/// Two KeyConfig are equal if their Name are the same
+		/// </summary>
+		/// <param name="other">The <see cref="VAS.Core.Hotkeys.KeyConfig"/> to compare with the current <see cref="T:VAS.Core.Hotkeys.KeyConfig"/>.</param>
+		/// <returns><c>true</c> if the specified <see cref="VAS.Core.Hotkeys.KeyConfig"/> is equal to the current
+		/// <see cref="T:VAS.Core.Hotkeys.KeyConfig"/>; otherwise, <c>false</c>.</returns>
+		public bool Equals (KeyConfig other)
+		{
+			if (other == null) {
+				return false;
+			}
+			return other.Name == Name;
+		}
+
+		public override bool Equals (object obj)
+		{
+			if (obj is KeyConfig) {
+				KeyConfig config = obj as KeyConfig;
+				return Equals (config);
+			} else
+				return false;
+		}
+
+		public override int GetHashCode ()
+		{
+			return Name.GetHashCode ();
+		}
 	}
 }
