@@ -26,7 +26,7 @@ namespace VAS.Services
 	/// <summary>
 	/// Hotkeys service, use this service to register hotkeys than later can be obtained by other classes.
 	/// </summary>
-	public class HotkeysService : IService
+	public class HotkeysService : IHotkeysService
 	{
 		List<KeyConfig> keyConfigs;
 
@@ -71,21 +71,48 @@ namespace VAS.Services
 			return true;
 		}
 
+		/// <summary>
+		/// Register the specified keyConfig.
+		/// </summary>
+		/// <param name="keyConfig">Key config.</param>
 		public void Register (KeyConfig keyConfig)
 		{
-			//check for keyConfigs with same name to throw exception
+			if (keyConfigs.Contains (keyConfig)) {
+				throw new InvalidOperationException ("A KeyConfig with the same name is already registered");
+			}
 			keyConfigs.Add (keyConfig);
 		}
 
+		/// <summary>
+		/// Register the specified list of keyConfigs
+		/// </summary>
+		/// <param name="keyConfig">Key config list</param>
 		public void Register (IEnumerable<KeyConfig> keyConfig)
 		{
-			//check for keyConfigs with same name to throw exception
+			if (keyConfig.Except (keyConfigs).Count () != keyConfig.Count ()) {
+				throw new InvalidOperationException ("A KeyConfig with the same name is already registered");
+			}
 			keyConfigs.AddRange (keyConfig);
 		}
 
+		/// <summary>
+		/// Gets KeyConfig by the name
+		/// </summary>
+		/// <returns>The KeyConfig</returns>
+		/// <param name="name">Name.</param>
 		public KeyConfig GetByName (string name)
 		{
 			return keyConfigs.FirstOrDefault ((arg) => arg.Name == name);
+		}
+
+		/// <summary>
+		/// Gets the KeyConfig 
+		/// </summary>
+		/// <returns>The by category.</returns>
+		/// <param name="category">Category.</param>
+		public IEnumerable<KeyConfig> GetByCategory (string category)
+		{
+			return keyConfigs.Where ((arg) => arg.Category == category);
 		}
 	}
 }
