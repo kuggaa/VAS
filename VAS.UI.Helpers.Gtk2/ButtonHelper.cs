@@ -144,6 +144,28 @@ namespace VAS.UI.Helpers
 			}
 		}
 
+		// FIXME: this method should be gone when we use the ButtonBindings everywhere
+		public static void Bind (this Button button, Command command, object parameter = null)
+		{
+			button.Configure (command.Icon?.Value, command.Text, command.ToolTipText, null);
+
+			button.Sensitive = command.CanExecute (parameter);
+			EventHandler handler = (sender, e) => {
+				button.Sensitive = command.CanExecute (parameter);
+			};
+			command.CanExecuteChanged += handler;
+			button.Destroyed += (sender, e) => {
+				command.CanExecuteChanged -= handler;
+			};
+			button.Clicked += (sender, e) => {
+				var radioButton = sender as RadioButton;
+				if (radioButton != null && radioButton.Active == false) {
+					return;
+				}
+				command.Execute (parameter);
+			};
+		}
+
 		/// <summary>
 		/// Links a group of toggle buttons to act like a radio button group.
 		/// </summary>
