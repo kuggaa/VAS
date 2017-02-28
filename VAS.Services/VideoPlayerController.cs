@@ -895,48 +895,37 @@ namespace VAS.Services
 		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
 		{
 			return new KeyAction [] {
-				new KeyAction (new KeyConfig {
-					Name = "PLAYER_RATE_INCREMENT",
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Right")},
+				new KeyAction (
+					App.Current.HotkeysService.GetByName("PLAYER_RATE_INCREMENT"),
 					FramerateUp
 				),
-				new KeyAction (new KeyConfig {
-					Name = "PLAYER_RATE_DECREMENT",
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Left")},
+				new KeyAction (
+					App.Current.HotkeysService.GetByName("PLAYER_RATE_DECREMENT"),
 					FramerateDown
 				),
-				new KeyAction (new KeyConfig {
-					Name = "PLAYER_RATE_MAX",
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Up")},
+				new KeyAction (
+					App.Current.HotkeysService.GetByName("PLAYER_RATE_MAX"),
 					FramerateUpper
 				),
-				new KeyAction (new KeyConfig {
-					Name = "PLAYER_RATE_DEFAULT",
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Down")},
+				new KeyAction (App.Current.HotkeysService.GetByName("PLAYER_RATE_DEFAULT"),
 					FramerateLower
 				),
-
-				new KeyAction (new KeyConfig {
-					Name = "PLAYER_TOGGLE_PLAY",
-					Key = App.Current.Keyboard.ParseName ("space")},
+				new KeyAction (
+					App.Current.HotkeysService.GetByName("PLAYER_TOGGLE_PLAY"),
 					TogglePlay
 				),
-				new KeyAction (new KeyConfig {
-					Name = "PLAYER_SEEK_LEFT_SHORT",
-					Key = App.Current.Keyboard.ParseName ("Left")},
-					() => PerformStep(new Time { TotalSeconds = -SHORT_SEEK_SECONDS })),
-				new KeyAction (new KeyConfig {
-					Name = "PLAYER_SEEK_LEFT_LONG",
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+Left")},
-					() => PerformStep(new Time { TotalSeconds = -LONG_SEEK_SECONDS })),
-				new KeyAction (new KeyConfig {
-					Name = "PLAYER_SEEK_RIGHT_SHORT",
-					Key = App.Current.Keyboard.ParseName ("Right")},
-					() => PerformStep(new Time { TotalSeconds = SHORT_SEEK_SECONDS })),
-				new KeyAction (new KeyConfig {
-					Name = "PLAYER_SEEK_RIGHT_LONG",
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+Right")},
-					() => PerformStep(new Time { TotalSeconds = LONG_SEEK_SECONDS }))
+				new KeyAction (
+					App.Current.HotkeysService.GetByName("PLAYER_SEEK_LEFT_SHORT"),
+					() => PerformStep (new Time { TotalSeconds = -SHORT_SEEK_SECONDS })),
+				new KeyAction (
+					App.Current.HotkeysService.GetByName("PLAYER_SEEK_LEFT_LONG"),
+					() => PerformStep (new Time { TotalSeconds = -LONG_SEEK_SECONDS })),
+				new KeyAction (
+					App.Current.HotkeysService.GetByName("PLAYER_SEEK_RIGHT_SHORT"),
+					() => PerformStep (new Time { TotalSeconds = SHORT_SEEK_SECONDS })),
+				new KeyAction (
+					App.Current.HotkeysService.GetByName("PLAYER_SEEK_RIGHT_LONG"),
+					() => PerformStep (new Time { TotalSeconds = LONG_SEEK_SECONDS }))
 			};
 		}
 
