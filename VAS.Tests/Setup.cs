@@ -15,12 +15,14 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System.Collections.Generic;
 using System.Threading;
 using ICSharpCode.SharpZipLib;
 using Moq;
 using NUnit.Framework;
 using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.GUI;
@@ -72,6 +74,10 @@ namespace VAS.Tests
 	public class ConfigDummy : Config
 	{
 		//Dummy class for VAS.Config
+		public ConfigDummy ()
+		{
+			KeyConfigs = new List<KeyConfig> ();
+		}
 	}
 
 	/// <summary>
