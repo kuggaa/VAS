@@ -81,6 +81,7 @@ namespace VAS.Services
 				throw new InvalidOperationException ("A KeyConfig with the same name is already registered");
 			}
 			keyConfigs.Add (keyConfig);
+			ApplyConfig (keyConfig);
 		}
 
 		/// <summary>
@@ -93,6 +94,7 @@ namespace VAS.Services
 				throw new InvalidOperationException ("A KeyConfig with the same name is already registered");
 			}
 			keyConfigs.AddRange (keyConfig);
+			ApplyConfig (keyConfig);
 		}
 
 		/// <summary>
@@ -113,6 +115,22 @@ namespace VAS.Services
 		public IEnumerable<KeyConfig> GetByCategory (string category)
 		{
 			return keyConfigs.Where ((arg) => arg.Category == category);
+		}
+
+		void ApplyConfig (KeyConfig kconfig)
+		{
+			var keyconfig = App.Current.Config.KeyConfigs.FirstOrDefault ((k) => k.Name == kconfig.Name);
+			if (keyconfig != null) {
+				kconfig.Key = keyconfig.Key;
+			}
+		}
+
+		void ApplyConfig (IEnumerable<KeyConfig> kconfigs)
+		{
+			foreach (var kconfig in kconfigs) {
+				ApplyConfig (kconfig);
+			}
+
 		}
 	}
 }
