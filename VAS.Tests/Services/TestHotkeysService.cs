@@ -151,5 +151,24 @@ namespace VAS.Tests.Services
 			Assert.IsNotNull (cat1KeyConfigs);
 			Assert.IsFalse (cat1KeyConfigs.Any ());
 		}
+
+		[Test]
+		public void TestApplyConfigInRegisterKeys ()
+		{
+			var kconfig = new KeyConfig {
+				Name = "KC1",
+				Description = "KeyConfig 1 Description",
+				Category = "Cat1",
+				Key = App.Current.Keyboard.ParseName ("z")
+			};
+			App.Current.Config.KeyConfigs.Add (kconfig);
+
+			hotkeysService.Register (keyConfig1);
+			var regKeyConfig = hotkeysService.GetByName ("KC1");
+
+			Assert.AreEqual (App.Current.Keyboard.ParseName ("z"), regKeyConfig.Key);
+			Assert.AreSame (keyConfig1, regKeyConfig);
+
+		}
 	}
 }
