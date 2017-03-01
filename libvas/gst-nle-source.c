@@ -278,7 +278,7 @@ gst_nle_source_setup (GstNleSource * nlesrc)
 
     gst_bin_add_many (GST_BIN (nlesrc), audioresample, audioconvert,
         audiorate, a_capsfilter, aident, NULL);
-    gst_element_link_many (audioresample, audioconvert,
+    gst_element_link_many (audioconvert, audioresample,
         audiorate, a_capsfilter, aident, NULL);
 
     a_caps = gst_nle_source_get_audio_caps (nlesrc);
@@ -292,7 +292,7 @@ gst_nle_source_setup (GstNleSource * nlesrc)
     gst_ghost_pad_set_target (GST_GHOST_PAD (nlesrc->audio_srcpad), a_pad);
     gst_object_unref (a_pad);
 
-    a_pad = gst_element_get_pad (audioresample, "sink");
+    a_pad = gst_element_get_pad (audioconvert, "sink");
     gst_ghost_pad_set_target (GST_GHOST_PAD (nlesrc->audio_sinkpad), a_pad);
     gst_object_unref (a_pad);
   }
