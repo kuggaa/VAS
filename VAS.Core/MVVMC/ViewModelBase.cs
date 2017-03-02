@@ -31,7 +31,7 @@ namespace VAS.Core.MVVMC
 		/// <param name="propertyNameToCheck">Property name to check.</param>
 		public bool NeedsSync (string propertyNameChanged, string propertyNameToCheck)
 		{
-			return NeedsSync (propertyNameChanged, propertyNameToCheck, null, null);
+			return NeedsSync (propertyNameChanged, propertyNameToCheck, this, null);
 		}
 
 		/// <summary>
@@ -42,7 +42,7 @@ namespace VAS.Core.MVVMC
 		/// <param name="propertyNameToCheck">Property name to check.</param>
 		public bool NeedsSync (PropertyChangedEventArgs eventArgs, string propertyNameToCheck)
 		{
-			return NeedsSync (eventArgs.PropertyName, propertyNameToCheck, null, null);
+			return NeedsSync (eventArgs.PropertyName, propertyNameToCheck, this, null);
 		}
 
 		/// <summary>
@@ -54,7 +54,7 @@ namespace VAS.Core.MVVMC
 		/// <param name="senderToCheck">Sender to check.</param>
 		public bool NeedsSync (string propertyNameChanged, string propertyNameToCheck, object sender, object senderToCheck)
 		{
-			if (propertyNameChanged == null) {
+			if (propertyNameChanged == null && (sender == null || senderToCheck == null || sender == senderToCheck)) {
 				return true;
 			}
 			if (propertyNameChanged == propertyNameToCheck) {
@@ -70,7 +70,7 @@ namespace VAS.Core.MVVMC
 		/// </summary>
 		public void Sync ()
 		{
-			RaisePropertyChanged (propertyName: null);
+			RaisePropertyChanged (propertyName: null, sender: this);
 		}
 
 		protected override void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
