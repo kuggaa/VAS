@@ -80,7 +80,7 @@ namespace VAS.UI.Component
 			if (propertyName == null || propertyName == "State") {
 				Visible = viewModel.CurrentJob.Model != null && viewModel.CurrentJob.State == JobState.Running;
 			}
-			if (propertyName == null || propertyName == "Collection") {
+			if (propertyName == null || propertyName.StartsWith ("Collection")) {
 				statebutton.Label = string.Format ("{0} ({1} {2})",
 												   Catalog.GetString ("Rendering queue"),
 												   ViewModel.PendingJobs.Count,
