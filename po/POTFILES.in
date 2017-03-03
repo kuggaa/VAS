@@ -65,3 +65,4 @@ VAS.Core/MVVMC/ControllerBase.cs
 VAS.Tests/Services/TestControllerBase.cs
 VAS.UI.Gtk2/UI/Component/LimitationWidget.cs
 VAS.UI.Gtk2/gtk-gui/VAS.UI.Component.LimitationWidget.cs
+VAS.Core/Interfaces/ITimed.cs
