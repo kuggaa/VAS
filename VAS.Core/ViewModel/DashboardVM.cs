@@ -21,6 +21,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Events;
+using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Templates;
@@ -208,7 +209,7 @@ namespace VAS.Core.ViewModel
 			}
 			set {
 				currentTime = value;
-				foreach (var timedVM in ViewModels.OfType<TimedDashboardButtonVM> ()) {
+				foreach (var timedVM in ViewModels.OfType<ITimed> ()) {
 					timedVM.CurrentTime = value;
 				}
 			}

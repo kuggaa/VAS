@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using VAS.Core.Common;
 using VAS.Core.Events;
+using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
@@ -226,7 +227,7 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// Class for the TimedDashBoardButton ViewModel.
 	/// </summary>
-	public class TimedDashboardButtonVM : DashboardButtonVM
+	public class TimedDashboardButtonVM : DashboardButtonVM, ITimed
 	{
 		Time currentTime;
 
@@ -486,7 +487,7 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// Class for the TimerButton ViewModel.
 	/// </summary>
-	public class TimerButtonVM : DashboardButtonVM
+	public class TimerButtonVM : DashboardButtonVM, ITimed
 	{
 		TimeNode currentNode;
 		Time currentTime;
