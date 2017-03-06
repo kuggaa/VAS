@@ -302,6 +302,11 @@ namespace VAS.Core.ViewModel
 		void AddToPlayersTimeline (TimelineEventVM timelineEventVM)
 		{
 			foreach (Player player in timelineEventVM.Model.Players) {
+				if (!playerToTimeline.ContainsKey (player)) {
+					// FIXME: We are calling this a thousand times. This fix works because the first times
+					// we don't have the teams, but the next ones we do. We should call this only when we do.
+					continue;
+				}
 				playerToTimeline [player].ViewModels.Add (timelineEventVM);
 			}
 		}
