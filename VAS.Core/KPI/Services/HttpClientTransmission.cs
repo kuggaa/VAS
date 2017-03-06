@@ -41,19 +41,19 @@ namespace Microsoft.HockeyApp.Services
 #if DEBUG
 			string result = System.Text.Encoding.UTF8.GetString (content, 0, content.Length);
 #endif
-			HttpClient client = new HttpClient () { Timeout = timeout };
-			using (MemoryStream contentStream = new MemoryStream (content)) {
-				var request = new HttpRequestMessage (HttpMethod.Post, address);
-				request.Content = new StreamContent (contentStream);
-				if (!string.IsNullOrEmpty (contentType)) {
-					request.Content.Headers.ContentType = new MediaTypeHeaderValue (contentType);
-				}
+			using (var client = new HttpClient () { Timeout = timeout }) {
+				using (MemoryStream contentStream = new MemoryStream (content)) {
+					var request = new HttpRequestMessage (HttpMethod.Post, address);
+					request.Content = new StreamContent (contentStream);
+					if (!string.IsNullOrEmpty (contentType)) {
+						request.Content.Headers.ContentType = new MediaTypeHeaderValue (contentType);
+					}
 
-				if (!string.IsNullOrEmpty (contentEncoding)) {
-					request.Content.Headers.Add (ContentEncodingHeader, contentEncoding);
+					if (!string.IsNullOrEmpty (contentEncoding)) {
+						request.Content.Headers.Add (ContentEncodingHeader, contentEncoding);
+					}
+					await client.SendAsync (request);
 				}
-
-				await client.SendAsync (request);
 			}
 		}
 
