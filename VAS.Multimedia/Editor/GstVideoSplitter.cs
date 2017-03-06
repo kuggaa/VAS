@@ -198,11 +198,11 @@ namespace VAS.Multimedia.Editor
 		}
 
 		[DllImport ("libvas.dll")]
-		static extern void gst_video_editor_start (IntPtr raw);
+		static extern void gst_video_editor_start (IntPtr raw, bool hardwareAcceleration);
 
 		public void Start ()
 		{
-			gst_video_editor_start (Handle);
+			gst_video_editor_start (Handle, App.Current.HardwareAcceleration);
 		}
 
 		[DllImport ("libvas.dll")]

@@ -62,7 +62,7 @@ namespace VAS.Multimedia.Capturer
 		static extern void gst_camera_capturer_start (IntPtr raw);
 
 		[DllImport ("libvas.dll")]
-		static extern void gst_camera_capturer_run (IntPtr raw);
+		static extern void gst_camera_capturer_run (IntPtr raw, bool hardwareAcceleration);
 
 		[DllImport ("libvas.dll")]
 		static extern void gst_camera_capturer_close (IntPtr raw);
@@ -475,7 +475,7 @@ namespace VAS.Multimedia.Capturer
 
 		public void Run ()
 		{
-			gst_camera_capturer_run (Handle);
+			gst_camera_capturer_run (Handle, App.Current.HardwareAcceleration);
 		}
 
 		public void Close ()

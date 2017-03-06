@@ -331,6 +331,15 @@ namespace VAS
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:LongoMatch.Config"/> hardware acceleration enabled.
+		/// </summary>
+		/// <value><c>true</c> if hardware acceleration enabled; otherwise, <c>false</c>.</value>
+		public bool HardwareAcceleration {
+			get;
+			set;
+		}
+
 		public string LatestVersionURL {
 			get;
 			set;
