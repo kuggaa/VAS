@@ -363,6 +363,7 @@ namespace VAS.Core.Common
 	public enum CursorType
 	{
 		Arrow,
+		LeftArrow,
 		DoubleArrow,
 		Selection,
 		Cross,
