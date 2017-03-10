@@ -16,9 +16,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Gtk;
-using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
@@ -37,7 +37,7 @@ namespace VAS.UI.Component
 		public HotkeysConfigurationView ()
 		{
 			this.Build ();
-			sgroup = new SizeGroup (SizeGroupMode.Horizontal);
+			categoriesCombo.Changed += HandleCategoriesComboChanged;
 		}
 
 
@@ -49,11 +49,7 @@ namespace VAS.UI.Component
 			set {
 				viewModel = value;
 				if (viewModel != null) {
-					int i = 0;
-					foreach (KeyConfigVM key in viewModel.ViewModels) {
-						AddWidget (key, i);
-						i++;
-					}
+					FillCategories ();
 				}
 			}
 		}
@@ -63,49 +59,69 @@ namespace VAS.UI.Component
 			ViewModel = (HotkeysConfigurationVM)viewModel;
 		}
 
-		public void AddWidget (KeyConfigVM keyconfig, int position)
+		void FillCategories ()
 		{
-			uint row_top, row_bottom, col_left, col_right;
-			HBox box;
-			Label descLabel, keyLabel;
-			Button edit;
-			Gtk.Image editImage;
+			foreach (var cat in viewModel.Categories) {
+				categoriesCombo.AppendText (cat);
+			}
+			//select First
+			TreeIter iter;
+			categoriesCombo.Model.GetIterFirst (out iter);
+			categoriesCombo.SetActiveIter (iter);
+		}
 
-			box = new HBox ();
-			box.Spacing = 5;
-			descLabel = new Label ();
-			descLabel.Markup = String.Format ("<b>{0}</b>", keyconfig.Description);
-			keyLabel = new Label ();
-			keyLabel.Markup = GLib.Markup.EscapeText (keyconfig.Key.ToString ());
-			edit = new Button ();
-			editImage = new Gtk.Image (Helpers.Misc.LoadIcon ("longomatch-pencil", 24));
-			edit.Add (editImage);
-			box.PackStart (descLabel, true, true, 0);
-			box.PackStart (keyLabel, false, true, 0);
-			box.PackStart (edit, false, true, 0);
-			box.ShowAll ();
+		void FillKeyConfigs (IEnumerable<KeyConfigVM> keyConfigs)
+		{
+			foreach (var child in keyConfigVBox.Children.ToList ()) {
+				child.Destroy ();
+				keyConfigVBox.Remove (child);
+			}
 
-			sgroup.AddWidget (keyLabel);
-			descLabel.Justify = Justification.Left;
-			descLabel.SetAlignment (0f, 0.5f);
-			edit.Clicked += (sender, e) => {
-				HotKey hotkey = App.Current.GUIToolkit.SelectHotkey (keyconfig.Key);
-				if (hotkey != null) {
-					if (viewModel.ViewModels.Where ((arg) => arg.Key == hotkey).Any ()) {
-						App.Current.Dialogs.ErrorMessage (VAS.Core.Catalog.GetString ("Hotkey already in use: ") +
-						GLib.Markup.EscapeText (hotkey.ToString ()), this);
-					} else {
-						keyconfig.Key = hotkey;
-						keyLabel.Markup = GLib.Markup.EscapeText (hotkey.ToString ());
+			foreach (var config in keyConfigs) {
+				HBox box;
+				Label descLabel, keyLabel;
+				Button edit;
+				Gtk.Image editImage;
+
+				box = new HBox ();
+				box.Homogeneous = false;
+				descLabel = new Label ();
+				descLabel.Markup = String.Format ("<b>{0}</b>", config.Description);
+				descLabel.Justify = Justification.Left;
+				descLabel.SetAlignment (0f, 0.5f);
+				descLabel.WidthRequest = 200;
+				keyLabel = new Label ();
+				keyLabel.Markup = GLib.Markup.EscapeText (config.Key.ToString ());
+				keyLabel.Justify = Justification.Left;
+				keyLabel.SetAlignment (0f, 0.5f);
+				keyLabel.WidthRequest = 200;
+				edit = new Button ();
+				editImage = new Gtk.Image (Helpers.Misc.LoadIcon ("longomatch-pencil", 24));
+				edit.Add (editImage);
+				box.PackStart (descLabel, false, false, 0);
+				box.PackStart (keyLabel, false, true, 0);
+				box.PackStart (edit, false, false, 0);
+				box.ShowAll ();
+
+				edit.Clicked += (sender, e) => {
+					HotKey hotkey = App.Current.GUIToolkit.SelectHotkey (config.Key);
+					if (hotkey != null) {
+						if (viewModel.ViewModels.Where ((arg) => arg.Key == hotkey).Any ()) {
+							App.Current.Dialogs.ErrorMessage (VAS.Core.Catalog.GetString ("Hotkey already in use: ") +
+							GLib.Markup.EscapeText (hotkey.ToString ()), this);
+						} else {
+							config.Key = hotkey;
+							keyLabel.Markup = GLib.Markup.EscapeText (hotkey.ToString ());
+						}
 					}
-				}
-			};
+				};
+				keyConfigVBox.PackStart (box, false, false, 0);
+			}
+		}
 
-			row_top = (uint)(position / table.NColumns);
-			row_bottom = (uint)row_top + 1;
-			col_left = (uint)position % table.NColumns;
-			col_right = (uint)col_left + 1;
-			table.Attach (box, col_left, col_right, row_top, row_bottom);
+		void HandleCategoriesComboChanged (object sender, EventArgs e)
+		{
+			FillKeyConfigs (viewModel.ViewModels.Where ((arg) => arg.Category == categoriesCombo.ActiveText));
 		}
 	}
 }
