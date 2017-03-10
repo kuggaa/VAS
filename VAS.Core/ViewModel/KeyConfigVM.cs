@@ -16,43 +16,51 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using System.Collections.Generic;
 using VAS.Core.Hotkeys;
+using VAS.Core.MVVMC;
+using VAS.Core.Store;
 
-namespace VAS.Core.Interfaces
+namespace VAS.Core.ViewModel
 {
-	public interface IHotkeysService : IService
+	public class KeyConfigVM : ViewModelBase<KeyConfig>
 	{
 		/// <summary>
-		/// Register the specified keyConfig.
+		/// Gets or sets the key that performs the action
 		/// </summary>
-		/// <param name="keyConfig">Key config.</param>
-		void Register (KeyConfig keyConfig);
+		/// <value>The key.</value>
+		public HotKey Key {
+			get {
+				return Model.Key;
+			}
+			set {
+				Model.Key = value;
+			}
+		}
 
 		/// <summary>
-		/// Register the specified keyConfig list
+		/// Gets or sets the category.
 		/// </summary>
-		/// <param name="keyConfig">Key config.</param>
-		void Register (IEnumerable<KeyConfig> keyConfig);
+		/// <value>The category.</value>
+		public string Category {
+			get {
+				return Model.Category;
+			}
+			set {
+				Model.Category = value;
+			}
+		}
 
 		/// <summary>
-		/// Gets KeyConfig by the name
+		/// Gets or sets the description of the HotKey
 		/// </summary>
-		/// <returns>The KeyConfig</returns>
-		/// <param name="name">Name.</param>
-		KeyConfig GetByName (string name);
-
-		/// <summary>
-		/// Gets the KeyConfig 
-		/// </summary>
-		/// <returns>The by category.</returns>
-		/// <param name="category">Category.</param>
-		IEnumerable<KeyConfig> GetByCategory (string category);
-
-		/// <summary>
-		/// Gets all KeyConfigs registered
-		/// </summary>
-		/// <returns>All registered Hotkeys configuration</returns>
-		IEnumerable<KeyConfig> GetAll ();
+		/// <value>The description.</value>
+		public string Description {
+			get {
+				return Model.Description;
+			}
+			set {
+				Model.Description = value;
+			}
+		}
 	}
 }

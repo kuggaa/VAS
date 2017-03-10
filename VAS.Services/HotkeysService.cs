@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VAS.Core.Common;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
 
@@ -117,6 +118,15 @@ namespace VAS.Services
 			return keyConfigs.Where ((arg) => arg.Category == category);
 		}
 
+		/// <summary>
+		/// Gets all KeyConfigs registered
+		/// </summary>
+		/// <returns>All registered Hotkeys configuration</returns>
+		public IEnumerable<KeyConfig> GetAll ()
+		{
+			return keyConfigs;
+		}
+
 		void ApplyConfig (KeyConfig kconfig)
 		{
 			var keyconfig = App.Current.Config.KeyConfigs.FirstOrDefault ((k) => k.Name == kconfig.Name);
@@ -130,7 +140,6 @@ namespace VAS.Services
 			foreach (var kconfig in kconfigs) {
 				ApplyConfig (kconfig);
 			}
-
 		}
 	}
 }
