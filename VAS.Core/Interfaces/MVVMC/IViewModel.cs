@@ -55,5 +55,11 @@ namespace VAS.Core.Interfaces.MVVMC
 
 		void SelectionReplace (IEnumerable<VMChilds> selection);
 	}
+
+	public interface IPreferencesVM : IViewModel
+	{
+		string View { get; }
+		string Name { get; }
+	}
 }
 

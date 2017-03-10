@@ -225,6 +225,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IHotkeysService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\GeneralUIHotkeys.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\DrawingToolHotkeys.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\KeyConfigVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

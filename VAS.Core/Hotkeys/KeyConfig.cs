@@ -16,11 +16,12 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
 namespace VAS.Core.Hotkeys
 {
-	public class KeyConfig : IEquatable<KeyConfig>
+	public class KeyConfig : BindableBase, IEquatable<KeyConfig>
 	{
 		/// <summary>
 		/// Gets or sets the identifier name of the HotKey
