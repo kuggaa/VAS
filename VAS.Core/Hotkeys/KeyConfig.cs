@@ -16,11 +16,15 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
 namespace VAS.Core.Hotkeys
 {
-	public class KeyConfig : IEquatable<KeyConfig>
+	/// <summary>
+	/// Key config class, has all the basic configuration of a Hotkey
+	/// </summary>
+	public class KeyConfig : BindableBase, IEquatable<KeyConfig>
 	{
 		/// <summary>
 		/// Gets or sets the identifier name of the HotKey
@@ -61,15 +65,26 @@ namespace VAS.Core.Hotkeys
 			return other.Name == Name;
 		}
 
+		/// <summary>
+		/// Determines whether the specified <see cref="object"/> is equal to the current <see cref="T:VAS.Core.Hotkeys.KeyConfig"/>.
+		/// </summary>
+		/// <param name="obj">The <see cref="object"/> to compare with the current <see cref="T:VAS.Core.Hotkeys.KeyConfig"/>.</param>
+		/// <returns><c>true</c> if the specified <see cref="object"/> is equal to the current
+		/// <see cref="T:VAS.Core.Hotkeys.KeyConfig"/>; otherwise, <c>false</c>.</returns>
 		public override bool Equals (object obj)
 		{
 			if (obj is KeyConfig) {
 				KeyConfig config = obj as KeyConfig;
 				return Equals (config);
-			} else
+			} else {
 				return false;
+			}
 		}
 
+		/// <summary>
+		/// Serves as a hash function for a <see cref="T:VAS.Core.Hotkeys.KeyConfig"/> object.
+		/// </summary>
+		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
 		public override int GetHashCode ()
 		{
 			return Name.GetHashCode ();
