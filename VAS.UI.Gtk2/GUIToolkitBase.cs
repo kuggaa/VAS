@@ -174,7 +174,21 @@ namespace VAS.UI
 			return true;
 		}
 
-		public abstract HotKey SelectHotkey (HotKey hotkey, object parent = null);
+		public HotKey SelectHotkey (HotKey hotkey, object parent = null)
+		{
+			HotKeySelectorDialog dialog;
+			Window w;
+
+			w = parent != null ? (parent as Widget).Toplevel as Window : MainWindow;
+			dialog = new HotKeySelectorDialog (w);
+			if (dialog.Run () == (int)ResponseType.Ok) {
+				hotkey = dialog.HotKey;
+			} else {
+				hotkey = null;
+			}
+			dialog.Destroy ();
+			return hotkey;
+		}
 
 		public void Invoke (EventHandler handler)
 		{

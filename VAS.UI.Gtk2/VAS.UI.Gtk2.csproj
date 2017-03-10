@@ -103,8 +103,10 @@
 		<Compile Include="UI\Component\LimitationWidget.cs" />
 		<Compile Include="UI\Panel\PreferencesPanel.cs" />
 		<Compile Include="gtk-gui\VAS.UI.Panel.PreferencesPanel.cs" />
-		<Compile Include="UI\Component\HotkeysConfiguration.cs" />
-		<Compile Include="gtk-gui\VAS.UI.Component.HotkeysConfiguration.cs" />
+		<Compile Include="UI\Component\HotkeysConfigurationView.cs" />
+		<Compile Include="gtk-gui\VAS.UI.Component.HotkeysConfigurationView.cs" />
+		<Compile Include="UI\Dialog\HotKeySelectorDialog.cs" />
+		<Compile Include="gtk-gui\VAS.UI.Dialog.HotKeySelectorDialog.cs" />
 	</ItemGroup>
 	<Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 	<ItemGroup>

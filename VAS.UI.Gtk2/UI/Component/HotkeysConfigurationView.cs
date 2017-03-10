@@ -16,32 +16,54 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Linq;
 using Gtk;
-using VAS.Core;
 using VAS.Core.Hotkeys;
+using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
+using VAS.Core.ViewModel;
+using VAS.Services.ViewModel;
 
 namespace VAS.UI.Component
 {
+	[ViewAttribute (HotkeysConfigurationVM.VIEW)]
 	[System.ComponentModel.ToolboxItem (true)]
-	public partial class HotkeysConfiguration : Gtk.Bin
+	public partial class HotkeysConfigurationView : Gtk.Bin, IView<HotkeysConfigurationVM>
 	{
 		SizeGroup sgroup;
+		HotkeysConfigurationVM viewModel;
 
-		public HotkeysConfiguration ()
+		public HotkeysConfigurationView ()
 		{
-			int i = 0;
 			this.Build ();
-
 			sgroup = new SizeGroup (SizeGroupMode.Horizontal);
-			foreach (KeyAction action in App.Current.Config.Hotkeys.ActionsDescriptions.Keys) {
-				AddWidget (action, App.Current.Config.Hotkeys.ActionsDescriptions [action],
-					App.Current.Config.Hotkeys.ActionsHotkeys [action], i);
-				i++;
+		}
+
+
+		public HotkeysConfigurationVM ViewModel {
+			get {
+				return viewModel;
+			}
+
+			set {
+				viewModel = value;
+				if (viewModel != null) {
+					int i = 0;
+					foreach (KeyConfigVM key in viewModel.ViewModels) {
+						AddWidget (key, i);
+						i++;
+					}
+				}
 			}
 		}
 
-		public void AddWidget (KeyAction action, string desc, HotKey key, int position)
+		public void SetViewModel (object viewModel)
+		{
+			ViewModel = (HotkeysConfigurationVM)viewModel;
+		}
+
+		public void AddWidget (KeyConfigVM keyconfig, int position)
 		{
 			uint row_top, row_bottom, col_left, col_right;
 			HBox box;
@@ -52,9 +74,9 @@ namespace VAS.UI.Component
 			box = new HBox ();
 			box.Spacing = 5;
 			descLabel = new Label ();
-			descLabel.Markup = String.Format ("<b>{0}</b>", desc);
+			descLabel.Markup = String.Format ("<b>{0}</b>", keyconfig.Description);
 			keyLabel = new Label ();
-			keyLabel.Markup = GLib.Markup.EscapeText (key.ToString ());
+			keyLabel.Markup = GLib.Markup.EscapeText (keyconfig.Key.ToString ());
 			edit = new Button ();
 			editImage = new Gtk.Image (Helpers.Misc.LoadIcon ("longomatch-pencil", 24));
 			edit.Add (editImage);
@@ -67,14 +89,13 @@ namespace VAS.UI.Component
 			descLabel.Justify = Justification.Left;
 			descLabel.SetAlignment (0f, 0.5f);
 			edit.Clicked += (sender, e) => {
-				HotKey hotkey = App.Current.GUIToolkit.SelectHotkey (key);
+				HotKey hotkey = App.Current.GUIToolkit.SelectHotkey (keyconfig.Key);
 				if (hotkey != null) {
-					if (App.Current.Config.Hotkeys.ActionsHotkeys.ContainsValue (hotkey)) {
-						App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Hotkey already in use: ") +
+					if (viewModel.ViewModels.Where ((arg) => arg.Key == hotkey).Any ()) {
+						App.Current.Dialogs.ErrorMessage (VAS.Core.Catalog.GetString ("Hotkey already in use: ") +
 						GLib.Markup.EscapeText (hotkey.ToString ()), this);
 					} else {
-						App.Current.Config.Hotkeys.ActionsHotkeys [action] = hotkey;
-						App.Current.Config.Save ();
+						keyconfig.Key = hotkey;
 						keyLabel.Markup = GLib.Markup.EscapeText (hotkey.ToString ());
 					}
 				}
