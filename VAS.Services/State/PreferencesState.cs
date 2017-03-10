@@ -17,10 +17,11 @@
 //
 using System;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Services.ViewModel;
 
 namespace VAS.Services.State
 {
-	public class PreferencesState : ScreenState<IViewModel>
+	public class PreferencesState : ScreenState<PreferencesPanelVM>
 	{
 		public const string NAME = "Preferences";
 
@@ -32,7 +33,8 @@ namespace VAS.Services.State
 
 		protected override void CreateViewModel (dynamic data)
 		{
-
+			ViewModel = new PreferencesPanelVM ();
+			ViewModel.ViewModels.Add (new HotkeysConfigurationVM ());
 		}
 	}
 }
