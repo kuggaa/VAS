@@ -21,32 +21,32 @@ using Gtk;
 using VAS.Core;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.GUI;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Services.State;
-using VAS.UI.Component;
+using VAS.Services.ViewModel;
 
 namespace VAS.UI.Panel
 {
 	[System.ComponentModel.ToolboxItem (true)]
 	[ViewAttribute (PreferencesState.NAME)]
-	public partial class PreferencesPanel : Gtk.Bin, IPanel
+	public partial class PreferencesPanel : Gtk.Bin, IPanel<PreferencesPanelVM>
 	{
 		Widget selectedPanel;
 		ListStore prefsStore;
+		PreferencesPanelVM viewModel;
 
 		public PreferencesPanel ()
 		{
 			this.Build ();
-			prefsStore = new ListStore (typeof (Pixbuf), typeof (string), typeof (Widget));
-			treeview.AppendColumn ("Icon", new CellRendererPixbuf (), "pixbuf", 0);
+			prefsStore = new ListStore (typeof (IPreferencesVM), typeof (string), typeof (Widget));
 			treeview.AppendColumn ("Desc", new CellRendererText (), "text", 1);
-			treeview.CursorChanged += HandleCursorChanged;
 			treeview.Model = prefsStore;
 			treeview.HeadersVisible = false;
 			treeview.EnableGridLines = TreeViewGridLines.None;
 			treeview.EnableTreeLines = false;
-			AddPanels ();
-			treeview.SetCursor (new TreePath ("0"), null, false);
+			treeview.Selection.Mode = SelectionMode.Single;
+			treeview.Selection.Changed += HandleSelectionChanged; ;
 		}
 
 		/// <summary>
@@ -105,12 +105,31 @@ namespace VAS.UI.Panel
 		{
 		}
 
+		public PreferencesPanelVM ViewModel {
+			get {
+				return viewModel;
+			}
+
+			set {
+				if (viewModel != null) {
+					RemovePanels ();
+				}
+				viewModel = value;
+				if (viewModel != null) {
+					AddPanels ();
+					//Select First Panel
+					treeview.Selection.SelectPath (new TreePath ("0"));
+				}
+			}
+		}
+
 		/// <summary>
 		/// Sets the view model.
 		/// </summary>
 		/// <param name="viewModel">View model.</param>
 		public void SetViewModel (object viewModel)
 		{
+			ViewModel = (PreferencesPanelVM)viewModel;
 		}
 
 		/// <summary>
@@ -119,9 +138,12 @@ namespace VAS.UI.Panel
 		/// <param name="desc">Desc.</param>
 		/// <param name="icon">Icon.</param>
 		/// <param name="pane">Pane.</param>
-		public void AddPanel (string desc, Pixbuf icon, Widget pane)
+		public void AddPanel (IPreferencesVM prefViewModel)
 		{
-			prefsStore.AppendValues (icon, desc, pane);
+			IView view = App.Current.ViewLocator.Retrieve (prefViewModel.View);
+			view.SetViewModel (prefViewModel);
+			prefsStore.AppendValues (prefViewModel, prefViewModel.Name,
+									 view as Widget);
 		}
 
 		/// <summary>
@@ -129,17 +151,17 @@ namespace VAS.UI.Panel
 		/// </summary>
 		public void AddPanels ()
 		{
-			AddPanel (Catalog.GetString ("Keyboard shortcuts"),
-				Helpers.Misc.LoadIcon ("longomatch-shortcut", IconSize.Dialog, 0),
-				new HotkeysConfiguration ());
+			foreach (var vm in viewModel.ViewModels) {
+				AddPanel (vm);
+			}
 		}
 
-		/// <summary>
-		/// Handles the cursor changed.
-		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="e">E.</param>
-		void HandleCursorChanged (object sender, EventArgs e)
+		void RemovePanels ()
+		{
+			prefsStore.Foreach ((model, path, iter) => prefsStore.Remove (ref iter));
+		}
+
+		void HandleSelectionChanged (object sender, EventArgs e)
 		{
 			Widget newPanel;
 			TreeIter iter;
@@ -149,9 +171,11 @@ namespace VAS.UI.Panel
 
 			treeview.Selection.GetSelected (out iter);
 			newPanel = prefsStore.GetValue (iter, 2) as Widget;
-			newPanel.Visible = true;
-			propsvbox.PackStart (newPanel, true, true, 0);
-			selectedPanel = newPanel;
+			if (newPanel != null) {
+				newPanel.Visible = true;
+				propsvbox.PackStart (newPanel, true, true, 0);
+				selectedPanel = newPanel;
+			}
 		}
 	}
 }
