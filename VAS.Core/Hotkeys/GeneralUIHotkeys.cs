@@ -48,7 +48,7 @@ namespace VAS.Core.Hotkeys
 				},
 				new KeyConfig {
 					Name = "OPEN_PREFERENCES",
-					Key = App.Current.Keyboard.ParseName ("<Control_L>++"),
+					Key = App.Current.Keyboard.ParseName ("<Control_L>+plus"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Open preferences")
 				},
@@ -60,19 +60,19 @@ namespace VAS.Core.Hotkeys
 				},
 				new KeyConfig {
 					Name = "ZOOM_IN",
-					Key = App.Current.Keyboard.ParseName ("+"),
+					Key = App.Current.Keyboard.ParseName ("plus"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Zoom in")
 				},
 				new KeyConfig {
 					Name = "ZOOM_OUT",
-					Key = App.Current.Keyboard.ParseName ("-"),
+					Key = App.Current.Keyboard.ParseName ("minus"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Zoom out")
 				},
 				new KeyConfig {
 					Name = "DELETE_SELECTED_EVENT",
-					Key = App.Current.Keyboard.ParseName ("del"),
+					Key = App.Current.Keyboard.ParseName ("Delete"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Delete selected event")
 				},

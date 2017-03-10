@@ -102,13 +102,13 @@ namespace VAS.Core.Hotkeys
 				},
 				new KeyConfig {
 					Name = "DRAWING_TOOL_ZOOM_IN",
-					Key = App.Current.Keyboard.ParseName ("<Control_L>++"),
+					Key = App.Current.Keyboard.ParseName ("<Control_L>+plus"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Zoom in")
 				},
 				new KeyConfig {
 					Name = "DRAWING_TOOL_ZOOM_OUT",
-					Key = App.Current.Keyboard.ParseName ("<Control_L>+-"),
+					Key = App.Current.Keyboard.ParseName ("<Control_L>+minus"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Zoom out")
 				},
