@@ -18,11 +18,10 @@
 using System;
 using VAS.Core.Handlers.Drawing;
 using VAS.Core.Common;
-using VAS.Core.Interfaces.Drawing;
 
 namespace VAS.Core.Interfaces.Drawing
 {
-	public interface IWidget: IDisposable
+	public interface IWidget : IDisposable
 	{
 		event DrawingHandler DrawEvent;
 		event ButtonPressedHandler ButtonPressEvent;

@@ -23,11 +23,9 @@ using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store.Drawables;
 using VAS.Drawing.CanvasObjects;
-using VAS.Drawing.CanvasObjects.Timeline;
 
 namespace VAS.Drawing
 {
-
 	/// <summary>
 	/// A selection canvas supports selecting <see cref="ICanvasSelectableObject"/>
 	/// objects from the canvas and moving, resizing them.
