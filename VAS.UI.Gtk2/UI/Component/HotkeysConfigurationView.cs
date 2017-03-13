@@ -21,9 +21,9 @@ using System.Linq;
 using Gtk;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
-using VAS.Core.Store;
 using VAS.Core.ViewModel;
 using VAS.Services.ViewModel;
+using VAS.UI.Helpers;
 
 namespace VAS.UI.Component
 {
@@ -31,12 +31,13 @@ namespace VAS.UI.Component
 	[System.ComponentModel.ToolboxItem (true)]
 	public partial class HotkeysConfigurationView : Gtk.Bin, IView<HotkeysConfigurationVM>
 	{
-		SizeGroup sgroup;
 		HotkeysConfigurationVM viewModel;
 
 		public HotkeysConfigurationView ()
 		{
 			this.Build ();
+			lblShortcut.ModifyFont (Pango.FontDescription.FromString (App.Current.Style.LabelFont));
+			lblAction.ModifyFont (Pango.FontDescription.FromString (App.Current.Style.LabelFont));
 			categoriesCombo.Changed += HandleCategoriesComboChanged;
 		}
 
@@ -72,50 +73,52 @@ namespace VAS.UI.Component
 
 		void FillKeyConfigs (IEnumerable<KeyConfigVM> keyConfigs)
 		{
-			foreach (var child in keyConfigVBox.Children.ToList ()) {
-				child.Destroy ();
-				keyConfigVBox.Remove (child);
-			}
+			RemoveAllChilds (keyConfigVBox);
 
 			foreach (var config in keyConfigs) {
 				HBox box;
 				Label descLabel, keyLabel;
 				Button edit;
-				Gtk.Image editImage;
 
 				box = new HBox ();
 				box.Homogeneous = false;
 				descLabel = new Label ();
-				descLabel.Markup = String.Format ("<b>{0}</b>", config.Description);
+				descLabel.ModifyFont (Pango.FontDescription.FromString (App.Current.Style.ContentFont));
+				descLabel.LabelProp = config.Description;
 				descLabel.Justify = Justification.Left;
 				descLabel.SetAlignment (0f, 0.5f);
 				descLabel.WidthRequest = 200;
 				keyLabel = new Label ();
-				keyLabel.Markup = GLib.Markup.EscapeText (config.Key.ToString ());
+				keyLabel.ModifyFont (Pango.FontDescription.FromString (App.Current.Style.ContentFont));
+				keyLabel.LabelProp = config.Key.ToString ();
 				keyLabel.Justify = Justification.Left;
 				keyLabel.SetAlignment (0f, 0.5f);
 				keyLabel.WidthRequest = 200;
 				edit = new Button ();
-				editImage = new Gtk.Image (Helpers.Misc.LoadIcon ("longomatch-pencil", 24));
-				edit.Add (editImage);
+				edit.Bind (config.EditCommand);
 				box.PackStart (descLabel, false, false, 0);
 				box.PackStart (keyLabel, false, true, 0);
 				box.PackStart (edit, false, false, 0);
 				box.ShowAll ();
+				keyConfigVBox.PackStart (box, false, false, 0);
 
-				edit.Clicked += (sender, e) => {
-					HotKey hotkey = App.Current.GUIToolkit.SelectHotkey (config.Key);
-					if (hotkey != null) {
-						if (viewModel.ViewModels.Where ((arg) => arg.Key == hotkey).Any ()) {
-							App.Current.Dialogs.ErrorMessage (VAS.Core.Catalog.GetString ("Hotkey already in use: ") +
-							GLib.Markup.EscapeText (hotkey.ToString ()), this);
-						} else {
-							config.Key = hotkey;
-							keyLabel.Markup = GLib.Markup.EscapeText (hotkey.ToString ());
-						}
+				//FIXME: This should use a Label bind that will come with the new longomatch_fix branch
+				config.PropertyChanged += (sender, e) => {
+					if (e.PropertyName == "Key") {
+						keyLabel.Markup = GLib.Markup.EscapeText (config.Key.ToString ());
 					}
 				};
-				keyConfigVBox.PackStart (box, false, false, 0);
+			}
+		}
+
+		void RemoveAllChilds (Container widget)
+		{
+			foreach (var child in widget.Children.ToList ()) {
+				if (child is Container) {
+					RemoveAllChilds (child as Container);
+				}
+				widget.Remove (child);
+				child.Destroy ();
 			}
 		}
 

@@ -118,5 +118,12 @@ namespace VAS.Core.Events
 		/// <value>The object.</value>
 		public T Object { get; set; }
 	}
+
+	/// <summary>
+	/// Event Sent to request editing a <typeparam name="T">.
+	/// </summary>
+	public class EditEvent<T> : GenericEvent<T>
+	{
+	}
 }
 

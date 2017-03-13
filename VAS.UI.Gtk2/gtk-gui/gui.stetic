@@ -2256,7 +2256,7 @@
     <child>
       <widget class="Gtk.VBox" id="vbox2">
         <property name="MemberName" />
-        <property name="Spacing">6</property>
+        <property name="Spacing">10</property>
         <child>
           <widget class="Gtk.Alignment" id="alignment1">
             <property name="MemberName" />
