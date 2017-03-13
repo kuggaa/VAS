@@ -18,9 +18,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
+using VAS.Core.Store;
 
 namespace VAS.Services
 {
@@ -61,6 +64,7 @@ namespace VAS.Services
 		/// </summary>
 		public bool Start ()
 		{
+			App.Current.EventsBroker.Subscribe<EditEvent<KeyConfig>> (HandleEditKeyConfig);
 			return true;
 		}
 
@@ -69,6 +73,7 @@ namespace VAS.Services
 		/// </summary>
 		public bool Stop ()
 		{
+			App.Current.EventsBroker.Unsubscribe<EditEvent<KeyConfig>> (HandleEditKeyConfig);
 			return true;
 		}
 
@@ -140,6 +145,21 @@ namespace VAS.Services
 			foreach (var kconfig in kconfigs) {
 				ApplyConfig (kconfig);
 			}
+		}
+
+		void HandleEditKeyConfig (EditEvent<KeyConfig> e)
+		{
+			HotKey hotkey = App.Current.GUIToolkit.SelectHotkey (e.Object.Key);
+			if (hotkey != null) {
+				if (keyConfigs.Where ((arg) => arg.Key == hotkey).Any ()) {
+					App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Hotkey already in use: ") +
+													  System.Security.SecurityElement.Escape (hotkey.ToString ()));
+					e.ReturnValue = false;
+				} else {
+					e.Object.Key = hotkey;
+				}
+			}
+			e.ReturnValue = true;
 		}
 	}
 }

@@ -16,6 +16,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Threading.Tasks;
+using VAS.Core.Events;
 using VAS.Core.Hotkeys;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
@@ -24,6 +26,14 @@ namespace VAS.Core.ViewModel
 {
 	public class KeyConfigVM : ViewModelBase<KeyConfig>
 	{
+
+		public KeyConfigVM ()
+		{
+			EditCommand = new Command (EditKey, () => { return true; });
+			EditCommand.Icon = Resources.LoadIcon ("longomatch-control-draw");
+			EditCommand.ToolTipText = Catalog.GetString ("Edit Shortcut");
+		}
+
 		/// <summary>
 		/// Gets or sets the key that performs the action
 		/// </summary>
@@ -61,6 +71,19 @@ namespace VAS.Core.ViewModel
 			set {
 				Model.Description = value;
 			}
+		}
+
+		[PropertyChanged.DoNotNotify]
+		public Command EditCommand {
+			get;
+			protected set;
+		}
+
+		async Task EditKey ()
+		{
+			await App.Current.EventsBroker.PublishWithReturn (new EditEvent<KeyConfig> {
+				Object = Model
+			});
 		}
 	}
 }
