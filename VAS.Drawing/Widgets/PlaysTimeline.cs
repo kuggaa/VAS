@@ -49,6 +49,9 @@ namespace VAS.Drawing.Widgets
 		protected bool movingTimeNode;
 		protected Dictionary<IViewModel, TimelineView> viewModelToView;
 		IAnalysisViewModel viewModel;
+		CursorType cursor;
+		DrawTool drawTool;
+		bool cursorIsDrawTool;
 
 		public PlaysTimeline (IWidget widget) : base (widget)
 		{
@@ -59,6 +62,8 @@ namespace VAS.Drawing.Widgets
 			SingleSelectionObjects.Add (typeof (TimerTimeNodeView));
 			currentTime = new Time (0);
 			duration = new Time (0);
+			cursor = CursorType.LeftArrow;
+			cursorIsDrawTool = false;
 		}
 
 		public PlaysTimeline () : this (null)
@@ -167,6 +172,42 @@ namespace VAS.Drawing.Widgets
 			AddObject (timelineView);
 			if (timelineView is EventTypeTimelineView) {
 				viewModelToView [viewModel] = timelineView;
+			}
+		}
+
+		protected override void CursorMoved (Point coords)
+		{
+			base.CursorMoved (coords);
+			if (HighlightedObject is TimeNodeView) {
+				Selection sel = GetSelection (coords, true);
+				switch ((HighlightedObject as TimeNodeView).DraggingMode) {
+				case NodeDraggingMode.None:
+					SetCursor (CursorType.LeftArrow);
+					break;
+				case NodeDraggingMode.Borders:
+					if (sel.Position == SelectionPosition.Right || sel.Position == SelectionPosition.Left) {
+						SetCursor (CursorType.DoubleArrow);
+					} else {
+						SetCursor (CursorType.LeftArrow);
+					}
+					break;
+				case NodeDraggingMode.Segment:
+					if (sel.Position == SelectionPosition.Right || sel.Position == SelectionPosition.Left) {
+						SetCursor (CursorType.LeftArrow);
+					} else {
+						SetCursorForTool (DrawTool.CanMove);
+					}
+					break;
+				case NodeDraggingMode.All:
+					if (sel.Position == SelectionPosition.Right || sel.Position == SelectionPosition.Left) {
+						SetCursor (CursorType.DoubleArrow);
+					} else {
+						SetCursorForTool (DrawTool.CanMove);
+					}
+					break;
+				}
+			} else {
+				SetCursor (CursorType.LeftArrow);
 			}
 		}
 
@@ -299,10 +340,13 @@ namespace VAS.Drawing.Widgets
 				return;
 
 			if (sel.Position != SelectionPosition.All) {
-				widget.SetCursor (CursorType.DoubleArrow);
+				SetCursor (CursorType.DoubleArrow);
 			}
 			if (sel.Drawable is TimeNodeView) {
 				movingTimeNode = true;
+				if (cursorIsDrawTool) {
+					SetCursorForTool (drawTool == DrawTool.CanMove ? DrawTool.Move : drawTool);
+				}
 				App.Current.EventsBroker.Publish (
 					new TogglePlayEvent {
 						Playing = false
@@ -313,7 +357,11 @@ namespace VAS.Drawing.Widgets
 
 		protected override void StopMove (bool moved)
 		{
-			widget.SetCursor (CursorType.Arrow);
+			if (cursorIsDrawTool) {
+				SetCursorForTool (drawTool == DrawTool.Move ? DrawTool.CanMove : drawTool);
+			} else {
+				SetCursor (cursor);
+			}
 			if (movingTimeNode) {
 				App.Current.EventsBroker.Publish (
 					new TogglePlayEvent {
@@ -401,6 +449,24 @@ namespace VAS.Drawing.Widgets
 				}
 			}
 			UpdateRowsOffsets ();
+		}
+
+		void SetCursor (CursorType cursorType)
+		{
+			if (cursorIsDrawTool || cursor != cursorType) {
+				cursor = cursorType;
+				cursorIsDrawTool = false;
+				widget.SetCursor (cursor);
+			}
+		}
+
+		void SetCursorForTool (DrawTool cursorType)
+		{
+			if (!cursorIsDrawTool || drawTool != cursorType) {
+				drawTool = cursorType;
+				cursorIsDrawTool = true;
+				widget.SetCursorForTool (drawTool);
+			}
 		}
 
 		void UpdateModel (IAnalysisViewModel value)

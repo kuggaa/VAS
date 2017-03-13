@@ -135,6 +135,9 @@ namespace VAS.Drawing.Cairo
 			case CursorType.Arrow:
 				gtype = GCursorType.Arrow;
 				break;
+			case CursorType.LeftArrow:
+				gtype = GCursorType.LeftPtr;
+				break;
 			case CursorType.DoubleArrow:
 				gtype = GCursorType.SbHDoubleArrow;
 				break;
