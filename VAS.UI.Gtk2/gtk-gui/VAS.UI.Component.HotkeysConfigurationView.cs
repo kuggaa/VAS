@@ -75,6 +75,7 @@ namespace VAS.UI.Component
 			w5.Position = 1;
 			w5.Expand = false;
 			w5.Fill = false;
+			w5.Padding = ((uint)(15));
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.GtkScrolledWindow = new global::Gtk.ScrolledWindow ();
 			this.GtkScrolledWindow.Name = "GtkScrolledWindow";
@@ -90,6 +91,7 @@ namespace VAS.UI.Component
 			this.vbox2.Add (this.GtkScrolledWindow);
 			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.GtkScrolledWindow]));
 			w9.Position = 2;
+			w9.Padding = ((uint)(5));
 			this.Add (this.vbox2);
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();

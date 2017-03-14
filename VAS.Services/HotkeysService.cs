@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VAS.Core;
-using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
@@ -65,6 +64,7 @@ namespace VAS.Services
 		public bool Start ()
 		{
 			App.Current.EventsBroker.Subscribe<EditEvent<KeyConfig>> (HandleEditKeyConfig);
+			App.Current.EventsBroker.Subscribe<SaveEvent<KeyConfig>> (HandleSaveEvent);
 			return true;
 		}
 
@@ -74,6 +74,7 @@ namespace VAS.Services
 		public bool Stop ()
 		{
 			App.Current.EventsBroker.Unsubscribe<EditEvent<KeyConfig>> (HandleEditKeyConfig);
+			App.Current.EventsBroker.Unsubscribe<SaveEvent<KeyConfig>> (HandleSaveEvent);
 			return true;
 		}
 
@@ -147,17 +148,61 @@ namespace VAS.Services
 			}
 		}
 
+		void SaveToConfig ()
+		{
+			App.Current.Config.KeyConfigs = keyConfigs;
+			App.Current.Config.Save ();
+		}
+
+		void SaveToConfig (KeyConfig kconfig)
+		{
+			if (!App.Current.Config.KeyConfigs.Contains (kconfig)) {
+				App.Current.Config.KeyConfigs.Add (kconfig);
+			} else {
+				var keyConfig = App.Current.Config.KeyConfigs.FirstOrDefault ((arg) => arg.Name == kconfig.Name);
+				if (keyConfig != null) {
+					keyConfig = kconfig;
+				}
+			}
+			App.Current.Config.Save ();
+		}
+
+		void HandleSaveEvent (SaveEvent<KeyConfig> e)
+		{
+			SaveToConfig ();
+		}
+
 		void HandleEditKeyConfig (EditEvent<KeyConfig> e)
 		{
 			HotKey hotkey = App.Current.GUIToolkit.SelectHotkey (e.Object.Key);
 			if (hotkey != null) {
-				if (keyConfigs.Where ((arg) => arg.Key == hotkey).Any ()) {
-					App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Hotkey already in use: ") +
-													  System.Security.SecurityElement.Escape (hotkey.ToString ()));
-					e.ReturnValue = false;
+				var kconfig = keyConfigs.FirstOrDefault ((arg) => arg.Key == hotkey);
+				if (kconfig != null && kconfig.Key != e.Object.Key) {
+					string key = System.Security.SecurityElement.Escape (hotkey.ToString ());
+					string msg = Catalog.GetString ($"Shortcut already in use\n{key}  is in use by  {kconfig.Category}/{kconfig.Description}  " +
+												   $"replacing it will leave  {kconfig.Description}  without a shortcut, are you sure? ");
+					msg = System.Security.SecurityElement.Escape (msg);
+					List<string> buttons = new List<string> { Catalog.GetString ("Replace"),
+						Catalog.GetString("Cancel"), Catalog.GetString("Try another key")};
+					int res = App.Current.Dialogs.ButtonsMessage (msg, buttons, 2);
+					switch (res) {
+					case 1:
+						kconfig.Key = new HotKey ();
+						e.Object.Key = hotkey;
+						break;
+					case 2:
+						e.ReturnValue = false;
+						return;
+					case 3:
+						HandleEditKeyConfig (e);
+						return;
+					}
 				} else {
 					e.Object.Key = hotkey;
 				}
+			}
+			if (e.AutoSave) {
+				SaveToConfig (e.Object);
 			}
 			e.ReturnValue = true;
 		}

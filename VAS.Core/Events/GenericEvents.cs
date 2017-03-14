@@ -124,6 +124,11 @@ namespace VAS.Core.Events
 	/// </summary>
 	public class EditEvent<T> : GenericEvent<T>
 	{
+		/// <summary>
+		/// Gets or sets a value indicating whether the object should be saved
+		/// </summary>
+		/// <value><c>true</c> if auto save; otherwise, <c>false</c>.</value>
+		public bool AutoSave { get; set; }
 	}
 }
 

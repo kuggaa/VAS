@@ -16,6 +16,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Threading.Tasks;
+using VAS.Core;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 
@@ -26,5 +28,65 @@ namespace VAS.Services.ViewModel
 	/// </summary>
 	public class PreferencesPanelVM : NestedViewModel<IPreferencesVM>
 	{
+		bool autoSave;
+		bool closing;
+
+		public PreferencesPanelVM ()
+		{
+			CancelCommand = new Command (Cancel, () => { return true; });
+			CancelCommand.Text = Catalog.GetString ("Cancel");
+			OkCommand = new Command (Accept, () => { return true; });
+			OkCommand.Text = Catalog.GetString ("Ok");
+		}
+
+		public bool AutoSave {
+			get {
+				return autoSave;
+			}
+
+			set {
+				autoSave = value;
+				foreach (var vm in ViewModels) {
+					vm.AutoSave = value;
+				}
+			}
+		}
+
+		public Command CancelCommand {
+			get;
+			set;
+		}
+
+		public Command OkCommand {
+			get;
+			set;
+		}
+
+		public void Close ()
+		{
+			if (!closing && !AutoSave) {
+				foreach (var vm in ViewModels) {
+					vm.Cancel ();
+				}
+			}
+		}
+
+		async Task Cancel ()
+		{
+			foreach (var vm in ViewModels) {
+				vm.Cancel ();
+			}
+			closing = true;
+			await App.Current.StateController.MoveBack ();
+		}
+
+		async Task Accept ()
+		{
+			foreach (var vm in ViewModels) {
+				vm.Save ();
+			}
+			closing = true;
+			await App.Current.StateController.MoveBack ();
+		}
 	}
 }
