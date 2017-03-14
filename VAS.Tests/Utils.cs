@@ -301,6 +301,11 @@ namespace VAS.Tests
 
 				return evt;
 			}
+
+			protected override void PCardAction (ButtonModifier modifier, PlayerVM player)
+			{
+				return;
+			}
 		}
 
 		//dummy class for abstract validation. Copied from LongoMatch and adapted to VAS.
