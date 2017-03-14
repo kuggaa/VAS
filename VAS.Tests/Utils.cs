@@ -23,6 +23,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Moq;
 using NUnit.Framework;
 using VAS.Core.Common;
 using VAS.Core.Filters;
@@ -201,14 +202,18 @@ namespace VAS.Tests
 
 	public class DummyTemplatesController : TemplatesController<Team, TeamVM, Player, PlayerVM>
 	{
+		Mock<ITemplateProvider<Team>> templatesProviderMock;
+
 		public DummyTemplatesController ()
 		{
 			ViewModel = new TemplatesManagerViewModel<Team, TeamVM, Player, PlayerVM> ();
+			templatesProviderMock = new Mock<ITemplateProvider<Team>> ();
+			Provider = templatesProviderMock.Object;
 		}
 
 		protected override bool SaveValidations (Team model)
 		{
-			throw new NotImplementedException ();
+			return true;
 		}
 	}
 

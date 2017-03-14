@@ -16,7 +16,13 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Linq;
+using Moq;
 using NUnit.Framework;
+using VAS.Core;
+using VAS.Core.Common;
+using VAS.Core.Events;
+using VAS.Core.Store.Templates;
 using VAS.Core.ViewModel;
 
 namespace VAS.Tests.Services
@@ -25,11 +31,28 @@ namespace VAS.Tests.Services
 	public class TestTemplatesController
 	{
 		DummyTemplatesController templatesController;
+		Mock<IDialogs> mockDialogs;
 
 		[SetUp]
 		public void SetUp ()
 		{
 			templatesController = new DummyTemplatesController ();
+			templatesController.Start ();
+		}
+
+		[TestFixtureSetUp]
+		public void SetUpFixture ()
+		{
+			mockDialogs = new Mock<IDialogs> ();
+			App.Current.Dialogs = mockDialogs.Object;
+			mockDialogs.Setup (m => m.QuestionMessage (It.IsAny<string> (), null, It.IsAny<DummyTemplatesController> ())).Returns (AsyncHelpers.Return (true));
+			mockDialogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (), It.IsAny<DummyTemplatesController> ())).Returns (AsyncHelpers.Return ("Test Team #2_copy"));
+		}
+
+		[TearDown]
+		public void TearDownOnce ()
+		{
+			templatesController.Stop ();
 		}
 
 		[Test ()]
@@ -39,7 +62,7 @@ namespace VAS.Tests.Services
 			Utils.PlayerDummy player = new Utils.PlayerDummy ();
 			DummyTeam team = new DummyTeam ();
 			team.List.Add (player);
-			TeamVM teamVM = new TeamVM () { Model = team };
+			TeamVM teamVM = new TeamVM { Model = team };
 
 			templatesController.ViewModel.ViewModels.Add (teamVM);
 
@@ -60,7 +83,7 @@ namespace VAS.Tests.Services
 			Utils.PlayerDummy player = new Utils.PlayerDummy ();
 			DummyTeam team = new DummyTeam ();
 			team.List.Add (player);
-			TeamVM teamVM = new TeamVM () { Model = team };
+			TeamVM teamVM = new TeamVM { Model = team };
 
 			templatesController.ViewModel.ViewModels.Add (teamVM);
 			templatesController.ViewModel.SelectionReplace (templatesController.ViewModel.ViewModels);
@@ -73,6 +96,92 @@ namespace VAS.Tests.Services
 						   "Loaded template model");
 			Assert.IsEmpty (templatesController.ViewModel.LoadedTemplate.SubViewModel,
 						   "Loaded template subVM");
+		}
+
+		[Test ()]
+		public void TestHandleSave_ForcedNameChanged ()
+		{
+			// Arrange
+			Utils.PlayerDummy player = new Utils.PlayerDummy ();
+			DummyTeam team = new DummyTeam ();
+			team.Name = "Test Team #1";
+			team.List.Add (player);
+			TeamVM teamVM = new TeamVM { Model = team };
+
+			templatesController.ViewModel.ViewModels.Add (teamVM);
+
+			DummyTeam team2 = team.Clone ();
+			string expectedName = "Test Team #2";
+			team2.Name = expectedName;
+
+			// Action
+			App.Current.EventsBroker.Publish (new UpdateEvent<Team> () {
+				Object = team2,
+				Force = true
+			});
+
+			// Assert
+			Assert.AreEqual (templatesController.ViewModel.ViewModels.First (x => x.ID == team.ID).Name,
+						   expectedName);
+			Assert.IsFalse (templatesController.ViewModel.SaveSensitive);
+		}
+
+		[Test ()]
+		public void TestHandleSave_NonForcedNameChanged ()
+		{
+			// Arrange
+			Utils.PlayerDummy player = new Utils.PlayerDummy ();
+			DummyTeam team = new DummyTeam ();
+			team.Name = "Test Team #1";
+			team.List.Add (player);
+			TeamVM teamVM = new TeamVM { Model = team };
+
+			templatesController.ViewModel.ViewModels.Add (teamVM);
+
+			DummyTeam team2 = team.Clone ();
+			string expectedName = "Test Team #2";
+			team2.Name = expectedName;
+
+			// Action
+			App.Current.EventsBroker.Publish (new UpdateEvent<Team> () {
+				Object = team2,
+				Force = false
+			});
+
+			// Assert
+			mockDialogs.Verify (m => m.QuestionMessage (It.IsAny<string> (), null, It.IsAny<DummyTemplatesController> ()), Times.Once ());
+			Assert.AreEqual (templatesController.ViewModel.ViewModels.First (x => x.ID == team.ID).Name,
+						   expectedName);
+			Assert.IsFalse (templatesController.ViewModel.SaveSensitive);
+		}
+
+		[Test ()]
+		public void TestHandleSave_SaveStatic ()
+		{
+			// Arrange
+			Utils.PlayerDummy player = new Utils.PlayerDummy ();
+			DummyTeam team = new DummyTeam ();
+			team.Name = "Test Team #1";
+			team.List.Add (player);
+			TeamVM teamVM = new TeamVM { Model = team };
+
+			templatesController.ViewModel.ViewModels.Add (teamVM);
+
+			DummyTeam team2 = team.Clone ();
+			string expectedName = "Test Team #2";
+			team2.Name = expectedName;
+			team2.Static = true;
+			var evt = new UpdateEvent<Team> () {
+				Object = team2,
+				Force = true
+			};
+
+			// Action
+			App.Current.EventsBroker.Publish (evt);
+
+			// Assert
+			Assert.IsTrue (evt.ReturnValue);
+			mockDialogs.Verify (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (), It.IsAny<DummyTemplatesController> ()), Times.Once ());
 		}
 	}
 }
