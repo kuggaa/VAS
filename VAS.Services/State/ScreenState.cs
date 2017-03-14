@@ -137,7 +137,7 @@ namespace VAS.Services.State
 			}
 			KeyContext panelKeyContext = Panel?.GetKeyContext ();
 			if (panelKeyContext != null) {
-				KeyContext.KeyActions.AddRange (Panel?.GetKeyContext ()?.KeyActions);
+				KeyContext.KeyActions.AddRange (panelKeyContext.KeyActions);
 			}
 
 			return AsyncHelpers.Return (true);
