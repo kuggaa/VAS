@@ -57,8 +57,13 @@ namespace VAS.Core.Common
 				}
 			}
 
+			int keyval = (int)Gdk.Keyval.ToLower ((uint)evt.KeyValue);
+			if (modifier != 0) {
+				keyval = (int)NormalizeKeyVal (evt.HardwareKeycode);
+			}
+
 			return new HotKey {
-				Key = (int)Gdk.Keyval.ToLower (evt.KeyValue),
+				Key = keyval,
 				Modifier = modifier
 			};
 		}
@@ -111,6 +116,19 @@ namespace VAS.Core.Common
 				name += "+";
 			}
 			return name + NameFromKeyval ((uint)hotkey.Key);
+		}
+
+		/// <summary>
+		/// Normalizes the key value. Only useful when having a modifier enabled with the key
+		/// </summary>
+		/// <returns>The key value.</returns>
+		/// <param name="hardwareKey">Hardware key.</param>
+		uint NormalizeKeyVal (uint hardwareKey)
+		{
+			KeymapKey [] keymapkey;
+			uint [] keyvals;
+			Gdk.Keymap.Default.GetEntriesForKeycode (hardwareKey, out keymapkey, out keyvals);
+			return keyvals [0];
 		}
 	}
 }
