@@ -179,8 +179,8 @@ namespace VAS.Services
 				var kconfig = keyConfigs.FirstOrDefault ((arg) => arg.Key == hotkey);
 				if (kconfig != null && kconfig.Key != e.Object.Key) {
 					string key = System.Security.SecurityElement.Escape (hotkey.ToString ());
-					string msg = Catalog.GetString ($"Shortcut Already in use\n<{key}> is in use by <{kconfig.Category},{kconfig.Description}> " +
-												   $"replacing it will leave <{kconfig.Description}> without a shortcut, are you sure? ");
+					string msg = Catalog.GetString ($"Shortcut Already in use\n{key}  is in use by  {kconfig.Category}/{kconfig.Description}  " +
+												   $"replacing it will leave  {kconfig.Description}  without a shortcut, are you sure? ");
 					msg = System.Security.SecurityElement.Escape (msg);
 					List<string> buttons = new List<string> { Catalog.GetString ("Replace"),
 						Catalog.GetString("Cancel"), Catalog.GetString("Try another key")};
