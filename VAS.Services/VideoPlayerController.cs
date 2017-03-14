@@ -916,16 +916,36 @@ namespace VAS.Services
 				),
 				new KeyAction (
 					App.Current.HotkeysService.GetByName("PLAYER_SEEK_LEFT_SHORT"),
-					() => PerformStep (new Time { TotalSeconds = -SHORT_SEEK_SECONDS })),
+					() => PerformStep (new Time { TotalSeconds = -SHORT_SEEK_SECONDS })
+				),
 				new KeyAction (
 					App.Current.HotkeysService.GetByName("PLAYER_SEEK_LEFT_LONG"),
-					() => PerformStep (new Time { TotalSeconds = -LONG_SEEK_SECONDS })),
+					() => PerformStep (new Time { TotalSeconds = -LONG_SEEK_SECONDS })
+				),
 				new KeyAction (
 					App.Current.HotkeysService.GetByName("PLAYER_SEEK_RIGHT_SHORT"),
-					() => PerformStep (new Time { TotalSeconds = SHORT_SEEK_SECONDS })),
+					() => PerformStep (new Time { TotalSeconds = SHORT_SEEK_SECONDS })
+				),
 				new KeyAction (
 					App.Current.HotkeysService.GetByName("PLAYER_SEEK_RIGHT_LONG"),
-					() => PerformStep (new Time { TotalSeconds = LONG_SEEK_SECONDS }))
+					() => PerformStep (new Time { TotalSeconds = LONG_SEEK_SECONDS })
+				),
+				new KeyAction (
+					App.Current.HotkeysService.GetByName("PLAYER_NEXT_ELEMENT"),
+					Next
+				),
+				new KeyAction (
+					App.Current.HotkeysService.GetByName("PLAYER_PREVIOUS_ELEMENT"),
+					() => Previous()
+				),
+				new KeyAction (
+					App.Current.HotkeysService.GetByName("PLAYER_PREVIOUS_ELEMENT"),
+					() => Previous()
+				),
+				new KeyAction (
+					App.Current.HotkeysService.GetByName("OPEN_DRAWING_TOOL"),
+					playerVM.DrawFrame
+				)
 			};
 		}
 

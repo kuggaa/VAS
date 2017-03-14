@@ -48,13 +48,13 @@ namespace VAS.Core.Hotkeys
 				},
 				new KeyConfig {
 					Name = "OPEN_PREFERENCES",
-					Key = App.Current.Keyboard.ParseName ("<Control_L>+plus"),
+					Key = App.Current.Keyboard.ParseName ("<Control_L>+p"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Open preferences")
 				},
 				new KeyConfig {
 					Name = "FIND_PLAYHEAD",
-					Key = App.Current.Keyboard.ParseName ("<Control_L>+a"),
+					Key = App.Current.Keyboard.ParseName ("<Shift_L>+p"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Find playhead")
 				},
@@ -70,6 +70,8 @@ namespace VAS.Core.Hotkeys
 					Category = CATEGORY,
 					Description = Catalog.GetString("Zoom out")
 				},
+				//FIXME: Not entering on first release, but should be
+				//done in a future
 				/*new KeyConfig {
 					Name = "DELETE_SELECTED_EVENT",
 					Key = App.Current.Keyboard.ParseName ("Delete"),
@@ -85,6 +87,9 @@ namespace VAS.Core.Hotkeys
 			};
 		}
 
+		/// <summary>
+		/// Registers the default UI hotkeys
+		/// </summary>
 		public static void RegisterDefaultHotkeys ()
 		{
 			App.Current.HotkeysService.Register (hotkeys);
