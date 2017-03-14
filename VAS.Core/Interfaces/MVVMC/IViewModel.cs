@@ -60,6 +60,9 @@ namespace VAS.Core.Interfaces.MVVMC
 	{
 		string View { get; }
 		string Name { get; }
+		bool AutoSave { get; set; }
+		void Cancel ();
+		void Save ();
 	}
 }
 

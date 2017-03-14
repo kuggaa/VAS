@@ -17,6 +17,7 @@
 //
 using System;
 using System.Threading.Tasks;
+using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Hotkeys;
 using VAS.Core.MVVMC;
@@ -26,12 +27,22 @@ namespace VAS.Core.ViewModel
 {
 	public class KeyConfigVM : ViewModelBase<KeyConfig>
 	{
-
+		HotKey initialHotkey;
 		public KeyConfigVM ()
 		{
 			EditCommand = new Command (EditKey, () => { return true; });
 			EditCommand.Icon = Resources.LoadIcon ("longomatch-control-draw");
 			EditCommand.ToolTipText = Catalog.GetString ("Edit Shortcut");
+		}
+
+		public override KeyConfig Model {
+			get {
+				return base.Model;
+			}
+			set {
+				base.Model = value;
+				initialHotkey = Model.Key.Clone ();
+			}
 		}
 
 		/// <summary>
@@ -73,16 +84,26 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		public bool AutoSave {
+			get; set;
+		}
+
 		[PropertyChanged.DoNotNotify]
 		public Command EditCommand {
 			get;
 			protected set;
 		}
 
+		public void Cancel ()
+		{
+			Key = initialHotkey;
+		}
+
 		async Task EditKey ()
 		{
 			await App.Current.EventsBroker.PublishWithReturn (new EditEvent<KeyConfig> {
-				Object = Model
+				Object = Model,
+				AutoSave = AutoSave
 			});
 		}
 	}

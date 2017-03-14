@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
@@ -52,6 +53,23 @@ namespace VAS.Services.ViewModel
 			get {
 				return ViewModels.Select ((arg) => arg.Category).Distinct ();
 			}
+		}
+
+		public bool AutoSave {
+			get;
+			set;
+		}
+
+		public void Cancel ()
+		{
+			foreach (var vm in ViewModels) {
+				vm.Cancel ();
+			}
+		}
+
+		public void Save ()
+		{
+			App.Current.EventsBroker.Publish (new SaveEvent<KeyConfig> ());
 		}
 	}
 }
