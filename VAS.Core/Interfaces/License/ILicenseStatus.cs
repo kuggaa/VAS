@@ -26,16 +26,12 @@ namespace VAS.Core.Interfaces.License
 		/// Gets a value indicating whether this <see cref="T:VAS.Core.Interfaces.License.ILicenseStatus"/> is valid.
 		/// </summary>
 		/// <value><c>true</c> if is valid; otherwise, <c>false</c>.</value>
-		bool IsValid {
-			get;
-		}
+		bool Valid { get; set; }
 
 		/// <summary>
-		/// Gets the LicenseLevel of the License (None, freemium, level1, etc)
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.Interfaces.License.ILicenseStatus"/> is limited.
 		/// </summary>
-		/// <value>The level.</value>
-		LicenseLevel Level {
-			get;
-		}
+		/// <value><c>true</c> if limited; otherwise, <c>false</c>.</value>
+		bool Limited { get; }
 	}
 }
