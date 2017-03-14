@@ -25,6 +25,7 @@ using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Services.State;
 using VAS.Services.ViewModel;
+using VAS.UI.Helpers;
 
 namespace VAS.UI.Panel
 {
@@ -46,7 +47,7 @@ namespace VAS.UI.Panel
 			treeview.EnableGridLines = TreeViewGridLines.None;
 			treeview.EnableTreeLines = false;
 			treeview.Selection.Mode = SelectionMode.Single;
-			treeview.Selection.Changed += HandleSelectionChanged; ;
+			treeview.Selection.Changed += HandleSelectionChanged;
 		}
 
 		/// <summary>
@@ -103,6 +104,7 @@ namespace VAS.UI.Panel
 		/// </summary>
 		public void OnUnload ()
 		{
+			viewModel.Close ();
 		}
 
 		public PreferencesPanelVM ViewModel {
@@ -119,6 +121,13 @@ namespace VAS.UI.Panel
 					AddPanels ();
 					//Select First Panel
 					treeview.Selection.SelectPath (new TreePath ("0"));
+					if (!viewModel.AutoSave) {
+						dialogButtonBox.Visible = true;
+						okButtonDialog.Bind (viewModel.OkCommand);
+						cancelButtonDialog.Bind (viewModel.CancelCommand);
+					} else {
+						dialogButtonBox.Visible = false;
+					}
 				}
 			}
 		}

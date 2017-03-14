@@ -19,6 +19,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Gtk;
+using VAS.Core;
+using VAS.Core.Common;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.ViewModel;
@@ -39,9 +41,17 @@ namespace VAS.UI.Component
 			lblShortcut.ModifyFont (Pango.FontDescription.FromString (App.Current.Style.LabelFont));
 			lblAction.ModifyFont (Pango.FontDescription.FromString (App.Current.Style.LabelFont));
 			categoriesCombo.Changed += HandleCategoriesComboChanged;
+			//Sorry for that :D this is to align the title with the keyconfigs
+			var lblInv = new Label ("        ");
+			hbox1.PackStart (lblInv, false, false, 0);
+			Box.BoxChild bc = ((Box.BoxChild)(this.hbox1 [lblInv]));
+			bc.Position = 0;
 		}
 
-
+		/// <summary>
+		/// Gets or sets the view model.
+		/// </summary>
+		/// <value>The view model.</value>
 		public HotkeysConfigurationVM ViewModel {
 			get {
 				return viewModel;
@@ -55,6 +65,10 @@ namespace VAS.UI.Component
 			}
 		}
 
+		/// <summary>
+		/// Sets the view model.
+		/// </summary>
+		/// <param name="viewModel">View model.</param>
 		public void SetViewModel (object viewModel)
 		{
 			ViewModel = (HotkeysConfigurationVM)viewModel;
@@ -82,6 +96,7 @@ namespace VAS.UI.Component
 
 				box = new HBox ();
 				box.Homogeneous = false;
+				box.Spacing = 5;
 				descLabel = new Label ();
 				descLabel.ModifyFont (Pango.FontDescription.FromString (App.Current.Style.ContentFont));
 				descLabel.LabelProp = config.Description;
@@ -90,22 +105,32 @@ namespace VAS.UI.Component
 				descLabel.WidthRequest = 200;
 				keyLabel = new Label ();
 				keyLabel.ModifyFont (Pango.FontDescription.FromString (App.Current.Style.ContentFont));
+				if (!config.Key.Defined) {
+					keyLabel.ModifyFg (StateType.Normal, Helpers.Misc.ToGdkColor (Color.Red));
+				} else {
+					keyLabel.ModifyFg (StateType.Normal, Helpers.Misc.ToGdkColor (App.Current.Style.TextColor));
+				}
 				keyLabel.LabelProp = config.Key.ToString ();
 				keyLabel.Justify = Justification.Left;
 				keyLabel.SetAlignment (0f, 0.5f);
 				keyLabel.WidthRequest = 200;
 				edit = new Button ();
 				edit.Bind (config.EditCommand);
+				box.PackStart (edit, false, false, 0);
 				box.PackStart (descLabel, false, false, 0);
 				box.PackStart (keyLabel, false, true, 0);
-				box.PackStart (edit, false, false, 0);
 				box.ShowAll ();
 				keyConfigVBox.PackStart (box, false, false, 0);
 
 				//FIXME: This should use a Label bind that will come with the new longomatch_fix branch
 				config.PropertyChanged += (sender, e) => {
 					if (e.PropertyName == "Key") {
-						keyLabel.Markup = GLib.Markup.EscapeText (config.Key.ToString ());
+						if (!config.Key.Defined) {
+							keyLabel.ModifyFg (StateType.Normal, Helpers.Misc.ToGdkColor (Color.Red));
+						} else {
+							keyLabel.ModifyFg (StateType.Normal, Helpers.Misc.ToGdkColor (App.Current.Style.TextColor));
+						}
+						keyLabel.LabelProp = config.Key.ToString ();
 					}
 				};
 			}

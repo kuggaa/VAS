@@ -17,6 +17,7 @@
 //
 using System;
 using System.Threading.Tasks;
+using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Hotkeys;
 using VAS.Core.MVVMC;
@@ -24,14 +25,30 @@ using VAS.Core.Store;
 
 namespace VAS.Core.ViewModel
 {
+	/// <summary>
+	/// Key config ViewModel
+	/// </summary>
 	public class KeyConfigVM : ViewModelBase<KeyConfig>
 	{
-
+		HotKey initialHotkey;
 		public KeyConfigVM ()
 		{
 			EditCommand = new Command (EditKey, () => { return true; });
 			EditCommand.Icon = Resources.LoadIcon ("longomatch-control-draw");
 			EditCommand.ToolTipText = Catalog.GetString ("Edit Shortcut");
+		}
+		/// <summary>
+		/// Gets or sets the model.
+		/// </summary>
+		/// <value>The model.</value>
+		public override KeyConfig Model {
+			get {
+				return base.Model;
+			}
+			set {
+				base.Model = value;
+				initialHotkey = Model.Key.Clone ();
+			}
 		}
 
 		/// <summary>
@@ -73,16 +90,37 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.KeyConfigVM"/> auto save.
+		/// </summary>
+		/// <value><c>true</c> if auto save; otherwise, <c>false</c>.</value>
+		public bool AutoSave {
+			get; set;
+		}
+
+		/// <summary>
+		/// Gets or sets the edit command.
+		/// </summary>
+		/// <value>The edit command.</value>
 		[PropertyChanged.DoNotNotify]
 		public Command EditCommand {
 			get;
 			protected set;
 		}
 
+		/// <summary>
+		/// Cancels All changes on this Hotkey
+		/// </summary>
+		public void Cancel ()
+		{
+			Key = initialHotkey;
+		}
+
 		async Task EditKey ()
 		{
 			await App.Current.EventsBroker.PublishWithReturn (new EditEvent<KeyConfig> {
-				Object = Model
+				Object = Model,
+				AutoSave = AutoSave
 			});
 		}
 	}
