@@ -89,16 +89,16 @@ namespace VAS.Core.Hotkeys
 					Description = Catalog.GetString("Filled circle")
 				},
 				new KeyConfig {
-					Name = "DRAWING_TOOL_TAG_PLAYER",
-					Key = App.Current.Keyboard.ParseName ("p"),
-					Category = CATEGORY,
-					Description = Catalog.GetString("Tag player")
-				},
-				new KeyConfig {
 					Name = "DRAWING_TOOL_COUNTER",
 					Key = App.Current.Keyboard.ParseName ("1"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Counter")
+				},
+				/*new KeyConfig {
+					Name = "DRAWING_TOOL_TAG_PLAYER",
+					Key = App.Current.Keyboard.ParseName ("p"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Tag player")
 				},
 				new KeyConfig {
 					Name = "DRAWING_TOOL_ZOOM_IN",
@@ -111,7 +111,7 @@ namespace VAS.Core.Hotkeys
 					Key = App.Current.Keyboard.ParseName ("<Control_L>+minus"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Zoom out")
-				},
+				},*/
 				new KeyConfig {
 					Name = "DRAWING_TOOL_CLEAR_ALL",
 					Key = App.Current.Keyboard.ParseName ("<Control_L>+<Alt_L>+<Shift_L>+x"),

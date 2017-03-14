@@ -70,7 +70,7 @@ namespace VAS.Core.Hotkeys
 					Category = CATEGORY,
 					Description = Catalog.GetString("Zoom out")
 				},
-				new KeyConfig {
+				/*new KeyConfig {
 					Name = "DELETE_SELECTED_EVENT",
 					Key = App.Current.Keyboard.ParseName ("Delete"),
 					Category = CATEGORY,
@@ -81,7 +81,7 @@ namespace VAS.Core.Hotkeys
 					Key = App.Current.Keyboard.ParseName ("<Control_L>"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Lock selection modifier")
-				}
+				}*/
 			};
 		}
 
