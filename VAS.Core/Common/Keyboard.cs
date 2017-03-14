@@ -43,10 +43,12 @@ namespace VAS.Core.Common
 			}
 			if (evt.State.HasFlag (Gdk.ModifierType.Mod1Mask) || evt.State.HasFlag (Gdk.ModifierType.Mod5Mask)) {
 				modifier += (int)ModifierType.Mod1Mask;
-			} 
-			// Use comand instead of control if we are in OSX
+			}
+			// Use comand or control if we are in OSX
+			// FIXME: we need to actually define this better. We want users to configure hotkeys with command? if so 
+			// let that be command.
 			if (Utils.OS == OperatingSystemID.OSX) {
-				if (evt.State.HasFlag (Gdk.ModifierType.Mod2Mask | Gdk.ModifierType.MetaMask)) {
+				if (evt.State.HasFlag (Gdk.ModifierType.Mod2Mask | Gdk.ModifierType.MetaMask) || evt.State.HasFlag (Gdk.ModifierType.ControlMask)) {
 					modifier += (int)ModifierType.ControlMask;
 				}
 			} else {
