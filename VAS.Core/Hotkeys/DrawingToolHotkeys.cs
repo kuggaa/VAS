@@ -94,6 +94,8 @@ namespace VAS.Core.Hotkeys
 					Category = CATEGORY,
 					Description = Catalog.GetString("Counter")
 				},
+				//FIXME: this sould be added, now are not possible due to 
+				//the actual functionality of the VAS DrawingTool
 				/*new KeyConfig {
 					Name = "DRAWING_TOOL_TAG_PLAYER",
 					Key = App.Current.Keyboard.ParseName ("p"),
@@ -119,6 +121,12 @@ namespace VAS.Core.Hotkeys
 					Description = Catalog.GetString("Clear all")
 				},
 				new KeyConfig {
+					Name = "DRAWING_TOOL_DELETE_SELECTION",
+					Key = App.Current.Keyboard.ParseName ("Delete"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Delete selection")
+				},
+				new KeyConfig {
 					Name = "DRAWING_TOOL_SAVE",
 					Key = App.Current.Keyboard.ParseName ("<Control_L>+s"),
 					Category = CATEGORY,
@@ -133,6 +141,9 @@ namespace VAS.Core.Hotkeys
 			};
 		}
 
+		/// <summary>
+		/// Static Method to Registers the default Drawing Tool hotkeys.
+		/// </summary>
 		public static void RegisterDefaultHotkeys ()
 		{
 			App.Current.HotkeysService.Register (hotkeys);

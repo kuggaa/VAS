@@ -63,49 +63,52 @@ namespace VAS.Core.Hotkeys
 				},
 				new KeyConfig {
 					Name = "PLAYER_RATE_INCREMENT",
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Right"),
+					Key = App.Current.Keyboard.ParseName ("<Control_L>+<Shift_L>+Right"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Speed up")
 				},
 				new KeyConfig {
 					Name = "PLAYER_RATE_DECREMENT",
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Left"),
+					Key = App.Current.Keyboard.ParseName ("<Control_L>+<Shift_L>+Left"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Speed down")
 				},
 				new KeyConfig {
 					Name = "PLAYER_RATE_MAX",
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Up"),
+					Key = App.Current.Keyboard.ParseName ("<Control_L>+<Shift_L>+Up"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Max speed")
 				},
 				new KeyConfig {
 					Name = "PLAYER_RATE_DEFAULT",
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Down"),
+					Key = App.Current.Keyboard.ParseName ("<Control_L>+<Shift_L>+Down"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Speed 1x")
 				},
 				new KeyConfig {
 					Name = "PLAYER_NEXT_ELEMENT",
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+x"),
+					Key = App.Current.Keyboard.ParseName ("<Control_L>+x"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Next event")
 				},
 				new KeyConfig {
 					Name = "PLAYER_PREVIOUS_ELEMENT",
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+z"),
+					Key = App.Current.Keyboard.ParseName ("<Control_L>+z"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Previous event")
 				},
 				new KeyConfig {
 					Name = "OPEN_DRAWING_TOOL",
-					Key = App.Current.Keyboard.ParseName (""),
+					Key = App.Current.Keyboard.ParseName ("<Control_L>+d"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Open drawing tool")
 				}
 			};
 		}
 
+		/// <summary>
+		/// Registers the default playback hotkeys.
+		/// </summary>
 		public static void RegisterDefaultHotkeys ()
 		{
 			App.Current.HotkeysService.Register (playbackHotkeys);

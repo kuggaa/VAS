@@ -212,7 +212,86 @@ namespace VAS.UI.Dialog
 
 		public KeyContext GetKeyContext ()
 		{
-			return new KeyContext ();
+			var keyContext = new KeyContext ();
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName ("DRAWING_TOOL_SELECT"),
+					selectbutton.Click)
+			);
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName ("DRAWING_TOOL_ERASER"),
+					eraserbutton.Click)
+			);
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName ("DRAWING_TOOL_PENCIL_TOOL"),
+					penbutton.Click)
+			);
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName ("DRAWING_TOOL_TEXT_TOOL"),
+					textbutton.Click)
+			);
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName ("DRAWING_TOOL_LINE_TOOL"),
+					linebutton.Click)
+			);
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName ("DRAWING_TOOL_X_TOOL"),
+					crossbutton.Click)
+			);
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName ("DRAWING_TOOL_SQUARE"),
+					rectanglebutton.Click)
+			);
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName ("DRAWING_TOOL_FILLED_SQUARE"),
+					rectanglefilledbutton.Click)
+			);
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName ("DRAWING_TOOL_CIRCLE"),
+					ellipsebutton.Click)
+			);
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName ("DRAWING_TOOL_FILLED_CIRCLE"),
+					ellipsefilledbutton.Click)
+			);
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName ("DRAWING_TOOL_COUNTER"),
+					numberbutton.Click)
+			);
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName ("DRAWING_TOOL_CLEAR_ALL"),
+					clearbutton.Click)
+			);
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName ("DRAWING_TOOL_DELETE_SELECTION"),
+					blackboard.DeleteSelection)
+			);
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName ("DRAWING_TOOL_SAVE"),
+					() => {
+						if (savetoprojectbutton.Visible) {
+							savetoprojectbutton.Click ();
+						}
+					})
+			); keyContext.AddAction (
+				 new KeyAction (
+					 App.Current.HotkeysService.GetByName ("DRAWING_TOOL_EXPORT_IMAGE"),
+					 savebutton.Click)
+			 );
+			return keyContext;
 		}
 
 		public void OnLoad ()
@@ -444,10 +523,10 @@ namespace VAS.UI.Dialog
 
 		protected override bool OnKeyPressEvent (Gdk.EventKey evnt)
 		{
-			if (evnt.Key == Gdk.Key.Delete) {
-				blackboard.DeleteSelection ();
+			if (!base.OnKeyPressEvent (evnt) || !(Focus is Entry)) {
+				App.Current.KeyContextManager.HandleKeyPressed (App.Current.Keyboard.ParseEvent (evnt));
 			}
-			return base.OnKeyPressEvent (evnt);
+			return true;
 		}
 
 		void HandleToolClicked (object sender, EventArgs e)
