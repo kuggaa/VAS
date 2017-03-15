@@ -124,7 +124,7 @@ namespace VAS.Tests.Services
 		public void TestEnableLimitationWithLicenseChange ()
 		{
 			//Arrange
-			mockLicenseStatus.SetupGet (obj => obj.Level).Returns (LicenseLevel.FREEMIUM);
+			mockLicenseStatus.SetupGet (obj => obj.Limited).Returns (true);
 
 			//Act
 			var limitation = new LicenseLimitation {
@@ -144,7 +144,7 @@ namespace VAS.Tests.Services
 		public void TestDisableLimitationWithLicenseChange ()
 		{
 			//Arrange
-			mockLicenseStatus.SetupGet (obj => obj.Level).Returns (LicenseLevel.LEVEL_1);
+			mockLicenseStatus.SetupGet (obj => obj.Limited).Returns (false);
 
 			//Act
 			var limitation = new LicenseLimitation {
