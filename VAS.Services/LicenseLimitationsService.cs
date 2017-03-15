@@ -118,7 +118,7 @@ namespace VAS.Services
 
 		void HandleLicenseChangeEvent (LicenseChangeEvent e)
 		{
-			bool enable = App.Current.LicenseManager.LicenseStatus.Level < LicenseLevel.LEVEL_1;
+			bool enable = App.Current.LicenseManager.LicenseStatus.Limited;
 			foreach (var limitation in GetAll ().Select ((arg) => arg.Model)) {
 				limitation.Enabled = enable;
 			}

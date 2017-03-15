@@ -59,7 +59,7 @@ namespace VAS.Tests
 			var mockLicenseManager = new Mock<ILicenseManager> ();
 			var mockLicenseStatus = new Mock<ILicenseStatus> ();
 			mockLicenseManager.SetupGet (obj => obj.LicenseStatus).Returns (mockLicenseStatus.Object);
-			mockLicenseStatus.SetupGet (obj => obj.Level).Returns (LicenseLevel.FREEMIUM);
+			mockLicenseStatus.SetupGet (obj => obj.Limited).Returns (true);
 			App.Current.LicenseManager = mockLicenseManager.Object;
 		}
 	}
