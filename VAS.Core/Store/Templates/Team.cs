@@ -108,5 +108,26 @@ namespace VAS.Core.Store.Templates
 			}
 			return newTeam;
 		}
+
+		public override bool Equals (object obj)
+		{
+			if (!(obj is Team)) {
+				return false;
+			}
+
+			Team other = obj as Team;
+
+			if (!base.Equals (obj)) {
+				return false;
+			}
+			if (this.Name != other.Name) {
+				return false;
+			}
+			if (this.Shield != other.Shield) {
+				return false;
+			}
+
+			return true;
+		}
 	}
 }
