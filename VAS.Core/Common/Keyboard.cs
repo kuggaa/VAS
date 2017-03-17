@@ -43,10 +43,12 @@ namespace VAS.Core.Common
 			}
 			if (evt.State.HasFlag (Gdk.ModifierType.Mod1Mask) || evt.State.HasFlag (Gdk.ModifierType.Mod5Mask)) {
 				modifier += (int)ModifierType.Mod1Mask;
-			} 
-			// Use comand instead of control if we are in OSX
+			}
+			// Use comand or control if we are in OSX
+			// FIXME: we need to actually define this better. We want users to configure hotkeys with command? if so 
+			// let that be command.
 			if (Utils.OS == OperatingSystemID.OSX) {
-				if (evt.State.HasFlag (Gdk.ModifierType.Mod2Mask | Gdk.ModifierType.MetaMask)) {
+				if (evt.State.HasFlag (Gdk.ModifierType.Mod2Mask | Gdk.ModifierType.MetaMask) || evt.State.HasFlag (Gdk.ModifierType.ControlMask)) {
 					modifier += (int)ModifierType.ControlMask;
 				}
 			} else {
@@ -55,8 +57,13 @@ namespace VAS.Core.Common
 				}
 			}
 
+			int keyval = (int)Gdk.Keyval.ToLower ((uint)evt.KeyValue);
+			if (modifier != 0) {
+				keyval = (int)NormalizeKeyVal (evt.HardwareKeycode);
+			}
+
 			return new HotKey {
-				Key = (int)Gdk.Keyval.ToLower (evt.KeyValue),
+				Key = keyval,
 				Modifier = modifier
 			};
 		}
@@ -109,6 +116,19 @@ namespace VAS.Core.Common
 				name += "+";
 			}
 			return name + NameFromKeyval ((uint)hotkey.Key);
+		}
+
+		/// <summary>
+		/// Normalizes the key value. Only useful when having a modifier enabled with the key
+		/// </summary>
+		/// <returns>The key value.</returns>
+		/// <param name="hardwareKey">Hardware key.</param>
+		uint NormalizeKeyVal (uint hardwareKey)
+		{
+			KeymapKey [] keymapkey;
+			uint [] keyvals;
+			Gdk.Keymap.Default.GetEntriesForKeycode (hardwareKey, out keymapkey, out keyvals);
+			return keyvals [0];
 		}
 	}
 }

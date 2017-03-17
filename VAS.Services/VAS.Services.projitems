@@ -31,6 +31,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectAnalysisVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\TaggingController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LicenseLimitationsService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HotkeysService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)State\PreferencesState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PreferencesPanelVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\HotkeysConfigurationVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />

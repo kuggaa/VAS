@@ -39,13 +39,6 @@ namespace VAS.Services.State
 			Panel = App.Current.ViewLocator.Retrieve (Name) as IPanel;
 			Controllers = App.Current.ControllerLocator.RetrieveAll (Name);
 			KeyContext = new KeyContext ();
-			foreach (IController controller in Controllers) {
-				KeyContext.KeyActions.AddRange (controller.GetDefaultKeyActions ());
-			}
-			KeyContext panelKeyContext = Panel?.GetKeyContext ();
-			if (panelKeyContext != null) {
-				KeyContext.KeyActions.AddRange (Panel?.GetKeyContext ()?.KeyActions);
-			}
 		}
 
 		protected override void DisposeManagedResources ()
@@ -138,6 +131,15 @@ namespace VAS.Services.State
 				controller.SetViewModel (ViewModel);
 			}
 			Panel.SetViewModel (ViewModel);
+
+			foreach (IController controller in Controllers) {
+				KeyContext.KeyActions.AddRange (controller.GetDefaultKeyActions ());
+			}
+			KeyContext panelKeyContext = Panel?.GetKeyContext ();
+			if (panelKeyContext != null) {
+				KeyContext.KeyActions.AddRange (panelKeyContext.KeyActions);
+			}
+
 			return AsyncHelpers.Return (true);
 		}
 

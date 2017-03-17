@@ -16,10 +16,12 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // 
 using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Events;
+using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.GUI;
@@ -167,6 +169,15 @@ namespace VAS
 		}
 
 		public string LicenseCode {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the key configs list
+		/// </summary>
+		/// <value>The key configurations</value>
+		public List<KeyConfig> KeyConfigs {
 			get;
 			set;
 		}

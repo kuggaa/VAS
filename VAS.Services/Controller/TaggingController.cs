@@ -90,7 +90,25 @@ namespace VAS.Services.Controller
 		/// <returns>The default key actions.</returns>
 		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
 		{
-			return Enumerable.Empty<KeyAction> ();
+			var keyActions = new List<KeyAction> ();
+			//Add AnalysisEventButtons
+			foreach (var button in project.Dashboard.ViewModels) {
+				var analysisButton = button as AnalysisEventButtonVM;
+				if (analysisButton != null) {
+					keyActions.Add (new KeyAction (new KeyConfig {
+						Name = analysisButton.Name,
+						Key = analysisButton.HotKey
+					}, () => analysisButton.Click ()));
+				}
+			}
+
+			int i = 1;
+			foreach (var player in project.Players) {
+				SetKeyActionsForPlayerCard (keyActions, i, player);
+				i++;
+				i = i % 10;
+			}
+			return keyActions;
 		}
 
 		/// <summary>
@@ -188,5 +206,28 @@ namespace VAS.Services.Controller
 				timedVM.CurrentTime = VideoPlayer.CurrentTime;
 			}
 		}
+
+		void SetKeyActionsForPlayerCard (List<KeyAction> keyActions, int index, PlayerVM player)
+		{
+			var KeyActionNone = new KeyAction (new KeyConfig {
+				Name = "Player " + index + " None",
+				Key = App.Current.Keyboard.ParseName (index.ToString ())
+			}, () => PCardAction (ButtonModifier.None, player));
+			keyActions.Add (KeyActionNone);
+
+			var KeyActionControl = new KeyAction (new KeyConfig {
+				Name = "Player " + index + " Control",
+				Key = App.Current.Keyboard.ParseName ("<Control_L>+" + index.ToString ())
+			}, () => PCardAction (ButtonModifier.Control, player));
+			keyActions.Add (KeyActionControl);
+
+			var KeyActionShift = new KeyAction (new KeyConfig {
+				Name = "Player " + index + " Shift",
+				Key = App.Current.Keyboard.ParseName ("<Shift_L>+" + index.ToString ())
+			}, () => PCardAction (ButtonModifier.Shift, player));
+			keyActions.Add (KeyActionShift);
+		}
+
+		protected abstract void PCardAction (ButtonModifier modifier, PlayerVM player);
 	}
 }
