@@ -220,6 +220,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Events\StorageEvents.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\License\ILicenseManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\License\ILicenseStatus.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\KeyConfig.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\PlaybackHotkeys.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IHotkeysService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\GeneralUIHotkeys.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\DrawingToolHotkeys.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\KeyConfigVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

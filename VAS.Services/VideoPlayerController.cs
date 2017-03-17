@@ -896,47 +896,56 @@ namespace VAS.Services
 		{
 			return new KeyAction [] {
 				new KeyAction (
-					"PLAYER_RATE_INCREMENT",
-					App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Right"),
+					App.Current.HotkeysService.GetByName("PLAYER_RATE_INCREMENT"),
 					FramerateUp
 				),
 				new KeyAction (
-					"PLAYER_RATE_DECREMENT",
-					App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Left"),
+					App.Current.HotkeysService.GetByName("PLAYER_RATE_DECREMENT"),
 					FramerateDown
 				),
 				new KeyAction (
-					"PLAYER_RATE_MAX",
-					App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Up"),
+					App.Current.HotkeysService.GetByName("PLAYER_RATE_MAX"),
 					FramerateUpper
 				),
-				new KeyAction (
-					"PLAYER_RATE_DEFAULT",
-					App.Current.Keyboard.ParseName ("<Shift_L>+<Alt_L>+Down"),
+				new KeyAction (App.Current.HotkeysService.GetByName("PLAYER_RATE_DEFAULT"),
 					FramerateLower
 				),
-
 				new KeyAction (
-					"PLAYER_TOGGLE_PLAY",
-					App.Current.Keyboard.ParseName ("space"),
+					App.Current.HotkeysService.GetByName("PLAYER_TOGGLE_PLAY"),
 					TogglePlay
 				),
 				new KeyAction (
-					"PLAYER_SEEK_LEFT_SHORT",
-					App.Current.Keyboard.ParseName ("Left"),
-					() => PerformStep(new Time { TotalSeconds = -SHORT_SEEK_SECONDS })),
+					App.Current.HotkeysService.GetByName("PLAYER_SEEK_LEFT_SHORT"),
+					() => PerformStep (new Time { TotalSeconds = -SHORT_SEEK_SECONDS })
+				),
 				new KeyAction (
-					"PLAYER_SEEK_LEFT_LONG",
-					App.Current.Keyboard.ParseName ("<Shift_L>+Left"),
-					() => PerformStep(new Time { TotalSeconds = -LONG_SEEK_SECONDS })),
+					App.Current.HotkeysService.GetByName("PLAYER_SEEK_LEFT_LONG"),
+					() => PerformStep (new Time { TotalSeconds = -LONG_SEEK_SECONDS })
+				),
 				new KeyAction (
-					"PLAYER_SEEK_RIGHT_SHORT",
-					App.Current.Keyboard.ParseName ("Right"),
-					() => PerformStep(new Time { TotalSeconds = SHORT_SEEK_SECONDS })),
+					App.Current.HotkeysService.GetByName("PLAYER_SEEK_RIGHT_SHORT"),
+					() => PerformStep (new Time { TotalSeconds = SHORT_SEEK_SECONDS })
+				),
 				new KeyAction (
-					"PLAYER_SEEK_RIGHT_LONG",
-					App.Current.Keyboard.ParseName ("<Shift_L>+Right"),
-					() => PerformStep(new Time { TotalSeconds = LONG_SEEK_SECONDS }))
+					App.Current.HotkeysService.GetByName("PLAYER_SEEK_RIGHT_LONG"),
+					() => PerformStep (new Time { TotalSeconds = LONG_SEEK_SECONDS })
+				),
+				new KeyAction (
+					App.Current.HotkeysService.GetByName("PLAYER_NEXT_ELEMENT"),
+					Next
+				),
+				new KeyAction (
+					App.Current.HotkeysService.GetByName("PLAYER_PREVIOUS_ELEMENT"),
+					() => Previous()
+				),
+				new KeyAction (
+					App.Current.HotkeysService.GetByName("PLAYER_PREVIOUS_ELEMENT"),
+					() => Previous()
+				),
+				new KeyAction (
+					App.Current.HotkeysService.GetByName("OPEN_DRAWING_TOOL"),
+					playerVM.DrawFrame
+				)
 			};
 		}
 

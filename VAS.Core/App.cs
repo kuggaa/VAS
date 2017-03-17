@@ -37,6 +37,7 @@ namespace VAS
 		public ControllerLocator ControllerLocator;
 		public DragContext DragContext;
 		public ILicenseManager LicenseManager;
+		public IHotkeysService HotkeysService;
 
 		public string homeDirectory = ".";
 		public string baseDirectory = ".";
