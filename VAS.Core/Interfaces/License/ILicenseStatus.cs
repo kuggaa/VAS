@@ -33,5 +33,13 @@ namespace VAS.Core.Interfaces.License
 		/// </summary>
 		/// <value><c>true</c> if limited; otherwise, <c>false</c>.</value>
 		bool Limited { get; }
+
+		/// <summary>
+		/// Gets the protected data.
+		/// </summary>
+		/// <value>The protected data.</value>
+		string ProtectedData {
+			get;
+		}
 	}
 }
