@@ -29,6 +29,7 @@ namespace VAS.Core.MVVMC
 		where TModel : IStorable, INotifyPropertyChanged
 	{
 		[JsonIgnore]
+		[PropertyChanged.DoNotCheckEquality]
 		public override TModel Model {
 			get {
 				return base.Model;
