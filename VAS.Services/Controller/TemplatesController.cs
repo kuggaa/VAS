@@ -369,7 +369,7 @@ namespace VAS.Services.Controller
 		{
 			TModel template = evt.Object;
 			bool force = evt.Force;
-			TViewModel templateViewmodel = ViewModel.ViewModels.FirstOrDefault (vm => vm.Model.ID.Equals (template.ID));
+			TViewModel templateViewmodel = ViewModel.ViewModels.FirstOrDefault (vm => vm.Model.Equals (template));
 
 			if (template == null || !template.IsChanged || !SaveValidations (template)) {
 				return;
@@ -389,7 +389,7 @@ namespace VAS.Services.Controller
 							// When is a new template, we should get the VM again, because previously was null
 							templateViewmodel = ViewModel.ViewModels.FirstOrDefault (vm => vm.Model.Equals (template));
 						} else {
-							// Update the ViewModel with the model clone used for editing. If it was a new one isn't necessary
+							// Update the ViewModel with the model clone used for editting. If it was a new one isn't necessary
 							templateViewmodel.Model = template;
 						}
 						ViewModel.SaveSensitive = false;
@@ -400,6 +400,7 @@ namespace VAS.Services.Controller
 
 		protected virtual async void HandleSelectionChanged (object sender, PropertyChangedEventArgs e)
 		{
+
 			if (e.PropertyName != "Selection") {
 				return;
 			}
