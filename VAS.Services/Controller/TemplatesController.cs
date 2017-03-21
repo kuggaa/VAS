@@ -172,11 +172,13 @@ namespace VAS.Services.Controller
 		/// Removes the selected children.
 		/// </summary>
 		/// <param name="vm">Vm.</param>
-		protected void RemoveSelectedChildren (TViewModel vm)
+		protected virtual async Task RemoveSelectedChildren (TViewModel vm)
 		{
-			foreach (var childVM in vm.Selection) {
-				vm.ViewModels.Remove (childVM);
-			}
+			await Task.Run (() => {
+				foreach (var childVM in vm.Selection) {
+					vm.ViewModels.Remove (childVM);
+				}
+			});
 		}
 
 		/// <summary>
@@ -354,7 +356,7 @@ namespace VAS.Services.Controller
 					if (await App.Current.Dialogs.QuestionMessage (msg, null)) {
 						foreach (var vm in selectedViewModels.ToList ()) {
 							var updateEvent = new UpdateEvent<TModel> ();
-							RemoveSelectedChildren (vm);
+							await RemoveSelectedChildren (vm);
 							updateEvent.Object = vm.Model;
 							updateEvent.Force = true;
 							await HandleSave (updateEvent);
