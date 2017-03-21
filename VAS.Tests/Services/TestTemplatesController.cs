@@ -123,7 +123,7 @@ namespace VAS.Tests.Services
 			// Assert
 			Assert.AreEqual (templatesController.ViewModel.ViewModels.First (x => x.ID == team.ID).Name,
 						   expectedName);
-			Assert.IsFalse (templatesController.ViewModel.SaveSensitive);
+			Assert.IsFalse (templatesController.ViewModel.SaveCommand.CanExecute());
 		}
 
 		[Test ()]
@@ -152,7 +152,7 @@ namespace VAS.Tests.Services
 			mockDialogs.Verify (m => m.QuestionMessage (It.IsAny<string> (), null, It.IsAny<DummyTemplatesController> ()), Times.Once ());
 			Assert.AreEqual (templatesController.ViewModel.ViewModels.First (x => x.ID == team.ID).Name,
 						   expectedName);
-			Assert.IsFalse (templatesController.ViewModel.SaveSensitive);
+			Assert.IsFalse (templatesController.ViewModel.SaveCommand.CanExecute());
 		}
 
 		[Test ()]
