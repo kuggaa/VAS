@@ -16,8 +16,12 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using Gtk;
+using Moq;
 using NUnit.Framework;
+using VAS.Core.Hotkeys;
+using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
+using VAS.Core.Store;
 using VAS.UI.Helpers;
 
 namespace VAS.Tests.Helpers
@@ -29,8 +33,14 @@ namespace VAS.Tests.Helpers
 		{
 			// Arrange
 			bool commandExecuted = false;
+			var mockHotkeysService = new Mock<IHotkeysService> ();
+			App.Current.HotkeysService = mockHotkeysService.Object;
 			Command testcommand = new Command (exec => commandExecuted = !commandExecuted);
-			MenuItem testItem = testcommand.CreateMenuItem ("test text");
+
+			KeyConfig hotkey = new KeyConfig { Key = new HotKey () };
+			mockHotkeysService.Setup (s => s.GetByName("TEST")).Returns(hotkey);
+
+			MenuItem testItem = testcommand.CreateMenuItem ("test text", null, "TEST");
 
 			// Act
 			testItem.Activate ();
@@ -44,8 +54,14 @@ namespace VAS.Tests.Helpers
 		{
 			// Arrange
 			bool canExecute = false;
+			var mockHotkeysService = new Mock<IHotkeysService> ();
+			App.Current.HotkeysService = mockHotkeysService.Object;
 			Command testcommand = new Command (exec => { }, can => { return canExecute; });
-			MenuItem testItem = testcommand.CreateMenuItem ("test text");
+
+			KeyConfig hotkey = new KeyConfig { Key = new HotKey () };
+			mockHotkeysService.Setup (s => s.GetByName ("TEST")).Returns (hotkey);
+
+			MenuItem testItem = testcommand.CreateMenuItem ("test text", null, "TEST");
 			canExecute = true;
 
 			// Act
