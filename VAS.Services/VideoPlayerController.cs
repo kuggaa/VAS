@@ -939,10 +939,6 @@ namespace VAS.Services
 					() => Previous()
 				),
 				new KeyAction (
-					App.Current.HotkeysService.GetByName("PLAYER_PREVIOUS_ELEMENT"),
-					() => Previous()
-				),
-				new KeyAction (
 					App.Current.HotkeysService.GetByName("OPEN_DRAWING_TOOL"),
 					playerVM.DrawFrame
 				)
