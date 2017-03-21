@@ -62,14 +62,14 @@ namespace VAS.DB.Views
 
 			// List all properties that will are included in the preloaded version of the object
 			// returned in the queries
-			PreviewProperties = typeof (TBase).GetProperties ().
+			PreviewProperties = typeof (TReal).GetProperties ().
 				Where (prop => Attribute.IsDefined (prop, typeof (PropertyPreload))).
 				Select (p => p.Name).ToList ();
 
 			// List all properties that are indexed for the queries sorted by Index
 			FilterProperties = new OrderedDictionary ();
 			FilterProperties.Add (DocumentsSerializer.PARENT_PROPNAME, true);
-			foreach (var prop in typeof (TBase).GetProperties ().
+			foreach (var prop in typeof (TReal).GetProperties ().
 				Select (p => new { P = p, A = p.GetCustomAttributes (typeof (PropertyIndex), true) }).
 				Where (x => x.A.Length == 1).
 				OrderBy (x => (x.A [0] as PropertyIndex).Index)) {
