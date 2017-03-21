@@ -31,28 +31,5 @@ namespace VAS.Tests.MVVMC
 
 			Assert.IsTrue (command.CanExecute ());
 		}
-
-		[Test]
-		public void Execute_CommandBeingExecuted_NoExecutionDone ()
-		{
-			// Arrange
-			int operationsExecuted = 0;
-			Command command = new Command (x => {
-				operationsExecuted++;
-				int totalCount = 0;
-				while (totalCount < 500) {
-					totalCount++;		
-				}
-			});
-
-			// Act
-			Task.WaitAll (
-				Task.Factory.StartNew (() => command.Execute ()),
-				Task.Factory.StartNew (() => command.Execute ())
-			);
-
-			// Assert
-			Assert.AreEqual (1, operationsExecuted);
-		}
 	}
 }

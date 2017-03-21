@@ -17,16 +17,18 @@
 //
 using Gtk;
 using VAS.Core.MVVMC;
+using VAS.Core.Store;
 
 namespace VAS.UI.Helpers
 {
 	public static class CommandExtensions
 	{
-		public static MenuItem CreateMenuItem (this Command command, string menuLabel)
+		public static MenuItem CreateMenuItem (this Command command, string menuLabel, AccelGroup group, string key)
 		{
 			MenuItem item = new MenuItem(menuLabel);
-			// uint parsedKey = App.Current.Keyboard.KeyvalFromName (key);
-			// item.AddAccelerator pending to use HotKeys
+			HotKey keyconfig = App.Current.HotkeysService.GetByName (key).Key;
+			AccelKey accelkey = new AccelKey ((Gdk.Key)keyconfig.Key, (Gdk.ModifierType)keyconfig.Modifier, AccelFlags.Visible);
+			item.AddAccelerator ("activate", group, accelkey);
 			item.Activated += (sender, e) => command.Execute ();
 			item.Sensitive = command.CanExecute ();
 			command.CanExecuteChanged += (sender, e) => item.Sensitive = command.CanExecute ();
