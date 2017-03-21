@@ -1,5 +1,5 @@
 ﻿//
-//  Copyright (C) 2017 Fluendo S.A.
+//  Copyright (C) 2017 ${CopyrightHolder}
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,44 +15,45 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System.Threading.Tasks;
+using Gtk;
 using NUnit.Framework;
 using VAS.Core.MVVMC;
+using VAS.UI.Helpers;
 
-namespace VAS.Tests.MVVMC
+namespace VAS.Tests.Helpers
 {
-	[TestFixture]
-	public class TestCommand
+	public class TestCommandExtensions
 	{
 		[Test]
-		public void TestCommandInitExecutable ()
+		public void CreateMenuItem_ActivateItem_CommandExecuted ()
 		{
-			Command command = new Command ((obj) => { });
+			// Arrange
+			bool commandExecuted = false;
+			Command testcommand = new Command (exec => commandExecuted = !commandExecuted);
+			MenuItem testItem = testcommand.CreateMenuItem ("test text");
 
-			Assert.IsTrue (command.CanExecute ());
+			// Act
+			testItem.Activate ();
+
+			// Assert
+			Assert.IsTrue (commandExecuted);
 		}
 
 		[Test]
-		public void Execute_CommandBeingExecuted_NoExecutionDone ()
+		public void CreateMenuItem_CanExecuteChangeRaised_ItemUpdated ()
 		{
 			// Arrange
-			int operationsExecuted = 0;
-			Command command = new Command (x => {
-				operationsExecuted++;
-				int totalCount = 0;
-				while (totalCount < 500) {
-					totalCount++;		
-				}
-			});
+			bool canExecute = false;
+			Command testcommand = new Command (exec => { }, can => { return canExecute; });
+			MenuItem testItem = testcommand.CreateMenuItem ("test text");
+			canExecute = true;
 
 			// Act
-			Task.WaitAll (
-				Task.Factory.StartNew (() => command.Execute ()),
-				Task.Factory.StartNew (() => command.Execute ())
-			);
+			Assert.IsFalse (testItem.Sensitive);
+			testcommand.EmitCanExecuteChanged ();
 
 			// Assert
-			Assert.AreEqual (1, operationsExecuted);
+			Assert.IsTrue (testItem.Sensitive);
 		}
 	}
 }

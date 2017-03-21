@@ -29,6 +29,7 @@ namespace VAS.Core.MVVMC
 		protected Func<object, bool> canExecute;
 		readonly Func<object, Task> execute;
 		bool executable;
+		bool isExecuting;
 
 		public Command (Func<object, Task> execute)
 		{
@@ -161,7 +162,13 @@ namespace VAS.Core.MVVMC
 
 		public void Execute (object parameter = null)
 		{
-			execute (parameter);
+			if (!isExecuting) {
+				isExecuting = true;
+				execute (parameter);
+				isExecuting = false;
+			} else {
+				Log.Verbose ("Command is already under execution, execute operation skipped");
+			}
 		}
 
 		/// <summary>
