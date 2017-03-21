@@ -22,10 +22,10 @@ namespace VAS.UI.Helpers
 {
 	public static class CommandExtensions
 	{
-		public static MenuItem CreateMenuItem (this Command command, string menuLabel, string key)
+		public static MenuItem CreateMenuItem (this Command command, string menuLabel)
 		{
 			MenuItem item = new MenuItem(menuLabel);
-			uint parsedKey = App.Current.Keyboard.KeyvalFromName (key);
+			// uint parsedKey = App.Current.Keyboard.KeyvalFromName (key);
 			// item.AddAccelerator pending to use HotKeys
 			item.Activated += (sender, e) => command.Execute ();
 			item.Sensitive = command.CanExecute ();
