@@ -26,9 +26,13 @@ namespace VAS.UI.Helpers
 		public static MenuItem CreateMenuItem (this Command command, string menuLabel, AccelGroup group, string key)
 		{
 			MenuItem item = new MenuItem(menuLabel);
-			HotKey keyconfig = App.Current.HotkeysService.GetByName (key).Key;
-			AccelKey accelkey = new AccelKey ((Gdk.Key)keyconfig.Key, (Gdk.ModifierType)keyconfig.Modifier, AccelFlags.Visible);
-			item.AddAccelerator ("activate", group, accelkey);
+
+			if (!string.IsNullOrEmpty (key)) {
+				HotKey keyconfig = App.Current.HotkeysService.GetByName (key).Key;
+				AccelKey accelkey = new AccelKey ((Gdk.Key)keyconfig.Key, (Gdk.ModifierType)keyconfig.Modifier, AccelFlags.Visible);
+				item.AddAccelerator ("activate", group, accelkey);
+			}
+
 			item.Activated += (sender, e) => command.Execute ();
 			item.Sensitive = command.CanExecute ();
 			command.CanExecuteChanged += (sender, e) => item.Sensitive = command.CanExecute ();
