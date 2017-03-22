@@ -235,7 +235,7 @@ namespace VAS.UI
 		protected async void ModalWindowDeleteEvent (object o, DeleteEventArgs args)
 		{
 			if (args.Event.Window != null) {
-				await App.Current.StateController.MoveBack ();
+				args.RetVal = !await App.Current.StateController.MoveBack ();
 			}
 		}
 
