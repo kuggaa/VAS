@@ -56,6 +56,28 @@ namespace VAS.Services
 			}
 		}
 
+		public int Level {
+			get {
+				return 30;
+			}
+		}
+
+		public string Name {
+			get {
+				return $"{typeof (T).Name} Template Provider";
+			}
+		}
+
+		public virtual bool Start ()
+		{
+			return true;
+		}
+
+		public virtual bool Stop ()
+		{
+			return true;
+		}
+
 		public T LoadFile (string filename)
 		{
 			Log.Information ("Loading template file " + filename);
