@@ -178,7 +178,14 @@ namespace VAS.Core.MVVMC
 		/// <param name="parameter">Parameter.</param>
 		public Task ExecuteAsync (object parameter = null)
 		{
-			return execute (parameter);
+			if (!isExecuting) {
+				isExecuting = true;
+				Task result = execute (parameter);
+				isExecuting = false;
+				return result;
+			}
+
+			return Task.Factory.StartNew (() => { });
 		}
 
 		public void EmitCanExecuteChanged ()
