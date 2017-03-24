@@ -53,13 +53,6 @@ namespace VAS.Core.Interfaces.GUI
 		string MenubarAccelerator { get; }
 
 		/// <summary>
-		/// OBSOLETE: Bring up the Tool user interface using provided toolkit.
-		/// </summary>
-		// FIXME: This has to desapear when Longomatch is adapted to use ITools.
-		[Obsolete]
-		void Load (IGUIToolkit toolkit);
-
-		/// <summary>
 		/// Enable this instance. It does the logic for the tool set up.
 		/// </summary>
 		void Enable ();
