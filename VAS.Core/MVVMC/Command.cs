@@ -162,13 +162,7 @@ namespace VAS.Core.MVVMC
 
 		public void Execute (object parameter = null)
 		{
-			if (!isExecuting) {
-				isExecuting = true;
-				execute (parameter);
-				isExecuting = false;
-			} else {
-				Log.Verbose ("Command is already under execution, execute operation skipped");
-			}
+			InternalExecute (parameter);
 		}
 
 		/// <summary>
@@ -178,14 +172,7 @@ namespace VAS.Core.MVVMC
 		/// <param name="parameter">Parameter.</param>
 		public Task ExecuteAsync (object parameter = null)
 		{
-			if (!isExecuting) {
-				isExecuting = true;
-				Task result = execute (parameter);
-				isExecuting = false;
-				return result;
-			}
-
-			return Task.Factory.StartNew (() => { });
+			return InternalExecute (parameter);
 		}
 
 		public void EmitCanExecuteChanged ()
@@ -193,6 +180,20 @@ namespace VAS.Core.MVVMC
 			if (CanExecuteChanged != null) {
 				CanExecuteChanged (this, EventArgs.Empty);
 			}
+		}
+
+		Task InternalExecute (object parameter)
+		{
+			if (!isExecuting) {
+				isExecuting = true;
+				Task result = execute (parameter);
+				isExecuting = false;
+				return result;
+			} else {
+				Log.Verbose ("Command is already under execution, execute operation skipped");
+			}
+
+			return AsyncHelpers.Return ();
 		}
 	}
 
