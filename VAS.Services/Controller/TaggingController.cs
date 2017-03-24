@@ -213,6 +213,13 @@ namespace VAS.Services.Controller
 			keyActions.Add (KeyActionShift);
 		}
 
-		protected abstract void PCardAction (ButtonModifier modifier, PlayerVM player);
+		void PCardAction (ButtonModifier modifier, PlayerVM player)
+		{
+			HandleClickedPCardEvent (new ClickedPCardEvent {
+				ClickedPlayer = player,
+				Modifier = modifier,
+				Sender = player
+			});
+		}
 	}
 }

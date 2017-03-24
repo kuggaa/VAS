@@ -29,6 +29,7 @@ namespace VAS.Core.MVVMC
 		protected Func<object, bool> canExecute;
 		readonly Func<object, Task> execute;
 		bool executable;
+		bool isExecuting;
 
 		public Command (Func<object, Task> execute)
 		{
@@ -161,7 +162,7 @@ namespace VAS.Core.MVVMC
 
 		public void Execute (object parameter = null)
 		{
-			execute (parameter);
+			InternalExecute (parameter);
 		}
 
 		/// <summary>
@@ -171,7 +172,7 @@ namespace VAS.Core.MVVMC
 		/// <param name="parameter">Parameter.</param>
 		public Task ExecuteAsync (object parameter = null)
 		{
-			return execute (parameter);
+			return InternalExecute (parameter);
 		}
 
 		public void EmitCanExecuteChanged ()
@@ -179,6 +180,20 @@ namespace VAS.Core.MVVMC
 			if (CanExecuteChanged != null) {
 				CanExecuteChanged (this, EventArgs.Empty);
 			}
+		}
+
+		Task InternalExecute (object parameter)
+		{
+			if (!isExecuting) {
+				isExecuting = true;
+				Task result = execute (parameter);
+				isExecuting = false;
+				return result;
+			} else {
+				Log.Verbose ("Command is already under execution, execute operation skipped");
+			}
+
+			return AsyncHelpers.Return ();
 		}
 	}
 
