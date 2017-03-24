@@ -41,6 +41,12 @@ namespace VAS.Core.Hotkeys
 					Description = Catalog.GetString("Save project")
 				},
 				new KeyConfig {
+					Name = "CLOSE_PROJECT",
+					Key = App.Current.Keyboard.ParseName ("<Control_L>+w"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Close project")
+				},
+				new KeyConfig {
 					Name = "CLOSE_APP",
 					Key = App.Current.Keyboard.ParseName ("<Control_L>+q"),
 					Category = CATEGORY,
