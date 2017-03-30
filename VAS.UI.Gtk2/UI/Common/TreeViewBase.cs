@@ -68,6 +68,7 @@ namespace VAS.UI.Common
 			dictionaryNestedParent = new Dictionary<INotifyCollectionChanged, TreeIter> ();
 			Selection.SelectFunction = SelectFunction;
 			RowActivated += HandleTreeviewRowActivated;
+			EnableSearch = false;
 		}
 
 		public override void Dispose ()
