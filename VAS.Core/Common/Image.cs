@@ -17,6 +17,7 @@
 // 
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using Gdk;
 
@@ -25,6 +26,8 @@ namespace VAS.Core.Common
 	[Serializable]
 	public class Image : BaseImage<Pixbuf>
 	{
+		const string FILE_EXTENSION = "png";
+
 		public Image (int width, int height)
 		{
 			Value = new Pixbuf (Colorspace.Rgb, true, 32, width, height);
@@ -105,9 +108,18 @@ namespace VAS.Core.Common
 			return pix.ScaleSimple (width, height, Gdk.InterpType.Bilinear);
 		}
 
+		/// <summary>
+		/// Save the image in the specified path.
+		/// </summary>
+		/// <param name="filename">Filename.</param>
 		public override void Save (string filename)
 		{
-			Value.Save (filename, "png");
+			//HACK: Force gdk_pixbuf_save_utf8 call if windows OS. Otherwhise call gdk_pixbuf_save
+			if (Environment.OSVersion.Platform == PlatformID.Win32NT) {
+				Value.SaveUtf (filename, FILE_EXTENSION);
+			} else {
+				Value.Save (filename, FILE_EXTENSION);
+			}
 		}
 
 		protected override int GetWidth ()
