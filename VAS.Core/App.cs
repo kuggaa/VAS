@@ -28,7 +28,7 @@ namespace VAS
 		public IKeyboard Keyboard;
 		public IDevice Device;
 		public EventsBroker EventsBroker;
-		public StateController StateController;
+		public IStateController StateController;
 		public Registry DependencyRegistry;
 		public IStorageManager DatabaseManager;
 		public IKpiService KPIService;

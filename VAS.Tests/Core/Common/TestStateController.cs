@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System.Dynamic;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using VAS.Core;
@@ -29,6 +30,7 @@ namespace VAS.Tests.Core.Common
 	{
 		StateController sc;
 		NavigationEvent lastNavigationEvent;
+		bool moveBackAfterNavigation;
 
 		[SetUp]
 		public void InitializeStateController ()
@@ -47,6 +49,11 @@ namespace VAS.Tests.Core.Common
 		void HandleTransitionEvent (NavigationEvent evt)
 		{
 			lastNavigationEvent = evt;
+
+			if (moveBackAfterNavigation) {
+				moveBackAfterNavigation = false;
+				Task.Factory.StartNew(() => sc.MoveBack ());
+			}
 		}
 
 		IScreenState GetScreenStateDummy (string transitionName)
@@ -56,9 +63,25 @@ namespace VAS.Tests.Core.Common
 			screenStateMock.Setup (x => x.ShowState ()).Returns (AsyncHelpers.Return (true));
 			screenStateMock.Setup (x => x.UnloadState ()).Returns (AsyncHelpers.Return (true));
 			screenStateMock.Setup (x => x.HideState ()).Returns (AsyncHelpers.Return (true));
+			screenStateMock.Setup (x => x.FreezeState ()).Returns (AsyncHelpers.Return (true));
+			screenStateMock.Setup (x => x.UnfreezeState ()).Returns (AsyncHelpers.Return (true));
 			screenStateMock.Setup (x => x.Panel).Returns (new Mock<IPanel> ().Object);
 			screenStateMock.Setup (x => x.Name).Returns (transitionName);
 			return screenStateMock.Object;
+		}
+
+		Mock<IScreenState> GetScreenStateMock (string transitionName)
+		{
+			var screenStateMock = new Mock<IScreenState> ();
+			screenStateMock.Setup (x => x.LoadState (It.IsAny<ExpandoObject> ())).Returns (AsyncHelpers.Return (true));
+			screenStateMock.Setup (x => x.ShowState ()).Returns (AsyncHelpers.Return (true));
+			screenStateMock.Setup (x => x.UnloadState ()).Returns (AsyncHelpers.Return (true));
+			screenStateMock.Setup (x => x.HideState ()).Returns (AsyncHelpers.Return (true));
+			screenStateMock.Setup (x => x.FreezeState ()).Returns (AsyncHelpers.Return (true));
+			screenStateMock.Setup (x => x.UnfreezeState ()).Returns (AsyncHelpers.Return (true));
+			screenStateMock.Setup (x => x.Panel).Returns (new Mock<IPanel> ().Object);
+			screenStateMock.Setup (x => x.Name).Returns (transitionName);
+			return screenStateMock;
 		}
 
 		[Test]
@@ -270,6 +293,112 @@ namespace VAS.Tests.Core.Common
 
 			// Assert
 			Assert.AreEqual (sc.Current, "Home");
+		}
+
+		[Test]
+		public async void MoveToModal_WaitingForCompletion_FinalStateOriginalOne ()
+		{
+			// Arrange
+			sc.Register ("Home", () => GetScreenStateDummy ("Home"));
+			sc.Register ("Wait1", () => GetScreenStateDummy ("Wait1"));
+			await sc.SetHomeTransition ("Home", null);
+
+			moveBackAfterNavigation = true; // forces unload after navigation
+
+			// Act
+			bool result = await sc.MoveToModal ("Wait1", null, true);
+
+			// Assert
+			Assert.IsTrue (result);
+			Assert.AreEqual (sc.Current, "Home");
+		}
+
+		[Test]
+		public async void MoveToModal_NotWaitingForCompletion_FinalStateNewState ()
+		{
+			// Arrange
+			sc.Register ("Home", () => GetScreenStateDummy ("Home"));
+			sc.Register ("Wait1", () => GetScreenStateDummy ("Wait1"));
+			await sc.SetHomeTransition ("Home", null);
+
+			// Act
+			bool result = await sc.MoveToModal ("Wait1", null, false);
+
+			// Assert
+			Assert.IsTrue (result);
+			Assert.AreEqual (sc.Current, "Wait1");
+		}
+
+		[Test]
+		public async void MoveToModal_ShowDialogAndMoveBack_StateUnfreezedOk ()
+		{
+			// Arrange
+			var backgroundStateMock = GetScreenStateMock ("Home");
+			sc.Register ("Home", () => backgroundStateMock.Object);
+			sc.Register ("Dialog", () => GetScreenStateDummy("Dialog"));
+			await sc.SetHomeTransition ("Home", null);
+
+			moveBackAfterNavigation = true; // forces unload dialog after navigation
+
+			// Act
+			bool result = await sc.MoveToModal ("Dialog", null, true);
+
+			// Assert
+			Assert.IsTrue (result);
+			Assert.AreEqual (sc.Current, "Home");
+			backgroundStateMock.Verify (s => s.FreezeState (), Times.Once ());
+			backgroundStateMock.Verify (s => s.HideState (), Times.Never ());
+			backgroundStateMock.Verify (s => s.UnloadState (), Times.Never ());
+			backgroundStateMock.Verify (s => s.UnfreezeState (), Times.Once ());
+			backgroundStateMock.Verify (s => s.ShowState (), Times.Once ());
+		}
+
+		[Test]
+		public async void MoveToModal_ShowDialogAndMoveToNewStateCleaningStack_Ok ()
+		{
+			// Arrange
+			var backgroundStateMock = GetScreenStateMock ("Initial");
+			sc.Register ("Initial", () => backgroundStateMock.Object);
+			sc.Register ("Dialog", () => GetScreenStateDummy ("Dialog"));
+			sc.Register ("New", () => GetScreenStateDummy ("New"));
+			await sc.MoveTo ("Initial", null);
+
+			// Act
+			await sc.MoveToModal ("Dialog", null);
+			bool result = await sc.MoveTo ("New", null, true);
+
+			// Assert
+			Assert.IsTrue (result);
+			Assert.AreEqual (sc.Current, "New");
+			backgroundStateMock.Verify (s => s.FreezeState (), Times.Once ());
+			backgroundStateMock.Verify (s => s.HideState (), Times.Once ());
+			backgroundStateMock.Verify (s => s.UnloadState (), Times.Once ());
+			backgroundStateMock.Verify (s => s.UnfreezeState (), Times.Never ());
+			backgroundStateMock.Verify (s => s.ShowState (), Times.Once ());
+		}
+
+		[Test]
+		public async void MoveToModal_ShowDialogAndMoveToNewState_Ok ()
+		{
+			// Arrange
+			var backgroundStateMock = GetScreenStateMock ("Initial");
+			sc.Register ("Initial", () => backgroundStateMock.Object);
+			sc.Register ("Dialog", () => GetScreenStateDummy ("Dialog"));
+			sc.Register ("New", () => GetScreenStateDummy ("New"));
+			await sc.MoveTo ("Initial", null);
+
+			// Act
+			await sc.MoveToModal ("Dialog", null);
+			bool result = await sc.MoveTo ("New", null);
+
+			// Assert
+			Assert.IsTrue (result);
+			Assert.AreEqual (sc.Current, "New");
+			backgroundStateMock.Verify (s => s.FreezeState (), Times.Once ());
+			backgroundStateMock.Verify (s => s.HideState (), Times.Never ());
+			backgroundStateMock.Verify (s => s.UnloadState (), Times.Never ());
+			backgroundStateMock.Verify (s => s.UnfreezeState (), Times.Never ());
+			backgroundStateMock.Verify (s => s.ShowState (), Times.Once ());
 		}
 	}
 }

@@ -44,6 +44,8 @@ namespace VAS.Core.MVVMC
 			}
 		}
 
+		#region IController
+
 		public virtual IEnumerable<KeyAction> GetDefaultKeyActions ()
 		{
 			return Enumerable.Empty<KeyAction> ();
@@ -76,5 +78,7 @@ namespace VAS.Core.MVVMC
 			}
 			started = false;
 		}
+
+		#endregion
 	}
 }
