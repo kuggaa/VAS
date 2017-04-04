@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // 
 using System;
+using System.Threading.Tasks;
 
 namespace VAS.Core.Interfaces.GUI
 {
@@ -45,6 +46,15 @@ namespace VAS.Core.Interfaces.GUI
 		/// <param name="action">The action to run in the background.</param>
 		/// <param name="pulseIntervalMS">The pulse interval in milliseconds.</param>
 		void ShowSync (Action action, uint pulseIntervalMS = 0);
+
+		/// <summary>
+		/// Show the dialog synchronously and run the <paramref name="asyncAction"/> in background.
+		/// The asyncAction should be awaited.
+		/// The dialog is closed automatically once the task has finished.
+		/// </summary>
+		/// <param name="asyncAction">Asynchronous Action.</param>
+		/// <param name="pulseIntervalMS">Pulse interval ms.</param>
+		void ShowSync (Func<Task> asyncAction, uint pulseIntervalMS = 0);
 	}
 }
 
