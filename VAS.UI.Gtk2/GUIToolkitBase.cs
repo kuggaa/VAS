@@ -147,9 +147,6 @@ namespace VAS.UI
 
 		public abstract void ExportFrameSeries (Project openedProject, TimelineEvent play, string snapshotsDir);
 
-		public abstract Task EditPlay (TimelineEvent play, Project project, bool editTags, bool editPos, bool editPlayers,
-									   bool editNotes);
-
 		public abstract Project ChooseProject (List<Project> projects);
 
 		public abstract void LoadPanel (IPanel panel);

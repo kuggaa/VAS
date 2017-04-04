@@ -234,6 +234,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\Binding.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\CommandBinding.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ITimed.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\EventEditionSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IStateController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

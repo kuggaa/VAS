@@ -150,6 +150,20 @@ namespace VAS.Tests.Services
 		}
 
 		[Test ()]
+		public void TestUnfreezeState ()
+		{
+			// Arrange
+			TestLoadState ();
+
+			// Act
+			screenState.UnfreezeState ();
+
+			// Assert
+			mockRootController.Verify (p => p.Start (), Times.Once ());
+			mockController.Verify (p => p.Start (), Times.Once ());
+		}
+
+		[Test ()]
 		public void TestHideState ()
 		{
 			// Arrange
@@ -161,6 +175,27 @@ namespace VAS.Tests.Services
 
 			// Act
 			screenState.HideState ();
+
+			// Assert
+			mockRootController.Verify (p => p.Stop (), Times.Once ());
+			mockController.Verify (p => p.Stop (), Times.Once ());
+			mockRootController.Verify (p => p.Dispose (), Times.Never ());
+			mockController.Verify (p => p.Dispose (), Times.Never ());
+			Assert.AreEqual (2, screenState.Controllers.Count);
+		}
+
+		[Test ()]
+		public void TestFreezeState ()
+		{
+			// Arrange
+			TestShowState ();
+			mockViewModel.ResetCalls ();
+			mockPanel.ResetCalls ();
+			mockController.ResetCalls ();
+			mockRootController.ResetCalls ();
+
+			// Act
+			screenState.FreezeState ();
 
 			// Assert
 			mockRootController.Verify (p => p.Stop (), Times.Once ());
