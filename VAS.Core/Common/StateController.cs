@@ -23,6 +23,7 @@ namespace VAS.Core
 		List<NavigationState> modalStateStack;
 		Dictionary<string, Stack<Func<IScreenState>>> overwrittenTransitions;
 		Dictionary<string, Command> transitionCommands;
+		string initiatedTransition;
 
 		public StateController ()
 		{
@@ -69,6 +70,7 @@ namespace VAS.Core
 		public async Task<bool> MoveTo (string transition, dynamic properties, bool emptyStack = false, bool forceMove = false)
 		{
 			Log.Debug ("Moving to " + transition);
+			initiatedTransition = transition;
 
 			if (!destination.ContainsKey (transition)) {
 				Log.Debug ("Moving failed because transition " + transition + " is not in destination dictionary.");
@@ -102,6 +104,13 @@ namespace VAS.Core
 						return false;
 					}
 				}
+
+				// Precheck: it is possible that hiding a previous state caused a new transition so the 
+				// initial one must be canceled
+				if (initiatedTransition != transition) { 
+					return false;
+				}
+
 				IScreenState state;
 				bool isHome = transition == home?.Name;
 				if (isHome) {
