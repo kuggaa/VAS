@@ -172,10 +172,17 @@ namespace VAS.Services.Controller
 		/// Removes the selected children.
 		/// </summary>
 		/// <param name="vm">Vm.</param>
-		protected void RemoveSelectedChildren (TViewModel vm)
+		protected virtual void RemoveChildsFromTemplate (TViewModel template, IEnumerable<TChildViewModel> childs)
 		{
-			foreach (var childVM in vm.Selection) {
-				vm.ViewModels.Remove (childVM);
+			foreach (var childVM in childs) {
+				template.ViewModels.Remove (childVM);
+			}
+		}
+
+		protected virtual void RemoveTemplates (IEnumerable<TModel> templates)
+		{
+			foreach (TModel template in templates.ToList ()) {
+				Provider.Delete (template);
 			}
 		}
 
@@ -343,9 +350,7 @@ namespace VAS.Services.Controller
 					string msg = templates.Count () == 1 ?
 							String.Format (ConfirmDeleteText, templates.FirstOrDefault ().Name) : ConfirmDeleteListText;
 					if (await App.Current.Dialogs.QuestionMessage (msg, null)) {
-						foreach (TModel template in templates) {
-							Provider.Delete (template);
-						}
+						RemoveTemplates (templates);
 						ViewModel.Select (ViewModel.Model.FirstOrDefault ());
 						evt.ReturnValue = true;
 					}
@@ -354,7 +359,7 @@ namespace VAS.Services.Controller
 					if (await App.Current.Dialogs.QuestionMessage (msg, null)) {
 						foreach (var vm in selectedViewModels.ToList ()) {
 							var updateEvent = new UpdateEvent<TModel> ();
-							RemoveSelectedChildren (vm);
+							RemoveChildsFromTemplate (vm, vm.Selection);
 							updateEvent.Object = vm.Model;
 							updateEvent.Force = true;
 							await HandleSave (updateEvent);

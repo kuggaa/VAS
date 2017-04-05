@@ -58,7 +58,7 @@ namespace VAS.Core.Interfaces
 		RangeObservableCollection<TChild> List { get; }
 	}
 
-	public interface ITemplateProvider
+	public interface ITemplateProvider : IService
 	{
 		bool Exists (string name);
 
