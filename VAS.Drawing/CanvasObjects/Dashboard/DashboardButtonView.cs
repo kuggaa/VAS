@@ -16,10 +16,11 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System.Collections.Generic;
-using VAS.Core.Interfaces.Drawing;
-using VAS.Core.Store.Drawables;
+using System.ComponentModel;
 using VAS.Core.Common;
+using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
+using VAS.Core.Store.Drawables;
 using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
@@ -31,6 +32,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 	{
 		protected LinkAnchorView anchor;
 		protected const int HOTKEY_WIDTH = 5;
+		DashboardButtonVM buttonVM;
 
 		public DashboardButtonView ()
 		{
@@ -47,11 +49,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			anchor.Dispose ();
 		}
 
-		public DashboardMode Mode {
-			get;
-			set;
-		}
-
 		public bool SupportsLinks {
 			get;
 			set;
@@ -62,9 +59,26 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			set;
 		}
 
+		public DashboardButtonVM ButtonVM {
+			get {
+				return buttonVM;
+			}
+			set {
+				if (buttonVM != null) {
+					buttonVM.PropertyChanged -= HandlePropertyChanged;
+				}
+				buttonVM = value;
+				if (buttonVM != null) {
+					buttonVM.PropertyChanged += HandlePropertyChanged;
+				}
+			}
+		}
+
+		// FIXME: remove it when everything is ported to MVVM
 		public DashboardButton Button {
-			get;
-			set;
+			get {
+				return ButtonVM.Model;
+			}
 		}
 
 		public bool EditActionLinks {
@@ -74,7 +88,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		public override bool DrawsSelectionArea {
 			get {
-				return Mode == DashboardMode.Edit;
+				return ButtonVM.Mode == DashboardMode.Edit;
 			}
 		}
 
@@ -151,7 +165,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				return base.Active;
 			}
 			set {
-				if (Mode != DashboardMode.Edit) {
+				if (ButtonVM.Mode != DashboardMode.Edit) {
 					base.Active = value;
 				}
 			}
@@ -227,71 +241,9 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 			return base.GetSelection (p, precision, inMotion);
 		}
-	}
 
-	/// <summary>
-	/// Class for the TimedTaggerButton View
-	/// </summary>
-	public class TimedTaggerButtonView : DashboardButtonView
-	{
-		TimedDashboardButtonVM timedButtonVM;
-
-		public TimedDashboardButtonVM TimedButtonVM {
-			get {
-				return timedButtonVM;
-			}
-			set {
-				if (timedButtonVM != null) {
-					timedButtonVM.PropertyChanged -= HandleTimedButtonVMPropertyChanged;
-				}
-				timedButtonVM = value;
-				if (timedButtonVM != null) {
-					Button = timedButtonVM.Model;
-					timedButtonVM.PropertyChanged += HandleTimedButtonVMPropertyChanged;
-				}
-			}
-		}
-
-		protected bool Recording {
-			get;
-			set;
-		}
-
-		public override void ClickReleased ()
+		protected virtual void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if (TimedButtonVM.TagMode == TagMode.Predefined) {
-				Active = !Active;
-				EmitClickEvent ();
-			} else if (!Recording) {
-				StartRecording ();
-			} else {
-				EmitClickEvent ();
-				Clear ();
-			}
-		}
-
-		protected void StartRecording ()
-		{
-			Recording = true;
-			if (TimedButtonVM.RecordingStart == null) {
-				TimedButtonVM.RecordingStart = TimedButtonVM.CurrentTime;
-			}
-			Active = true;
-			ReDraw ();
-		}
-
-		protected virtual void Clear ()
-		{
-			Recording = false;
-			TimedButtonVM.RecordingStart = null;
-			Active = false;
-		}
-
-		void HandleTimedButtonVMPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
-		{
-			if (sender == TimedButtonVM && e.PropertyName == "ButtonTime") {
-				ReDraw ();
-			}
 		}
 	}
 }

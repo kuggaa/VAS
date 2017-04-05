@@ -25,11 +25,16 @@ namespace VAS.Services.ViewModel
 	/// <summary>
 	/// A ViewModel used in analysis views where there is a video player, a timeline and playlists
 	/// </summary>
-	public class ProjectAnalysisVM<T> : BindableBase, IAnalysisViewModel
+	public class ProjectAnalysisVM<T> : ViewModelBase<T>, IAnalysisViewModel
 		where T : ProjectVM
 	{
 		public ProjectAnalysisVM ()
 		{
+		}
+
+		public static implicit operator DashboardVM (ProjectAnalysisVM<T> projectAnalysisVM)
+		{
+			return projectAnalysisVM?.Project.Dashboard;
 		}
 
 		/// <summary>

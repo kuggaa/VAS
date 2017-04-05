@@ -36,7 +36,7 @@ namespace VAS.Core.ViewModel
 	/// Every view that needs to control the player should use this ViewModel instead of the
 	/// PlayerController.
 	/// </summary>
-	public class VideoPlayerVM : BindableBase, IViewModel
+	public class VideoPlayerVM : ViewModelBase, IViewModel
 	{
 		PlayerViewOperationMode mode;
 

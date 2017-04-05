@@ -1,6 +1,20 @@
 ﻿//
 //  Copyright (C) 2016 Fluendo S.A.
 //
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
+//
 
 using System;
 using Gdk;
@@ -14,100 +28,78 @@ namespace VAS.UI.Helpers
 	public static class ButtonHelper
 	{
 		/// <summary>
-		/// Creates a normal button from a <see cref="Command"/>.
+		/// Creates a button with the normal style.
 		/// </summary>
 		/// <returns>The button.</returns>
-		/// <param name="command">Command.</param>
-		public static Button CreateButton (Command command)
+		public static Button CreateButton ()
 		{
 			Button button = new Button ();
-			button.ApplyStyleNormal (command);
+			button.ApplyStyleNormal ();
 			return button;
 		}
 
 		/// <summary>
-		/// Creates a tab button from a <see cref="Command"/>.
+		/// Creates a radio button with the tab style.
 		/// </summary>
 		/// <returns>The button.</returns>
 		/// <param name="otherButton">Other radio button in the group.</param>
-		/// <param name="command">Command.</param>
-		public static Button CreateTabButton (Command command, RadioButton otherButton)
+		public static Button CreateTabButton (RadioButton otherButton)
 		{
 			RadioButton button = new RadioButton (otherButton);
 			button.DrawIndicator = false;
-			button.ApplyStyleTab (command);
+			button.ApplyStyleTab ();
 			return button;
 		}
 
 		/// <summary>
-		/// Creates a button dialog from a <see cref="Command"/>.
+		/// Creates a button with the dialog style.
 		/// </summary>
 		/// <returns>The button dialog.</returns>
-		/// <param name="command">Command.</param>
-		public static Button CreateDialogButton (Command command)
+		public static Button CreateDialogButton ()
 		{
 			Button button = new Button ();
-			button.ApplyStyleDialog (command);
+			button.ApplyStyleDialog ();
 			return button;
 		}
 
 		/// <summary>
-		/// Applies the normal style normal to the given button and binds it to a command.
+		/// Applies the normal style normal to the given button.
 		/// </summary>
 		/// <param name="button">Button.</param>
-		/// <param name="command">Command.</param>
-		public static void ApplyStyleNormal (this Button button, Command command = null)
+		public static void ApplyStyleNormal (this Button button)
 		{
-			if (command != null) {
-				button.Bind (command);
-			}
 			button.ApplyStyle (StyleConf.ButtonNormal, App.Current.Style.ButtonNormalWidth);
 		}
 
 		/// <summary>
-		/// Applies the limit style to the given button and binds it to a command.
+		/// Applies the limit style to the given button.
 		/// </summary>
 		/// <param name="button">Button.</param>
-		/// <param name="command">Command.</param>
-		public static void ApplyStyleLimit (this Button button, Command command = null)
+		public static void ApplyStyleLimit (this Button button)
 		{
-			if (command != null) {
-				button.Bind (command);
-			}
 			button.ApplyStyle (StyleConf.ButtonLimit, App.Current.Style.ButtonLimitWidth);
 		}
 
 		/// <summary>
-		/// Applies the normal style normal to the given button and binds it to a command.
+		/// Applies the normal style normal to the given button.
 		/// </summary>
 		/// <param name="button">Button.</param>
-		/// <param name="command">Command.</param>
-		public static void ApplyStyleTab (this Button button, Command command = null)
+		public static void ApplyStyleTab (this Button button)
 		{
-			if (command != null) {
-				button.Bind (command);
-			}
 			button.ApplyStyle (StyleConf.ButtonTab, App.Current.Style.ButtonTabWidth);
 		}
 
-		public static void ApplyStyleRemove (this Button button, Command command = null)
+		public static void ApplyStyleRemove (this Button button)
 		{
-			if (command != null) {
-				button.Bind (command);
-			}
 			button.ApplyStyle (StyleConf.ButtonRemove, App.Current.Style.ButtonRemoveWidth);
 		}
 
 		/// <summary>
-		/// Applies the dialog style to the given button and binds it to a command.
+		/// Applies the dialog style to the given button.
 		/// </summary>
 		/// <param name="button">Button.</param>
-		/// <param name="command">Command.</param>
-		public static void ApplyStyleDialog (this Button button, Command command = null)
+		public static void ApplyStyleDialog (this Button button)
 		{
-			if (command != null) {
-				button.Bind (command);
-			}
 			button.Name = StyleConf.ButtonDialog;
 			button.HeightRequest = App.Current.Style.ButtonDialogHeight;
 		}
@@ -117,7 +109,7 @@ namespace VAS.UI.Helpers
 		/// </summary>
 		/// <param name="button">Button.</param>
 		/// <param name="icon">Icon.</param>
-		static public void SetImage (this Button button, Pixbuf icon)
+		public static void SetImage (this Button button, Pixbuf icon)
 		{
 			if (icon == null) {
 				return;
@@ -138,25 +130,24 @@ namespace VAS.UI.Helpers
 		/// <param name="callback">Callback.</param>
 		public static void Configure (this Button button, Pixbuf icon, string text, string tooltipText, EventHandler callback)
 		{
-			button.SetImage (icon);
+			if (icon != null) {
+				button.SetImage (icon);
+			}
 			if (text != null) {
 				button.Label = text;
 			}
-			button.TooltipText = tooltipText;
-			button.Clicked += callback;
+			if (tooltipText != null) {
+				button.TooltipText = tooltipText;
+			}
+			if (callback != null) {
+				button.Clicked += callback;
+			}
 		}
 
-		/// <summary>
-		/// Bind a button to  the specified button, command and parameter.
-		/// </summary>
-		/// <param name="button">Button.</param>
-		/// <param name="command">Command.</param>
-		/// <param name="parameter">Parameter.</param>
+		// FIXME: this method should be gone when we use the ButtonBindings everywhere
 		public static void Bind (this Button button, Command command, object parameter = null)
 		{
-			button.SetImage (command.Icon?.Value);
-			button.Label = command.Text;
-			button.TooltipText = command.ToolTipText;
+			button.Configure (command.Icon?.Value, command.Text, command.ToolTipText, null);
 
 			button.Sensitive = command.CanExecute (parameter);
 			EventHandler handler = (sender, e) => {
@@ -173,6 +164,25 @@ namespace VAS.UI.Helpers
 				}
 				command.Execute (parameter);
 			};
+		}
+
+		/// <summary>
+		/// Links a group of toggle buttons to act like a radio button group.
+		/// </summary>
+		/// <param name="buttons">Buttons.</param>
+		public static void LinkToggleButtons (params ToggleButton [] buttons)
+		{
+			foreach (ToggleButton button in buttons) {
+				button.Toggled += (sender, e) => {
+					if (button.Active) {
+						foreach (var otherButton in buttons) {
+							if (otherButton != button) {
+								otherButton.Active = false;
+							}
+						}
+					}
+				};
+			}
 		}
 
 		static void ApplyStyle (this Button button, string buttonStyle, int buttonSize)

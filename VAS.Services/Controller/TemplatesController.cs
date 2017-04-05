@@ -397,7 +397,7 @@ namespace VAS.Services.Controller
 							// Update the ViewModel with the model clone used for editing. If it was a new one isn't necessary
 							templateViewmodel.Model = template;
 						}
-						ViewModel.SaveSensitive = false;
+						ViewModel.SaveCommand.EmitCanExecuteChanged ();
 					}
 				}
 			}
@@ -433,9 +433,9 @@ namespace VAS.Services.Controller
 			// Load the model
 			ViewModel.LoadedTemplate.Model = loadedTemplate;
 			// Update controls visiblity
-			ViewModel.DeleteSensitive = loadedTemplate != null && ViewModel.LoadedTemplate.Editable;
-			ViewModel.ExportSensitive = loadedTemplate != null;
-			ViewModel.SaveSensitive = false;
+			ViewModel.DeleteCommand.EmitCanExecuteChanged ();
+			ViewModel.ExportCommand.EmitCanExecuteChanged ();
+			ViewModel.SaveCommand.EmitCanExecuteChanged ();
 
 			//Update commands
 			ViewModel.DeleteCommand.EmitCanExecuteChanged ();
@@ -465,9 +465,8 @@ namespace VAS.Services.Controller
 
 		void HandleTemplateChanged (object sender, PropertyChangedEventArgs e)
 		{
-			ViewModel.SaveSensitive = true;
+			ViewModel.SaveCommand.EmitCanExecuteChanged ();
 		}
-
 
 		void HandleProviderCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{

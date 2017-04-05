@@ -32,7 +32,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 	/// <summary>
 	/// Class for the AnalysisEventButton View
 	/// </summary>
-	[ViewAttribute ("AnalysisEventButtonView")]
+	[View ("AnalysisEventButtonView")]
 	public class AnalysisEventButtonView : TimedTaggerButtonView, ICanvasObjectView<AnalysisEventButtonVM>
 	{
 		public event ButtonSelectedHandler EditButtonTagsEvent;
@@ -55,8 +55,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		protected Rectangle editRect, cancelRect, applyRect;
 		double catWidth, heightPerRow;
 		Dictionary<Tag, LinkAnchorView> subcatAnchors, cachedAnchors;
-		AnalysisEventButton button;
-		AnalysisEventButtonVM viewModel;
 
 		public AnalysisEventButtonView () : base ()
 		{
@@ -97,18 +95,16 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
-		/// <summary>
-		/// Gets or sets the button.
-		/// </summary>
-		/// <value>The button.</value>
-		AnalysisEventButton Button {
+		public AnalysisEventButtonVM ViewModel {
 			get {
-				return button;
+				return ButtonVM as AnalysisEventButtonVM;
 			}
 			set {
-				button = value;
-				foreach (Tag tag in button.AnalysisEventType.Tags) {
-					AddSubcatAnchor (tag, new Point (0, 0), 100, HeaderHeight);
+				ButtonVM = value;
+				if (value != null) {
+					foreach (Tag tag in Button.AnalysisEventType.Tags) {
+						AddSubcatAnchor (tag, new Point (0, 0), 100, HeaderHeight);
+					}
 				}
 			}
 		}
@@ -128,11 +124,18 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
+		// FIXME: View accessing the Model/ <value>The button.</value>
+		new AnalysisEventButton Button {
+			get {
+				return ViewModel.Model;
+			}
+		}
+
 		bool ShowApplyButton {
 			get {
 				return ShowTags && tagsByGroup.Count > 1
-				&& Button.TagMode == TagMode.Predefined
-				&& Mode != DashboardMode.Edit;
+											  && ViewModel.TagMode == TagMode.Predefined
+											  && ButtonVM.Mode != DashboardMode.Edit;
 			}
 		}
 
@@ -143,7 +146,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		/// <value><c>true</c> if show tags; otherwise, <c>false</c>.</value>
 		protected bool ShowTags {
 			get {
-				return (Button.ShowSubcategories || ShowLinks) && Button.AnalysisEventType.Tags.Count != 0;
+				return (ViewModel.ShowSubcategories || ShowLinks) && Button.AnalysisEventType.Tags.Count != 0;
 			}
 		}
 
@@ -161,7 +164,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		double HeaderTextWidth {
 			get {
-				if (Button.TagMode == TagMode.Free) {
+				if (ViewModel.TagMode == TagMode.Free) {
 					return Width - HeaderTextOffset - StyleConf.ButtonRecWidth;
 				} else {
 					return Width - HeaderTextOffset;
@@ -172,28 +175,11 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		void UpdateRows ()
 		{
 			/* Header */
-			int tagsPerRow = Math.Max (1, Button.TagsPerRow);
+			int tagsPerRow = Math.Max (1, ViewModel.TagsPerRow);
 			nrows = 0;
 
 			foreach (List<Tag> tags in tagsByGroup.Values) {
 				nrows += (int)Math.Ceiling ((float)tags.Count / tagsPerRow);
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the view model.
-		/// </summary>
-		/// <value>The view model.</value>
-		public AnalysisEventButtonVM ViewModel {
-			get {
-				return viewModel;
-			}
-
-			set {
-				viewModel = value;
-				if (viewModel != null) {
-					Button = viewModel.Model;
-				}
 			}
 		}
 
@@ -204,7 +190,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		public void SetViewModel (object viewModel)
 		{
 			ViewModel = (AnalysisEventButtonVM)viewModel;
-			TimedButtonVM = (TimedDashboardButtonVM)viewModel;
 		}
 
 		public void ClickTag (Tag tag)
@@ -242,7 +227,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		void DelayTagClicked ()
 		{
-			if (tagsByGroup.Keys.Count == 1 || Mode == DashboardMode.Edit) {
+			if (tagsByGroup.Keys.Count == 1 || ButtonVM.Mode == DashboardMode.Edit) {
 				TimerCallback (null);
 				return;
 			}
@@ -255,10 +240,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		void CategoryClicked (AnalysisEventButton category)
 		{
-			if (Button.TagMode == TagMode.Predefined) {
+			if (ViewModel.TagMode == TagMode.Predefined) {
 				emitEvent = true;
 				Active = true;
-			} else if (Button.TagMode == TagMode.Free) {
+			} else if (ViewModel.TagMode == TagMode.Free) {
 				if (!Recording) {
 					StartRecording ();
 				} else {
@@ -275,7 +260,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				SelectedTags.RemoveAll (t => t.Group == tag.Group);
 				SelectedTags.Add (tag);
 			}
-			if (Button.TagMode == TagMode.Free) {
+			if (ViewModel.TagMode == TagMode.Free) {
 				StartRecording ();
 			} else {
 				Active = true;
@@ -291,7 +276,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		public List<Tag> SelectedTags {
 			get {
-				return viewModel.SelectedTags;
+				return ViewModel.SelectedTags;
 			}
 		}
 
@@ -370,9 +355,9 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		public override void ClickPressed (Point p, ButtonModifier modif)
 		{
-			if (Mode == DashboardMode.Edit || Button.ShowSettingIcon) {
+			if (ButtonVM.Mode == DashboardMode.Edit || Button.ShowSettingIcon) {
 				editClicked = CheckRect (p, editRect, editbutton);
-				if (editClicked || Mode == DashboardMode.Edit)
+				if (editClicked || ButtonVM.Mode == DashboardMode.Edit)
 					return;
 			}
 
@@ -416,7 +401,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			Point start;
 			int tagsPerRow, row = 0;
 
-			tagsPerRow = Math.Max (1, Button.TagsPerRow);
+			tagsPerRow = Math.Max (1, ViewModel.TagsPerRow);
 			rowwidth = catWidth / tagsPerRow;
 
 			start = new Point (Position.X, Position.Y + HeaderHeight);
@@ -521,7 +506,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			tk.StrokeColor = BackgroundColor;
 			tk.StrokeColor = textColor;
 			tk.FontWeight = FontWeight.Light;
-			tk.DrawText (pos, width, height, Button.AnalysisEventType.Name, false, ellipsize);
+			tk.DrawText (pos, width, height, ViewModel.Name, false, ellipsize);
 		}
 
 		void DrawEditButton (IDrawingToolkit tk)
@@ -530,7 +515,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			Color c;
 			double width, height;
 
-			if ((Mode != DashboardMode.Edit || ShowLinks || !Button.ShowSubcategories) && !Button.ShowSettingIcon) {
+			if ((ButtonVM.Mode != DashboardMode.Edit || ShowLinks || !ViewModel.ShowSubcategories) && !Button.ShowSettingIcon) {
 				return;
 			}
 
@@ -554,7 +539,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		void DrawSelectedTags (IDrawingToolkit tk)
 		{
-			if (Mode == DashboardMode.Edit) {
+			if (ButtonVM.Mode == DashboardMode.Edit) {
 				return;
 			}
 			foreach (Rectangle r in rects.Keys) {
@@ -574,21 +559,21 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		protected virtual void DrawRecordTime (IDrawingToolkit tk)
 		{
-			if (Recording && Mode != DashboardMode.Edit && viewModel.ButtonTime != null) {
+			if (Recording && ButtonVM.Mode != DashboardMode.Edit && ViewModel.ButtonTime != null) {
 				if (ShowTags) {
 					tk.FontSize = 12;
 					tk.FontWeight = FontWeight.Normal;
 					tk.StrokeColor = BackgroundColor;
 					tk.DrawText (new Point (Position.X + HeaderTextOffset, Position.Y),
 						HeaderTextWidth, HeaderHeight,
-								 viewModel.ButtonTime.ToSecondsString ());
+								 ViewModel.ButtonTime.ToSecondsString ());
 				} else {
 					tk.FontSize = 24;
 					tk.FontWeight = FontWeight.Bold;
 					tk.StrokeColor = BackgroundColor;
 					tk.DrawText (new Point (Position.X, Position.Y + HeaderHeight),
 						Width, Height - HeaderHeight,
-								 viewModel.ButtonTime.ToSecondsString ());
+								 ViewModel.ButtonTime.ToSecondsString ());
 				}
 			}
 		}
@@ -624,7 +609,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			Point pos, bpos;
 			double width, height;
 
-			if (Button.TagMode != TagMode.Free || ShowLinks) {
+			if (ViewModel.TagMode != TagMode.Free || ShowLinks) {
 				return;
 			}
 

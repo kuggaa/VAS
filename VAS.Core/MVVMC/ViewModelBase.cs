@@ -21,21 +21,8 @@ using System.ComponentModel;
 
 namespace VAS.Core.MVVMC
 {
-	public class ViewModelBase<T> : BindableBase, IViewModel<T> where T : INotifyPropertyChanged
+	public class ViewModelBase : BindableBase, IViewModel
 	{
-		/// <summary>
-		/// Gets or sets the model used by this ViewModel.
-		/// We disable Foody's equality check since we work sometimes with
-		/// copies of the template and replacing the model with the copies template after saving
-		/// it does not update the model because of the ID-based equality check 
-		/// </summary>
-		/// <value>The model.</value>
-		[PropertyChanged.DoNotCheckEquality]
-		public virtual T Model {
-			set;
-			get;
-		}
-
 		/// <summary>
 		/// Checks if sync is required from the name of the property that triggered a <see cref="PropertyChangedEventHandler"/>.
 		/// </summary>
@@ -44,7 +31,18 @@ namespace VAS.Core.MVVMC
 		/// <param name="propertyNameToCheck">Property name to check.</param>
 		public bool NeedsSync (string propertyNameChanged, string propertyNameToCheck)
 		{
-			return NeedsSync (propertyNameChanged, propertyNameToCheck, null, null);
+			return NeedsSync (propertyNameChanged, propertyNameToCheck, this, null);
+		}
+
+		/// <summary>
+		/// Checks if sync is required from the event args that triggered a <see cref="PropertyChangedEventHandler"/>.
+		/// </summary>
+		/// <returns><c>true</c>, if sync was needsed, <c>false</c> otherwise.</returns>
+		/// <param name="eventArgs">Event arguments.</param>
+		/// <param name="propertyNameToCheck">Property name to check.</param>
+		public bool NeedsSync (PropertyChangedEventArgs eventArgs, string propertyNameToCheck)
+		{
+			return NeedsSync (eventArgs.PropertyName, propertyNameToCheck, this, null);
 		}
 
 		/// <summary>
@@ -56,7 +54,7 @@ namespace VAS.Core.MVVMC
 		/// <param name="senderToCheck">Sender to check.</param>
 		public bool NeedsSync (string propertyNameChanged, string propertyNameToCheck, object sender, object senderToCheck)
 		{
-			if (propertyNameChanged == null) {
+			if (propertyNameChanged == null && (sender == null || senderToCheck == null || sender == senderToCheck)) {
 				return true;
 			}
 			if (propertyNameChanged == propertyNameToCheck) {
@@ -67,9 +65,33 @@ namespace VAS.Core.MVVMC
 			return false;
 		}
 
+		/// <summary>
+		/// Force a sync of all properties as when the ViewModel is set for the first time in a View.
+		/// </summary>
+		public void Sync ()
+		{
+			RaisePropertyChanged (propertyName: null, sender: this);
+		}
+
 		protected override void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			base.ForwardPropertyChanged (this, e);
+		}
+	}
+
+	public class ViewModelBase<T> : ViewModelBase, IViewModel<T> where T : INotifyPropertyChanged
+	{
+		/// <summary>
+		/// Gets or sets the model used by this ViewModel.
+		/// We disable Foody's equality check since we work sometimes with
+		/// copies of the template and replacing the model with the copies template after saving
+		/// it does not update the model because of the ID-based equality check
+		/// </summary>
+		/// <value>The model.</value>
+		[PropertyChanged.DoNotCheckEquality]
+		public virtual T Model {
+			set;
+			get;
 		}
 	}
 }

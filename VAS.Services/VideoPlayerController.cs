@@ -1606,7 +1606,7 @@ namespace VAS.Services
 
 		protected void HandleMediaFileSetPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == "IsStretched" || e.PropertyName == "Collection") {
+			if (e.PropertyName == "IsStretched" || e.PropertyName.StartsWith ("Collection")) {
 				UpdateDuration ();
 			}
 		}

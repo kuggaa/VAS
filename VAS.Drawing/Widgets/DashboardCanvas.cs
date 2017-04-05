@@ -18,6 +18,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Handlers;
@@ -62,17 +64,18 @@ namespace VAS.Drawing.Widgets
 			get {
 				return viewModel;
 			}
-
 			set {
 				if (viewModel != null) {
 					viewModel.PropertyChanged -= HandlePropertyChanged;
+					viewModel.ViewModels.CollectionChanged -= HandleViewModelsCollectionChanged;
 				}
 				ClearCanvas ();
 				viewModel = value;
 				if (viewModel != null) {
 					FillCanvas ();
 					viewModel.PropertyChanged += HandlePropertyChanged;
-					HandlePropertyChanged (viewModel, null);
+					viewModel.ViewModels.CollectionChanged += HandleViewModelsCollectionChanged;
+					ViewModel.Sync ();
 				}
 			}
 		}
@@ -124,14 +127,14 @@ namespace VAS.Drawing.Widgets
 
 		protected override void ShowMenu (Point coords)
 		{
-			List<DashboardButton> buttons;
+			List<DashboardButtonVM> buttons;
 			List<ActionLink> links;
 
 			if (ShowMenuEvent == null || Selections.Count == 0)
 				return;
 
 			buttons = Selections.Where (s => s.Drawable is DashboardButtonView).
-				Select (s => (s.Drawable as DashboardButtonView).Button).ToList ();
+								Select (s => (s.Drawable as DashboardButtonView).ButtonVM).ToList ();
 			links = Selections.Where (s => s.Drawable is ActionLinkView).
 				Select (s => (s.Drawable as ActionLinkView).Link).ToList ();
 			ShowMenuEvent (buttons, links);
@@ -303,13 +306,6 @@ namespace VAS.Drawing.Widgets
 			End ();
 		}
 
-		public void AddButton (DashboardButtonView button)
-		{
-			button.ShowLinks = ViewModel.ShowLinks;
-			AddObject (button);
-			buttonsDict.Add (button.Button, button);
-		}
-
 		protected virtual void ClearCanvas ()
 		{
 			ClearObjects ();
@@ -319,18 +315,7 @@ namespace VAS.Drawing.Widgets
 		protected virtual void FillCanvas ()
 		{
 			foreach (DashboardButtonVM vm in ViewModel.ViewModels) {
-				IView view = App.Current.ViewLocator.Retrieve (vm.View);
-				view.SetViewModel (vm);
-				var viewButton = view as DashboardButtonView;
-				viewButton.ClickedEvent += HandleTaggerClickedEvent;
-				viewButton.Mode = ViewModel.Mode;
-				if (viewButton is AnalysisEventButtonView) {
-					((AnalysisEventButtonView)viewButton).EditButtonTagsEvent += (t) => {
-						if (EditButtonTagsEvent != null)
-							EditButtonTagsEvent (t);
-					};
-				}
-				AddButton (viewButton);
+				AddButton (vm);
 			}
 
 			foreach (DashboardButtonView buttonObject in buttonsDict.Values) {
@@ -404,7 +389,7 @@ namespace VAS.Drawing.Widgets
 				if (tag.Active) {
 					/* All tag buttons from the same group that are active */
 					foreach (TagButtonView to in Objects.OfType<TagButtonView> ().
-						Where (t => t.TagButton.Tag.Group == tag.TagButton.Tag.Group &&
+							 Where (t => t.ViewModel.Tag.Group == tag.ViewModel.Tag.Group &&
 							t.Active && t != tagger)) {
 						to.Active = false;
 					}
@@ -438,38 +423,43 @@ namespace VAS.Drawing.Widgets
 			}
 			foreach (TagButtonView to in Objects.OfType<TagButtonView> ()) {
 				if (to.Active) {
-					tags.Add (to.TagButton.Tag);
+					tags.Add (to.ViewModel.Tag);
 				}
 				to.Active = false;
 			}
 			NewTagEvent (button.EventType, null, null, tags, start, stop, eventTime, button);
 		}
 
-		void HandlePropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		void AddButton (DashboardButtonVM vm)
 		{
-			if (sender != ViewModel) {
-				return;
+			IView view = App.Current.ViewLocator.Retrieve (vm.View);
+			view.SetViewModel (vm);
+			var viewButton = view as DashboardButtonView;
+			viewButton.ClickedEvent += HandleTaggerClickedEvent;
+			if (viewButton is AnalysisEventButtonView) {
+				((AnalysisEventButtonView)viewButton).EditButtonTagsEvent += (t) => {
+					if (EditButtonTagsEvent != null)
+						EditButtonTagsEvent (t);
+				};
 			}
-
-			if (e == null || e.PropertyName == "Mode") {
-				HandleModeChanged ();
-			} else if (e == null || e.PropertyName == "ShowLinks") {
-				HandleShowLinksChanged ();
-			} else if (e == null || e.PropertyName == "FitMode") {
-				HandleSizeChangedEvent ();
-			}
+			viewButton.ShowLinks = ViewModel.ShowLinks;
+			AddObject (viewButton);
+			buttonsDict.Add (viewButton.Button, viewButton);
 		}
 
-		void HandleModeChanged ()
+		void RemoveButton (DashboardButtonVM vm)
+		{
+			RemoveObject (buttonsDict [vm.Model]);
+			buttonsDict.Remove (vm.Model);
+		}
+
+		void UpdateMode ()
 		{
 			ObjectsCanMove = ViewModel.Mode == DashboardMode.Edit;
-			foreach (DashboardButtonView to in Objects.OfType<DashboardButtonView> ()) {
-				to.Mode = ViewModel.Mode;
-			}
 			ClearSelection ();
 		}
 
-		void HandleShowLinksChanged ()
+		void UpdateShowLinks ()
 		{
 			foreach (DashboardButtonView to in Objects.OfType<DashboardButtonView> ()) {
 				to.ShowLinks = ViewModel.ShowLinks;
@@ -482,6 +472,42 @@ namespace VAS.Drawing.Widgets
 			ClearSelection ();
 			widget?.ReDraw ();
 		}
+
+		void HandleViewModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		{
+			switch (e.Action) {
+			case NotifyCollectionChangedAction.Add:
+				foreach (DashboardButtonVM viewModel in e.NewItems.OfType<DashboardButtonVM> ()) {
+					AddButton (viewModel);
+				}
+				break;
+			case NotifyCollectionChangedAction.Remove:
+				foreach (DashboardButtonVM viewModel in e.OldItems.OfType<DashboardButtonVM> ()) {
+					RemoveButton (viewModel);
+				}
+				break;
+			case NotifyCollectionChangedAction.Reset:
+				ClearCanvas ();
+				FillCanvas ();
+				break;
+			}
+			HandleSizeChangedEvent ();
+		}
+
+		void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (sender != ViewModel) {
+				return;
+			}
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.Mode))) {
+				UpdateMode ();
+			}
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.ShowLinks))) {
+				UpdateShowLinks ();
+			}
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.FitMode))) {
+				HandleSizeChangedEvent ();
+			}
+		}
 	}
 }
-

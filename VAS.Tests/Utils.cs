@@ -30,12 +30,12 @@ using VAS.Core.Filters;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.MVVMC;
-using VAS.Core.License;
 using VAS.Core.MVVMC;
 using VAS.Core.Serialization;
 using VAS.Core.Store;
 using VAS.Core.Store.Templates;
 using VAS.Core.ViewModel;
+using VAS.Drawing.CanvasObjects.Dashboard;
 using VAS.Drawing.CanvasObjects.Timeline;
 using VAS.Services;
 using VAS.Services.Controller;
@@ -184,6 +184,27 @@ namespace VAS.Tests
 		}
 	}
 
+	public class DummyProjectVM : ProjectVM<Project>
+	{
+		public IEnumerable<TeamVM> teams;
+
+		public DummyProjectVM ()
+		{
+			teams = new List<TeamVM> ();
+		}
+
+		public DummyProjectVM (IEnumerable<TeamVM> teams)
+		{
+			this.teams = teams;
+		}
+
+		public override IEnumerable<TeamVM> Teams {
+			get {
+				return teams;
+			}
+		}
+	}
+
 	public class DummyTeam : Team
 	{
 	}
@@ -221,6 +242,14 @@ namespace VAS.Tests
 	{
 		public void SetViewModel (object viewModel)
 		{
+		}
+	}
+
+	public class DummyDashboardButtonView : DashboardButtonView, IView
+	{
+		public void SetViewModel (object viewModel)
+		{
+			ButtonVM = viewModel as DashboardButtonVM;
 		}
 	}
 
@@ -305,11 +334,6 @@ namespace VAS.Tests
 				evt.Project = project.Model;
 
 				return evt;
-			}
-
-			protected override void PCardAction (ButtonModifier modifier, PlayerVM player)
-			{
-				return;
 			}
 		}
 

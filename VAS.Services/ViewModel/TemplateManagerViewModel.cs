@@ -42,27 +42,46 @@ namespace VAS.Services.ViewModel
 		{
 			LoadedTemplate = new TViewModel ();
 			NewCommand = new Command (New, () => true);
-			DeleteCommand = new Command (Delete, () => Selection.Any ());
+			SaveCommand = new Command<bool> ((o) => Save (o), () => LoadedTemplate.Model != null && LoadedTemplate.Edited);
+			DeleteCommand = new Command (Delete, () => LoadedTemplate.Model != null);
+			ExportCommand = new Command (Export, () => LoadedTemplate.Model != null);
+			ImportCommand = new Command (Import, () => true);
 		}
 
-		[PropertyChanged.DoNotNotify]
+		/// <summary>
+		/// Gets or sets the View Model for the template loaded. This view model does not change, instead the model
+		/// is updated so the View displaying the loaded ViewModel should only listen to the Model property changed.
+		/// </summary>
+		/// <value>The loaded template.</value>
 		public TViewModel LoadedTemplate {
 			get;
-			set;
+			protected set;
 		}
 
+		/// <summary>
+		/// Command to create a new template.
+		/// </summary>
+		/// <value>The new command.</value>
 		[PropertyChanged.DoNotNotify]
 		public Command NewCommand {
 			get;
 			protected set;
 		}
 
+		/// <summary>
+		/// Command to open a template.
+		/// </summary>
+		/// <value>The open command.</value>
 		[PropertyChanged.DoNotNotify]
 		public Command OpenCommand {
 			get;
 			protected set;
 		}
 
+		/// <summary>
+		/// Command to delete a template.
+		/// </summary>
+		/// <value>The delete command.</value>
 		[PropertyChanged.DoNotNotify]
 		public Command DeleteCommand {
 			get;
@@ -70,36 +89,39 @@ namespace VAS.Services.ViewModel
 		}
 
 		/// <summary>
-		/// Control whether the save button is clickable or not.
+		/// Command to save a template.
 		/// </summary>
-		/// <value><c>true</c> if save clickable; otherwise, <c>false</c>.</value>
-		public bool SaveSensitive {
+		/// <value>The save command.</value>
+		[PropertyChanged.DoNotNotify]
+		public Command<bool> SaveCommand {
 			get;
-			set;
+			protected set;
 		}
 
 		/// <summary>
-		/// Control whether the delete button is clickable or not.
+		/// Command to export a template.
 		/// </summary>
-		/// <value><c>true</c> if delete clickable; otherwise, <c>false</c>.</value>
-		public bool DeleteSensitive {
+		/// <value>The export command.</value>
+		[PropertyChanged.DoNotNotify]
+		public Command ExportCommand {
 			get;
-			set;
+			protected set;
 		}
 
 		/// <summary>
-		/// Control whether the export button is clickable or not.
+		/// Command to import a template.
 		/// </summary>
-		/// <value><c>true</c> if delete clickable; otherwise, <c>false</c>.</value>
-		public bool ExportSensitive {
+		/// <value>The import command.</value>
+		[PropertyChanged.DoNotNotify]
+		public Command ImportCommand {
 			get;
-			set;
+			protected set;
 		}
 
 		/// <summary>
 		/// Command to export the currently loaded template.
 		/// </summary>
-		public Task<bool> Export ()
+		protected virtual Task<bool> Export ()
 		{
 			TViewModel templateVM = Selection.FirstOrDefault ();
 			if (templateVM != null && templateVM.Model != null) {
@@ -111,7 +133,7 @@ namespace VAS.Services.ViewModel
 		/// <summary>
 		/// Command to import a template.
 		/// </summary>
-		public Task<bool> Import ()
+		protected virtual Task<bool> Import ()
 		{
 			return App.Current.EventsBroker.PublishWithReturn (new ImportEvent<TModel> ());
 		}
@@ -119,15 +141,15 @@ namespace VAS.Services.ViewModel
 		/// <summary>
 		/// Command to create a new a template.
 		/// </summary>
-		protected virtual void New ()
+		protected virtual Task New ()
 		{
-			App.Current.EventsBroker.Publish (new CreateEvent<TModel> ());
+			return App.Current.EventsBroker.Publish (new CreateEvent<TModel> ());
 		}
 
 		/// <summary>
 		/// Send the event to open a template.
 		/// </summary>
-		public Task<bool> Open (TModel model)
+		protected virtual Task<bool> Open (TModel model)
 		{
 			return App.Current.EventsBroker.PublishWithReturn (new OpenEvent<TModel> () { Object = model });
 		}
@@ -135,13 +157,13 @@ namespace VAS.Services.ViewModel
 		/// <summary>
 		/// Command to delete the currently loaded template.
 		/// </summary>
-		protected virtual void Delete ()
+		protected virtual async Task Delete ()
 		{
 			if (Selection != null) {
 				ObservableCollection<TModel> objects = new ObservableCollection<TModel>
 					(Selection.Where (x => x.Model != null).Select (x => x.Model));
 				if (objects.Any ()) {
-					App.Current.EventsBroker.Publish (
+					await App.Current.EventsBroker.Publish (
 						new DeleteEvent<ObservableCollection<TModel>> { Object = objects });
 				}
 			}
@@ -151,7 +173,7 @@ namespace VAS.Services.ViewModel
 		/// Command to save the currently loaded template.
 		/// </summary>
 		/// <param name="force">If set to <c>true</c> does not prompt to save.</param>
-		public Task<bool> Save (bool force)
+		protected virtual Task<bool> Save (bool force)
 		{
 			TModel template = LoadedTemplate.Model;
 			if (template != null) {

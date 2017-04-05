@@ -70,13 +70,18 @@ namespace VAS.Tests.MVVMC
 		public void TestRaiseCollectionChanged ()
 		{
 			int evtCount = 0;
+			string name = null;
 			AnalysisEventType evt = new AnalysisEventType ();
 			evt.Tags = new ObservableCollection<Tag> ();
-			evt.PropertyChanged += (sender, e) => evtCount++;
+			evt.PropertyChanged += (sender, e) => {
+				evtCount++;
+				name = e.PropertyName;
+			};
 
 			evt.Tags.Add (new Tag ("test"));
 
 			Assert.AreEqual (1, evtCount);
+			Assert.AreEqual ("Collection_Tags", name);
 		}
 
 		[Test]

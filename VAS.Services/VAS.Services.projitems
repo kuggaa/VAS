@@ -35,6 +35,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)State\PreferencesState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PreferencesPanelVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\HotkeysConfigurationVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller\DashboardEditorController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />
