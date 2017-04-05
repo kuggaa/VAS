@@ -126,7 +126,8 @@ namespace VAS.Services.Controller
 
 		void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == "Collection" || e.PropertyName == "Active") {
+			if (e.PropertyName == $"Collection_{nameof (timelineVM.Filters.Elements)}" ||
+				e.PropertyName == nameof (timelineVM.Filters.Active)) {
 				HandleFiltersChanged ();
 			}
 		}

@@ -16,13 +16,12 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
-using VAS.Core.Serialization;
 using VAS.Core.Store;
 
 namespace VAS.Core.ViewModel
@@ -31,7 +30,7 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// A ViewModel for <see cref="Project"/> objects.
 	/// </summary>
-	public class ProjectVM : StorableVM<Project>
+	public abstract class ProjectVM : StorableVM<Project>
 	{
 
 		public ProjectVM ()
@@ -130,13 +129,17 @@ namespace VAS.Core.ViewModel
 		}
 
 		public virtual IEnumerable<PlayerVM> Players {
-			get;
-			internal set;
+			get {
+				return Teams.SelectMany (t => t.ViewModels);
+			}
 		}
 
-		public virtual IEnumerable<TeamVM> Teams {
+		/// <summary>
+		/// Gets the teams in this project.
+		/// </summary>
+		/// <value>The teams.</value>
+		public abstract IEnumerable<TeamVM> Teams {
 			get;
-			internal set;
 		}
 
 		/// <summary>
@@ -182,17 +185,18 @@ namespace VAS.Core.ViewModel
 			Timers.Model = Model.Timers;
 			Periods.Model = Model.Periods;
 			Timeline.CreateEventTypeTimelines (EventTypes);
+			Timeline.CreateTeamsTimelines (Teams);
 			Timeline.Model = Model.Timeline;
+			Dashboard.Model = Model.Dashboard;
 		}
 
 		protected override void SyncPreloadedModel ()
 		{
 			FileSet.Model = Model.FileSet;
-			Dashboard.Model = Model.Dashboard;
 		}
 	}
 
-	public class ProjectVM<TProject> : ProjectVM, IViewModel<TProject>
+	public abstract class ProjectVM<TProject> : ProjectVM, IViewModel<TProject>
 		where TProject : Project
 	{
 		public new TProject Model {

@@ -70,7 +70,7 @@ namespace VAS.Tests.Services
 			};
 
 			controller = new CoreEventsController ();
-			projectVM = new ProjectVM { Model = Utils.CreateProject (true) };
+			projectVM = new DummyProjectVM { Model = Utils.CreateProject (true) };
 			controller.SetViewModel (new ProjectAnalysisVM<ProjectVM> {
 				Project = projectVM,
 				VideoPlayer = videoPlayer

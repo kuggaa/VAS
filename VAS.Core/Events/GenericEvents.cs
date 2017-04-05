@@ -35,6 +35,7 @@ namespace VAS.Core.Events
 
 	public class DeleteEvent<T> : GenericEvent<T>
 	{
+		public bool Force { get; set; }
 	}
 
 	public class UpdateEvent<T> : GenericEvent<T>

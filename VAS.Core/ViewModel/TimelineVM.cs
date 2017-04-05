@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Filters;
@@ -42,15 +41,19 @@ namespace VAS.Core.ViewModel
 	{
 		RangeObservableCollection<TimelineEvent> model;
 		Dictionary<string, EventTypeTimelineVM> eventTypeToTimeline;
+		Dictionary<Player, PlayerTimelineVM> playerToTimeline;
 
 		public TimelineVM ()
 		{
 			Filters = new AndPredicate<TimelineEventVM> ();
 			eventTypeToTimeline = new Dictionary<string, EventTypeTimelineVM> ();
+			playerToTimeline = new Dictionary<Player, PlayerTimelineVM> ();
 			EventTypesTimeline = new NestedViewModel<EventTypeTimelineVM> ();
 			EventTypesTimeline.ViewModels.CollectionChanged += HandleEventTypesCollectionChanged;
+			TeamsTimeline = new NestedViewModel<TeamTimelineVM> ();
 			FullTimeline = CreateFullTimeline ();
 			FullTimeline.ViewModels.CollectionChanged += HandleTimelineCollectionChanged;
+			FullTimeline.PropertyChanged += FullTimeline_PropertyChanged;
 		}
 
 		protected override void DisposeManagedResources ()
@@ -89,6 +92,15 @@ namespace VAS.Core.ViewModel
 		public NestedViewModel<EventTypeTimelineVM> EventTypesTimeline {
 			get;
 			protected set;
+		}
+
+		/// <summary>
+		/// Gets or sets the event types timeline.
+		/// </summary>
+		/// <value>The event types timeline.</value>
+		public NestedViewModel<TeamTimelineVM> TeamsTimeline {
+			get;
+			set;
 		}
 
 		public PlaylistCollectionVM Playlists {
@@ -132,6 +144,21 @@ namespace VAS.Core.ViewModel
 			EventTypesTimeline.ViewModels.AddRange (eventTypes.Select (e => new EventTypeTimelineVM (e)));
 		}
 
+		public void CreateTeamsTimelines (IEnumerable<TeamVM> teams)
+		{
+			if (teams == null) {
+				return;
+			}
+			foreach (TeamVM team in teams) {
+				TeamTimelineVM teamTimeline = new TeamTimelineVM (team);
+				foreach (PlayerVM player in team) {
+					PlayerTimelineVM playerTimeline = new PlayerTimelineVM (player);
+					playerToTimeline [player.Model] = playerTimeline;
+					teamTimeline.ViewModels.Add (playerTimeline);
+				}
+				TeamsTimeline.ViewModels.Add (teamTimeline);
+			}
+		}
 
 		/// <summary>
 		/// Load a TimelineEvent to the player to start playing it. The EventsController should be the responsible
@@ -269,11 +296,42 @@ namespace VAS.Core.ViewModel
 				EventTypesTimeline.ViewModels.Add (new EventTypeTimelineVM { Model = viewModel.Model.EventType });
 			}
 			eventTypeToTimeline [viewModel.Model.EventType.Name].ViewModels.Add (viewModel);
+			AddToPlayersTimeline (viewModel);
+		}
+
+		void AddToPlayersTimeline (TimelineEventVM timelineEventVM)
+		{
+			foreach (Player player in timelineEventVM.Model.Players) {
+				if (!playerToTimeline.ContainsKey (player)) {
+					// FIXME: We are calling this a thousand times. This fix works because the first times
+					// we don't have the teams, but the next ones we do. We should call this only when we do.
+					continue;
+				}
+				playerToTimeline [player].ViewModels.Add (timelineEventVM);
+			}
 		}
 
 		void RemoveTimelineEventVM (TimelineEventVM viewModel)
 		{
+			foreach (Player player in viewModel.Model.Players) {
+				playerToTimeline [player].ViewModels.Remove (viewModel);
+			}
 			eventTypeToTimeline [viewModel.Model.EventType.Name].ViewModels.Remove (viewModel);
+		}
+
+		void FullTimeline_PropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			TimelineEventVM timelineEvent = sender as TimelineEventVM;
+			if (timelineEvent != null && e.PropertyName == $"Collection_{nameof (TimelineEvent.Players)}") {
+				// It's a bit faster to remove all the existing events and add them again in AddToPlayersTimeline
+				// than traversing the whole tree to add only the new ones.
+				foreach (PlayerTimelineVM timeline in playerToTimeline.Values) {
+					if (timeline.ViewModels.Contains (timelineEvent)) {
+						timeline.ViewModels.Remove (timelineEvent);
+					}
+				}
+				AddToPlayersTimeline (timelineEvent);
+			}
 		}
 	}
 }

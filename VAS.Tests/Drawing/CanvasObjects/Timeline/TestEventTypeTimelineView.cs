@@ -46,7 +46,7 @@ namespace VAS.Tests.Drawing.CanvasObjects.Timeline
 		public void SetUp ()
 		{
 			project = Utils.CreateProject (true);
-			var projectVM = new ProjectVM { Model = project };
+			var projectVM = new DummyProjectVM { Model = project };
 			widgetMock = new Mock<IWidget> ();
 			widgetMock.SetupAllProperties ();
 			timeline = new EventTypeTimelineView ();

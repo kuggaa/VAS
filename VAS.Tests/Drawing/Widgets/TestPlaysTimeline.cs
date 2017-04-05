@@ -65,7 +65,7 @@ namespace VAS.Tests.Drawing.Widgets
 		{
 			project = Utils.CreateProject (true);
 			project.Periods.Add (new Period ());
-			projectVM = new ProjectVM { Model = project };
+			projectVM = new DummyProjectVM { Model = project };
 			widgetMock = new Mock<IWidget> ();
 			widgetMock.SetupAllProperties ();
 			timeline = new DummyPlaysTimeline (widgetMock.Object);

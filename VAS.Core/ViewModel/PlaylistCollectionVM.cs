@@ -46,7 +46,7 @@ namespace VAS.Core.ViewModel
 			DeleteCommand = new Command (Delete, () => HasItemsSelected ());
 			DeleteCommand.Icon = deleteIcon;
 			DeleteCommand.ToolTipText = Catalog.GetString ("Delete Playlists");
-			NewCommand = new Command (New, () => Limitation.Count < Limitation.Maximum);
+			NewCommand = new Command (New, () => Limitation == null || Limitation.Count < Limitation.Maximum);
 			NewCommand.Icon = newIcon;
 			NewCommand.ToolTipText = Catalog.GetString ("New Playlist");
 		}

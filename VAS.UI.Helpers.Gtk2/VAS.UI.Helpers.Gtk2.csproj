@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -48,6 +47,14 @@
       <Link>AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="ButtonHelper.cs" />
+    <Compile Include="Bindings\BindingsExtensions.cs" />
+    <Compile Include="Bindings\EntryBinding.cs" />
+    <Compile Include="Bindings\LabelBinding.cs" />
+    <Compile Include="Bindings\TextViewBinding.cs" />
+    <Compile Include="Bindings\ImageBinding.cs" />
+    <Compile Include="Bindings\ButtonBinding.cs" />
+    <Compile Include="Bindings\ToggleButtonBinding.cs" />
+    <Compile Include="CommandExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -69,6 +76,9 @@
       <Project>{08AE7734-B995-4E0D-AD8F-38F597E0D4DF}</Project>
       <Name>VAS.Core.Net45</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Bindings\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

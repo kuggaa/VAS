@@ -226,6 +226,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\GeneralUIHotkeys.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\DrawingToolHotkeys.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\KeyConfigVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PlayerTimelineVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TeamTimelineVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Events\DashboardEditorEvents.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\PropertyBinding.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\BindingContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\Binding.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\CommandBinding.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ITimed.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

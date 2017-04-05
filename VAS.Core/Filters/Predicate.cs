@@ -73,24 +73,13 @@ namespace VAS.Core.Filters
 
 		public CompositePredicate ()
 		{
-			Elements.CollectionChanged += (sender, e) => {
-				CollectionChanged (sender, e);
-			};
+			Elements = new ObservableCollection<IPredicate<T>> ();
 		}
 
-		protected override void RaisePropertyChanged (PropertyChangedEventArgs args, object sender = null)
-		{
-			if (IgnoreEvents) {
-				return;
-			}
-			if (args.PropertyName == "Elements" || args.PropertyName == "Collection" || args.PropertyName == "Active") {
-				UpdatePredicate ();
-			}
-			base.RaisePropertyChanged (args, sender);
+		public ObservableCollection<IPredicate<T>> Elements {
+			get;
+			private set;
 		}
-
-		public ObservableCollection<IPredicate<T>> Elements { get; } = new ObservableCollection<IPredicate<T>> ();
-
 
 		#region IPredicate implementation
 
@@ -117,6 +106,24 @@ namespace VAS.Core.Filters
 				}
 			}
 		}
+
+		public void EmitPredicateChanged ()
+		{
+			RaisePropertyChanged (new PropertyChangedEventArgs ($"Collection_{nameof (Elements)}"));
+		}
+
+		protected override void RaisePropertyChanged (PropertyChangedEventArgs args, object sender = null)
+		{
+			if (IgnoreEvents) {
+				return;
+			}
+			if (args.PropertyName == nameof (Elements) || args.PropertyName == $"Collection_{nameof (Elements)}" ||
+				args.PropertyName == nameof (Active)) {
+				UpdatePredicate ();
+			}
+			base.RaisePropertyChanged (args, sender);
+		}
+
 
 		public virtual bool Filter (T obj)
 		{
@@ -210,18 +217,6 @@ namespace VAS.Core.Filters
 		}
 
 		#endregion
-
-		/// <summary>
-		/// Raises the collection property changed.
-		/// </summary>
-		/// <param name="sender">Sender.</param>
-		public void RaiseCollectionPropertyChanged (object sender)
-		{
-			if (sender == null) {
-				sender = this;
-			}
-			RaisePropertyChanged (new PropertyChangedEventArgs ("Collection"), sender);
-		}
 	}
 
 	/// <summary>

@@ -152,8 +152,6 @@ namespace VAS.UI
 
 		public abstract Project ChooseProject (List<Project> projects);
 
-		public abstract void OpenDatabasesManager ();
-
 		public abstract void LoadPanel (IPanel panel);
 
 		public abstract void ShowProjectStats (Project project);

@@ -19,7 +19,6 @@ using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
-using VAS.Drawing.CanvasObjects;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
@@ -137,9 +136,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				return false;
 			}
 
+			// FIXME: View using Model
 			/* Check if this link will result into a duplicated link */
-			foreach (ActionLink link in Source.Button.Button.ActionLinks) {
-				if (link.DestinationButton == dest.Button.Button &&
+			foreach (ActionLink link in Source.Button.ButtonVM.Model.ActionLinks) {
+				if (link.DestinationButton == dest.Button.ButtonVM.Model &&
 					link.SourceTags.SequenceEqualSafe (Source.Tags) &&
 					link.DestinationTags.SequenceEqualSafe (dest.Tags)) {
 					return false;
