@@ -68,6 +68,7 @@ namespace VAS.UI.Common
 			dictionaryNestedParent = new Dictionary<INotifyCollectionChanged, TreeIter> ();
 			Selection.SelectFunction = SelectFunction;
 			RowActivated += HandleTreeviewRowActivated;
+			EnableSearch = false;
 		}
 
 		public override void Dispose ()
@@ -669,12 +670,13 @@ namespace VAS.UI.Common
 			vm.PropertyChanged -= PropertyChangedItem;
 		}
 
-		void PropertyChangedItem (object sender, PropertyChangedEventArgs e)
+		protected virtual void PropertyChangedItem (object sender, PropertyChangedEventArgs e)
 		{
 			var senderVM = sender as IViewModel;
 			if (senderVM == null || Model == null || !dictionaryStore.ContainsKey (senderVM)) {
 				return;
 			}
+
 			TreeIter iter = dictionaryStore [senderVM];
 			store.EmitRowChanged (store.GetPath (iter), iter);
 		}

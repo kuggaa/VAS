@@ -99,8 +99,40 @@ namespace VAS.UI.Dialog
 			task.Start ();
 			timeout = GLib.Timeout.Add (pulseIntervalMS, OnTimeout);
 			Run ();
-			if (ex != null)
+			if (ex != null) {
 				throw ex;
+			}
+		}
+
+		public void ShowSync (Func<Task> action, uint pulseIntervalMS = 0)
+		{
+			Exception ex = null;
+			object lockObject = this.lockObject = new object ();
+
+			if (pulseIntervalMS == 0) {
+				pulseIntervalMS = 100;
+			}
+			Task task = new Task (async () => {
+
+				try {
+					await action ();
+				} catch (Exception e) {
+					ex = e;
+				} finally {
+					App.Current.GUIToolkit.Invoke (delegate {
+						lock (lockObject) {
+							Destroy ();
+						}
+					});
+				}
+			});
+			Monitor.Enter (lockObject);
+			task.Start ();
+			timeout = GLib.Timeout.Add (pulseIntervalMS, OnTimeout);
+			Run ();
+			if (ex != null) {
+				throw ex;
+			}
 		}
 
 		public void Show (uint pulseIntervalMS = 0)
