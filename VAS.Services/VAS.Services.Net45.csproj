@@ -47,7 +47,7 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="Sparkle">
-      <HintPath>..\..\packages\Sparkle.1.16.0\lib\net45\Sparkle.dll</HintPath>
+        <HintPath>$(SolutionDir)\packages\Sparkle.1.16.0\lib\net45\Sparkle.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
