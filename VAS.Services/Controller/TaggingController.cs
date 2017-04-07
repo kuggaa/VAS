@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Events;
@@ -31,6 +32,7 @@ namespace VAS.Services.Controller
 	{
 		protected ProjectVM project;
 		protected VideoPlayerVM videoPlayer;
+		IDictionary<DashboardButtonVM, KeyAction> dashboardKeyActions;
 
 		/// <summary>
 		/// Gets or sets the video player view model
@@ -59,6 +61,10 @@ namespace VAS.Services.Controller
 			base.Start ();
 			App.Current.EventsBroker.Subscribe<ClickedPCardEvent> (HandleClickedPCardEvent);
 			App.Current.EventsBroker.Subscribe<NewTagEvent> (HandleNewTagEvent);
+
+			foreach (var item in project.Dashboard.ViewModels) {
+				item.PropertyChanged += HandlePropertyChanged;
+			}
 		}
 
 		/// <summary>
@@ -69,6 +75,10 @@ namespace VAS.Services.Controller
 			base.Stop ();
 			App.Current.EventsBroker.Unsubscribe<ClickedPCardEvent> (HandleClickedPCardEvent);
 			App.Current.EventsBroker.Unsubscribe<NewTagEvent> (HandleNewTagEvent);
+
+			foreach (var item in project.Dashboard.ViewModels) {
+				item.PropertyChanged -= HandlePropertyChanged;
+			}
 		}
 
 		/// <summary>
@@ -87,15 +97,17 @@ namespace VAS.Services.Controller
 		/// <returns>The default key actions.</returns>
 		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
 		{
-			var keyActions = new List<KeyAction> ();
 			//Add AnalysisEventButtons
+			dashboardKeyActions = new Dictionary<DashboardButtonVM, KeyAction> ();
+			var keyActions = new List<KeyAction> ();
 			foreach (var button in project.Dashboard.ViewModels) {
 				var analysisButton = button as AnalysisEventButtonVM;
 				if (analysisButton != null) {
-					keyActions.Add (new KeyAction (new KeyConfig {
-						Name = analysisButton.Name,
-						Key = analysisButton.HotKey
-					}, () => analysisButton.Click ()));
+					KeyAction action = new KeyAction (
+						new KeyConfig { Name = analysisButton.Name, Key = analysisButton.HotKey },
+						() => analysisButton.Click ());
+					dashboardKeyActions.Add (button, action);
+					keyActions.Add (action);
 				}
 			}
 
@@ -105,6 +117,7 @@ namespace VAS.Services.Controller
 				i++;
 				i = i % 10;
 			}
+
 			return keyActions;
 		}
 
@@ -220,6 +233,16 @@ namespace VAS.Services.Controller
 				Modifier = modifier,
 				Sender = player
 			});
+		}
+
+		void HandlePropertyChanged (object sender, PropertyChangedEventArgs e) 
+		{
+			if (e.PropertyName == "HotKey") {
+				DashboardButtonVM changedButton = sender as DashboardButtonVM;
+				if (changedButton != null && dashboardKeyActions.ContainsKey (changedButton)) {
+					dashboardKeyActions [changedButton].KeyConfig.Key = changedButton.HotKey;
+				}
+			}
 		}
 	}
 }

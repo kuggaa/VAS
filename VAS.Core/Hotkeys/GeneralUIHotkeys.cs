@@ -76,6 +76,24 @@ namespace VAS.Core.Hotkeys
 					Category = CATEGORY,
 					Description = Catalog.GetString("Zoom out")
 				},
+				new KeyConfig {
+					Name = "FIT_TIMELINE",
+					Key = App.Current.Keyboard.ParseName ("<Shift_L>+t"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Adjust timeline to current position")
+				},
+				new KeyConfig {
+					Name = "SHOW_DASHBOARD",
+					Key = App.Current.Keyboard.ParseName ("<Shift_L>+z"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Show dashboard")
+				},
+				new KeyConfig {
+					Name = "SHOW_TIMELINE",
+					Key = App.Current.Keyboard.ParseName ("<Shift_L>+x"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Show timeline")
+				},
 				//FIXME: Not entering on first release, but should be
 				//done in a future
 				/*new KeyConfig {
