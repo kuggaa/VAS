@@ -1309,7 +1309,7 @@ namespace VAS.Tests.Services
 			Mock<IMultiVideoPlayer> multiplayerMock = new Mock<IMultiVideoPlayer> ();
 
 			mtkMock.Setup (m => m.GetMultiPlayer ()).Returns (multiplayerMock.Object);
-			player = new VideoPlayerController (true);
+			player = new VideoPlayerController ();
 			//Should set again the ViewModel
 			(player as IController).SetViewModel (playerVM);
 			PreparePlayer ();
@@ -1391,7 +1391,7 @@ namespace VAS.Tests.Services
 			Mock<IMultiVideoPlayer> multiplayerMock = new Mock<IMultiVideoPlayer> ();
 
 			mtkMock.Setup (m => m.GetMultiPlayer ()).Returns (multiplayerMock.Object);
-			player = new VideoPlayerController (true);
+			player = new VideoPlayerController ();
 			(player as IController).SetViewModel (playerVM);
 			PreparePlayer ();
 
