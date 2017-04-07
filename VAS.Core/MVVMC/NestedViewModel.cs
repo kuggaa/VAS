@@ -29,7 +29,7 @@ namespace VAS.Core.MVVMC
 	/// Base class implementation of <see cref="INestedViewModel"/> with support for child selection.
 	/// This base class should be used by any ViewModel with a collection of typeparam name="VMChilds".
 	/// </summary>
-	public class NestedViewModel<VMChilds> : BindableBase, INestedViewModel<VMChilds>
+	public class NestedViewModel<VMChilds> : ViewModelBase, INestedViewModel<VMChilds>
 		where VMChilds : IViewModel
 	{
 		RangeObservableCollection<VMChilds> viewModels;
