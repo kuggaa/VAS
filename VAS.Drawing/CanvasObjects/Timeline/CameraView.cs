@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.ComponentModel;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
@@ -45,6 +46,9 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				return viewModel;
 			}
 			set {
+				if (TimeNode != null) {
+					TimeNode.PropertyChanged -= HandlePropertyChanged;
+				}
 				viewModel = value;
 				if (viewModel != null) {
 					TimeNode = new TimeNodeVM {
@@ -53,6 +57,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 							Stop = viewModel.Duration - viewModel.Offset, Name = viewModel.Name
 						}
 					};
+					TimeNode.PropertyChanged += HandlePropertyChanged;
 				}
 			}
 		}
@@ -112,6 +117,13 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 					TimeNode.Name);
 			}
 			tk.End ();
+		}
+
+		void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof (TimeNodeVM.Start)) {
+				viewModel.Offset = new Time (-TimeNode.Start.MSeconds);
+			}
 		}
 	}
 }

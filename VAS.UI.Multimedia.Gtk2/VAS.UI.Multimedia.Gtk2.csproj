@@ -57,6 +57,7 @@
 		<Compile Include="gtk-gui\VAS.UI.VideoWindow.cs" />
 		<Compile Include="UI\VideoPlayerView.cs" />
 		<Compile Include="gtk-gui\VAS.UI.VideoPlayerView.cs" />
+		<Compile Include="Init.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="gtk-gui\gui.stetic">

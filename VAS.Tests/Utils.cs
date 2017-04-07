@@ -475,6 +475,7 @@ namespace VAS.Tests
 			p.FileSet.Add (new MediaFile (Path.GetTempFileName (), 34000, 25, true, true, "mp4", "h264",
 				"aac", 320, 240, 1.3, null, "Test asset 2"));
 			p.UpdateEventTypesAndTimers ();
+			p.IsLoaded = true;
 
 			if (withEvents) {
 				AnalysisEventButton b = p.Dashboard.List [0] as AnalysisEventButton;

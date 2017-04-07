@@ -36,6 +36,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PreferencesPanelVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\HotkeysConfigurationVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\DashboardEditorController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller\CameraSynchronizationController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\CameraSynchronizationVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />

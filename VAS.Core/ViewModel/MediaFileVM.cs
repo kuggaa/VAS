@@ -180,5 +180,15 @@ namespace VAS.Core.ViewModel
 			get;
 			set;
 		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.MediaFileVM"/>
+		/// is selected or active.
+		/// </summary>
+		/// <value><c>true</c> if selected; otherwise, <c>false</c>.</value>
+		public bool Selected {
+			get;
+			set;
+		}
 	}
 }

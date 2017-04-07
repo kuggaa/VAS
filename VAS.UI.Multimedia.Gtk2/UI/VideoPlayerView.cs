@@ -37,13 +37,14 @@ using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
 using VAS.Drawing.Cairo;
 using VAS.Drawing.Widgets;
+using VAS.Core.MVVMC;
 
 
 namespace VAS.UI
 {
 	[System.ComponentModel.Category ("VAS")]
 	[System.ComponentModel.ToolboxItem (true)]
-
+	[View ("VideoPlayerView")]
 	public partial class VideoPlayerView : Gtk.Bin, IView<VideoPlayerVM>, IVideoPlayerView
 	{
 		protected const int SCALE_FPS = 25;
@@ -203,8 +204,6 @@ namespace VAS.UI
 
 		#region Private methods
 
-
-
 		protected virtual bool DrawingsVisible {
 			set {
 				videowindow.Visible = !value;
@@ -218,12 +217,7 @@ namespace VAS.UI
 				closebutton.Visible = false;
 			}
 
-			prevbutton.Visible = nextbutton.Visible = jumplabel.Visible =
-				jumpspinbutton.Visible = tlabel.Visible = timelabel.Visible =
-					detachbutton.Visible = ratescale.Visible = !playerVM.Compact;
-
 			controlsbox.Sensitive = ratescale.Sensitive = playerVM.ControlsSensitive;
-			drawbutton.Visible = playerVM.ShowDrawingIcon;
 			DrawingsVisible = false;
 			timescale.Value = 0;
 			timelabel.Text = "";
@@ -572,25 +566,14 @@ namespace VAS.UI
 
 		void SyncVMValues (string propertyName = null)
 		{
-			if (propertyName == null || propertyName == "ShowControls") {
-				controlsbox.Visible = ratescale.Visible = playerVM.ShowControls;
-			}
 			if (propertyName == null || propertyName == "ControlsSensitive") {
 				controlsbox.Sensitive = ratescale.Sensitive = playerVM.ControlsSensitive;
-			}
-			if (propertyName == null || propertyName == "Compact") {
-				prevbutton.Visible = nextbutton.Visible = jumplabel.Visible =
-					jumpspinbutton.Visible = tlabel.Visible = timelabel.Visible =
-						detachbutton.Visible = ratescale.Visible = !playerVM.Compact;
 			}
 			if (propertyName == null || propertyName == "PlayerAttached") {
 				HandlePlayerAttachedChanged ();
 			}
 			if (propertyName == null || propertyName == "ShowDetachButton") {
 				detachbutton.Visible = playerVM.ShowDetachButton;
-			}
-			if (propertyName == null || propertyName == "ShowDrawingIcon") {
-				drawbutton.Visible = playerVM.ShowDrawingIcon;
 			}
 			if (propertyName == null || propertyName == "Playing") {
 				HandlePlayingChanged ();
