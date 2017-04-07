@@ -38,32 +38,17 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class VideoPlayerVM : ViewModelBase, IViewModel
 	{
-		PlayerViewOperationMode mode;
 
 		public VideoPlayerVM ()
 		{
 			CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+			CurrentTime = new Time (0);
 		}
 
 		public bool ControlsSensitive {
 			get;
 			set;
 		}
-
-		public bool ShowControls {
-			get;
-			set;
-		}
-
-		public bool Compact {
-			get;
-			set;
-		}
-
-		public bool ShowDrawingIcon {
-			get;
-			set;
-		} = true;
 
 		/// <summary>
 		/// Gets or sets the current audio volume.
@@ -138,34 +123,8 @@ namespace VAS.Core.ViewModel
 		}
 
 		public PlayerViewOperationMode ViewMode {
-			set {
-				mode = value;
-				switch (mode) {
-				case PlayerViewOperationMode.Analysis:
-					Compact = false;
-					ShowControls = true;
-					ShowDrawingIcon = true;
-					break;
-				case PlayerViewOperationMode.LiveAnalysisReview:
-					Compact = true;
-					ShowControls = true;
-					ShowDrawingIcon = true;
-					break;
-				case PlayerViewOperationMode.Synchronization:
-					Compact = false;
-					ShowControls = false;
-					ShowDrawingIcon = false;
-					break;
-				case PlayerViewOperationMode.SimpleWithControls:
-					Compact = false;
-					ShowControls = true;
-					ShowDrawingIcon = false;
-					break;
-				}
-			}
-			get {
-				return mode;
-			}
+			set;
+			get;
 		}
 
 		public VideoPlayerOperationMode PlayerMode {

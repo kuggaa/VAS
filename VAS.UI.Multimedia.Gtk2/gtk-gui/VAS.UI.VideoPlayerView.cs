@@ -4,21 +4,51 @@ namespace VAS.UI
 {
 	public partial class VideoPlayerView
 	{
-		private global::Gtk.VBox vbox3;
+		private global::Gtk.EventBox maineventbox;
+
+		private global::Gtk.VBox totalbox;
 
 		private global::Gtk.HBox mainbox;
 
-		private global::Gtk.HBox hbox3;
+		private global::Gtk.HPaned videohpaned;
 
-		private global::VAS.UI.VideoWindow videowindow;
+		private global::Gtk.HBox videobox;
+
+		private global::VAS.UI.VideoWindow mainviewport;
 
 		private global::Gtk.DrawingArea blackboarddrawingarea;
+
+		private global::Gtk.VBox subviewportsbox;
+
+		private global::VAS.UI.SubViewport subviewport1;
+
+		private global::VAS.UI.SubViewport subviewport2;
+
+		private global::VAS.UI.SubViewport subviewport3;
+
+		private global::Gtk.VBox ratebox;
+
+		private global::Gtk.VBox camerasbox;
+
+		private global::Gtk.ToggleButton viewportsSwitchButton;
+
+		private global::Gtk.Image viewportsSwitchImage;
+
+		private global::Gtk.Button zoomLevelButton;
+
+		private global::Gtk.Image zoomLevelImage;
 
 		private global::Gtk.EventBox lightbackgroundeventbox;
 
 		private global::Gtk.Alignment alignment1;
 
+		private global::Gtk.VBox vbox1;
+
+		private global::Gtk.DrawingArea timerulearea;
+
 		private global::Gtk.HBox controlsbox;
+
+		private global::Gtk.Alignment buttonsleftalignment;
 
 		private global::Gtk.HBox buttonsbox;
 
@@ -48,19 +78,25 @@ namespace VAS.UI
 
 		private global::Gtk.HScale ratescale;
 
-		private global::Gtk.HBox hbox1;
+		private global::Gtk.HBox center_playhead_box;
+
+		private global::Gtk.Button centerplayheadbutton;
+
+		private global::Gtk.Image centerplayheadbuttonimage;
+
+		private global::Gtk.HBox jumpsbox;
 
 		private global::Gtk.Label jumplabel;
 
 		private global::Gtk.SpinButton jumpspinbutton;
 
-		private global::Gtk.HBox hbox2;
-
-		private global::Gtk.Label tlabel;
-
-		private global::Gtk.HScale timescale;
+		private global::Gtk.HBox timescalebox;
 
 		private global::Gtk.Label timelabel;
+
+		private global::Gtk.Alignment buttonsrightalignment;
+
+		private global::Gtk.HBox hbox1;
 
 		private global::Gtk.Button volumebutton;
 
@@ -70,150 +106,252 @@ namespace VAS.UI
 
 		private global::Gtk.Image detachbuttonimage;
 
-		protected virtual void Build ()
+		protected virtual void Build()
 		{
-			global::Stetic.Gui.Initialize (this);
+			global::Stetic.Gui.Initialize(this);
 			// Widget VAS.UI.VideoPlayerView
-			global::Stetic.BinContainer.Attach (this);
+			global::Stetic.BinContainer.Attach(this);
 			this.Name = "VAS.UI.VideoPlayerView";
 			// Container child VAS.UI.VideoPlayerView.Gtk.Container+ContainerChild
-			this.vbox3 = new global::Gtk.VBox ();
-			this.vbox3.Name = "vbox3";
-			this.vbox3.Spacing = 6;
-			// Container child vbox3.Gtk.Box+BoxChild
-			this.mainbox = new global::Gtk.HBox ();
+			this.maineventbox = new global::Gtk.EventBox();
+			this.maineventbox.Name = "maineventbox";
+			// Container child maineventbox.Gtk.Container+ContainerChild
+			this.totalbox = new global::Gtk.VBox();
+			this.totalbox.Name = "totalbox";
+			// Container child totalbox.Gtk.Box+BoxChild
+			this.mainbox = new global::Gtk.HBox();
 			this.mainbox.Name = "mainbox";
-			this.mainbox.Spacing = 6;
 			// Container child mainbox.Gtk.Box+BoxChild
-			this.hbox3 = new global::Gtk.HBox ();
-			this.hbox3.Name = "hbox3";
-			this.hbox3.Spacing = 6;
-			// Container child hbox3.Gtk.Box+BoxChild
-			this.videowindow = new global::VAS.UI.VideoWindow ();
-			this.videowindow.Events = ((global::Gdk.EventMask)(256));
-			this.videowindow.Name = "videowindow";
-			this.videowindow.Ratio = 0F;
-			this.hbox3.Add (this.videowindow);
-			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.videowindow]));
+			this.videohpaned = new global::Gtk.HPaned();
+			this.videohpaned.CanFocus = true;
+			this.videohpaned.Name = "videohpaned";
+			this.videohpaned.Position = 543;
+			// Container child videohpaned.Gtk.Paned+PanedChild
+			this.videobox = new global::Gtk.HBox();
+			this.videobox.WidthRequest = 200;
+			this.videobox.Name = "videobox";
+			// Container child videobox.Gtk.Box+BoxChild
+			this.mainviewport = new global::VAS.UI.VideoWindow();
+			this.mainviewport.Events = ((global::Gdk.EventMask)(256));
+			this.mainviewport.Name = "mainviewport";
+			this.mainviewport.Ratio = 1F;
+			this.videobox.Add(this.mainviewport);
+			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.videobox[this.mainviewport]));
 			w1.Position = 0;
-			// Container child hbox3.Gtk.Box+BoxChild
-			this.blackboarddrawingarea = new global::Gtk.DrawingArea ();
+			// Container child videobox.Gtk.Box+BoxChild
+			this.blackboarddrawingarea = new global::Gtk.DrawingArea();
 			this.blackboarddrawingarea.Name = "blackboarddrawingarea";
-			this.hbox3.Add (this.blackboarddrawingarea);
-			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.blackboarddrawingarea]));
+			this.videobox.Add(this.blackboarddrawingarea);
+			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.videobox[this.blackboarddrawingarea]));
 			w2.Position = 1;
-			this.mainbox.Add (this.hbox3);
-			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.mainbox [this.hbox3]));
-			w3.Position = 0;
-			this.vbox3.Add (this.mainbox);
-			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.vbox3 [this.mainbox]));
+			this.videohpaned.Add(this.videobox);
+			global::Gtk.Paned.PanedChild w3 = ((global::Gtk.Paned.PanedChild)(this.videohpaned[this.videobox]));
+			w3.Resize = false;
+			w3.Shrink = false;
+			// Container child videohpaned.Gtk.Paned+PanedChild
+			this.subviewportsbox = new global::Gtk.VBox();
+			this.subviewportsbox.WidthRequest = 150;
+			this.subviewportsbox.Name = "subviewportsbox";
+			// Container child subviewportsbox.Gtk.Box+BoxChild
+			this.subviewport1 = new global::VAS.UI.SubViewport();
+			this.subviewport1.Events = ((global::Gdk.EventMask)(256));
+			this.subviewport1.Name = "subviewport1";
+			this.subviewport1.Index = 0;
+			this.subviewportsbox.Add(this.subviewport1);
+			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.subviewportsbox[this.subviewport1]));
 			w4.Position = 0;
-			// Container child vbox3.Gtk.Box+BoxChild
-			this.lightbackgroundeventbox = new global::Gtk.EventBox ();
+			// Container child subviewportsbox.Gtk.Box+BoxChild
+			this.subviewport2 = new global::VAS.UI.SubViewport();
+			this.subviewport2.Events = ((global::Gdk.EventMask)(256));
+			this.subviewport2.Name = "subviewport2";
+			this.subviewport2.Index = 0;
+			this.subviewportsbox.Add(this.subviewport2);
+			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.subviewportsbox[this.subviewport2]));
+			w5.Position = 1;
+			// Container child subviewportsbox.Gtk.Box+BoxChild
+			this.subviewport3 = new global::VAS.UI.SubViewport();
+			this.subviewport3.Events = ((global::Gdk.EventMask)(256));
+			this.subviewport3.Name = "subviewport3";
+			this.subviewport3.Index = 0;
+			this.subviewportsbox.Add(this.subviewport3);
+			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.subviewportsbox[this.subviewport3]));
+			w6.Position = 2;
+			this.videohpaned.Add(this.subviewportsbox);
+			global::Gtk.Paned.PanedChild w7 = ((global::Gtk.Paned.PanedChild)(this.videohpaned[this.subviewportsbox]));
+			w7.Resize = false;
+			w7.Shrink = false;
+			this.mainbox.Add(this.videohpaned);
+			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.mainbox[this.videohpaned]));
+			w8.Position = 0;
+			// Container child mainbox.Gtk.Box+BoxChild
+			this.ratebox = new global::Gtk.VBox();
+			this.ratebox.Name = "ratebox";
+			this.ratebox.Spacing = 6;
+			// Container child ratebox.Gtk.Box+BoxChild
+			this.camerasbox = new global::Gtk.VBox();
+			this.camerasbox.Name = "camerasbox";
+			this.camerasbox.Spacing = 6;
+			// Container child camerasbox.Gtk.Box+BoxChild
+			this.viewportsSwitchButton = new global::Gtk.ToggleButton();
+			this.viewportsSwitchButton.CanFocus = true;
+			this.viewportsSwitchButton.Name = "viewportsSwitchButton";
+			this.viewportsSwitchButton.FocusOnClick = false;
+			this.viewportsSwitchButton.Relief = ((global::Gtk.ReliefStyle)(2));
+			this.viewportsSwitchButton.Active = true;
+			// Container child viewportsSwitchButton.Gtk.Container+ContainerChild
+			this.viewportsSwitchImage = new global::Gtk.Image();
+			this.viewportsSwitchImage.Name = "viewportsSwitchImage";
+			this.viewportsSwitchButton.Add(this.viewportsSwitchImage);
+			this.camerasbox.Add(this.viewportsSwitchButton);
+			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.camerasbox[this.viewportsSwitchButton]));
+			w10.Position = 0;
+			w10.Expand = false;
+			// Container child camerasbox.Gtk.Box+BoxChild
+			this.zoomLevelButton = new global::Gtk.Button();
+			this.zoomLevelButton.CanFocus = true;
+			this.zoomLevelButton.Name = "zoomLevelButton";
+			this.zoomLevelButton.FocusOnClick = false;
+			this.zoomLevelButton.Relief = ((global::Gtk.ReliefStyle)(2));
+			// Container child zoomLevelButton.Gtk.Container+ContainerChild
+			this.zoomLevelImage = new global::Gtk.Image();
+			this.zoomLevelImage.Name = "zoomLevelImage";
+			this.zoomLevelButton.Add(this.zoomLevelImage);
+			this.camerasbox.Add(this.zoomLevelButton);
+			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.camerasbox[this.zoomLevelButton]));
+			w12.Position = 1;
+			w12.Expand = false;
+			this.ratebox.Add(this.camerasbox);
+			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.ratebox[this.camerasbox]));
+			w13.Position = 0;
+			this.mainbox.Add(this.ratebox);
+			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.mainbox[this.ratebox]));
+			w14.Position = 1;
+			w14.Expand = false;
+			w14.Fill = false;
+			this.totalbox.Add(this.mainbox);
+			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.totalbox[this.mainbox]));
+			w15.Position = 0;
+			// Container child totalbox.Gtk.Box+BoxChild
+			this.lightbackgroundeventbox = new global::Gtk.EventBox();
 			this.lightbackgroundeventbox.Name = "lightbackgroundeventbox";
 			// Container child lightbackgroundeventbox.Gtk.Container+ContainerChild
-			this.alignment1 = new global::Gtk.Alignment (0F, 0.5F, 1F, 1F);
+			this.alignment1 = new global::Gtk.Alignment(0F, 0.5F, 1F, 1F);
 			this.alignment1.Name = "alignment1";
 			// Container child alignment1.Gtk.Container+ContainerChild
-			this.controlsbox = new global::Gtk.HBox ();
+			this.vbox1 = new global::Gtk.VBox();
+			this.vbox1.Name = "vbox1";
+			this.vbox1.Spacing = 6;
+			// Container child vbox1.Gtk.Box+BoxChild
+			this.timerulearea = new global::Gtk.DrawingArea();
+			this.timerulearea.Name = "timerulearea";
+			this.vbox1.Add(this.timerulearea);
+			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.timerulearea]));
+			w16.Position = 0;
+			w16.Expand = false;
+			// Container child vbox1.Gtk.Box+BoxChild
+			this.controlsbox = new global::Gtk.HBox();
 			this.controlsbox.Name = "controlsbox";
 			this.controlsbox.Spacing = 6;
 			// Container child controlsbox.Gtk.Box+BoxChild
-			this.buttonsbox = new global::Gtk.HBox ();
+			this.buttonsleftalignment = new global::Gtk.Alignment(0F, 0.5F, 1F, 1F);
+			this.buttonsleftalignment.Name = "buttonsleftalignment";
+			// Container child buttonsleftalignment.Gtk.Container+ContainerChild
+			this.buttonsbox = new global::Gtk.HBox();
 			this.buttonsbox.Name = "buttonsbox";
 			this.buttonsbox.Homogeneous = true;
 			// Container child buttonsbox.Gtk.Box+BoxChild
-			this.closebutton = new global::Gtk.Button ();
+			this.closebutton = new global::Gtk.Button();
 			this.closebutton.TooltipMarkup = "Close loaded event";
 			this.closebutton.Name = "closebutton";
 			this.closebutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child closebutton.Gtk.Container+ContainerChild
-			this.closebuttonimage = new global::Gtk.Image ();
+			this.closebuttonimage = new global::Gtk.Image();
 			this.closebuttonimage.Name = "closebuttonimage";
-			this.closebutton.Add (this.closebuttonimage);
-			this.buttonsbox.Add (this.closebutton);
-			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.buttonsbox [this.closebutton]));
-			w6.Position = 0;
-			w6.Expand = false;
-			w6.Fill = false;
+			this.closebutton.Add(this.closebuttonimage);
+			this.buttonsbox.Add(this.closebutton);
+			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.buttonsbox[this.closebutton]));
+			w18.Position = 0;
+			w18.Expand = false;
+			w18.Fill = false;
 			// Container child buttonsbox.Gtk.Box+BoxChild
-			this.drawbutton = new global::Gtk.Button ();
+			this.drawbutton = new global::Gtk.Button();
 			this.drawbutton.TooltipMarkup = "Draw frame";
 			this.drawbutton.Name = "drawbutton";
 			this.drawbutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child drawbutton.Gtk.Container+ContainerChild
-			this.drawbuttonimage = new global::Gtk.Image ();
+			this.drawbuttonimage = new global::Gtk.Image();
 			this.drawbuttonimage.Name = "drawbuttonimage";
-			this.drawbutton.Add (this.drawbuttonimage);
-			this.buttonsbox.Add (this.drawbutton);
-			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.buttonsbox [this.drawbutton]));
-			w8.Position = 1;
-			w8.Expand = false;
-			w8.Fill = false;
+			this.drawbutton.Add(this.drawbuttonimage);
+			this.buttonsbox.Add(this.drawbutton);
+			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.buttonsbox[this.drawbutton]));
+			w20.Position = 1;
+			w20.Expand = false;
+			w20.Fill = false;
 			// Container child buttonsbox.Gtk.Box+BoxChild
-			this.playbutton = new global::Gtk.Button ();
+			this.playbutton = new global::Gtk.Button();
 			this.playbutton.TooltipMarkup = "Play";
 			this.playbutton.Name = "playbutton";
 			this.playbutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child playbutton.Gtk.Container+ContainerChild
-			this.playbuttonimage = new global::Gtk.Image ();
+			this.playbuttonimage = new global::Gtk.Image();
 			this.playbuttonimage.Name = "playbuttonimage";
-			this.playbutton.Add (this.playbuttonimage);
-			this.buttonsbox.Add (this.playbutton);
-			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.buttonsbox [this.playbutton]));
-			w10.Position = 2;
-			w10.Expand = false;
-			w10.Fill = false;
+			this.playbutton.Add(this.playbuttonimage);
+			this.buttonsbox.Add(this.playbutton);
+			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.buttonsbox[this.playbutton]));
+			w22.Position = 2;
+			w22.Expand = false;
+			w22.Fill = false;
 			// Container child buttonsbox.Gtk.Box+BoxChild
-			this.pausebutton = new global::Gtk.Button ();
+			this.pausebutton = new global::Gtk.Button();
 			this.pausebutton.TooltipMarkup = "Pause";
 			this.pausebutton.Name = "pausebutton";
 			this.pausebutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child pausebutton.Gtk.Container+ContainerChild
-			this.pausebuttonimage = new global::Gtk.Image ();
+			this.pausebuttonimage = new global::Gtk.Image();
 			this.pausebuttonimage.Name = "pausebuttonimage";
-			this.pausebutton.Add (this.pausebuttonimage);
-			this.buttonsbox.Add (this.pausebutton);
-			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.buttonsbox [this.pausebutton]));
-			w12.Position = 3;
-			w12.Expand = false;
-			w12.Fill = false;
+			this.pausebutton.Add(this.pausebuttonimage);
+			this.buttonsbox.Add(this.pausebutton);
+			global::Gtk.Box.BoxChild w24 = ((global::Gtk.Box.BoxChild)(this.buttonsbox[this.pausebutton]));
+			w24.Position = 3;
+			w24.Expand = false;
+			w24.Fill = false;
 			// Container child buttonsbox.Gtk.Box+BoxChild
-			this.prevbutton = new global::Gtk.Button ();
+			this.prevbutton = new global::Gtk.Button();
 			this.prevbutton.TooltipMarkup = "Previous";
 			this.prevbutton.Name = "prevbutton";
 			this.prevbutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child prevbutton.Gtk.Container+ContainerChild
-			this.prevbuttonimage = new global::Gtk.Image ();
+			this.prevbuttonimage = new global::Gtk.Image();
 			this.prevbuttonimage.Name = "prevbuttonimage";
-			this.prevbutton.Add (this.prevbuttonimage);
-			this.buttonsbox.Add (this.prevbutton);
-			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.buttonsbox [this.prevbutton]));
-			w14.Position = 4;
-			w14.Expand = false;
-			w14.Fill = false;
+			this.prevbutton.Add(this.prevbuttonimage);
+			this.buttonsbox.Add(this.prevbutton);
+			global::Gtk.Box.BoxChild w26 = ((global::Gtk.Box.BoxChild)(this.buttonsbox[this.prevbutton]));
+			w26.Position = 4;
+			w26.Expand = false;
+			w26.Fill = false;
 			// Container child buttonsbox.Gtk.Box+BoxChild
-			this.nextbutton = new global::Gtk.Button ();
+			this.nextbutton = new global::Gtk.Button();
 			this.nextbutton.TooltipMarkup = "Next";
 			this.nextbutton.Sensitive = false;
 			this.nextbutton.Name = "nextbutton";
 			this.nextbutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child nextbutton.Gtk.Container+ContainerChild
-			this.nextbuttonimage = new global::Gtk.Image ();
+			this.nextbuttonimage = new global::Gtk.Image();
 			this.nextbuttonimage.Name = "nextbuttonimage";
-			this.nextbutton.Add (this.nextbuttonimage);
-			this.buttonsbox.Add (this.nextbutton);
-			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.buttonsbox [this.nextbutton]));
-			w16.Position = 5;
-			w16.Expand = false;
-			w16.Fill = false;
-			this.controlsbox.Add (this.buttonsbox);
-			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.controlsbox [this.buttonsbox]));
-			w17.Position = 0;
-			w17.Expand = false;
-			w17.Fill = false;
+			this.nextbutton.Add(this.nextbuttonimage);
+			this.buttonsbox.Add(this.nextbutton);
+			global::Gtk.Box.BoxChild w28 = ((global::Gtk.Box.BoxChild)(this.buttonsbox[this.nextbutton]));
+			w28.Position = 5;
+			w28.Expand = false;
+			w28.Fill = false;
+			this.buttonsleftalignment.Add(this.buttonsbox);
+			this.controlsbox.Add(this.buttonsleftalignment);
+			global::Gtk.Box.BoxChild w30 = ((global::Gtk.Box.BoxChild)(this.controlsbox[this.buttonsleftalignment]));
+			w30.Position = 0;
+			w30.Expand = false;
+			w30.Fill = false;
 			// Container child controlsbox.Gtk.Box+BoxChild
-			this.ratescale = new global::Gtk.HScale (null);
+			this.ratescale = new global::Gtk.HScale(null);
 			this.ratescale.TooltipMarkup = "Playback speed";
 			this.ratescale.HeightRequest = 36;
 			this.ratescale.Sensitive = false;
@@ -224,127 +362,147 @@ namespace VAS.UI
 			this.ratescale.Adjustment.PageIncrement = 3;
 			this.ratescale.Adjustment.PageSize = 1;
 			this.ratescale.Adjustment.StepIncrement = 1;
-			this.ratescale.Adjustment.Value = 25;
+			this.ratescale.Adjustment.Value = 22;
 			this.ratescale.DrawValue = true;
 			this.ratescale.Digits = 0;
 			this.ratescale.ValuePos = ((global::Gtk.PositionType)(3));
-			this.controlsbox.Add (this.ratescale);
-			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.controlsbox [this.ratescale]));
-			w18.Position = 1;
+			this.controlsbox.Add(this.ratescale);
+			global::Gtk.Box.BoxChild w31 = ((global::Gtk.Box.BoxChild)(this.controlsbox[this.ratescale]));
+			w31.Position = 1;
 			// Container child controlsbox.Gtk.Box+BoxChild
-			this.hbox1 = new global::Gtk.HBox ();
-			this.hbox1.Name = "hbox1";
-			this.hbox1.Spacing = 6;
-			// Container child hbox1.Gtk.Box+BoxChild
-			this.jumplabel = new global::Gtk.Label ();
+			this.center_playhead_box = new global::Gtk.HBox();
+			this.center_playhead_box.Name = "center_playhead_box";
+			// Container child center_playhead_box.Gtk.Box+BoxChild
+			this.centerplayheadbutton = new global::Gtk.Button();
+			this.centerplayheadbutton.TooltipMarkup = "Next";
+			this.centerplayheadbutton.Name = "centerplayheadbutton";
+			this.centerplayheadbutton.Relief = ((global::Gtk.ReliefStyle)(2));
+			// Container child centerplayheadbutton.Gtk.Container+ContainerChild
+			this.centerplayheadbuttonimage = new global::Gtk.Image();
+			this.centerplayheadbuttonimage.Name = "centerplayheadbuttonimage";
+			this.centerplayheadbutton.Add(this.centerplayheadbuttonimage);
+			this.center_playhead_box.Add(this.centerplayheadbutton);
+			global::Gtk.Box.BoxChild w33 = ((global::Gtk.Box.BoxChild)(this.center_playhead_box[this.centerplayheadbutton]));
+			w33.Position = 0;
+			w33.Expand = false;
+			w33.Fill = false;
+			this.controlsbox.Add(this.center_playhead_box);
+			global::Gtk.Box.BoxChild w34 = ((global::Gtk.Box.BoxChild)(this.controlsbox[this.center_playhead_box]));
+			w34.Position = 2;
+			w34.Fill = false;
+			// Container child controlsbox.Gtk.Box+BoxChild
+			this.jumpsbox = new global::Gtk.HBox();
+			this.jumpsbox.Name = "jumpsbox";
+			this.jumpsbox.Spacing = 6;
+			// Container child jumpsbox.Gtk.Box+BoxChild
+			this.jumplabel = new global::Gtk.Label();
 			this.jumplabel.Name = "jumplabel";
-			this.jumplabel.LabelProp = global::Mono.Unix.Catalog.GetString ("Jump (s):");
-			this.hbox1.Add (this.jumplabel);
-			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.jumplabel]));
-			w19.Position = 0;
-			w19.Expand = false;
-			w19.Fill = false;
-			// Container child hbox1.Gtk.Box+BoxChild
-			this.jumpspinbutton = new global::Gtk.SpinButton (1, 100, 1);
+			this.jumplabel.LabelProp = global::Mono.Unix.Catalog.GetString("Jump (s):");
+			this.jumpsbox.Add(this.jumplabel);
+			global::Gtk.Box.BoxChild w35 = ((global::Gtk.Box.BoxChild)(this.jumpsbox[this.jumplabel]));
+			w35.Position = 0;
+			w35.Expand = false;
+			w35.Fill = false;
+			// Container child jumpsbox.Gtk.Box+BoxChild
+			this.jumpspinbutton = new global::Gtk.SpinButton(1, 100, 1);
 			this.jumpspinbutton.TooltipMarkup = "Jump in seconds. Hold the Shift key with the direction keys to activate it.";
 			this.jumpspinbutton.Name = "jumpspinbutton";
 			this.jumpspinbutton.Adjustment.PageIncrement = 10;
 			this.jumpspinbutton.ClimbRate = 1;
 			this.jumpspinbutton.Numeric = true;
 			this.jumpspinbutton.Value = 10;
-			this.hbox1.Add (this.jumpspinbutton);
-			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.jumpspinbutton]));
-			w20.Position = 1;
-			w20.Expand = false;
-			w20.Fill = false;
-			this.controlsbox.Add (this.hbox1);
-			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.controlsbox [this.hbox1]));
-			w21.Position = 2;
-			w21.Expand = false;
-			w21.Fill = false;
+			this.jumpsbox.Add(this.jumpspinbutton);
+			global::Gtk.Box.BoxChild w36 = ((global::Gtk.Box.BoxChild)(this.jumpsbox[this.jumpspinbutton]));
+			w36.Position = 1;
+			w36.Expand = false;
+			w36.Fill = false;
+			this.controlsbox.Add(this.jumpsbox);
+			global::Gtk.Box.BoxChild w37 = ((global::Gtk.Box.BoxChild)(this.controlsbox[this.jumpsbox]));
+			w37.Position = 3;
+			w37.Expand = false;
 			// Container child controlsbox.Gtk.Box+BoxChild
-			this.hbox2 = new global::Gtk.HBox ();
-			this.hbox2.Name = "hbox2";
-			this.hbox2.Spacing = 6;
-			// Container child hbox2.Gtk.Box+BoxChild
-			this.tlabel = new global::Gtk.Label ();
-			this.tlabel.Name = "tlabel";
-			this.tlabel.LabelProp = global::Mono.Unix.Catalog.GetString ("Time:");
-			this.hbox2.Add (this.tlabel);
-			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.tlabel]));
-			w22.Position = 0;
-			w22.Expand = false;
-			w22.Fill = false;
-			// Container child hbox2.Gtk.Box+BoxChild
-			this.timescale = new global::Gtk.HScale (null);
-			this.timescale.Name = "timescale";
-			this.timescale.Adjustment.Upper = 1;
-			this.timescale.Adjustment.PageIncrement = 1;
-			this.timescale.Adjustment.StepIncrement = 1;
-			this.timescale.DrawValue = false;
-			this.timescale.Digits = 0;
-			this.timescale.ValuePos = ((global::Gtk.PositionType)(2));
-			this.hbox2.Add (this.timescale);
-			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.timescale]));
-			w23.Position = 1;
-			// Container child hbox2.Gtk.Box+BoxChild
-			this.timelabel = new global::Gtk.Label ();
+			this.timescalebox = new global::Gtk.HBox();
+			this.timescalebox.Name = "timescalebox";
+			this.timescalebox.Spacing = 6;
+			// Container child timescalebox.Gtk.Box+BoxChild
+			this.timelabel = new global::Gtk.Label();
 			this.timelabel.Name = "timelabel";
-			this.hbox2.Add (this.timelabel);
-			global::Gtk.Box.BoxChild w24 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.timelabel]));
-			w24.Position = 2;
-			w24.Expand = false;
-			w24.Fill = false;
-			this.controlsbox.Add (this.hbox2);
-			global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(this.controlsbox [this.hbox2]));
-			w25.Position = 3;
+			this.timescalebox.Add(this.timelabel);
+			global::Gtk.Box.BoxChild w38 = ((global::Gtk.Box.BoxChild)(this.timescalebox[this.timelabel]));
+			w38.Position = 0;
+			w38.Expand = false;
+			w38.Fill = false;
+			this.controlsbox.Add(this.timescalebox);
+			global::Gtk.Box.BoxChild w39 = ((global::Gtk.Box.BoxChild)(this.controlsbox[this.timescalebox]));
+			w39.Position = 4;
+			w39.Expand = false;
+			w39.Fill = false;
 			// Container child controlsbox.Gtk.Box+BoxChild
-			this.volumebutton = new global::Gtk.Button ();
+			this.buttonsrightalignment = new global::Gtk.Alignment(1F, 0.5F, 1F, 1F);
+			this.buttonsrightalignment.Name = "buttonsrightalignment";
+			// Container child buttonsrightalignment.Gtk.Container+ContainerChild
+			this.hbox1 = new global::Gtk.HBox();
+			this.hbox1.Name = "hbox1";
+			this.hbox1.Spacing = 6;
+			// Container child hbox1.Gtk.Box+BoxChild
+			this.volumebutton = new global::Gtk.Button();
 			this.volumebutton.TooltipMarkup = "Volume";
 			this.volumebutton.Name = "volumebutton";
 			this.volumebutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child volumebutton.Gtk.Container+ContainerChild
-			this.volumebuttonimage = new global::Gtk.Image ();
+			this.volumebuttonimage = new global::Gtk.Image();
 			this.volumebuttonimage.Name = "volumebuttonimage";
-			this.volumebutton.Add (this.volumebuttonimage);
-			this.controlsbox.Add (this.volumebutton);
-			global::Gtk.Box.BoxChild w27 = ((global::Gtk.Box.BoxChild)(this.controlsbox [this.volumebutton]));
-			w27.Position = 4;
-			w27.Expand = false;
-			w27.Fill = false;
-			// Container child controlsbox.Gtk.Box+BoxChild
-			this.detachbutton = new global::Gtk.Button ();
+			this.volumebutton.Add(this.volumebuttonimage);
+			this.hbox1.Add(this.volumebutton);
+			global::Gtk.Box.BoxChild w41 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.volumebutton]));
+			w41.Position = 0;
+			w41.Expand = false;
+			w41.Fill = false;
+			// Container child hbox1.Gtk.Box+BoxChild
+			this.detachbutton = new global::Gtk.Button();
 			this.detachbutton.TooltipMarkup = "Detach window";
 			this.detachbutton.Name = "detachbutton";
 			this.detachbutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child detachbutton.Gtk.Container+ContainerChild
-			this.detachbuttonimage = new global::Gtk.Image ();
+			this.detachbuttonimage = new global::Gtk.Image();
 			this.detachbuttonimage.Name = "detachbuttonimage";
-			this.detachbutton.Add (this.detachbuttonimage);
-			this.controlsbox.Add (this.detachbutton);
-			global::Gtk.Box.BoxChild w29 = ((global::Gtk.Box.BoxChild)(this.controlsbox [this.detachbutton]));
-			w29.Position = 5;
-			w29.Expand = false;
-			w29.Fill = false;
-			this.alignment1.Add (this.controlsbox);
-			this.lightbackgroundeventbox.Add (this.alignment1);
-			this.vbox3.Add (this.lightbackgroundeventbox);
-			global::Gtk.Box.BoxChild w32 = ((global::Gtk.Box.BoxChild)(this.vbox3 [this.lightbackgroundeventbox]));
-			w32.Position = 1;
-			w32.Expand = false;
-			w32.Fill = false;
-			this.Add (this.vbox3);
-			if ((this.Child != null)) {
-				this.Child.ShowAll ();
+			this.detachbutton.Add(this.detachbuttonimage);
+			this.hbox1.Add(this.detachbutton);
+			global::Gtk.Box.BoxChild w43 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.detachbutton]));
+			w43.Position = 1;
+			w43.Expand = false;
+			w43.Fill = false;
+			this.buttonsrightalignment.Add(this.hbox1);
+			this.controlsbox.Add(this.buttonsrightalignment);
+			global::Gtk.Box.BoxChild w45 = ((global::Gtk.Box.BoxChild)(this.controlsbox[this.buttonsrightalignment]));
+			w45.PackType = ((global::Gtk.PackType)(1));
+			w45.Position = 5;
+			w45.Expand = false;
+			w45.Fill = false;
+			this.vbox1.Add(this.controlsbox);
+			global::Gtk.Box.BoxChild w46 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.controlsbox]));
+			w46.Position = 1;
+			w46.Expand = false;
+			w46.Fill = false;
+			this.alignment1.Add(this.vbox1);
+			this.lightbackgroundeventbox.Add(this.alignment1);
+			this.totalbox.Add(this.lightbackgroundeventbox);
+			global::Gtk.Box.BoxChild w49 = ((global::Gtk.Box.BoxChild)(this.totalbox[this.lightbackgroundeventbox]));
+			w49.Position = 1;
+			w49.Expand = false;
+			this.maineventbox.Add(this.totalbox);
+			this.Add(this.maineventbox);
+			if ((this.Child != null))
+			{
+				this.Child.ShowAll();
 			}
-			this.videowindow.Hide ();
-			this.blackboarddrawingarea.Hide ();
-			this.closebutton.Hide ();
-			this.pausebutton.Hide ();
-			this.prevbutton.Hide ();
-			this.nextbutton.Hide ();
-			this.controlsbox.Hide ();
-			this.Show ();
+			this.blackboarddrawingarea.Hide();
+			this.closebutton.Hide();
+			this.pausebutton.Hide();
+			this.prevbutton.Hide();
+			this.nextbutton.Hide();
+			this.controlsbox.Hide();
+			this.Show();
 		}
 	}
 }
