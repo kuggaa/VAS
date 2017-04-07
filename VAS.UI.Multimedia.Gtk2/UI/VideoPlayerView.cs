@@ -179,7 +179,6 @@ namespace VAS.UI
 					playerVM.Step = new Time { TotalSeconds = jumpspinbutton.ValueAsInt };
 					playerVM.SetCamerasConfig (new ObservableCollection<CameraConfig> { new CameraConfig (0) });
 					ResetGui ();
-					ViewModel.SupportsMultipleCameras = false;
 					SyncVMValues ();
 				}
 			}
