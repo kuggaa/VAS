@@ -34,9 +34,11 @@ namespace VAS.UI.Helpers
 		public static void Start (string url, string sourcePoint = null)
 		{
 			try {
+#if !DEBUG
 				if (!string.IsNullOrEmpty (sourcePoint)) {
-					url += $"?utm_source=RiftAnalyst&utm_medium={sourcePoint}&sessionid={000000}&userid={000000}";
+					url += $"?utm_source=RiftAnalyst&utm_medium={sourcePoint}&sessionid={000000}&userid={App.Current.KPIService.UserID}";
 				}
+#endif
 				Process.Start (url);
 			} catch (Exception ex) {
 				Log.Debug ("Failed opening ad: " + ex);

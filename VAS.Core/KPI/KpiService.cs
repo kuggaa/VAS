@@ -26,6 +26,16 @@ namespace VAS.KPI
 {
 	public class KpiService : IKpiService
 	{
+		/// <summary>
+		/// Gets the user identifier.
+		/// </summary>
+		/// <value>The user identifier.</value>
+		public string UserID {
+			get {
+				return HockeyClient.Current.AsInternal ().UserID;
+			}
+		}
+
 		public async Task Init (string appId, string user, string email)
 		{
 #if !DEBUG
