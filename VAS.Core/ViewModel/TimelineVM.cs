@@ -15,6 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -54,6 +55,7 @@ namespace VAS.Core.ViewModel
 			FullTimeline = CreateFullTimeline ();
 			FullTimeline.ViewModels.CollectionChanged += HandleTimelineCollectionChanged;
 			FullTimeline.PropertyChanged += FullTimeline_PropertyChanged;
+			EditionCommand = new Command<TimelineEvent> (HandleEditPlay, (arg) => true);
 		}
 
 		protected override void DisposeManagedResources ()
@@ -65,6 +67,12 @@ namespace VAS.Core.ViewModel
 			EventTypesTimeline.Dispose ();
 			FullTimeline.Dispose ();
 		}
+
+		/// <summary>
+		/// Gets or sets the edition command.
+		/// </summary>
+		/// <value>The edition command.</value>
+		public Command EditionCommand { get; set; }
 
 		public RangeObservableCollection<TimelineEvent> Model {
 			get {
@@ -280,6 +288,15 @@ namespace VAS.Core.ViewModel
 			if (sender is AnalysisEventType && e.PropertyName == nameof (EventType.Name)) {
 				RecreateInternalDictionary ();
 			}
+		}
+
+		void HandleEditPlay (TimelineEvent playEvent)
+		{
+			App.Current.EventsBroker.Publish (
+				new EditEventEvent {
+					TimelineEvent = playEvent
+				}
+			);
 		}
 
 		void RecreateInternalDictionary ()

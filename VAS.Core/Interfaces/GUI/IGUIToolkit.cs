@@ -50,8 +50,6 @@ namespace VAS.Core.Interfaces.GUI
 
 		void ShowProjectStats (Project project);
 
-		Task EditPlay (TimelineEvent play, Project project, bool editTags, bool editPositions, bool editPlayers, bool editNotes);
-
 		string RemuxFile (string filePath, string outputFile, VideoMuxerType muxer);
 
 		EndCaptureResponse EndCapture (bool isCapturing);

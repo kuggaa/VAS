@@ -104,23 +104,25 @@ namespace VAS.Services.State
 		public virtual Task<bool> HideState ()
 		{
 			Log.Debug ($"Hiding state {Name}");
-			foreach (IController controller in Controllers) {
-				Log.Debug ($"Stoping controller {controller}");
-				controller.Stop ();
-			}
-			App.Current.KeyContextManager.RemoveContext (KeyContext);
-			return AsyncHelpers.Return (true);
+			return InternalStopState ();
 		}
 
 		public virtual Task<bool> ShowState ()
 		{
 			Log.Debug ($"Showing state {Name}");
-			foreach (IController controller in Controllers) {
-				Log.Debug ($"Starting controller {controller}");
-				controller.Start ();
-			}
-			App.Current.KeyContextManager.AddContext (KeyContext);
-			return AsyncHelpers.Return (true);
+			return InternalStartState ();
+		}
+
+		public virtual Task<bool> FreezeState ()
+		{
+			Log.Debug ($"Freezing state {Name}");
+			return InternalStopState ();
+		}
+
+		public virtual Task<bool> UnfreezeState ()
+		{
+			Log.Debug ($"Unfreezing state {Name}");
+			return InternalStartState ();
 		}
 
 		protected Task<bool> Initialize (dynamic data)
@@ -156,6 +158,26 @@ namespace VAS.Services.State
 		/// <param name="data">Data.</param>
 		protected virtual void CreateControllers (dynamic data)
 		{
+		}
+
+		Task<bool> InternalStopState ()
+		{
+			foreach (IController controller in Controllers) {
+				Log.Debug ($"Stoping controller {controller}");
+				controller.Stop ();
+			}
+			App.Current.KeyContextManager.RemoveContext (KeyContext);
+			return AsyncHelpers.Return (true);
+		}
+
+		Task<bool> InternalStartState ()
+		{
+			foreach (IController controller in Controllers) {
+				Log.Debug ($"Starting controller {controller}");
+				controller.Start ();
+			}
+			App.Current.KeyContextManager.AddContext (KeyContext);
+			return AsyncHelpers.Return (true);
 		}
 	}
 }
