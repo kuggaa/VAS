@@ -154,7 +154,7 @@ namespace VAS.Services.Controller
 				new NewDashboardEvent {
 					TimelineEvent = play,
 					DashboardButton = e.Button,
-					Edit = false,
+					Edit = !project.Dashboard.DisablePopupWindow,
 					DashboardButtons = null,
 					ProjectId = project.Model.ID
 				}

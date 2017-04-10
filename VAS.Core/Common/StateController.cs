@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VAS.Core.Common;
 using VAS.Core.Events;
+using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.MVVMC;
 
@@ -15,7 +16,7 @@ namespace VAS.Core
 	/// corresponding GUI toolkit to replace panels in the MainWindow and to
 	/// create modal windows
 	/// </summary>
-	public class StateController
+	public class StateController : IStateController
 	{
 		Dictionary<string, Func<IScreenState>> destination;
 		NavigationState home;
@@ -89,7 +90,7 @@ namespace VAS.Core
 						return false;
 					}
 					if (lastState == home && home.Name != transition) {
-						if (!await lastState.ScreenState.HideState ()) {
+						if (!await lastState.Hide ()) {
 							Log.Debug ("Moving failed because home panel " + lastState.Name + " cannot move.");
 							return false;
 						}
@@ -99,7 +100,7 @@ namespace VAS.Core
 						return false;
 					}
 				} else if (lastState != null) {
-					if (!await lastState.ScreenState.HideState ()) {
+					if (!await lastState.Hide ()) {
 						Log.Debug ("Moving failed because panel " + lastState.Name + " cannot move.");
 						return false;
 					}
@@ -134,7 +135,7 @@ namespace VAS.Core
 		/// </summary>
 		/// <returns>True if the Move could be performed. False otherwise</returns>
 		/// <param name="transition">Transition.</param>
-		public async Task<bool> MoveToModal (string transition, dynamic properties)
+		public async Task<bool> MoveToModal (string transition, dynamic properties, bool waitUntilClose = false)
 		{
 			Log.Debug ("Moving to " + transition + " in modal mode");
 
@@ -147,13 +148,17 @@ namespace VAS.Core
 				IScreenState state = destination [transition] ();
 
 				NavigationState lastState = LastState ();
-				if (!await lastState.ScreenState.HideState ()) {
+				if (!await lastState.Freeze ()) {
 					return false;
 				}
 
 				bool ok = await state.LoadState (properties);
 				if (ok) {
 					await PushModalState (transition, state, LastState ()?.ScreenState);
+					NavigationState resultantState = LastState ();
+					if (waitUntilClose && resultantState.Name == transition) {
+						await resultantState.Completion.Task;
+					}
 				} else {
 					Log.Debug ("Moving failed because panel " + state.Name + " cannot move.");
 				}
@@ -176,11 +181,11 @@ namespace VAS.Core
 			}
 
 			try {
-				bool isModal;
-				NavigationState current = LastState (out isModal);
+				bool triggeredFromModal;
+				NavigationState current = LastState (out triggeredFromModal);
 				Log.Debug ("Moving Back");
 				if (current != null) {
-					if (!isModal) {
+					if (!triggeredFromModal) {
 						if (!await PopNavigationState ()) {
 							return false;
 						}
@@ -189,8 +194,13 @@ namespace VAS.Core
 							return false;
 						}
 					}
-					current = LastState (out isModal);
-					return await current.ScreenState.ShowState ();
+
+					current = LastState ();
+					if (triggeredFromModal) {
+						return await current.Unfreeze ();
+					} else {
+						return await current.Show ();
+					}
 				}
 				return true;
 			} catch (Exception ex) {
@@ -315,10 +325,10 @@ namespace VAS.Core
 				return false;
 			}
 			foreach (var navigationState in navigationStateStack.ToList ()) {
-				if (!await navigationState.ScreenState.HideState ()) {
+				if (!await navigationState.Hide ()) {
 					return false;
 				}
-				if (!await navigationState.ScreenState.UnloadState ()) {
+				if (!await navigationState.Unload ()) {
 					return false;
 				}
 				navigationState.ScreenState.Dispose ();
@@ -344,7 +354,8 @@ namespace VAS.Core
 
 		async Task<bool> PopNavigationState ()
 		{
-			IScreenState screenToPop = navigationStateStack [navigationStateStack.Count - 1].ScreenState;
+			NavigationState navigationState = navigationStateStack [navigationStateStack.Count - 1];
+			IScreenState screenToPop = navigationState.ScreenState;
 			navigationStateStack.RemoveAt (navigationStateStack.Count - 1);
 
 			NavigationState lastState = LastNavigationState ();
@@ -355,7 +366,7 @@ namespace VAS.Core
 				return false;
 			}
 			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = Current });
-			if (!await screenToPop.UnloadState ()) {
+			if (!await navigationState.Unload ()) {
 				return false;
 			}
 			screenToPop.Dispose ();
@@ -369,10 +380,10 @@ namespace VAS.Core
 				return false;
 			}
 			for (int i = navigationStateStack.Count - 1; i > index; i--) {
-				if (!await navigationStateStack [i].ScreenState.HideState ()) {
+				if (!await navigationStateStack [i].Hide ()) {
 					return false;
 				}
-				if (!await navigationStateStack [i].ScreenState.UnloadState ()) {
+				if (!await navigationStateStack [i].Unload ()) {
 					return false;
 				}
 				navigationStateStack [i].ScreenState.Dispose ();
@@ -381,7 +392,7 @@ namespace VAS.Core
 					return false;
 				}
 			}
-			if (!await state.ScreenState.ShowState ()) {
+			if (!await state.Show ()) {
 				return false;
 			}
 			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = state.Name });
@@ -394,6 +405,7 @@ namespace VAS.Core
 			if (!await state.ShowState ()) {
 				return false;
 			}
+
 			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = transition, IsModal = true });
 			await App.Current.Navigation.PushModal (state.Panel, current.Panel);
 			return true;
@@ -401,11 +413,13 @@ namespace VAS.Core
 
 		async Task<bool> PopModalState (NavigationState current)
 		{
-			IScreenState screenToPop = modalStateStack [modalStateStack.Count - 1].ScreenState;
+			NavigationState navigationState = modalStateStack [modalStateStack.Count - 1];
+			IScreenState screenToPop = navigationState.ScreenState;
+
 			if (!await screenToPop.HideState ()) {
 				return false;
 			}
-			if (!await screenToPop.UnloadState ()) {
+			if (!await navigationState.Unload ()) {
 				return false;
 			}
 			modalStateStack.RemoveAt (modalStateStack.Count - 1);
@@ -482,11 +496,14 @@ namespace VAS.Core
 		{
 			Name = name;
 			ScreenState = screenState;
+			Completion = new TaskCompletionSource<bool> ();
 		}
 
 		public string Name { get; set; }
 
 		public IScreenState ScreenState { get; set; }
+
+		public TaskCompletionSource<bool> Completion { get; }
 
 		public override bool Equals (object obj)
 		{
@@ -516,6 +533,44 @@ namespace VAS.Core
 		public static bool operator != (NavigationState a, NavigationState b)
 		{
 			return !(a == b);
+		}
+
+		public async Task<bool> Load (dynamic data)
+		{
+			return await ScreenState.LoadState (data);
+		}
+
+		public async Task<bool> Show ()
+		{
+			return await ScreenState.ShowState ();
+		}
+
+		public async Task<bool> Unfreeze ()
+		{
+			return await ScreenState.UnfreezeState ();
+		}
+
+		public async Task<bool> Freeze ()
+		{
+			return await ScreenState.FreezeState ();
+		}
+
+		public async Task<bool> Hide ()
+		{
+			return await ScreenState.HideState ();
+		}
+
+		public async Task<bool> Unload ()
+		{
+			bool result = await ScreenState.UnloadState ();
+			// FIXME: when quit is done a double home navigation is done
+			// this causes that the hide/unload of the state is done twice
+			// because the stack is not empty, the hide state is the one creating 
+			// the second home transition
+			if (Completion.Task.Status != TaskStatus.RanToCompletion) {
+				Completion.SetResult (result);
+			}
+			return result;
 		}
 	}
 }

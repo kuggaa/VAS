@@ -80,6 +80,18 @@ namespace VAS.Core.Interfaces.GUI
 		/// <returns>The task result.</returns>
 		Task<bool> HideState ();
 
+		/// <summary>
+		/// Method called to freeze the state.
+		/// </summary>
+		/// <returns>The task result.</returns>
+		Task<bool> FreezeState ();
+
+		/// <summary>
+		/// Method called to unfreeze the state.
+		/// </summary>
+		/// <returns>The task result.</returns>
+		Task<bool> UnfreezeState ();
+
 	}
 }
 

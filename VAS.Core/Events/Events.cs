@@ -110,6 +110,11 @@ namespace VAS.Core.Events
 		public bool Active { get; set; }
 	}
 
+	public class EditEventEvent : Event
+	{
+		public TimelineEvent TimelineEvent { get; set; }
+	}
+
 	public class EventEditedEvent : Event
 	{
 		public TimelineEvent TimelineEvent { get; set; }

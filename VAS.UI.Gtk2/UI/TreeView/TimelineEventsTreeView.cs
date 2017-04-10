@@ -139,6 +139,9 @@ namespace VAS.UI.Component
 			if (Selection.CountSelectedRows () == 0) {
 				ViewModel.UnloadEvents ();
 			}
+
+			// update selection
+			ViewModel.FullTimeline.Selection.Replace (events);
 		}
 
 		protected override void HandleTreeviewRowActivated (object o, RowActivatedArgs args)
