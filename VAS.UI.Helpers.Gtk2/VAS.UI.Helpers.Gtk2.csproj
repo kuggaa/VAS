@@ -58,6 +58,7 @@
     <Compile Include="Bindings\CheckBoxBinding.cs" />
     <Compile Include="Bindings\SpinBinding.cs" />
     <Compile Include="Bindings\ColorButtonBinding.cs" />
+    <Compile Include="UrlHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
