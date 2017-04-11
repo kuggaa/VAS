@@ -22,6 +22,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using Newtonsoft.Json;
+using VAS.Core.Common;
 using VAS.Core.Interfaces;
 
 namespace VAS.Core.MVVMC
@@ -100,6 +101,7 @@ namespace VAS.Core.MVVMC
 			if (PropertyChanged != null) {
 				if (sender == null) {
 					sender = this;
+					Log.Verbose ($"RaisePropertyChanged {this} - changing sender: {sender} from null");
 				}
 				PropertyChanged (sender, args);
 			}
@@ -202,6 +204,7 @@ namespace VAS.Core.MVVMC
 				return;
 			}
 			forwarding = true;
+			Log.Verbose ($"BindableBase {this} - Reception Forward PropertyName: {e.PropertyName} with sender: {sender}");
 			RaisePropertyChanged (e, sender);
 			forwarding = false;
 		}
