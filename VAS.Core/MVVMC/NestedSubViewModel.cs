@@ -31,6 +31,11 @@ namespace VAS.Core.MVVMC
 	{
 		TModel model;
 
+		public NestedSubViewModel ()
+		{
+			SubViewModel = new CollectionViewModel<TModelChild, TVMChild> ();
+		}
+
 		/// <summary>
 		/// Gets or sets the model.
 		/// </summary>
@@ -71,6 +76,6 @@ namespace VAS.Core.MVVMC
 		protected CollectionViewModel<TModelChild, TVMChild> SubViewModel {
 			get;
 			set;
-		} = new CollectionViewModel<TModelChild, TVMChild> ();
+		}
 	}
 }
