@@ -78,7 +78,7 @@ namespace VAS.Tests.Core.ViewModel
 			};
 
 			model.Elements.Add (new PlaylistPlayElement (new TimelineEvent ()));
-			Assert.AreEqual (1, count);
+			Assert.AreEqual (3, count);
 			Assert.AreEqual (1, viewModel.ViewModels.Count);
 		}
 	}
