@@ -30,6 +30,12 @@ namespace VAS.Core.Interfaces
 		string UserID { get; }
 
 		/// <summary>
+		/// Gets the session identifier.
+		/// </summary>
+		/// <value>The session identifier.</value>
+		string SessionID { get; }
+
+		/// <summary>
 		/// Init the KPIService with the specified appId, user and email.
 		/// </summary>
 		/// <param name="appId">App identifier.</param>

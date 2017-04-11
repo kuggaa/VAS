@@ -36,6 +36,16 @@ namespace VAS.KPI
 			}
 		}
 
+		/// <summary>
+		/// Gets the session identifier.
+		/// </summary>
+		/// <value>The session identifier.</value>
+		public string SessionID {
+			get {
+				return HockeyClient.Current.AsInternal ().SessionID;
+			}
+		}
+
 		public async Task Init (string appId, string user, string email)
 		{
 #if !DEBUG

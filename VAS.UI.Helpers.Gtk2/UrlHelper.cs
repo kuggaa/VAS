@@ -36,7 +36,7 @@ namespace VAS.UI.Helpers
 			try {
 #if !DEBUG
 				if (!string.IsNullOrEmpty (sourcePoint)) {
-					url += $"?utm_source=RiftAnalyst&utm_medium={sourcePoint}&sessionid={000000}&userid={App.Current.KPIService.UserID}";
+					url += $"?utm_source=RiftAnalyst&utm_medium={sourcePoint}&sessionid={App.Current.KPIService.SessionID}&userid={App.Current.KPIService.UserID}";
 				}
 #endif
 				Process.Start (url);
