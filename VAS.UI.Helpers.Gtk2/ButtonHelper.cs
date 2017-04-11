@@ -102,6 +102,7 @@ namespace VAS.UI.Helpers
 		{
 			button.Name = StyleConf.ButtonDialog;
 			button.HeightRequest = App.Current.Style.ButtonDialogHeight;
+			button.CanFocus = true;
 		}
 
 		/// <summary>
@@ -193,6 +194,7 @@ namespace VAS.UI.Helpers
 			if (button.Image != null) {
 				button.ImagePosition = PositionType.Left;
 			}
+			button.CanFocus = false;
 		}
 	}
 }
