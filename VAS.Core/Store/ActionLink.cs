@@ -26,7 +26,7 @@ namespace VAS.Core.Store
 	/// Defines an action link between 2 buttons in a <see cref="LongoMatch.Core.Store.Templates.Dashboard"/>.
 	/// </summary>
 	[Serializable]
-	public class ActionLink: BindableBase
+	public class ActionLink : BindableBase
 	{
 
 		public ActionLink ()
@@ -110,11 +110,11 @@ namespace VAS.Core.Store
 				return false;
 
 			if (link.SourceButton != SourceButton ||
-			    link.DestinationButton != DestinationButton) {
+				link.DestinationButton != DestinationButton) {
 				return false;
 			}
 			if (!link.SourceTags.SequenceEqualSafe (SourceTags) ||
-			    !link.DestinationTags.SequenceEqualSafe (DestinationTags)) {
+				!link.DestinationTags.SequenceEqualSafe (DestinationTags)) {
 				return false;
 			}
 			return true;
@@ -130,11 +130,11 @@ namespace VAS.Core.Store
 			if (Object.ReferenceEquals (l1, l2)) {
 				return true;
 			}
-			
+
 			if ((object)l1 == null || (object)l2 == null) {
 				return false;
 			}
-			
+
 			return l1.Equals (l2);
 		}
 

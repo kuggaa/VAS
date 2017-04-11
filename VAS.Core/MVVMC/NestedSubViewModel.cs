@@ -14,7 +14,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System.Collections.ObjectModel;
+using System.ComponentModel;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.MVVMC;
 
@@ -76,6 +76,14 @@ namespace VAS.Core.MVVMC
 		protected CollectionViewModel<TModelChild, TVMChild> SubViewModel {
 			get;
 			set;
+		}
+
+		protected override void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (sender == Model) {
+				sender = this;
+			}
+			base.ForwardPropertyChanged (sender, e);
 		}
 	}
 }

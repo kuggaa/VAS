@@ -18,6 +18,7 @@
 using NUnit.Framework;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
+using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
 
 namespace VAS.Tests.MVVMC
@@ -45,6 +46,59 @@ namespace VAS.Tests.MVVMC
 			// Assert
 			Assert.AreEqual (1, eventCount, $"PropertyChanged was called {eventCount} instead of once");
 			Assert.IsTrue (senderIsTimeNodeVM, "Sender is not a ViewModel");
+		}
+
+		[Test]
+		public void TestForwardModelChangesToVM ()
+		{
+			object senderObject = null;
+			TimerVM viewModel = new TimerVM ();
+			Timer timer = new Timer ();
+			timer.Nodes.Add (new TimeNode ());
+			viewModel.Model = timer;
+			viewModel.PropertyChanged += (sender, e) => {
+				senderObject = sender;
+			};
+
+			viewModel.ViewModels [0].Model.Name = "test";
+
+			Assert.AreEqual (viewModel.ViewModels [0], senderObject);
+		}
+
+		[Test]
+		public void TestForwardModelChangesToVMWithPlaylists ()
+		{
+			object senderObject = null;
+			var model = new Playlist ();
+			var viewModel = new PlaylistVM {
+				Model = model,
+			};
+			TimelineEvent timelineEvent = new TimelineEvent ();
+			model.Elements.Add (new PlaylistPlayElement (timelineEvent));
+			viewModel.PropertyChanged += (sender, e) => {
+				senderObject = sender;
+			};
+
+			timelineEvent.Name = "test";
+			Assert.AreEqual (viewModel.ViewModels [0], senderObject);
+		}
+
+		[Test]
+		public void TestForwardNotChangeSenderIfVM ()
+		{
+			object senderObject = null;
+			TimerVM viewModel = new TimerVM ();
+			Timer timer = new Timer ();
+			TimeNode timeNode = new TimeNode ();
+			timer.Nodes.Add (timeNode);
+			viewModel.Model = timer;
+			viewModel.PropertyChanged += (sender, e) => {
+				senderObject = sender;
+			};
+
+			viewModel.ViewModels [0].Name = "test";
+
+			Assert.AreEqual (viewModel.ViewModels [0], senderObject);
 		}
 
 		[Test]
