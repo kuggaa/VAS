@@ -18,6 +18,7 @@
 using System;
 using VAS.Core.Interfaces.MVVMC;
 using System.ComponentModel;
+using System.Reflection;
 
 namespace VAS.Core.MVVMC
 {
@@ -75,7 +76,23 @@ namespace VAS.Core.MVVMC
 
 		protected override void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			base.ForwardPropertyChanged (this, e);
+			if (!(sender is IViewModel)) {
+				PropertyInfo [] props = this.GetType ().GetProperties ();
+				foreach (PropertyInfo info in props) {
+					if (info.Name == "Model") {
+						if (info.PropertyType.IsAssignableFrom (sender.GetType ()) ||
+							sender.GetType ().IsAssignableFrom (info.PropertyType) ||
+							info.PropertyType.IsInstanceOfType (sender)) {
+							sender = this;
+							break;
+						}
+					}
+				}
+			}
+
+			if (sender is IViewModel) {
+				base.ForwardPropertyChanged (sender, e);
+			}
 		}
 	}
 

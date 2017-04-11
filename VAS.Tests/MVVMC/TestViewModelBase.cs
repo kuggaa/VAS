@@ -48,6 +48,31 @@ namespace VAS.Tests.MVVMC
 		}
 
 		[Test]
+		public void TestForwardPropertyChangeSenderIfNotViewModel ()
+		{
+			object senderObject = null;
+			TimerVM timerVM = new TimerVM ();
+			Timer timer = new Timer ();
+			TimeNode timeNode = new TimeNode ();
+			timer.Nodes.Add (timeNode);
+			timerVM.Model = timer;
+			TimeNodeVM shouldBeSender = timerVM.ViewModels [0];
+			timerVM.PropertyChanged += (sender, e) => {
+				senderObject = sender;
+			};
+
+			timeNode.Name = "test";
+
+			Assert.AreEqual (shouldBeSender, senderObject);
+		}
+
+		[Test]
+		public void TestForwardPropertyNotChangeSenderIfViewModel ()
+		{
+
+		}
+
+		[Test]
 		public void TestChangeModel ()
 		{
 			int eventCount = 0;
