@@ -42,6 +42,5 @@ namespace VAS.Core.Hotkeys
 			KeyActions.RemoveAll (x => x == keyAction);
 			KeyActions.Sort ();
 		}
-
 	}
 }
