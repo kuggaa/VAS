@@ -109,6 +109,9 @@ namespace VAS.Core.ViewModel
 			if (e.PropertyName == "VisibleRegion") {
 				VisibleRegion.Model = Model.VisibleRegion;
 			}
+			if (sender == Model) {
+				sender = this;
+			}
 			base.ForwardPropertyChanged (sender, e);
 		}
 	}

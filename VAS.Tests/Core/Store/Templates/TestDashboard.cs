@@ -86,9 +86,9 @@ namespace VAS.Tests.Core.Store.Templates
 			dashboard.List.Add (b2);
 			dashboard.List.Add (b3);
 
-			b1.ActionLinks.Add (new ActionLink { DestinationButton = b2 });
-			b2.ActionLinks.Add (new ActionLink { DestinationButton = b3 });
-			b3.ActionLinks.Add (new ActionLink { DestinationButton = b1 });
+			b1.ActionLinks.Add (new ActionLink { SourceButton = b1, DestinationButton = b2 });
+			b2.ActionLinks.Add (new ActionLink { SourceButton = b2, DestinationButton = b3 });
+			b3.ActionLinks.Add (new ActionLink { SourceButton = b3, DestinationButton = b1 });
 
 			dashboard.RemoveButton (b3);
 			Assert.AreEqual (0, b2.ActionLinks.Count);
@@ -105,7 +105,7 @@ namespace VAS.Tests.Core.Store.Templates
 			dashboard.AddDefaultTags (b1.AnalysisEventType);
 			dashboard.AddDefaultTags (b2.AnalysisEventType);
 
-			b1.ActionLinks.Add (new ActionLink { DestinationButton = b2 });
+			b1.ActionLinks.Add (new ActionLink { SourceButton = b1, DestinationButton = b2 });
 			dashboard.RemoveDeadLinks (b2);
 			Assert.AreEqual (1, b1.ActionLinks.Count);
 

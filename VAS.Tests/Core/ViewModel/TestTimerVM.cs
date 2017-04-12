@@ -69,7 +69,7 @@ namespace VAS.Tests.Core.ViewModel
 			viewModel.PropertyChanged += (sender, e) => count++;
 			model.Nodes.Add (new TimeNode ());
 
-			Assert.AreEqual (1, count);
+			Assert.AreEqual (3, count);
 			Assert.AreEqual (1, viewModel.ViewModels.Count);
 		}
 	}

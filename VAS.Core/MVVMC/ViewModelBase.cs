@@ -18,6 +18,8 @@
 using System;
 using VAS.Core.Interfaces.MVVMC;
 using System.ComponentModel;
+using VAS.Core.Common;
+using System.Reflection;
 
 namespace VAS.Core.MVVMC
 {
@@ -75,11 +77,15 @@ namespace VAS.Core.MVVMC
 
 		protected override void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			base.ForwardPropertyChanged (this, e);
+			Log.Verbose ($"ViewModelBase {this} - Reception Forward PropertyName: {e.PropertyName} with sender: {sender}");
+			if (sender is IViewModel) {
+				Log.Verbose ($"ViewModelBase {this} - Forwarding PropertyName: {e.PropertyName} with sender: {sender}");
+				base.ForwardPropertyChanged (sender, e);
+			}
 		}
 	}
 
-	public class ViewModelBase<T> : ViewModelBase, IViewModel<T> where T : INotifyPropertyChanged
+	public class ViewModelBase<T> : ViewModelBase, IViewModel<T> where T : class, INotifyPropertyChanged
 	{
 		/// <summary>
 		/// Gets or sets the model used by this ViewModel.
@@ -92,6 +98,31 @@ namespace VAS.Core.MVVMC
 		public virtual T Model {
 			set;
 			get;
+		}
+
+		protected override void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			Log.Verbose ($"ViewModelBase<T>{this} - Reception Forward PropertyName: {e.PropertyName} with sender: {sender}");
+			if (!(sender is IViewModel) && Model != null) {
+				if (sender == Model) {
+					Log.Verbose ($"ViewModelBase<T> {this} - Changing Forward sender to {this}");
+					sender = this;
+				} else {
+					//FIXME: This changes sender if sender is a Property of the Model,
+					// But this logic should be done in the Model. Maybe a ModelBase should
+					// be created in order to change the sender in its forwarder
+					PropertyInfo [] props = Model.GetType ().GetProperties ();
+					foreach (var info in props) {
+						if (info.PropertyType.IsAssignableFrom (sender.GetType ())) {
+							Log.Verbose ($"ViewModelBase<T> {this} - Changing Forward sender to {this}");
+							sender = this;
+							break;
+						}
+					}
+				}
+			}
+			Log.Verbose ($"ViewModelBase<T> {this} - Forwarding PropertyName: {e.PropertyName} with sender: {sender}");
+			base.ForwardPropertyChanged (sender, e);
 		}
 	}
 }
