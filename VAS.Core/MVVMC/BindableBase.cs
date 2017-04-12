@@ -185,7 +185,8 @@ namespace VAS.Core.MVVMC
 				foreach (var element in e.OldItems.OfType<INotifyPropertyChanged> ()) {
 					element.PropertyChanged -= ForwardPropertyChanged;
 				}
-			} else if (e.NewItems != null) {
+			}
+			if (e.NewItems != null) {
 				// Keep track to items removed from the collection and stop observing them
 				foreach (var element in e.NewItems.OfType<INotifyPropertyChanged> ()) {
 					element.PropertyChanged += ForwardPropertyChanged;

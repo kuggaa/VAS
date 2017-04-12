@@ -16,10 +16,12 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
 using VAS.Core.Common;
 using VAS.Core.Store;
+using DummyPlayer = VAS.Tests.Utils.PlayerDummy;
 
 namespace VAS.Tests.MVVMC
 {
@@ -160,6 +162,46 @@ namespace VAS.Tests.MVVMC
 
 			Assert.IsTrue (evt.IsChanged);
 			Assert.IsTrue (isChanged);
+		}
+
+		[Test]
+		public void TestEventForwardingInCollectionReplacements ()
+		{
+			// Arrange
+			List<object> senderObjects = new List<object> ();
+			DummyPlayer p1 = new DummyPlayer {
+				Name = "Player 1"
+			};
+			DummyPlayer p2 = new DummyPlayer {
+				Name = "Player 2"
+			};
+			DummyTeam team = new DummyTeam ();
+			team.List.Add (p1);
+			team.List.Add (p2);
+
+			team.List.Swap (p1, p2);
+
+			team.IsChanged = false;
+			p1.IsChanged = false;
+			p2.IsChanged = false;
+
+			team.PropertyChanged += (sender, e) => {
+				senderObjects.Add (sender);
+			};
+
+			// Action
+			p2.Nationality = "FR";
+			p1.Nationality = "DE";
+
+			//Assert
+			Assert.AreEqual (p2.Nationality, team.List [0].Nationality);
+			Assert.AreEqual (p1.Nationality, team.List [1].Nationality);
+			Assert.IsTrue (team.IsChanged);
+			Assert.IsTrue (p1.IsChanged);
+			Assert.IsTrue (p2.IsChanged);
+			Assert.AreEqual (2, senderObjects.Count);
+			Assert.AreEqual (p2, senderObjects [0]);
+			Assert.AreEqual (p1, senderObjects [1]);
 		}
 	}
 }
