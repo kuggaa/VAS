@@ -30,7 +30,7 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// Generic base class for <see cref="ITemplate"/> ViewModel.
 	/// </summary>
-	public abstract class TemplateViewModel<T> : StorableVM<T> where T : ITemplate
+	public abstract class TemplateViewModel<T> : StorableVM<T> where T : class, ITemplate
 	{
 		/// <summary>
 		/// Gets the name of the template.
@@ -76,7 +76,7 @@ namespace VAS.Core.ViewModel
 	}
 
 	public abstract class TemplateViewModel<TModel, TChildModel, TChildViewModel> : TemplateViewModel<TModel>, INestedViewModel<TChildViewModel>
-		where TModel : ITemplate<TChildModel>
+		where TModel : class, ITemplate<TChildModel>
 		where TChildViewModel : IViewModel<TChildModel>, new()
 		where TChildModel : BindableBase
 	{

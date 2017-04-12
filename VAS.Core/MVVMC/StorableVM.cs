@@ -26,7 +26,7 @@ namespace VAS.Core.MVVMC
 	/// account if the Model is preloaded or not to avoid fully loading the storable when properties are not needed.
 	/// </summary>
 	public class StorableVM<TModel> : ViewModelBase<TModel>
-		where TModel : IStorable, INotifyPropertyChanged
+		where TModel : class, IStorable, INotifyPropertyChanged
 	{
 		[JsonIgnore]
 		[PropertyChanged.DoNotCheckEquality]

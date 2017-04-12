@@ -47,7 +47,7 @@ namespace VAS.Tests.Core.ViewModel
 			};
 
 			model.Name = "T";
-			Assert.AreEqual (2, count);
+			Assert.AreEqual (1, count);
 		}
 	}
 }
