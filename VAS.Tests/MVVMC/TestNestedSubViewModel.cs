@@ -112,5 +112,20 @@ namespace VAS.Tests.MVVMC
 			Assert.AreSame (child2, viewModel.ViewModels [0].Model);
 			Assert.AreSame (child3, viewModel.ViewModels [1].Model);
 		}
+
+		[Test]
+		public void TestSenderPropertyChangeOnCollection ()
+		{
+			object senderObject = null;
+			var child4 = new DummyModelChild ();
+			viewModel.PropertyChanged += (sender, e) => {
+				senderObject = sender;
+			};
+
+			model.Children.Add (child4);
+
+			Assert.AreEqual (viewModel, senderObject);
+			Assert.IsNotNull (senderObject as DummyNestedSubVM);
+		}
 	}
 }

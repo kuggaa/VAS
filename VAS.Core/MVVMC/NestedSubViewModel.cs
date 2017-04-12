@@ -80,7 +80,7 @@ namespace VAS.Core.MVVMC
 
 		protected override void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if (sender == Model) {
+			if (sender == Model || sender == SubViewModel) {
 				sender = this;
 			}
 			base.ForwardPropertyChanged (sender, e);
