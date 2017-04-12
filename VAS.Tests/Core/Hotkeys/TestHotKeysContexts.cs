@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Moq;
 using NUnit.Framework;
-using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Hotkeys;
+using VAS.Core.Interfaces;
+using VAS.Core.Interfaces.GUI;
 using VAS.Core.Store;
+using Timer = System.Timers.Timer;
 
 namespace VAS.Tests.Core.HotKeys
 {
@@ -22,6 +27,7 @@ namespace VAS.Tests.Core.HotKeys
 		HotKey globalHotkey = App.Current.Keyboard.ParseName ("G");
 		int countPlay = 0, countForward = 0, countFastForward = 0, countGlobal = 0;
 		KeyAction play, forward, fastForward, globalAction;
+		Mock<IGUIToolkit> mockToolkit;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -35,6 +41,11 @@ namespace VAS.Tests.Core.HotKeys
 		{
 			countPlay = countForward = countFastForward = countGlobal = 0;
 			App.Current.KeyContextManager.NewKeyContexts (new List<KeyContext> ());
+
+			mockToolkit = new Mock<IGUIToolkit> ();
+			App.Current.GUIToolkit = mockToolkit.Object;
+
+			App.Current.DependencyRegistry.Register<ITimer, Timer> (1);
 		}
 
 		[TearDown ()]
@@ -242,6 +253,55 @@ namespace VAS.Tests.Core.HotKeys
 			Assert.AreEqual (1, countForward);
 			Assert.AreEqual (1, countFastForward);
 			Assert.AreEqual (2, countGlobal);
+		}
+
+		[Test ()]
+		public void AddContext_TempContextAdded_RemovedAfterTimeExpires ()
+		{
+			// Arrange
+			AutoResetEvent resetEvent = new AutoResetEvent (false);
+			KeyTemporalContext context = new KeyTemporalContext ();
+			context.AddAction (play);
+			context.Duration = 100;
+			context.ExpiredTimeAction = () => resetEvent.Set ();
+
+			mockToolkit.Setup (x => x.Invoke (It.IsAny<EventHandler> ())).Callback (() => Task.Factory.StartNew (() => context.ExpiredTimeAction ()));
+
+			// Act
+			App.Current.KeyContextManager.AddContext (context);
+			Assert.AreEqual (1, App.Current.KeyContextManager.CurrentKeyContexts.Count);
+
+			// Assert
+			resetEvent.WaitOne ();
+			Assert.AreEqual (0, App.Current.KeyContextManager.CurrentKeyContexts.Count);
+
+			resetEvent.Dispose ();
+		}
+
+		[Test ()]
+		public void NewKeyContexts_TempContextAdded_RemoveAfterTimeExpires ()
+		{
+			// Arrange
+			AutoResetEvent resetEvent = new AutoResetEvent (false);
+			KeyTemporalContext tmpContext = new KeyTemporalContext ();
+			tmpContext.AddAction (play);
+			tmpContext.Duration = 100;
+			tmpContext.ExpiredTimeAction = () => resetEvent.Set ();
+
+			KeyContext context = new KeyContext ();
+			context.AddAction (forward);
+
+			mockToolkit.Setup (x => x.Invoke (It.IsAny<EventHandler> ())).Callback (() => Task.Factory.StartNew (() => tmpContext.ExpiredTimeAction ()));
+
+			// Act
+			App.Current.KeyContextManager.NewKeyContexts (new List<KeyContext> { tmpContext, context });
+			Assert.AreEqual (2, App.Current.KeyContextManager.CurrentKeyContexts.Count);
+
+			// Assert
+			resetEvent.WaitOne ();
+			Assert.AreEqual (1, App.Current.KeyContextManager.CurrentKeyContexts.Count);
+
+			resetEvent.Dispose ();
 		}
 	}
 }

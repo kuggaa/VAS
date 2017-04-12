@@ -236,6 +236,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ITimed.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\EventEditionSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IStateController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\KeyTemporalContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ITimer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\Timer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

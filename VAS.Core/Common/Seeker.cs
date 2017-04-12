@@ -1,10 +1,9 @@
 using System;
 using System.Threading;
-using VAS.Core.Common;
 using VAS.Core.Handlers;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
-using Timer = System.Threading.Timer;
+using ThreadingTimer = System.Threading.Timer;
 
 namespace VAS.Core.Common
 {
@@ -19,7 +18,7 @@ namespace VAS.Core.Common
 		float rate;
 		SeekType seekType;
 		static object lockObject = new Object ();
-		readonly Timer timer;
+		readonly ThreadingTimer timer;
 		readonly ManualResetEvent TimerDisposed;
 
 		public Seeker (uint timeoutMS = 80)
@@ -27,7 +26,7 @@ namespace VAS.Core.Common
 			timeout = timeoutMS;
 			pendingSeek = false;
 			seekType = SeekType.None;
-			timer = new Timer (HandleSeekTimeout);
+			timer = new ThreadingTimer (HandleSeekTimeout);
 			TimerDisposed = new ManualResetEvent (false);
 		}
 

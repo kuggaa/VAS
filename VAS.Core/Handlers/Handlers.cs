@@ -26,6 +26,7 @@ using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Templates;
 using VAS.Core.ViewModel;
+using Timer = VAS.Core.Store.Timer;
 
 namespace VAS.Core.Handlers
 {

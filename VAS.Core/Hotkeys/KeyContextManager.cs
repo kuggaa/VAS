@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Timers;
+using VAS.Core.Common;
 using VAS.Core.Events;
+using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
 namespace VAS.Core.Hotkeys
@@ -10,17 +14,28 @@ namespace VAS.Core.Hotkeys
 	/// Manager to Register KeyContexts, global or Current State app context
 	/// Manages Actions when a Hotkey is pressed and compares it to the KeyContexts
 	/// </summary>
-	public sealed class KeyContextManager
+	public sealed class KeyContextManager : DisposableBase
 	{
 		private static readonly KeyContextManager instance = new KeyContextManager ();
 		List<KeyContext> currentKeyContexts;
 		KeyContext globalKeyContext;
+		ITimer contextTimer;
 
 		private KeyContextManager ()
 		{
 			currentKeyContexts = new List<KeyContext> ();
 			globalKeyContext = new KeyContext ();
 			EnableGlobalContext = true;
+			contextTimer = App.Current.DependencyRegistry.Retrieve<ITimer> (InstanceType.Default);
+			contextTimer.Elapsed += OnElapsedTimer;
+			contextTimer.Interval = 200;
+		}
+
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			contextTimer.Elapsed -= OnElapsedTimer;
+			contextTimer.Dispose ();
 		}
 
 		/// <summary>
@@ -56,7 +71,7 @@ namespace VAS.Core.Hotkeys
 		/// Gets the current key contexts.
 		/// </summary>
 		/// <value>The current key contexts.</value>
-		public List<KeyContext> CurrentKeyContexts {
+		internal List<KeyContext> CurrentKeyContexts {
 			get {
 				return currentKeyContexts;
 			}
@@ -69,6 +84,10 @@ namespace VAS.Core.Hotkeys
 		/// <param name="context">Context.</param>
 		public void AddContext (KeyContext context)
 		{
+			if (context is KeyTemporalContext) {
+				AddTemporalContext ((KeyTemporalContext)context);
+			}
+
 			currentKeyContexts.Add (context);
 		}
 
@@ -78,6 +97,10 @@ namespace VAS.Core.Hotkeys
 		/// <param name="context">Context.</param>
 		public void RemoveContext (KeyContext context)
 		{
+			if (context is KeyTemporalContext && !currentKeyContexts.Any (x => x is KeyTemporalContext)) {
+				contextTimer.Stop ();
+			}
+			
 			currentKeyContexts.RemoveAll (ctx => ctx == context);
 		}
 
@@ -87,6 +110,7 @@ namespace VAS.Core.Hotkeys
 		/// <param name="contexts">Contexts.</param>
 		public void NewKeyContexts (List<KeyContext> contexts)
 		{
+			contexts.Where(x => x is KeyTemporalContext).ToList().ForEach (x => AddTemporalContext((KeyTemporalContext)x));
 			currentKeyContexts = contexts;
 		}
 
@@ -109,6 +133,9 @@ namespace VAS.Core.Hotkeys
 					}
 				}
 				if (handled) {
+					if (currentKeyContexts [i] is KeyTemporalContext) {
+						currentKeyContexts.RemoveAt (i);
+					}
 					break;
 				}
 			}
@@ -137,6 +164,39 @@ namespace VAS.Core.Hotkeys
 					Key = key
 				}
 			);
+		}
+
+		void OnElapsedTimer (object sender, ElapsedEventArgs e)
+		{
+			contextTimer.Stop ();
+			currentKeyContexts.RemoveAll (x => CheckContextExpired(x));
+			if (currentKeyContexts.Any (x => x is KeyTemporalContext)) {
+				contextTimer.Start ();
+			}
+		}
+
+		bool CheckContextExpired (KeyContext context)
+		{
+			bool expired = false;
+
+			KeyTemporalContext tmpContext = context as KeyTemporalContext;
+			if (tmpContext != null) {
+				TimeSpan passedTime = DateTime.Now - tmpContext.StartedTime;
+				expired =  passedTime.TotalMilliseconds >= tmpContext.Duration;
+				if (expired) {
+					App.Current.GUIToolkit.Invoke ((sender, e) => tmpContext.ExpiredTimeAction ());
+				}
+			}
+
+			return expired;
+		}
+
+		void AddTemporalContext (KeyTemporalContext tmpContext)
+		{
+			tmpContext.StartedTime = DateTime.Now;
+			if (!contextTimer.Enabled) {
+				contextTimer.Start ();
+			}
 		}
 	}
 }
