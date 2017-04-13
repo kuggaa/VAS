@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Events;
@@ -31,6 +32,12 @@ namespace VAS.Services.Controller
 	{
 		protected ProjectVM project;
 		protected VideoPlayerVM videoPlayer;
+		IDictionary<DashboardButtonVM, KeyAction> categoriesActions;
+
+		public TaggingController ()
+		{
+			categoriesActions = new Dictionary<DashboardButtonVM, KeyAction> ();
+		}
 
 		/// <summary>
 		/// Gets or sets the video player view model
@@ -59,6 +66,10 @@ namespace VAS.Services.Controller
 			base.Start ();
 			App.Current.EventsBroker.Subscribe<ClickedPCardEvent> (HandleClickedPCardEvent);
 			App.Current.EventsBroker.Subscribe<NewTagEvent> (HandleNewTagEvent);
+
+			foreach (DashboardButtonVM button in project.Dashboard.ViewModels) {
+				button.PropertyChanged += HandlePropertyChanged;
+			}
 		}
 
 		/// <summary>
@@ -69,6 +80,10 @@ namespace VAS.Services.Controller
 			base.Stop ();
 			App.Current.EventsBroker.Unsubscribe<ClickedPCardEvent> (HandleClickedPCardEvent);
 			App.Current.EventsBroker.Unsubscribe<NewTagEvent> (HandleNewTagEvent);
+
+			foreach (DashboardButtonVM button in project.Dashboard.ViewModels) {
+				button.PropertyChanged -= HandlePropertyChanged;
+			}
 		}
 
 		/// <summary>
@@ -92,20 +107,16 @@ namespace VAS.Services.Controller
 			foreach (var button in project.Dashboard.ViewModels) {
 				var analysisButton = button as AnalysisEventButtonVM;
 				if (analysisButton != null) {
-					keyActions.Add (new KeyAction (new KeyConfig {
+					KeyAction action = new KeyAction (new KeyConfig {
 						Name = analysisButton.Name,
 						Key = analysisButton.HotKey
-					}, () => analysisButton.Click ()));
+					}, () => HandleSubCategoriesTagging(analysisButton));
+					keyActions.Add (action);
+					categoriesActions.Add (analysisButton, action);
 				}
 			}
 
-			int i = 1;
-			foreach (var player in project.Players) {
-				SetKeyActionsForPlayerCard (keyActions, i, player);
-				i++;
-				i = i % 10;
-			}
-			return keyActions;
+			return keyActions; 
 		}
 
 		/// <summary>
@@ -137,6 +148,15 @@ namespace VAS.Services.Controller
 			// Right now we don't care about selections and moving pcards
 		}
 
+		protected void PCardAction (ButtonModifier modifier, PlayerVM player)
+		{
+			HandleClickedPCardEvent (new ClickedPCardEvent {
+				ClickedPlayer = player,
+				Modifier = modifier,
+				Sender = player
+			});
+		}
+
 		protected abstract TimelineEvent CreateTimelineEvent (EventType type, Time start, Time stop,
 															  Time eventTime, Image miniature);
 
@@ -147,7 +167,8 @@ namespace VAS.Services.Controller
 			}
 
 			var play = CreateTimelineEvent (e.EventType, e.Start, e.Stop, e.EventTime, null);
-
+			play.Tags.AddRange (e.Tags);
+			    
 			AddPlayersToEvent (play);
 
 			App.Current.EventsBroker.Publish (
@@ -192,34 +213,33 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		void SetKeyActionsForPlayerCard (List<KeyAction> keyActions, int index, PlayerVM player)
+		void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			var KeyActionNone = new KeyAction (new KeyConfig {
-				Name = "Player " + index + " None",
-				Key = App.Current.Keyboard.ParseName (index.ToString ())
-			}, () => PCardAction (ButtonModifier.None, player));
-			keyActions.Add (KeyActionNone);
-
-			var KeyActionControl = new KeyAction (new KeyConfig {
-				Name = "Player " + index + " Control",
-				Key = App.Current.Keyboard.ParseName ("<Control_L>+" + index.ToString ())
-			}, () => PCardAction (ButtonModifier.Control, player));
-			keyActions.Add (KeyActionControl);
-
-			var KeyActionShift = new KeyAction (new KeyConfig {
-				Name = "Player " + index + " Shift",
-				Key = App.Current.Keyboard.ParseName ("<Shift_L>+" + index.ToString ())
-			}, () => PCardAction (ButtonModifier.Shift, player));
-			keyActions.Add (KeyActionShift);
+			var changedButton = sender as DashboardButtonVM;
+			if (changedButton != null && changedButton.NeedsSync (e, nameof (changedButton.HotKey)) && 
+			    categoriesActions.ContainsKey (changedButton)) {
+				categoriesActions [changedButton].KeyConfig.Key = changedButton.HotKey;
+			}
 		}
 
-		void PCardAction (ButtonModifier modifier, PlayerVM player)
+		void HandleSubCategoriesTagging (AnalysisEventButtonVM buttonVM, Tag subcategoryTagged = null)
 		{
-			HandleClickedPCardEvent (new ClickedPCardEvent {
-				ClickedPlayer = player,
-				Modifier = modifier,
-				Sender = player
-			});
+			if (subcategoryTagged != null) {
+				buttonVM.SelectedTags.Add (subcategoryTagged);
+			}
+			
+			KeyTemporalContext tempContext = new KeyTemporalContext { };
+			foreach (var subcategory in buttonVM.Tags) {
+				KeyAction action = new KeyAction (new KeyConfig {
+					Name = subcategory.Value,
+					Key = subcategory.HotKey
+				}, () => HandleSubCategoriesTagging (buttonVM, subcategory));
+				tempContext.AddAction (action);
+			}
+			tempContext.Duration = Constants.TEMP_TAGGING_DURATION;
+			tempContext.ExpiredTimeAction = buttonVM.Click ;
+
+			App.Current.KeyContextManager.AddContext (tempContext);
 		}
 	}
 }

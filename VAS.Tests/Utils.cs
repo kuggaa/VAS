@@ -40,6 +40,7 @@ using VAS.Drawing.CanvasObjects.Timeline;
 using VAS.Services;
 using VAS.Services.Controller;
 using VAS.Services.ViewModel;
+using Timer = VAS.Core.Store.Timer;
 
 namespace VAS.Tests
 {

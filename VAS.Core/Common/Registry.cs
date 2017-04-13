@@ -96,6 +96,40 @@ namespace VAS.Core.Common
 		}
 
 		/// <summary>
+		/// register a new element with an instance object for a given interface with a priority
+		/// </summary>
+		/// <param name="instance">The instance of the registered interface.</param>
+		/// <param name="priority">Priority.</param>
+		/// <typeparam name="TInterface">The interface to register the element.</typeparam>
+		public void Register<TInterface> (object instance, int priority = 0)
+		{
+			Type interfac = typeof (TInterface);
+			Register (interfac, instance, priority);
+		}
+
+		/// <summary>
+		/// register a new element with an instance object for a given interface with a priority in runtime
+		/// </summary>
+		/// <param name="interfac">Interfac.</param>
+		/// <param name="instance">The instance of the registered interface.</param>
+		/// <param name="priority">Priority.</param>
+		public void Register (Type interfac, object instance, int priority = 0)
+		{
+			if (!interfac.IsAssignableFrom(instance.GetType ())) {
+				throw new InvalidOperationException ("Registered instance does not implement the proper interface");
+			}
+
+			if (!elements.ContainsKey (interfac)) {
+				elements [interfac] = new List<RegistryElement> ();
+			}
+
+			RegistryElement element = new RegistryElement (instance.GetType (), priority);
+			element.Instance = instance;
+			elements [interfac].Add (element);
+			Log.Information (string.Format ("Registered instance of type {0} in {1} with priority {2}", instance.GetType (), interfac, priority));
+		}
+
+		/// <summary>
 		/// Retrieve an instance of the element registered with the highest pripority.
 		/// </summary>
 		/// <param name="instanceType">Instance type.</param>
