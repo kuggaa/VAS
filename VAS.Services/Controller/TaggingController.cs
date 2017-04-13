@@ -66,6 +66,7 @@ namespace VAS.Services.Controller
 			base.Start ();
 			App.Current.EventsBroker.Subscribe<ClickedPCardEvent> (HandleClickedPCardEvent);
 			App.Current.EventsBroker.Subscribe<NewTagEvent> (HandleNewTagEvent);
+			App.Current.EventsBroker.Subscribe<CapturerTickEvent> (HandleCapturerTick);
 
 			foreach (DashboardButtonVM button in project.Dashboard.ViewModels) {
 				button.PropertyChanged += HandlePropertyChanged;
@@ -80,6 +81,7 @@ namespace VAS.Services.Controller
 			base.Stop ();
 			App.Current.EventsBroker.Unsubscribe<ClickedPCardEvent> (HandleClickedPCardEvent);
 			App.Current.EventsBroker.Unsubscribe<NewTagEvent> (HandleNewTagEvent);
+			App.Current.EventsBroker.Unsubscribe<CapturerTickEvent> (HandleCapturerTick);
 
 			foreach (DashboardButtonVM button in project.Dashboard.ViewModels) {
 				button.PropertyChanged -= HandlePropertyChanged;
@@ -240,6 +242,11 @@ namespace VAS.Services.Controller
 			tempContext.ExpiredTimeAction = buttonVM.Click ;
 
 			App.Current.KeyContextManager.AddContext (tempContext);
+		}
+
+		void HandleCapturerTick (CapturerTickEvent e)
+		{
+			project.Dashboard.CurrentTime = e.Time;
 		}
 	}
 }

@@ -312,6 +312,16 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (time, project.Dashboard.CurrentTime);
 		}
 
+		[Test]
+		public void TestCapturerTimeUpdated ()
+		{
+			Time time = new Time (3000);
+
+			App.Current.EventsBroker.Publish (new CapturerTickEvent { Time = time });
+
+			Assert.AreEqual (time, project.Dashboard.CurrentTime);
+		}
+
 		void HandleNewDashboardEvent (NewDashboardEvent e)
 		{
 			sendedTimelineEvent = e.TimelineEvent;

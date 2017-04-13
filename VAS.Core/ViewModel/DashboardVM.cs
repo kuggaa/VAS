@@ -78,6 +78,7 @@ namespace VAS.Core.ViewModel
 			ChangeFitMode = new Command<FitMode> ((p) => FitMode = p);
 
 			ViewModels.CollectionChanged += HandleCollectionChanged;
+			CurrentTime = new Time ();
 		}
 
 		/// <summary>
