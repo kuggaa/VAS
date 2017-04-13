@@ -22,6 +22,7 @@ using VAS.Core.Common;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
+using Timer = VAS.Core.Store.Timer;
 
 namespace VAS.Tests.Core.ViewModel
 {

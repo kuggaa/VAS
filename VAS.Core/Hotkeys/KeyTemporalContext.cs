@@ -1,5 +1,5 @@
 ﻿//
-//  Copyright (C) 2016 Fluendo S.A.
+//  Copyright (C) 2017 FLUENDO S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,37 +15,30 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System.Collections.ObjectModel;
-using VAS.Core.Common;
-using VAS.Core.MVVMC;
-using VAS.Core.Store;
-using Timer = VAS.Core.Store.Timer;
-
-namespace VAS.Core.ViewModel
+using System;
+namespace VAS.Core.Hotkeys
 {
 	/// <summary>
-	/// ViewModel for <see cref="Timer"/> objects.
+	/// Key context that is temporal in the application
 	/// </summary>
-	public class TimerVM : NestedSubViewModel<Timer, TimerVM, TimeNode, TimeNodeVM>
+	public class KeyTemporalContext : KeyContext
 	{
+		/// <summary>
+		/// The context duration in miliseconds
+		/// </summary>
+		/// <value>The duration in ms.</value>
+		public int Duration { get; set; }
 
 		/// <summary>
-		/// Gets or sets the name of the timer.
+		/// Gets or sets the started time of the context in the application
 		/// </summary>
-		/// <value>The name.</value>
-		public virtual string Name {
-			get {
-				return Model.Name;
-			}
-			set {
-				Model.Name = value;
-			}
-		}
+		/// <value>The started time.</value>
+		public DateTime StartedTime { get; set; }
 
-		public override RangeObservableCollection<TimeNode> ChildModels {
-			get {
-				return Model.Nodes;
-			}
-		}
+		/// <summary>
+		/// Gets or sets the action to perform when the context has expired
+		/// </summary>
+		/// <value>The action.</value>
+		public Action ExpiredTimeAction { get; set; }
 	}
 }

@@ -28,6 +28,7 @@ using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.License;
 using VAS.DB;
+using Timer = VAS.Core.Common.Timer;
 
 namespace VAS.Tests
 {
@@ -51,6 +52,7 @@ namespace VAS.Tests
 			SynchronizationContext.SetSynchronizationContext (new MockSynchronizationContext ());
 			App.Current.DependencyRegistry.Register<IStorageManager, CouchbaseManager> (1);
 			App.Current.DependencyRegistry.Register<IStopwatch, Stopwatch> (1);
+			App.Current.DependencyRegistry.Register<ITimer, Timer> (1);
 			App.Current.Dialogs = new Mock<IDialogs> ().Object;
 			var navigation = new Mock<INavigation> ();
 			navigation.Setup (x => x.Push (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));

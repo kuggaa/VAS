@@ -23,6 +23,7 @@ using VAS.Core.Events;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
+using Timer = VAS.Core.Store.Timer;
 
 namespace VAS.Core.ViewModel
 {

@@ -29,6 +29,7 @@ using VAS.Drawing.Cairo;
 using VAS.Drawing.Widgets;
 using VAS.UI.Menus;
 using VASDrawing = VAS.Drawing;
+using Timer = VAS.Core.Store.Timer;
 
 namespace VAS.UI.Component
 {
