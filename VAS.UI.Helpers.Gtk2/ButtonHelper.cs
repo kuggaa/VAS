@@ -103,6 +103,7 @@ namespace VAS.UI.Helpers
 			button.Name = StyleConf.ButtonDialog;
 			button.HeightRequest = App.Current.Style.ButtonDialogHeight;
 			button.CanFocus = true;
+			button.FocusOnClick = true;
 		}
 
 		/// <summary>
@@ -143,6 +144,8 @@ namespace VAS.UI.Helpers
 			if (callback != null) {
 				button.Clicked += callback;
 			}
+			button.CanFocus = false;
+			button.FocusOnClick = false;
 		}
 
 		// FIXME: this method should be gone when we use the ButtonBindings everywhere
@@ -195,6 +198,7 @@ namespace VAS.UI.Helpers
 				button.ImagePosition = PositionType.Left;
 			}
 			button.CanFocus = false;
+			button.FocusOnClick = false;
 		}
 	}
 }
