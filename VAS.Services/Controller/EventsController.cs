@@ -123,9 +123,10 @@ namespace VAS.Services.Controller
 			Timeline = (TimelineVM)(viewModel as dynamic);
 			projectVM = (ProjectVM)(viewModel as dynamic);
 
+			// FIXME: Remove the try catch when the new interface is passed instead of IViewModel
 			try {
-				capturer = (ICapturerBin)(viewModel as dynamic);
-			} catch {
+				capturer = (ICapturerBin)((viewModel as dynamic).Capturer);
+			} catch (Exception e){
 			}
 		}
 
