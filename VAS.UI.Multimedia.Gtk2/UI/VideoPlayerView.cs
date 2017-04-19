@@ -885,6 +885,9 @@ namespace VAS.UI
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.FileSet))) {
 				HandleCamerasConfigChanged ();
 			}
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.SupportsMultipleCameras))) {
+				HandleCamerasConfigChanged ();
+			}
 		}
 
 		void HandleModeChanged ()
@@ -968,8 +971,7 @@ namespace VAS.UI
 				mainviewport.Visible = ViewModel.FileSet.ViewModels.Count > 0;
 				UpdateComboboxes ();
 				DebugCamerasVisible ();
-				SubViewPortsVisible = true;
-				playerVM.ControlsSensitive = true;
+				SubViewPortsVisible = ViewModel.SupportsMultipleCameras;
 				zoomLevelButton.Visible = true;
 			} else {
 				SubViewPortsVisible = false;
