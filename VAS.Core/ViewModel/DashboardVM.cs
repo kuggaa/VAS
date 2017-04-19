@@ -61,8 +61,8 @@ namespace VAS.Core.ViewModel
 			};
 
 			ToggleActionLinks = new Command<bool> ((p) => ShowLinks = p) {
-				Icon = Resources.LoadIcon ("longomatch-link-disabled", App.Current.Style.ButtonNormalWidth),
-				IconInactive = Resources.LoadIcon ("longomatch-link-active", App.Current.Style.ButtonNormalWidth),
+				Icon = Resources.LoadIcon ("longomatch-link-active", App.Current.Style.ButtonNormalWidth),
+				IconInactive = Resources.LoadIcon ("longomatch-link-disabled", App.Current.Style.ButtonNormalWidth),
 			};
 
 			ChangeDashboardMode = new Command<DashboardMode> ((p) => Mode = p) {
