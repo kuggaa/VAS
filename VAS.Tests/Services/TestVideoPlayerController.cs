@@ -74,7 +74,6 @@ namespace VAS.Tests.Services
 
 			mtkMock = new Mock<IMultimediaToolkit> ();
 			mtkMock.Setup (m => m.GetPlayer ()).Returns (playerMock.Object);
-			mtkMock.Setup (m => m.GetMultiPlayer ()).Throws (new Exception ());
 			App.Current.MultimediaToolkit = mtkMock.Object;
 
 			var ftk = new Mock<IGUIToolkit> ();
@@ -109,6 +108,8 @@ namespace VAS.Tests.Services
 		[SetUp ()]
 		public void Setup ()
 		{
+			mtkMock.Setup (m => m.GetMultiPlayer ()).Throws (new Exception ());
+
 			evt = new TimelineEvent {
 				Start = new Time (100), Stop = new Time (200),
 				CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) },
@@ -1309,7 +1310,7 @@ namespace VAS.Tests.Services
 			Mock<IMultiVideoPlayer> multiplayerMock = new Mock<IMultiVideoPlayer> ();
 
 			mtkMock.Setup (m => m.GetMultiPlayer ()).Returns (multiplayerMock.Object);
-			player = new VideoPlayerController (true);
+			player = new VideoPlayerController ();
 			//Should set again the ViewModel
 			(player as IController).SetViewModel (playerVM);
 			PreparePlayer ();
@@ -1391,7 +1392,7 @@ namespace VAS.Tests.Services
 			Mock<IMultiVideoPlayer> multiplayerMock = new Mock<IMultiVideoPlayer> ();
 
 			mtkMock.Setup (m => m.GetMultiPlayer ()).Returns (multiplayerMock.Object);
-			player = new VideoPlayerController (true);
+			player = new VideoPlayerController ();
 			(player as IController).SetViewModel (playerVM);
 			PreparePlayer ();
 

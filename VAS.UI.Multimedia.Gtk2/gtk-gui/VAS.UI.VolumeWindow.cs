@@ -5,11 +5,11 @@ namespace VAS.UI
 	public partial class VolumeWindow
 	{
 		private global::Gtk.VBox vbox2;
-		
+
 		private global::Gtk.Button morebutton;
-		
+
 		private global::Gtk.VScale volumescale;
-		
+
 		private global::Gtk.Button lessbutton;
 
 		protected virtual void Build ()

@@ -55,6 +55,7 @@ VAS.UI.Multimedia.Gtk2/UI/CapturerBin.cs
 VAS.UI.Multimedia.Gtk2/UI/VideoPlayerCapturerBin.cs
 VAS.UI.Multimedia.Gtk2/UI/VideoPlayerView.cs
 VAS.UI.Multimedia.Gtk2/UI/Utils/Remuxer.cs
+VAS.UI.Multimedia.Gtk2/UI/ZoomMenu.cs
 VAS.UI.Multimedia.Gtk2/gtk-gui/VAS.UI.CapturerBin.cs
 VAS.UI.Multimedia.Gtk2/gtk-gui/VAS.UI.VideoPlayerCapturerBin.cs
 VAS.UI.Multimedia.Gtk2/gtk-gui/VAS.UI.VideoPlayerView.cs
