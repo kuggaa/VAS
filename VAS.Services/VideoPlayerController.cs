@@ -80,6 +80,8 @@ namespace VAS.Services
 		VideoPlayerOperationMode mode;
 		Playlist loadedPlaylist;
 		object camerasLayout;
+		bool supportsMultipleCameras;
+
 
 		protected struct Segment
 		{
@@ -99,7 +101,7 @@ namespace VAS.Services
 
 		#region Constructors
 
-		public VideoPlayerController (bool supportMultipleCameras = false)
+		public VideoPlayerController ()
 		{
 			seeker = new Seeker ();
 			seeker.SeekEvent += HandleSeekEvent;
@@ -112,7 +114,7 @@ namespace VAS.Services
 			timer = new Timer (HandleTimeout);
 			TimerDisposed = new ManualResetEvent (false);
 			ready = false;
-			CreatePlayer (supportMultipleCameras);
+			CreatePlayer ();
 			Active = true;
 			Mode = VideoPlayerOperationMode.Normal;
 		}
@@ -146,7 +148,7 @@ namespace VAS.Services
 
 		public virtual ObservableCollection<CameraConfig> CamerasConfig {
 			set {
-				Log.Debug ("Updating cameras configuration: ", string.Join ("-", value));
+				Log.Debug ("Updating cameras configuration: " + value);
 				camerasConfig = value;
 				playerVM.CamerasConfig = camerasConfig;
 				if (defaultCamerasConfig == null) {
@@ -191,7 +193,7 @@ namespace VAS.Services
 					if (multiPlayer == null) {
 						player.WindowHandle = value [0].WindowHandle;
 					} else {
-						multiPlayer.WindowHandles = value.Select (v => v.WindowHandle).ToList ();
+						multiPlayer.WindowHandles = value.Select (v => v.WindowHandle ?? IntPtr.Zero).ToList ();
 					}
 				} else {
 					if (multiPlayer == null && player != null) {
@@ -351,6 +353,7 @@ namespace VAS.Services
 		{
 			playerVM = (VideoPlayerVM)(viewModel as dynamic);
 			playerVM.Player = this;
+			playerVM.SupportsMultipleCameras = supportsMultipleCameras;
 		}
 
 		public virtual void Ready (bool ready)
@@ -1135,6 +1138,10 @@ namespace VAS.Services
 		/// </summary>
 		protected virtual void UpdatePar ()
 		{
+			if (ViewPorts == null) {
+				return;
+			}
+
 			for (int i = 0; i < Math.Min (CamerasConfig.Count, ViewPorts.Count); i++) {
 				int index = CamerasConfig [i].Index;
 				MediaFile file = FileSet [index];
@@ -1175,7 +1182,6 @@ namespace VAS.Services
 			if (defaultFile) {
 				defaultFileSet = fileSet;
 			}
-
 
 			if ((fileSet != null && (!fileSet.Equals (FileSet) || fileSet.CheckMediaFilesModified (mediaFileSetCopy))) || force) {
 				readyToSeek = false;
@@ -1372,20 +1378,17 @@ namespace VAS.Services
 		/// <summary>
 		/// Creates the backend video player.
 		/// </summary>
-		protected virtual void CreatePlayer (bool supportMultipleCameras)
+		protected virtual void CreatePlayer ()
 		{
-			if (supportMultipleCameras) {
-				try {
-					player = multiPlayer = App.Current.MultimediaToolkit.GetMultiPlayer ();
-					multiPlayer.ScopeChangedEvent += HandleScopeChangedEvent;
-				} catch {
-					Log.Error ("Player with support for multiple cameras not found");
-				}
-			}
-			if (player == null) {
+			try {
+				player = multiPlayer = App.Current.MultimediaToolkit.GetMultiPlayer ();
+				multiPlayer.ScopeChangedEvent += HandleScopeChangedEvent;
+				supportsMultipleCameras = true;
+			} catch {
+				Log.Error ("Player with support for multiple cameras not found");
 				player = App.Current.MultimediaToolkit.GetPlayer ();
+				supportsMultipleCameras = false;
 			}
-
 
 			player.Error += HandleError;
 			player.StateChange += HandleStateChange;
