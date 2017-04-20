@@ -244,6 +244,13 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		protected virtual void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
+			if (sender == ButtonVM && (
+				ButtonVM.NeedsSync (e, nameof (ButtonVM.BackgroundColor)) ||
+				ButtonVM.NeedsSync (e, nameof (ButtonVM.TextColor)) ||
+				ButtonVM.NeedsSync (e, nameof (ButtonVM.Name)) ||
+				ButtonVM.NeedsSync (e, nameof (ButtonVM.HotKey)))) {
+				ReDraw ();
+			}
 		}
 	}
 }
