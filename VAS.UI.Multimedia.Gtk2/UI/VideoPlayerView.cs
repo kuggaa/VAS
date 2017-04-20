@@ -42,7 +42,7 @@ using Point = VAS.Core.Common.Point;
 
 namespace VAS.UI
 {
-	[Category ("LongoMatch")]
+	[Category ("VAS")]
 	[ToolboxItem (true)]
 	[View ("VideoPlayerView")]
 	public partial class VideoPlayerView : Bin, IView<VideoPlayerVM>, IVideoPlayerView
@@ -208,10 +208,7 @@ namespace VAS.UI
 			}
 		}
 
-		#endregion
-
-		#region Private methods
-
+		// FIXME: Used in presentations while MVVM is not implemented there
 		public bool SubViewPortsVisible {
 			set {
 				bool b = value && (ViewModel.FileSet == null || ViewModel.FileSet.ViewModels.Count > 1);
@@ -230,6 +227,10 @@ namespace VAS.UI
 				return drawingsVisible;
 			}
 		}
+
+		#endregion
+
+		#region Private methods
 
 		void Reset ()
 		{
@@ -536,7 +537,7 @@ namespace VAS.UI
 		/// <param name="o">source</param>
 		/// <param name="args">Arguments.</param>
 		[GLib.ConnectBefore]
-		protected virtual void HandleRatescaleButtonPress (object o, ButtonPressEventArgs args)
+		void HandleRatescaleButtonPress (object o, ButtonPressEventArgs args)
 		{
 			if (args.Event.Button == 1) {
 				args.Event.SetButton (2);
@@ -552,7 +553,7 @@ namespace VAS.UI
 		/// <param name="o">source</param>
 		/// <param name="args">Arguments.</param>
 		[GLib.ConnectBefore]
-		protected virtual void HandleRatescaleButtonRelease (object o, ButtonReleaseEventArgs args)
+		void HandleRatescaleButtonRelease (object o, ButtonReleaseEventArgs args)
 		{
 			if (args.Event.Button == 1) {
 				args.Event.SetButton (2);
@@ -736,7 +737,7 @@ namespace VAS.UI
 			playerVM.Ready (true);
 		}
 
-		protected virtual void HandleUnReady (object sender, EventArgs e)
+		void HandleUnReady (object sender, EventArgs e)
 		{
 			playerVM.Ready (false);
 			playerVM.ViewPorts = null;
@@ -804,6 +805,7 @@ namespace VAS.UI
 			}
 		}
 
+		// FIXME: To be fixed in LON-1019
 		void HandleKeyPressed (KeyPressedEvent e)
 		{
 			/*
