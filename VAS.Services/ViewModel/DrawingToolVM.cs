@@ -16,16 +16,14 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using System.ComponentModel;
 using VAS.Core.Common;
 using VAS.Core.Events;
-using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
 namespace VAS.Services.ViewModel
 {
-	public class DrawingToolVM : DisposableBase, IViewModel
+	public class DrawingToolVM : ViewModelBase
 	{
 		/// <summary>
 		/// Gets or sets the project.
@@ -79,7 +77,5 @@ namespace VAS.Services.ViewModel
 		{
 			App.Current.EventsBroker.Publish (new DrawingSavedToProjectEvent { ProjectId = Project.ID });
 		}
-
-		public event PropertyChangedEventHandler PropertyChanged;
 	}
 }
