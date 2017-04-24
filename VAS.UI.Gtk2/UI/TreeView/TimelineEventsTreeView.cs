@@ -129,7 +129,9 @@ namespace VAS.UI.Component
 				foreach (TimelineEventVM eventVM in GetSelectedViewModels ().OfType<TimelineEventVM> ()) {
 					eventVM.Selected = true;
 					events.Add (eventVM);
-					Selection.SelectIter (dictionaryStore [eventVM]);
+					foreach (TreeIter iter in dictionaryStore[eventVM]) {
+						Selection.SelectIter (iter);
+					}
 				}
 				if (events.Any ()) {
 					ViewModel.LoadEvents (events, false);
