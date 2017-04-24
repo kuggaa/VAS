@@ -42,7 +42,7 @@ namespace VAS.UI.Common
 		protected const int COL_DATA = 0;
 		protected TreeStore store;
 		TCollectionViewModel viewModel;
-		protected Dictionary<IViewModel, TreeIter> dictionaryStore;
+		protected Dictionary<IViewModel, List<TreeIter>> dictionaryStore;
 		protected Dictionary<INotifyCollectionChanged, TreeIter> dictionaryNestedParent;
 
 		protected TreeModelFilter filter;
@@ -64,7 +64,7 @@ namespace VAS.UI.Common
 		public TreeViewBase (TreeStore treeStore)
 		{
 			Model = store = treeStore;
-			dictionaryStore = new Dictionary<IViewModel, TreeIter> ();
+			dictionaryStore = new Dictionary<IViewModel, List<TreeIter>> ();
 			dictionaryNestedParent = new Dictionary<INotifyCollectionChanged, TreeIter> ();
 			Selection.SelectFunction = SelectFunction;
 			RowActivated += HandleTreeviewRowActivated;
@@ -213,14 +213,19 @@ namespace VAS.UI.Common
 		protected virtual void AddSubViewModel (IViewModel subViewModel, TreeIter parent, int index)
 		{
 			TreeIter iter;
-			(subViewModel as INotifyPropertyChanged).PropertyChanged += PropertyChangedItem;
+			if (!dictionaryStore.ContainsKey (subViewModel)) {
+				(subViewModel as INotifyPropertyChanged).PropertyChanged += PropertyChangedItem;
+				dictionaryStore.Add (subViewModel, new List<TreeIter> ());
+			}
+
 			if (!parent.Equals (TreeIter.Zero)) {
 				iter = store.InsertWithValues (parent, index, subViewModel);
-				dictionaryStore.Add (subViewModel, iter);
+				dictionaryStore[subViewModel].Add (iter);
 			} else {
 				iter = store.InsertWithValues (index, subViewModel);
-				dictionaryStore.Add (subViewModel, iter);
+				dictionaryStore [subViewModel].Add (iter);
 			}
+
 			if (subViewModel is IEnumerable) {
 				index = 0;
 				foreach (var v in (subViewModel as IEnumerable)) {
@@ -237,11 +242,11 @@ namespace VAS.UI.Common
 		protected virtual void RemoveSubViewModel (IViewModel subViewModel)
 		{
 			RemoveSubViewModelListener (subViewModel);
-			TreeIter iter = dictionaryStore [subViewModel];
+
 			if (subViewModel is INestedViewModel) {
 				RemoveAllNestedSubViewModels (subViewModel);
 			} else {
-				store.Remove (ref iter);
+				dictionaryStore [subViewModel].ForEach (x => store.Remove (ref x));
 				dictionaryStore.Remove (subViewModel);
 			}
 		}
@@ -525,12 +530,14 @@ namespace VAS.UI.Common
 			if (e.PropertyName == "Selection") {
 				//Sincronization of the first external selection
 				if (ViewModel.Selection.Count == 1 && Selection.CountSelectedRows () == 0) {
-					TreeIter externalSelected = dictionaryStore [ViewModel.Selection.FirstOrDefault ()];
-					if (filter != null) {
-						externalSelected = filter.ConvertChildIterToIter (externalSelected);
-						externalSelected = sort.ConvertChildIterToIter (externalSelected);
+					foreach (TreeIter element in dictionaryStore [ViewModel.Selection.FirstOrDefault ()]) {
+						TreeIter externalSelected = element;
+						if (filter != null) {
+							externalSelected = filter.ConvertChildIterToIter (externalSelected);
+							externalSelected = sort.ConvertChildIterToIter (externalSelected);
+						}
+						Selection.SelectIter (externalSelected);
 					}
-					Selection.SelectIter (externalSelected);
 				}
 			}
 		}
@@ -583,13 +590,14 @@ namespace VAS.UI.Common
 						TreeIter parent;
 						//Get the parentVM for every drag ViewModel
 						foreach (IViewModel vm in draggedViewModels) {
-							iter = dictionaryStore [vm];
-							if (Model.IterParent (out parent, iter)) {
-								INestedViewModel sourceParentVM = Model.GetValue (parent, COL_DATA) as INestedViewModel;
-								if (!elementsToRemove.ContainsKey (sourceParentVM)) {
-									elementsToRemove.Add (sourceParentVM, new List<IViewModel> ());
+							foreach (TreeIter element in dictionaryStore[vm]) {
+								if (Model.IterParent (out parent, element)) {
+									INestedViewModel sourceParentVM = Model.GetValue (parent, COL_DATA) as INestedViewModel;
+									if (!elementsToRemove.ContainsKey (sourceParentVM)) {
+										elementsToRemove.Add (sourceParentVM, new List<IViewModel> ());
+									}
+									elementsToRemove [sourceParentVM].Add (vm);
 								}
-								elementsToRemove [sourceParentVM].Add (vm);
 							}
 						}
 					}
@@ -660,8 +668,11 @@ namespace VAS.UI.Common
 				dictionaryNestedParent.Remove ((subViewModel as INestedViewModel).GetNotifyCollection ());
 			}
 			subViewModel.PropertyChanged -= PropertyChangedItem;
-			TreeIter iter = dictionaryStore [subViewModel];
-			store.Remove (ref iter);
+			foreach (TreeIter element in dictionaryStore [subViewModel]) {
+				TreeIter iter = element;
+				store.Remove (ref iter);
+			}
+
 			dictionaryStore.Remove (subViewModel);
 		}
 
@@ -677,8 +688,10 @@ namespace VAS.UI.Common
 				return;
 			}
 
-			TreeIter iter = dictionaryStore [senderVM];
-			store.EmitRowChanged (store.GetPath (iter), iter);
+			foreach (TreeIter element in dictionaryStore [senderVM]) {
+				TreeIter iter = element;
+				store.EmitRowChanged (store.GetPath (iter), iter);
+			}
 		}
 
 		void DisableDragInto (TreePath path, Gdk.DragContext context, uint time, TreeViewDropPosition pos)
