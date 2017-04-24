@@ -188,9 +188,11 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		protected override void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if (sender == ViewModel && (
-				e.PropertyName == "Name" ||
-				e.PropertyName == "TimerTime" ||
-				e.PropertyName == "Hotkey")) {
+				ViewModel.NeedsSync (e, nameof (ViewModel.BackgroundColor)) ||
+				ViewModel.NeedsSync (e, nameof (ViewModel.TextColor)) ||
+				ViewModel.NeedsSync (e, nameof (ViewModel.Name)) ||
+				ViewModel.NeedsSync (e, nameof (ViewModel.TimerTime)) ||
+				ViewModel.NeedsSync (e, nameof (ViewModel.HotKey)))) {
 				ReDraw ();
 			}
 		}
