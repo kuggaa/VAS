@@ -149,7 +149,7 @@ namespace VAS.UI.Helpers
 		}
 
 		// FIXME: this method should be gone when we use the ButtonBindings everywhere
-		public static void Bind (this Button button, Command command, object parameter = null)
+		public static void BindManually (this Button button, Command command, object parameter = null)
 		{
 			button.Configure (command.Icon?.Value, command.Text, command.ToolTipText, null);
 
