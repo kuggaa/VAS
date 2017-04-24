@@ -400,5 +400,32 @@ namespace VAS.Tests.Core.Common
 			backgroundStateMock.Verify (s => s.UnfreezeState (), Times.Never ());
 			backgroundStateMock.Verify (s => s.ShowState (), Times.Once ());
 		}
+
+		[Test]
+		public async void MoveTo_HideStateDoesTransition_Ok ()
+		{
+			// Arrange
+			var transition1StateMock = GetScreenStateMock ("Transition1");
+			sc.Register ("Home", () => GetScreenStateDummy ("Home"));
+			sc.Register ("Transition1", () => transition1StateMock.Object);
+			sc.Register ("Transition2", () => GetScreenStateDummy ("Transition2"));
+			sc.Register ("Transition3", () => GetScreenStateDummy ("Transition3"));
+			await sc.SetHomeTransition ("Home", null);
+
+			bool hidden = false;
+			transition1StateMock.Setup (x => x.HideState ()).Callback (() => {
+				if (!hidden) {
+					hidden = true;
+					sc.MoveTo ("Transition3", null);
+				}
+			}).Returns(AsyncHelpers.Return (true));
+
+			// Act
+			await sc.MoveTo ("Transition1", null);
+			await sc.MoveTo ("Transition2", null);
+
+			// Assert
+			Assert.AreEqual ("Transition2", sc.Current);
+		}
 	}
 }
