@@ -75,7 +75,12 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		protected override void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if (TimedButtonVM.NeedsSync (e, nameof (TimedButtonVM.ButtonTime))) {
+			if (sender == TimedButtonVM && (
+				TimedButtonVM.NeedsSync (e, nameof (TimedButtonVM.ButtonTime)) ||
+				TimedButtonVM.NeedsSync (e, nameof (ButtonVM.BackgroundColor)) ||
+				TimedButtonVM.NeedsSync (e, nameof (ButtonVM.TextColor)) ||
+				TimedButtonVM.NeedsSync (e, nameof (ButtonVM.Name)) ||
+				TimedButtonVM.NeedsSync (e, nameof (ButtonVM.HotKey)))) {
 				ReDraw ();
 			}
 		}
