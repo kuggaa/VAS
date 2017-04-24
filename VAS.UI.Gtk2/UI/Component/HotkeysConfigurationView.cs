@@ -115,7 +115,8 @@ namespace VAS.UI.Component
 				keyLabel.SetAlignment (0f, 0.5f);
 				keyLabel.WidthRequest = 200;
 				edit = new Button ();
-				edit.Bind (config.EditCommand);
+				//FIXME: This should use the BindingContext
+				edit.BindManually (config.EditCommand);
 				box.PackStart (edit, false, false, 0);
 				box.PackStart (descLabel, false, false, 0);
 				box.PackStart (keyLabel, false, true, 0);
