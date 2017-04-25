@@ -39,7 +39,7 @@ namespace VAS.Core.Hotkeys
 		/// <value><c>true</c> if continue chain; otherwise, <c>false</c>.</value>
 		public bool ContinueChain { get; set; }
 
-		public KeyAction (KeyConfig keyConfig, Action action, int priority = 999, bool continueChain = true)
+		public KeyAction (KeyConfig keyConfig, Action action, int priority = 999, bool continueChain = false)
 		{
 			this.KeyConfig = keyConfig;
 			this.Action = action;
