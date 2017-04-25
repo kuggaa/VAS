@@ -123,15 +123,7 @@ namespace VAS.Core.Hotkeys
 			bool handled = false;
 
 			for (int i = currentKeyContexts.Count - 1; i >= 0; i--) {
-				foreach (KeyAction ka in currentKeyContexts [i].KeyActions) {
-					if (ka.KeyConfig.Key == key) {
-						ka.Action ();
-						handled = true;
-						if (!ka.ContinueChain) {
-							break;
-						}
-					}
-				}
+				handled = ProcessKeyActions (currentKeyContexts [i].KeyActions, key);
 				if (handled) {
 					if (currentKeyContexts [i] is KeyTemporalContext) {
 						currentKeyContexts.RemoveAt (i);
@@ -141,20 +133,26 @@ namespace VAS.Core.Hotkeys
 			}
 
 			if (!handled && EnableGlobalContext) {
-				foreach (KeyAction ka in globalKeyContext.KeyActions) {
-					if (ka.KeyConfig.Key == key) {
-						ka.Action ();
-						handled = true;
-						if (!ka.ContinueChain) {
-							break;
-						}
-					}
-				}
+				handled = ProcessKeyActions (globalKeyContext.KeyActions, key);
 			}
 
 			if (!handled) {
 				FallbackKeyPressedEvent (key);
 			}
+		}
+
+		bool ProcessKeyActions (List<KeyAction> keyActions, HotKey key)
+		{
+			bool handled = false;
+
+			foreach (KeyAction ka in keyActions.Where (ka => ka.KeyConfig.Key == key).OrderBy (ka => ka.Priority)) {
+				ka.Action ();
+				handled = true;
+				if (!ka.ContinueChain) {
+					break;
+				}
+			}
+			return handled;
 		}
 
 		void FallbackKeyPressedEvent (HotKey key)
