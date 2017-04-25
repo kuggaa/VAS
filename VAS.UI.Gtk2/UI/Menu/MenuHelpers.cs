@@ -83,9 +83,13 @@ namespace VAS.UI.Menus
 				};
 			}
 			item = new MenuItem (Catalog.GetString ("Create new playlist..."));
-			LicenseLimitationVM limitation = App.Current.LicenseLimitationsService.Get ("Presentations");
-			if (limitation != null) {
-				item.Sensitive = limitation.Count < limitation.Maximum;
+
+			// FIXME: Longomatch has not implemented the limitation service, remove the null check when it is done
+			if (App.Current.LicenseLimitationsService != null) {
+				LicenseLimitationVM limitation = App.Current.LicenseLimitationsService.Get ("Presentations");
+				if (limitation != null) {
+					item.Sensitive = limitation.Count < limitation.Maximum;
+				}
 			}
 
 			plMenu.Append (item);
