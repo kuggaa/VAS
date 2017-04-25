@@ -303,6 +303,29 @@ namespace VAS.Tests.Core.HotKeys
 
 			resetEvent.Dispose ();
 		}
+
+		[Test ()]
+		public void TestKeyActionPriority ()
+		{
+			int countPlay2 = 0;
+			KeyAction play2 = new KeyAction (new KeyConfig { Name = "PLAY_2", Key = spaceHotkey },
+								  () => countPlay2++, 1);
+
+			KeyContext context = new KeyContext ();
+			context.AddAction (play);
+			context.AddAction (play2);
+			App.Current.KeyContextManager.NewKeyContexts (new List<KeyContext> { context });
+			App.Current.KeyContextManager.HandleKeyPressed (spaceHotkey);
+
+			context = new KeyContext ();
+			context.AddAction (play2);
+			context.AddAction (play);
+			App.Current.KeyContextManager.NewKeyContexts (new List<KeyContext> { context });
+			App.Current.KeyContextManager.HandleKeyPressed (spaceHotkey);
+
+			Assert.AreEqual (2, countPlay2);
+			Assert.AreEqual (0, countPlay);
+		}
 	}
 }
 
