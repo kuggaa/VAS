@@ -15,14 +15,17 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.MVVMC;
 using VAS.Core.Store.Drawables;
+using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects
 {
-	public class PinCanvasObject : FixedSizeCanvasObject, ICanvasSelectableObject
+	public class PinCanvasObject : FixedSizeCanvasObject, ICanvasSelectableObject, ICanvasObjectView<PointVM>
 	{
 		static Image missingLocationPinImage;
 		static Image locationPinImageMoving;
@@ -40,9 +43,27 @@ namespace VAS.Drawing.CanvasObjects
 
 		public PinCanvasObject ()
 		{
-			modified = false;
 			Width = missingLocationPinImage.Width;
 			Height = missingLocationPinImage.Height;
+			ViewModel = null;
+		}
+
+		/// <summary>
+		/// ViewModel for the Point being modified
+		/// </summary>
+		/// <value>The view model.</value>
+		public PointVM ViewModel { get; set; }
+
+		public override Point Position {
+			get {
+				return base.Position;
+			}
+			set {
+				base.Position = value;
+				if (ViewModel != null) {
+					ViewModel.Model = value;
+				}
+			}
 		}
 
 		public Selection GetSelection (Point point, double precision, bool inMotion = false)
@@ -61,7 +82,7 @@ namespace VAS.Drawing.CanvasObjects
 			if (!Visible) {
 				return;
 			}
-			if (Position == null) {
+			if (Position == null || ViewModel == null) {
 				return;
 			}
 
@@ -97,6 +118,11 @@ namespace VAS.Drawing.CanvasObjects
 			base.ClickReleased ();
 			moving = false;
 			ReDraw ();
+		}
+
+		public void SetViewModel (object viewModel)
+		{
+			ViewModel = (PointVM)viewModel;
 		}
 	}
 }

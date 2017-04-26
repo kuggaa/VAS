@@ -239,6 +239,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\KeyTemporalContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ITimer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Timer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\PointVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
