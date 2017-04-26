@@ -188,15 +188,15 @@ namespace VAS.Tests.Core.Store
 		public void TestUpdateCoordinates ()
 		{
 			TimelineEvent evt = CreateTimelineEvent ();
-			evt.UpdateCoordinates (FieldPositionType.Field, new ObservableCollection<Point> { new Point (4, 5) });
+			evt.UpdateCoordinates (FieldPositionType.Field, new RangeObservableCollection<Point> { new Point (4, 5) });
 			Assert.AreEqual (evt.FieldPosition.Points [0].X, 4);
 			Assert.AreEqual (evt.FieldPosition.Points [0].Y, 5);
 
-			evt.UpdateCoordinates (FieldPositionType.HalfField, new ObservableCollection<Point> { new Point (4, 5) });
+			evt.UpdateCoordinates (FieldPositionType.HalfField, new RangeObservableCollection<Point> { new Point (4, 5) });
 			Assert.AreEqual (evt.HalfFieldPosition.Points [0].X, 4);
 			Assert.AreEqual (evt.HalfFieldPosition.Points [0].Y, 5);
 
-			evt.UpdateCoordinates (FieldPositionType.Goal, new ObservableCollection<Point> { new Point (4, 5) });
+			evt.UpdateCoordinates (FieldPositionType.Goal, new RangeObservableCollection<Point> { new Point (4, 5) });
 			Assert.AreEqual (evt.GoalPosition.Points [0].X, 4);
 			Assert.AreEqual (evt.GoalPosition.Points [0].Y, 5);
 		}

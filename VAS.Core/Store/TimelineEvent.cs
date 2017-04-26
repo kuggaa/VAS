@@ -424,7 +424,7 @@ namespace VAS.Core.Store
 			return null;
 		}
 
-		public void UpdateCoordinates (FieldPositionType pos, ObservableCollection<Point> points)
+		public void UpdateCoordinates (FieldPositionType pos, RangeObservableCollection<Point> points)
 		{
 			Coordinates co = new Coordinates ();
 			co.Points = points;
