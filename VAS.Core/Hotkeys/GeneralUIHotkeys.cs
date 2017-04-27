@@ -100,6 +100,18 @@ namespace VAS.Core.Hotkeys
 					Category = CATEGORY,
 					Description = Catalog.GetString("Delete selected element")
 				},
+				new KeyConfig {
+					Name = "OK",
+					Key = App.Current.Keyboard.ParseName ("Return"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("OK")
+				},
+				new KeyConfig {
+					Name = "CANCEL",
+					Key = App.Current.Keyboard.ParseName ("Escape"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Cancel")
+				}
 				//FIXME: Not entering on first release, but should be
 				//done in a future
 				/*new KeyConfig {
