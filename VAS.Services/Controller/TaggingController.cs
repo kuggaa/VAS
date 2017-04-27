@@ -208,7 +208,7 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		void HandleVideoPlayerPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		void HandleVideoPlayerPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if (sender == videoPlayer && e.PropertyName == "CurrentTime") {
 				project.Dashboard.CurrentTime = VideoPlayer.CurrentTime;
