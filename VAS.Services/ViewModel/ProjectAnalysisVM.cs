@@ -25,7 +25,7 @@ namespace VAS.Services.ViewModel
 	/// <summary>
 	/// A ViewModel used in analysis views where there is a video player, a timeline and playlists
 	/// </summary>
-	public class ProjectAnalysisVM<T> : ViewModelBase<T>, IAnalysisViewModel
+	public class ProjectAnalysisVM<T> : ViewModelBase<T>, IAnalysisViewModel, IVideoPlayerVM
 		where T : ProjectVM
 	{
 		public ProjectAnalysisVM ()
