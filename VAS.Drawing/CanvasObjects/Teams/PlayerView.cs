@@ -72,20 +72,6 @@ namespace VAS.Drawing.CanvasObjects.Teams
 			}
 		}
 
-		public override bool Active {
-			get {
-				if (player != null) {
-					return player.Tagged;
-				}
-				return false;
-			}
-			set {
-				if (player != null) {
-					player.Tagged = value;
-				}
-			}
-		}
-
 		public virtual void LoadSurfaces ()
 		{
 			if (!surfacesCached) {
@@ -146,7 +132,7 @@ namespace VAS.Drawing.CanvasObjects.Teams
 			tk.FillColor = Color;
 			tk.DrawRectangle (p, size, 3);
 
-			if (Active) {
+			if (Player.Tagged) {
 				Color c = Color.Copy ();
 				c.A = (byte)(c.A * 60 / 100);
 				tk.FillColor = c;
