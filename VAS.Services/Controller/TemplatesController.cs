@@ -463,7 +463,7 @@ namespace VAS.Services.Controller
 			await AsyncHelpers.Return ();
 		}
 
-		void HandleTemplateChanged (object sender, PropertyChangedEventArgs e)
+		protected virtual void HandleTemplateChanged (object sender, PropertyChangedEventArgs e)
 		{
 			ViewModel.SaveCommand.EmitCanExecuteChanged ();
 		}

@@ -29,7 +29,7 @@ namespace VAS.Services.ViewModel
 		/// Gets or sets the project.
 		/// </summary>
 		/// <value>The project.</value>
-		public Project Project {
+		public virtual Project Project {
 			get;
 			set;
 		}
