@@ -70,6 +70,10 @@ namespace VAS.UI
 		{
 			this.Build ();
 
+			// The editor keeps changing that value to false.
+			var panedChild = ((Paned.PanedChild)(this.videohpaned [this.videobox]));
+			panedChild.Resize = true;
+
 			timerulearea.HeightRequest = DConstants.TIMERULE_PLAYER_HEIGHT;
 			timerule = new Timerule (new WidgetWrapper (timerulearea)) {
 				PlayerMode = true,
@@ -643,8 +647,7 @@ namespace VAS.UI
 
 			int ndx = subviewport.Index;
 
-			Log.Debug ("Selected camera " + subviewport.Combo.Active +
-			" on subviewport " + ndx);
+			Log.Debug ("Selected camera " + subviewport.Combo.Active + " on subviewport " + ndx);
 
 			// Store in a dropped CameraConfig List the CameraConfig that is going to be drop (in order to reuse it later)
 			CameraConfig cam = playerVM.CamerasConfig.FirstOrDefault (x => x.Index == playerVM.CamerasConfig [ndx].Index);
