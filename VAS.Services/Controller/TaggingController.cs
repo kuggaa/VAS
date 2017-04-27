@@ -112,13 +112,13 @@ namespace VAS.Services.Controller
 					KeyAction action = new KeyAction (new KeyConfig {
 						Name = analysisButton.Name,
 						Key = analysisButton.HotKey
-					}, () => HandleSubCategoriesTagging(analysisButton));
+					}, () => HandleSubCategoriesTagging (analysisButton));
 					keyActions.Add (action);
 					categoriesActions.Add (analysisButton, action);
 				}
 			}
 
-			return keyActions; 
+			return keyActions;
 		}
 
 		/// <summary>
@@ -170,7 +170,7 @@ namespace VAS.Services.Controller
 
 			var play = CreateTimelineEvent (e.EventType, e.Start, e.Stop, e.EventTime, null);
 			play.Tags.AddRange (e.Tags);
-			    
+
 			AddPlayersToEvent (play);
 
 			App.Current.EventsBroker.Publish (
@@ -192,7 +192,7 @@ namespace VAS.Services.Controller
 				play.Players.Add (playerVM.Model);
 			}
 
-			var teams = project.Teams.Where (team => players.Any (player => team.Contains (player))).Select (vm => vm.Model);
+			var teams = project.Teams.Where (team => team.Tagged).Select (team => team.Model);
 			play.Teams.AddRange (teams);
 		}
 
@@ -218,8 +218,8 @@ namespace VAS.Services.Controller
 		void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			var changedButton = sender as DashboardButtonVM;
-			if (changedButton != null && changedButton.NeedsSync (e, nameof (changedButton.HotKey)) && 
-			    categoriesActions.ContainsKey (changedButton)) {
+			if (changedButton != null && changedButton.NeedsSync (e, nameof (changedButton.HotKey)) &&
+				categoriesActions.ContainsKey (changedButton)) {
 				categoriesActions [changedButton].KeyConfig.Key = changedButton.HotKey;
 			}
 		}
@@ -229,7 +229,7 @@ namespace VAS.Services.Controller
 			if (subcategoryTagged != null) {
 				buttonVM.SelectedTags.Add (subcategoryTagged);
 			}
-			
+
 			KeyTemporalContext tempContext = new KeyTemporalContext { };
 			foreach (var subcategory in buttonVM.Tags) {
 				KeyAction action = new KeyAction (new KeyConfig {
@@ -239,7 +239,7 @@ namespace VAS.Services.Controller
 				tempContext.AddAction (action);
 			}
 			tempContext.Duration = Constants.TEMP_TAGGING_DURATION;
-			tempContext.ExpiredTimeAction = buttonVM.Click ;
+			tempContext.ExpiredTimeAction = buttonVM.Click;
 
 			App.Current.KeyContextManager.AddContext (tempContext);
 		}
