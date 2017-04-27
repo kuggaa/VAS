@@ -42,5 +42,13 @@ namespace VAS.Core.ViewModel
 			get { return Model.ID; }
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.TeamVM"/> is tagged.
+		/// </summary>
+		/// <value><c>true</c> if tagged; otherwise, <c>false</c>.</value>
+		public bool Tagged {
+			get;
+			set;
+		}
 	}
 }
