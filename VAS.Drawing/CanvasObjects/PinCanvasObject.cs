@@ -61,9 +61,14 @@ namespace VAS.Drawing.CanvasObjects
 			set {
 				base.Position = value;
 				if (ViewModel != null) {
-					ViewModel.Model = value;
+					ViewModel.Model = value.Normalize ((int)ContainerSize.X, (int)ContainerSize.Y);
 				}
 			}
+		}
+
+		public Point ContainerSize {
+			get;
+			set;
 		}
 
 		public Selection GetSelection (Point point, double precision, bool inMotion = false)
@@ -74,7 +79,10 @@ namespace VAS.Drawing.CanvasObjects
 
 		public void Move (Selection s, Point dst, Point start)
 		{
-			Position = dst;
+			Position = new Point (
+				dst.X.Clamp (0, ContainerSize.X),
+				dst.Y.Clamp (0, ContainerSize.Y)
+			);
 		}
 
 		public override void Draw (IDrawingToolkit tk, Area area)
