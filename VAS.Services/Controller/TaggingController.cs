@@ -206,6 +206,9 @@ namespace VAS.Services.Controller
 					player.Tagged = false;
 				}
 			}
+			foreach (var team in project.Teams) {
+				team.Tagged = false;
+			}
 		}
 
 		void HandleVideoPlayerPropertyChanged (object sender, PropertyChangedEventArgs e)
