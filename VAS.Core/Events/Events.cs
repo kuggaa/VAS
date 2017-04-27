@@ -137,6 +137,15 @@ namespace VAS.Core.Events
 		public ButtonModifier Modifier { get; set; }
 	}
 
+	public class TagPlayerEvent : Event
+	{
+		public PlayerVM Player { get; set; }
+
+		public TeamVM Team { get; set; }
+
+		public ButtonModifier Modifier { get; set; }
+	}
+
 	#endregion
 
 	public class TimeNodeStartedEvent : Event
