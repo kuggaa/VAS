@@ -35,7 +35,6 @@ namespace VAS.Drawing.Widgets
 {
 	public class DashboardCanvas : SelectionCanvas, IView<DashboardVM>
 	{
-		public event ButtonsSelectedHandler ButtonsSelectedEvent;
 		public event ButtonSelectedHandler EditButtonTagsEvent;
 		public event ActionLinksSelectedHandler ActionLinksSelectedEvent;
 		public event ActionLinkCreatedHandler ActionLinkCreatedEvent;
@@ -198,21 +197,11 @@ namespace VAS.Drawing.Widgets
 		protected override void SelectionChanged (List<Selection> sel)
 		{
 			if (sel.Count == 0) {
-				if (ButtonsSelectedEvent != null) {
-					ButtonsSelectedEvent (new List<DashboardButton> ());
-				}
+				ViewModel.Selection.Clear ();
 				return;
 			}
-
 			if (sel [0].Drawable is DashboardButtonView) {
-				List<DashboardButton> buttons;
-
-				buttons = sel.Select (s => (s.Drawable as DashboardButtonView).Button).ToList ();
-				if (ViewModel.Mode == DashboardMode.Edit) {
-					if (ButtonsSelectedEvent != null) {
-						ButtonsSelectedEvent (buttons);
-					}
-				}
+				ViewModel.Selection.Replace (sel.Select (s => (s.Drawable as DashboardButtonView).ButtonVM));
 			} else if (sel [0].Drawable is ActionLinkView) {
 				List<ActionLink> links;
 
@@ -473,6 +462,18 @@ namespace VAS.Drawing.Widgets
 			widget?.ReDraw ();
 		}
 
+		void SyncSelection ()
+		{
+			ClearSelection ();
+			var selections = new List<Selection> ();
+			foreach (var button in ViewModel.Selection) {
+				var view = buttonsDict [button.Model];
+				view.Selected = true;
+				selections.Add (new Selection (view, SelectionPosition.All));
+			}
+			Selections = selections;
+		}
+
 		void HandleViewModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
 			switch (e.Action) {
@@ -507,6 +508,9 @@ namespace VAS.Drawing.Widgets
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.FitMode))) {
 				HandleSizeChangedEvent ();
+			}
+			if (ViewModel.NeedsSync (e, $"Collection_{nameof (DashboardVM.Selection)}")) {
+				SyncSelection ();
 			}
 		}
 	}
