@@ -121,6 +121,18 @@ namespace VAS.Core.Events
 	}
 
 	/// <summary>
+	/// Event Sent to request duplicating/copying a <typeparam name="T">.
+	/// </summary>
+	public class DuplicateEvent<T> : ReturningValueEvent<T>
+	{
+		/// <summary>
+		/// Gets or sets the object to duplicate.
+		/// </summary>
+		/// <value>The object.</value>
+		public T Object { get; set; }
+	}
+
+	/// <summary>
 	/// Event Sent to request editing a <typeparam name="T">.
 	/// </summary>
 	public class EditEvent<T> : GenericEvent<T>
