@@ -16,11 +16,13 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
+using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
@@ -53,6 +55,12 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Unsubscribe<ResetDashboardFieldEvent> (HandleResetField);
 			App.Current.EventsBroker.Unsubscribe<DuplicateEvent<DashboardButtonVM>> (HandleDuplicateButton);
 			base.Stop ();
+		}
+
+		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
+		{
+			yield return new KeyAction (App.Current.HotkeysService.GetByName ("DELETE"),
+										() => dashboardVM.DeleteButton.Execute (dashboardVM.Selection.FirstOrDefault ()), 10);
 		}
 
 		public override void SetViewModel (IViewModel viewModel)
