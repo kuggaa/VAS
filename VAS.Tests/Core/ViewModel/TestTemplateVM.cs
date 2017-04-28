@@ -122,5 +122,23 @@ namespace VAS.Tests.Core.ViewModel
 
 			Assert.IsNotNull (viewModel.Selection);
 		}
+
+		[Test]
+		public void TestSelect ()
+		{
+			var model = new DummyTeam {
+				Name = "dash",
+			};
+			var player = new Utils.PlayerDummy ();
+			model.List.Add (player);
+			var viewModel = new DummyTeamVM {
+				Model = model
+			};
+
+			viewModel.Select (viewModel.ViewModels.First ());
+
+			Assert.AreEqual (1, viewModel.Selection.Count);
+			Assert.AreEqual (player, viewModel.Selection.First ().Model);
+		}
 	}
 }
