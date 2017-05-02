@@ -78,7 +78,7 @@ namespace VAS.UI.Menus
 			ShowMenu (project, plays, null, null, project.EventTypes, true);
 		}
 
-		public void ShowMenu (Project project, List<TimelineEvent> plays)
+		public virtual void ShowMenu (Project project, List<TimelineEvent> plays)
 		{
 			ShowMenu (project, plays, null, null, project.EventTypes, false);
 		}

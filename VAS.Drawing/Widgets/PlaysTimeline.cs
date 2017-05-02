@@ -285,18 +285,9 @@ namespace VAS.Drawing.Widgets
 
 		protected void ShowTimersMenu (Point coords)
 		{
-			if (PeriodsTimeline != null &&
-				coords.Y >= PeriodsTimeline.OffsetY &&
-				coords.Y < PeriodsTimeline.OffsetY + PeriodsTimeline.Height) {
-				TimerVM t = Selections.Select (p => (p.Drawable as TimerTimeNodeView).Timer).FirstOrDefault ();
-				if (ShowTimerMenuEvent != null) {
-					ShowTimerMenuEvent (t.Model, Utils.PosToTime (coords, SecondsPerPixel));
-				}
-			} else {
-				List<TimeNodeVM> nodes = Selections.Select (p => (p.Drawable as TimeNodeView).TimeNode).ToList ();
-				if (nodes.Count > 0 && ShowTimersMenuEvent != null) {
-					ShowTimersMenuEvent (nodes.Select (n => n.Model).ToList ());
-				}
+			List<TimeNodeVM> nodes = Selections.Select (p => (p.Drawable as TimeNodeView).TimeNode).ToList ();
+			if (nodes.Count > 0 && ShowTimersMenuEvent != null) {
+				ShowTimersMenuEvent (nodes.Select (n => n.Model).ToList ());
 			}
 		}
 
@@ -374,10 +365,7 @@ namespace VAS.Drawing.Widgets
 
 		protected override void ShowMenu (Point coords)
 		{
-			TimelineView timeline = Objects.OfType<TimelineView> ().Where (
-				t => t.Visible &&
-				coords.Y >= t.OffsetY &&
-				coords.Y < t.OffsetY + t.Height).FirstOrDefault ();
+			TimelineView timeline = GetTimeline (coords);
 
 			EventTypeTimelineView catTimeline = timeline as EventTypeTimelineView;
 			if (catTimeline != null) {
@@ -449,6 +437,14 @@ namespace VAS.Drawing.Widgets
 				}
 			}
 			UpdateRowsOffsets ();
+		}
+
+		protected TimelineView GetTimeline (Point coords)
+		{
+			return Objects.OfType<TimelineView> ().Where (
+				t => t.Visible &&
+				coords.Y >= t.OffsetY &&
+				coords.Y < t.OffsetY + t.Height).FirstOrDefault ();
 		}
 
 		void SetCursor (CursorType cursorType)

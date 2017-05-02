@@ -90,7 +90,9 @@ namespace VAS.UI.Component
 		/// Shows the menu for the a list of events.
 		/// </summary>
 		/// <param name="events">Events.</param>
-		protected abstract void ShowMenu (IEnumerable<TimelineEventVM> events);
+		protected virtual void ShowMenu (IEnumerable<TimelineEventVM> events)
+		{
+		}
 
 		/// <summary>
 		/// Sets the ViewModel in the cell renderer before drawing.
