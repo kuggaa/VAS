@@ -65,6 +65,7 @@ namespace VAS.Core.Handlers
 	/* Show project stats */
 	public delegate void ShowTimersMenuHandler (List<TimeNode> timenodes);
 	public delegate void ShowTimerMenuHandler (Timer timer, Time time);
+	public delegate void ShowPeriodsMenuHandler (Timer timer, Time time);
 	public delegate void ShowTimelineMenuHandler (List<TimelineEvent> plays, EventType cat, Time time);
 
 	/* Button clicked */
