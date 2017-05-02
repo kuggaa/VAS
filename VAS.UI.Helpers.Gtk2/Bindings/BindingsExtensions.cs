@@ -133,5 +133,15 @@ namespace VAS.UI.Helpers.Bindings
 		{
 			return new ButtonBinding (button, commandFunc, parameter, image, "");
 		}
+
+		/// <summary>
+		/// Bind the specified SpinButton to a property by name.
+		/// </summary>
+		/// <param name="SpinButton">SpinButton.</param>
+		public static SpinBinding Bind (this SpinButton spinButton, Expression<Func<IViewModel, object>> propertyExpression,
+										TypeConverter converter = null)
+		{
+			return new SpinBinding (spinButton, propertyExpression, converter);
+		}
 	}
 }
