@@ -247,6 +247,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\IDashboardDealer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\ICapturerBinDealer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ActionLinkVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\HotKeyVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
