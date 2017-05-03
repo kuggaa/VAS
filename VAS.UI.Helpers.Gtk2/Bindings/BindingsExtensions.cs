@@ -19,6 +19,7 @@ using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using Gtk;
+using VAS.Core.Common;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using Image = VAS.Core.Common.Image;
@@ -142,6 +143,16 @@ namespace VAS.UI.Helpers.Bindings
 										TypeConverter converter = null)
 		{
 			return new SpinBinding (spinButton, propertyExpression, converter);
+		}
+
+		/// <summary>
+		/// Bind the specified colorButton and propertyExpression.
+		/// </summary>
+		/// <param name="colorButton">Color button.</param>
+		/// <param name="propertyExpression">Property expression.</param>
+		public static ColorButtonBinding Bind (this ColorButton colorButton, Expression<Func<IViewModel, Color>> propertyExpression)
+		{
+			return new ColorButtonBinding (colorButton, propertyExpression);
 		}
 	}
 }
