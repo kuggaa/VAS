@@ -54,7 +54,6 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Unsubscribe<SaveEvent<ProjectVM>> (HandleSave);
 			projectVM.Periods.PropertyChanged -= HandlePropertyChanged;
 			projectVM.FileSet.PropertyChanged -= HandlePropertyChanged;
-			videoPlayerVM.Pause ();
 		}
 
 		public override void SetViewModel (IViewModel viewModel)

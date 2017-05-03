@@ -44,10 +44,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 		public override string Name {
 			get {
-				return viewModel?.Name ?? name;
-			}
-			set {
-				name = value;
+				return viewModel?.Name;
 			}
 		}
 
