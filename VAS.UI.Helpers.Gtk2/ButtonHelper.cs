@@ -117,8 +117,19 @@ namespace VAS.UI.Helpers
 				return;
 			}
 
-			Image image = new Image ();
-			button.Image = image;
+			Image image = null;
+
+			foreach (var container in button.Children) {
+				if (container is Image) {
+					image = (Image)container;
+					break;
+				}
+			}
+
+			if (image == null) {
+				image = new Image ();
+				button.Image = image;
+			}
 			image.Pixbuf = icon;
 		}
 
