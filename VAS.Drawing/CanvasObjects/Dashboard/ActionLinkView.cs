@@ -19,6 +19,7 @@ using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
+using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
@@ -33,7 +34,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		public ActionLinkView (LinkAnchorView source,
 								 LinkAnchorView destination,
-								 ActionLink link)
+								 ActionLinkVM link)
 		{
 			Link = link;
 			Source = source;
@@ -61,7 +62,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		/// Gets or sets the link.
 		/// </summary>
 		/// <value>The link.</value>
-		public ActionLink Link {
+		public ActionLinkVM Link {
 			get;
 			set;
 		}
