@@ -33,6 +33,25 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class DashboardButtonVM : ViewModelBase<DashboardButton>
 	{
+		public DashboardButtonVM ()
+		{
+			ActionLinks = new CollectionViewModel<ActionLink, ActionLinkVM> ();
+		}
+
+		/// <summary>
+		/// Gets or sets the dashboard button model.
+		/// </summary>
+		/// <value>The model.</value>
+		public override DashboardButton Model {
+			get {
+				return base.Model;
+			}
+			set {
+				base.Model = value;
+				ActionLinks.Model = value.ActionLinks;
+			}
+		}
+
 		/// <summary>
 		/// Gets the DashboardButtonView.
 		/// </summary>
@@ -174,13 +193,9 @@ namespace VAS.Core.ViewModel
 		/// <summary>
 		/// A list with all the outgoing links of this button
 		/// </summary>
-		public ObservableCollection<ActionLink> ActionLinks {
-			get {
-				return Model.ActionLinks;
-			}
-			set {
-				Model.ActionLinks = value;
-			}
+		public CollectionViewModel<ActionLink, ActionLinkVM> ActionLinks {
+			get;
+			set;
 		}
 
 		/// <summary>
@@ -505,6 +520,12 @@ namespace VAS.Core.ViewModel
 	{
 		TimeNode currentNode;
 		Time currentTime;
+
+		public TimerButtonVM ()
+		{
+			currentTime = new Time (0);
+		}
+
 		/// <summary>
 		/// Gets or sets the model.
 		/// </summary>
@@ -567,6 +588,12 @@ namespace VAS.Core.ViewModel
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.TimerButtonVM"/> is active.
+		/// </summary>
+		/// <value><c>true</c> if active; otherwise, <c>false</c>.</value>
+		public bool Active { get; set; }
+
 		public void Click (bool cancel)
 		{
 			//Cancel
@@ -576,18 +603,47 @@ namespace VAS.Core.ViewModel
 				return;
 			}
 			//Start
+			if (!Start (null)) {
+				Stop (null);
+			}
+		}
+
+		/// <summary>
+		/// Start the timer operation.
+		/// </summary>
+		/// <param name="buttons">Buttons.</param>
+		public bool Start (List<DashboardButtonVM> buttons)
+		{
+			bool result = false;
+
 			if (currentNode == null) {
 				currentNode = new TimeNode { Name = Name, Start = CurrentTime };
+				Active = true;
 				TimerTime = new Time (0);
-				return;
+				result = true;
+				App.Current.EventsBroker.Publish (new TimeNodeStartedEvent { 
+					DashboardButtons = buttons, TimerButton = this, TimeNode = currentNode });
 			}
-			//Stop
+
+			return result;
+		}
+
+		/// <summary>
+		/// Stops the timer operation
+		/// </summary>
+		/// <param name="buttons">Buttons.</param>
+		public void Stop (List<DashboardButtonVM> buttons)
+		{
 			if (currentNode.Start.MSeconds != CurrentTime.MSeconds) {
 				currentNode.Stop = CurrentTime;
 				Timer.Nodes.Add (currentNode);
 			}
+
+			Active = false;
 			currentNode = null;
 			TimerTime = null;
+			App.Current.EventsBroker.Publish (new TimeNodeStoppedEvent { 
+				DashboardButtons = buttons, TimerButton = this, TimeNode = currentNode });
 		}
 	}
 }

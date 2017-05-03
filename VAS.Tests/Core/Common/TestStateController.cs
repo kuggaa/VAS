@@ -15,6 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using System.Dynamic;
 using System.Threading.Tasks;
 using Moq;
@@ -31,6 +32,8 @@ namespace VAS.Tests.Core.Common
 		StateController sc;
 		NavigationEvent lastNavigationEvent;
 		bool moveBackAfterNavigation;
+		bool moveToAfterNavigation;
+		Action navigation;
 
 		[SetUp]
 		public void InitializeStateController ()
@@ -52,7 +55,10 @@ namespace VAS.Tests.Core.Common
 
 			if (moveBackAfterNavigation) {
 				moveBackAfterNavigation = false;
-				Task.Factory.StartNew(() => sc.MoveBack ());
+				Task.Factory.StartNew (() => sc.MoveBack ());
+			} else if (moveToAfterNavigation) {
+				moveToAfterNavigation = false;
+				Task.Factory.StartNew (() => navigation ());
 			}
 		}
 
@@ -187,7 +193,7 @@ namespace VAS.Tests.Core.Common
 		{
 			// Arrange
 			sc.Register ("home", () => GetScreenStateDummy ("home"));
-			sc.Register ("newModalTransition", () => GetScreenStateDummy ("newTransition"));
+			sc.Register ("newModalTransition", () => GetScreenStateDummy ("newModalTransition"));
 			await sc.SetHomeTransition ("home", null);
 			// Action
 			bool moveTransition = await sc.MoveToModal ("newModalTransition", null);
@@ -397,6 +403,33 @@ namespace VAS.Tests.Core.Common
 			backgroundStateMock.Verify (s => s.FreezeState (), Times.Once ());
 			backgroundStateMock.Verify (s => s.HideState (), Times.Never ());
 			backgroundStateMock.Verify (s => s.UnloadState (), Times.Never ());
+			backgroundStateMock.Verify (s => s.UnfreezeState (), Times.Never ());
+			backgroundStateMock.Verify (s => s.ShowState (), Times.Once ());
+		}
+
+		[Test]
+		public async void MoveToModal_EmptyStackWhenStateFreezed_CompletesDialogTaskOk ()
+		{
+			// Arrange
+			var backgroundStateMock = GetScreenStateMock ("First");
+			sc.Register ("Home", () => GetScreenStateDummy ("Home"));
+			sc.Register ("First", () => backgroundStateMock.Object);
+			sc.Register ("Dialog", () => GetScreenStateDummy ("Dialog"));
+			sc.Register ("Second", () => GetScreenStateDummy ("Second"));
+			await sc.SetHomeTransition ("Home", null);
+			await sc.MoveTo ("First", null);
+			        
+			moveToAfterNavigation = true; // forces unload dialog after navigation
+			navigation = (async () => await sc.MoveTo ("Second", null, true));
+
+			// Act
+			bool result = await sc.MoveToModal ("Dialog", null, true);
+
+			// Assert
+			Assert.IsTrue (result);
+			backgroundStateMock.Verify (s => s.FreezeState (), Times.Once ());
+			backgroundStateMock.Verify (s => s.HideState (), Times.Once ());
+			backgroundStateMock.Verify (s => s.UnloadState (), Times.Once ());
 			backgroundStateMock.Verify (s => s.UnfreezeState (), Times.Never ());
 			backgroundStateMock.Verify (s => s.ShowState (), Times.Once ());
 		}

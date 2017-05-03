@@ -42,6 +42,7 @@ namespace VAS.Services.Controller
 			base.Start ();
 			App.Current.EventsBroker.Subscribe<CreateDashboardButtonEvent> (HandleCreateButton);
 			App.Current.EventsBroker.SubscribeAsync<DeleteEvent<DashboardButtonVM>> (HandleDeleteButton);
+			App.Current.EventsBroker.SubscribeAsync<DeleteEvent<ActionLinkVM>> (HandleRemoveLink);
 			App.Current.EventsBroker.SubscribeAsync<ReplaceDashboardFieldEvent> (HandleReplaceField);
 			App.Current.EventsBroker.Subscribe<ResetDashboardFieldEvent> (HandleResetField);
 			App.Current.EventsBroker.Subscribe<DuplicateEvent<DashboardButtonVM>> (HandleDuplicateButton);
@@ -51,6 +52,7 @@ namespace VAS.Services.Controller
 		{
 			App.Current.EventsBroker.Unsubscribe<CreateDashboardButtonEvent> (HandleCreateButton);
 			App.Current.EventsBroker.UnsubscribeAsync<DeleteEvent<DashboardButtonVM>> (HandleDeleteButton);
+			App.Current.EventsBroker.UnsubscribeAsync<DeleteEvent<ActionLinkVM>> (HandleRemoveLink);
 			App.Current.EventsBroker.UnsubscribeAsync<ReplaceDashboardFieldEvent> (HandleReplaceField);
 			App.Current.EventsBroker.Unsubscribe<ResetDashboardFieldEvent> (HandleResetField);
 			App.Current.EventsBroker.Unsubscribe<DuplicateEvent<DashboardButtonVM>> (HandleDuplicateButton);
@@ -68,7 +70,7 @@ namespace VAS.Services.Controller
 			dashboardVM = ((IDashboardDealer)viewModel).Dashboard;
 		}
 
-		protected virtual async Task HandleReplaceField (ReplaceDashboardFieldEvent arg)
+		protected async Task HandleReplaceField (ReplaceDashboardFieldEvent arg)
 		{
 			Image background = await App.Current.Dialogs.OpenImage ();
 			if (background == null) {
@@ -79,12 +81,12 @@ namespace VAS.Services.Controller
 			ReplaceField (arg.Field, background);
 		}
 
-		protected virtual void HandleResetField (ResetDashboardFieldEvent arg)
+		protected void HandleResetField (ResetDashboardFieldEvent arg)
 		{
 			ReplaceField (arg.Field);
 		}
 
-		protected virtual async Task HandleDeleteButton (DeleteEvent<DashboardButtonVM> evt)
+		protected async Task HandleDeleteButton (DeleteEvent<DashboardButtonVM> evt)
 		{
 			DashboardButtonVM buttonVM = evt.Object;
 			if (buttonVM == null) {
@@ -97,17 +99,17 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		protected virtual async Task HandleRemoveLink (DeleteEvent<ActionLink> evt)
+		protected async Task HandleRemoveLink (DeleteEvent<ActionLinkVM> evt)
 		{
-			ActionLink link = evt.Object;
+			ActionLinkVM link = evt.Object;
 			if (link == null) {
 				return;
 			}
 
 			string msg = string.Format ("{0} {1} ?",
-										Catalog.GetString ("Do you want to delete: "), link);
+										Catalog.GetString ("Do you want to delete: "), link.Name);
 			if (await App.Current.Dialogs.QuestionMessage (msg, null, this)) {
-				link.SourceButton.ActionLinks.Remove (link);
+				link.SourceButton.ActionLinks.ViewModels.Remove  (link);
 			}
 		}
 

@@ -348,7 +348,10 @@ namespace Prism.Events
 		public virtual void Unsubscribe (Delegate subscriber)
 		{
 			lock (Subscriptions) {
-				IEventSubscription eventSubscription = Subscriptions.FirstOrDefault (evt => evt.Delegate == subscriber);
+				IEventSubscription eventSubscription = Subscriptions.FirstOrDefault (evt => {
+						return evt.Delegate != null && evt.Delegate.GetType () == subscriber.GetType () &&
+							      evt.Delegate.Target == subscriber.Target;
+				});
 				if (eventSubscription != null) {
 					Subscriptions.Remove (eventSubscription);
 				}
