@@ -78,6 +78,8 @@ namespace VAS.Multimedia.Utils
 			Environment.SetEnvironmentVariable ("GST_REGISTRY", GetRegistryPath ());
 			Environment.SetEnvironmentVariable ("GST_PLUGIN_PATH",
 				App.Current.RelativeToPrefix (Path.Combine ("lib", "gstreamer-0.10")));
+			Environment.SetEnvironmentVariable ("GST_PLUGIN_SCANNER", 
+			    App.Current.RelativeToPrefix(Path.Combine ("libexec", "gstreamer-0.10/gst-plugin-scanner")));
 		}
 
 		private static string GetRegistryPath ()
