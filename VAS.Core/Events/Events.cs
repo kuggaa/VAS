@@ -28,9 +28,13 @@ using VAS.Core.ViewModel;
 
 namespace VAS.Core.Events
 {
-	public class ReturningValueEvent : Event
+	public class ReturningValueEvent<T> : Event
 	{
-		public bool ReturnValue { get; set; }
+		public T ReturnValue { get; set; }
+	}
+
+	public class ReturningValueEvent : ReturningValueEvent<bool>
+	{
 	}
 
 	// FIXME: this event should be replaced with the one using the ViewModel

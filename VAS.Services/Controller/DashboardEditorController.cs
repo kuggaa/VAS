@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using VAS.Core;
 using VAS.Core.Common;
@@ -41,6 +42,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.SubscribeAsync<DeleteEvent<DashboardButtonVM>> (HandleDeleteButton);
 			App.Current.EventsBroker.SubscribeAsync<ReplaceDashboardFieldEvent> (HandleReplaceField);
 			App.Current.EventsBroker.Subscribe<ResetDashboardFieldEvent> (HandleResetField);
+			App.Current.EventsBroker.Subscribe<DuplicateEvent<DashboardButtonVM>> (HandleDuplicateButton);
 		}
 
 		public override void Stop ()
@@ -49,6 +51,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.UnsubscribeAsync<DeleteEvent<DashboardButtonVM>> (HandleDeleteButton);
 			App.Current.EventsBroker.UnsubscribeAsync<ReplaceDashboardFieldEvent> (HandleReplaceField);
 			App.Current.EventsBroker.Unsubscribe<ResetDashboardFieldEvent> (HandleResetField);
+			App.Current.EventsBroker.Unsubscribe<DuplicateEvent<DashboardButtonVM>> (HandleDuplicateButton);
 			base.Stop ();
 		}
 
@@ -108,6 +111,19 @@ namespace VAS.Services.Controller
 				button.Position = new Point (dashboardVM.CanvasWidth, 0);
 				dashboardVM.Model.List.Add (button);
 			}
+		}
+
+		protected virtual void HandleDuplicateButton (DuplicateEvent<DashboardButtonVM> arg)
+		{
+			var newButton = arg.Object.Model.Clone ();
+			if (newButton is EventButton) {
+				((EventButton)newButton).EventType.ID = Guid.NewGuid ();
+			}
+			newButton.Position.X += 50;
+			newButton.Position.Y += 50;
+			dashboardVM.Model.List.Add (newButton);
+			arg.ReturnValue = dashboardVM.ViewModels.Last ();
+			dashboardVM.Select (arg.ReturnValue);
 		}
 
 		protected virtual DashboardButton CreateButton (string buttonType)

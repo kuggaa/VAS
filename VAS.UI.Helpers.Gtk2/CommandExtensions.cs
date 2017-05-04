@@ -23,9 +23,18 @@ namespace VAS.UI.Helpers
 {
 	public static class CommandExtensions
 	{
-		public static MenuItem CreateMenuItem (this Command command, string menuLabel, AccelGroup group, string key)
+		public static MenuItem CreateMenuItem (this Command command, string menuLabel = null, AccelGroup group = null,
+											   string key = null, object commandParam = null)
 		{
-			MenuItem item = new MenuItem(menuLabel);
+			string label = "";
+
+			if (!string.IsNullOrEmpty (menuLabel)) {
+				label = menuLabel;
+			} else if (!string.IsNullOrEmpty (command.Text)) {
+				label = command.Text;
+			}
+
+			MenuItem item = new MenuItem (label);
 
 			if (!string.IsNullOrEmpty (key)) {
 				HotKey keyconfig = App.Current.HotkeysService.GetByName (key).Key;
@@ -33,7 +42,7 @@ namespace VAS.UI.Helpers
 				item.AddAccelerator ("activate", group, accelkey);
 			}
 
-			item.Activated += (sender, e) => command.Execute ();
+			item.Activated += (sender, e) => command.Execute (commandParam);
 			item.Sensitive = command.CanExecute ();
 			command.CanExecuteChanged += (sender, e) => item.Sensitive = command.CanExecute ();
 			item.Show ();
