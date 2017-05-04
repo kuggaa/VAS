@@ -15,11 +15,16 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System.Collections.Generic;
 using System.Linq;
+using Moq;
 using NUnit.Framework;
-using VAS.Core.ViewModel;
-using VAS.Services.Controller;
+using VAS.Core;
+using VAS.Core.Hotkeys;
 using VAS.Core.Store;
+using VAS.Core.ViewModel;
+using VAS.Services;
+using VAS.Services.Controller;
 
 namespace VAS.Tests.Services
 {
@@ -29,6 +34,17 @@ namespace VAS.Tests.Services
 	{
 		DashboardVM dashboardVM;
 		DashboardEditorController controller;
+		Mock<IDialogs> mockDialogs;
+
+		[TestFixtureSetUp]
+		public void Init ()
+		{
+			App.Current.HotkeysService = new HotkeysService ();
+			GeneralUIHotkeys.RegisterDefaultHotkeys ();
+			mockDialogs = new Mock<IDialogs> ();
+			App.Current.Dialogs = mockDialogs.Object;
+			mockDialogs.Setup (m => m.QuestionMessage (It.IsAny<string> (), null, It.IsAny<object> ())).Returns (AsyncHelpers.Return (true));
+		}
 
 		[SetUp]
 		public void SetUp ()
@@ -39,6 +55,11 @@ namespace VAS.Tests.Services
 			controller = new DashboardEditorController ();
 			controller.SetViewModel (dashboardVM);
 			controller.Start ();
+			KeyContext context = new KeyContext ();
+			foreach (KeyAction action in controller.GetDefaultKeyActions ()) {
+				context.AddAction (action);
+			}
+			App.Current.KeyContextManager.NewKeyContexts (new List<KeyContext> { context });
 		}
 
 		[Test]
@@ -60,6 +81,26 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (8, dashboardVM.ViewModels.Count);
 			Assert.AreNotEqual ((button.Model as EventButton).EventType.ID,
 								(dashboardVM.ViewModels.Last ().Model as EventButton).EventType.ID);
+		}
+
+		[Test]
+		public void TestDelete_BackSpace ()
+		{
+			var first = dashboardVM.ViewModels.First ();
+			dashboardVM.Select (first);
+
+			App.Current.KeyContextManager.HandleKeyPressed (App.Current.Keyboard.ParseName ("Delete"));
+
+			Assert.AreEqual (6, dashboardVM.ViewModels.Count);
+			CollectionAssert.DoesNotContain (dashboardVM.ViewModels, first);
+		}
+
+		[Test]
+		public void TestDelete_BackSpace_NoSelection ()
+		{
+			App.Current.KeyContextManager.HandleKeyPressed (App.Current.Keyboard.ParseName ("Delete"));
+
+			Assert.AreEqual (7, dashboardVM.ViewModels.Count);
 		}
 	}
 }

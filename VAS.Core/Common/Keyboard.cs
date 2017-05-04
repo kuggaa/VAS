@@ -38,16 +38,23 @@ namespace VAS.Core.Common
 			int modifier = 0;
 			EventKey evt = obj as EventKey;
 
+			int keyval = (int)Gdk.Keyval.ToLower ((uint)evt.KeyValue);
+
 			if (evt.State.HasFlag (Gdk.ModifierType.ShiftMask)) {
 				modifier += (int)ModifierType.ShiftMask;
 			}
 			if (evt.State.HasFlag (Gdk.ModifierType.Mod1Mask) || evt.State.HasFlag (Gdk.ModifierType.Mod5Mask)) {
 				modifier += (int)ModifierType.Mod1Mask;
 			}
-			// Use comand or control if we are in OSX
-			// FIXME: we need to actually define this better. We want users to configure hotkeys with command? if so 
-			// let that be command.
 			if (Utils.OS == OperatingSystemID.OSX) {
+				// Map Command + BackSpace to Delete
+				if (evt.State.HasFlag (Gdk.ModifierType.MetaMask) && evt.Key == Key.BackSpace) {
+					modifier = 0;
+					keyval = (int)Gdk.Key.Delete;
+				} else
+				// Use comand or control if we are in OSX
+				// FIXME: we need to actually define this better. We want users to configure hotkeys with command? if so
+				// let that be command.
 				if (evt.State.HasFlag (Gdk.ModifierType.Mod2Mask | Gdk.ModifierType.MetaMask) || evt.State.HasFlag (Gdk.ModifierType.ControlMask)) {
 					modifier += (int)ModifierType.ControlMask;
 				}
@@ -57,7 +64,6 @@ namespace VAS.Core.Common
 				}
 			}
 
-			int keyval = (int)Gdk.Keyval.ToLower ((uint)evt.KeyValue);
 			if (modifier != 0) {
 				keyval = (int)NormalizeKeyVal (evt.HardwareKeycode);
 			}

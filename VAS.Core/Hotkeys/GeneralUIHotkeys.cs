@@ -94,6 +94,12 @@ namespace VAS.Core.Hotkeys
 					Category = CATEGORY,
 					Description = Catalog.GetString("Show timeline")
 				},
+				new KeyConfig {
+					Name = "DELETE",
+					Key = App.Current.Keyboard.ParseName ("Delete"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Delete selected element")
+				},
 				//FIXME: Not entering on first release, but should be
 				//done in a future
 				/*new KeyConfig {
