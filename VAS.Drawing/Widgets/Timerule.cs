@@ -181,7 +181,7 @@ namespace VAS.Drawing.Widgets
 			set {
 				if (duration != value) {
 					duration = value;
-					if (duration.MSeconds == 0) {
+					if (duration != null && duration.MSeconds == 0) {
 						currentTime = duration;
 					}
 					needle.ResetDrawArea ();
@@ -231,7 +231,7 @@ namespace VAS.Drawing.Widgets
 			double start, stop, tpos, height, width;
 			double interval = secondsPerPixel * timeSpacing;
 
-			if (Duration == null) {
+			if (Duration == null || CurrentTime == null) {
 				return;
 			}
 

@@ -28,6 +28,7 @@ using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.License;
 using VAS.DB;
+using VAS.Services;
 using Timer = VAS.Core.Common.Timer;
 
 namespace VAS.Tests
