@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
@@ -86,9 +87,10 @@ namespace VAS
 			string home = null;
 
 			if (Environment.GetEnvironmentVariable (evUninstalled) != null) {
-				App.Current.baseDirectory = Path.GetFullPath (".");
-				App.Current.DataDir.Add (App.Current.RelativeToPrefix ("../VAS/data"));
-				App.Current.DataDir.Add (App.Current.RelativeToPrefix ("../data"));
+ 				App.Current.baseDirectory = GetPrefixPath (softwareName);
+				App.Current.DataDir.Add (Path.Combine (Path.GetFullPath ("."), "../VAS/data"));
+				App.Current.DataDir.Add (Path.Combine (Path.GetFullPath ("."), "../data"));
+				ConfigureEnvVariables ();
 			} else {
 				if (Utils.OS == OperatingSystemID.Android) {
 					App.Current.baseDirectory = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
@@ -197,6 +199,22 @@ namespace VAS
 			} else {
 				Current.BuildVersion = Current.Version.ToString ();
 			}
+		}
+
+		static void ConfigureEnvVariables ()
+		{
+			Environment.SetEnvironmentVariable ("GDK_PIXBUF_MODULEDIR", 
+				App.Current.RelativeToPrefix("lib/gdk-pixbuf-2.0/2.10.0/loaders"));
+			Environment.SetEnvironmentVariable ("GDK_PIXBUF_MODULE_FILE",
+			    App.Current.RelativeToPrefix("lib/gdk-pixbuf-2.0/2.10.0/loaders.cache"));
+		}
+
+		static string GetPrefixPath (string softwareName)
+		{
+			Regex regex = new Regex (@"((.*" + softwareName.ToLower ()+@".*))(lib)$");
+			var result = ((string)Environment.GetEnvironmentVariables () ["PATH"]).Split (':');
+			string libPrefixPath = result.FirstOrDefault (regex.IsMatch);
+			return Path.Combine (libPrefixPath, "../");
 		}
 
 		public Config Config {
