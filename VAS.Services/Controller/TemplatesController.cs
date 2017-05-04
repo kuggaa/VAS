@@ -33,6 +33,7 @@ using VAS.Core.MVVMC;
 using VAS.Core.Serialization;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
+using VAS.Services.Interfaces;
 using VAS.Services.ViewModel;
 
 namespace VAS.Services.Controller
@@ -130,7 +131,11 @@ namespace VAS.Services.Controller
 
 		public override void SetViewModel (IViewModel viewModel)
 		{
-			ViewModel = (TemplatesManagerViewModel<TModel, TViewModel, TChildModel, TChildViewModel>)(viewModel as dynamic);
+			if (viewModel is ITeamCollectionDealer) {
+				ViewModel = ((ITeamCollectionDealer)viewModel).Teams as dynamic;
+			} else {
+				ViewModel = (TemplatesManagerViewModel<TModel, TViewModel, TChildModel, TChildViewModel>)viewModel;
+			}
 		}
 
 		public override void Start ()

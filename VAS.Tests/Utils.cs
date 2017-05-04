@@ -45,23 +45,19 @@ using Timer = VAS.Core.Store.Timer;
 namespace VAS.Tests
 {
 
-	public class DummyPlaylistsManagerVM : IViewModel
+	public class DummyPlaylistsManagerVM : IViewModel, IVideoPlayerDealer, IPlaylistCollectionDealer
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
-
-		public static implicit operator VideoPlayerVM (DummyPlaylistsManagerVM viewModel)
-		{
-			return viewModel.Player;
-		}
-
-		public static implicit operator PlaylistCollectionVM (DummyPlaylistsManagerVM viewModel)
-		{
-			return viewModel.Playlists;
-		}
 
 		public VideoPlayerVM Player { get; set; }
 
 		public PlaylistCollectionVM Playlists { get; set; }
+
+		public VideoPlayerVM VideoPlayer {
+			get {
+				return Player;
+			}
+		}
 
 		public void Dispose ()
 		{

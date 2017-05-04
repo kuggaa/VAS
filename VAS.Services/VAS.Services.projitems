@@ -40,10 +40,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\CameraSynchronizationVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)State\CameraSynchronizationState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Init.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ITeamCollectionDealer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />
     <Folder Include="$(MSBuildThisFileDirectory)Controller\" />
     <Folder Include="$(MSBuildThisFileDirectory)State\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Interfaces\" />
   </ItemGroup>
 </Project>
