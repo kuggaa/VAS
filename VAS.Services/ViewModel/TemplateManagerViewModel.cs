@@ -46,6 +46,7 @@ namespace VAS.Services.ViewModel
 			DeleteCommand = new Command (Delete, () => LoadedTemplate.Model != null);
 			ExportCommand = new Command (Export, () => LoadedTemplate.Model != null);
 			ImportCommand = new Command (Import, () => true);
+			OpenCommand = new Command<TModel> ((o) => Open (o), () => true);
 		}
 
 		/// <summary>
