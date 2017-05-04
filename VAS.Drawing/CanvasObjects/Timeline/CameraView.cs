@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.ComponentModel;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
@@ -45,6 +46,12 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				return viewModel;
 			}
 			set {
+				if (TimeNode != null) {
+					TimeNode.PropertyChanged -= HandleChildNodePropertyChanged;
+				}
+				if (ViewModel != null) {
+					ViewModel.PropertyChanged -= HandleVMPropertyChanged;
+				}
 				viewModel = value;
 				if (viewModel != null) {
 					TimeNode = new TimeNodeVM {
@@ -53,6 +60,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 							Stop = viewModel.Duration - viewModel.Offset, Name = viewModel.Name
 						}
 					};
+					TimeNode.PropertyChanged += HandleChildNodePropertyChanged;
+					ViewModel.PropertyChanged += HandleVMPropertyChanged;
 				}
 			}
 		}
@@ -76,6 +85,16 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		public override Area Area {
 			get {
 				return new Area (new Point (StartX, OffsetY), (StopX - StartX), Height);
+			}
+		}
+
+		public override bool Selected {
+			get {
+				return base.Selected;
+			}
+			set {
+				base.Selected = value;
+				ViewModel.SelectedGrabber = value ? SelectionPosition.All : SelectionPosition.None;
 			}
 		}
 
@@ -112,6 +131,20 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 					TimeNode.Name);
 			}
 			tk.End ();
+		}
+
+		void HandleChildNodePropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof (TimeNodeVM.Start)) {
+				viewModel.Offset = new Time (-TimeNode.Start.MSeconds);
+			}
+		}
+
+		void HandleVMPropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.Offset))) {
+				ReDraw ();
+			}
 		}
 	}
 }

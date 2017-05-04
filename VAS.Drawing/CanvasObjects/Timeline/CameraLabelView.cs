@@ -20,6 +20,7 @@ using System;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
+using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
@@ -27,10 +28,29 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 	/// A label for the cameras timeline row.
 	/// </summary>
 	[View ("CameraLabelView")]
-	public class CameraLabelView : LabelView, ICanvasObjectView
+	public class CameraLabelView : LabelView, ICanvasObjectView<MediaFileVM>
 	{
+		MediaFileVM viewModel;
+		string name;
+
+		public MediaFileVM ViewModel {
+			get {
+				return viewModel;
+			}
+			set {
+				viewModel = value;
+			}
+		}
+
+		public override string Name {
+			get {
+				return viewModel?.Name;
+			}
+		}
+
 		public void SetViewModel (object viewModel)
 		{
+			ViewModel = (MediaFileVM)viewModel;
 		}
 
 		public override void Draw (IDrawingToolkit tk, Area area)
