@@ -78,7 +78,7 @@ namespace VAS.UI.Component
 		/// <param name="viewModel">View model.</param>
 		public void SetViewModel (object viewModel)
 		{
-			ViewModel = (LicenseLimitationVM)(viewModel as dynamic);
+			ViewModel = (LicenseLimitationVM)viewModel;
 		}
 
 		void HandlePropertyChangedEventHandler (object sender, PropertyChangedEventArgs e)

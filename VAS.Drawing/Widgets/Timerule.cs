@@ -74,9 +74,9 @@ namespace VAS.Drawing.Widgets
 				}
 				viewModel = value;
 				if (viewModel != null) {
+					Duration = viewModel.Duration;
 					viewModel.PropertyChanged += HandlePropertyChangedEventHandler;
 				}
-				Duration = viewModel.Duration;
 			}
 		}
 
