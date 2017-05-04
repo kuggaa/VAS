@@ -50,6 +50,11 @@ namespace VAS.Core.ViewModel
 				Text = Catalog.GetString ("Delete"),
 			};
 
+			DuplicateButton = new Command<DashboardButtonVM> (
+				(s) => App.Current.EventsBroker.Publish (new DuplicateEvent<DashboardButtonVM> { Object = s })) {
+				Text = Catalog.GetString ("Duplicate"),
+			};
+
 			ResetField = new Command<FieldPositionType> (
 				(p) => App.Current.EventsBroker.Publish (new ResetDashboardFieldEvent { Field = p })) {
 				Text = Catalog.GetString ("Reset"),
@@ -95,6 +100,15 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		[PropertyChanged.DoNotNotify]
 		public Command<DashboardButtonVM> DeleteButton {
+			get;
+			private set;
+		}
+
+		/// <summary>
+		/// Gets the command to duplicate a button.
+		/// </summary>
+		[PropertyChanged.DoNotNotify]
+		public Command<DashboardButtonVM> DuplicateButton {
 			get;
 			private set;
 		}

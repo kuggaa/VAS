@@ -158,6 +158,20 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
+		/// Selects the current object.
+		/// </summary>
+		/// <param name="selected">Selected element.</param>
+		/// <param name="clearSelection">If <c>true</c>, clears the previous selection</param>
+		public void Select (TChildViewModel selected, bool clearSelection = true)
+		{
+			if (clearSelection) {
+				Selection.Replace (new List<TChildViewModel> { selected });
+			} else {
+				Selection.Add (selected);
+			}
+		}
+
+		/// <summary>
 		/// Creates the sub view model.
 		/// </summary>
 		/// <returns>The sub view model.</returns>
