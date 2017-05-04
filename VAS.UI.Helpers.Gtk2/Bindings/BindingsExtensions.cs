@@ -136,6 +136,15 @@ namespace VAS.UI.Helpers.Bindings
 		}
 
 		/// <summary>
+		/// Bind the specified CheckButton to a property by name.
+		/// </summary>
+		/// <param name="CheckButton">CheckButton.</param>
+		public static CheckBoxBinding Bind (this CheckButton checkButton, Expression<Func<IViewModel, bool>> propertyExpression)
+		{
+			return new CheckBoxBinding (checkButton, propertyExpression);
+		}
+
+		/// <summary>
 		/// Bind the specified SpinButton to a property by name.
 		/// </summary>
 		/// <param name="SpinButton">SpinButton.</param>
