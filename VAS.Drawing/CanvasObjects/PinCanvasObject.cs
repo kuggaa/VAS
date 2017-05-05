@@ -25,6 +25,11 @@ using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects
 {
+	/// <summary>
+	/// Pin canvas object.
+	/// This object is a pinhead drawed in a canvas.
+	/// It's selected when clicking anywhere, and its movement is clamped to the container size.
+	/// </summary>
 	public class PinCanvasObject : FixedSizeCanvasObject, ICanvasSelectableObject, ICanvasObjectView<PointVM>
 	{
 		static Image missingLocationPinImage;
@@ -54,6 +59,10 @@ namespace VAS.Drawing.CanvasObjects
 		/// <value>The view model.</value>
 		public PointVM ViewModel { get; set; }
 
+		/// <summary>
+		/// Gets or sets the position of the object.
+		/// </summary>
+		/// <value>The position.</value>
 		public override Point Position {
 			get {
 				return base.Position;
@@ -66,17 +75,33 @@ namespace VAS.Drawing.CanvasObjects
 			}
 		}
 
+		/// <summary>
+		/// Size of the container of the pin.
+		/// This is used to restrict the position to always be inside the container.
+		/// </summary>
+		/// <value>The size of the container.</value>
 		public Point ContainerSize {
 			get;
 			set;
 		}
 
+		/// <summary>
+		/// Gets the selection for this pin. It returns it regardless of the point.
+		/// </summary>
+		/// <returns>The selection.</returns>
+		/// <param name="point">Point.</param>
+		/// <param name="precision">Precision.</param>
+		/// <param name="inMotion">If set to <c>true</c> in motion.</param>
 		public Selection GetSelection (Point point, double precision, bool inMotion = false)
 		{
 			// Always select the pin, regardless of where it's clicked.
 			return new Selection (this, SelectionPosition.All, 0);
 		}
 
+		/// <summary>
+		/// Move the pin to the specified dst
+		/// </summary>
+		/// <param name="dst">Destination point.</param>
 		public void Move (Selection s, Point dst, Point start)
 		{
 			Position = new Point (
