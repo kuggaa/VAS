@@ -285,8 +285,12 @@ namespace VAS.Core.ViewModel
 		protected override void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			base.ForwardPropertyChanged (sender, e);
-			if (sender is AnalysisEventType && e.PropertyName == nameof (EventType.Name)) {
-				RecreateInternalDictionary ();
+
+			var viewModel = sender as EventTypeVM;
+			if (viewModel != null) {
+				if (viewModel.NeedsSync (e, nameof (viewModel.Name))) {
+					RecreateInternalDictionary ();
+				}
 			}
 		}
 
