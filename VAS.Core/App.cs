@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
@@ -87,7 +86,7 @@ namespace VAS
 			string home = null;
 
 			if (Environment.GetEnvironmentVariable (evUninstalled) != null) {
- 				App.Current.baseDirectory = GetPrefixPath (softwareName);
+				App.Current.baseDirectory = GetPrefixPath ();
 				App.Current.DataDir.Add (Path.Combine (Path.GetFullPath ("."), "../VAS/data"));
 				App.Current.DataDir.Add (Path.Combine (Path.GetFullPath ("."), "../data"));
 				ConfigureEnvVariables ();
@@ -203,17 +202,22 @@ namespace VAS
 
 		static void ConfigureEnvVariables ()
 		{
-			Environment.SetEnvironmentVariable ("GDK_PIXBUF_MODULEDIR", 
-				App.Current.RelativeToPrefix("lib/gdk-pixbuf-2.0/2.10.0/loaders"));
+			Environment.SetEnvironmentVariable ("GDK_PIXBUF_MODULEDIR",
+				App.Current.RelativeToPrefix ("lib/gdk-pixbuf-2.0/2.10.0/loaders"));
 			Environment.SetEnvironmentVariable ("GDK_PIXBUF_MODULE_FILE",
-			    App.Current.RelativeToPrefix("lib/gdk-pixbuf-2.0/2.10.0/loaders.cache"));
+				App.Current.RelativeToPrefix ("lib/gdk-pixbuf-2.0/2.10.0/loaders.cache"));
 		}
 
-		static string GetPrefixPath (string softwareName)
+		static string GetPrefixPath ()
 		{
-			Regex regex = new Regex (@"((.*" + softwareName.ToLower ()+@".*))(lib)$");
-			var result = ((string)Environment.GetEnvironmentVariables () ["PATH"]).Split (':');
-			string libPrefixPath = result.FirstOrDefault (regex.IsMatch);
+			// When defining a custom .NET Runtime, monodevelop takes cares of configuring the environment
+			// to use the prefix, in our case cerbero's one. The first entry in the PATH veriable is the
+			// libdir and we use it to infer the prefix path.
+			string libPrefixPath = ((string)Environment.GetEnvironmentVariables () ["PATH"]).Split (':') [0];
+			if (!Directory.Exists (Path.Combine (libPrefixPath, "gdk-pixbuf-2.0"))) {
+				throw new Exception ($"The prefix found {libPrefixPath} does not seems to be correct. " +
+									 "Make sure your Run Configuration is using the correct .Net Runtime");
+			}
 			return Path.Combine (libPrefixPath, "../");
 		}
 
