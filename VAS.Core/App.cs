@@ -85,7 +85,9 @@ namespace VAS
 
 			string home = null;
 
-			if (Environment.GetEnvironmentVariable (evUninstalled) != null) {
+			App.Current.Uninstalled = Environment.GetEnvironmentVariable (evUninstalled) != null;
+
+			if (App.Current.Uninstalled) {
 				App.Current.baseDirectory = GetPrefixPath ();
 				App.Current.DataDir.Add (Path.Combine (Path.GetFullPath ("."), "../VAS/data"));
 				App.Current.DataDir.Add (Path.Combine (Path.GetFullPath ("."), "../data"));
@@ -243,6 +245,15 @@ namespace VAS
 				string filename = App.Current.SoftwareName.ToLower () + "-1.0.config";
 				return Path.Combine (App.Current.ConfigDir, filename);
 			}
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="T:VAS.App"/> is running uninstalled.
+		/// </summary>
+		/// <value><c>true</c> if uninstalled; otherwise, <c>false</c>.</value>
+		public bool Uninstalled {
+			get;
+			private set;
 		}
 
 		public string HomeDir {
