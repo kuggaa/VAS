@@ -25,58 +25,9 @@ namespace VAS.Services.ViewModel
 	/// <summary>
 	/// A ViewModel used in analysis views where there is a video player, a timeline and playlists
 	/// </summary>
-	public class ProjectAnalysisVM<T> : ViewModelBase<T>, IAnalysisViewModel
+	public class ProjectAnalysisVM<T> : ViewModelBase<T>, IAnalysisViewModel, ITimelineDealer, IPlaylistCollectionDealer, IDashboardDealer
 		where T : ProjectVM
 	{
-		public ProjectAnalysisVM ()
-		{
-		}
-
-		public static implicit operator DashboardVM (ProjectAnalysisVM<T> projectAnalysisVM)
-		{
-			return projectAnalysisVM?.Project.Dashboard;
-		}
-
-		/// <summary>
-		/// Cast to PlaylistCollectionVM explicit operator.
-		/// </summary>
-		/// <returns>PlaylistCollectionVM.</returns>
-		/// <param name="vm">The AnalysisVM view model.</param>
-		public static implicit operator PlaylistCollectionVM (ProjectAnalysisVM<T> projectAnalysisVM)
-		{
-			return projectAnalysisVM?.Project.Playlists;
-		}
-
-		/// <summary>
-		/// Cast to ProjectVM<Project> explicit operator.
-		/// </summary>
-		/// <returns>ProjectVM<Project>.</returns>
-		/// <param name="vm">The AnalysisVM view model.</param>
-		public static implicit operator T (ProjectAnalysisVM<T> projectAnalysisVM)
-		{
-			return projectAnalysisVM?.Project;
-		}
-
-		/// <summary>
-		/// Cast to RAEventTypeCollectionVM explicit operator.
-		/// </summary>
-		/// <returns>The explicit.</returns>
-		/// <param name="vm">Vm.</param>
-		public static implicit operator TimelineVM (ProjectAnalysisVM<T> projectAnalysisVM)
-		{
-			return projectAnalysisVM?.Project.Timeline;
-		}
-
-		/// <summary>
-		/// Cast to VideoPlayerVM explicit operator.
-		/// </summary>
-		/// <returns>Video player ViewModel</returns>
-		/// <param name="vm">The AnalysisVM view model.</param>
-		public static implicit operator VideoPlayerVM (ProjectAnalysisVM<T> projectAnalysisVM)
-		{
-			return projectAnalysisVM?.VideoPlayer;
-		}
-
 		/// <summary>
 		/// Gets or sets the project used in the analysis
 		/// </summary>
@@ -113,9 +64,27 @@ namespace VAS.Services.ViewModel
 			set;
 		}
 
-		ProjectVM IAnalysisViewModel.Project {
+		ProjectVM IProjectDealer.Project {
 			get {
 				return Project;
+			}
+		}
+
+		public TimelineVM Timeline {
+			get {
+				return Project.Timeline;
+			}
+		}
+
+		public PlaylistCollectionVM Playlists {
+			get {
+				return Project.Playlists;
+			}
+		}
+
+		public DashboardVM Dashboard {
+			get {
+				return Project.Dashboard;
 			}
 		}
 	}

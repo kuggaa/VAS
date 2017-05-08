@@ -1,5 +1,5 @@
-//
-//  Copyright (C) 2016 Fluendo S.A.
+﻿//
+//  Copyright (C) 2017 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,17 +15,19 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-
+using System;
+using VAS.Core.Store;
+using VAS.Core.Store.Templates;
 using VAS.Core.ViewModel;
+using VAS.Services.ViewModel;
 
-namespace VAS.Core.Interfaces.MVVMC
+namespace VAS.Services.Interfaces
 {
-
 	/// <summary>
-	/// Interface that every panel related to analysis should implement, that is panels that 
-	/// has Players in it, and or Events Managers lists, etc.
+	/// Interface that every ViewModel that has a TemplatesManagerViewModel<Team, TeamVM, Player, PlayerVM> should implement
 	/// </summary>
-	public interface IAnalysisViewModel : IViewModel, IVideoPlayerDealer, IProjectDealer
+	public interface ITeamCollectionDealer
 	{
+		TemplatesManagerViewModel<Team, TeamVM, Player, PlayerVM> Teams { get; }
 	}
 }

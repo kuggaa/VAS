@@ -240,6 +240,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ITimer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Timer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\PointVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\ITimelineDealer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\IVideoPlayerDealer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\IProjectDealer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\IPlaylistCollectionDealer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\IDashboardDealer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\ICapturerBinDealer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
