@@ -52,8 +52,9 @@ namespace VAS.Tests.Services
 			var dashboard = Utils.DashboardDummy.Default ();
 			dashboard.InsertTimer ();
 			dashboardVM = new DashboardVM { Model = dashboard };
+			var viewModel = new DummyDashboardManagerVM (dashboardVM);
 			controller = new DashboardEditorController ();
-			controller.SetViewModel (dashboardVM);
+			controller.SetViewModel (viewModel);
 			controller.Start ();
 			KeyContext context = new KeyContext ();
 			foreach (KeyAction action in controller.GetDefaultKeyActions ()) {

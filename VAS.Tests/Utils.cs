@@ -250,6 +250,19 @@ namespace VAS.Tests
 		}
 	}
 
+	public class DummyDashboardManagerVM : TemplatesManagerViewModel<Dashboard, DashboardVM, DashboardButton, DashboardButtonVM>, IDashboardDealer
+	{
+		public DummyDashboardManagerVM (DashboardVM vm)
+		{
+			LoadedTemplate = vm;
+		}
+
+		public DashboardVM Dashboard {
+			get {
+				return LoadedTemplate;
+			}
+		}
+	}
 	public static class Utils
 	{
 		public class PlayerDummy : Player
