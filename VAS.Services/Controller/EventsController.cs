@@ -206,6 +206,8 @@ namespace VAS.Services.Controller
 				e.TimelineEvent.EventType.Name));
 			projectVM.Model.AddEvent (e.TimelineEvent);
 			AddNewPlay (e.TimelineEvent);
+			await App.Current.EventsBroker.Publish (new DashboardEventCreatedEvent { 
+				TimelineEvent = e.TimelineEvent, DashboardButton = e.DashboardButton, DashboardButtons = e.DashboardButtons });
 		}
 
 		void HandleMoveToEventType (MoveToEventTypeEvent e)

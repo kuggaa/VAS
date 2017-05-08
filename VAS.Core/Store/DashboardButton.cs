@@ -45,7 +45,7 @@ namespace VAS.Core.Store
 				TextColor = App.Current.Style.PaletteBackgroundLight.Copy (true);
 			}
 			HotKey = new HotKey { IsChanged = false };
-			ActionLinks = new ObservableCollection<ActionLink> ();
+			ActionLinks = new RangeObservableCollection<ActionLink> ();
 			ShowIcon = false;
 			ShowHotkey = false;
 			ShowSettingIcon = false;
@@ -111,7 +111,7 @@ namespace VAS.Core.Store
 		/// <summary>
 		/// A list with all the outgoing links of this button
 		/// </summary>
-		public ObservableCollection<ActionLink> ActionLinks {
+		public RangeObservableCollection<ActionLink> ActionLinks {
 			get;
 			set;
 		}

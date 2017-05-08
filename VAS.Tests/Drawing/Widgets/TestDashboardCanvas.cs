@@ -89,12 +89,24 @@ namespace VAS.Tests.Drawing.Widgets
 		}
 
 		[Test]
-		public void TestUpdateShowLinks ()
+		public void UpdateShowLinksToTrue_InEditMode_ShowLinks ()
 		{
 			dashboard.ShowLinks = true;
+			dashboard.Mode = DashboardMode.Edit;
 
 			foreach (DashboardButtonView to in dashboardCanvas.Objects.OfType<DashboardButtonView> ()) {
 				Assert.IsTrue (to.ShowLinks);
+			}
+		}
+
+		[Test]
+		public void UpdateShowLinksToTrue_InCodeMode_LinksNotShowed ()
+		{
+			dashboard.ShowLinks = true;
+			dashboard.Mode = DashboardMode.Code;
+
+			foreach (DashboardButtonView to in dashboardCanvas.Objects.OfType<DashboardButtonView> ()) {
+				Assert.IsFalse (to.ShowLinks);
 			}
 		}
 	}

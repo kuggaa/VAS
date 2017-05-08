@@ -143,12 +143,12 @@ namespace VAS.Core.Events
 	{
 		public TimeNode TimeNode { get; set; }
 
-		public TimerButton TimerButton { get; set; }
+		public TimerButtonVM TimerButton { get; set; }
 
-		public List<DashboardButton> DashboardButtons {
+		public List<DashboardButtonVM> DashboardButtons {
 			get {
 				if (dashboardButton == null) {
-					dashboardButton = new List<DashboardButton> ();
+					dashboardButton = new List<DashboardButtonVM> ();
 				}
 				return dashboardButton;
 			}
@@ -157,19 +157,19 @@ namespace VAS.Core.Events
 			}
 		}
 
-		List<DashboardButton> dashboardButton;
+		List<DashboardButtonVM> dashboardButton;
 	}
 
 	public class TimeNodeStoppedEvent : Event
 	{
 		public TimeNode TimeNode { get; set; }
 
-		public TimerButton TimerButton { get; set; }
+		public TimerButtonVM TimerButton { get; set; }
 
-		public List<DashboardButton> DashboardButtons {
+		public List<DashboardButtonVM> DashboardButtons {
 			get {
 				if (dashboardButton == null) {
-					dashboardButton = new List<DashboardButton> ();
+					dashboardButton = new List<DashboardButtonVM> ();
 				}
 				return dashboardButton;
 			}
@@ -178,7 +178,7 @@ namespace VAS.Core.Events
 			}
 		}
 
-		List<DashboardButton> dashboardButton;
+		List<DashboardButtonVM> dashboardButton;
 	}
 
 	public class DatabaseCreatedEvent : Event
@@ -382,6 +382,27 @@ namespace VAS.Core.Events
 		List<DashboardButton> dashboardButtons;
 
 		public Guid ProjectId { get; set; }
+	}
+
+	public class DashboardEventCreatedEvent : Event
+	{
+		public TimelineEvent TimelineEvent { get; set; }
+
+		public DashboardButton DashboardButton { get; set; }
+
+		public List<DashboardButton> DashboardButtons {
+			get {
+				if (dashboardButtons == null) {
+					dashboardButtons = new List<DashboardButton> ();
+				}
+				return dashboardButtons;
+			}
+			set {
+				dashboardButtons = value;
+			}
+		}
+
+		List<DashboardButton> dashboardButtons;
 	}
 
 	public class NewEventEvent : Event

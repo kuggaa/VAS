@@ -138,15 +138,16 @@ namespace VAS.Core
 
 			try {
 				IScreenState state = destination [transition] ();
+				NavigationState transitionState = new NavigationState (transition, state, !waitUntilClose);
 
 				NavigationState lastState = LastState ();
-				if (!await lastState.Freeze ()) {
+				if (!await lastState.Freeze (transitionState)) {
 					return false;
 				}
 
 				bool ok = await state.LoadState (properties);
 				if (ok) {
-					await PushModalState (transition, state, LastState ()?.ScreenState);
+					await PushModalState (transitionState, LastState ()?.ScreenState);
 					NavigationState resultantState = LastState ();
 					if (waitUntilClose && resultantState.Name == transition) {
 						await resultantState.Completion.Task;
@@ -391,15 +392,15 @@ namespace VAS.Core
 			return await App.Current.Navigation.Push (state.ScreenState.Panel);
 		}
 
-		async Task<bool> PushModalState (string transition, IScreenState state, IScreenState current)
+		async Task<bool> PushModalState (NavigationState state, IScreenState current)
 		{
-			modalStateStack.Add (new NavigationState (transition, state));
-			if (!await state.ShowState ()) {
+			modalStateStack.Add (state);
+			if (!await state.Show ()) {
 				return false;
 			}
 
-			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = transition, IsModal = true });
-			await App.Current.Navigation.PushModal (state.Panel, current.Panel);
+			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = state.ScreenState.Name, IsModal = true });
+			await App.Current.Navigation.PushModal (state.ScreenState.Panel, current.Panel);
 			return true;
 		}
 
@@ -484,11 +485,15 @@ namespace VAS.Core
 
 	class NavigationState
 	{
-		public NavigationState (string name, IScreenState screenState)
+		NavigationState freezingState;
+		bool completeWhenUnload;
+
+		public NavigationState (string name, IScreenState screenState, bool completeWhenUnload = true)
 		{
 			Name = name;
 			ScreenState = screenState;
 			Completion = new TaskCompletionSource<bool> ();
+			completeWhenUnload = completeWhenUnload;
 		}
 
 		public string Name { get; set; }
@@ -539,11 +544,18 @@ namespace VAS.Core
 
 		public async Task<bool> Unfreeze ()
 		{
-			return await ScreenState.UnfreezeState ();
+			bool result = await ScreenState.UnfreezeState ();
+			if (freezingState.Completion.Task.Status != TaskStatus.RanToCompletion) {
+				freezingState.Completion.SetResult (result);
+			}
+
+			freezingState = null;
+			return result;
 		}
 
-		public async Task<bool> Freeze ()
+		public async Task<bool> Freeze (NavigationState freezingState)
 		{
+			this.freezingState = freezingState;
 			return await ScreenState.FreezeState ();
 		}
 
@@ -555,13 +567,20 @@ namespace VAS.Core
 		public async Task<bool> Unload ()
 		{
 			bool result = await ScreenState.UnloadState ();
+
+			if (freezingState != null && freezingState.Completion.Task.Status != TaskStatus.RanToCompletion) {
+				freezingState.Completion.SetResult (true);
+				freezingState = null;
+			}
+
 			// FIXME: when quit is done a double home navigation is done
 			// this causes that the hide/unload of the state is done twice
 			// because the stack is not empty, the hide state is the one creating 
 			// the second home transition
-			if (Completion.Task.Status != TaskStatus.RanToCompletion) {
+			if (Completion.Task.Status != TaskStatus.RanToCompletion && completeWhenUnload) {
 				Completion.SetResult (result);
 			}
+
 			return result;
 		}
 	}
