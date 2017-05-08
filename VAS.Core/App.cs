@@ -212,15 +212,22 @@ namespace VAS
 
 		static string GetPrefixPath ()
 		{
-			// When defining a custom .NET Runtime, monodevelop takes cares of configuring the environment
-			// to use the prefix, in our case cerbero's one. The first entry in the PATH veriable is the
-			// libdir and we use it to infer the prefix path.
-			string libPrefixPath = ((string)Environment.GetEnvironmentVariables () ["PATH"]).Split (':') [0];
-			if (!Directory.Exists (Path.Combine (libPrefixPath, "gdk-pixbuf-2.0"))) {
-				throw new Exception ($"The prefix found {libPrefixPath} does not seems to be correct. " +
-									 "Make sure your Run Configuration is using the correct .Net Runtime");
+			// The runtime prefix is always defined in the PATH environment variable,
+			// either because we choosed a custom .NET Runtime in Xamarin Studio, we are running
+			// in cerbero's shell or we are executing the app as an application bundle with
+			// the PATH configured to have our prefix. Here we iterate over all PATH entries
+			// until we find it, which is normally
+			// libdir and we use it to infer the prefix path, unless we are in a cerbero shell. We iterate
+			// over all the directories to find the prefix.
+			foreach (var pathEntry in ((string)Environment.GetEnvironmentVariables () ["PATH"]).Split (':')) {
+				var prefix = Path.Combine (pathEntry, "../");
+				if (Directory.Exists (Path.Combine (prefix, "lib", "gdk-pixbuf-2.0"))) {
+					return prefix;
+				}
 			}
-			return Path.Combine (libPrefixPath, "../");
+			throw new Exception ($"No potential prefix was found in $PATH." +
+								 "Make sure your Run Configuration is using the correct .Net Runtime," +
+								 "or the environment is configured correctly.");
 		}
 
 		public Config Config {
