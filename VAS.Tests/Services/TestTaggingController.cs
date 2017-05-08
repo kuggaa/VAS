@@ -17,6 +17,7 @@
 //
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using NUnit.Framework;
 using VAS.Core.Common;
 using VAS.Core.Events;
@@ -301,6 +302,28 @@ namespace VAS.Tests.Services
 
 			Assert.AreEqual (new Time (9).MSeconds, sendedTimelineEvent.EventTime.MSeconds);
 			Assert.AreEqual (2, sendedTimelineEvent.Players.Count);
+		}
+
+		[Test]
+		public void TestNewTagEventWithTeam ()
+		{
+			team1.Tagged = true;
+
+			var newTagEvent = new NewTagEvent {
+				EventType = project.Model.EventTypes [0],
+				Start = new Time (0),
+				Stop = new Time (10),
+				Tags = new List<Tag> (),
+				EventTime = new Time (9),
+				Button = null
+			};
+
+			// Action
+			App.Current.EventsBroker.Publish (newTagEvent);
+
+			Assert.AreEqual (1, sendedTimelineEvent.Teams.Count);
+			Assert.AreSame (team1.Model, sendedTimelineEvent.Teams.First ());
+
 		}
 
 		[Test]
