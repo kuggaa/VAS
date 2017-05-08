@@ -25,7 +25,7 @@ using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Services.State;
 using VAS.Services.ViewModel;
-using VAS.UI.Helpers;
+using VAS.UI.Helpers.Bindings;
 
 namespace VAS.UI.Panel
 {
@@ -33,6 +33,7 @@ namespace VAS.UI.Panel
 	[ViewAttribute (PreferencesState.NAME)]
 	public partial class PreferencesPanel : Gtk.Bin, IPanel<PreferencesPanelVM>
 	{
+		BindingContext ctx;
 		Widget selectedPanel;
 		ListStore prefsStore;
 		PreferencesPanelVM viewModel;
@@ -117,14 +118,13 @@ namespace VAS.UI.Panel
 					RemovePanels ();
 				}
 				viewModel = value;
+				ctx.UpdateViewModel (viewModel);
 				if (viewModel != null) {
 					AddPanels ();
 					//Select First Panel
 					treeview.Selection.SelectPath (new TreePath ("0"));
 					if (!viewModel.AutoSave) {
 						dialogButtonBox.Visible = true;
-						okButtonDialog.Bind (viewModel.OkCommand);
-						cancelButtonDialog.Bind (viewModel.CancelCommand);
 					} else {
 						dialogButtonBox.Visible = false;
 					}
@@ -163,6 +163,13 @@ namespace VAS.UI.Panel
 			foreach (var vm in viewModel.ViewModels) {
 				AddPanel (vm);
 			}
+		}
+
+		void Bind ()
+		{
+			ctx = new BindingContext ();
+			ctx.Add (cancelButtonDialog.Bind ((vm) => ((PreferencesPanelVM)vm).CancelCommand));
+			ctx.Add (okButtonDialog.Bind ((vm) => ((PreferencesPanelVM)vm).OkCommand));
 		}
 
 		void RemovePanels ()

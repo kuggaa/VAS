@@ -50,8 +50,11 @@ namespace VAS.Core.Common
 
 		public Point Normalize (int width, int height)
 		{
-			return new Point (Math.Min (X, width) / width,
-				Math.Min (Y, height) / height);
+			return new Point (
+				X.Clamp (0, width) / width,
+				Y.Clamp (0, height) / height
+			);
+
 		}
 
 		public Point Denormalize (int width, int height)

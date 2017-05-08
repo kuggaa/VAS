@@ -123,10 +123,11 @@ namespace VAS.Core.Hotkeys
 			bool handled = false;
 
 			for (int i = currentKeyContexts.Count - 1; i >= 0; i--) {
-				handled = ProcessKeyActions (currentKeyContexts [i].KeyActions, key);
+				KeyContext context = currentKeyContexts [i];
+				handled = ProcessKeyActions (context.KeyActions, key);
 				if (handled) {
-					if (currentKeyContexts [i] is KeyTemporalContext) {
-						currentKeyContexts.RemoveAt (i);
+					if (context is KeyTemporalContext) {
+						currentKeyContexts.Remove (context);
 					}
 					break;
 				}

@@ -75,6 +75,12 @@ namespace VAS.Drawing.Cairo
 			}
 		}
 
+		/// <summary>
+		/// Fast button clicks sometimes produced a small move that
+		/// should be ignored. Start moving only when the button has been
+		/// pressed for more than MoveWaitMS.
+		/// </summary>
+		/// <value>Milliseconds to wait before moving.</value>
 		public uint MoveWaitMS {
 			get;
 			set;
