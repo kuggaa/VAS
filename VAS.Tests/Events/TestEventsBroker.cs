@@ -146,5 +146,45 @@ namespace VAS.Tests.Events
 			// Assert
 			Assert.AreEqual (0, count);
 		}
+
+		[Test]
+		public async Task Unsuscribe_VirtualMethod_Ok ()
+		{
+			// Arrange
+			BDummyClass classSubscriber = new BDummyClass();
+			classSubscriber.Start (eventsBroker);
+			classSubscriber.Stop (eventsBroker);
+
+			// Act
+			await eventsBroker.Publish (new ReturningValueEvent ());
+
+			// Assert
+			Assert.AreEqual (0, classSubscriber.Count);
+		}
+	}
+
+	class ADummyClass
+	{
+		public int Count { get; set; }
+
+		protected virtual Task DoSomething (ReturningValueEvent e)
+		{
+			Count++;
+			return AsyncHelpers.Return ();
+		}
+
+		public void Start (EventsBroker eventsBtoker)
+		{
+			eventsBtoker.SubscribeAsync<ReturningValueEvent> (DoSomething);
+		}
+
+		public void Stop (EventsBroker eventsBtoker)
+		{
+			eventsBtoker.UnsubscribeAsync<ReturningValueEvent> (DoSomething);
+		}
+	}
+
+	class BDummyClass : ADummyClass
+	{
 	}
 }

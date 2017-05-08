@@ -16,6 +16,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
@@ -26,12 +28,44 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class DashboardButtonCollectionVM : CollectionViewModel<DashboardButton, DashboardButtonVM>
 	{
+		IDictionary<DashboardButton, DashboardButtonVM> cachedButtonVMs;
 
 		public DashboardButtonCollectionVM ()
 		{
+			cachedButtonVMs = new Dictionary<DashboardButton, DashboardButtonVM> ();
 			TypeMappings.Add (typeof (AnalysisEventButton), typeof (AnalysisEventButtonVM));
 			TypeMappings.Add (typeof (TagButton), typeof (TagButtonVM));
 			TypeMappings.Add (typeof (TimerButton), typeof (TimerButtonVM));
+		}
+
+		protected override DashboardButtonVM CreateInstance (DashboardButton model)
+		{
+			if (cachedButtonVMs.ContainsKey (model)) {
+				return cachedButtonVMs [model];
+			}
+
+			DashboardButtonVM buttonVM = base.CreateInstance (model);
+			cachedButtonVMs.Add (model, buttonVM);
+
+			foreach (ActionLinkVM link in buttonVM.ActionLinks) {
+				link.SourceButton = GetLinkedButton (link.Model.SourceButton);
+				link.DestinationButton = GetLinkedButton (link.Model.DestinationButton);
+			}
+
+			return buttonVM;
+		}
+
+		DashboardButtonVM GetLinkedButton (DashboardButton model)
+		{
+			if (modelToViewModel.ContainsKey (model)) {
+				return modelToViewModel [model];
+			} else if (cachedButtonVMs.ContainsKey(model)) {
+				return cachedButtonVMs [model];
+			}
+
+			DashboardButtonVM buttonVM = base.CreateInstance (model);
+			cachedButtonVMs.Add (model, buttonVM);
+			return buttonVM;
 		}
 	}
 }

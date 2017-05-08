@@ -44,13 +44,13 @@ namespace VAS.Core.Handlers
 	public delegate void ButtonSelectedHandler (DashboardButton taggerbutton);
 
 	/* Dashboard link selected */
-	public delegate void ActionLinksSelectedHandler (List<ActionLink> actionLink);
+	public delegate void ActionLinksSelectedHandler (List<ActionLinkVM> actionLink);
 
 	/* Dashboard link crated */
-	public delegate void ActionLinkCreatedHandler (ActionLink actionLink);
+	public delegate void ActionLinkCreatedHandler (ActionLinkVM actionLink);
 
 	/* Show dashboard menu */
-	public delegate void ShowDashboardMenuHandler (List<DashboardButtonVM> selectedButtons, List<ActionLink> selectedLinks);
+	public delegate void ShowDashboardMenuHandler (List<DashboardButtonVM> selectedButtons, List<ActionLinkVM> selectedLinks);
 
 	/* The plays filter was updated */
 	public delegate void FilterUpdatedHandler ();

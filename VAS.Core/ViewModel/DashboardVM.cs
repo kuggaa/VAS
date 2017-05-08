@@ -35,6 +35,7 @@ namespace VAS.Core.ViewModel
 	{
 		DashboardMode mode;
 		Time currentTime;
+		bool showLinks;
 
 		public DashboardVM ()
 		{
@@ -53,6 +54,12 @@ namespace VAS.Core.ViewModel
 			DuplicateButton = new Command<DashboardButtonVM> (
 				(s) => App.Current.EventsBroker.Publish (new DuplicateEvent<DashboardButtonVM> { Object = s })) {
 				Text = Catalog.GetString ("Duplicate"),
+			};
+
+			DeleteLink = new Command<ActionLinkVM> (
+				(s) => App.Current.EventsBroker.Publish (new DeleteEvent<ActionLinkVM> { Object = s })) {
+				Icon = Resources.LoadIcon ("longomatch-delete", App.Current.Style.ButtonNormalWidth),
+				Text = Catalog.GetString ("Delete"),
 			};
 
 			ResetField = new Command<FieldPositionType> (
@@ -117,7 +124,7 @@ namespace VAS.Core.ViewModel
 		/// Gets the command to delete link.
 		/// </summary>
 		[PropertyChanged.DoNotNotify]
-		public Command<ActionLink> DeleteLink {
+		public Command<ActionLinkVM> DeleteLink {
 			get;
 			private set;
 		}
@@ -210,8 +217,12 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		/// <value><c>true</c> if show links; otherwise, <c>false</c>.</value>
 		public bool ShowLinks {
-			get;
-			set;
+			get {
+				return showLinks && mode == DashboardMode.Edit;
+			}
+			set {
+				showLinks = value;
+			}
 		}
 
 		/// <summary>

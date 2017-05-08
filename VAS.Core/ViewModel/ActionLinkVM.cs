@@ -1,5 +1,5 @@
 ﻿//
-//  Copyright (C) 2015 Fluendo S.A.
+//  Copyright (C) 2017 FLUENDO S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,35 +15,32 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using System.Collections.ObjectModel;
 using VAS.Core.Common;
 using VAS.Core.MVVMC;
+using VAS.Core.Store;
 
-namespace VAS.Core.Store
+namespace VAS.Core.ViewModel
 {
 	/// <summary>
-	/// Defines an action link between 2 buttons in a <see cref="LongoMatch.Core.Store.Templates.Dashboard"/>.
+	/// ViewModel of the Action link.
 	/// </summary>
-	[Serializable]
-	public class ActionLink : BindableBase
+	public class ActionLinkVM : ViewModelBase<ActionLink>
 	{
+		DashboardButtonVM sourceButtonVM;
+		DashboardButtonVM destinationButtonVM;
 
-		public ActionLink ()
+		public ActionLinkVM ()
 		{
-			KeepGenericTags = true;
-			KeepPlayerTags = true;
-			SourceTags = new ObservableCollection<Tag> ();
-			DestinationTags = new ObservableCollection<Tag> ();
-			TeamAction = TeamLinkAction.Keep;
+			var k = 0;
 		}
 
 		/// <summary>
 		/// The type of action that will be performed in the destination.
 		/// </summary>
 		public LinkAction Action {
-			get;
-			set;
+			get { return Model.Action; }
+			set { Model.Action = value; }
 		}
 
 		/// <summary>
@@ -51,97 +48,70 @@ namespace VAS.Core.Store
 		/// for team tagged in the source event.
 		/// </summary>
 		public TeamLinkAction TeamAction {
-			get;
-			set;
+			get { return Model.TeamAction; }
+			set { Model.TeamAction = value; }
 		}
 
 		/// <summary>
 		/// The source button of the link
 		/// </summary>
-		public DashboardButton SourceButton {
-			get;
-			set;
+		public DashboardButtonVM SourceButton {
+			get { return sourceButtonVM; }
+			set {
+				sourceButtonVM = value;
+				Model.SourceButton = sourceButtonVM.Model;
+			}
 		}
 
 		/// <summary>
 		/// A list of tags that needs to match in the source
 		/// </summary>
 		public ObservableCollection<Tag> SourceTags {
-			get;
-			set;
+			get { return Model.SourceTags; }
+			set { Model.SourceTags = value; }
 		}
 
 		/// <summary>
 		/// The destination button of the link
 		/// </summary>
-		public DashboardButton DestinationButton {
-			get;
-			set;
+		public DashboardButtonVM DestinationButton {
+			get { return destinationButtonVM; }
+			set {
+				destinationButtonVM = value;
+				Model.DestinationButton = destinationButtonVM.Model;
+			}
 		}
 
 		/// <summary>
 		/// A list of tags that needs to be set in the destination
 		/// </summary>
 		public ObservableCollection<Tag> DestinationTags {
-			get;
-			set;
+			get { return Model.DestinationTags; }
+			set { Model.DestinationTags = value; }
 		}
 
 		/// <summary>
 		/// If <c>true</c>, players tagged in the source event will be copied
 		/// </summary>
 		public bool KeepPlayerTags {
-			get;
-			set;
+			get { return Model.KeepPlayerTags; }
+			set { Model.KeepPlayerTags = value; }
 		}
 
 		/// <summary>
 		/// If <c>true</c>, generic tags will be copied.
 		/// </summary>
 		public bool KeepGenericTags {
-			get;
-			set;
+			get { return Model.KeepGenericTags; }
+			set { Model.KeepGenericTags = value; }
 		}
 
-		public override bool Equals (object obj)
-		{
-			ActionLink link = obj as ActionLink;
-			if (link == null)
-				return false;
-
-			if (link.SourceButton != SourceButton ||
-				link.DestinationButton != DestinationButton) {
-				return false;
-			}
-			if (!link.SourceTags.SequenceEqualSafe (SourceTags) ||
-				!link.DestinationTags.SequenceEqualSafe (DestinationTags)) {
-				return false;
-			}
-			return true;
-		}
-
-		public override int GetHashCode ()
-		{
-			return base.GetHashCode ();
-		}
-
-		public static bool operator == (ActionLink l1, ActionLink l2)
-		{
-			if (Object.ReferenceEquals (l1, l2)) {
-				return true;
-			}
-
-			if ((object)l1 == null || (object)l2 == null) {
-				return false;
-			}
-
-			return l1.Equals (l2);
-		}
-
-		public static bool operator != (ActionLink l1, ActionLink l2)
-		{
-			return !(l1 == l2);
+		/// <summary>
+		/// Gets the name of the action link
+		/// </summary>
+		/// <value>The action link name.</value>
+		public string Name {
+			get { return string.Format ("{0} -> {1}", SourceButton?.Name, DestinationButton?.Name); }
 		}
 	}
 }
-
