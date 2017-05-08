@@ -17,6 +17,7 @@
 //
 using System.Collections.ObjectModel;
 using VAS.Core.Events;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
@@ -26,7 +27,7 @@ namespace VAS.Services.ViewModel
 	/// <summary>
 	/// A ViewModel to synchronize different cameras in a project.
 	/// </summary>
-	public class CameraSynchronizationVM : ViewModelBase
+	public class CameraSynchronizationVM : ViewModelBase, IVideoPlayerDealer
 	{
 		ProjectVM projectVM;
 
@@ -35,11 +36,6 @@ namespace VAS.Services.ViewModel
 			Save = new Command (() => {
 				App.Current.EventsBroker.Publish (new SaveEvent<ProjectVM> { Object = Project });
 			});
-		}
-
-		public static implicit operator VideoPlayerVM (CameraSynchronizationVM camSyncVM)
-		{
-			return camSyncVM?.VideoPlayer;
 		}
 
 		/// <summary>

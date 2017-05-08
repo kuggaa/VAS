@@ -25,6 +25,7 @@ using VAS.Core;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
@@ -507,10 +508,10 @@ namespace VAS.Tests.Services
 
 		class PlaylistControllerWithProject : PlaylistController
 		{
-			public override void SetViewModel (VAS.Core.Interfaces.MVVMC.IViewModel viewModel)
+			public override void SetViewModel (IViewModel viewModel)
 			{
 				base.SetViewModel (viewModel);
-				ProjectViewModel = (ProjectVM)(viewModel as dynamic);
+				ProjectViewModel = ((IProjectDealer)viewModel).Project;
 			}
 
 			// For some reason, without this override, these 3 tests fail:

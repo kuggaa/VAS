@@ -65,7 +65,7 @@ namespace VAS.Services.Controller
 
 		public override void SetViewModel (IViewModel viewModel)
 		{
-			dashboardVM = (DashboardVM)(viewModel as dynamic);
+			dashboardVM = ((IDashboardDealer)viewModel).Dashboard;
 		}
 
 		protected virtual async Task HandleReplaceField (ReplaceDashboardFieldEvent arg)

@@ -81,14 +81,9 @@ namespace VAS.Services.Controller
 
 		public override void SetViewModel (IViewModel viewModel)
 		{
-			project = (ProjectVM)(viewModel as dynamic);
-			videoPlayer = (VideoPlayerVM)(viewModel as dynamic);
-
-			// FIXME: Remove the try catch when the new interface is passed instead of IViewModel
-			try {
-				capturer = (ICapturerBin)((viewModel as dynamic).Capturer);
-			} catch {
-			}
+			project = ((IProjectDealer)viewModel).Project;
+			videoPlayer = ((IVideoPlayerDealer)viewModel).VideoPlayer;
+			capturer = (viewModel as ICapturerBinDealer)?.Capturer;
 
 			if (project.ProjectType == ProjectType.FileProject && project.FileSet.Any ()) {
 				framesCapturer = App.Current.MultimediaToolkit.GetFramesCapturer ();

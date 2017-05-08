@@ -351,7 +351,10 @@ namespace VAS.Services
 
 		public override void SetViewModel (IViewModel viewModel)
 		{
-			playerVM = (VideoPlayerVM)(viewModel as dynamic);
+			playerVM = viewModel as VideoPlayerVM;
+			if (playerVM == null) {
+				playerVM = ((IVideoPlayerDealer)viewModel).VideoPlayer;
+			}
 			playerVM.Player = this;
 			playerVM.SupportsMultipleCameras = supportsMultipleCameras;
 		}

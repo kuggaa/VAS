@@ -119,15 +119,10 @@ namespace VAS.Services.Controller
 
 		public override void SetViewModel (IViewModel viewModel)
 		{
-			PlayerVM = (VideoPlayerVM)(viewModel as dynamic);
-			Timeline = (TimelineVM)(viewModel as dynamic);
-			projectVM = (ProjectVM)(viewModel as dynamic);
-
-			// FIXME: Remove the try catch when the new interface is passed instead of IViewModel
-			try {
-				capturer = (ICapturerBin)((viewModel as dynamic).Capturer);
-			} catch (Exception e){
-			}
+			PlayerVM = ((IVideoPlayerDealer)viewModel).VideoPlayer;
+			Timeline = ((ITimelineDealer)viewModel).Timeline;
+			projectVM = (viewModel as IProjectDealer)?.Project;
+			capturer = (viewModel as ICapturerBinDealer)?.Capturer;
 		}
 
 		public override IEnumerable<KeyAction> GetDefaultKeyActions ()

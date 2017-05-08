@@ -95,12 +95,12 @@ namespace VAS.Services.Controller
 			if (playlistViewModel != null) {
 				playlistViewModel.PropertyChanged -= HandlePropertyChanged;
 			}
-			playlistViewModel = (PlaylistCollectionVM)(viewModel as dynamic);
+			playlistViewModel = ((IPlaylistCollectionDealer)viewModel).Playlists;
 			if (playlistViewModel != null) {
 				playlistViewModel.PropertyChanged += HandlePropertyChanged;
 			}
 
-			PlayerVM = (VideoPlayerVM)(viewModel as dynamic);
+			PlayerVM = ((IVideoPlayerDealer)viewModel).VideoPlayer;
 		}
 
 		public override IEnumerable<KeyAction> GetDefaultKeyActions ()

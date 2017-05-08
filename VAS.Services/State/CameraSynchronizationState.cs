@@ -42,7 +42,6 @@ namespace VAS.Services.State
 		protected override void CreateControllers (dynamic data)
 		{
 			var playerController = new VideoPlayerController ();
-			playerController.SetViewModel (ViewModel.VideoPlayer);
 			Controllers.Add (playerController);
 		}
 
