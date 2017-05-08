@@ -34,6 +34,7 @@ namespace VAS.UI.Component
 		where TViewModel : class, IViewModel<TModel>, new()
 	{
 		protected bool isSelecting;
+		protected bool loadEventsOnSelectionChanged;
 		TimelineVM viewModel;
 
 		public TimelineEventsTreeView ()
@@ -135,7 +136,7 @@ namespace VAS.UI.Component
 						Selection.SelectIter (iter);
 					}
 				}
-				if (events.Any ()) {
+				if (events.Any () && loadEventsOnSelectionChanged) {
 					ViewModel.LoadEvents (events, false);
 				}
 				isSelecting = false;
