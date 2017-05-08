@@ -27,10 +27,10 @@ namespace VAS.Core.Common
 
 		public Coordinates ()
 		{
-			Points = new ObservableCollection<Point> ();
+			Points = new RangeObservableCollection<Point> ();
 		}
 
-		public ObservableCollection<Point> Points {
+		public RangeObservableCollection<Point> Points {
 			get;
 			set;
 		}

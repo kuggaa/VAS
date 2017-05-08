@@ -38,7 +38,7 @@ namespace VAS.Core.ViewModel
 	/// timeline widget where each row show the timeline events for a given a event type.
 	/// This timeline also contains a <see cref="CollectionViewModel`1"/> with all the timeline events.
 	/// </summary>
-	public class TimelineVM : BindableBase, IViewModel<RangeObservableCollection<TimelineEvent>>
+	public class TimelineVM : ViewModelBase<RangeObservableCollection<TimelineEvent>>
 	{
 		RangeObservableCollection<TimelineEvent> model;
 		Dictionary<string, EventTypeTimelineVM> eventTypeToTimeline;

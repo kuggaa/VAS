@@ -105,6 +105,19 @@ namespace VAS.Core.ViewModel
 			get;
 			set;
 		}
+
+		/// <summary>
+		/// Position of this event in the field.
+		/// </summary>
+		/// <value>The field position.</value>
+		public Coordinates FieldPosition {
+			get {
+				return Model.FieldPosition;
+			}
+			set {
+				Model.FieldPosition = value;
+			}
+		}
 	}
 
 	/// <summary>
