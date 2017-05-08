@@ -23,8 +23,12 @@ using VAS.Core.Store;
 
 namespace VAS.Services.ViewModel
 {
+	/// <summary>
+	/// ViewModel used in DrawingTool View
+	/// </summary>
 	public class DrawingToolVM : ViewModelBase
 	{
+		//FIXME: this should be migrated to MVVM ProjectVM, TimelineEventVM, etc.
 		/// <summary>
 		/// Gets or sets the project.
 		/// </summary>
