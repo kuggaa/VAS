@@ -286,7 +286,7 @@ namespace VAS.Core.ViewModel
 		{
 			base.ForwardPropertyChanged (sender, e);
 
-			var viewModel = (EventTypeVM)sender;
+			var viewModel = sender as EventTypeVM;
 			if (viewModel != null) {
 				if (viewModel.NeedsSync (e, nameof (viewModel.Name))) {
 					RecreateInternalDictionary ();
