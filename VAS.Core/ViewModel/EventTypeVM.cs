@@ -52,6 +52,19 @@ namespace VAS.Core.ViewModel
 				Model.Color = value;
 			}
 		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.AnalysisEventButtonVM"/> locate event.
+		/// </summary>
+		/// <value><c>true</c> if locate event; otherwise, <c>false</c>.</value>
+		public bool AllowLocation {
+			get {
+				return Model.AllowLocation;
+			}
+			set {
+				Model.AllowLocation = value;
+			}
+		}
 	}
 
 }

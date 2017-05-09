@@ -111,7 +111,7 @@ namespace VAS.Services.Controller
 				if (analysisButton != null) {
 					KeyAction action = new KeyAction (new KeyConfig {
 						Name = analysisButton.Name,
-						Key = analysisButton.HotKey
+						Key = analysisButton.HotKey.Model
 					}, () => HandleSubCategoriesTagging (analysisButton));
 					keyActions.Add (action);
 					categoriesActions.Add (analysisButton, action);
@@ -218,9 +218,9 @@ namespace VAS.Services.Controller
 		void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			var changedButton = sender as DashboardButtonVM;
-			if (changedButton != null && changedButton.NeedsSync (e, nameof (changedButton.HotKey)) &&
+			if (changedButton != null && changedButton.NeedsSync (e, nameof (changedButton.HotKey.Model)) &&
 				categoriesActions.ContainsKey (changedButton)) {
-				categoriesActions [changedButton].KeyConfig.Key = changedButton.HotKey;
+				categoriesActions [changedButton].KeyConfig.Key = changedButton.HotKey.Model;
 			}
 		}
 

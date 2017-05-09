@@ -36,10 +36,11 @@ namespace VAS.Core.ViewModel
 		public DashboardButtonVM ()
 		{
 			ActionLinks = new CollectionViewModel<ActionLink, ActionLinkVM> ();
+			HotKey = new HotKeyVM ();
 		}
 
 		/// <summary>
-		/// Gets or sets the dashboard button model.
+		/// Gets or sets the model (DashboardButton).
 		/// </summary>
 		/// <value>The model.</value>
 		public override DashboardButton Model {
@@ -49,9 +50,10 @@ namespace VAS.Core.ViewModel
 			set {
 				base.Model = value;
 				ActionLinks.Model = value.ActionLinks;
+				HotKey.Model = value.HotKey;
 			}
 		}
-
+		
 		/// <summary>
 		/// Gets the DashboardButtonView.
 		/// </summary>
@@ -142,13 +144,9 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the hot key.
 		/// </summary>
 		/// <value>The hot key.</value>
-		public virtual HotKey HotKey {
-			get {
-				return Model.HotKey;
-			}
-			set {
-				Model.HotKey = value;
-			}
+		public virtual HotKeyVM HotKey {
+			get;
+			private set;
 		}
 
 		/// <summary>
@@ -365,11 +363,11 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class AnalysisEventButtonVM : EventButtonVM
 	{
-
 		public AnalysisEventButtonVM ()
 		{
 			SelectedTags = new List<Tag> ();
 		}
+
 		/// <summary>
 		/// Gets or sets the model.
 		/// </summary>
