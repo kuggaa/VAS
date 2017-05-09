@@ -89,15 +89,7 @@ namespace VAS.Core.Store.Templates
 		/// </summary>
 		/// <value>The list.</value>
 		[JsonProperty]
-		public RangeObservableCollection<Player> List {
-
-		[XmlIgnore]
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		protected bool Disposed {
-			get;
-			protected set;
-		}
+		public RangeObservableCollection<Player> List { get; set; }
 
 		/// <summary>
 		/// Creates a deep copy of this team with new ID's for each player

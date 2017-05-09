@@ -342,7 +342,6 @@ namespace VAS.Core.Serialization
 			} catch (Exception ex) {
 				return null;
 			}
-			return contract;
 		}
 	}
 

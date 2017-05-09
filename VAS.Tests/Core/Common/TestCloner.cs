@@ -94,11 +94,9 @@ namespace VAS.Tests.Core.Common
 		{
 			var player = new DummyPlayer ();
 			player.Color = Color.Black;
-			player.Tagged = true;
 			player.IsChanged = true;
 			var player2 = player.Clone ();
 			Assert.AreEqual (player.Color, player2.Color);
-			Assert.AreEqual (player.Tagged, player2.Tagged);
 			Assert.IsTrue (player2.IsChanged);
 		}
 
@@ -164,7 +162,7 @@ namespace VAS.Tests.Core.Common
 		[Test ()]
 		public void TestClone_CloneIgnore_Team ()
 		{
-			var team = new Team ();
+			var team = new DummyTeam ();
 			team.Static = true;
 			team.Color = Color.Black;
 			var team2 = team.Clone ();
@@ -206,6 +204,10 @@ namespace VAS.Tests.Core.Common
 		}
 	}
 
+	class DummyTeam : Team
+	{
+	}
+
 	class DummyPlayer : Player
 	{
 	}
@@ -217,7 +219,12 @@ namespace VAS.Tests.Core.Common
 			throw new NotImplementedException ();
 		}
 
-		public override TimelineEvent AddEvent (EventType type, Time start, Time stop, Time eventTime, Image miniature, bool addToTimeline = true)
+		public new TimelineEvent AddEvent (EventType type, Time start, Time stop, Time eventTime, Image miniature)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public override TimelineEvent CreateEvent (EventType type, Time start, Time stop, Time eventTime, Image miniature, int index = 0)
 		{
 			throw new NotImplementedException ();
 		}
