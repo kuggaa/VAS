@@ -15,13 +15,15 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
+using System.IO;
 using System.Linq;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
+using VAS.Core.Serialization;
 using VAS.Core.Store.Templates;
 using VAS.Core.ViewModel;
 
@@ -32,17 +34,13 @@ namespace VAS.Tests.Services
 	{
 		DummyTemplatesController templatesController;
 		Mock<IDialogs> mockDialogs;
+		string tempFile;
 
 		[SetUp]
 		public void SetUp ()
 		{
 			templatesController = new DummyTemplatesController ();
 			templatesController.Start ();
-		}
-
-		[TestFixtureSetUp]
-		public void SetUpFixture ()
-		{
 			mockDialogs = new Mock<IDialogs> ();
 			App.Current.Dialogs = mockDialogs.Object;
 			mockDialogs.Setup (m => m.QuestionMessage (It.IsAny<string> (), null, It.IsAny<DummyTemplatesController> ())).Returns (AsyncHelpers.Return (true));
@@ -53,6 +51,10 @@ namespace VAS.Tests.Services
 		public void TearDownOnce ()
 		{
 			templatesController.Stop ();
+			try {
+				File.Delete (tempFile);
+			} catch {
+			}
 		}
 
 		[Test ()]
@@ -123,7 +125,7 @@ namespace VAS.Tests.Services
 			// Assert
 			Assert.AreEqual (templatesController.ViewModel.ViewModels.First (x => x.ID == team.ID).Name,
 						   expectedName);
-			Assert.IsFalse (templatesController.ViewModel.SaveCommand.CanExecute());
+			Assert.IsFalse (templatesController.ViewModel.SaveCommand.CanExecute ());
 		}
 
 		[Test ()]
@@ -152,7 +154,7 @@ namespace VAS.Tests.Services
 			mockDialogs.Verify (m => m.QuestionMessage (It.IsAny<string> (), null, It.IsAny<DummyTemplatesController> ()), Times.Once ());
 			Assert.AreEqual (templatesController.ViewModel.ViewModels.First (x => x.ID == team.ID).Name,
 						   expectedName);
-			Assert.IsFalse (templatesController.ViewModel.SaveCommand.CanExecute());
+			Assert.IsFalse (templatesController.ViewModel.SaveCommand.CanExecute ());
 		}
 
 		[Test ()]
@@ -182,6 +184,91 @@ namespace VAS.Tests.Services
 			// Assert
 			Assert.IsTrue (evt.ReturnValue);
 			mockDialogs.Verify (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (), It.IsAny<DummyTemplatesController> ()), Times.Once ());
+		}
+
+		public TeamVM PrepareExport ()
+		{
+			Utils.PlayerDummy player = new Utils.PlayerDummy ();
+			DummyTeam team = new DummyTeam ();
+			team.List.Add (player);
+			TeamVM teamVM = new TeamVM { Model = team };
+			templatesController.ViewModel.ViewModels.Add (teamVM);
+			templatesController.ViewModel.Selection.Add (teamVM);
+			tempFile = Path.Combine (Path.GetTempPath (), Path.GetRandomFileName ());
+			tempFile = Path.ChangeExtension (tempFile, null);
+			mockDialogs.Setup (m => m.SaveFile (It.IsAny<string> (), It.IsAny<string> (),
+												It.IsAny<string> (), It.IsAny<string> (),
+												It.IsAny<string []> ())).
+					   Returns (tempFile);
+			return teamVM;
+		}
+
+		[Test ()]
+		public void TestExport_TemplateSelectedToNewFile_Exported ()
+		{
+			// Arrange
+			TeamVM team = PrepareExport ();
+
+			// Act
+			templatesController.ViewModel.ExportCommand.Execute ();
+			var exportedTeam = Serializer.Instance.Load<DummyTeam> (tempFile);
+
+			// Assert
+			Assert.AreEqual (team.Model, exportedTeam);
+		}
+
+		[Test ()]
+		public void TestExport_TemplateSelected_Overwrite ()
+		{
+			// Arrange
+			TeamVM team = PrepareExport ();
+			using (var stream = File.AppendText (tempFile)) {
+				stream.WriteLine ("FOO");
+			}
+
+			// Act
+			templatesController.ViewModel.ExportCommand.Execute ();
+			var exportedTeam = Serializer.Instance.Load<DummyTeam> (tempFile);
+
+			// Assert
+			Assert.AreEqual (team.Model, exportedTeam);
+		}
+
+		[Test ()]
+		public void TestExport_TemplateSelected_NotOverwrite ()
+		{
+			// Arrange
+			TeamVM team = PrepareExport ();
+			using (var stream = File.AppendText (tempFile)) {
+				stream.WriteLine ("FOO");
+			}
+			mockDialogs.Setup (m => m.QuestionMessage (It.IsAny<string> (), null,
+													   It.IsAny<DummyTemplatesController> ())).
+					   Returns (AsyncHelpers.Return (false));
+
+
+			templatesController.ViewModel.ExportCommand.Execute ();
+
+			// Assert
+			Assert.IsTrue (File.Exists (tempFile));
+			Assert.Throws<JsonReaderException> (() => Serializer.Instance.Load<DummyTeam> (tempFile));
+		}
+
+		[Test ()]
+		public void TestExport_WithoutTemplateSelected_NotExported ()
+		{
+			tempFile = Path.Combine (Path.GetTempPath (), Path.GetRandomFileName ());
+			tempFile = Path.ChangeExtension (tempFile, null);
+			mockDialogs.Setup (m => m.SaveFile (It.IsAny<string> (), It.IsAny<string> (),
+												It.IsAny<string> (), It.IsAny<string> (),
+												It.IsAny<string []> ())).
+					   Returns (tempFile);
+
+			// Act
+			templatesController.ViewModel.ExportCommand.Execute ();
+
+			// Assert
+			Assert.IsFalse (File.Exists (tempFile));
 		}
 	}
 }
