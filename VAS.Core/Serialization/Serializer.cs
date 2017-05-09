@@ -168,22 +168,35 @@ namespace VAS.Core.Serialization
 			}
 		}
 
-		public T Clone<T> (T obj)
+		public T Clone<T> (T obj, SerializationType serType = SerializationType.Json)
 		{
 			T retStorable;
-			var jsonSettings = JsonSettings;
-			jsonSettings.ContractResolver = new IsChangedContractResolver (true);
-			using (Stream s = new MemoryStream ()) {
-				using (StreamWriter sw = new StreamWriter (s, Encoding.UTF8)) {
-					sw.NewLine = "\n";
-					sw.Write (JsonConvert.SerializeObject (obj, jsonSettings));
-					sw.Flush ();
-					s.Seek (0, SeekOrigin.Begin);
-					using (StreamReader sr = new StreamReader (s, Encoding.UTF8)) {
-						retStorable = (T)JsonConvert.DeserializeObject (sr.ReadToEnd (), obj.GetType (), jsonSettings);
+
+			switch (serType) {
+			case SerializationType.Json:
+				var jsonSettings = JsonSettings;
+				jsonSettings.ContractResolver = new IsChangedContractResolver (true);
+				using (Stream s = new MemoryStream ()) {
+					using (StreamWriter sw = new StreamWriter (s, Encoding.UTF8)) {
+						sw.NewLine = "\n";
+						sw.Write (JsonConvert.SerializeObject (obj, jsonSettings));
+						sw.Flush ();
+						s.Seek (0, SeekOrigin.Begin);
+						using (StreamReader sr = new StreamReader (s, Encoding.UTF8)) {
+							retStorable = (T)JsonConvert.DeserializeObject (sr.ReadToEnd (), obj.GetType (), jsonSettings);
+						}
 					}
 				}
+				break;
+			default:
+				using (Stream s = new MemoryStream ()) {
+					Save<T> (obj, s, serType);
+					s.Seek (0, SeekOrigin.Begin);
+					retStorable = Load<T> (s, serType);
+				}
+				break;
 			}
+
 			return retStorable;
 		}
 	}
@@ -328,20 +341,16 @@ namespace VAS.Core.Serialization
 
 		protected override JsonContract CreateContract (Type type)
 		{
-			try {
-				JsonContract contract = base.CreateContract (type);
-				if (typeof (IChanged).IsAssignableFrom (type)) {
-					contract.OnDeserializedCallbacks.Add (
-						(o, context) => {
-							if (!IgnoreJsonIgnore) {
-								(o as IChanged).IsChanged = false;
-							}
-						});
-				}
-				return contract;
-			} catch (Exception ex) {
-				return null;
+			JsonContract contract = base.CreateContract (type);
+			if (typeof (IChanged).IsAssignableFrom (type)) {
+				contract.OnDeserializedCallbacks.Add (
+					(o, context) => {
+						if (!IgnoreJsonIgnore) {
+							(o as IChanged).IsChanged = false;
+						}
+					});
 			}
+			return contract;
 		}
 	}
 
