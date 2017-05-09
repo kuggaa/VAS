@@ -41,7 +41,8 @@ namespace VAS.Core.Interfaces
 		/// </summary>
 		/// <returns>The object's deep clone.</returns>
 		/// <param name="obj">The object to be cloned.</param>
+		/// <param name="serType">The serialization type to do the clone operation.</param>
 		/// <typeparam name="T">The type of the object to be cloned.</typeparam>
-		T Clone<T> (T obj);
+		T Clone<T> (T obj, SerializationType serType = SerializationType.Json);
 	}
 }
