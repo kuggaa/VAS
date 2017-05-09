@@ -2451,4 +2451,25 @@
       </widget>
     </child>
   </widget>
+  <widget class="Gtk.Bin" id="VAS.UI.Component.HotKeyView" design-size="365 218">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Gtk.HBox" id="hbox1">
+        <property name="MemberName" />
+        <property name="Spacing">6</property>
+        <child>
+          <widget class="Gtk.Button" id="hotKeyButton">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Type">Custom</property>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
 </stetic-interface>

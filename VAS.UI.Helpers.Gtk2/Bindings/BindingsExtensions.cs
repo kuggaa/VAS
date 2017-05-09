@@ -19,6 +19,7 @@ using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using Gtk;
+using VAS.Core.Common;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using Image = VAS.Core.Common.Image;
@@ -132,6 +133,35 @@ namespace VAS.UI.Helpers.Bindings
 		public static ButtonBinding BindWithIcon (this Button button, Image image, Func<IViewModel, Command> commandFunc, object parameter = null)
 		{
 			return new ButtonBinding (button, commandFunc, parameter, image, "");
+		}
+
+		/// <summary>
+		/// Bind the specified CheckButton to a property by name.
+		/// </summary>
+		/// <param name="CheckButton">CheckButton.</param>
+		public static CheckBoxBinding Bind (this CheckButton checkButton, Expression<Func<IViewModel, bool>> propertyExpression)
+		{
+			return new CheckBoxBinding (checkButton, propertyExpression);
+		}
+
+		/// <summary>
+		/// Bind the specified SpinButton to a property by name.
+		/// </summary>
+		/// <param name="SpinButton">SpinButton.</param>
+		public static SpinBinding Bind (this SpinButton spinButton, Expression<Func<IViewModel, object>> propertyExpression,
+										TypeConverter converter = null)
+		{
+			return new SpinBinding (spinButton, propertyExpression, converter);
+		}
+
+		/// <summary>
+		/// Bind the specified colorButton and propertyExpression.
+		/// </summary>
+		/// <param name="colorButton">Color button.</param>
+		/// <param name="propertyExpression">Property expression.</param>
+		public static ColorButtonBinding Bind (this ColorButton colorButton, Expression<Func<IViewModel, Color>> propertyExpression)
+		{
+			return new ColorButtonBinding (colorButton, propertyExpression);
 		}
 	}
 }

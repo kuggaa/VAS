@@ -55,6 +55,9 @@
     <Compile Include="Bindings\ButtonBinding.cs" />
     <Compile Include="Bindings\ToggleButtonBinding.cs" />
     <Compile Include="CommandExtensions.cs" />
+    <Compile Include="Bindings\CheckBoxBinding.cs" />
+    <Compile Include="Bindings\SpinBinding.cs" />
+    <Compile Include="Bindings\ColorButtonBinding.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -25,13 +25,14 @@ using VAS.Core.Common;
 namespace VAS.Core.Store
 {
 	[Serializable]
-	public class EventType: StorableBase
+	public class EventType : StorableBase
 	{
 
 		public EventType ()
 		{
 			ID = Guid.NewGuid ();
 			Color = Color.Red.Copy (true);
+			AllowLocation = true;
 		}
 
 		public virtual string Name {
@@ -74,6 +75,11 @@ namespace VAS.Core.Store
 			set;
 		}
 
+		public bool AllowLocation {
+			get;
+			set;
+		}
+
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public string SortMethodString {
@@ -105,7 +111,7 @@ namespace VAS.Core.Store
 	}
 
 	[Serializable]
-	public class AnalysisEventType: EventType
+	public class AnalysisEventType : EventType
 	{
 
 		public AnalysisEventType ()
