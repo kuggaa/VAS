@@ -493,7 +493,7 @@ namespace VAS.Core
 			Name = name;
 			ScreenState = screenState;
 			Completion = new TaskCompletionSource<bool> ();
-			completeWhenUnload = completeWhenUnload;
+			this.completeWhenUnload = completeWhenUnload;
 		}
 
 		public string Name { get; set; }
