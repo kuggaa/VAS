@@ -111,11 +111,23 @@ namespace VAS.Core
 				} else {
 					state = destination [transition] ();
 					if (!await state.LoadState (properties)) {
+						// If the transition failed and the stack is empty, load the home,
+						// otherwise show again the last state that was hidden at the start of the
+						// MoveTo
+						if (emptyStack) {
+							await PushNavigationState (home.Name, home.ScreenState);
+						} else {
+							if (!await lastState.Show ()) {
+								// This shouldn't fail... but just in case
+								Log.Error ("Last state couldn't be shown again, we'll move back home");
+								await PushNavigationState (home.Name, home.ScreenState);
+							}
+						}
 						return false;
 					}
 				}
 
-				return await PushNavigationState (transition, state, isHome);
+				return await PushNavigationState (transition, state);
 			} catch (Exception ex) {
 				Log.Exception (ex);
 				return false;
@@ -330,15 +342,19 @@ namespace VAS.Core
 			return true;
 		}
 
-		async Task<bool> PushNavigationState (string transition, IScreenState state, bool ishome)
+		async Task<bool> PushNavigationState (string transition, IScreenState state)
 		{
-			if (!ishome) {
-				navigationStateStack.Add (new NavigationState (transition, state));
+			NavigationState navState;
+			if (transition == home?.Name) {
+				navState = home;
+			} else {
+				navState = new NavigationState (transition, state);
+				navigationStateStack.Add (navState);
 			}
 			if (!await App.Current.Navigation.Push (state.Panel)) {
 				return false;
 			}
-			if (!await state.ShowState ()) {
+			if (!await navState.Show ()) {
 				return false;
 			}
 			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = transition });
@@ -483,10 +499,20 @@ namespace VAS.Core
 		}
 	}
 
+	enum NavigationStateStatus
+	{
+		Loaded,
+		Shown,
+		Frozen,
+		Hidden,
+		Unloaded
+	}
+
 	class NavigationState
 	{
 		NavigationState freezingState;
 		bool completeWhenUnload;
+
 
 		public NavigationState (string name, IScreenState screenState, bool completeWhenUnload = true)
 		{
@@ -501,6 +527,8 @@ namespace VAS.Core
 		public IScreenState ScreenState { get; set; }
 
 		public TaskCompletionSource<bool> Completion { get; }
+
+		public NavigationStateStatus CurrentStatus { get; private set; }
 
 		public override bool Equals (object obj)
 		{
@@ -532,19 +560,50 @@ namespace VAS.Core
 			return !(a == b);
 		}
 
+		public override int GetHashCode ()
+		{
+			return base.GetHashCode ();
+		}
+
 		public async Task<bool> Load (dynamic data)
 		{
-			return await ScreenState.LoadState (data);
+			NavigationStateStatus newStatus = NavigationStateStatus.Loaded;
+			if (IsAlreadyInSameStatus (newStatus)) {
+				return true;
+			}
+
+			bool result = await ScreenState.LoadState (data);
+			if (result) {
+				UpdateState (newStatus);
+			}
+			return result;
 		}
 
 		public async Task<bool> Show ()
 		{
-			return await ScreenState.ShowState ();
+			NavigationStateStatus newStatus = NavigationStateStatus.Shown;
+			if (IsAlreadyInSameStatus (newStatus)) {
+				return true;
+			}
+
+			bool result = await ScreenState.ShowState ();
+			if (result) {
+				UpdateState (newStatus);
+			}
+			return result;
 		}
 
 		public async Task<bool> Unfreeze ()
 		{
+			NavigationStateStatus newStatus = NavigationStateStatus.Shown;
+			if (IsAlreadyInSameStatus (newStatus)) {
+				return true;
+			}
+
 			bool result = await ScreenState.UnfreezeState ();
+			if (result) {
+				UpdateState (newStatus);
+			}
 			if (freezingState.Completion.Task.Status != TaskStatus.RanToCompletion) {
 				freezingState.Completion.SetResult (result);
 			}
@@ -555,18 +614,44 @@ namespace VAS.Core
 
 		public async Task<bool> Freeze (NavigationState freezingState)
 		{
+			NavigationStateStatus newStatus = NavigationStateStatus.Frozen;
+			if (IsAlreadyInSameStatus (newStatus)) {
+				return true;
+			}
+
 			this.freezingState = freezingState;
-			return await ScreenState.FreezeState ();
+			bool result = await ScreenState.FreezeState ();
+			if (result) {
+				UpdateState (newStatus);
+			}
+			return result;
 		}
 
 		public async Task<bool> Hide ()
 		{
-			return await ScreenState.HideState ();
+			NavigationStateStatus newStatus = NavigationStateStatus.Hidden;
+			if (IsAlreadyInSameStatus (newStatus)) {
+				return true;
+			}
+
+			bool result = await ScreenState.HideState ();
+			if (result) {
+				UpdateState (newStatus);
+			}
+			return result;
 		}
 
 		public async Task<bool> Unload ()
 		{
+			NavigationStateStatus newStatus = NavigationStateStatus.Unloaded;
+			if (IsAlreadyInSameStatus (newStatus)) {
+				return true;
+			}
+
 			bool result = await ScreenState.UnloadState ();
+			if (result) {
+				UpdateState (newStatus);
+			}
 
 			if (freezingState != null && freezingState.Completion.Task.Status != TaskStatus.RanToCompletion) {
 				freezingState.Completion.SetResult (true);
@@ -582,6 +667,26 @@ namespace VAS.Core
 			}
 
 			return result;
+		}
+
+		bool IsAlreadyInSameStatus (NavigationStateStatus status)
+		{
+			if (CurrentStatus == status) {
+				Log.Warning ($"NavigationState has already to desired status {CurrentStatus}");
+				return true;
+			}
+			return false;
+		}
+
+		void UpdateState (NavigationStateStatus status)
+		{
+			Log.Verbose ($"Transitioning navigation state {Name} from {CurrentStatus} to {status}");
+			if (Math.Abs (status - CurrentStatus) > 1 &&
+				!((CurrentStatus == NavigationStateStatus.Hidden && status == NavigationStateStatus.Shown) ||
+				  (CurrentStatus == NavigationStateStatus.Shown && status == NavigationStateStatus.Hidden))) {
+				Log.Warning ($"Possible inconsistent status transition from {CurrentStatus} to {status}");
+			}
+			CurrentStatus = status;
 		}
 	}
 }

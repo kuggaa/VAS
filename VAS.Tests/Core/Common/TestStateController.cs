@@ -26,7 +26,6 @@ using VAS.Core.Events;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
-using VAS.Services.State;
 
 namespace VAS.Tests.Core.Common
 {
@@ -474,6 +473,48 @@ namespace VAS.Tests.Core.Common
 
 			// Assert
 			Assert.AreEqual ("Transition2", sc.Current);
+		}
+
+
+		[Test]
+		public async void TestMoveTo_EmptyStackAndLoadStateFails_HomeStateRestored ()
+		{
+			// Arrange
+			var transition2StateMock = Utils.GetScreenStateMocked ("Transition1");
+			transition2StateMock.Setup (x => x.LoadState (It.IsAny<ExpandoObject> ())).
+								Returns (AsyncHelpers.Return (false));
+			sc.Register ("Home", () => GetScreenStateDummy ("Home"));
+			sc.Register ("Transition1", () => GetScreenStateDummy ("Transition1"));
+			sc.Register ("Transition2", () => transition2StateMock.Object);
+			await sc.SetHomeTransition ("Home", null);
+			await sc.MoveTo ("Transition1", null);
+			bool ret = await sc.MoveTo ("Transition2", null, true);
+			var currentNavState = sc.LastState ();
+
+			Assert.IsFalse (ret);
+			Assert.AreEqual ("Home", sc.Current);
+
+			Assert.AreEqual (NavigationStateStatus.Shown, currentNavState.CurrentStatus);
+		}
+
+		[Test]
+		public async void TestMoveTo_LoadStateFails_PreviousStateRestored ()
+		{
+			// Arrange
+			var transition2StateMock = Utils.GetScreenStateMocked ("Transition1");
+			transition2StateMock.Setup (x => x.LoadState (It.IsAny<ExpandoObject> ())).
+								Returns (AsyncHelpers.Return (false));
+			sc.Register ("Home", () => GetScreenStateDummy ("Home"));
+			sc.Register ("Transition1", () => GetScreenStateDummy ("Transition1"));
+			sc.Register ("Transition2", () => transition2StateMock.Object);
+			await sc.SetHomeTransition ("Home", null);
+			await sc.MoveTo ("Transition1", null);
+			bool ret = await sc.MoveTo ("Transition2", null, false);
+			var currentNavState = sc.LastState ();
+
+			Assert.IsFalse (ret);
+			Assert.AreEqual ("Transition1", sc.Current);
+			Assert.AreEqual (NavigationStateStatus.Shown, currentNavState.CurrentStatus);
 		}
 	}
 
