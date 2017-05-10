@@ -23,14 +23,12 @@ using Gtk;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
-using VAS.Core.Filters;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
 using VAS.Core.Store.Playlists;
-using VAS.Core.ViewModel;
 using VAS.Drawing;
 using VAS.Drawing.CanvasObjects.Blackboard;
 using VAS.UI.Dialog;
@@ -207,9 +205,11 @@ namespace VAS.UI
 
 		protected void ShowModalWindow (IPanel panel, IPanel parent)
 		{
-			if (panel is Gtk.Dialog) {
-				(panel as Gtk.Dialog).TransientFor = ((Bin)parent).Toplevel as Window;
-				(panel as Gtk.Dialog).DeleteEvent += ModalWindowDeleteEvent;
+			var dialog = panel as Gtk.Dialog;
+			if (dialog != null) {
+				dialog.TransientFor = ((Bin)parent).Toplevel as Window;
+				dialog.DeleteEvent += ModalWindowDeleteEvent;
+				dialog.Center ();
 				panel.OnLoad ();
 			} else {
 				ExternalWindow modalWindow = new ExternalWindow ();
