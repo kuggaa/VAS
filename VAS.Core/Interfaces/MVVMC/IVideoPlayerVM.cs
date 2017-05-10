@@ -16,39 +16,12 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using VAS.Core.Common;
-using VAS.Core.Store;
-using VAS.Core.Store.Templates;
+using VAS.Core.ViewModel;
 
-namespace VAS.Core.ViewModel
+namespace VAS.Core.Interfaces.MVVMC
 {
-	public class TeamVM : TemplateViewModel<Team, Player, PlayerVM>
+	public interface IVideoPlayerVM
 	{
-		/// <summary>
-		/// Gets or sets the icon of the team.
-		/// </summary>
-		/// <value>The icon.</value>
-		public override Image Icon {
-			get {
-				return Model.Shield;
-			}
-			set {
-				Model.Shield = value;
-			}
-		}
-
-
-		public Guid ID {
-			get { return Model.ID; }
-		}
-
-		/// <summary>
-		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.TeamVM"/> is tagged.
-		/// </summary>
-		/// <value><c>true</c> if tagged; otherwise, <c>false</c>.</value>
-		public bool Tagged {
-			get;
-			set;
-		}
+		VideoPlayerVM VideoPlayer { get; }
 	}
 }

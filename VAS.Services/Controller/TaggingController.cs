@@ -159,6 +159,12 @@ namespace VAS.Services.Controller
 			});
 		}
 
+		protected virtual void AddTeamsToEvent (TimelineEvent play)
+		{
+			var teams = project.Teams.Where (team => team.Tagged).Select (team => team.Model);
+			play.Teams.AddRange (teams);
+		}
+
 		protected abstract TimelineEvent CreateTimelineEvent (EventType type, Time start, Time stop,
 															  Time eventTime, Image miniature);
 
@@ -172,6 +178,7 @@ namespace VAS.Services.Controller
 			play.Tags.AddRange (e.Tags);
 
 			AddPlayersToEvent (play);
+			AddTeamsToEvent (play);
 
 			App.Current.EventsBroker.Publish (
 				new NewDashboardEvent {
@@ -191,9 +198,6 @@ namespace VAS.Services.Controller
 			foreach (var playerVM in players) {
 				play.Players.Add (playerVM.Model);
 			}
-
-			var teams = project.Teams.Where (team => players.Any (player => team.Contains (player))).Select (vm => vm.Model);
-			play.Teams.AddRange (teams);
 		}
 
 		/// <summary>
@@ -206,9 +210,12 @@ namespace VAS.Services.Controller
 					player.Tagged = false;
 				}
 			}
+			foreach (var team in project.Teams) {
+				team.Tagged = false;
+			}
 		}
 
-		void HandleVideoPlayerPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		void HandleVideoPlayerPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if (sender == videoPlayer && e.PropertyName == "CurrentTime") {
 				project.Dashboard.CurrentTime = VideoPlayer.CurrentTime;
