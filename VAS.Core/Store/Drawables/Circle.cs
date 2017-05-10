@@ -18,11 +18,12 @@
 using System;
 using Newtonsoft.Json;
 using VAS.Core.Common;
+using VAS.Core.Serialization;
 
 namespace VAS.Core.Store.Drawables
 {
 	[Serializable]
-	public class Circle: Ellipse
+	public class Circle : Ellipse
 	{
 		public Circle ()
 		{
@@ -38,6 +39,7 @@ namespace VAS.Core.Store.Drawables
 			set;
 		}
 
+		[CloneIgnoreAttribute]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public override double AxisY {
@@ -49,6 +51,7 @@ namespace VAS.Core.Store.Drawables
 			}
 		}
 
+		[CloneIgnoreAttribute]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public override double AxisX {

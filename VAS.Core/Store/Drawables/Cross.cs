@@ -23,7 +23,7 @@ using VAS.Core.Common;
 namespace VAS.Core.Store.Drawables
 {
 	[Serializable]
-	public class Cross: Drawable
+	public class Cross : Drawable
 	{
 		public Cross ()
 		{
@@ -51,7 +51,7 @@ namespace VAS.Core.Store.Drawables
 		public override Area Area {
 			get {
 				Point tl = new Point (Math.Min (Start.X, Stop.X),
-					           Math.Min (Start.Y, Stop.Y));
+							   Math.Min (Start.Y, Stop.Y));
 				return new Area (tl, Math.Abs (Start.X - Stop.X),
 					Math.Abs (Start.Y - Stop.Y));
 			}
@@ -75,8 +75,8 @@ namespace VAS.Core.Store.Drawables
 
 		public override void Reorder ()
 		{
-			Point[] array = new Point[] { Start, Stop, StartI, StopI };
-			
+			Point [] array = new Point [] { Start, Stop, StartI, StopI };
+
 			array = array.OrderBy (p => p.X).ThenBy (p => p.Y).ToArray ();
 			Start = array [0];
 			Stop = array [3];
@@ -86,11 +86,11 @@ namespace VAS.Core.Store.Drawables
 		{
 			double d;
 			Selection sel;
-			
+
 			if (Selected) {
 				return base.GetSelection (p, pr);
 			}
-			
+
 			if (MatchPoint (Start, p, pr, out d)) {
 				return new Selection (this, SelectionPosition.TopLeft, d);
 			} else if (MatchPoint (StopI, p, pr, out d)) {

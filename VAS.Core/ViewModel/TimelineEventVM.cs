@@ -42,7 +42,7 @@ namespace VAS.Core.ViewModel
 		/// <value>The color.</value>
 		public Color Color {
 			get {
-				return Model.Color;
+				return Model?.Color;
 			}
 		}
 

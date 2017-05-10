@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Newtonsoft.Json;
 using VAS.Core.Common;
@@ -88,10 +89,7 @@ namespace VAS.Core.Store.Templates
 		/// </summary>
 		/// <value>The list.</value>
 		[JsonProperty]
-		public RangeObservableCollection<Player> List {
-			get;
-			protected set;
-		}
+		public RangeObservableCollection<Player> List { get; set; }
 
 		/// <summary>
 		/// Creates a deep copy of this team with new ID's for each player

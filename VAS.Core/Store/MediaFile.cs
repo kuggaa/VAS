@@ -21,7 +21,6 @@ using System;
 using System.IO;
 using Newtonsoft.Json;
 using VAS.Core.Common;
-using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
 
 namespace VAS.Core.Store

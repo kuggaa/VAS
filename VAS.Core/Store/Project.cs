@@ -150,7 +150,6 @@ namespace VAS.Core.Store
 			}
 		}
 
-
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public IEnumerable<IGrouping<EventType, TimelineEvent>> EventsGroupedByEventType {

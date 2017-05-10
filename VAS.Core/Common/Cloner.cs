@@ -20,19 +20,20 @@ using System.IO;
 using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
 using VAS.Core.Serialization;
+using VAS.Core.Store;
 
 namespace VAS.Core.Common
 {
 	public static class Cloner
 	{
-		public static T Clone<T> (this T source, SerializationType type = SerializationType.Binary)
+		public static T Clone<T> (this T source, SerializationType type = SerializationType.Json)
 		{
+			IStorable storable = source as IStorable;
 			T retStorable;
 
-			if (Object.ReferenceEquals (source, null))
+			if (Object.ReferenceEquals (source, null)) {
 				return default (T);
-
-			Stream s = new MemoryStream ();
+			}
 
 			// Binary deserialization fails in mobile platforms because of
 			// https://bugzilla.xamarin.com/show_bug.cgi?id=37300
@@ -44,13 +45,9 @@ namespace VAS.Core.Common
 				type = SerializationType.Json;
 			}
 
-			using (s) {
-				Serializer.Instance.Save<T> (source, s, type);
-				s.Seek (0, SeekOrigin.Begin);
-				retStorable = Serializer.Instance.Load<T> (s, type);
-			}
-			if (source is IStorable) {
-				(retStorable as IStorable).Storage = (source as IStorable).Storage;
+			retStorable = Serializer.Instance.Clone (source, type);
+			if (storable != null) {
+				(retStorable as IStorable).Storage = storable.Storage;
 			}
 			return retStorable;
 		}

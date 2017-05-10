@@ -24,6 +24,7 @@ using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.MVVMC;
+using VAS.Core.Serialization;
 
 namespace VAS.Core.Store
 {
@@ -190,6 +191,7 @@ namespace VAS.Core.Store
 			set;
 		}
 
+		[CloneIgnoreAttribute]
 		public override HotKey HotKey {
 			get {
 				return Tag != null ? Tag.HotKey : null;
@@ -201,6 +203,7 @@ namespace VAS.Core.Store
 			}
 		}
 
+		[CloneIgnoreAttribute]
 		public override string Name {
 			get {
 				return Tag != null ? Tag.Value : null;
@@ -226,6 +229,7 @@ namespace VAS.Core.Store
 			set;
 		}
 
+		[CloneIgnoreAttribute]
 		public override string Name {
 			get {
 				return Timer != null ? Timer.Name : null;
@@ -246,6 +250,7 @@ namespace VAS.Core.Store
 			set;
 		}
 
+		[CloneIgnoreAttribute]
 		public override string Name {
 			get {
 				return EventType != null ? EventType.Name : null;
@@ -257,6 +262,7 @@ namespace VAS.Core.Store
 			}
 		}
 
+		[CloneIgnoreAttribute]
 		public override Color BackgroundColor {
 			get {
 				return EventType != null ? EventType.Color : null;

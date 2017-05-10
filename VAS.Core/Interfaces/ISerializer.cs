@@ -23,17 +23,26 @@ namespace VAS.Core.Interfaces
 	public interface ISerializer
 	{
 		void Save<T> (T obj, Stream stream,
-		              SerializationType type = SerializationType.Json);
+					  SerializationType type = SerializationType.Json);
 
 		void Save<T> (T obj, string filepath,
-		              SerializationType type = SerializationType.Json);
+					  SerializationType type = SerializationType.Json);
 
 		T Load<T> (Stream stream,
-		           SerializationType type = SerializationType.Json);
+				   SerializationType type = SerializationType.Json);
 
 		T Load<T> (string filepath,
-		           SerializationType type = SerializationType.Json);
+				   SerializationType type = SerializationType.Json);
 
 		T LoadSafe<T> (string filepath);
+
+		/// <summary>
+		/// Deep clone of object using Json and avoiding JsonIgnore
+		/// </summary>
+		/// <returns>The object's deep clone.</returns>
+		/// <param name="obj">The object to be cloned.</param>
+		/// <param name="serType">The serialization type to do the clone operation.</param>
+		/// <typeparam name="T">The type of the object to be cloned.</typeparam>
+		T Clone<T> (T obj, SerializationType serType = SerializationType.Json);
 	}
 }

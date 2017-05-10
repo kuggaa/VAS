@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml.Serialization;
@@ -139,7 +140,6 @@ namespace VAS.Core.Serialization
 
 		public T LoadSafe<T> (string filepath)
 		{
-
 			Stream stream = new FileStream (filepath, FileMode.Open,
 								FileAccess.Read, FileShare.Read);
 			using (stream) {
@@ -163,8 +163,41 @@ namespace VAS.Core.Serialization
 				settings.Converters.Add (new VersionConverter ());
 				settings.Converters.Add (new VASConverter (true));
 				settings.Binder = new MigrationBinder (Serializer.TypesMappings, Serializer.NamespacesReplacements);
+				settings.MetadataPropertyHandling = MetadataPropertyHandling.ReadAhead;
 				return settings;
 			}
+		}
+
+		public T Clone<T> (T obj, SerializationType serType = SerializationType.Json)
+		{
+			T retStorable;
+
+			switch (serType) {
+			case SerializationType.Json:
+				var jsonSettings = JsonSettings;
+				jsonSettings.ContractResolver = new IsChangedContractResolver (true);
+				using (Stream s = new MemoryStream ()) {
+					using (StreamWriter sw = new StreamWriter (s, Encoding.UTF8)) {
+						sw.NewLine = "\n";
+						sw.Write (JsonConvert.SerializeObject (obj, jsonSettings));
+						sw.Flush ();
+						s.Seek (0, SeekOrigin.Begin);
+						using (StreamReader sr = new StreamReader (s, Encoding.UTF8)) {
+							retStorable = (T)JsonConvert.DeserializeObject (sr.ReadToEnd (), obj.GetType (), jsonSettings);
+						}
+					}
+				}
+				break;
+			default:
+				using (Stream s = new MemoryStream ()) {
+					Save<T> (obj, s, serType);
+					s.Seek (0, SeekOrigin.Begin);
+					retStorable = Load<T> (s, serType);
+				}
+				break;
+			}
+
+			return retStorable;
 		}
 	}
 
@@ -284,6 +317,27 @@ namespace VAS.Core.Serialization
 
 	public class IsChangedContractResolver : DefaultContractResolver
 	{
+		public bool IgnoreJsonIgnore { get; private set; }
+
+		public IsChangedContractResolver (bool ignoreJsonIgnore = false)
+		{
+			IgnoreJsonIgnore = ignoreJsonIgnore;
+		}
+
+		protected override JsonProperty CreateProperty (MemberInfo member, MemberSerialization memberSerialization)
+		{
+			var property = base.CreateProperty (member, memberSerialization);
+			if (IgnoreJsonIgnore) {
+				var attribs = property.AttributeProvider.GetAttributes (typeof (NonSerializedAttribute), true);
+				var attribs2 = property.AttributeProvider.GetAttributes (typeof (CloneIgnoreAttribute), true);
+				if (attribs.Count + attribs2.Count > 0 || !property.Writable) {
+					property.Ignored = true;
+				} else {
+					property.Ignored = false;
+				}
+			}
+			return property;
+		}
 
 		protected override JsonContract CreateContract (Type type)
 		{
@@ -291,7 +345,9 @@ namespace VAS.Core.Serialization
 			if (typeof (IChanged).IsAssignableFrom (type)) {
 				contract.OnDeserializedCallbacks.Add (
 					(o, context) => {
-						(o as IChanged).IsChanged = false;
+						if (!IgnoreJsonIgnore) {
+							(o as IChanged).IsChanged = false;
+						}
 					});
 			}
 			return contract;

@@ -16,13 +16,17 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using VAS.Core;
 using VAS.Core.Events;
+using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.GUI;
+using VAS.Core.Interfaces.MVVMC;
+using VAS.Services.State;
 
 namespace VAS.Tests.Core.Common
 {
@@ -74,20 +78,6 @@ namespace VAS.Tests.Core.Common
 			screenStateMock.Setup (x => x.Panel).Returns (new Mock<IPanel> ().Object);
 			screenStateMock.Setup (x => x.Name).Returns (transitionName);
 			return screenStateMock.Object;
-		}
-
-		Mock<IScreenState> GetScreenStateMock (string transitionName)
-		{
-			var screenStateMock = new Mock<IScreenState> ();
-			screenStateMock.Setup (x => x.LoadState (It.IsAny<ExpandoObject> ())).Returns (AsyncHelpers.Return (true));
-			screenStateMock.Setup (x => x.ShowState ()).Returns (AsyncHelpers.Return (true));
-			screenStateMock.Setup (x => x.UnloadState ()).Returns (AsyncHelpers.Return (true));
-			screenStateMock.Setup (x => x.HideState ()).Returns (AsyncHelpers.Return (true));
-			screenStateMock.Setup (x => x.FreezeState ()).Returns (AsyncHelpers.Return (true));
-			screenStateMock.Setup (x => x.UnfreezeState ()).Returns (AsyncHelpers.Return (true));
-			screenStateMock.Setup (x => x.Panel).Returns (new Mock<IPanel> ().Object);
-			screenStateMock.Setup (x => x.Name).Returns (transitionName);
-			return screenStateMock;
 		}
 
 		[Test]
@@ -339,9 +329,9 @@ namespace VAS.Tests.Core.Common
 		public async void MoveToModal_ShowDialogAndMoveBack_StateUnfreezedOk ()
 		{
 			// Arrange
-			var backgroundStateMock = GetScreenStateMock ("Home");
+			var backgroundStateMock = Utils.GetScreenStateMocked ("Home");
 			sc.Register ("Home", () => backgroundStateMock.Object);
-			sc.Register ("Dialog", () => GetScreenStateDummy("Dialog"));
+			sc.Register ("Dialog", () => GetScreenStateDummy ("Dialog"));
 			await sc.SetHomeTransition ("Home", null);
 
 			moveBackAfterNavigation = true; // forces unload dialog after navigation
@@ -360,10 +350,34 @@ namespace VAS.Tests.Core.Common
 		}
 
 		[Test]
+		public async void MoveToModal_ShowDialogAndMoveBack_WaitForControllerToStart ()
+		{
+			// Arrange
+			DummyController fakeController = new DummyController ();
+			var backgroundState = new DummyState ();
+			backgroundState.Controllers.Add (fakeController);
+			sc.Register ("Home", () => GetScreenStateDummy ("Home"));
+			sc.Register ("First", () => backgroundState);
+			sc.Register ("Dialog", () => GetScreenStateDummy ("Dialog"));
+			await sc.SetHomeTransition ("Home", null);
+
+			await sc.MoveTo ("First", null);
+			moveBackAfterNavigation = true; // forces unload dialog after navigation
+
+			// Act
+			bool result = await sc.MoveToModal ("Dialog", null, true);
+
+			// Assert
+			Assert.IsTrue (fakeController.Started);
+			Assert.IsTrue (result);
+			Assert.AreEqual (sc.Current, "First");
+		}
+
+		[Test]
 		public async void MoveToModal_ShowDialogAndMoveToNewStateCleaningStack_Ok ()
 		{
 			// Arrange
-			var backgroundStateMock = GetScreenStateMock ("Initial");
+			var backgroundStateMock = Utils.GetScreenStateMocked ("Initial");
 			sc.Register ("Initial", () => backgroundStateMock.Object);
 			sc.Register ("Dialog", () => GetScreenStateDummy ("Dialog"));
 			sc.Register ("New", () => GetScreenStateDummy ("New"));
@@ -387,7 +401,7 @@ namespace VAS.Tests.Core.Common
 		public async void MoveToModal_ShowDialogAndMoveToNewState_Ok ()
 		{
 			// Arrange
-			var backgroundStateMock = GetScreenStateMock ("Initial");
+			var backgroundStateMock = Utils.GetScreenStateMocked ("Initial");
 			sc.Register ("Initial", () => backgroundStateMock.Object);
 			sc.Register ("Dialog", () => GetScreenStateDummy ("Dialog"));
 			sc.Register ("New", () => GetScreenStateDummy ("New"));
@@ -411,14 +425,15 @@ namespace VAS.Tests.Core.Common
 		public async void MoveToModal_EmptyStackWhenStateFreezed_CompletesDialogTaskOk ()
 		{
 			// Arrange
-			var backgroundStateMock = GetScreenStateMock ("First");
+			var backgroundStateMock = Utils.GetScreenStateMocked ("First");
 			sc.Register ("Home", () => GetScreenStateDummy ("Home"));
 			sc.Register ("First", () => backgroundStateMock.Object);
 			sc.Register ("Dialog", () => GetScreenStateDummy ("Dialog"));
 			sc.Register ("Second", () => GetScreenStateDummy ("Second"));
 			await sc.SetHomeTransition ("Home", null);
 			await sc.MoveTo ("First", null);
-			        
+
+
 			moveToAfterNavigation = true; // forces unload dialog after navigation
 			navigation = (async () => await sc.MoveTo ("Second", null, true));
 
@@ -438,7 +453,7 @@ namespace VAS.Tests.Core.Common
 		public async void MoveTo_HideStateDoesTransition_Ok ()
 		{
 			// Arrange
-			var transition1StateMock = GetScreenStateMock ("Transition1");
+			var transition1StateMock = Utils.GetScreenStateMocked ("Transition1");
 			sc.Register ("Home", () => GetScreenStateDummy ("Home"));
 			sc.Register ("Transition1", () => transition1StateMock.Object);
 			sc.Register ("Transition2", () => GetScreenStateDummy ("Transition2"));
@@ -451,7 +466,7 @@ namespace VAS.Tests.Core.Common
 					hidden = true;
 					sc.MoveTo ("Transition3", null);
 				}
-			}).Returns(AsyncHelpers.Return (true));
+			}).Returns (AsyncHelpers.Return (true));
 
 			// Act
 			await sc.MoveTo ("Transition1", null);
@@ -461,4 +476,51 @@ namespace VAS.Tests.Core.Common
 			Assert.AreEqual ("Transition2", sc.Current);
 		}
 	}
+
+	class DummyController : IController
+	{
+		public bool Started { get; set; }
+
+		public void Dispose ()
+		{
+		}
+
+		public IEnumerable<KeyAction> GetDefaultKeyActions ()
+		{
+			return null;
+		}
+
+		public void SetViewModel (IViewModel viewModel)
+		{
+		}
+
+		public void Start ()
+		{
+			Started = true;
+		}
+
+		public void Stop ()
+		{
+			Started = false;
+		}
+	}
+
+	class DummyState : VAS.Services.State.ScreenState<IViewModel>
+	{
+		public override string Name {
+			get {
+				return "First";
+			}
+		}
+
+		protected override void CreateViewModel (dynamic data)
+		{
+		}
+
+		public override Task<bool> LoadState (dynamic data)
+		{
+			return AsyncHelpers.Return (true);
+		}
+	}
+
 }
