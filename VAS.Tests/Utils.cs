@@ -542,6 +542,9 @@ namespace VAS.Tests
 			screenStateMock.Setup (x => x.ShowState ()).Returns (AsyncHelpers.Return (true));
 			screenStateMock.Setup (x => x.UnloadState ()).Returns (AsyncHelpers.Return (true));
 			screenStateMock.Setup (x => x.HideState ()).Returns (AsyncHelpers.Return (true));
+			screenStateMock.Setup (x => x.FreezeState ()).Returns (AsyncHelpers.Return (true));
+			screenStateMock.Setup (x => x.UnfreezeState ()).Returns (AsyncHelpers.Return (true));
+
 			screenStateMock.Setup (x => x.Panel).Returns (new Mock<IPanel> ().Object);
 			screenStateMock.Setup (x => x.Name).Returns (transitionName);
 			return screenStateMock;
