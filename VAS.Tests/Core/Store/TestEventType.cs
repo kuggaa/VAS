@@ -78,7 +78,7 @@ namespace VAS.Tests.Core.Store
 			Utils.CheckSerialization (at);
 
 			Assert.IsNotNull (at.Tags);
-			Assert.AreEqual (at.TagsByGroup.Count, 0); 
+			Assert.AreEqual (at.TagsByGroup.Count, 0);
 			at.Tags.Add (new Tag ("test1", "grp1"));
 			at.Tags.Add (new Tag ("test2", "grp1"));
 			at.Tags.Add (new Tag ("test3", "grp2"));

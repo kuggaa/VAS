@@ -26,7 +26,7 @@ using VAS.Core.MVVMC;
 namespace VAS.Core.Store.Playlists
 {
 	[Serializable]
-	public class PlaylistPlayElement: BindableBase, IPlaylistElement
+	public class PlaylistPlayElement : BindableBase, IPlaylistElement
 	{
 
 		public PlaylistPlayElement (TimelineEvent play)
@@ -105,7 +105,6 @@ namespace VAS.Core.Store.Playlists
 			get;
 			set;
 		}
-
 
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]

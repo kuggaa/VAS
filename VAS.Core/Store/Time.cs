@@ -19,8 +19,8 @@
 //
 using System;
 using Newtonsoft.Json;
-using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
+using VAS.Core.Serialization;
 
 namespace VAS.Core.Store
 {
@@ -61,6 +61,7 @@ namespace VAS.Core.Store
 		/// <summary>
 		/// Time in seconds
 		/// </summary>		
+		[CloneIgnoreAttribute]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public int TotalSeconds {
@@ -74,7 +75,8 @@ namespace VAS.Core.Store
 
 		/// <summary>
 		/// Time in nano seconds
-		/// </summary>		
+		/// </summary>
+		[CloneIgnoreAttribute]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public long NSeconds {

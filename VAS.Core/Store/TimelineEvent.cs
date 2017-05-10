@@ -81,6 +81,7 @@ namespace VAS.Core.Store
 			set;
 		}
 
+		[CloneIgnoreAttribute]
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public IStorage Storage {
@@ -320,7 +321,7 @@ namespace VAS.Core.Store
 		[PropertyChanged.DoNotNotify]
 		public virtual Color Color {
 			get {
-				return EventType.Color;
+				return EventType?.Color;
 			}
 		}
 

@@ -22,7 +22,7 @@ using VAS.Core.Common;
 namespace VAS.Core.Store.Drawables
 {
 	[Serializable]
-	public class Angle: Drawable
+	public class Angle : Drawable
 	{
 		public Angle ()
 		{

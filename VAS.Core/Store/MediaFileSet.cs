@@ -23,6 +23,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
+using VAS.Core.Serialization;
 
 namespace VAS.Core.Store
 {

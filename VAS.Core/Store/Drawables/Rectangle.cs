@@ -23,7 +23,7 @@ using VAS.Core.Common;
 namespace VAS.Core.Store.Drawables
 {
 	[Serializable]
-	public class Rectangle: Quadrilateral
+	public class Rectangle : Quadrilateral
 	{
 		public Rectangle ()
 		{
@@ -68,8 +68,8 @@ namespace VAS.Core.Store.Drawables
 
 		public override void Reorder ()
 		{
-			Point[] array = new Point[] { TopLeft, TopRight, BottomLeft, BottomRight };
-			
+			Point [] array = new Point [] { TopLeft, TopRight, BottomLeft, BottomRight };
+
 			array = array.OrderBy (p => p.X).ThenBy (p => p.Y).ToArray ();
 			TopLeft = array [0];
 			BottomLeft = array [1];
@@ -81,11 +81,11 @@ namespace VAS.Core.Store.Drawables
 		{
 			Selection selection;
 			double d;
-			
+
 			selection = base.GetSelection (p, pr);
 			if (selection == null)
 				return selection;
-			
+
 			if (selection.Position == SelectionPosition.All) {
 				if (MatchAxis (p.X, TopLeft.X, pr, out d)) {
 					return new Selection (this, SelectionPosition.Left, d);
