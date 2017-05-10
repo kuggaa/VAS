@@ -32,11 +32,11 @@ namespace VAS.Services.Controller
 	{
 		protected ProjectVM project;
 		protected VideoPlayerVM videoPlayer;
-		IDictionary<DashboardButtonVM, KeyAction> categoriesActions;
+		IDictionary<HotKeyVM, KeyAction> categoriesActions;
 
 		public TaggingController ()
 		{
-			categoriesActions = new Dictionary<DashboardButtonVM, KeyAction> ();
+			categoriesActions = new Dictionary<HotKeyVM, KeyAction> ();
 		}
 
 		/// <summary>
@@ -114,7 +114,7 @@ namespace VAS.Services.Controller
 						Key = analysisButton.HotKey.Model
 					}, () => HandleSubCategoriesTagging (analysisButton));
 					keyActions.Add (action);
-					categoriesActions.Add (analysisButton, action);
+					categoriesActions.Add (analysisButton.HotKey, action);
 				}
 			}
 
@@ -217,10 +217,10 @@ namespace VAS.Services.Controller
 
 		void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			var changedButton = sender as DashboardButtonVM;
-			if (changedButton != null && changedButton.NeedsSync (e, nameof (changedButton.HotKey.Model)) &&
+			var changedButton = sender as HotKeyVM;
+			if (changedButton != null && changedButton.NeedsSync (e, nameof (changedButton.Model)) &&
 				categoriesActions.ContainsKey (changedButton)) {
-				categoriesActions [changedButton].KeyConfig.Key = changedButton.HotKey.Model;
+				categoriesActions [changedButton].KeyConfig.Key = changedButton.Model;
 			}
 		}
 
