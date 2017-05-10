@@ -147,13 +147,9 @@ namespace VAS.Drawing.Widgets
 		protected override void ClearObjects ()
 		{
 			base.ClearObjects ();
-			foreach (var vm in viewModelToView.Keys) {
-				var nestedVM = vm as INestedViewModel;
-				if (nestedVM != null) {
-					nestedVM.GetNotifyCollection ().CollectionChanged -= HandleChildsVMCollectionChanged;
-				}
+			foreach (var vm in viewModelToView.Keys.ToList ()) {
+				RemoveTimeline (vm);
 			}
-			viewModelToView.Clear ();
 		}
 
 		protected void Update ()
@@ -167,11 +163,25 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
+		protected void RemoveTimeline (IViewModel viewModel)
+		{
+			RemoveObject (viewModelToView [viewModel]);
+			viewModelToView.Remove (viewModel);
+			var nestedVM = viewModel as INestedViewModel;
+			if (nestedVM != null) {
+				nestedVM.GetNotifyCollection ().CollectionChanged -= HandleChildsVMCollectionChanged;
+			}
+		}
+
 		protected void AddTimeline (TimelineView timelineView, IViewModel viewModel)
 		{
 			AddObject (timelineView);
 			if (timelineView is EventTypeTimelineView) {
 				viewModelToView [viewModel] = timelineView;
+			}
+			var nestedVM = viewModel as INestedViewModel;
+			if (nestedVM != null) {
+				nestedVM.GetNotifyCollection ().CollectionChanged += HandleChildsVMCollectionChanged;
 			}
 		}
 
@@ -247,7 +257,6 @@ namespace VAS.Drawing.Widgets
 					BackgroundColor = Utils.ColorForRow (line),
 				};
 				timelineView.ViewModel = timerVM;
-				timerVM.ViewModels.CollectionChanged += HandleChildsVMCollectionChanged;
 				AddTimeline (timelineView, timerVM);
 				line++;
 			}
@@ -271,15 +280,13 @@ namespace VAS.Drawing.Widgets
 				Height = StyleConf.TimelineCategoryHeight,
 			};
 			timelineView.ViewModel = timelineVM;
-			timelineVM.ViewModels.CollectionChanged += HandleChildsVMCollectionChanged;
 			AddTimeline (timelineView, timelineVM);
 			return timelineView;
 		}
 
 		protected virtual void RemoveEventTypeTimeline (EventTypeTimelineVM timelineVM)
 		{
-			timelineVM.ViewModels.CollectionChanged -= HandleChildsVMCollectionChanged;
-			RemoveObject (viewModelToView [timelineVM]);
+			RemoveTimeline (timelineVM);
 			UpdateRowsOffsets ();
 		}
 
@@ -501,5 +508,6 @@ namespace VAS.Drawing.Widgets
 				}
 			}
 		}
+
 	}
 }
