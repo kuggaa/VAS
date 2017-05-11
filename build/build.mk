@@ -1,6 +1,6 @@
-BUILD_DIR ?= $(top_builddir)/../bin
+BUILD_DIR ?= $(top_builddir)/bin
 ASSEMBLY_FILE ?= $(BUILD_DIR)/$(ASSEMBLY)
-OUTPUT_DIR ?= $(libdir)/@USER_PACKAGE@
+OUTPUT_DIR ?= $(pkglibdir)
 
 XBUILD_CMD = $(XBUILD) \
  /property:DefineConstants="$(XBUILD_CONSTANTS)" \
@@ -8,7 +8,6 @@ XBUILD_CMD = $(XBUILD) \
  /property:BuildProjectReferences=false \
  /property:Configuration=Release \
  /property:OutDir=$(BUILD_DIR)/ \
- /property:SolutionDir=$(top_builddir) \
  $(PROJECT_FILE) $(XBUILD_EXTRA_FLAGS)
 
 OUTPUT_FILES ?= \
@@ -17,7 +16,7 @@ OUTPUT_FILES ?= \
 
 .PHONY: $(ASSEMBLY_FILE)
 
-all: $(ASSEMBLY_FILE)
+all-local: $(ASSEMBLY_FILE)
 
 $(ASSEMBLY_FILE):
 	$(AM_V_GEN) $(XBUILD_CMD)
@@ -37,7 +36,7 @@ desktopdir = $(datadir)/applications
 desktop_in_files = $(DESKTOP_FILE)
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 
-imagesdir = @datadir@/@USER_PACKAGE@/images
+imagesdir = @datadir@/@PACKAGE@/images
 images_DATA = $(IMAGES)
 
 logo_48dir = @datadir@/icons/hicolor/48x48/apps
