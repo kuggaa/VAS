@@ -163,7 +163,6 @@ namespace VAS.Services.State
 		Task<bool> InternalStopState ()
 		{
 			foreach (IController controller in Controllers) {
-				Log.Debug ($"Stoping controller {controller}");
 				controller.Stop ();
 			}
 			App.Current.KeyContextManager.RemoveContext (KeyContext);
@@ -173,7 +172,6 @@ namespace VAS.Services.State
 		Task<bool> InternalStartState ()
 		{
 			foreach (IController controller in Controllers) {
-				Log.Debug ($"Starting controller {controller}");
 				controller.Start ();
 			}
 			App.Current.KeyContextManager.AddContext (KeyContext);
