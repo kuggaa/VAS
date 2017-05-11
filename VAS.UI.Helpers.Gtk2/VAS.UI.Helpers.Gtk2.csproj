@@ -59,6 +59,7 @@
     <Compile Include="Bindings\SpinBinding.cs" />
     <Compile Include="Bindings\ColorButtonBinding.cs" />
     <Compile Include="UrlHelper.cs" />
+    <Compile Include="ExtensionMethods.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
