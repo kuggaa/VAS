@@ -24,6 +24,18 @@ namespace VAS.Core.Interfaces
 	public interface IKpiService
 	{
 		/// <summary>
+		/// Gets the user identifier.
+		/// </summary>
+		/// <value>The user identifier.</value>
+		string UserID { get; }
+
+		/// <summary>
+		/// Gets the session identifier.
+		/// </summary>
+		/// <value>The session identifier.</value>
+		string SessionID { get; }
+
+		/// <summary>
 		/// Init the KPIService with the specified appId, user and email.
 		/// </summary>
 		/// <param name="appId">App identifier.</param>
