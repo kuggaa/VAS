@@ -47,6 +47,11 @@ namespace VAS
 		public string baseDirectory = ".";
 		public string configDirectory = ".";
 
+		public App ()
+		{
+			ZoomLevels = new List<double> { 1.0, 1.25, 1.50, 1.75, 2.0 };
+		}
+
 		public KeyContextManager KeyContextManager {
 			get {
 				return KeyContextManager.Instance;
@@ -465,6 +470,15 @@ namespace VAS
 		}
 
 		public double DefaultRate {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets a list with the possible zoom levels for the video player.
+		/// </summary>
+		/// <value>The zoom levels.</value>
+		public List<double> ZoomLevels {
 			get;
 			set;
 		}

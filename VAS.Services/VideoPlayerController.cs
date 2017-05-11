@@ -162,9 +162,9 @@ namespace VAS.Services
 				}
 				if (multiPlayer != null) {
 					multiPlayer.CamerasConfig = camerasConfig;
-					if (!skipApplyCamerasConfig && Opened) {
-						ApplyCamerasConfig ();
-					}
+				}
+				if (!skipApplyCamerasConfig && Opened) {
+					ApplyCamerasConfig ();
 				}
 			}
 			get {
@@ -843,6 +843,7 @@ namespace VAS.Services
 			if (multiPlayer != null) {
 				multiPlayer.ApplyROI (camConfig);
 			}
+			UpdateZoom ();
 		}
 
 		public virtual void DrawFrame ()
@@ -870,6 +871,41 @@ namespace VAS.Services
 					}
 				);
 			}
+		}
+
+		public void SetZoom (double zoomLevel)
+		{
+			if (zoomLevel < 1 || zoomLevel > App.Current.ZoomLevels.Max ()) {
+				Log.Error ("Zoom level is not between the supported boundaries : " + zoomLevel);
+				return;
+			}
+			CameraConfig cfg = CamerasConfig [0];
+			Point origin = cfg.RegionOfInterest.Center;
+			MediaFile file = FileSet [cfg.Index];
+
+			cfg.RegionOfInterest.Width = file.VideoWidth / zoomLevel;
+			cfg.RegionOfInterest.Height = file.VideoHeight / zoomLevel;
+
+			// Center with regards to previous origin
+			cfg.RegionOfInterest.Start.X = origin.X - cfg.RegionOfInterest.Width / 2;
+			cfg.RegionOfInterest.Start.Y = origin.Y - cfg.RegionOfInterest.Height / 2;
+
+			ClipRoi (cfg.RegionOfInterest, file);
+
+			ApplyROI (cfg);
+		}
+
+		public void MoveROI (Point diff)
+		{
+			CameraConfig cfg = CamerasConfig [0];
+			MediaFile file = FileSet [cfg.Index];
+
+			cfg.RegionOfInterest = new Area (cfg.RegionOfInterest.Start.X - diff.X,
+											 cfg.RegionOfInterest.Start.Y - diff.Y,
+											 cfg.RegionOfInterest.Width,
+											 cfg.RegionOfInterest.Height);
+			ClipRoi (cfg.RegionOfInterest, FileSet [cfg.Index]);
+			ApplyROI (cfg);
 		}
 
 		#endregion
@@ -936,7 +972,19 @@ namespace VAS.Services
 				new KeyAction (
 					App.Current.HotkeysService.GetByName("OPEN_DRAWING_TOOL"),
 					playerVM.DrawFrame
-				)
+				),
+				new KeyAction (
+					App.Current.HotkeysService.GetByName(PlaybackHotkeys.ZOOM_RESTORE),
+					() => SetZoom (App.Current.ZoomLevels[0])
+				),
+				new KeyAction (
+					App.Current.HotkeysService.GetByName(PlaybackHotkeys.ZOOM_INCREASE),
+					IncreaseZoom
+				),
+				new KeyAction (
+					App.Current.HotkeysService.GetByName(PlaybackHotkeys.ZOOM_INCREASE),
+					DecreaseZoom
+				),
 			};
 		}
 
@@ -1116,9 +1164,30 @@ namespace VAS.Services
 		protected virtual void ApplyCamerasConfig ()
 		{
 			ValidateVisibleCameras ();
+			UpdateZoom ();
+			UpdatePar ();
 			if (multiPlayer != null) {
 				multiPlayer.ApplyCamerasConfig ();
-				UpdatePar ();
+			}
+		}
+
+		/// <summary>
+		/// Updates the current zoom value.
+		/// </summary>
+		protected virtual void UpdateZoom ()
+		{
+			if (CamerasConfig.Count == 0) {
+				playerVM.Zoom = 1;
+				return;
+			}
+
+			CameraConfig cfg = CamerasConfig [0];
+			MediaFile file = FileSet [cfg.Index];
+
+			if (cfg.RegionOfInterest.Empty) {
+				playerVM.Zoom = 1;
+			} else {
+				playerVM.Zoom = file.VideoWidth / cfg.RegionOfInterest.Width;
 			}
 		}
 
@@ -1200,8 +1269,8 @@ namespace VAS.Services
 					FileSet = null;
 					return;
 				}
-				// Validate Cam config against fileset
 				ValidateVisibleCameras ();
+				UpdateZoom ();
 				UpdatePar ();
 				try {
 					Log.Debug ("Opening new file set " + fileSet);
@@ -1496,6 +1565,31 @@ namespace VAS.Services
 			if (playerVM != null) {
 				playerVM.Duration = duration;
 				playerVM.AbsoluteDuration = absoluteDuration;
+			}
+		}
+
+		void ClipRoi (Area roi, MediaFile file)
+		{
+			Point st = roi.Start;
+			st.X = Math.Max (st.X, 0);
+			st.Y = Math.Max (st.Y, 0);
+			st.X = Math.Min (st.X, (file.VideoWidth - roi.Width));
+			st.Y = Math.Min (st.Y, (file.VideoHeight - roi.Height));
+		}
+
+		void IncreaseZoom ()
+		{
+			double? newLevel = App.Current.ZoomLevels.Where (l => l > playerVM.Zoom).OrderBy (l => l).FirstOrDefault ();
+			if (newLevel != 0) {
+				SetZoom ((double)newLevel);
+			}
+		}
+
+		void DecreaseZoom ()
+		{
+			double? newLevel = App.Current.ZoomLevels.Where (l => l < playerVM.Zoom).OrderByDescending (l => l).FirstOrDefault ();
+			if (newLevel != 0) {
+				SetZoom ((double)newLevel);
 			}
 		}
 
