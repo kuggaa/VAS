@@ -27,6 +27,9 @@ namespace VAS.Core.Hotkeys
 	{
 		static List<KeyConfig> playbackHotkeys;
 		public const string CATEGORY = "Playback";
+		public const string ZOOM_RESTORE = "ZOOM_RESTORE";
+		public const string ZOOM_DECREASE = "ZOOM_DECREASE";
+		public const string ZOOM_INCREASE = "ZOOM_INCREASE";
 
 		static PlaybackHotkeys ()
 		{
@@ -102,6 +105,24 @@ namespace VAS.Core.Hotkeys
 					Key = App.Current.Keyboard.ParseName ("<Control_L>+d"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Open drawing tool")
+				},
+				new KeyConfig {
+					Name = ZOOM_RESTORE,
+					Key = App.Current.Keyboard.ParseName ("<Primary>+0"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Restore zoom")
+				},
+				new KeyConfig {
+					Name = ZOOM_DECREASE,
+					Key = App.Current.Keyboard.ParseName ("<Primary>+minus"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Decrease zoom")
+				},
+				new KeyConfig {
+					Name = ZOOM_INCREASE,
+					Key = App.Current.Keyboard.ParseName ("<Primary>+plus"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Increase zoom")
 				}
 			};
 		}

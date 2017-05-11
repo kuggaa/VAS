@@ -61,8 +61,7 @@ namespace VAS.UI
 		Timerule timerule;
 		VideoPlayerVM playerVM;
 		VolumeWindow vwin;
-		ZoomLevel zoomLevel;
-		ZoomMenu zoomMenu;
+		Menu zoomMenu;
 
 		#region Constructors
 
@@ -120,10 +119,11 @@ namespace VAS.UI
 			centerplayheadbutton.TooltipMarkup = Catalog.GetString ("Center Playhead");
 
 			vwin = new VolumeWindow ();
-			zoomMenu = new ZoomMenu ();
 			blackboard = new Blackboard (new WidgetWrapper (blackboarddrawingarea));
 			blackboarddrawingarea.Visible = false;
 			blackboarddrawingarea.NoShowAll = true;
+
+			CreateZoomMenu ();
 
 			//Set ratescale specific values
 			ratescale.Adjustment.Upper = App.Current.UpperRate;
@@ -245,13 +245,11 @@ namespace VAS.UI
 			ignoreRate = false;
 			viewportsSwitchButton.Active = true;
 			SubViewPortsVisible = true;
-			zoomLevel = ZoomLevel.Original;
 		}
 
 		void ConnectSignals ()
 		{
 			vwin.VolumeChanged += HandleVolumeChanged;
-			zoomMenu.ZoomChanged += HandleZoomChanged;
 			closebutton.Clicked += HandleClosebuttonClicked;
 			prevbutton.Clicked += HandlePrevbuttonClicked;
 			nextbutton.Clicked += HandleNextbuttonClicked;
@@ -270,6 +268,8 @@ namespace VAS.UI
 			timerule.CenterPlayheadClicked += HandleCenterPlayheadClicked;
 			detachbutton.Clicked += (sender, e) =>
 				App.Current.EventsBroker.Publish (new DetachEvent ());
+			mainviewport.VideoDragStarted += OnMainViewportVideoDragStartedEvent;
+			mainviewport.VideoDragStopped += OnMainViewportVideoDragStoppedEvent;
 		}
 
 		void LoadImage (Image image, FrameDrawing drawing)
@@ -317,6 +317,19 @@ namespace VAS.UI
 			ConnectWindow (subviewport3.Viewport);
 		}
 
+		void CreateZoomMenu ()
+		{
+			zoomMenu = new Menu ();
+			foreach (double zoomLevel in App.Current.ZoomLevels) {
+				MenuItem item = new MenuItem ($"{zoomLevel * 100}%");
+				item.Activated += (object sender, EventArgs e) => {
+					playerVM.SetZoom (zoomLevel);
+				};
+				zoomMenu.Append (item);
+			}
+			zoomMenu.ShowAll ();
+		}
+
 		void SetVolumeIcon (string name)
 		{
 			volumebuttonimage.Pixbuf = Misc.LoadIcon (name, IconSize.Button, 0);
@@ -345,11 +358,6 @@ namespace VAS.UI
 					changed = true;
 					cameras.Add (new CameraConfig (i));
 				}
-			}
-			// If a ROI is defined we need to allow dragging
-			if (!cameras [0].RegionOfInterest.Empty) {
-				mainviewport.VideoDragStarted += OnMainViewportVideoDragStartedEvent;
-				mainviewport.VideoDragStopped += OnMainViewportVideoDragStoppedEvent;
 			}
 			if (changed) {
 				playerVM.SetCamerasConfig (cameras);
@@ -568,6 +576,9 @@ namespace VAS.UI
 
 		void OnMainViewportVideoDragStartedEvent (object o, ButtonPressEventArgs args)
 		{
+			if (ViewModel.Zoom == 1) {
+				return;
+			}
 			dragTimerID = GLib.Timeout.Add (200, delegate {
 				mainviewport.VideoDragged += OnMainViewportVideoDraggedEvent;
 				return false;
@@ -580,6 +591,9 @@ namespace VAS.UI
 
 		void OnMainViewportVideoDragStoppedEvent (object o, ButtonReleaseEventArgs args)
 		{
+			if (ViewModel.Zoom == 1) {
+				return;
+			}
 			if (dragTimerID != 0) {
 				GLib.Source.Remove (dragTimerID);
 				dragTimerID = 0;
@@ -611,10 +625,7 @@ namespace VAS.UI
 			Point newStart = new Point (args.Event.X, args.Event.Y);
 			Point diff = newStart - moveStart;
 			moveStart = newStart;
-			playerVM.CamerasConfig [0].RegionOfInterest.Start -= diff;
-			ClipRoi (playerVM.CamerasConfig [0].RegionOfInterest,
-					 ViewModel.FileSet.ViewModels [playerVM.CamerasConfig [0].Index]);
-			playerVM.ApplyROI (playerVM.CamerasConfig [0]);
+			playerVM.MoveROI (diff);
 			roiMoved = true;
 		}
 
@@ -625,15 +636,6 @@ namespace VAS.UI
 			 * triggering this callback. This should be fixed properly.*/
 			Gdk.Pointer.Ungrab (Gtk.Global.CurrentEventTime);
 			playerVM.TogglePlay ();
-		}
-
-		void ClipRoi (Area roi, MediaFileVM file)
-		{
-			Point st = roi.Start;
-			st.X = Math.Max (st.X, 0);
-			st.Y = Math.Max (st.Y, 0);
-			st.X = Math.Min (st.X, (file.VideoWidth - roi.Width));
-			st.Y = Math.Min (st.Y, (file.VideoHeight - roi.Height));
 		}
 
 		void OnSubViewportChangedEvent (object o, EventArgs args)
@@ -754,88 +756,6 @@ namespace VAS.UI
 		void HandleZoomClicked (object sender, EventArgs e)
 		{
 			zoomMenu.Popup ();
-		}
-
-		void HandleZoomChanged (ZoomLevel level)
-		{
-			CameraConfig cfg = playerVM.CamerasConfig [0];
-			MediaFileVM file = ViewModel.FileSet.ViewModels [cfg.Index];
-			double zoomFactor = 1.0;
-
-			zoomLevel = level;
-
-			switch (zoomLevel) {
-			case ZoomLevel.Original:
-				zoomFactor = 1;
-				break;
-			case ZoomLevel.Level1:
-				zoomFactor = 1.2;
-				break;
-			case ZoomLevel.Level2:
-				zoomFactor = 1.4;
-				break;
-			case ZoomLevel.Level3:
-				zoomFactor = 1.6;
-				break;
-			case ZoomLevel.Level4:
-				zoomFactor = 1.8;
-				break;
-			case ZoomLevel.Level5:
-				zoomFactor = 2;
-				break;
-			}
-
-			Point origin = cfg.RegionOfInterest.Center;
-
-			cfg.RegionOfInterest.Width = file.VideoWidth / zoomFactor;
-			cfg.RegionOfInterest.Height = file.VideoHeight / zoomFactor;
-
-			// Center with regards to previous origin
-			cfg.RegionOfInterest.Start.X = origin.X - cfg.RegionOfInterest.Width / 2;
-			cfg.RegionOfInterest.Start.Y = origin.Y - cfg.RegionOfInterest.Height / 2;
-
-			ClipRoi (cfg.RegionOfInterest, file);
-
-			playerVM.SetCamerasConfig (playerVM.CamerasConfig);
-
-			if (zoomLevel != ZoomLevel.Original) {
-				mainviewport.VideoDragStarted += OnMainViewportVideoDragStartedEvent;
-				mainviewport.VideoDragStopped += OnMainViewportVideoDragStoppedEvent;
-			} else {
-				mainviewport.VideoDragged -= OnMainViewportVideoDraggedEvent;
-				mainviewport.VideoDragStarted -= OnMainViewportVideoDragStartedEvent;
-				mainviewport.VideoDragStopped -= OnMainViewportVideoDragStoppedEvent;
-			}
-		}
-
-		// FIXME: To be fixed in LON-1019
-		void HandleKeyPressed (KeyPressedEvent e)
-		{
-			/*
-			try {
-				action = App.Current.Config.Hotkeys.ActionsHotkeys.GetKeyByValue (e.Key);
-			} catch (Exception ex) {
-				// The dictionary contains 2 equal values for different keys
-				Log.Exception (ex);
-				return;
-			}
-
-			if (action != LMCommon.KeyAction.None) {
-				switch (action) {
-				case LMCommon.KeyAction.VideoZoomOriginal:
-					HandleZoomChanged (ZoomLevel.Original);
-					break;
-				case LMCommon.KeyAction.VideoZoomIn:
-					// Increase zoom level with clamping to max level
-					HandleZoomChanged ((ZoomLevel)Math.Min ((int)ZoomLevel.Level5, (int)zoomLevel + 1));
-					break;
-				case LMCommon.KeyAction.VideoZoomOut:
-					// Decrease zoom level with clamping to original
-					HandleZoomChanged ((ZoomLevel)Math.Max ((int)ZoomLevel.Original, (int)zoomLevel - 1));
-					break;
-				}
-			}
-		*/
 		}
 
 		#endregion

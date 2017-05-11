@@ -215,10 +215,17 @@ namespace VAS.Core.Interfaces
 		void Ready (bool ready);
 
 		/// <summary>
-		/// Applies the configured RegionOfInterest for a given camera.
+		/// Changes the zoom for the main camera.
 		/// </summary>
-		/// <param name="camConfig">The camera to update.</param>
-		void ApplyROI (CameraConfig camConfig);
+		/// <param name="zoomLevel">The new zoom level, where 1 is 100%.</param>
+		void SetZoom (double zoomLevel);
+
+		/// <summary>
+		/// Moves the current RegionOfInterest by the vector expressed between the origin of
+		/// coordinaties and the <paramref name="diff"/> point for the main.
+		/// </summary>
+		/// <param name="diff">Diff.</param>
+		void MoveROI (Point diff);
 
 		/// <summary>
 		/// Emits a DrawFrame event with the currently loaded frame.
