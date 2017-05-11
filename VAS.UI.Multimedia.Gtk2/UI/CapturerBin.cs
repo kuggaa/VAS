@@ -510,9 +510,10 @@ namespace VAS.UI
 		protected virtual void HandlePlayLast (object sender, EventArgs e)
 		{
 			if (lastevent != null) {
-				App.Current.EventsBroker.Publish<LoadEventEvent> (
-					new LoadEventEvent {
-						TimelineEvent = lastevent
+				App.Current.EventsBroker.Publish (
+					new LoadTimelineEventEvent<TimelineEvent> {
+						Object = lastevent,
+						Playing = true,
 					}
 				);
 			}
