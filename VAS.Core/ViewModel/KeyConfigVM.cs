@@ -33,7 +33,7 @@ namespace VAS.Core.ViewModel
 		HotKey initialHotkey;
 		public KeyConfigVM ()
 		{
-			EditCommand = new Command (EditKey, () => { return true; });
+			EditCommand = new AsyncCommand (EditKey, () => { return true; });
 			EditCommand.Icon = Resources.LoadIcon ("longomatch-control-draw");
 			EditCommand.ToolTipText = Catalog.GetString ("Edit Shortcut");
 		}
