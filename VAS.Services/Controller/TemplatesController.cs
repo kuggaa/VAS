@@ -240,12 +240,12 @@ namespace VAS.Services.Controller
 				if (System.IO.File.Exists (fileName)) {
 					string msg = AlreadyExistsText + " " + OverwriteText;
 					evt.ReturnValue = await App.Current.Dialogs.QuestionMessage (msg, null);
+					if (!evt.ReturnValue) {
+						return;
+					}
 				}
-
-				if (evt.ReturnValue) {
-					Serializer.Instance.Save (template, fileName);
-					App.Current.Dialogs.InfoMessage (ExportedCorrectlyText);
-				}
+				Serializer.Instance.Save (template, fileName);
+				App.Current.Dialogs.InfoMessage (ExportedCorrectlyText);
 			}
 		}
 
