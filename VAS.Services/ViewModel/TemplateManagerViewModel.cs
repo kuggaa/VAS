@@ -41,12 +41,12 @@ namespace VAS.Services.ViewModel
 		public TemplatesManagerViewModel ()
 		{
 			LoadedTemplate = new TViewModel ();
-			NewCommand = new Command (New, () => true);
-			SaveCommand = new Command<bool> ((o) => Save (o), () => LoadedTemplate.Model != null && LoadedTemplate.Edited);
-			DeleteCommand = new Command (Delete, () => LoadedTemplate.Model != null && LoadedTemplate.Editable);
-			ExportCommand = new Command (Export, () => LoadedTemplate.Model != null);
-			ImportCommand = new Command (Import, () => true);
-			OpenCommand = new Command<TModel> ((o) => Open (o), () => true);
+			NewCommand = new AsyncCommand (New);
+			SaveCommand = new AsyncCommand<bool> (Save, () => LoadedTemplate.Model != null && LoadedTemplate.Edited);
+			DeleteCommand = new AsyncCommand (Delete, () => LoadedTemplate.Model != null && LoadedTemplate.Editable);
+			ExportCommand = new AsyncCommand (Export, () => LoadedTemplate.Model != null);
+			ImportCommand = new AsyncCommand (Import);
+			OpenCommand = new AsyncCommand<TModel> (Open);
 		}
 
 		/// <summary>

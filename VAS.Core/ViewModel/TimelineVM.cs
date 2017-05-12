@@ -55,7 +55,7 @@ namespace VAS.Core.ViewModel
 			FullTimeline = CreateFullTimeline ();
 			FullTimeline.ViewModels.CollectionChanged += HandleTimelineCollectionChanged;
 			FullTimeline.PropertyChanged += FullTimeline_PropertyChanged;
-			EditionCommand = new Command<TimelineEvent> (HandleEditPlay, (arg) => true);
+			EditionCommand = new Command<TimelineEvent> (HandleEditPlay);
 		}
 
 		protected override void DisposeManagedResources ()
