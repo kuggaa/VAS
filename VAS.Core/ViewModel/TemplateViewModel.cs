@@ -15,11 +15,10 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.ComponentModel;
+using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.MVVMC;
@@ -80,11 +79,11 @@ namespace VAS.Core.ViewModel
 		where TChildViewModel : IViewModel<TChildModel>, new()
 		where TChildModel : BindableBase
 	{
-
 		public TemplateViewModel ()
 		{
 			Selection = new RangeObservableCollection<TChildViewModel> ();
 			SubViewModel = CreateSubViewModel ();
+			GetNotifyCollection ().CollectionChanged += HandleViewModelsChanged;
 		}
 
 		public CollectionViewModel<TChildModel, TChildViewModel> SubViewModel {
@@ -186,6 +185,21 @@ namespace VAS.Core.ViewModel
 		{
 			base.SyncLoadedModel ();
 			SubViewModel.Model = Model?.List;
+		}
+
+		void HandleViewModelsChanged (object sender, NotifyCollectionChangedEventArgs e)
+		{
+			switch (e.Action) {
+			case NotifyCollectionChangedAction.Remove:
+				Selection.RemoveRange (Selection.Intersect (e.OldItems.OfType<TChildViewModel> ()));
+				break;
+			case NotifyCollectionChangedAction.Replace:
+				Selection.RemoveRange (Selection.Intersect (e.OldItems.OfType<TChildViewModel> ()));
+				break;
+			case NotifyCollectionChangedAction.Reset:
+				Selection.Clear ();
+				break;
+			}
 		}
 	}
 }
