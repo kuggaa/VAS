@@ -86,7 +86,7 @@ namespace VAS.Services
 			return template;
 		}
 
-		public void Save (T template)
+		public virtual void Save (T template)
 		{
 			bool isNew = false;
 
@@ -117,7 +117,7 @@ namespace VAS.Services
 			}
 		}
 
-		public void Add (T template)
+		public virtual void Add (T template)
 		{
 			Log.Information ("Adding new template " + template.Name);
 			try {
@@ -146,7 +146,7 @@ namespace VAS.Services
 			return template;
 		}
 
-		public void Delete (T template)
+		public virtual void Delete (T template)
 		{
 			Log.Information ("Deleting template " + template.Name);
 			if (systemTemplates.Contains (template)) {
