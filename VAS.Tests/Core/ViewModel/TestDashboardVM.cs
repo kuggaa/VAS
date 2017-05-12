@@ -104,5 +104,16 @@ namespace VAS.Tests.Core.ViewModel
 			Assert.AreEqual (DashboardMode.Code, viewModel.Mode);
 			Assert.AreEqual (time, viewModel.CurrentTime);
 		}
+
+		[Test]
+		public void DeleteButton_RemovedFromSelection ()
+		{
+			DashboardButtonVM button = dashboard.ViewModels [0];
+			dashboard.SelectionReplace (button.ToEnumerable ());
+
+			dashboard.ViewModels.Remove (button);
+
+			Assert.IsEmpty (dashboard.Selection);
+		}
 	}
 }
