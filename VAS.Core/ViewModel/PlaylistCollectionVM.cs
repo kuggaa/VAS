@@ -43,7 +43,7 @@ namespace VAS.Core.ViewModel
 
 		public PlaylistCollectionVM ()
 		{
-			DeleteCommand = new Command (Delete, () => HasItemsSelected ());
+			DeleteCommand = new Command (Delete, HasItemsSelected);
 			DeleteCommand.Icon = deleteIcon;
 			DeleteCommand.ToolTipText = Catalog.GetString ("Delete Playlists");
 			NewCommand = new Command (New, () => Limitation == null || Limitation.Count < Limitation.Maximum);
