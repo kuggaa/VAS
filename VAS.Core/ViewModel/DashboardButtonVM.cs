@@ -48,12 +48,12 @@ namespace VAS.Core.ViewModel
 				return base.Model;
 			}
 			set {
-				base.Model = value;
 				ActionLinks.Model = value.ActionLinks;
 				HotKey.Model = value.HotKey;
+				base.Model = value;
 			}
 		}
-		
+
 		/// <summary>
 		/// Gets the DashboardButtonView.
 		/// </summary>
