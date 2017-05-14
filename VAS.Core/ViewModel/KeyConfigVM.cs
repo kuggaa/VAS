@@ -46,8 +46,8 @@ namespace VAS.Core.ViewModel
 				return base.Model;
 			}
 			set {
+				initialHotkey = value.Key.Clone ();
 				base.Model = value;
-				initialHotkey = Model.Key.Clone ();
 			}
 		}
 
