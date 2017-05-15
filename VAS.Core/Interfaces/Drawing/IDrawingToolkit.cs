@@ -20,12 +20,12 @@ using VAS.Core.Common;
 
 namespace VAS.Core.Interfaces.Drawing
 {
-	public interface IContext:IDisposable
+	public interface IContext : IDisposable
 	{
 		object Value { get; }
 	}
 
-	public interface ISurface:IDisposable
+	public interface ISurface : IDisposable
 	{
 		Image Copy ();
 
@@ -87,13 +87,13 @@ namespace VAS.Core.Interfaces.Drawing
 		void DrawLine (Point start, Point stop);
 
 		void DrawTriangle (Point corner, double width, double height,
-		                   SelectionPosition orientation);
+						   SelectionPosition orientation);
 
 		void DrawRectangle (Point start, double width, double height);
 
 		void DrawRoundedRectangle (Point start, double width, double height, double radius);
 
-		void DrawArea (params Point[] vertices);
+		void DrawArea (params Point [] vertices);
 
 		void DrawPoint (Point point);
 
@@ -120,7 +120,7 @@ namespace VAS.Core.Interfaces.Drawing
 		void Invoke (EventHandler handler);
 
 		void MeasureText (string text, out int width, out int height,
-		                  string fontFamily, int fontSize, FontWeight fontWeight);
+						  string fontFamily, int fontSize, FontWeight fontWeight);
 	}
 }
 

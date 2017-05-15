@@ -24,7 +24,6 @@ namespace VAS
 {
 	public static class GtkGlue
 	{
-		
 		[DllImport ("libgtk-2.0.dll") /* willfully unmapped */]
 		static extern void gtk_menu_item_set_label (IntPtr menu, IntPtr label);
 
@@ -55,6 +54,15 @@ namespace VAS
 			lgm_gtk_glue_gdk_event_button_set_button (ev.Handle, button);
 		}
 
+		/// <summary>
+		/// pango_layout_set_height (SetPangoLayoutHeight) has 2 different behaviors:
+		/// If height is positive, it'll the layout max height (and at least one line).
+		/// If height is negative, it'll the max number of lines per paragraph,
+		/// if height is -1, first line of each paragraph is ellipsized.
+		/// More info: https://developer.gnome.org/pango/stable/pango-Layout-Objects.html#pango-layout-set-height
+		/// </summary>
+		/// <param name="layout">Layout.</param>
+		/// <param name="height">Height in Pango Units.</param>
 		public static void SetPangoLayoutHeight (this Pango.Layout layout, int height)
 		{
 			pango_layout_set_height (layout.Handle, height);
@@ -88,7 +96,7 @@ namespace VAS
 
 			public void ConnectTo (Gtk.Label label)
 			{
-				var signal = GLib.Signal.Lookup (label, "activate-link", typeof(ActivateLinkEventArgs));
+				var signal = GLib.Signal.Lookup (label, "activate-link", typeof (ActivateLinkEventArgs));
 				signal.AddDelegate (new EventHandler<ActivateLinkEventArgs> (HandleLink));
 			}
 
