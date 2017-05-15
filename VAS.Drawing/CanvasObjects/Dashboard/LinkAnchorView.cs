@@ -149,7 +149,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				return true;
 			else if (Button is TagButtonView && anchor.Button is TagButtonView)
 				return true;
-			else if (Button.ButtonVM is AnalysisEventButtonVM && anchor.Button.ButtonVM is AnalysisEventButtonVM)
+			else if (Button.ButtonVM is EventButtonVM && anchor.Button.ButtonVM is EventButtonVM)
 				return true;
 			return false;
 		}
