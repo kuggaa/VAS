@@ -43,7 +43,7 @@ namespace VAS.Services.ViewModel
 			LoadedTemplate = new TViewModel ();
 			NewCommand = new Command (New, () => true);
 			SaveCommand = new Command<bool> ((o) => Save (o), () => LoadedTemplate.Model != null && LoadedTemplate.Edited);
-			DeleteCommand = new Command (Delete, () => LoadedTemplate.Model != null);
+			DeleteCommand = new Command (Delete, () => LoadedTemplate.Model != null && LoadedTemplate.Editable);
 			ExportCommand = new Command (Export, () => LoadedTemplate.Model != null);
 			ImportCommand = new Command (Import, () => true);
 			OpenCommand = new Command<TModel> ((o) => Open (o), () => true);
