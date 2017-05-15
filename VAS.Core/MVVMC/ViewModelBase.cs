@@ -87,6 +87,8 @@ namespace VAS.Core.MVVMC
 
 	public class ViewModelBase<T> : ViewModelBase, IViewModel<T> where T : class, INotifyPropertyChanged
 	{
+		T model;
+
 		/// <summary>
 		/// Gets or sets the model used by this ViewModel.
 		/// We disable Foody's equality check since we work sometimes with
@@ -96,8 +98,13 @@ namespace VAS.Core.MVVMC
 		/// <value>The model.</value>
 		[PropertyChanged.DoNotCheckEquality]
 		public virtual T Model {
-			set;
-			get;
+			get {
+				return model;
+			}
+			set {
+				model = value;
+				Sync ();
+			}
 		}
 
 		protected override void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)

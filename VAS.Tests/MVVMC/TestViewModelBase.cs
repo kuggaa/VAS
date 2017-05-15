@@ -170,6 +170,20 @@ namespace VAS.Tests.MVVMC
 
 			Assert.IsNull (propertyName);
 		}
+
+		[Test]
+		public void Model_Set_SyncCalled ()
+		{
+			bool called = false;
+			var viewModel = new ViewModelBase<StorableBase> ();
+			viewModel.PropertyChanged += (sender, e) => {
+				called |= e.PropertyName == null;
+			};
+
+			viewModel.Model = new StorableBase ();
+
+			Assert.IsTrue (called);
+		}
 	}
 }
 
