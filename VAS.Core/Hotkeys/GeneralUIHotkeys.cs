@@ -36,25 +36,25 @@ namespace VAS.Core.Hotkeys
 				},
 				new KeyConfig {
 					Name = "SAVE_PROJECT",
-					Key = App.Current.Keyboard.ParseName ("<Control_L>+s"),
+					Key = App.Current.Keyboard.ParseName ("<Primary>+s"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Save project")
 				},
 				new KeyConfig {
 					Name = "CLOSE_PROJECT",
-					Key = App.Current.Keyboard.ParseName ("<Control_L>+w"),
+					Key = App.Current.Keyboard.ParseName ("<Primary>+w"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Close project")
 				},
 				new KeyConfig {
 					Name = "CLOSE_APP",
-					Key = App.Current.Keyboard.ParseName ("<Control_L>+q"),
+					Key = App.Current.Keyboard.ParseName ("<Primary>+q"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Close application")
 				},
 				new KeyConfig {
 					Name = "OPEN_PREFERENCES",
-					Key = App.Current.Keyboard.ParseName ("<Control_L>+p"),
+					Key = App.Current.Keyboard.ParseName ("<Primary>+p"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Open preferences")
 				},
