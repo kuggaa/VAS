@@ -38,6 +38,10 @@ namespace VAS.Core.Common
 			int modifier = 0;
 			EventKey evt = obj as EventKey;
 
+			if (IsSupportedModifier (evt.Key)) {
+				return null;
+			}
+
 			int keyval = (int)Gdk.Keyval.ToLower ((uint)evt.KeyValue);
 
 			if (evt.State.HasFlag (Gdk.ModifierType.ShiftMask)) {
@@ -46,21 +50,17 @@ namespace VAS.Core.Common
 			if (evt.State.HasFlag (Gdk.ModifierType.Mod1Mask) || evt.State.HasFlag (Gdk.ModifierType.Mod5Mask)) {
 				modifier += (int)ModifierType.Mod1Mask;
 			}
+			if (evt.State.HasFlag (Gdk.ModifierType.ControlMask)) {
+				modifier += (int)ModifierType.ControlMask;
+			}
+			if (evt.State.HasFlag (Gdk.ModifierType.MetaMask)) {
+				modifier += (int)ModifierType.MetaMask;
+			}
 			if (Utils.OS == OperatingSystemID.OSX) {
 				// Map Command + BackSpace to Delete
 				if (evt.State.HasFlag (Gdk.ModifierType.MetaMask) && evt.Key == Key.BackSpace) {
 					modifier = 0;
 					keyval = (int)Gdk.Key.Delete;
-				} else
-				// Use comand or control if we are in OSX
-				// FIXME: we need to actually define this better. We want users to configure hotkeys with command? if so
-				// let that be command.
-				if (evt.State.HasFlag (Gdk.ModifierType.Mod2Mask | Gdk.ModifierType.MetaMask) || evt.State.HasFlag (Gdk.ModifierType.ControlMask)) {
-					modifier += (int)ModifierType.ControlMask;
-				}
-			} else {
-				if (evt.State.HasFlag (Gdk.ModifierType.ControlMask)) {
-					modifier += (int)ModifierType.ControlMask;
 				}
 			}
 
@@ -83,19 +83,41 @@ namespace VAS.Core.Common
 				string kName = keyName.Trim ();
 				if (kName.StartsWith ("<") && kName.EndsWith (">")) {
 					switch (kName.Substring (1, kName.Length - 2)) {
+					case "Primary": {
+							if (Utils.OS == OperatingSystemID.OSX) {
+								modifier += (int)ModifierType.MetaMask;
+							} else {
+								modifier += (int)ModifierType.ControlMask;
+							}
+							break;
+						}
 					case "Shift_L":
+					case "Shift_R":
+					case "Shift":
 						modifier += (int)ModifierType.ShiftMask;
 						break;
 					case "Alt_L":
+					case "Alt_R":
+					case "Alt":
 						modifier += (int)ModifierType.Mod1Mask;
 						break;
 					case "Control_L":
+					case "Control_R":
+					case "Control":
 						modifier += (int)ModifierType.ControlMask;
+						break;
+					case "Meta_L":
+					case "Meta_R":
+					case "Meta":
+						modifier += (int)ModifierType.MetaMask;
 						break;
 					}
 				} else {
 					key = (int)KeyvalFromName (kName);
 				}
+			}
+			if (key == 0) {
+				return null;
 			}
 			return new HotKey { Key = key, Modifier = modifier };
 		}
@@ -124,6 +146,11 @@ namespace VAS.Core.Common
 			return name + NameFromKeyval ((uint)hotkey.Key);
 		}
 
+		internal bool ContainsModifier (HotKey hotkey, ModifierType modifier)
+		{
+			return (hotkey.Modifier & (int)modifier) == (int)modifier;
+		}
+
 		/// <summary>
 		/// Normalizes the key value. Only useful when having a modifier enabled with the key
 		/// </summary>
@@ -135,6 +162,19 @@ namespace VAS.Core.Common
 			uint [] keyvals;
 			Gdk.Keymap.Default.GetEntriesForKeycode (hardwareKey, out keymapkey, out keyvals);
 			return keyvals [0];
+		}
+
+		bool IsSupportedModifier (Key key)
+		{
+			return key == Key.Shift_L ||
+							 key == Key.Shift_R ||
+							 key == Key.Alt_L ||
+							 key == Key.Alt_R ||
+							 key == Key.Control_L ||
+							 key == Key.Control_R ||
+							 key == Key.Meta_L ||
+							 key == Key.Meta_R ||
+							 key == (Key)ModifierType.None;
 		}
 	}
 }
