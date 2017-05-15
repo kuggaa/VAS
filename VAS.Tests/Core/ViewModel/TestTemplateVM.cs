@@ -17,6 +17,7 @@
 //
 using System.Linq;
 using NUnit.Framework;
+using VAS.Core.Common;
 using VAS.Core.ViewModel;
 
 namespace VAS.Tests.Core.ViewModel
@@ -139,6 +140,44 @@ namespace VAS.Tests.Core.ViewModel
 
 			Assert.AreEqual (1, viewModel.Selection.Count);
 			Assert.AreEqual (player, viewModel.Selection.First ().Model);
+		}
+
+		[Test]
+		public void Selection_ElementDeleted_SelectionSynced ()
+		{
+			var model = new DummyTeam {
+				Name = "dash",
+			};
+			model.List.Add (new Utils.PlayerDummy ());
+			model.List.Add (new Utils.PlayerDummy ());
+			var viewModel = new DummyTeamVM {
+				Model = model
+			};
+
+			var element = viewModel.ViewModels [0];
+			viewModel.Select (element);
+			viewModel.ViewModels.Remove (element);
+
+			Assert.IsEmpty (viewModel.Selection);
+		}
+
+		[Test]
+		public void Selection_CollectionCleared_SelectionSynced ()
+		{
+			var model = new DummyTeam {
+				Name = "dash",
+			};
+			model.List.Add (new Utils.PlayerDummy ());
+			model.List.Add (new Utils.PlayerDummy ());
+			var viewModel = new DummyTeamVM {
+				Model = model
+			};
+
+			var element = viewModel.ViewModels [0];
+			viewModel.Select (element);
+			viewModel.ViewModels.Clear ();
+
+			Assert.IsEmpty (viewModel.Selection);
 		}
 	}
 }
