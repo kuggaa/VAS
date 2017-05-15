@@ -33,7 +33,7 @@ using Point = VAS.Core.Common.Point;
 
 namespace VAS.Drawing.Cairo
 {
-	public class CairoBackend: IDrawingToolkit
+	public class CairoBackend : IDrawingToolkit
 	{
 		IContext context;
 		Style fSlant;
@@ -90,7 +90,6 @@ namespace VAS.Drawing.Cairo
 		public string FontFamily {
 			set;
 			protected get;
-			
 		}
 
 		public int FontSize {
@@ -213,7 +212,7 @@ namespace VAS.Drawing.Cairo
 		public Area UserToDevice (Area a)
 		{
 			double x, y, x2, y2, x3, y3;
-			
+
 			x = a.Start.X;
 			y = a.Start.Y;
 			CContext.UserToDevice (ref x, ref y);
@@ -254,13 +253,13 @@ namespace VAS.Drawing.Cairo
 		}
 
 		public void DrawTriangle (Point corner, double width, double height,
-		                          SelectionPosition position)
+								  SelectionPosition position)
 		{
 			double x1, y1, x2, y2, x3, y3;
 
 			x1 = corner.X;
 			y1 = corner.Y;
-			
+
 			switch (position) {
 			case SelectionPosition.Top:
 				x2 = x1 + width / 2;
@@ -276,7 +275,7 @@ namespace VAS.Drawing.Cairo
 				y3 = y1 - height;
 				break;
 			}
-			
+
 			SetColor (StrokeColor);
 			CContext.MoveTo (x1, y1);
 			CContext.LineTo (x2, y2);
@@ -285,7 +284,7 @@ namespace VAS.Drawing.Cairo
 			StrokeAndFill ();
 		}
 
-		public void DrawArea (params Point[] vertices)
+		public void DrawArea (params Point [] vertices)
 		{
 			double x1, y1;
 			Point initial_point = vertices [0];
@@ -330,7 +329,7 @@ namespace VAS.Drawing.Cairo
 		public void DrawRoundedRectangle (Point start, double width, double height, double radius, bool strokeAndFill)
 		{
 			double x, y;
-			
+
 			x = start.X + LineWidth / 2;
 			y = start.Y + LineWidth / 2;
 			height -= LineWidth;
@@ -365,11 +364,11 @@ namespace VAS.Drawing.Cairo
 		}
 
 		public void DrawText (Point point, double width, double height, string text,
-		                      bool escape = false, bool ellipsize = false)
+							  bool escape = false, bool ellipsize = false)
 		{
 			Layout layout = null;
 			Pango.Rectangle inkRect, logRect;
-			
+
 			if (text == null) {
 				return;
 			}
@@ -377,7 +376,7 @@ namespace VAS.Drawing.Cairo
 			if (escape) {
 				text = GLib.Markup.EscapeText (text);
 			}
-			
+
 			if (context is CairoContext) {
 				layout = (context as CairoContext).PangoLayout;
 			}
@@ -389,12 +388,13 @@ namespace VAS.Drawing.Cairo
 			} else {
 				layout.Ellipsize = EllipsizeMode.None;
 			}
+
 			layout.FontDescription = FontDescription.FromString (
 				String.Format ("{0} {1}px", FontFamily, FontSize));
 			layout.FontDescription.Weight = fWeight;
 			layout.FontDescription.Style = fSlant;
-			layout.Width = Pango.Units.FromPixels ((int)width);
-			layout.SetPangoLayoutHeight ((int)height);
+			layout.Width = Units.FromPixels ((int)width);
+			layout.SetPangoLayoutHeight (Units.FromPixels ((int)height));
 			layout.Alignment = fAlignment;
 			layout.SetMarkup (GLib.Markup.EscapeText (text));
 			SetColor (StrokeColor);
@@ -415,7 +415,7 @@ namespace VAS.Drawing.Cairo
 		{
 			double scaleX, scaleY;
 			Point offset;
-			
+
 			image.ScaleFactor ((int)width, (int)height, mode, out scaleX, out scaleY, out offset);
 			CContext.Save ();
 			CContext.Translate (start.X + offset.X, start.Y + offset.Y);
@@ -512,7 +512,7 @@ namespace VAS.Drawing.Cairo
 			Image img;
 			Pixmap pm;
 			global::Cairo.Context ctx;
-			
+
 			pm = new Pixmap (null, (int)area.Width, (int)area.Height, 24);
 			ctx = Gdk.CairoHelper.Create (pm);
 			disableScalling = true;
@@ -543,10 +543,10 @@ namespace VAS.Drawing.Cairo
 		{
 			switch (LineStyle) {
 			case LineStyle.Normal:
-				CContext.SetDash (new double[] { }, 0);
-				break;	
+				CContext.SetDash (new double [] { }, 0);
+				break;
 			default:
-				CContext.SetDash (new double[] { 10 * LineWidth / 2, 10 * LineWidth / 2 }, 0);
+				CContext.SetDash (new double [] { 10 * LineWidth / 2, 10 * LineWidth / 2 }, 0);
 				break;
 			}
 		}
@@ -600,7 +600,7 @@ namespace VAS.Drawing.Cairo
 		}
 
 		public void MeasureText (string text, out int width, out int height,
-		                         string fontFamily, int fontSize, FontWeight fontWeight)
+								 string fontFamily, int fontSize, FontWeight fontWeight)
 		{
 			FontDescription desc = new FontDescription ();
 			desc.Family = fontFamily;
@@ -636,8 +636,8 @@ namespace VAS.Drawing.Cairo
 	class ContextStatus
 	{
 		public ContextStatus (Color strokeColor, Color fillColor, Style fSlant,
-		                      Weight fWeight, Pango.Alignment alignment, int lineWidth, int fontSize,
-		                      string fontFamily, LineStyle lineStyle, bool clear)
+							  Weight fWeight, Pango.Alignment alignment, int lineWidth, int fontSize,
+							  string fontFamily, LineStyle lineStyle, bool clear)
 		{
 			StrokeColor = strokeColor;
 			FillColor = fillColor;
