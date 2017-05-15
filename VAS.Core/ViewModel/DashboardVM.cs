@@ -75,11 +75,13 @@ namespace VAS.Core.ViewModel
 			ToggleActionLinks = new Command<bool> ((p) => ShowLinks = p) {
 				Icon = Resources.LoadIcon ("longomatch-link-active", App.Current.Style.ButtonNormalWidth),
 				IconInactive = Resources.LoadIcon ("longomatch-link-disabled", App.Current.Style.ButtonNormalWidth),
+				ToolTipText = Catalog.GetString ("Edit action links"),
 			};
 
 			ChangeDashboardMode = new Command<DashboardMode> ((p) => Mode = p) {
 				Icon = Resources.LoadIcon ("longomatch-dash-edit_active", App.Current.Style.ButtonNormalWidth),
 				IconInactive = Resources.LoadIcon ("longomatch-dash-edit", App.Current.Style.ButtonNormalWidth),
+				ToolTipText = Catalog.GetString ("Edit dashboard"),
 			};
 
 			TogglePopupWindow = new Command<bool> ((p) => DisablePopupWindow = !p) {
