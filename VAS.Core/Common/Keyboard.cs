@@ -125,20 +125,30 @@ namespace VAS.Core.Common
 		public string HotKeyName (HotKey hotkey)
 		{
 			string name = "";
-			if ((hotkey.Modifier & (int)ModifierType.ShiftMask) == (int)ModifierType.ShiftMask) {
-				name += "<Shift_L>";
+			if (ContainsModifier (hotkey, ModifierType.ShiftMask)) {
+				name += "⇧";
 			}
-			if ((hotkey.Modifier & (int)ModifierType.Mod1Mask) == (int)ModifierType.Mod1Mask) {
+			if (ContainsModifier (hotkey, ModifierType.Mod1Mask)) {
 				if (name != "") {
 					name += "+";
 				}
-				name += "<Alt_L>";
+				if (Utils.OS == OperatingSystemID.OSX) {
+					name += "⌥";
+				} else {
+					name += "alt";
+				}
 			}
-			if ((hotkey.Modifier & (int)ModifierType.ControlMask) == (int)ModifierType.ControlMask) {
+			if (ContainsModifier (hotkey, ModifierType.ControlMask)) {
 				if (name != "") {
 					name += "+";
 				}
-				name += "<Control_L>";
+				name += "ctrl";
+			}
+			if (ContainsModifier (hotkey, ModifierType.MetaMask)) {
+				if (name != "") {
+					name += "+";
+				}
+				name += "⌘";
 			}
 			if (name != "") {
 				name += "+";
