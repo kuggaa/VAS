@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
@@ -19,6 +20,8 @@ namespace VAS
 {
 	public abstract class App
 	{
+		static int mainThreadId;
+
 		/* State */
 		public IGUIToolkit GUIToolkit;
 		public INavigation Navigation;
@@ -68,6 +71,12 @@ namespace VAS
 			set;
 		}
 
+		public static bool IsMainThread {
+			get {
+				return Thread.CurrentThread.ManagedThreadId == mainThreadId;
+			}
+		}
+
 		List<string> dataDir;
 
 		public static void Init (App appInit, string evUninstalled, string softwareName, string portableFile, string evHome)
@@ -80,6 +89,8 @@ namespace VAS
 			*  Config.dataDir
 			*  Config.homeDirectory
 			*/
+
+			mainThreadId = Thread.CurrentThread.ManagedThreadId;
 
 			Current = appInit;
 
