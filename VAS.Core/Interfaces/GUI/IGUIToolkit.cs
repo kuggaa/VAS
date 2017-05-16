@@ -58,7 +58,17 @@ namespace VAS.Core.Interfaces.GUI
 
 		HotKey SelectHotkey (HotKey hotkey, object parent = null);
 
+		/// <summary>
+		/// Queues the handler in the main thread. It returns as soon as the handler is queued.
+		/// </summary>
+		/// <param name="handler">Handler.</param>
 		void Invoke (EventHandler handler);
+
+		/// <summary>
+		/// Invokes the handler in the main thread asynchronously.
+		/// </summary>
+		/// <param name="handler">Handler.</param>
+		Task<T> Invoke<T> (Func<Task<T>> handler);
 
 		Task<bool> CreateNewTemplate<T> (IList<T> availableTemplates, string defaultName,
 										 string countText, string emptyText,
