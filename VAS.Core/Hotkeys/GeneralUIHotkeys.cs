@@ -25,93 +25,109 @@ namespace VAS.Core.Hotkeys
 		static List<KeyConfig> hotkeys;
 		public const string CATEGORY = "General Interface";
 
+		// Keep this sorted alphabetically
+		public const string CANCEL = "CANCEL";
+		public const string CLOSE = "CLOSE";
+		public const string CLOSE_APP = "CLOSE_APP";
+		public const string DELETE = "DELETE";
+		public const string FIND_PLAYHEAD = "FIND_PLAYHEAD";
+		public const string FIT_TIMELINE = "FIT_TIMELINE";
+		public const string OK = "OK";
+		public const string OPEN_PREFERENCES = "OPEN_PREFERENCES";
+		public const string SAVE = "SAVE";
+		public const string SHOW_DASHBOARD = "SHOW_DASHBOARD";
+		public const string SHOW_TIMELINE = "SHOW_TIMELINE";
+		public const string TOGGLE_MAP_VISIBILITY = "TOGGLE_MAP_VISIBILITY";
+		public const string ZOOM_IN = "ZOOM_IN";
+		public const string ZOOM_OUT = "ZOOM_OUT";
+
 		static GeneralUIHotkeys ()
 		{
 			hotkeys = new List<KeyConfig> {
 				new KeyConfig {
-					Name = "TOGGLE_MAP_VISIBILITY",
-					Key = App.Current.Keyboard.ParseName ("F9"),
-					Category = CATEGORY,
-					Description = Catalog.GetString("Hide map")
-				},
-				new KeyConfig {
-					Name = "SAVE_PROJECT",
+					Name = SAVE,
 					Key = App.Current.Keyboard.ParseName ("<Primary>+s"),
 					Category = CATEGORY,
-					Description = Catalog.GetString("Save project")
+					Description = Catalog.GetString("Save")
 				},
 				new KeyConfig {
-					Name = "CLOSE_PROJECT",
+					Name = CLOSE,
 					Key = App.Current.Keyboard.ParseName ("<Primary>+w"),
 					Category = CATEGORY,
-					Description = Catalog.GetString("Close project")
+					Description = Catalog.GetString("Close")
 				},
 				new KeyConfig {
-					Name = "CLOSE_APP",
-					Key = App.Current.Keyboard.ParseName ("<Primary>+q"),
-					Category = CATEGORY,
-					Description = Catalog.GetString("Close application")
-				},
-				new KeyConfig {
-					Name = "OPEN_PREFERENCES",
-					Key = App.Current.Keyboard.ParseName ("<Primary>+p"),
-					Category = CATEGORY,
-					Description = Catalog.GetString("Open preferences")
-				},
-				new KeyConfig {
-					Name = "FIND_PLAYHEAD",
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+p"),
-					Category = CATEGORY,
-					Description = Catalog.GetString("Find playhead")
-				},
-				new KeyConfig {
-					Name = "ZOOM_IN",
-					Key = App.Current.Keyboard.ParseName ("plus"),
-					Category = CATEGORY,
-					Description = Catalog.GetString("Zoom in")
-				},
-				new KeyConfig {
-					Name = "ZOOM_OUT",
-					Key = App.Current.Keyboard.ParseName ("minus"),
-					Category = CATEGORY,
-					Description = Catalog.GetString("Zoom out")
-				},
-				new KeyConfig {
-					Name = "FIT_TIMELINE",
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+t"),
-					Category = CATEGORY,
-					Description = Catalog.GetString("Adjust timeline to current position")
-				},
-				new KeyConfig {
-					Name = "SHOW_DASHBOARD",
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+z"),
-					Category = CATEGORY,
-					Description = Catalog.GetString("Show dashboard")
-				},
-				new KeyConfig {
-					Name = "SHOW_TIMELINE",
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+x"),
-					Category = CATEGORY,
-					Description = Catalog.GetString("Show timeline")
-				},
-				new KeyConfig {
-					Name = "DELETE",
+					Name = DELETE,
 					Key = App.Current.Keyboard.ParseName ("Delete"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Delete selected element")
 				},
 				new KeyConfig {
-					Name = "OK",
+					Name = OK,
 					Key = App.Current.Keyboard.ParseName ("Return"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("OK")
 				},
 				new KeyConfig {
-					Name = "CANCEL",
+					Name = CANCEL,
 					Key = App.Current.Keyboard.ParseName ("Escape"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Cancel")
-				}
+				},
+				new KeyConfig {
+					Name = CLOSE_APP,
+					Key = App.Current.Keyboard.ParseName ("<Primary>+q"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Close application")
+				},
+				new KeyConfig {
+					Name = TOGGLE_MAP_VISIBILITY,
+					Key = App.Current.Keyboard.ParseName ("F9"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Hide map")
+				},
+				new KeyConfig {
+					Name = OPEN_PREFERENCES,
+					Key = App.Current.Keyboard.ParseName ("<Primary>+p"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Open preferences")
+				},
+				new KeyConfig {
+					Name = FIND_PLAYHEAD,
+					Key = App.Current.Keyboard.ParseName ("<Shift_L>+p"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Find playhead")
+				},
+				new KeyConfig {
+					Name = ZOOM_IN,
+					Key = App.Current.Keyboard.ParseName ("plus"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Zoom in")
+				},
+				new KeyConfig {
+					Name = ZOOM_OUT,
+					Key = App.Current.Keyboard.ParseName ("minus"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Zoom out")
+				},
+				new KeyConfig {
+					Name = FIT_TIMELINE,
+					Key = App.Current.Keyboard.ParseName ("<Shift_L>+t"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Adjust timeline to current position")
+				},
+				new KeyConfig {
+					Name = SHOW_DASHBOARD,
+					Key = App.Current.Keyboard.ParseName ("<Shift_L>+z"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Show dashboard")
+				},
+				new KeyConfig {
+					Name = SHOW_TIMELINE,
+					Key = App.Current.Keyboard.ParseName ("<Shift_L>+x"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Show timeline")
+				},
 				//FIXME: Not entering on first release, but should be
 				//done in a future
 				/*new KeyConfig {

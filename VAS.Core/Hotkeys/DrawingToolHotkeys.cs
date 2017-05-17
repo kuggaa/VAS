@@ -94,6 +94,18 @@ namespace VAS.Core.Hotkeys
 					Category = CATEGORY,
 					Description = Catalog.GetString("Counter")
 				},
+				new KeyConfig {
+					Name = "DRAWING_TOOL_CLEAR_ALL",
+					Key = App.Current.Keyboard.ParseName ("<Control_L>+<Alt_L>+<Shift_L>+x"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Clear all")
+				},
+				new KeyConfig {
+					Name = "DRAWING_TOOL_EXPORT_IMAGE",
+					Key = App.Current.Keyboard.ParseName ("<Control_L>+<Shift_L>+s"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Export image")
+				},
 				//FIXME: this sould be added, now are not possible due to 
 				//the actual functionality of the VAS DrawingTool
 				/*new KeyConfig {
@@ -114,30 +126,6 @@ namespace VAS.Core.Hotkeys
 					Category = CATEGORY,
 					Description = Catalog.GetString("Zoom out")
 				},*/
-				new KeyConfig {
-					Name = "DRAWING_TOOL_CLEAR_ALL",
-					Key = App.Current.Keyboard.ParseName ("<Control_L>+<Alt_L>+<Shift_L>+x"),
-					Category = CATEGORY,
-					Description = Catalog.GetString("Clear all")
-				},
-				new KeyConfig {
-					Name = "DRAWING_TOOL_DELETE_SELECTION",
-					Key = App.Current.Keyboard.ParseName ("Delete"),
-					Category = CATEGORY,
-					Description = Catalog.GetString("Delete selection")
-				},
-				new KeyConfig {
-					Name = "DRAWING_TOOL_SAVE",
-					Key = App.Current.Keyboard.ParseName ("<Control_L>+s"),
-					Category = CATEGORY,
-					Description = Catalog.GetString("Save")
-				},
-				new KeyConfig {
-					Name = "DRAWING_TOOL_EXPORT_IMAGE",
-					Key = App.Current.Keyboard.ParseName ("<Control_L>+<Shift_L>+s"),
-					Category = CATEGORY,
-					Description = Catalog.GetString("Export image")
-				},
 			};
 		}
 
