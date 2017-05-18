@@ -70,11 +70,6 @@ namespace VAS.Core.ViewModel
 			set;
 		}
 
-		public bool CloseButtonVisible {
-			get;
-			set;
-		}
-
 		public bool Playing {
 			get;
 			set;
