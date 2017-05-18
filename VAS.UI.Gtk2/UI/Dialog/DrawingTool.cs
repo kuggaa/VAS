@@ -275,12 +275,12 @@ namespace VAS.UI.Dialog
 			);
 			keyContext.AddAction (
 				new KeyAction (
-					App.Current.HotkeysService.GetByName ("DRAWING_TOOL_DELETE_SELECTION"),
+					App.Current.HotkeysService.GetByName (GeneralUIHotkeys.DELETE),
 					blackboard.DeleteSelection)
 			);
 			keyContext.AddAction (
 				new KeyAction (
-					App.Current.HotkeysService.GetByName ("DRAWING_TOOL_SAVE"),
+					App.Current.HotkeysService.GetByName (GeneralUIHotkeys.SAVE),
 					() => {
 						if (savetoprojectbutton.Visible) {
 							savetoprojectbutton.Click ();
