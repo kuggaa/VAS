@@ -1475,23 +1475,27 @@ namespace VAS.Services
 
 		void UpdateDuration ()
 		{
+			Time absoluteDuration;
 			if (Mode == VideoPlayerOperationMode.Presentation) {
-				duration = LoadedPlaylist.Duration;
+				absoluteDuration = duration = LoadedPlaylist.Duration;
 			} else {
+				if (Mode == VideoPlayerOperationMode.Stretched) {
+					absoluteDuration = FileSet?.VisibleRegion.Duration;
+				} else {
+					absoluteDuration = FileSet?.Duration;
+				}
+
 				if (StillImageLoaded) {
 					duration = loadedPlaylistElement.Duration;
 				} else if (SegmentLoaded) {
 					duration = loadedSegment.Stop - loadedSegment.Start;
 				} else {
-					if (Mode == VideoPlayerOperationMode.Stretched) {
-						duration = FileSet?.VisibleRegion.Duration;
-					} else {
-						duration = FileSet?.Duration;
-					}
+					duration = absoluteDuration;
 				}
 			}
 			if (playerVM != null) {
 				playerVM.Duration = duration;
+				playerVM.AbsoluteDuration = absoluteDuration;
 			}
 		}
 

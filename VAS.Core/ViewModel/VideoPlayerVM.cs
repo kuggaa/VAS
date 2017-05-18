@@ -85,7 +85,26 @@ namespace VAS.Core.ViewModel
 			set;
 		}
 
+		/// <summary>
+		/// The duration of the currently active element in the video player,
+		/// which can be the whole media file's duration, the duration of the currently loaded
+		/// timeline element or the duration of the playlist. This should be used in Views where the
+		/// seekable region is limitied to the duration of the loaded element, for example a video
+		/// player that wants to restrict seeks relative to the start and stop time of the loaded
+		/// element.
+		/// </summary>
+		/// <value>The duration.</value>
 		public Time Duration {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// The absolute seekable duration, regardless of the currently loaded element. This should
+		/// be used by Views that needs to display the full duration of the clip, like a timeline.
+		/// </summary>
+		/// <value>The duration.</value>
+		public Time AbsoluteDuration {
 			get;
 			set;
 		}
