@@ -740,13 +740,7 @@ namespace VAS.Services
 			}
 			UpdateDuration ();
 			LoadedPlaylist.SetActive (element);
-			EmitElementLoaded (element, playlist.HasNext ());
-			App.Current.EventsBroker.Publish<PlaylistElementLoadedEvent> (
-				new PlaylistElementLoadedEvent {
-					Playlist = playlist,
-					Element = element
-				}
-			);
+			EmitElementLoaded (element, playlist);
 		}
 
 		public virtual void LoadEvent (TimelineEvent evt, Time seekTime, bool playing)
@@ -774,12 +768,7 @@ namespace VAS.Services
 				Log.Error ("Event does not have timing info: " + evt);
 			}
 			UpdateDuration ();
-			EmitElementLoaded (evt, false);
-			App.Current.EventsBroker.Publish<EventLoadedEvent> (
-				new EventLoadedEvent {
-					TimelineEvent = evt
-				}
-			);
+			EmitElementLoaded (evt, null);
 		}
 
 		public virtual void UnloadCurrentEvent ()
@@ -971,22 +960,32 @@ namespace VAS.Services
 			}
 		}
 
-		protected virtual void EmitElementLoaded (object element, bool hasNext)
+		protected virtual void EmitElementLoaded (object element, Playlist playlist)
 		{
-			playerVM.HasNext = hasNext;
+			playerVM.HasNext = playlist != null ? playlist.HasNext () : false;
 			playerVM.PlayElement = element;
+			if (element is IPlaylistElement) {
+				App.Current.EventsBroker.Publish (
+					new PlaylistElementLoadedEvent {
+						Playlist = playlist,
+						Element = element as IPlaylistElement,
+					}
+				);
+			} else {
+				App.Current.EventsBroker.Publish (
+					new EventLoadedEvent {
+						TimelineEvent = element as TimelineEvent,
+					}
+				);
+			}
 			if (ElementLoadedEvent != null && !disposed) {
-				ElementLoadedEvent (element, hasNext);
+				ElementLoadedEvent (element, playerVM.HasNext);
 			}
 		}
 
 		protected virtual void EmitEventUnloaded ()
 		{
-			playerVM.PlayElement = null;
-			EmitElementLoaded (null, false);
-			App.Current.EventsBroker.Publish<EventLoadedEvent> (
-				new EventLoadedEvent ()
-			);
+			EmitElementLoaded (null, null);
 		}
 
 		protected virtual void EmitRateChanged (float rate)

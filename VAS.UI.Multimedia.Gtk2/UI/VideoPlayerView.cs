@@ -860,8 +860,8 @@ namespace VAS.UI
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.HasNext))) {
 				nextbutton.Sensitive = playerVM.HasNext;
 			}
-			if (ViewModel.NeedsSync (e, nameof (ViewModel.CloseButtonVisible))) {
-				closebutton.Visible = playerVM.CloseButtonVisible;
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.PlayElement))) {
+				closebutton.Visible = playerVM.PlayElement != null;
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Rate))) {
 				ignoreRate = true;
