@@ -55,27 +55,16 @@ namespace VAS.UI.Dialog
 				return base.OnKeyPressEvent (evnt);
 			}
 
-			if (IsSupportedModifier (evnt.Key)) {
+			hotKey = App.Current.Keyboard.ParseEvent (evnt);
+			// Hotkey can be null when the first key is a supported modifier
+			if (hotKey == null) {
 				return true;
 			}
 
-			hotKey = App.Current.Keyboard.ParseEvent (evnt);
 			Respond (ResponseType.Ok);
 			return true;
 		}
 
 		#endregion
-
-		bool IsSupportedModifier (Gdk.Key key)
-		{
-			return key == Gdk.Key.Shift_L ||
-			key == Gdk.Key.Shift_R ||
-			key == Gdk.Key.Alt_L ||
-			key == Gdk.Key.Alt_R ||
-			key == Gdk.Key.Control_L ||
-			key == Gdk.Key.Control_R ||
-			key == (Gdk.Key)ModifierType.None;
-		}
-
 	}
 }

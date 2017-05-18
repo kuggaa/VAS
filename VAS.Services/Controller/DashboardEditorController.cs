@@ -61,7 +61,7 @@ namespace VAS.Services.Controller
 
 		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
 		{
-			yield return new KeyAction (App.Current.HotkeysService.GetByName ("DELETE"),
+			yield return new KeyAction (App.Current.HotkeysService.GetByName (GeneralUIHotkeys.DELETE),
 										() => dashboardVM.DeleteButton.Execute (dashboardVM.Selection.FirstOrDefault ()), 10);
 		}
 
