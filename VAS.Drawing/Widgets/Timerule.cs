@@ -57,6 +57,7 @@ namespace VAS.Drawing.Widgets
 			BackgroundColor = App.Current.Style.PaletteBackgroundDark;
 			Accuracy = 5.0f;
 			PlayerMode = false;
+			UseAbsoluteDuration = false;
 		}
 
 		public Timerule () : this (null)
@@ -126,12 +127,6 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
-		/// <summary>
-		/// Gets or sets the relative time.
-		/// </summary>
-		/// <value>The relative time.</value>
-		public Time RelativeTime { get; set; }
-
 		public double SecondsPerPixel {
 			set {
 				secondsPerPixel = value;
@@ -147,6 +142,16 @@ namespace VAS.Drawing.Widgets
 		/// AdjustSizeToDuration mode means that the timerule area will include the whole duration, without scroll.
 		/// </summary>
 		public bool AdjustSizeToDuration {
+			set;
+			get;
+		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Drawing.Widgets.Timerule"/>
+		/// is using the video player absolute duration or not.
+		/// </summary>
+		/// <value><c>true</c> if use absolute duration; otherwise, <c>false</c>.</value>
+		public bool UseAbsoluteDuration {
 			set;
 			get;
 		}
@@ -307,7 +312,13 @@ namespace VAS.Drawing.Widgets
 		protected override void StartMove (Selection sel)
 		{
 			WasPlaying = ViewModel.Playing;
-			ViewModel.LoadEvent (null, false);
+			if (UseAbsoluteDuration) {
+				// Seeks can happen outside the region of the loaded element,
+				// so we have to unload it
+				ViewModel.LoadEvent (null, false);
+			} else {
+				ViewModel.Pause ();
+			}
 		}
 
 		protected override void StopMove (bool moved)
@@ -359,9 +370,13 @@ namespace VAS.Drawing.Widgets
 
 		void HandlePropertyChangedEventHandler (object sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == nameof (VideoPlayerVM.Duration)) {
+			if (ViewModel.NeedsSync (e, nameof (VideoPlayerVM.Duration)) && !UseAbsoluteDuration) {
 				Duration = ViewModel.Duration;
-			} else if (AutoUpdate && e.PropertyName == nameof (VideoPlayerVM.CurrentTime)) {
+			}
+			if (ViewModel.NeedsSync (e, nameof (VideoPlayerVM.AbsoluteDuration)) && UseAbsoluteDuration) {
+				Duration = ViewModel.AbsoluteDuration;
+			}
+			if (ViewModel.NeedsSync (e, nameof (VideoPlayerVM.CurrentTime)) && AutoUpdate) {
 				CurrentTime = ViewModel.CurrentTime;
 			}
 		}
