@@ -33,7 +33,7 @@ namespace VAS.Core.MVVMC
 		/// <param name="propertyNameToCheck">Property name to check.</param>
 		public bool NeedsSync (string propertyNameChanged, string propertyNameToCheck)
 		{
-			return NeedsSync (propertyNameChanged, propertyNameToCheck, this, null);
+			return NeedsSync (propertyNameChanged, propertyNameToCheck, null, null);
 		}
 
 		/// <summary>
@@ -44,7 +44,7 @@ namespace VAS.Core.MVVMC
 		/// <param name="propertyNameToCheck">Property name to check.</param>
 		public bool NeedsSync (PropertyChangedEventArgs eventArgs, string propertyNameToCheck)
 		{
-			return NeedsSync (eventArgs.PropertyName, propertyNameToCheck, this, null);
+			return NeedsSync (eventArgs.PropertyName, propertyNameToCheck, null, null);
 		}
 
 		/// <summary>
@@ -56,13 +56,11 @@ namespace VAS.Core.MVVMC
 		/// <param name="senderToCheck">Sender to check.</param>
 		public bool NeedsSync (string propertyNameChanged, string propertyNameToCheck, object sender, object senderToCheck)
 		{
-			if (propertyNameChanged == null && (sender == null || senderToCheck == null || sender == senderToCheck)) {
-				return true;
+			if (!SendersAreEqual (sender, senderToCheck)) {
+				return false;
 			}
-			if (propertyNameChanged == propertyNameToCheck) {
-				if (sender == null || senderToCheck == null || sender == senderToCheck) {
-					return true;
-				}
+			if (propertyNameChanged == null || propertyNameChanged == propertyNameToCheck) {
+				return true;
 			}
 			return false;
 		}
@@ -81,6 +79,15 @@ namespace VAS.Core.MVVMC
 			if (sender is IViewModel) {
 				Log.Verbose ($"ViewModelBase {this} - Forwarding PropertyName: {e.PropertyName} with sender: {sender}");
 				base.ForwardPropertyChanged (sender, e);
+			}
+		}
+
+		bool SendersAreEqual (object sender, object senderToCheck)
+		{
+			if (sender == null && senderToCheck == null) {
+				return true;
+			} else {
+				return sender == senderToCheck;
 			}
 		}
 	}
