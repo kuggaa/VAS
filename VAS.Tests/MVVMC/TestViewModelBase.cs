@@ -160,6 +160,13 @@ namespace VAS.Tests.MVVMC
 		}
 
 		[Test]
+		public void NeedsSync_SenderNotNullSenderToCheckNull_False ()
+		{
+			var viewModel = new ViewModelBase<StorableBase> ();
+			Assert.IsFalse (viewModel.NeedsSync ("Prop1", "Prop1", new object (), null));
+		}
+
+		[Test]
 		public void TestSync ()
 		{
 			string propertyName = "foo";
