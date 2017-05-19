@@ -941,7 +941,7 @@ namespace VAS.UI
 				mode == PlayerViewOperationMode.Synchronization;
 
 			prevbutton.Visible = nextbutton.Visible =
-				prevbutton.Visible ||
+				mode == PlayerViewOperationMode.Analysis ||
 				mode == PlayerViewOperationMode.SimpleWithControls;
 		}
 
