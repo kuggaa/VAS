@@ -207,6 +207,74 @@ namespace VAS.Tests.Services
 			Assert.AreSame (ev, projectVM.Timeline.FullTimeline.ViewModels [currentCount].Model);
 		}
 
+		[Test]
+		public void PeriodChange_StartChanged_SeekDone ()
+		{
+			Period period = new Period {
+				Nodes = {
+					new TimeNode { Start = new Time (0), Stop = new Time (10000) }
+				}
+			};
+			projectVM.Periods.Model.Add (period);
+			Time start = new Time (5000);
+
+			period.Nodes [0].Start = start;
+
+			playerController.Verify (p => p.Pause (false));
+			playerController.Verify (p => p.Seek (start, true, false, true));
+		}
+
+		[Test]
+		public void PeriodChange_StopChanged_SeekDone ()
+		{
+			Period period = new Period {
+				Nodes = {
+					new TimeNode { Start = new Time (0), Stop = new Time (10000) }
+				}
+			};
+			projectVM.Periods.Model.Add (period);
+			Time stop = new Time (5000);
+
+			period.Nodes [0].Stop = stop;
+
+			playerController.Verify (p => p.Pause (false));
+			playerController.Verify (p => p.Seek (stop, true, false, true));
+		}
+
+		[Test]
+		public void TimerChange_StartChanged_SeekDone ()
+		{
+			Timer timer = new Timer {
+				Nodes = {
+					new TimeNode { Start = new Time (0), Stop = new Time (10000) }
+				}
+			};
+			projectVM.Timers.Model.Add (timer);
+			Time start = new Time (5000);
+
+			timer.Nodes [0].Start = start;
+
+			playerController.Verify (p => p.Pause (false));
+			playerController.Verify (p => p.Seek (start, true, false, true));
+		}
+
+		[Test]
+		public void TimerChange_StopChanged_SeekDone ()
+		{
+			Timer timer = new Timer {
+				Nodes = {
+					new TimeNode { Start = new Time (0), Stop = new Time (10000) }
+				}
+			};
+			projectVM.Timers.Model.Add (timer);
+			Time stop = new Time (5000);
+
+			timer.Nodes [0].Stop = stop;
+
+			playerController.Verify (p => p.Pause (false));
+			playerController.Verify (p => p.Seek (stop, true, false, true));
+		}
+
 		bool ComparePlaylistElement (IPlaylistElement element, TimelineEvent ev)
 		{
 			var el = element as PlaylistPlayElement;
