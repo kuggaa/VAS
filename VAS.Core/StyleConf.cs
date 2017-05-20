@@ -230,6 +230,18 @@ namespace VAS.Core.Common
 		public const string LocationSet = "icons/hicolor/scalable/actions/vas-location-set" + IMAGE_EXT;
 		public const string LocationPinMoving = "icons/hicolor/scalable/actions/vas-location-moving" + IMAGE_EXT;
 
+		// Events treeview assets
+		public const string NormalLocation = "images/events/el_location_n" + IMAGE_EXT;
+		public const string PrelightLocation = "images/events/el_location_p" + IMAGE_EXT;
+		public const string InsensitiveLocation = "images/events/el_location_i" + IMAGE_EXT;
+		public const string NormalDrawings = "images/events/el_pen_n" + IMAGE_EXT;
+		public const string PrelightDrawings = "images/events/el_pen_p" + IMAGE_EXT;
+		public const string InsensitiveDrawings = "images/events/el_pen_i" + IMAGE_EXT;
+		public const string NormalEye = "images/events/el_eye_n" + IMAGE_EXT;
+		public const string PrelightEye = "images/events/el_eye_p" + IMAGE_EXT;
+		public const string InsensitiveEye = "images/events/el_eye_i" + IMAGE_EXT;
+
+
 		public StyleConf ()
 		{
 			HomeTeamColor = Color.Red;
