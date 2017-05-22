@@ -20,7 +20,6 @@ using Gdk;
 using Gtk;
 using VAS.Core.Interfaces.GUI;
 using VAS.Multimedia.Utils;
-using VAS.Core.Events;
 
 
 namespace VAS.UI
