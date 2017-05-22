@@ -884,13 +884,9 @@ namespace VAS.UI
 					DrawingsVisible = false;
 				}
 			}
-			if (ViewModel.NeedsSync (e, nameof (ViewModel.CamerasConfig))) {
-				HandleCamerasConfigChanged ();
-			}
-			if (ViewModel.NeedsSync (e, nameof (ViewModel.FileSet))) {
-				HandleCamerasConfigChanged ();
-			}
-			if (ViewModel.NeedsSync (e, nameof (ViewModel.SupportsMultipleCameras))) {
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.CamerasConfig)) ||
+				ViewModel.NeedsSync (e, nameof (ViewModel.FileSet)) ||
+				ViewModel.NeedsSync (e, nameof (ViewModel.SupportsMultipleCameras))) {
 				HandleCamerasConfigChanged ();
 			}
 		}

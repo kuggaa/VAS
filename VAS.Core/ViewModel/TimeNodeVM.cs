@@ -36,7 +36,7 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the name.
 		/// </summary>
 		/// <value>The name.</value>
-		public string Name {
+		public virtual string Name {
 			get {
 				return Model.Name;
 			}
