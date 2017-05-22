@@ -33,9 +33,9 @@ namespace VAS.Services.ViewModel
 
 		public PreferencesPanelVM ()
 		{
-			CancelCommand = new Command (Cancel, () => { return true; });
+			CancelCommand = new AsyncCommand (Cancel, () => { return true; });
 			CancelCommand.Text = Catalog.GetString ("Cancel");
-			OkCommand = new Command (Accept, () => { return true; });
+			OkCommand = new AsyncCommand (Accept, () => { return true; });
 			OkCommand.Text = Catalog.GetString ("Ok");
 		}
 

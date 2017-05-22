@@ -38,16 +38,29 @@ namespace VAS.UI.Component
 		protected const int SPACING = 5;
 		protected const int RIGTH_OFFSET = 5;
 		protected const int LEFT_OFFSET = 5;
+		protected const double ACTION_IMAGE_WIDTH = 25;
+		protected const double ACTION_IMAGE_HEIGHT = 25;
+		protected const int LOCATION_IMAGE_WIDTH = 16;
+		protected const int LOCATION_IMAGE_HEIGHT = 16;
+		protected const int DRAWINGS_IMAGE_WIDTH = 16;
+		protected const int DRAWINGS_IMAGE_HEIGHT = 16;
+		protected const int EYE_IMAGE_WIDTH = 32;
+		protected const int EYE_IMAGE_HEIGHT = 16;
 
 		protected static Point cursor;
 		protected static double offsetX, offsetY = 0;
 		static bool playButtonPrelighted = false;
 
-		static ISurface PlayIcon = null;
-		static ISurface BtnNormalBackground = null;
-		static ISurface BtnNormalBackgroundPrelight = null;
-		static ISurface BtnNormalBackgroundActive = null;
-		static ISurface BtnNormalBackgroundInsensitive = null;
+		static ISurface PlayIcon;
+		static ISurface BtnNormalBackground;
+		static ISurface BtnNormalBackgroundPrelight;
+		static ISurface BtnNormalBackgroundActive;
+		static ISurface BtnNormalBackgroundInsensitive;
+		static ISurface Eye;
+		static ISurface Drawings;
+		static ISurface PrelightDrawings;
+		static ISurface Location;
+		static ISurface PrelightLocation;
 
 		static EventCellRenderer ()
 		{
@@ -56,6 +69,11 @@ namespace VAS.UI.Component
 			BtnNormalBackgroundPrelight = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.NormalButtonPrelightTheme, false);
 			BtnNormalBackgroundActive = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.NormalButtonActiveTheme, false);
 			BtnNormalBackgroundInsensitive = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.NormalButtonInsensititveTheme, false);
+			Drawings = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.NormalDrawings, false);
+			PrelightDrawings = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.PrelightDrawings, false);
+			Location = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.NormalLocation, false);
+			PrelightLocation = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.PrelightLocation, false);
+			Eye = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.NormalEye, false);
 		}
 
 		public EventCellRenderer ()
@@ -279,6 +297,60 @@ namespace VAS.UI.Component
 			}
 			tk.DrawSurface (p, App.Current.Style.ButtonNormalWidth, App.Current.Style.ButtonNormalHeight, background, ScaleMode.AspectFit);
 			tk.DrawSurface (p, App.Current.Style.IconLargeHeight, App.Current.Style.IconLargeHeight, PlayIcon, ScaleMode.AspectFit);
+		}
+
+		protected void RenderActionText (IDrawingToolkit tk, Point p, int width, int height, TimelineEventVM vm, Color textColor)
+		{
+			tk.StrokeColor = textColor;
+			tk.FontSize = 12;
+			tk.FontWeight = FontWeight.Normal;
+			tk.FontAlignment = FontAlignment.Left;
+			tk.DrawText (p, width, height, vm.Name, false, true);
+		}
+
+		protected void RenderLocationIcon (IDrawingToolkit tk, Area backgroundArea, Area cellArea, bool HasLocation)
+		{
+			Point p = new Point (backgroundArea.Right - RIGTH_OFFSET - DRAWINGS_IMAGE_WIDTH - LOCATION_IMAGE_WIDTH, cellArea.Start.Y + VERTICAL_OFFSET);
+			if (HasLocation) {
+				if (cursor.IsInsideArea (p, LOCATION_IMAGE_WIDTH, LOCATION_IMAGE_HEIGHT)) {
+					tk.DrawSurface (p, LOCATION_IMAGE_WIDTH, LOCATION_IMAGE_HEIGHT, PrelightLocation, ScaleMode.AspectFit);
+				} else {
+					tk.DrawSurface (p, LOCATION_IMAGE_WIDTH, LOCATION_IMAGE_HEIGHT, Location, ScaleMode.AspectFit);
+				}
+			}
+		}
+
+		protected void RenderDrawingsIcon (IDrawingToolkit tk, Area backgroundArea, Area cellArea, bool HasDrawings)
+		{
+			Point p = new Point (backgroundArea.Right - RIGTH_OFFSET - DRAWINGS_IMAGE_WIDTH, cellArea.Start.Y + VERTICAL_OFFSET);
+			if (HasDrawings) {
+				if (cursor.IsInsideArea (p, DRAWINGS_IMAGE_WIDTH, DRAWINGS_IMAGE_HEIGHT)) {
+					tk.DrawSurface (p, DRAWINGS_IMAGE_WIDTH, DRAWINGS_IMAGE_HEIGHT, PrelightDrawings, ScaleMode.AspectFit);
+				} else {
+					tk.DrawSurface (p, DRAWINGS_IMAGE_WIDTH, DRAWINGS_IMAGE_HEIGHT, Drawings, ScaleMode.AspectFit);
+				}
+			}
+		}
+
+		protected void RenderEye (IDrawingToolkit tk, Area backgroundArea, Area cellArea, bool Playing)
+		{
+			Point p = new Point (backgroundArea.Right - RIGTH_OFFSET - EYE_IMAGE_WIDTH,
+						  cellArea.Start.Y + VERTICAL_OFFSET + LOCATION_IMAGE_HEIGHT);
+			if (Playing) {
+				tk.DrawSurface (p, EYE_IMAGE_WIDTH, EYE_IMAGE_HEIGHT, Eye, ScaleMode.AspectFit);
+			}
+		}
+
+		protected void RenderPrelit (TimelineEventVM vm, IDrawingToolkit tk, IContext context,
+						   Area backgroundArea, Area cellArea, CellState state)
+		{
+			if (!state.HasFlag (CellState.Prelit) && !(vm.Selected || state.HasFlag (CellState.Selected))) {
+				Point pos = new Point (backgroundArea.Start.X + LEFT_OFFSET + COLOR_RECTANGLE_WIDTH, backgroundArea.Start.Y);
+				tk.FillColor = Color.BlackTransparent;
+				tk.StrokeColor = Color.Transparent;
+				tk.DrawRectangle (pos, backgroundArea.Width, backgroundArea.Height);
+			}
+
 		}
 	}
 }

@@ -23,36 +23,27 @@ using VAS.Core.Common;
 
 namespace VAS.Core.MVVMC
 {
+	/// <summary>
+	/// Command implementation of <see cref="ICommand"/>.
+	/// </summary>
 	public class Command : ICommand
 	{
 		public event EventHandler CanExecuteChanged;
 		protected Func<object, bool> canExecute;
-		readonly Func<object, Task> execute;
+		protected Func<object, Task> execute;
 		bool executable;
 		bool isExecuting;
 
-		public Command (Func<object, Task> execute)
+		protected Command ()
 		{
-			Contract.Requires (execute != null);
-
-			this.execute = execute;
-			Executable = true;
 		}
 
 		public Command (Action<object> execute)
 		{
 			Contract.Requires (execute != null);
 
-			this.execute = (o) => {
-				execute (o);
-				return AsyncHelpers.Return ();
-			};
+			this.execute = (o) => { execute (o); return AsyncHelpers.Return (); };
 			Executable = true;
-		}
-
-		public Command (Func<Task> execute) : this (o => execute ())
-		{
-			Contract.Requires (execute != null);
 		}
 
 		public Command (Action execute) : this (o => execute ())
@@ -68,31 +59,6 @@ namespace VAS.Core.MVVMC
 			this.canExecute = canExecute;
 		}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:VAS.Core.MVVMC.Command"/> class with an async function.
-		/// </summary>
-		public Command (Func<object, Task> execute, Func<object, bool> canExecute) : this (execute)
-		{
-			Contract.Requires (execute != null);
-			Contract.Requires (canExecute != null);
-
-			this.canExecute = canExecute;
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:VAS.Core.MVVMC.Command"/> class.
-		/// </summary>
-		/// <param name="execute">Execute.</param>
-		/// <param name="canExecute">Can execute.</param>
-		public Command (Func<Task> execute, Func<bool> canExecute) : this (o => execute (), o => canExecute ())
-		{
-			Contract.Requires (execute != null);
-			Contract.Requires (canExecute != null);
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:VAS.Core.MVVMC.Command"/> class with an async function.
-		/// </summary>
 		public Command (Action execute, Func<bool> canExecute) : this (o => execute (), o => canExecute ())
 		{
 			Contract.Requires (execute != null);
@@ -197,7 +163,43 @@ namespace VAS.Core.MVVMC
 		}
 	}
 
-	public sealed class Command<T> : Command
+	/// <summary>
+	/// Command implementation of <see cref="ICommand"/> for async functions.
+	/// </summary>
+	public class AsyncCommand : Command
+	{
+		public AsyncCommand (Func<object, Task> execute)
+		{
+			Contract.Requires (execute != null);
+
+			this.execute = execute;
+			Executable = true;
+		}
+
+		public AsyncCommand (Func<Task> execute) : this (o => execute ())
+		{
+			Contract.Requires (execute != null);
+		}
+
+		public AsyncCommand (Func<object, Task> execute, Func<object, bool> canExecute) : this (execute)
+		{
+			Contract.Requires (execute != null);
+			Contract.Requires (canExecute != null);
+
+			this.canExecute = canExecute;
+		}
+
+		public AsyncCommand (Func<Task> execute, Func<bool> canExecute) : this (o => execute (), o => canExecute ())
+		{
+			Contract.Requires (execute != null);
+			Contract.Requires (canExecute != null);
+		}
+	}
+
+	/// <summary>
+	/// Command implementation of <see cref="ICommand"/> using generics for the type of the first command argument
+	/// </summary>
+	public class Command<T> : Command
 	{
 		public Command (Action<T> execute) : base (o => execute ((T)o))
 		{
@@ -209,28 +211,26 @@ namespace VAS.Core.MVVMC
 			Contract.Requires (execute != null);
 			Contract.Requires (canExecute != null);
 		}
+	}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:VAS.Core.MVVMC.Command`1"/> class with an async function.
-		/// </summary>
-		public Command (Func<T, Task> execute) : base (o => execute ((T)o))
+	/// <summary>
+	/// Command implementation of <see cref="ICommand"/> for async functions using generics for the type of the first
+	/// command argument
+	/// </summary>
+	public class AsyncCommand<T> : Command<T>
+	{
+		public AsyncCommand (Func<T, Task> execute) : base (o => execute (o))
 		{
 			Contract.Requires (execute != null);
 		}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:VAS.Core.MVVMC.Command`1"/> class with an async function.
-		/// </summary>
-		public Command (Func<T, Task> execute, Func<T, bool> canExecute) : base (o => execute ((T)o), o => canExecute ((T)o))
+		public AsyncCommand (Func<T, Task> execute, Func<T, bool> canExecute) : base (o => execute (o), o => canExecute (o))
 		{
 			Contract.Requires (execute != null);
 			Contract.Requires (canExecute != null);
 		}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:VAS.Core.MVVMC.Command`1"/> class with an async function.
-		/// </summary>
-		public Command (Func<T, Task> execute, Func<bool> canExecute) : base (o => execute ((T)o), o => canExecute ())
+		public AsyncCommand (Func<T, Task> execute, Func<bool> canExecute) : base (o => execute (o), o => canExecute ())
 		{
 			Contract.Requires (execute != null);
 			Contract.Requires (canExecute != null);
