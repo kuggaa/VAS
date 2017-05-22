@@ -221,7 +221,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		void TimerCallback (Object state)
 		{
-			App.Current.DrawingToolkit.Invoke (delegate {
+			App.Current.GUIToolkit.Invoke (delegate {
 				EmitCreateEvent ();
 			});
 		}

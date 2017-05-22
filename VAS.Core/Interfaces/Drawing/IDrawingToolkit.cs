@@ -119,8 +119,6 @@ namespace VAS.Core.Interfaces.Drawing
 
 		Area UserToDevice (Area area);
 
-		void Invoke (EventHandler handler);
-
 		void MeasureText (string text, out int width, out int height,
 						  string fontFamily, int fontSize, FontWeight fontWeight);
 	}
