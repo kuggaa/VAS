@@ -1674,6 +1674,7 @@ namespace VAS.Tests.Services
 			// Check the first seek to current time
 			playerMock.Verify (p => p.Seek (new Time (5000), true, false), Times.Once ());
 			Assert.AreEqual (new Time (3000), playerVM.Duration);
+			Assert.AreEqual (new Time (3000), playerVM.AbsoluteDuration);
 			Assert.AreEqual (new Time (3000), playerVM.CurrentTime);
 		}
 
@@ -1695,6 +1696,7 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (new Time (5000), curTime);
 			Assert.AreEqual (new Time (5000), relativeTime);
 			Assert.AreEqual (new Time (13000), playerVM.Duration);
+			Assert.AreEqual (new Time (13000), playerVM.AbsoluteDuration);
 			Assert.AreEqual (new Time (5000), playerVM.CurrentTime);
 		}
 
@@ -1721,6 +1723,7 @@ namespace VAS.Tests.Services
 			localPlaylist.Elements.Add (element3);
 
 			Assert.AreEqual (new Time (30), playerVM.Duration);
+			Assert.AreEqual (new Time (30), playerVM.AbsoluteDuration);
 		}
 
 		[Test]
@@ -1743,6 +1746,7 @@ namespace VAS.Tests.Services
 			element2.Play.Stop = new Time (20);
 
 			Assert.AreEqual (new Time (30), playerVM.Duration);
+			Assert.AreEqual (new Time (30), playerVM.AbsoluteDuration);
 		}
 
 		void HandleElementLoadedEvent (object element, bool hasNext)
