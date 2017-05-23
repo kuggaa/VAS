@@ -155,6 +155,7 @@ namespace VAS.UI.Component
 		void Initialize ()
 		{
 			timerule = new Timerule (new WidgetWrapper (timerulearea));
+			timerule.UseAbsoluteDuration = true;
 			timerule.CenterPlayheadClicked += HandleFocusClicked;
 			timeline = App.Current.ViewLocator.Retrieve ("PlaysTimelineView") as PlaysTimeline;
 			timeline.SetWidget (new WidgetWrapper (timelinearea));

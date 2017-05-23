@@ -17,6 +17,8 @@
 //
 using Moq;
 using NUnit.Framework;
+using VAS.Core.Common;
+using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
@@ -29,6 +31,8 @@ namespace VAS.Tests.Drawing.Widgets
 	{
 		Timerule timerule;
 		VideoPlayerVM videoPlayer;
+		Mock<IWidget> widgetMock;
+		Mock<IVideoPlayerController> videoPlayerMock;
 
 		[SetUp]
 		public void Setup ()
@@ -37,9 +41,12 @@ namespace VAS.Tests.Drawing.Widgets
 			drawingToolkitMock.Setup (d => d.CreateSurfaceFromResource (It.IsAny<string> (), It.IsAny<bool> ())).
 							  Returns (Mock.Of<ISurface> ());
 			App.Current.DrawingToolkit = drawingToolkitMock.Object;
-			timerule = new Timerule (Mock.Of<IWidget> ());
+			widgetMock = new Mock<IWidget> ();
+			timerule = new Timerule (widgetMock.Object);
 			videoPlayer = new VideoPlayerVM ();
 			timerule.SetViewModel (videoPlayer);
+			videoPlayerMock = new Mock<IVideoPlayerController> ();
+			videoPlayer.Player = videoPlayerMock.Object;
 		}
 
 		[Test]
@@ -58,6 +65,31 @@ namespace VAS.Tests.Drawing.Widgets
 			videoPlayer.CurrentTime = new Time (5000);
 
 			Assert.AreEqual (new Time (0), timerule.CurrentTime);
+		}
+
+		[Test]
+		public void StartSeek_UseAbsoluteDuration_EventUnloaded ()
+		{
+			timerule.UseAbsoluteDuration = true;
+
+			widgetMock.Raise ((obj) => obj.ButtonPressEvent += null,
+							  new Point (0, 0), (uint)0, ButtonType.Left, ButtonModifier.None,
+							  ButtonRepetition.Single);
+
+			videoPlayerMock.Verify (p => p.UnloadCurrentEvent (), Times.Once ());
+		}
+
+		[Test]
+		public void StartSeek_NotUseAbsoluteDuration_EventNotUnloaded ()
+		{
+			timerule.UseAbsoluteDuration = false;
+
+			widgetMock.Raise ((obj) => obj.ButtonPressEvent += null,
+							  new Point (0, 0), (uint)0, ButtonType.Left, ButtonModifier.None,
+							  ButtonRepetition.Single);
+
+			videoPlayerMock.Verify (p => p.Pause (false), Times.Once ());
+			videoPlayerMock.Verify (p => p.UnloadCurrentEvent (), Times.Never ());
 		}
 	}
 }
