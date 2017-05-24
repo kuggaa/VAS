@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Gtk;
 using VAS.Core;
@@ -183,10 +184,41 @@ namespace VAS.UI
 			return hotkey;
 		}
 
+		/// <summary>
+		/// Queues the handler in the main thread. It returns as soon as the handler is queued.
+		/// </summary>
+		/// <param name="handler">Handler.</param>
 		public void Invoke (EventHandler handler)
 		{
+			if (App.IsMainThread) {
+				Log.Warning ("Invoke called from the main thread");
+			}
 			Application.Invoke (handler);
 		}
+
+		/// <summary>
+		/// Invokes the handler in the main thread asynchronously.
+		/// </summary>
+		/// <param name="handler">Handler.</param>
+		public async Task<T> Invoke<T> (Func<Task<T>> handler)
+		{
+			if (App.IsMainThread) {
+				Log.Warning ("Invoke called from the main thread");
+				return await handler ();
+			}
+			TaskCompletionSource<T> tcs = new TaskCompletionSource<T> ();
+			Application.Invoke (async (sender, e) => {
+				try {
+					T res = await handler ();
+					tcs.SetResult (res);
+				} catch (Exception ex) {
+					Log.Exception (ex);
+					tcs.SetException (ex);
+				}
+			});
+			return await tcs.Task;
+		}
+
 
 		public abstract Task<bool> CreateNewTemplate<T> (IList<T> availableTemplates, string defaultName,
 														 string countText, string emptyText,
