@@ -1,6 +1,6 @@
 BUILD_DIR ?= $(top_builddir)/bin
 ASSEMBLY_FILE ?= $(BUILD_DIR)/$(ASSEMBLY)
-OUTPUT_DIR ?= $(pkglibdir)
+OUTPUT_DIR ?= $(libdir)/@USER_PACKAGE@
 
 XBUILD_CMD = $(XBUILD) \
  /property:DefineConstants="$(XBUILD_CONSTANTS)" \
