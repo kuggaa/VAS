@@ -201,12 +201,22 @@ namespace VAS.Core.MVVMC
 	/// </summary>
 	public class Command<T> : Command
 	{
+		protected Command ()
+		{
+		}
+
 		public Command (Action<T> execute) : base (o => execute ((T)o))
 		{
 			Contract.Requires (execute != null);
 		}
 
 		public Command (Action<T> execute, Func<T, bool> canExecute) : base (o => execute ((T)o), o => canExecute ((T)o))
+		{
+			Contract.Requires (execute != null);
+			Contract.Requires (canExecute != null);
+		}
+
+		public Command (Action<T> execute, Func<bool> canExecute) : base (o => execute ((T)o), (o) => canExecute ())
 		{
 			Contract.Requires (execute != null);
 			Contract.Requires (canExecute != null);
@@ -219,21 +229,27 @@ namespace VAS.Core.MVVMC
 	/// </summary>
 	public class AsyncCommand<T> : Command<T>
 	{
-		public AsyncCommand (Func<T, Task> execute) : base (o => execute (o))
+		public AsyncCommand (Func<T, Task> execute)
 		{
 			Contract.Requires (execute != null);
+
+			this.execute = o => execute ((T)o);
 		}
 
-		public AsyncCommand (Func<T, Task> execute, Func<T, bool> canExecute) : base (o => execute (o), o => canExecute (o))
+		public AsyncCommand (Func<T, Task> execute, Func<T, bool> canExecute) : this (execute)
 		{
 			Contract.Requires (execute != null);
 			Contract.Requires (canExecute != null);
+
+			this.canExecute = o => canExecute ((T)o);
 		}
 
-		public AsyncCommand (Func<T, Task> execute, Func<bool> canExecute) : base (o => execute (o), o => canExecute ())
+		public AsyncCommand (Func<T, Task> execute, Func<bool> canExecute) : this (execute)
 		{
 			Contract.Requires (execute != null);
 			Contract.Requires (canExecute != null);
+
+			this.canExecute = o => canExecute ();
 		}
 	}
 }
