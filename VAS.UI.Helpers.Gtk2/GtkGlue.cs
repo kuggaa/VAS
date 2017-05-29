@@ -24,17 +24,98 @@ namespace VAS
 {
 	public static class GtkGlue
 	{
-		[DllImport ("libgtk-2.0.dll") /* willfully unmapped */]
-		static extern void gtk_menu_item_set_label (IntPtr menu, IntPtr label);
+		const string LIBGDK = "libgdk-2.0.dll";
+		const string LIBGTK = "libgtk-2.0.dll";
+		const string LIBPANGO = "libpango-1.0.dll";
+		const string LIBGDK_PIXBUF = "libgdk_pixbuf-2.0.dll";
+		const string LIBVAS = "libvas.dll";
 
-		[DllImport ("libgtk-2.0.dll") /* willfully unmapped */]
-		static extern IntPtr gtk_message_dialog_get_message_area (IntPtr dialog);
-
-		[DllImport ("libvas.dll")]
+		[DllImport (LIBVAS)]
 		static extern void lgm_gtk_glue_gdk_event_button_set_button (IntPtr evt, uint button);
 
-		[DllImport ("libpango-1.0.dll")]
+		[DllImport (LIBPANGO)]
 		static extern void pango_layout_set_height (IntPtr layout, int height);
+
+		[DllImport (LIBGTK)]
+		static extern void gtk_menu_item_set_label (IntPtr menu, IntPtr label);
+
+		[DllImport (LIBGTK)]
+		static extern IntPtr gtk_message_dialog_get_message_area (IntPtr dialog);
+
+		[DllImport (LIBGTK, CallingConvention = CallingConvention.Cdecl)]
+		static extern void gtk_icon_source_set_scale (IntPtr source, double scale);
+
+		[DllImport (LIBGTK, CallingConvention = CallingConvention.Cdecl)]
+		static extern void gtk_icon_source_set_scale_wildcarded (IntPtr source, bool setting);
+
+		[DllImport (LIBGTK, CallingConvention = CallingConvention.Cdecl)]
+		static extern double gtk_widget_get_scale_factor (IntPtr widget);
+
+		[DllImport (LIBGTK, CallingConvention = CallingConvention.Cdecl)]
+		static extern IntPtr gtk_icon_set_render_icon_scaled (IntPtr handle, IntPtr style, int direction,
+															  int state, int size, IntPtr widget,
+															  IntPtr intPtr, ref double scale);
+
+		[DllImport (LIBGDK, CallingConvention = CallingConvention.Cdecl)]
+		static extern double gdk_screen_get_monitor_scale_factor (IntPtr widget, int monitor);
+
+		[DllImport (LIBGDK_PIXBUF, CallingConvention = CallingConvention.Cdecl)]
+		static extern void gdk_pixbuf_set_hires_variant (IntPtr px, IntPtr variant2x);
+
+		[DllImport (LIBGDK_PIXBUF, CallingConvention = CallingConvention.Cdecl)]
+		static extern IntPtr gdk_pixbuf_get_hires_variant (IntPtr px);
+
+		public static bool SetSourceScale (this IconSource source, double scale)
+		{
+			gtk_icon_source_set_scale (source.Handle, scale);
+			return true;
+		}
+
+		public static bool SetSourceScaleWildcarded (this IconSource source, bool setting)
+		{
+			gtk_icon_source_set_scale_wildcarded (source.Handle, setting);
+			return false;
+		}
+
+		public static Pixbuf GetHiResVariant (this Pixbuf px)
+		{
+			return new Pixbuf (gdk_pixbuf_get_hires_variant (px.Handle));
+		}
+
+		public static void SetHiResVariant (this Pixbuf px, Pixbuf variant2x)
+		{
+			gdk_pixbuf_set_hires_variant (px.Handle, variant2x.Handle);
+		}
+
+		public static double GetScaleFactor (this Widget w)
+		{
+			return gtk_widget_get_scale_factor (w.Handle);
+		}
+
+		public static double GetScaleFactor (this Screen screen, int monitor)
+		{
+			return gdk_screen_get_monitor_scale_factor (screen.Handle, monitor);
+		}
+
+
+		public static Pixbuf RenderIcon (this IconSet iconset, Style style,
+											 TextDirection direction, StateType state,
+											 IconSize size, Widget widget, string detail,
+											 double scale)
+		{
+			if (scale == 1d)
+				return iconset.RenderIcon (style, direction, state, size, widget, detail);
+
+			IntPtr intPtr = GLib.Marshaller.StringToPtrGStrdup (detail);
+			IntPtr o = gtk_icon_set_render_icon_scaled (iconset.Handle,
+														(style != null) ? style.Handle : IntPtr.Zero,
+														(int)direction, (int)state, (int)size,
+														(widget != null) ? widget.Handle : IntPtr.Zero,
+														intPtr, ref scale);
+			Pixbuf result = (Pixbuf)GLib.Object.GetObject (o);
+			GLib.Marshaller.Free (intPtr);
+			return result;
+		}
 
 		public static void SetLabel (this MenuItem menu, string label)
 		{
@@ -47,7 +128,6 @@ namespace VAS
 
 			return new VBox (handle);
 		}
-
 
 		public static void SetButton (this EventButton ev, uint button)
 		{
