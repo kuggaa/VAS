@@ -676,6 +676,13 @@ gst_video_editor_set_encoding_format (GstVideoEditor * gve,
       enable_title, enable_audio);
 }
 
+void
+gst_video_editor_set_watermark (GstVideoEditor * gve,
+    GdkPixbuf * watermark, gdouble x, gdouble y, gdouble height)
+{
+  gst_nle_source_set_watermark (gve->priv->nle_source, watermark, x, y, height);
+}
+
 GstVideoEditor *
 gst_video_editor_new (GError ** err)
 {
