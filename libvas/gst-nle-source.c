@@ -23,9 +23,13 @@
 */
 
 #include <string.h>
+#include <cairo.h>
+#include <cairo-gobject.h>
 #include <gst/gst.h>
 #include <gst/video/video.h>
 #include <gst/app/gstappsink.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gdk/gdk.h>
 
 #include "lgm-utils.h"
 #include "gst-nle-source.h"
@@ -213,11 +217,31 @@ gst_nle_source_get_audio_caps (GstNleSource * nlesrc)
 }
 
 static void
+gst_nle_source_draw_overlay (GstElement * overlay, cairo_t * cr,
+    guint64 timestamp, guint64 duration, gpointer user_data)
+{
+  GstNleSource *nlesrc = (GstNleSource *) user_data;
+  gdouble scale, offset_x, offset_y;
+
+  if (nlesrc->watermark == NULL){
+    GST_ERROR_OBJECT (nlesrc, "watermark pipeline set without a watermark image.");
+  }
+
+  scale = nlesrc->watermark_height * nlesrc->height /
+    gdk_pixbuf_get_height(nlesrc->watermark);
+  cairo_translate (cr, nlesrc->watermark_x * nlesrc->width,
+      nlesrc->watermark_y * nlesrc->height);
+  cairo_scale (cr, scale, scale);
+  gdk_cairo_set_source_pixbuf (cr, nlesrc->watermark, 0, 0);
+  cairo_paint (cr);
+}
+
+static void
 gst_nle_source_setup (GstNleSource * nlesrc)
 {
-  GstElement *rotate, *videorate, *videoscale, *colorspace, *vident;
+  GstElement *rotate, *videorate, *videoscale, *colorspace, *vident, *cairooverlay, *colorspace2;
   GstElement *audiorate, *audioconvert, *audioresample, *aident;
-  GstElement *a_capsfilter, *v_capsfilter;
+  GstElement *a_capsfilter, *v_capsfilter, *last;
   GstPad *v_pad, *a_pad;
   GstCaps *v_caps, *a_caps;
 
@@ -228,6 +252,9 @@ gst_nle_source_setup (GstNleSource * nlesrc)
   colorspace = gst_element_factory_make ("ffmpegcolorspace", NULL);
   v_capsfilter = gst_element_factory_make ("capsfilter", "video_capsfilter");
   nlesrc->textoverlay = gst_element_factory_make ("textoverlay", NULL);
+  cairooverlay = gst_element_factory_make ("cairooverlay", "overlay");
+  colorspace2 = gst_element_factory_make ("ffmpegcolorspace", NULL);
+
   vident = gst_element_factory_make ("identity", NULL);
 
   v_caps = gst_caps_new_simple ("video/x-raw-yuv",
@@ -249,17 +276,36 @@ gst_nle_source_setup (GstNleSource * nlesrc)
   g_object_set (videoscale, "add-borders", TRUE, NULL);
   g_object_set (vident, "single-segment", TRUE, NULL);
   g_object_set (v_capsfilter, "caps", v_caps, NULL);
-  g_object_set (nlesrc->textoverlay, "valignment", 2, "halignment", 2,
+  g_object_set (nlesrc->textoverlay, "valignment", 2, "halignment", 0,
       "auto-resize", TRUE, "wrap-mode", 0, "silent", !nlesrc->overlay_title,
       NULL);
+
+  g_signal_connect (cairooverlay, "draw",
+      G_CALLBACK (gst_nle_source_draw_overlay), nlesrc);
 
   /* As videorate can duplicate a lot of buffers we want to put it last in this
      transformation bin */
   gst_bin_add_many (GST_BIN (nlesrc), rotate, nlesrc->videocrop,
       videoscale, colorspace, nlesrc->textoverlay, videorate, v_capsfilter,
       vident, NULL);
+  /* cairooverlay forces a colorpsace conversion ro RGB that we want to avoid
+   * when we are not rendering the watermark */
+  if (nlesrc->watermark != NULL) {
+    gst_bin_add_many (GST_BIN (nlesrc), cairooverlay, colorspace2, NULL);
+  }
+
   gst_element_link_many (rotate, nlesrc->videocrop, videoscale, colorspace,
-      nlesrc->textoverlay, videorate, v_capsfilter, vident, NULL);
+      nlesrc->textoverlay, NULL);
+
+  if (nlesrc->watermark != NULL) {
+    gst_element_link_many (nlesrc->textoverlay, cairooverlay, colorspace2, NULL);
+    last = colorspace2;
+  } else {
+    last = nlesrc->textoverlay;
+  }
+
+  gst_element_link_many (last, videorate, v_capsfilter, vident, NULL);
+
   /* Ghost source and sink pads */
   v_pad = gst_element_get_pad (vident, "src");
   gst_ghost_pad_set_target (GST_GHOST_PAD (nlesrc->video_srcpad), v_pad);
@@ -947,6 +993,15 @@ gst_nle_source_configure (GstNleSource * nlesrc, guint width, guint height,
 
   GST_INFO_OBJECT (nlesrc, "Configuring source with %dx%d@%d/%dfps t:%d a:%d",
       width, height, fps_n, fps_d, overlay_title, with_audio);
+}
+
+void gst_nle_source_set_watermark (GstNleSource * nlesrc,
+    GdkPixbuf * watermark, gdouble x, gdouble y, gdouble height)
+{
+  nlesrc->watermark = watermark;
+  nlesrc->watermark_x = x;
+  nlesrc->watermark_y = y;
+  nlesrc->watermark_height = height;
 }
 
 GstNleSource *
