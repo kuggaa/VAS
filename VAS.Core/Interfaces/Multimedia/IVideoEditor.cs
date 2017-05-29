@@ -35,9 +35,11 @@ namespace VAS.Core.Interfaces.Multimedia
 			set;
 		}
 
-		void AddSegment (string filePath, long start, long duration, double rate, string title, bool hasAudio, Area roi) ;
+		void AddSegment (string filePath, long start, long duration, double rate, string title, bool hasAudio, Area roi);
 
-		void AddImageSegment (string filePath, long start, long duration, string title, Area roi) ;
+		void AddImageSegment (string filePath, long start, long duration, string title, Area roi);
+
+		void SetWatermark (Image image, double x, double y, double height);
 
 		void ClearList ();
 

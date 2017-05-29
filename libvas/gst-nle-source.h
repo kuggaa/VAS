@@ -59,6 +59,10 @@ struct _GstNleSource
   guint title_size;
   gboolean overlay_title;
   gboolean with_audio;
+  GdkPixbuf *watermark;
+  gdouble watermark_x;
+  gdouble watermark_y;
+  gdouble watermark_height;
 
   GstPad *video_srcpad;
   GstPad *video_sinkpad;
@@ -124,6 +128,9 @@ EXPORT void gst_nle_source_add_item   (GstNleSource *nlesrc,
 
 EXPORT void gst_nle_source_query_progress (GstNleSource * nlesrc,
                                                      gfloat * position);
+
+EXPORT void gst_nle_source_set_watermark (GstNleSource * nlesrc,
+    GdkPixbuf * watermark, gdouble x, gdouble y, gdouble height);
 
 G_END_DECLS
 #endif /* _GST_NLE_SOURCE_H_ */

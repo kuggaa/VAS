@@ -260,6 +260,18 @@ namespace VAS.Multimedia.Editor
 			}
 		}
 
+		[DllImport ("libvas.dll")]
+		static extern bool gst_video_editor_set_watermark (IntPtr raw,
+														   IntPtr watermark,
+														   double x,
+														   double y,
+														   double height);
+
+		public void SetWatermark (Image watermark, double x, double y, double height)
+		{
+			gst_video_editor_set_watermark (Handle, watermark.Value.Handle, x, y, height);
+		}
+
 		public string TempDir {
 			set {
 				;
