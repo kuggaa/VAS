@@ -1,4 +1,4 @@
-imagesdir = @datadir@/@USER_PACKAGE@/images
+imagesdir = @datadir@/@PACKAGE@/images
 nobase_dist_images_DATA = tools/dash-line.svg \
 	tools/line-arrow.svg \
 	tools/line-dot.svg \

@@ -1,4 +1,4 @@
-iconsdir = @datadir@/@USER_PACKAGE@/icons
+iconsdir = @datadir@/@PACKAGE@/icons
 nobase_dist_icons_DATA = hicolor/index.theme \
 	hicolor/scalable/actions/longomatch-cancel-rec.svg \
 	hicolor/scalable/actions/longomatch-control-detach.svg \
