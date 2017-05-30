@@ -7,7 +7,6 @@ XBUILD_CMD = $(XBUILD) \
  /property:BuildType=makefiles \
  /property:BuildProjectReferences=false \
  /property:Configuration=Release \
- /property:OutDir=$(BUILD_DIR)/ \
  $(PROJECT_FILE) $(XBUILD_EXTRA_FLAGS)
 
 OUTPUT_FILES ?= \
