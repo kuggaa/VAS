@@ -377,7 +377,7 @@ namespace VAS.Drawing.Widgets
 					}
 					App.Current.DrawingToolkit.MeasureText (text.Value, out width, out heigth,
 						App.Current.Style.Font, FontSize, FontWeight.Normal);
-					text.Update (new Point (MoveStart.X - width / 2, MoveStart.Y - heigth / 2),
+					text.Update (new Point (MoveStart.X, MoveStart.Y + heigth / 2),
 						width, heigth);
 					text.TextColor = TextColor.Copy ();
 					text.FillColor = text.StrokeColor = TextBackgroundColor.Copy ();
