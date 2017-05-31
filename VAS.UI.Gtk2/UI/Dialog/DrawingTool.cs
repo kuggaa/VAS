@@ -135,7 +135,7 @@ namespace VAS.UI.Dialog
 			textspinbutton.Value = 12;
 			textspinbutton.ValueChanged += (sender, e) => UpdateTextSize ();
 			linesizespinbutton.ValueChanged += (sender, e) => UpdateLineWidth ();
-			linesizespinbutton.Value = 4;
+			linesizespinbutton.Value = 2;
 
 			clearbutton.Clicked += HandleClearClicked;
 			zoomscale.CanFocus = false;
