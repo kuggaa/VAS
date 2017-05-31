@@ -24,6 +24,9 @@ namespace VAS.Core.Store.Drawables
 	[Serializable]
 	public class Ellipse : Drawable
 	{
+		// When creating a new Ellipse, we store here the originating point so that we
+		// can calculate more easilly the center and radius based on this start point.
+		Point startPoint;
 
 		public Ellipse ()
 		{
@@ -31,6 +34,7 @@ namespace VAS.Core.Store.Drawables
 
 		public Ellipse (Point center, double axisX, double axisY, string text = null)
 		{
+			startPoint = center.Copy ();
 			Center = center;
 			AxisX = axisX;
 			AxisY = axisY;
@@ -155,6 +159,19 @@ namespace VAS.Core.Store.Drawables
 			case SelectionPosition.All: {
 					Center.X += p.X - moveStart.X;
 					Center.Y += p.Y - moveStart.Y;
+					break;
+				}
+			case SelectionPosition.New: {
+					if (startPoint == null) {
+						throw new Exception ("Unsupported move for ellipse, start point was not set :  " + sel.Position);
+					}
+					var ax = (p.X - startPoint.X) / 2;
+					var ay = (p.Y - startPoint.Y) / 2;
+					Center.X = startPoint.X + ax;
+					Center.Y = startPoint.Y + ay;
+
+					AxisX = Math.Max (1, Math.Abs (ax));
+					AxisY = Math.Max (1, Math.Abs (ay));
 					break;
 				}
 			default:

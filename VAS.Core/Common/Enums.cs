@@ -291,6 +291,7 @@ namespace VAS.Core.Common
 		CircleBorder,
 		All,
 		None,
+		New,
 	}
 
 	public enum LineStyle
