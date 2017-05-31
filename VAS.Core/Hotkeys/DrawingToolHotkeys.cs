@@ -30,6 +30,9 @@ namespace VAS.Core.Hotkeys
 		public const string DRAWING_TOOL_MOVE_LEFT = "DRAWING_TOOL_MOVE_LEFT";
 		public const string DRAWING_TOOL_MOVE_RIGHT = "DRAWING_TOOL_MOVE_RIGHT";
 		public const string DRAWING_TOOL_MOVE_UP = "DRAWING_TOOL_MOVE_UP";
+		public const string DRAWING_TOOL_MOVE_TO_FRONT = "DRAWING_TOOL_MOVE_TO_FRONT";
+		public const string DRAWING_TOOL_MOVE_TO_BACK = "DRAWING_TOOL_MOVE_TO_BACK";
+
 
 		static DrawingToolHotkeys ()
 		{
@@ -113,28 +116,40 @@ namespace VAS.Core.Hotkeys
 					Description = Catalog.GetString("Export image")
 				},
 				new KeyConfig {
-					Name = "DRAWING_TOOL_MOVE_RIGHT",
+					Name = DRAWING_TOOL_MOVE_RIGHT,
 					Key = App.Current.Keyboard.ParseName ("Right"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Move right")
 				},
 				new KeyConfig {
-					Name = "DRAWING_TOOL_MOVE_LEFT",
+					Name = DRAWING_TOOL_MOVE_LEFT,
 					Key = App.Current.Keyboard.ParseName ("Left"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Move left")
 				},
 				new KeyConfig {
-					Name = "DRAWING_TOOL_MOVE_UP",
+					Name = DRAWING_TOOL_MOVE_UP,
 					Key = App.Current.Keyboard.ParseName ("Up"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Move up")
 				},
 				new KeyConfig {
-					Name = "DRAWING_TOOL_MOVE_DOWN",
+					Name = DRAWING_TOOL_MOVE_DOWN,
 					Key = App.Current.Keyboard.ParseName ("Down"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Move down")
+				},
+				new KeyConfig {
+					Name = DRAWING_TOOL_MOVE_TO_FRONT,
+					Key = App.Current.Keyboard.ParseName ("<Primary>+<Alt_L>+Up"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Move to Front")
+				},
+				new KeyConfig {
+					Name = DRAWING_TOOL_MOVE_TO_BACK,
+					Key = App.Current.Keyboard.ParseName ("<Primary>+<Alt_L>+Down"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Move to Back")
 				},
 				//FIXME: this sould be added, now are not possible due to 
 				//the actual functionality of the VAS DrawingTool
