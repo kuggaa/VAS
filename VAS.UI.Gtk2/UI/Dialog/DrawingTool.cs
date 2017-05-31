@@ -301,26 +301,32 @@ namespace VAS.UI.Dialog
 			keyContext.AddAction (
 				new KeyAction (
 					App.Current.HotkeysService.GetByName (DrawingToolHotkeys.DRAWING_TOOL_MOVE_RIGHT),
-					() => blackboard.MoveSelected (new Point (MOVE_OFFSET, 0)),
-					continueChain: false)
+					() => blackboard.MoveSelected (new Point (MOVE_OFFSET, 0)))
 			);
 			keyContext.AddAction (
 				new KeyAction (
 					App.Current.HotkeysService.GetByName (DrawingToolHotkeys.DRAWING_TOOL_MOVE_LEFT),
-					() => blackboard.MoveSelected (new Point (-MOVE_OFFSET, 0)),
-					continueChain: false)
+					() => blackboard.MoveSelected (new Point (-MOVE_OFFSET, 0)))
 			);
 			keyContext.AddAction (
 				new KeyAction (
 					App.Current.HotkeysService.GetByName (DrawingToolHotkeys.DRAWING_TOOL_MOVE_UP),
-					() => blackboard.MoveSelected (new Point (0, -MOVE_OFFSET)),
-					continueChain: false)
+					() => blackboard.MoveSelected (new Point (0, -MOVE_OFFSET)))
 			);
 			keyContext.AddAction (
 				new KeyAction (
 					App.Current.HotkeysService.GetByName (DrawingToolHotkeys.DRAWING_TOOL_MOVE_DOWN),
-					() => blackboard.MoveSelected (new Point (0, MOVE_OFFSET)),
-					continueChain: false)
+					() => blackboard.MoveSelected (new Point (0, MOVE_OFFSET)))
+			);
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName (DrawingToolHotkeys.DRAWING_TOOL_MOVE_TO_FRONT),
+					() => blackboard.MoveToFront ())
+			);
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName (DrawingToolHotkeys.DRAWING_TOOL_MOVE_TO_BACK),
+					() => blackboard.MoveToBack ())
 			);
 			return keyContext;
 		}
