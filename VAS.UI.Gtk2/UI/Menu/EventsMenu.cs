@@ -21,6 +21,7 @@ using System.Linq;
 using Gtk;
 using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Store;
 using VAS.UI.Menus;
 
@@ -28,7 +29,7 @@ namespace VAS.UI.Menus
 {
 	public class EventsMenu : Gtk.Menu
 	{
-		protected MenuItem render;
+		protected MenuItem render, drawings;
 		protected List<TimelineEvent> plays;
 
 		public EventsMenu ()
@@ -85,6 +86,41 @@ namespace VAS.UI.Menus
 				plays = new List<TimelineEvent> ();
 			}
 			MenuHelpers.FillExportToVideoFileMenu (render, null, plays, Catalog.GetString ("Render"));
+
+			drawings.Visible = this.plays.Count == 1 && this.plays.FirstOrDefault ().Drawings.Count > 0;
+
+			if (drawings.Visible) {
+				Menu drawingsMenu = new Menu ();
+				for (int i = 0; i < plays.FirstOrDefault ().Drawings.Count; i++) {
+					int index = i;
+					MenuItem drawingItem = new MenuItem (Catalog.GetString ("Drawing ") + (i + 1));
+					MenuItem editItem = new MenuItem (Catalog.GetString ("Edit"));
+					MenuItem deleteItem = new MenuItem (Catalog.GetString ("Delete"));
+					Menu drawingMenu = new Menu ();
+
+					drawingsMenu.Append (drawingItem);
+					drawingMenu.Append (editItem);
+					drawingMenu.Append (deleteItem);
+					editItem.Activated += (sender, e) => {
+						App.Current.EventsBroker.Publish<DrawFrameEvent> (
+							new DrawFrameEvent {
+								Play = plays.FirstOrDefault (),
+								DrawingIndex = index,
+								CamConfig = plays.FirstOrDefault ().Drawings [index].CameraConfig,
+								Current = false
+							}
+						);
+					};
+					deleteItem.Activated += (sender, e) => {
+						plays.FirstOrDefault ().Drawings.RemoveAt (index);
+						plays.FirstOrDefault ().UpdateMiniature ();
+					};
+					drawingItem.Submenu = drawingMenu;
+					drawingMenu.ShowAll ();
+				}
+				drawingsMenu.ShowAll ();
+				drawings.Submenu = drawingsMenu;
+			}
 		}
 
 		protected virtual void CreateMenu ()
@@ -92,6 +128,8 @@ namespace VAS.UI.Menus
 			render = new MenuItem ("");
 			Add (render);
 			render.Activated += (sender, e) => MenuHelpers.EmitRenderPlaylist (plays);
+			drawings = new MenuItem (Catalog.GetString ("Drawings"));
+			Add (drawings);
 
 			ShowAll ();
 		}
