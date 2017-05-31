@@ -362,7 +362,7 @@ namespace VAS.Drawing.Widgets
 			case DrawTool.Counter:
 				drawable = new Counter (MoveStart, 3 * LineWidth, 0);
 				drawable.FillColor = Color.Copy ();
-				(drawable as Counter).TextColor = Color.Grey2;
+				(drawable as Counter).TextColor = TextColor.Copy ();
 				resize = false;
 				break;
 			case DrawTool.Text:
