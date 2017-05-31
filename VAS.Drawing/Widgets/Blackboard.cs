@@ -543,6 +543,17 @@ namespace VAS.Drawing.Widgets
 				End ();
 			}
 		}
+
+		public void MoveSelected (Point offset)
+		{
+			foreach (var selection in Selections) {
+				selection.Position = SelectionPosition.All;
+				Point topLeft = ((ICanvasDrawableObject)selection.Drawable).IDrawableObject.Area.TopLeft;
+				topLeft = ToUserCoords (topLeft);
+				selection.Drawable.Move (selection, topLeft + offset, topLeft);
+			}
+			widget.ReDraw ();
+		}
 	}
 }
 

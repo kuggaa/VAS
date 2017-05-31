@@ -25,6 +25,12 @@ namespace VAS.Core.Hotkeys
 		static List<KeyConfig> hotkeys;
 		public const string CATEGORY = "Drawing tool";
 
+		// Keep this sorted alphabetically
+		public const string DRAWING_TOOL_MOVE_DOWN = "DRAWING_TOOL_MOVE_DOWN";
+		public const string DRAWING_TOOL_MOVE_LEFT = "DRAWING_TOOL_MOVE_LEFT";
+		public const string DRAWING_TOOL_MOVE_RIGHT = "DRAWING_TOOL_MOVE_RIGHT";
+		public const string DRAWING_TOOL_MOVE_UP = "DRAWING_TOOL_MOVE_UP";
+
 		static DrawingToolHotkeys ()
 		{
 			hotkeys = new List<KeyConfig> {
@@ -105,6 +111,30 @@ namespace VAS.Core.Hotkeys
 					Key = App.Current.Keyboard.ParseName ("<Control_L>+<Shift_L>+s"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Export image")
+				},
+				new KeyConfig {
+					Name = "DRAWING_TOOL_MOVE_RIGHT",
+					Key = App.Current.Keyboard.ParseName ("Right"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Move right")
+				},
+				new KeyConfig {
+					Name = "DRAWING_TOOL_MOVE_LEFT",
+					Key = App.Current.Keyboard.ParseName ("Left"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Move left")
+				},
+				new KeyConfig {
+					Name = "DRAWING_TOOL_MOVE_UP",
+					Key = App.Current.Keyboard.ParseName ("Up"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Move up")
+				},
+				new KeyConfig {
+					Name = "DRAWING_TOOL_MOVE_DOWN",
+					Key = App.Current.Keyboard.ParseName ("Down"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Move down")
 				},
 				//FIXME: this sould be added, now are not possible due to 
 				//the actual functionality of the VAS DrawingTool
