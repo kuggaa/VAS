@@ -297,6 +297,21 @@ namespace VAS.Drawing.Widgets
 			currentZoom = zoom;
 		}
 
+		/// <summary>
+		/// Draws the objects.
+		/// In the blackboard we don't care about highlighted, etc when drawing the objects,
+		/// we just want all the objects in the same order they are.
+		/// </summary>
+		/// <param name="area">Area.</param>
+		protected override void DrawObjects (Area area)
+		{
+			foreach (ICanvasObject co in Objects) {
+				if (co.Visible) {
+					co.Draw (tk, area);
+				}
+			}
+		}
+
 		void ClipRoi (Area roi)
 		{
 			Point st = roi.Start;
@@ -552,6 +567,34 @@ namespace VAS.Drawing.Widgets
 				topLeft = ToUserCoords (topLeft);
 				selection.Drawable.Move (selection, topLeft + offset, topLeft);
 			}
+			widget.ReDraw ();
+		}
+
+		public void MoveToBack ()
+		{
+			foreach (var selection in Selections) {
+				ICanvasDrawableObject canvasDrawableObject = (ICanvasDrawableObject)selection.Drawable;
+				var drawable = (Drawable)canvasDrawableObject.IDrawableObject;
+				Objects.Remove (canvasDrawableObject);
+				drawing.Drawables.Remove (drawable);
+				Objects.Insert (0, canvasDrawableObject);
+				drawing.Drawables.Insert (0, drawable);
+			}
+
+			widget.ReDraw ();
+		}
+
+		public void MoveToFront ()
+		{
+			foreach (var selection in Selections) {
+				ICanvasDrawableObject canvasDrawableObject = (ICanvasDrawableObject)selection.Drawable;
+				var drawable = (Drawable)canvasDrawableObject.IDrawableObject;
+				Objects.Remove (canvasDrawableObject);
+				drawing.Drawables.Remove (drawable);
+				Objects.Add (canvasDrawableObject);
+				drawing.Drawables.Add (drawable);
+			}
+
 			widget.ReDraw ();
 		}
 	}
