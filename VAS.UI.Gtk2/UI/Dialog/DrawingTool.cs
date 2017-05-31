@@ -657,7 +657,13 @@ namespace VAS.UI.Dialog
 		void HandleShowMenuEvent (IBlackboardObject drawable)
 		{
 			Menu m = new Menu ();
-			MenuItem item = new MenuItem (Catalog.GetString ("Delete"));
+			MenuItem item = new MenuItem (Catalog.GetString ("Move to Front"));
+			item.Activated += (sender, e) => blackboard.MoveToFront ();
+			m.Add (item);
+			item = new MenuItem (Catalog.GetString ("Move to Back"));
+			item.Activated += (sender, e) => blackboard.MoveToBack ();
+			m.Add (item);
+			item = new MenuItem (Catalog.GetString ("Delete"));
 			item.Activated += (sender, e) => blackboard.DeleteSelection ();
 			m.Add (item);
 			if (drawable is Text) {
