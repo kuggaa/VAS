@@ -29,11 +29,13 @@ namespace VAS.Core.Hotkeys
 		public const string CANCEL = "CANCEL";
 		public const string CLOSE = "CLOSE";
 		public const string CLOSE_APP = "CLOSE_APP";
+		public const string COPY = "COPY";
 		public const string DELETE = "DELETE";
 		public const string FIND_PLAYHEAD = "FIND_PLAYHEAD";
 		public const string FIT_TIMELINE = "FIT_TIMELINE";
 		public const string OK = "OK";
 		public const string OPEN_PREFERENCES = "OPEN_PREFERENCES";
+		public const string PASTE = "PASTE";
 		public const string SAVE = "SAVE";
 		public const string SHOW_DASHBOARD = "SHOW_DASHBOARD";
 		public const string SHOW_TIMELINE = "SHOW_TIMELINE";
@@ -127,6 +129,18 @@ namespace VAS.Core.Hotkeys
 					Key = App.Current.Keyboard.ParseName ("<Shift_L>+x"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Show timeline")
+				},
+				new KeyConfig {
+					Name = COPY,
+					Key = App.Current.Keyboard.ParseName ("<Primary>+c"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Copy")
+				},
+				new KeyConfig {
+					Name = PASTE,
+					Key = App.Current.Keyboard.ParseName ("<Primary>+v"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Paste")
 				},
 				//FIXME: Not entering on first release, but should be
 				//done in a future

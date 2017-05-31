@@ -44,6 +44,7 @@ namespace VAS.Drawing.Widgets
 		ButtonModifier modifier;
 		bool handdrawing, inObjectCreation, inZooming;
 		double currentZoom;
+		List<Selection> copiedItems;
 
 		public Blackboard (IWidget widget) : base (widget)
 		{
@@ -194,6 +195,33 @@ namespace VAS.Drawing.Widgets
 		{
 			base.SetWidget (newWidget);
 			newWidget?.SetCursorForTool (Tool);
+		}
+
+		public void Copy ()
+		{
+			copiedItems = Selections.ToList ();
+		}
+
+		public void Paste ()
+		{
+			if (copiedItems != null && copiedItems.Count > 0) {
+				var selectionsCopy = Selections.ToList ();
+				ClearSelection ();
+				foreach (Selection sel in selectionsCopy) {
+					ICanvasDrawableObject selectionDrawable = sel.Drawable as ICanvasDrawableObject;
+					if (selectionDrawable == null) {
+						continue;
+					}
+					var copy = (Drawable)(selectionDrawable.IDrawableObject).Clone ();
+					copy.Move (SelectionPosition.All, new Point (copy.Area.TopLeft.X + 20, copy.Area.TopLeft.Y + 20),
+							   new Point (copy.Area.TopLeft.X, copy.Area.TopLeft.Y));
+					drawing.Drawables.Add (copy);
+					ICanvasSelectableObject copyView = Add (copy);
+					UpdateSelection (new Selection (copyView, sel.Position, sel.Accuracy), false);
+				}
+				SelectionChanged (Selections);
+				widget?.ReDraw ();
+			}
 		}
 
 		/// <summary>
@@ -350,6 +378,7 @@ namespace VAS.Drawing.Widgets
 				drawable = new Rectangle (MoveStart, 2, 2);
 				break;
 			case DrawTool.CircleArea:
+				pos = SelectionPosition.New;
 				drawable = new Ellipse (MoveStart, 2, 2);
 				drawable.FillColor = Color.Copy ();
 				drawable.FillColor.A = byte.MaxValue / 2;
