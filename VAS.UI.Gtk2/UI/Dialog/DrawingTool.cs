@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 using Gtk;
 using VAS.Core;
 using VAS.Core.Common;
@@ -40,6 +41,8 @@ namespace VAS.UI.Dialog
 	[ViewAttribute (DrawingToolState.NAME)]
 	public abstract partial class DrawingTool : Gtk.Dialog, IPanel<DrawingToolVM>
 	{
+		const int MOVE_OFFSET = 5;
+
 		readonly Blackboard blackboard;
 		TimelineEvent play;
 		FrameDrawing drawing;
@@ -287,11 +290,36 @@ namespace VAS.UI.Dialog
 							savetoprojectbutton.Click ();
 						}
 					})
-			); keyContext.AddAction (
+			);
+			keyContext.AddAction (
 				 new KeyAction (
 					 App.Current.HotkeysService.GetByName ("DRAWING_TOOL_EXPORT_IMAGE"),
 					 savebutton.Click)
 			 );
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName (DrawingToolHotkeys.DRAWING_TOOL_MOVE_RIGHT),
+					() => blackboard.MoveSelected (new Point (MOVE_OFFSET, 0)),
+					continueChain: false)
+			);
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName (DrawingToolHotkeys.DRAWING_TOOL_MOVE_LEFT),
+					() => blackboard.MoveSelected (new Point (-MOVE_OFFSET, 0)),
+					continueChain: false)
+			);
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName (DrawingToolHotkeys.DRAWING_TOOL_MOVE_UP),
+					() => blackboard.MoveSelected (new Point (0, -MOVE_OFFSET)),
+					continueChain: false)
+			);
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName (DrawingToolHotkeys.DRAWING_TOOL_MOVE_DOWN),
+					() => blackboard.MoveSelected (new Point (0, MOVE_OFFSET)),
+					continueChain: false)
+			);
 			return keyContext;
 		}
 
