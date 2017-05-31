@@ -150,6 +150,8 @@ namespace VAS.UI.Dialog
 			hscrollbar.Visible = wscrollbar.Visible = false;
 			zoomscale.Value = 1;
 
+			Misc.SetFocus (this, false);
+
 			if (!App.Current.SupportsZoom) {
 				zoombox.Visible = false;
 				zoombutton.Visible = false;
