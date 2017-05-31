@@ -126,7 +126,7 @@ namespace VAS.UI.Dialog
 			textcolorbutton.Color = Misc.ToGdkColor (Color.White);
 			blackboard.TextColor = Color.White;
 			backgroundcolorbutton.UseAlpha = true;
-			backgroundcolorbutton.Alpha = (ushort)(ushort.MaxValue * 0.8);
+			backgroundcolorbutton.Alpha = 0;
 			backgroundcolorbutton.ColorSet += HandleBackgroundColorSet;
 			backgroundcolorbutton.Color = Misc.ToGdkColor (Color.Green1);
 			blackboard.TextBackgroundColor = Misc.ToLgmColor (backgroundcolorbutton.Color,
