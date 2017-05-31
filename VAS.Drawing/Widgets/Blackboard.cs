@@ -171,7 +171,6 @@ namespace VAS.Drawing.Widgets
 			set {
 				tool = value;
 				widget?.SetCursorForTool (tool);
-				UpdateSelection (null);
 			}
 		}
 
@@ -440,7 +439,11 @@ namespace VAS.Drawing.Widgets
 				(sel.Drawable as ICanvasDrawableObject).IDrawableObject.Reorder ();
 			}
 			if (inObjectCreation) {
-				UpdateSelection (null);
+				if (Tool != DrawTool.Counter) {
+					Tool = DrawTool.Selection;
+				} else {
+					UpdateSelection (null);
+				}
 				inObjectCreation = false;
 			}
 			handdrawing = false;
