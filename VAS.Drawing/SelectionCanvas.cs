@@ -33,6 +33,7 @@ namespace VAS.Drawing
 	public class SelectionCanvas : Canvas
 	{
 		protected Selection clickedSel;
+		Point moveStart;
 
 		public SelectionCanvas (IWidget widget) : base (widget)
 		{
@@ -387,6 +388,7 @@ namespace VAS.Drawing
 			Point userCoords;
 
 			userCoords = ToUserCoords (coords);
+
 			if (Moving && Selections.Count != 0) {
 				sel = Selections [0];
 				sel.Drawable.Move (sel, userCoords, MoveStart);
@@ -396,7 +398,7 @@ namespace VAS.Drawing
 			} else {
 				CursorMoved (userCoords);
 			}
-			MoveStart = ToUserCoords (coords);
+			MoveStart = userCoords;
 		}
 
 		void HandleButtonReleasedEvent (Point coords, ButtonType type, ButtonModifier modifier)
