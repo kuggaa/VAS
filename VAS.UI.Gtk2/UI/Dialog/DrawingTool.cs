@@ -50,6 +50,7 @@ namespace VAS.UI.Dialog
 		double scaleFactor;
 		bool ignoreChanges;
 		DrawingToolVM viewModel;
+		RadioButton lastButton;
 
 		public DrawingTool ()
 		{
@@ -531,39 +532,8 @@ namespace VAS.UI.Dialog
 
 		void HandleToolClicked (object sender, EventArgs e)
 		{
-			if (!(sender as RadioButton).Active) {
-				return;
-			}
-
-			if (sender == selectbutton) {
-				blackboard.Tool = DrawTool.Selection;
-			} else if (sender == eraserbutton) {
-				blackboard.Tool = DrawTool.Eraser;
-			} else if (sender == penbutton) {
-				blackboard.Tool = DrawTool.Pen;
-			} else if (sender == textbutton) {
-				blackboard.Tool = DrawTool.Text;
-			} else if (sender == linebutton) {
-				blackboard.Tool = DrawTool.Line;
-			} else if (sender == crossbutton) {
-				blackboard.Tool = DrawTool.Cross;
-			} else if (sender == rectanglebutton) {
-				blackboard.Tool = DrawTool.Rectangle;
-			} else if (sender == ellipsebutton) {
-				blackboard.Tool = DrawTool.Ellipse;
-			} else if (sender == rectanglefilledbutton) {
-				blackboard.Tool = DrawTool.RectangleArea;
-			} else if (sender == ellipsefilledbutton) {
-				blackboard.Tool = DrawTool.CircleArea;
-			} else if (sender == numberbutton) {
-				blackboard.Tool = DrawTool.Counter;
-			} else if (sender == anglebutton) {
-				blackboard.Tool = DrawTool.Angle;
-			} else if (sender == playerbutton) {
-				blackboard.Tool = DrawTool.Player;
-			} else if (sender == zoombutton) {
-				blackboard.Tool = DrawTool.Zoom;
-			}
+			lastButton = sender as RadioButton;
+			blackboard.Tool = GetTool (lastButton);
 		}
 
 		async void OnSavebuttonClicked (object sender, System.EventArgs e)
@@ -612,6 +582,10 @@ namespace VAS.UI.Dialog
 		void HandleDrawableChangedEvent (IBlackboardObject drawable)
 		{
 			selectedDrawable = drawable as Drawable;
+
+			if (blackboard.Tool != GetTool (lastButton)) {
+				selectbutton.Click ();
+			}
 
 			colorbutton.Sensitive = !(drawable is Text);
 
@@ -718,6 +692,41 @@ namespace VAS.UI.Dialog
 				return;
 
 			blackboard.Zoom (zoomscale.Value);
+		}
+
+		DrawTool GetTool (RadioButton sender)
+		{
+			DrawTool tool = DrawTool.None;
+			if (sender == selectbutton) {
+				tool = DrawTool.Selection;
+			} else if (sender == eraserbutton) {
+				tool = DrawTool.Eraser;
+			} else if (sender == penbutton) {
+				tool = DrawTool.Pen;
+			} else if (sender == textbutton) {
+				tool = DrawTool.Text;
+			} else if (sender == linebutton) {
+				tool = DrawTool.Line;
+			} else if (sender == crossbutton) {
+				tool = DrawTool.Cross;
+			} else if (sender == rectanglebutton) {
+				tool = DrawTool.Rectangle;
+			} else if (sender == ellipsebutton) {
+				tool = DrawTool.Ellipse;
+			} else if (sender == rectanglefilledbutton) {
+				tool = DrawTool.RectangleArea;
+			} else if (sender == ellipsefilledbutton) {
+				tool = DrawTool.CircleArea;
+			} else if (sender == numberbutton) {
+				tool = DrawTool.Counter;
+			} else if (sender == anglebutton) {
+				tool = DrawTool.Angle;
+			} else if (sender == playerbutton) {
+				tool = DrawTool.Player;
+			} else if (sender == zoombutton) {
+				tool = DrawTool.Zoom;
+			}
+			return tool;
 		}
 	}
 }
