@@ -60,6 +60,8 @@
     <Compile Include="Bindings\ColorButtonBinding.cs" />
     <Compile Include="UrlHelper.cs" />
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="Bindings\SpinnerBinding.cs" />
+    <Compile Include="Bindings\ComboBoxBinding.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
