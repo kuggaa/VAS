@@ -48,7 +48,7 @@ namespace VAS.Drawing.Widgets
 		public Blackboard (IWidget widget) : base (widget)
 		{
 			Accuracy = 5;
-			SelectionMode = MultiSelectionMode.Single;
+			SelectionMode = MultiSelectionMode.MultipleWithModifier;
 			LineWidth = 2;
 			Color = Color.Red1;
 			LineStyle = LineStyle.Normal;
