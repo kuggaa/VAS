@@ -50,9 +50,9 @@ namespace VAS.UI.Helpers.Bindings
 		protected override void WriteViewValue (Image val)
 		{
 			if (width != 0 && height != 0) {
-				image.Pixbuf = val.Scale (width, height).Value;
+				image.Pixbuf = val?.Scale (width, height).Value;
 			} else {
-				image.Pixbuf = val.Value;
+				image.Pixbuf = val?.Value;
 			}
 		}
 	}
