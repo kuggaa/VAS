@@ -163,5 +163,23 @@ namespace VAS.UI.Helpers.Bindings
 		{
 			return new ColorButtonBinding (colorButton, propertyExpression);
 		}
+
+		/// <summary>
+		/// Bind the specified spinner to a property by name.
+		/// </summary>
+		/// <param name="spinner">Spinner.</param>
+		public static SpinnerBinding Bind (this Gtk.Image spinner, Expression<Func<IViewModel, bool>> propertyExpression)
+		{
+			return new SpinnerBinding (spinner, propertyExpression);
+		}
+
+		/// <summary>
+		/// Bind the specified ComboBox to a property by name.
+		/// </summary>
+		/// <param name="comboBox">ComboBox.</param>
+		public static ComboBoxBinding Bind (this ComboBox comboBox, Expression<Func<IViewModel, string>> propertyExpression)
+		{
+			return new ComboBoxBinding (comboBox, propertyExpression);
+		}
 	}
 }
