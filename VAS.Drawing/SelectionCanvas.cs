@@ -315,9 +315,11 @@ namespace VAS.Drawing
 					sel = selected.Drawable.GetSelection (coords, Accuracy, inMotion);
 			}
 
-			/* Iterate over all the objects now */
+			/* Iterate over all the objects now.
+			 * We iterate in reverse order to select the object most recently painted (the one on top).
+			 */
 			if (sel == null) {
-				foreach (ICanvasSelectableObject co in Objects.OfType<ICanvasSelectableObject> ()) {
+				foreach (ICanvasSelectableObject co in Objects.OfType<ICanvasSelectableObject> ().Reverse ()) {
 					sel = co.GetSelection (coords, Accuracy, inMotion);
 					if (sel == null)
 						continue;
