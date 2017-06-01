@@ -221,6 +221,18 @@ namespace VAS.UI.Dialog
 			var keyContext = new KeyContext ();
 			keyContext.AddAction (
 				new KeyAction (
+					App.Current.HotkeysService.GetByName (GeneralUIHotkeys.COPY), blackboard.Copy)
+			);
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName (GeneralUIHotkeys.PASTE), blackboard.Paste)
+			);
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName (GeneralUIHotkeys.DELETE), blackboard.DeleteSelection)
+			);
+			keyContext.AddAction (
+				new KeyAction (
 					App.Current.HotkeysService.GetByName ("DRAWING_TOOL_SELECT"),
 					selectbutton.Click)
 			);
