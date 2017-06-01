@@ -343,6 +343,7 @@ namespace VAS.Drawing.Widgets
 					LineStyle);
 				break;
 			case DrawTool.Ellipse:
+				pos = SelectionPosition.New;
 				drawable = new Ellipse (MoveStart, 2, 2);
 				break;
 			case DrawTool.Rectangle:
