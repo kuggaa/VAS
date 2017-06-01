@@ -301,26 +301,32 @@ namespace VAS.UI.Dialog
 			keyContext.AddAction (
 				new KeyAction (
 					App.Current.HotkeysService.GetByName (DrawingToolHotkeys.DRAWING_TOOL_MOVE_RIGHT),
-					() => blackboard.MoveSelected (new Point (MOVE_OFFSET, 0)),
-					continueChain: false)
+					() => blackboard.MoveSelected (new Point (MOVE_OFFSET, 0)))
 			);
 			keyContext.AddAction (
 				new KeyAction (
 					App.Current.HotkeysService.GetByName (DrawingToolHotkeys.DRAWING_TOOL_MOVE_LEFT),
-					() => blackboard.MoveSelected (new Point (-MOVE_OFFSET, 0)),
-					continueChain: false)
+					() => blackboard.MoveSelected (new Point (-MOVE_OFFSET, 0)))
 			);
 			keyContext.AddAction (
 				new KeyAction (
 					App.Current.HotkeysService.GetByName (DrawingToolHotkeys.DRAWING_TOOL_MOVE_UP),
-					() => blackboard.MoveSelected (new Point (0, -MOVE_OFFSET)),
-					continueChain: false)
+					() => blackboard.MoveSelected (new Point (0, -MOVE_OFFSET)))
 			);
 			keyContext.AddAction (
 				new KeyAction (
 					App.Current.HotkeysService.GetByName (DrawingToolHotkeys.DRAWING_TOOL_MOVE_DOWN),
-					() => blackboard.MoveSelected (new Point (0, MOVE_OFFSET)),
-					continueChain: false)
+					() => blackboard.MoveSelected (new Point (0, MOVE_OFFSET)))
+			);
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName (DrawingToolHotkeys.DRAWING_TOOL_MOVE_TO_FRONT),
+					() => blackboard.MoveToFront ())
+			);
+			keyContext.AddAction (
+				new KeyAction (
+					App.Current.HotkeysService.GetByName (DrawingToolHotkeys.DRAWING_TOOL_MOVE_TO_BACK),
+					() => blackboard.MoveToBack ())
 			);
 			return keyContext;
 		}
@@ -657,7 +663,13 @@ namespace VAS.UI.Dialog
 		void HandleShowMenuEvent (IBlackboardObject drawable)
 		{
 			Menu m = new Menu ();
-			MenuItem item = new MenuItem (Catalog.GetString ("Delete"));
+			MenuItem item = new MenuItem (Catalog.GetString ("Move to Front"));
+			item.Activated += (sender, e) => blackboard.MoveToFront ();
+			m.Add (item);
+			item = new MenuItem (Catalog.GetString ("Move to Back"));
+			item.Activated += (sender, e) => blackboard.MoveToBack ();
+			m.Add (item);
+			item = new MenuItem (Catalog.GetString ("Delete"));
 			item.Activated += (sender, e) => blackboard.DeleteSelection ();
 			m.Add (item);
 			if (drawable is Text) {
