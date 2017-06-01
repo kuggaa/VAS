@@ -17,6 +17,7 @@
 //
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
 
@@ -81,7 +82,7 @@ namespace VAS.Services.AppUpdater
 		{
 			Log.Debug ("WinSparkle CanShutdownCallback called");
 			Task<bool> taskResult = App.Current.GUIToolkit.Invoke (() => {
-				return App.Current.Dialogs.QuestionMessage ("Do you want to close RiftAnalyst to install the update?", "Install Update Confirmation");
+				return App.Current.Dialogs.QuestionMessage (Catalog.GetString ("Do you want to close the application to install the update?"), Catalog.GetString ("Install Update Confirmation"));
 			});
 			taskResult.ConfigureAwait (false);
 			// Because this is a delegate and we don't have an option to await the result of the task, Wait() it with a
