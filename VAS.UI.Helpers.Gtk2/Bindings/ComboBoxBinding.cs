@@ -17,43 +17,51 @@
 //
 using System;
 using System.Linq.Expressions;
-using VAS.Core.Common;
+using Gtk;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 
 namespace VAS.UI.Helpers.Bindings
 {
 	/// <summary>
-	/// Property binding for images.
+	/// Property binding for text entries.
 	/// </summary>
-	public class ImageBinding : PropertyBinding<Image>
+	public class ComboBoxBinding : PropertyBinding<string>
 	{
-		Gtk.Image image;
-		int width, height;
+		ComboBox comboBox;
 
-		public ImageBinding (Gtk.Image image, Expression<Func<IViewModel, Image>> propertyExpression,
-							 int width = 0, int height = 0) : base (propertyExpression)
+		public ComboBoxBinding (ComboBox comboBox, Expression<Func<IViewModel, string>> propertyExpression) : base (propertyExpression)
 		{
-			this.image = image;
-			this.width = width;
-			this.height = height;
+			this.comboBox = comboBox;
 		}
 
 		protected override void BindView ()
 		{
+			comboBox.Changed += HandleSelectionChanged;
 		}
 
 		protected override void UnbindView ()
 		{
+			comboBox.Changed -= HandleSelectionChanged;
 		}
 
-		protected override void WriteViewValue (Image val)
+		protected override void WriteViewValue (string val)
 		{
-			if (width != 0 && height != 0) {
-				image.Pixbuf = val?.Scale (width, height).Value;
-			} else {
-				image.Pixbuf = val?.Value;
-			}
+			TreeIter iter;
+			comboBox.Model.GetIterFirst (out iter);
+			do {
+				GLib.Value thisRow = new GLib.Value ();
+				comboBox.Model.GetValue (iter, 0, ref thisRow);
+				if ((thisRow.Val as string).Equals (val)) {
+					comboBox.SetActiveIter (iter);
+					break;
+				}
+			} while (comboBox.Model.IterNext (ref iter));
+		}
+
+		void HandleSelectionChanged (object sender, EventArgs e)
+		{
+			WritePropertyValue (comboBox.ActiveText);
 		}
 	}
 }
