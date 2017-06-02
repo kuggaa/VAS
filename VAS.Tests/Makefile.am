@@ -22,7 +22,7 @@ coverage:do-coverage print-coverage
 endif
 endif
 
-CLEANFILES += \
+CLEANFILES = \
 	VAS.Tests.dll.covcfg.* \
 	TestsResult.xml
 
