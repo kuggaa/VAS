@@ -1,9 +1,4 @@
-OJECT_FILE = VAS.Tests.csproj
-ASSEMBLY= VAS.Tests.dll
-
-include $(srcdir)/../build/build.mk
-
-XBUILD_CMD += /property:SolutionDir=$(abs_top_builddir)
+ASSEMBLY_FILE= $(top_builddir)/bin/VAS.Tests.dll
 
 if ENABLE_TESTS
 check:
