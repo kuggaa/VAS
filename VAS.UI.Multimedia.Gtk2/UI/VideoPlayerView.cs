@@ -398,7 +398,7 @@ namespace VAS.UI
 		{
 			Cursor c = null;
 			if (cursor != null) {
-				Image img = VAS.Core.Resources.LoadImage ("images/cursors/" + cursor);
+				Image img = App.Current.ResourcesLocator.LoadImage ("images/cursors/" + cursor);
 				c = new Cursor (this.Display, img.Value, 0, 0);
 			}
 

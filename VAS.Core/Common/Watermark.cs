@@ -63,13 +63,12 @@ namespace VAS.Core.Common
 		{
 			double videoWidth = videoStandard.Width;
 			double videoHeight = videoStandard.Height;
-			var originalImage = new Image (App.Current.EmbeddedResourceLocator.GetEmbeddedResourceFileStream (Constants.WATERMARK_RESOURCE_ID));
+			var originalImage = App.Current.ResourcesLocator.LoadEmbeddedImage (Constants.WATERMARK_RESOURCE_ID);
 			double sizeChanged = (videoHeight * StyleConf.WatermarkHeightNormalization) / originalImage.Height;
 			int newWidth = (int)(originalImage.Width * sizeChanged);
 			int newHeight = (int)(originalImage.Height * sizeChanged);
 
-			var newImage = new Image (App.Current.EmbeddedResourceLocator.GetEmbeddedResourceFileStream (
-				Constants.WATERMARK_RESOURCE_ID), newWidth, newHeight);
+			var newImage = App.Current.ResourcesLocator.LoadEmbeddedImage (Constants.WATERMARK_RESOURCE_ID, newWidth, newHeight);
 
 			double offsetX = 0;
 			double offsetY = 0;
