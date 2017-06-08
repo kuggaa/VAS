@@ -62,5 +62,7 @@ namespace VAS.Core.Common
 
 		public const int PLAYBACK_TOLERANCE = 100;
 		public const int TEMP_TAGGING_DURATION = 500;
+
+		public const string WATERMARK_RESOURCE_ID = "logo-watermark.svg";
 	}
 }
