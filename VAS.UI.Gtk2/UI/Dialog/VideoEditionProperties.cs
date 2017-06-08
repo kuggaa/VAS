@@ -56,8 +56,14 @@ namespace VAS.UI.Dialog
 				OutputDir = mediafilechooser2.CurrentPath;
 			};
 
-			watermarkcheckbutton.Active = true;
-			watermarkcheckbutton.Sensitive = !App.Current.LicenseManager.LicenseStatus.Limited;
+			watermarkcheckbutton.Active = App.Current.Config.AddWatermark;
+			//FIXME: This Logic should be changed once Longomatch initializes LicenseManager
+			if (App.Current.LicenseManager != null) {
+				watermarkcheckbutton.Sensitive = !App.Current.LicenseManager.LicenseStatus.Limited;
+				if (App.Current.LicenseManager.LicenseStatus.Limited) {
+					watermarkcheckbutton.Active = true;
+				}
+			}
 		}
 
 		#endregion

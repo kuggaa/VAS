@@ -148,6 +148,11 @@ namespace VAS
 			set;
 		} = false;
 
+		public bool AddWatermark {
+			get;
+			set;
+		} = true;
+
 		public uint FPS_N {
 			get;
 			set;
