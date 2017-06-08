@@ -22,6 +22,7 @@ using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Store.Playlists;
 using VASMisc = VAS.UI.Helpers.Misc;
+using Image = VAS.Core.Common.Image;
 
 namespace VAS.UI.Dialog
 {
@@ -55,6 +56,9 @@ namespace VAS.UI.Dialog
 			mediafilechooser2.ChangedEvent += (sender, e) => {
 				OutputDir = mediafilechooser2.CurrentPath;
 			};
+
+			watermarkcheckbutton.Active = true;
+			watermarkcheckbutton.Sensitive = !App.Current.LicenseManager.LicenseStatus.Limited;
 		}
 
 		#endregion
@@ -125,6 +129,12 @@ namespace VAS.UI.Dialog
 			encSettings.EnableAudio = audiocheckbutton.Active;
 			encSettings.EnableTitle = descriptioncheckbutton.Active;
 
+			if (watermarkcheckbutton.Active) {
+				ConfigureWatermark ();
+			} else {
+				encSettings.Watermark = null;
+			}
+
 			if (!SplitFiles && String.IsNullOrEmpty (EncodingSettings.OutputFile)) {
 				App.Current.Dialogs.WarningMessage (Catalog.GetString ("Please, select a video file."));
 			} else if (SplitFiles && String.IsNullOrEmpty (OutputDir)) {
@@ -139,6 +149,16 @@ namespace VAS.UI.Dialog
 			dirbox.Visible = splitfilesbutton.Active;
 			filebox.Visible = !splitfilesbutton.Active;
 			SplitFiles = splitfilesbutton.Active;
+		}
+
+		void ConfigureWatermark ()
+		{
+			double videoWidth = encSettings.VideoStandard.Width;
+			double videoHeight = encSettings.VideoStandard.Height;
+			double sizeChanged = (videoHeight * StyleConf.WatermarkHeightNormalization) / App.Current.WatermarkImage.Height;
+			double offsetX = (videoWidth - (App.Current.WatermarkImage.Width * sizeChanged) - StyleConf.WatermarkPadding) / videoWidth;
+			double offsetY = StyleConf.WatermarkPadding / videoHeight;
+			encSettings.Watermark = new Watermark (App.Current.WatermarkImage, StyleConf.WatermarkHeightNormalization, offsetX, offsetY);
 		}
 	}
 }

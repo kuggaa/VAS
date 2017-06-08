@@ -427,6 +427,11 @@ namespace VAS
 			}
 		}
 
+		public Image WatermarkImage {
+			get;
+			set;
+		}
+
 		public string ProjectExtension {
 			get;
 			set;
