@@ -22,7 +22,6 @@ using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Store.Playlists;
 using VASMisc = VAS.UI.Helpers.Misc;
-using Image = VAS.Core.Common.Image;
 
 namespace VAS.UI.Dialog
 {
@@ -130,7 +129,7 @@ namespace VAS.UI.Dialog
 			encSettings.EnableTitle = descriptioncheckbutton.Active;
 
 			if (watermarkcheckbutton.Active) {
-				ConfigureWatermark ();
+				encSettings.Watermark = Watermark.ConfigureNewWatermark (WatermarkPosition.TOP_RIGHT, encSettings.VideoStandard);
 			} else {
 				encSettings.Watermark = null;
 			}
@@ -149,16 +148,6 @@ namespace VAS.UI.Dialog
 			dirbox.Visible = splitfilesbutton.Active;
 			filebox.Visible = !splitfilesbutton.Active;
 			SplitFiles = splitfilesbutton.Active;
-		}
-
-		void ConfigureWatermark ()
-		{
-			double videoWidth = encSettings.VideoStandard.Width;
-			double videoHeight = encSettings.VideoStandard.Height;
-			double sizeChanged = (videoHeight * StyleConf.WatermarkHeightNormalization) / App.Current.WatermarkImage.Height;
-			double offsetX = (videoWidth - (App.Current.WatermarkImage.Width * sizeChanged) - StyleConf.WatermarkPadding) / videoWidth;
-			double offsetY = StyleConf.WatermarkPadding / videoHeight;
-			encSettings.Watermark = new Watermark (App.Current.WatermarkImage, StyleConf.WatermarkHeightNormalization, offsetX, offsetY);
 		}
 	}
 }

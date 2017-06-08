@@ -610,4 +610,15 @@ namespace VAS.Core.Common
 		LEVEL_15 = 65535
 	}
 
+	/// <summary>
+	/// Watermark position.
+	/// </summary>
+	public enum WatermarkPosition
+	{
+		TOP_LEFT,
+		TOP_RIGHT,
+		BOTTOM_LEFT,
+		BOTTOM_RIGHT
+	}
+
 }
