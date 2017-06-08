@@ -257,6 +257,11 @@ namespace VAS.Multimedia.Editor
 					value.Framerate_d,
 					value.EnableAudio,
 					value.EnableTitle);
+
+				if (value.Watermark != null) {
+					SetWatermark (value.Watermark.Image, value.Watermark.OffsetX,
+								 value.Watermark.OffsetY, value.Watermark.Height);
+				}
 			}
 		}
 

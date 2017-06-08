@@ -209,7 +209,6 @@ namespace VAS.Services
 			videoEditor.EncodingSettings = job.EncodingSettings;
 			videoEditor.Progress += OnProgress;
 			videoEditor.Error += OnError;
-			videoEditor.SetWatermark (App.Current.Background, 0, 0, 0.1);
 
 			foreach (IPlaylistElement segment in job.Playlist.Elements) {
 				if (segment is PlaylistPlayElement) {
