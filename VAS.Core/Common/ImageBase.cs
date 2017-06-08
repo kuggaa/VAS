@@ -52,6 +52,11 @@ namespace VAS.Core.Common
 			Value = LoadFromStream (stream);
 		}
 
+		public BaseImage (Stream stream, int width, int height)
+		{
+			Value = LoadFromStream (stream, width, height);
+		}
+
 		protected override void DisposeManagedResources ()
 		{
 			base.DisposeManagedResources ();
@@ -158,6 +163,8 @@ namespace VAS.Core.Common
 		protected abstract T LoadFromFile (string filename, int width, int height);
 
 		protected abstract T LoadFromStream (Stream stream);
+
+		protected abstract T LoadFromStream (Stream stream, int width, int height);
 
 		protected abstract T Scale (T pix, int maxWidth, int maxHeight);
 
