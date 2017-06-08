@@ -315,6 +315,10 @@ namespace VAS.Core.Common
 
 		public Color Foreground_Highlight { get; set; }
 
+		public Color Stat_Win { get; set; }
+
+		public Color Stat_Lose { get; set; }
+
 		//Sizes
 
 		public int IconLargeHeight { get; set; }
