@@ -65,19 +65,19 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			editRect = new Rectangle (new Point (0, 0), 0, 0);
 			applyRect = new Rectangle (new Point (0, 0), 0, 0);
 			if (iconImage == null) {
-				iconImage = Resources.LoadImage (StyleConf.ButtonEventIcon);
+				iconImage = App.Current.ResourcesLocator.LoadImage (StyleConf.ButtonEventIcon);
 			}
 			if (recImage == null) {
-				recImage = Resources.LoadImage (StyleConf.RecordButton);
+				recImage = App.Current.ResourcesLocator.LoadImage (StyleConf.RecordButton);
 			}
 			if (editImage == null) {
-				editImage = Resources.LoadImage (StyleConf.EditButton);
+				editImage = App.Current.ResourcesLocator.LoadImage (StyleConf.EditButton);
 			}
 			if (cancelImage == null) {
-				cancelImage = Resources.LoadImage (StyleConf.CancelButton);
+				cancelImage = App.Current.ResourcesLocator.LoadImage (StyleConf.CancelButton);
 			}
 			if (applyImage == null) {
-				applyImage = Resources.LoadImage (StyleConf.ApplyButton);
+				applyImage = App.Current.ResourcesLocator.LoadImage (StyleConf.ApplyButton);
 			}
 			MinWidth = 100;
 			MinHeight = HeaderHeight * 2;

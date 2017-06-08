@@ -30,26 +30,26 @@ namespace VAS.Tests.Core
 		{
 			//FIXME: RelativePrefix cannot be used
 			App.Current.DataDir.Add ("./data/");
-			Resources.TEST_MODE = false;
+			App.Current.ResourcesLocator.TestMode = false;
 		}
 
 		[TestFixtureTearDown]
 		public void TearDown ()
 		{
-			Resources.TEST_MODE = true;
+			App.Current.ResourcesLocator.TestMode = true;
 		}
 
 		[Test ()]
 		public void TestLoadIconResource ()
 		{
-			Image img = VAS.Core.Resources.LoadImage ("longomatch-dark-bg.svg");
+			Image img = App.Current.ResourcesLocator.LoadImage ("longomatch-dark-bg.svg");
 			Assert.IsNotNull (img);
 		}
 
 		[Test ()]
 		public void TestLoadImageResource ()
 		{
-			Image img = VAS.Core.Resources.LoadImage ("longomatch.svg");
+			Image img = App.Current.ResourcesLocator.LoadImage ("longomatch.svg");
 			Assert.IsNotNull (img);
 		}
 
@@ -58,7 +58,7 @@ namespace VAS.Tests.Core
 		{
 			Assert.Throws<System.IO.FileNotFoundException> (
 				delegate {
-					var img = VAS.Core.Resources.LoadImage ("not-found.svg");
+					var img = App.Current.ResourcesLocator.LoadImage ("not-found.svg");
 				});
 		}
 	}

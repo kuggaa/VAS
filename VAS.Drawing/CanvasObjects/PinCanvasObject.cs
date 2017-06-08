@@ -41,9 +41,9 @@ namespace VAS.Drawing.CanvasObjects
 
 		static PinCanvasObject ()
 		{
-			missingLocationPinImage = Resources.LoadImage (StyleConf.LocationPinNotSet);
-			locationPinImageMoving = Resources.LoadImage (StyleConf.LocationPinMoving);
-			locationPinImageSet = Resources.LoadImage (StyleConf.LocationSet);
+			missingLocationPinImage = App.Current.ResourcesLocator.LoadImage (StyleConf.LocationPinNotSet);
+			locationPinImageMoving = App.Current.ResourcesLocator.LoadImage (StyleConf.LocationPinMoving);
+			locationPinImageSet = App.Current.ResourcesLocator.LoadImage (StyleConf.LocationSet);
 		}
 
 		public PinCanvasObject ()

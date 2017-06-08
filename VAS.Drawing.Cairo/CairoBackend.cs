@@ -152,7 +152,7 @@ namespace VAS.Drawing.Cairo
 
 		public ISurface CreateSurfaceFromResource (string resourceName, bool warnOnDispose = true)
 		{
-			Image img = Resources.LoadImage (resourceName);
+			Image img = App.Current.ResourcesLocator.LoadImage (resourceName);
 			return CreateSurface (img.Width, img.Height, img, warnOnDispose);
 		}
 

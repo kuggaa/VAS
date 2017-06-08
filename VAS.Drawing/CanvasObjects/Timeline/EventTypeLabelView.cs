@@ -41,7 +41,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		public EventTypeLabelView ()
 		{
 			playButton = new TimelineButtonView ();
-			playButton.Icon = Resources.LoadImage (StyleConf.PlayButton);
+			playButton.Icon = App.Current.ResourcesLocator.LoadImage (StyleConf.PlayButton);
 			playButton.ClickedEvent += PlayButtonClickedEvent;
 			playButton.RedrawEvent += HandleButtonRedrawEvent;
 		}
