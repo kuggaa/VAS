@@ -31,8 +31,8 @@ namespace VAS.Core.MVVMC
 		public static void ScanViews (ViewLocator viewLocator)
 		{
 			Assembly assembly = Assembly.GetCallingAssembly ();
-			foreach (Type type in assembly.GetTypes()) {
-				foreach (var attribute in type.GetCustomAttributes (typeof(ViewAttribute), true)) {
+			foreach (Type type in assembly.GetTypes ()) {
+				foreach (var attribute in type.GetCustomAttributes (typeof (ViewAttribute), true)) {
 					viewLocator.Register ((attribute as ViewAttribute).ViewName, type);
 				}
 			}
@@ -42,12 +42,31 @@ namespace VAS.Core.MVVMC
 		/// Scans and register Controllers from the calling assembly. This should be called from all of
 		/// the assemblies containing Controllers in the initialization.
 		/// </summary>
-		/// <param name="viewLocator">View locator.</param>
+		/// <param name="controllerLocator">Controller locator.</param>
 		public static void ScanControllers (ControllerLocator controllerLocator)
 		{
 			Assembly assembly = Assembly.GetCallingAssembly ();
-			foreach (Type type in assembly.GetTypes()) {
-				foreach (var attribute in type.GetCustomAttributes (typeof(ControllerAttribute), true)) {
+			RegisterControllers (assembly, controllerLocator);
+		}
+
+		/// <summary>
+		/// Scans and register Controllers from the referenced assemblies to the calling assembly. It also loads each
+		/// referenced assembly This should be called from all tests that are testing states in the initialization.
+		/// </summary>
+		/// <param name="controllerLocator">Controller locator.</param>
+		public static void ScanReferencedControllers (ControllerLocator controllerLocator)
+		{
+			Assembly callingAssembly = Assembly.GetCallingAssembly ();
+			foreach (AssemblyName assemblyName in callingAssembly.GetReferencedAssemblies ()) {
+				var assembly = Assembly.Load (assemblyName);
+				RegisterControllers (assembly, controllerLocator);
+			}
+		}
+
+		static void RegisterControllers (Assembly assembly, ControllerLocator controllerLocator)
+		{
+			foreach (Type type in assembly.GetTypes ()) {
+				foreach (var attribute in type.GetCustomAttributes (typeof (ControllerAttribute), true)) {
 					controllerLocator.Register ((attribute as ControllerAttribute).ViewName, type);
 				}
 			}
