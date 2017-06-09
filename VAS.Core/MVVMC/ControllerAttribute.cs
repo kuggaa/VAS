@@ -22,8 +22,8 @@ namespace VAS.Core.MVVMC
 	/// <summary>
 	/// Attribute used to register Controllers.
 	/// </summary>
-	[AttributeUsage (AttributeTargets.Class, AllowMultiple = true)]
-	public class ControllerAttribute: Attribute
+	[AttributeUsage (AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
+	public class ControllerAttribute : Attribute
 	{
 		public ControllerAttribute (string viewName)
 		{
