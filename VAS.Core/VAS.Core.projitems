@@ -249,12 +249,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ActionLinkVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\HotKeyVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Converter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\SeriesCollectionVM.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\SeriesVM.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\BarChartVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Watermark.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IResourcesLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\CloneIgnoreAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\BorderRegionVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TextBorderRegionVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Statistics\TwoBarChartVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Statistics\BarChartVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Statistics\SeriesCollectionVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Statistics\SeriesVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\CanvasBorderVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Statistics\ChartVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
@@ -278,6 +283,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />
     <Folder Include="$(MSBuildThisFileDirectory)License\" />
     <Folder Include="$(MSBuildThisFileDirectory)Interfaces\License\" />
+    <Folder Include="$(MSBuildThisFileDirectory)ViewModel\Statistics\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)VAS.Core.dll.config">

@@ -319,9 +319,11 @@ namespace VAS.Core.Common
 
 		public Color Foreground_Highlight { get; set; }
 
-		public Color Stat_Win { get; set; }
+		public Color Stat_Success { get; set; }
 
-		public Color Stat_Lose { get; set; }
+		public Color Stat_Failure { get; set; }
+
+		public Color Text_Highlight { get; set; }
 
 		//Sizes
 
