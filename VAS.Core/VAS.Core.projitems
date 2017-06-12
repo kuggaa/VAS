@@ -250,6 +250,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\HotKeyVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Converter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\CloneIgnoreAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\SeriesCollectionVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\SeriesVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\BarChartVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
