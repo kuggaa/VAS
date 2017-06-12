@@ -1,11 +1,10 @@
 ﻿//
 //  Copyright (C) 2017 Fluendo S.A.
 //
-using System;
 using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
-using VAS.Core.ViewModel;
+using VAS.Core.ViewModel.Statistics;
 
 namespace VAS.Drawing.CanvasObjects.Statistics
 {
@@ -40,16 +39,21 @@ namespace VAS.Drawing.CanvasObjects.Statistics
 				return;
 			}
 
+			ViewModel.Height = ViewModel.Height < 0.1f ? area.Height : ViewModel.Height;
+			double width = area.Width - ViewModel.LeftPadding - ViewModel.RightPadding;
+
 			tk.Begin ();
 
-			double posX = 0;
+			double posX = area.Start.X + ViewModel.LeftPadding;
+			double posY = area.Start.Y + ViewModel.TopPadding;
 			double end;
 			double totalX = ViewModel.Series.ViewModels.Sum (x => x.Elements);
 
 			foreach (var serie in ViewModel.Series.Where (x => x.Elements != 0)) {
 				tk.FillColor = serie.Color;
-				end = (serie.Elements / totalX) * area.Width;
-				tk.DrawRectangle (new Point (posX, 0), end, area.Height);
+				tk.StrokeColor = serie.Color;
+				end = (serie.Elements / totalX) * width;
+				tk.DrawRectangle (new Point (posX, posY), end, ViewModel.Height);
 				posX += end;
 			}
 

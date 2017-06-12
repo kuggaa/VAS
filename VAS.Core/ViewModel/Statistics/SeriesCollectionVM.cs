@@ -15,49 +15,12 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
-using VAS.Core.Common;
 using VAS.Core.MVVMC;
 
-namespace VAS.Core.ViewModel
+namespace VAS.Core.ViewModel.Statistics
 {
-	/// <summary>
-	/// SeriesVM for stats representation.
-	/// </summary>
-	public class SeriesVM : ViewModelBase
+	public class SeriesCollectionVM : NestedViewModel<SeriesVM>
 	{
-		public SeriesVM (string title, int elements, Color color)
-		{
-			Title = title;
-			Elements = elements;
-			Color = color;
-		}
 
-		/// <summary>
-		/// Gets or sets the series' title.
-		/// </summary>
-		/// <value>The title.</value>
-		public string Title {
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// Gets or sets the elements quantity.
-		/// </summary>
-		/// <value>The elements.</value>
-		public int Elements {
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// Gets or sets the color.
-		/// </summary>
-		/// <value>The color.</value>
-		public Color Color {
-			get;
-			set;
-		}
 	}
 }

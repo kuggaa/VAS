@@ -66,5 +66,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Init.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\PinCanvasObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Statistics\BarChartView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\BorderRegionView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\TextBorderRegionView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Statistics\TwoBarChartView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\CanvasBorderView.cs" />
   </ItemGroup>
 </Project>
