@@ -87,6 +87,14 @@ namespace VAS.Services.AppUpdater
 			taskResult.ConfigureAwait (false);
 			// Because this is a delegate and we don't have an option to await the result of the task, Wait() it with a
 			// continuation in a different thread to avoid blocking.
+			if (taskResult.Result) {
+				//Move To Home to close any opened projects before HandleShutdownRequestCallback
+				Task<bool> taskHomeResult = App.Current.GUIToolkit.Invoke (() => {
+					return App.Current.StateController.MoveToHome ();
+				});
+				taskHomeResult.ConfigureAwait (false);
+				return taskHomeResult.Result;
+			}
 			return taskResult.Result;
 		}
 
