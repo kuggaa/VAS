@@ -315,6 +315,10 @@ namespace VAS.Core.Common
 
 		public Color Foreground_Highlight { get; set; }
 
+		public Color Stat_Win { get; set; }
+
+		public Color Stat_Lose { get; set; }
+
 		//Sizes
 
 		public int IconLargeHeight { get; set; }
@@ -362,6 +366,10 @@ namespace VAS.Core.Common
 		public int ButtonLimitWidth { get; set; }
 
 		public int ButtonLimitHeight { get; set; }
+
+		public int ButtonHeaderBoxHeight { get; set; }
+
+		public int ButtonHeaderBoxWidth { get; set; }
 
 		public int ContainerBigPadding { get; set; }
 
