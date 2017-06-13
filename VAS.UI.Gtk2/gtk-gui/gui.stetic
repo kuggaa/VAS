@@ -1622,11 +1622,17 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="VAS.UI.Dialog.VideoEditionProperties" design-size="548 407">
+  <widget class="Gtk.Dialog" id="VAS.UI.Dialog.VideoEditionProperties" design-size="567 421">
     <property name="MemberName" />
+    <property name="WidthRequest">440</property>
+    <property name="HeightRequest">340</property>
     <property name="Title" translatable="yes">Video Properties</property>
     <property name="WindowPosition">CenterOnParent</property>
     <property name="Modal">True</property>
+    <property name="Resizable">False</property>
+    <property name="AllowGrow">False</property>
+    <property name="DefaultWidth">440</property>
+    <property name="DefaultHeight">340</property>
     <property name="Gravity">Center</property>
     <property name="SkipPagerHint">True</property>
     <property name="SkipTaskbarHint">True</property>
@@ -1635,19 +1641,45 @@
     <child internal-child="VBox">
       <widget class="Gtk.VBox" id="dialog1_VBox">
         <property name="MemberName" />
-        <property name="BorderWidth">2</property>
         <child>
           <widget class="Gtk.VBox" id="vbox2">
             <property name="MemberName" />
-            <property name="Spacing">6</property>
+            <property name="Spacing">10</property>
+            <child>
+              <widget class="Gtk.EventBox" id="containerRegular">
+                <property name="MemberName" />
+                <child>
+                  <widget class="Gtk.Alignment" id="titleAlignment">
+                    <property name="MemberName" />
+                    <property name="LeftPadding">10</property>
+                    <property name="TopPadding">10</property>
+                    <property name="BottomPadding">10</property>
+                    <child>
+                      <widget class="Gtk.Label" id="labelTextTitle">
+                        <property name="MemberName" />
+                        <property name="WidthRequest">200</property>
+                        <property name="HeightRequest">20</property>
+                        <property name="Xalign">0</property>
+                        <property name="LabelProp" translatable="yes">Video Properties</property>
+                      </widget>
+                    </child>
+                  </widget>
+                </child>
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
             <child>
               <widget class="Gtk.Table" id="table1">
                 <property name="MemberName" />
                 <property name="NRows">5</property>
                 <property name="NColumns">2</property>
-                <property name="Homogeneous">True</property>
-                <property name="RowSpacing">6</property>
-                <property name="ColumnSpacing">6</property>
+                <property name="RowSpacing">10</property>
+                <property name="ColumnSpacing">35</property>
                 <child>
                   <widget class="Gtk.CheckButton" id="audiocheckbutton">
                     <property name="MemberName" />
@@ -1662,7 +1694,7 @@
                     <property name="BottomAttach">4</property>
                     <property name="LeftAttach">1</property>
                     <property name="RightAttach">2</property>
-                    <property name="AutoSize">True</property>
+                    <property name="AutoSize">False</property>
                     <property name="XOptions">Fill</property>
                     <property name="YOptions">Fill</property>
                     <property name="XExpand">False</property>
@@ -1681,11 +1713,13 @@
                     <property name="DrawIndicator">True</property>
                     <property name="HasLabel">True</property>
                     <property name="UseUnderline">True</property>
+                    <property name="Xalign">0</property>
                   </widget>
                   <packing>
                     <property name="TopAttach">3</property>
                     <property name="BottomAttach">4</property>
-                    <property name="AutoSize">True</property>
+                    <property name="XPadding">10</property>
+                    <property name="AutoSize">False</property>
                     <property name="XOptions">Fill</property>
                     <property name="YOptions">Fill</property>
                     <property name="XExpand">False</property>
@@ -1707,12 +1741,12 @@
                     <property name="BottomAttach">3</property>
                     <property name="LeftAttach">1</property>
                     <property name="RightAttach">2</property>
-                    <property name="AutoSize">True</property>
-                    <property name="XOptions">Fill</property>
+                    <property name="AutoSize">False</property>
+                    <property name="XOptions">Shrink, Fill</property>
                     <property name="YOptions">Fill</property>
                     <property name="XExpand">False</property>
                     <property name="XFill">True</property>
-                    <property name="XShrink">False</property>
+                    <property name="XShrink">True</property>
                     <property name="YExpand">False</property>
                     <property name="YFill">True</property>
                     <property name="YShrink">False</property>
@@ -1725,7 +1759,8 @@
                     <property name="LabelProp" translatable="yes">Quality:</property>
                   </widget>
                   <packing>
-                    <property name="AutoSize">True</property>
+                    <property name="XPadding">10</property>
+                    <property name="AutoSize">False</property>
                     <property name="XOptions">Fill</property>
                     <property name="YOptions">Fill</property>
                     <property name="XExpand">False</property>
@@ -1745,7 +1780,8 @@
                   <packing>
                     <property name="TopAttach">1</property>
                     <property name="BottomAttach">2</property>
-                    <property name="AutoSize">True</property>
+                    <property name="XPadding">10</property>
+                    <property name="AutoSize">False</property>
                     <property name="XOptions">Fill</property>
                     <property name="YOptions">Fill</property>
                     <property name="XExpand">False</property>
@@ -1765,7 +1801,8 @@
                   <packing>
                     <property name="TopAttach">2</property>
                     <property name="BottomAttach">3</property>
-                    <property name="AutoSize">True</property>
+                    <property name="XPadding">10</property>
+                    <property name="AutoSize">False</property>
                     <property name="XOptions">Fill</property>
                     <property name="YOptions">Fill</property>
                     <property name="XExpand">False</property>
@@ -1785,12 +1822,12 @@
                   <packing>
                     <property name="LeftAttach">1</property>
                     <property name="RightAttach">2</property>
-                    <property name="AutoSize">True</property>
-                    <property name="XOptions">Fill</property>
+                    <property name="AutoSize">False</property>
+                    <property name="XOptions">Shrink, Fill</property>
                     <property name="YOptions">Fill</property>
                     <property name="XExpand">False</property>
                     <property name="XFill">True</property>
-                    <property name="XShrink">False</property>
+                    <property name="XShrink">True</property>
                     <property name="YExpand">False</property>
                     <property name="YFill">True</property>
                     <property name="YShrink">False</property>
@@ -1807,12 +1844,12 @@
                     <property name="BottomAttach">2</property>
                     <property name="LeftAttach">1</property>
                     <property name="RightAttach">2</property>
-                    <property name="AutoSize">True</property>
-                    <property name="XOptions">Fill</property>
+                    <property name="AutoSize">False</property>
+                    <property name="XOptions">Shrink, Fill</property>
                     <property name="YOptions">Fill</property>
                     <property name="XExpand">False</property>
                     <property name="XFill">True</property>
-                    <property name="XShrink">False</property>
+                    <property name="XShrink">True</property>
                     <property name="YExpand">False</property>
                     <property name="YFill">True</property>
                     <property name="YShrink">False</property>
@@ -1822,10 +1859,11 @@
                   <widget class="Gtk.CheckButton" id="splitfilesbutton">
                     <property name="MemberName" />
                     <property name="CanFocus">True</property>
-                    <property name="Label" translatable="yes">Split output in one file per playlist element</property>
+                    <property name="Label" translatable="yes">Export one file per element in playlist</property>
                     <property name="DrawIndicator">True</property>
                     <property name="HasLabel">True</property>
                     <property name="UseUnderline">True</property>
+                    <property name="Xalign">0</property>
                     <signal name="Clicked" handler="OnSplitfilesbuttonClicked" />
                   </widget>
                   <packing>
@@ -1833,7 +1871,7 @@
                     <property name="BottomAttach">5</property>
                     <property name="LeftAttach">1</property>
                     <property name="RightAttach">2</property>
-                    <property name="AutoSize">True</property>
+                    <property name="AutoSize">False</property>
                     <property name="XOptions">Fill</property>
                     <property name="YOptions">Fill</property>
                     <property name="XExpand">False</property>
@@ -1853,11 +1891,13 @@
                     <property name="DrawIndicator">True</property>
                     <property name="HasLabel">True</property>
                     <property name="UseUnderline">True</property>
+                    <property name="Xalign">0</property>
                   </widget>
                   <packing>
                     <property name="TopAttach">4</property>
                     <property name="BottomAttach">5</property>
-                    <property name="AutoSize">True</property>
+                    <property name="XPadding">10</property>
+                    <property name="AutoSize">False</property>
                     <property name="XOptions">Fill</property>
                     <property name="YOptions">Fill</property>
                     <property name="XExpand">False</property>
@@ -1870,7 +1910,7 @@
                 </child>
               </widget>
               <packing>
-                <property name="Position">0</property>
+                <property name="Position">1</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
@@ -1883,6 +1923,7 @@
                 <child>
                   <widget class="Gtk.Label" id="filenamelabel">
                     <property name="MemberName" />
+                    <property name="Xpad">10</property>
                     <property name="Xalign">1</property>
                     <property name="LabelProp" translatable="yes">File name: </property>
                   </widget>
@@ -1899,12 +1940,12 @@
                   </widget>
                   <packing>
                     <property name="Position">1</property>
-                    <property name="AutoSize">False</property>
+                    <property name="AutoSize">True</property>
                   </packing>
                 </child>
               </widget>
               <packing>
-                <property name="Position">1</property>
+                <property name="Position">2</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
@@ -1918,6 +1959,7 @@
                 <child>
                   <widget class="Gtk.Label" id="directorynamelabel1">
                     <property name="MemberName" />
+                    <property name="Xpad">10</property>
                     <property name="Xalign">1</property>
                     <property name="LabelProp" translatable="yes">Directory name: </property>
                   </widget>
@@ -1934,12 +1976,12 @@
                   </widget>
                   <packing>
                     <property name="Position">1</property>
-                    <property name="AutoSize">False</property>
+                    <property name="AutoSize">True</property>
                   </packing>
                 </child>
               </widget>
               <packing>
-                <property name="Position">2</property>
+                <property name="Position">3</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
