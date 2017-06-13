@@ -64,6 +64,8 @@ namespace VAS.UI.Dialog
 					watermarkcheckbutton.Active = true;
 				}
 			}
+			ModifyBg (StateType.Normal, VASMisc.ToGdkColor (App.Current.Style.BackgroundLevel3));
+			containerRegular.ModifyBg (StateType.Normal, VASMisc.ToGdkColor (App.Current.Style.BackgroundLevel1));
 		}
 
 		#endregion
