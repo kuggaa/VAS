@@ -18,38 +18,34 @@
 using NUnit.Framework;
 using VAS.Core.Common;
 using VAS.Core;
+using VAS.Core.Interfaces;
 
 namespace VAS.Tests.Core
 {
 	[TestFixture ()]
 	public class TestResources
 	{
+		IResourcesLocator resources;
 
 		[TestFixtureSetUp]
 		public void Setup ()
 		{
 			//FIXME: RelativePrefix cannot be used
 			App.Current.DataDir.Add ("./data/");
-			App.Current.ResourcesLocator.TestMode = false;
-		}
-
-		[TestFixtureTearDown]
-		public void TearDown ()
-		{
-			App.Current.ResourcesLocator.TestMode = true;
+			resources = new ResourcesLocator ();
 		}
 
 		[Test ()]
 		public void TestLoadIconResource ()
 		{
-			Image img = App.Current.ResourcesLocator.LoadImage ("longomatch-dark-bg.svg");
+			Image img = resources.LoadImage ("longomatch-dark-bg.svg");
 			Assert.IsNotNull (img);
 		}
 
 		[Test ()]
 		public void TestLoadImageResource ()
 		{
-			Image img = App.Current.ResourcesLocator.LoadImage ("longomatch.svg");
+			Image img = resources.LoadImage ("longomatch.svg");
 			Assert.IsNotNull (img);
 		}
 
@@ -58,7 +54,7 @@ namespace VAS.Tests.Core
 		{
 			Assert.Throws<System.IO.FileNotFoundException> (
 				delegate {
-					var img = App.Current.ResourcesLocator.LoadImage ("not-found.svg");
+					var img = resources.LoadImage ("not-found.svg");
 				});
 		}
 	}
