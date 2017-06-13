@@ -27,8 +27,6 @@ namespace VAS.Core.Interfaces
 	/// </summary>
 	public interface IResourcesLocator
 	{
-
-		bool TestMode { get; set; }
 		/// <summary>
 		/// Register the specified assembly with embedded resources
 		/// </summary>

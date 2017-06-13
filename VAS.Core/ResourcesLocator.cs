@@ -30,21 +30,6 @@ namespace VAS.Core
 	{
 		HashSet<Assembly> assemblies;
 
-		/// <summary>
-		/// Set this value to <c>true</c> in unit test to create dummy images.
-		/// </summary>
-		static bool TEST_MODE = false;
-
-		public bool TestMode {
-			get {
-				return TEST_MODE;
-			}
-
-			set {
-				TEST_MODE = value;
-			}
-		}
-
 		public ResourcesLocator ()
 		{
 			assemblies = new HashSet<Assembly> ();
@@ -83,12 +68,6 @@ namespace VAS.Core
 		/// <param name="height">Height.</param>
 		public Image LoadEmbeddedImage (string resourceId, int width = 0, int height = 0)
 		{
-			if (TestMode) {
-				string svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16px\" height=\"16px\"/>";
-				using (Stream s = new MemoryStream (Encoding.UTF8.GetBytes (svg))) {
-					return new Image (s);
-				}
-			}
 			var embeddedStream = GetEmbeddedResourceFileStream (resourceId);
 			if (embeddedStream != null) {
 				if (width != 0 && height != 0) {
@@ -110,12 +89,6 @@ namespace VAS.Core
 		/// <param name="height">Height.</param>
 		public Image LoadImage (string name, int width = 0, int height = 0)
 		{
-			if (TestMode) {
-				string svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16px\" height=\"16px\"/>";
-				using (Stream s = new MemoryStream (Encoding.UTF8.GetBytes (svg))) {
-					return new Image (s);
-				}
-			}
 			if (width != 0 && height != 0) {
 				return new Image (Utils.GetDataFilePath (name), width, height);
 			}
