@@ -15,18 +15,68 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using VAS.Core.Common;
+using VAS.Core.Interfaces;
 
 namespace VAS.Core
 {
-	public static class Resources
+	public class ResourcesLocator : IResourcesLocator
 	{
+		HashSet<Assembly> assemblies;
+
+		public ResourcesLocator ()
+		{
+			assemblies = new HashSet<Assembly> ();
+		}
+
 		/// <summary>
-		/// Set this value to <c>true</c> in unit test to create dummy images.
+		/// Register the specified assembly with embedded resources
 		/// </summary>
-		public static bool TEST_MODE = false;
+		/// <param name="assembly">Assembly.</param>
+		public void Register (Assembly assembly)
+		{
+			assemblies.Add (assembly);
+		}
+
+		/// <summary>
+		/// Gets the embedded resource file stream.
+		/// </summary>
+		/// <returns>The embedded resource file stream.</returns>
+		/// <param name="resourceId">Resource identifier.</param>
+		public Stream GetEmbeddedResourceFileStream (string resourceId)
+		{
+			foreach (var assembly in assemblies) {
+				if (assembly.GetManifestResourceNames ().Contains (resourceId)) {
+					return assembly.GetManifestResourceStream (resourceId);
+				}
+			}
+			return null;
+		}
+
+		/// <summary>
+		/// Loads the embedded image.
+		/// </summary>
+		/// <returns>The embedded image.</returns>
+		/// <param name="resourceId">Resource identifier.</param>
+		/// <param name="width">Width.</param>
+		/// <param name="height">Height.</param>
+		public Image LoadEmbeddedImage (string resourceId, int width = 0, int height = 0)
+		{
+			var embeddedStream = GetEmbeddedResourceFileStream (resourceId);
+			if (embeddedStream != null) {
+				if (width != 0 && height != 0) {
+					return new Image (embeddedStream, width, height);
+				}
+				return new Image (embeddedStream);
+			}
+			return null;
+		}
 
 		/// <summary>
 		/// Loads an icon <see cref="Image"/> using the icon name. If <paramref name="width"/> or <paramref name="height"/>
@@ -37,14 +87,8 @@ namespace VAS.Core
 		/// <param name="name">Name.</param>
 		/// <param name="width">Width.</param>
 		/// <param name="height">Height.</param>
-		public static Image LoadImage (string name, int width = 0, int height = 0)
+		public Image LoadImage (string name, int width = 0, int height = 0)
 		{
-			if (TEST_MODE) {
-				string svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16px\" height=\"16px\"/>";
-				using (Stream s = new MemoryStream (Encoding.UTF8.GetBytes (svg))) {
-					return new Image (s);
-				}
-			}
 			if (width != 0 && height != 0) {
 				return new Image (Utils.GetDataFilePath (name), width, height);
 			}
@@ -58,7 +102,7 @@ namespace VAS.Core
 		/// <returns>The icon.</returns>
 		/// <param name="name">Name.</param>
 		/// <param name="size">Desired size.</param>
-		public static Image LoadIcon (string name, int size = 0)
+		public Image LoadIcon (string name, int size = 0)
 		{
 			return LoadImage ("icons/hicolor/scalable/actions/" + name + StyleConf.IMAGE_EXT, size, size);
 		}

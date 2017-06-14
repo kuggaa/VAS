@@ -55,6 +55,17 @@ namespace VAS.UI.Dialog
 			mediafilechooser2.ChangedEvent += (sender, e) => {
 				OutputDir = mediafilechooser2.CurrentPath;
 			};
+
+			watermarkcheckbutton.Active = App.Current.Config.AddWatermark;
+			//FIXME: This Logic should be changed once Longomatch initializes LicenseManager
+			if (App.Current.LicenseManager != null) {
+				watermarkcheckbutton.Sensitive = !App.Current.LicenseManager.LicenseStatus.Limited;
+				if (App.Current.LicenseManager.LicenseStatus.Limited) {
+					watermarkcheckbutton.Active = true;
+				}
+			}
+			ModifyBg (StateType.Normal, VASMisc.ToGdkColor (App.Current.Style.BackgroundLevel3));
+			containerRegular.ModifyBg (StateType.Normal, VASMisc.ToGdkColor (App.Current.Style.BackgroundLevel1));
 		}
 
 		#endregion
@@ -124,6 +135,12 @@ namespace VAS.UI.Dialog
 
 			encSettings.EnableAudio = audiocheckbutton.Active;
 			encSettings.EnableTitle = descriptioncheckbutton.Active;
+
+			if (watermarkcheckbutton.Active) {
+				encSettings.Watermark = Watermark.ConfigureNewWatermark (WatermarkPosition.TOP_RIGHT, encSettings.VideoStandard);
+			} else {
+				encSettings.Watermark = null;
+			}
 
 			if (!SplitFiles && String.IsNullOrEmpty (EncodingSettings.OutputFile)) {
 				App.Current.Dialogs.WarningMessage (Catalog.GetString ("Please, select a video file."));

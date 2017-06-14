@@ -207,7 +207,7 @@ namespace VAS.Tests.Services
 
 			const string outputFile = "path";
 			EncodingSettings settings = new EncodingSettings (VideoStandards.P720, EncodingProfiles.MP4,
-											EncodingQualities.Medium, 25, 1, outputFile, true, true, 20);
+															  EncodingQualities.Medium, 25, 1, outputFile, true, true, 20, null);
 
 			return new EditionJob (playlist, settings);
 		}

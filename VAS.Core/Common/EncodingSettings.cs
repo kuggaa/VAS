@@ -23,9 +23,9 @@ namespace VAS.Core.Common
 	public struct EncodingSettings
 	{
 		public EncodingSettings (VideoStandard videoStandard, EncodingProfile encodingProfile,
-		                         EncodingQuality encodingQuality, uint fr_n, uint fr_d,
-		                         string outputFile, bool enableAudio, bool enableTitle,
-		                         uint titleSize)
+								 EncodingQuality encodingQuality, uint fr_n, uint fr_d,
+								 string outputFile, bool enableAudio, bool enableTitle,
+								 uint titleSize, Watermark watermark)
 		{
 			VideoStandard = videoStandard;
 			EncodingProfile = encodingProfile;
@@ -36,6 +36,7 @@ namespace VAS.Core.Common
 			TitleSize = titleSize;
 			EnableAudio = enableAudio;
 			EnableTitle = enableTitle;
+			Watermark = watermark;
 		}
 
 		public VideoStandard VideoStandard;
@@ -47,8 +48,10 @@ namespace VAS.Core.Common
 		public uint TitleSize;
 		public bool EnableAudio;
 		public bool EnableTitle;
+		public Watermark Watermark;
 
-		
+
+
 		public static EncodingSettings DefaultRenderingSettings (string outputFilepath)
 		{
 			return new EncodingSettings (App.Current.Config.RenderVideoStandard,
@@ -56,7 +59,8 @@ namespace VAS.Core.Common
 				App.Current.Config.RenderEncodingQuality,
 				App.Current.Config.FPS_N, App.Current.Config.FPS_D,
 				outputFilepath,
-				App.Current.Config.EnableAudio, App.Current.Config.OverlayTitle, 20);
+				App.Current.Config.EnableAudio, App.Current.Config.OverlayTitle, 20,
+				null);
 		}
 
 		/// <summary>
@@ -64,9 +68,9 @@ namespace VAS.Core.Common
 		/// </summary>
 		public uint VideoBitrate {
 			get {
-				float fps = (float) Framerate_n / Framerate_d;
+				float fps = (float)Framerate_n / Framerate_d;
 				float motionFactor = EncodingQuality.VideoQuality / 1000;
-				return (uint) (VideoStandard.Width * VideoStandard.Height * fps * 0.07 * motionFactor / 1000);
+				return (uint)(VideoStandard.Width * VideoStandard.Height * fps * 0.07 * motionFactor / 1000);
 			}
 		}
 

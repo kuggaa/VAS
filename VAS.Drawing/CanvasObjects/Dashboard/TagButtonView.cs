@@ -36,7 +36,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			Toggle = true;
 			SupportsLinks = false;
 			if (iconImage == null) {
-				iconImage = Resources.LoadImage (StyleConf.ButtonTagIcon);
+				iconImage = App.Current.ResourcesLocator.LoadImage (StyleConf.ButtonTagIcon);
 			}
 		}
 

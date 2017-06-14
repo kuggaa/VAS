@@ -221,7 +221,7 @@ namespace VAS.Drawing.Cairo
 			if (cursorStr == null) {
 				widget.GdkWindow.Cursor = cursor;
 			} else {
-				Image img = Resources.LoadImage (Path.Combine ("images/cursors", cursorStr));
+				Image img = App.Current.ResourcesLocator.LoadImage (Path.Combine ("images/cursors", cursorStr));
 				Cursor c = new Cursor (widget.Display, img.Value, 0, 0);
 				widget.GdkWindow.Cursor = c;
 			}

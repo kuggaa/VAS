@@ -41,7 +41,6 @@ namespace VAS.Tests
 		{
 			// Initialize VAS.Core by using a type, this will call the module initialization
 			VFS.SetCurrent (new FileSystem ());
-			Resources.TEST_MODE = true;
 			Initialize ();
 		}
 
@@ -66,6 +65,7 @@ namespace VAS.Tests
 			mockLicenseManager.SetupGet (obj => obj.LicenseStatus).Returns (mockLicenseStatus.Object);
 			mockLicenseStatus.SetupGet (obj => obj.Limited).Returns (true);
 			App.Current.LicenseManager = mockLicenseManager.Object;
+			App.Current.ResourcesLocator = new DummyResourcesLocator ();
 		}
 	}
 
