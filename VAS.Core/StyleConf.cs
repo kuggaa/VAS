@@ -245,6 +245,8 @@ namespace VAS.Core.Common
 		public const int WatermarkPadding = 20;
 		public const double WatermarkHeightNormalization = 0.087;
 
+		public const string Spinner = "images/vas-spinner.gif";
+
 
 		public StyleConf ()
 		{
