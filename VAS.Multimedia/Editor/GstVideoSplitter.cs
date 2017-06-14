@@ -257,7 +257,24 @@ namespace VAS.Multimedia.Editor
 					value.Framerate_d,
 					value.EnableAudio,
 					value.EnableTitle);
+
+				if (value.Watermark != null) {
+					SetWatermark (value.Watermark.Image, value.Watermark.OffsetX,
+								 value.Watermark.OffsetY, value.Watermark.Height);
+				}
 			}
+		}
+
+		[DllImport ("libvas.dll")]
+		static extern bool gst_video_editor_set_watermark (IntPtr raw,
+														   IntPtr watermark,
+														   double x,
+														   double y,
+														   double height);
+
+		public void SetWatermark (Image watermark, double x, double y, double height)
+		{
+			gst_video_editor_set_watermark (Handle, watermark.Value.Handle, x, y, height);
 		}
 
 		public string TempDir {

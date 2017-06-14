@@ -37,8 +37,8 @@ namespace VAS.Core.ViewModel
 
 		static PlaylistCollectionVM ()
 		{
-			deleteIcon = Resources.LoadIcon ("vas-delete", App.Current.Style.IconSmallWidth);
-			newIcon = Resources.LoadIcon ("vas-new-playlist", App.Current.Style.IconSmallWidth);
+			deleteIcon = App.Current.ResourcesLocator.LoadIcon ("vas-delete", App.Current.Style.IconSmallWidth);
+			newIcon = App.Current.ResourcesLocator.LoadIcon ("vas-new-playlist", App.Current.Style.IconSmallWidth);
 		}
 
 		public PlaylistCollectionVM ()

@@ -41,6 +41,7 @@ namespace VAS
 		public DragContext DragContext;
 		public ILicenseManager LicenseManager;
 		public IHotkeysService HotkeysService;
+		public IResourcesLocator ResourcesLocator;
 
 		public string homeDirectory = ".";
 		public string baseDirectory = ".";
@@ -179,6 +180,7 @@ namespace VAS
 			App.Current.Device = new Core.Device ();
 			App.Current.KPIService = new KpiService ();
 			App.Current.DragContext = new DragContext ();
+			App.Current.ResourcesLocator = new ResourcesLocator ();
 		}
 
 		// copied from OneplayLongomMatch::CoreServices
@@ -405,26 +407,31 @@ namespace VAS
 
 		public Image FieldBackground {
 			get {
-				return Resources.LoadImage (Constants.FIELD_BACKGROUND);
+				return App.Current.ResourcesLocator.LoadImage (Constants.FIELD_BACKGROUND);
 			}
 		}
 
 		public Image HalfFieldBackground {
 			get {
-				return Resources.LoadImage (Constants.HALF_FIELD_BACKGROUND);
+				return App.Current.ResourcesLocator.LoadImage (Constants.HALF_FIELD_BACKGROUND);
 			}
 		}
 
 		public Image HHalfFieldBackground {
 			get {
-				return Resources.LoadImage (Constants.HHALF_FIELD_BACKGROUND);
+				return App.Current.ResourcesLocator.LoadImage (Constants.HHALF_FIELD_BACKGROUND);
 			}
 		}
 
 		public Image GoalBackground {
 			get {
-				return Resources.LoadImage (Constants.GOAL_BACKGROUND);
+				return App.Current.ResourcesLocator.LoadImage (Constants.GOAL_BACKGROUND);
 			}
+		}
+
+		public Image WatermarkImage {
+			get;
+			set;
 		}
 
 		public string ProjectExtension {

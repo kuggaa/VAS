@@ -49,6 +49,10 @@ namespace VAS.Core.Common
 		{
 		}
 
+		public Image (Stream stream, int width, int height) : base (stream, width, height)
+		{
+		}
+
 		// this constructor is automatically called during deserialization
 		public Image (SerializationInfo info, StreamingContext context)
 		{
@@ -72,6 +76,11 @@ namespace VAS.Core.Common
 		protected override Pixbuf LoadFromStream (Stream stream)
 		{
 			return new Pixbuf (stream);
+		}
+
+		protected override Pixbuf LoadFromStream (Stream stream, int width, int height)
+		{
+			return new Pixbuf (stream, width, height);
 		}
 
 		public override byte [] Serialize ()

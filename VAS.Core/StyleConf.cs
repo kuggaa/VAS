@@ -241,6 +241,10 @@ namespace VAS.Core.Common
 		public const string PrelightEye = "images/events/el_eye_p" + IMAGE_EXT;
 		public const string InsensitiveEye = "images/events/el_eye_i" + IMAGE_EXT;
 
+		//Watermark
+		public const int WatermarkPadding = 20;
+		public const double WatermarkHeightNormalization = 0.087;
+
 
 		public StyleConf ()
 		{

@@ -35,9 +35,19 @@ namespace VAS.Core.Interfaces.Multimedia
 			set;
 		}
 
-		void AddSegment (string filePath, long start, long duration, double rate, string title, bool hasAudio, Area roi) ;
+		void AddSegment (string filePath, long start, long duration, double rate, string title, bool hasAudio, Area roi);
 
-		void AddImageSegment (string filePath, long start, long duration, string title, Area roi) ;
+		void AddImageSegment (string filePath, long start, long duration, string title, Area roi);
+
+		/// <summary>
+		/// Sets the watermark on rendered videos. X, Y and Height are relative values, normalized from 0 to 1,
+		/// so that the watermark is correctly scalled independently of the output size.
+		/// </summary>
+		/// <param name="image">The Image used as watermak.</param>
+		/// <param name="x">The relative x offset.</param>
+		/// <param name="y">The relative y offset.</param>
+		/// <param name="height">The relative Height.</param>
+		void SetWatermark (Image image, double x, double y, double height);
 
 		void ClearList ();
 

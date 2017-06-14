@@ -407,9 +407,9 @@ namespace VAS.UI.Dialog
 			CellRendererPixbuf renderer = new CellRendererPixbuf ();
 
 			formatStore = new ListStore (typeof (Gdk.Pixbuf), typeof (LineStyle));
-			formatStore.AppendValues (Resources.LoadImage (Constants.LINE_NORMAL).Value,
+			formatStore.AppendValues (App.Current.ResourcesLocator.LoadImage (Constants.LINE_NORMAL).Value,
 				LineStyle.Normal);
-			formatStore.AppendValues (Resources.LoadImage (Constants.LINE_DASHED).Value,
+			formatStore.AppendValues (App.Current.ResourcesLocator.LoadImage (Constants.LINE_DASHED).Value,
 				LineStyle.Dashed);
 			stylecombobox.Clear ();
 			stylecombobox.PackStart (renderer, true);
@@ -425,15 +425,15 @@ namespace VAS.UI.Dialog
 			CellRendererPixbuf renderer = new CellRendererPixbuf ();
 
 			formatStore = new ListStore (typeof (Gdk.Pixbuf), typeof (LineStyle));
-			formatStore.AppendValues (Resources.LoadImage (Constants.LINE_NORMAL).Value,
+			formatStore.AppendValues (App.Current.ResourcesLocator.LoadImage (Constants.LINE_NORMAL).Value,
 				LineType.Simple);
-			formatStore.AppendValues (Resources.LoadImage (Constants.LINE_ARROW).Value,
+			formatStore.AppendValues (App.Current.ResourcesLocator.LoadImage (Constants.LINE_ARROW).Value,
 				LineType.Arrow);
-			formatStore.AppendValues (Resources.LoadImage (Constants.LINE_DOUBLE_ARROW).Value,
+			formatStore.AppendValues (App.Current.ResourcesLocator.LoadImage (Constants.LINE_DOUBLE_ARROW).Value,
 				LineType.DoubleArrow);
-			formatStore.AppendValues (Resources.LoadImage (Constants.LINE_DOT).Value,
+			formatStore.AppendValues (App.Current.ResourcesLocator.LoadImage (Constants.LINE_DOT).Value,
 				LineType.Dot);
-			formatStore.AppendValues (Resources.LoadImage (Constants.LINE_DOUBLE_DOT).Value,
+			formatStore.AppendValues (App.Current.ResourcesLocator.LoadImage (Constants.LINE_DOUBLE_DOT).Value,
 				LineType.DoubleDot);
 			typecombobox.Clear ();
 			typecombobox.PackStart (renderer, true);
