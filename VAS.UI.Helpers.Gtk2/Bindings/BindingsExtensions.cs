@@ -181,5 +181,14 @@ namespace VAS.UI.Helpers.Bindings
 		{
 			return new ComboBoxBinding (comboBox, propertyExpression);
 		}
+
+		/// <summary>
+		/// Bind the specified ComboBox to a property by name.
+		/// </summary>
+		/// <param name="comboBox">ComboBox.</param>
+		public static ComboBoxBinding Bind (this ComboBox comboBox, Expression<Func<IViewModel, object>> propertyExpression, TypeConverter converter)
+		{
+			return new ComboBoxBinding (comboBox, propertyExpression, converter);
+		}
 	}
 }

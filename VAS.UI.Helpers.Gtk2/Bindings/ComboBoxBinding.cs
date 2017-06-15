@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.ComponentModel;
 using System.Linq.Expressions;
 using Gtk;
 using VAS.Core.Interfaces.MVVMC;
@@ -31,6 +32,11 @@ namespace VAS.UI.Helpers.Bindings
 		ComboBox comboBox;
 
 		public ComboBoxBinding (ComboBox comboBox, Expression<Func<IViewModel, string>> propertyExpression) : base (propertyExpression)
+		{
+			this.comboBox = comboBox;
+		}
+
+		public ComboBoxBinding (ComboBox comboBox, Expression<Func<IViewModel, object>> propertyExpression, TypeConverter converter) : base (propertyExpression, converter)
 		{
 			this.comboBox = comboBox;
 		}
