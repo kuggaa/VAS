@@ -16,59 +16,59 @@ namespace VAS.UI.Dialog
 
 		private global::Gtk.RadioButton anglebutton;
 
-		private global::Gtk.Image anglebuttonimage;
+		private global::VAS.UI.Helpers.ImageView anglebuttonimage;
 
 		private global::Gtk.RadioButton crossbutton;
 
-		private global::Gtk.Image crossbuttonimage;
+		private global::VAS.UI.Helpers.ImageView crossbuttonimage;
 
 		private global::Gtk.RadioButton ellipsebutton;
 
-		private global::Gtk.Image ellipsebuttonimage;
+		private global::VAS.UI.Helpers.ImageView ellipsebuttonimage;
 
 		private global::Gtk.RadioButton ellipsefilledbutton;
 
-		private global::Gtk.Image ellipsefilledbuttonimage;
+		private global::VAS.UI.Helpers.ImageView ellipsefilledbuttonimage;
 
 		private global::Gtk.RadioButton eraserbutton;
 
-		private global::Gtk.Image eraserbuttonimage;
+		private global::VAS.UI.Helpers.ImageView eraserbuttonimage;
 
 		private global::Gtk.RadioButton linebutton;
 
-		private global::Gtk.Image linebuttonimage;
+		private global::VAS.UI.Helpers.ImageView linebuttonimage;
 
 		private global::Gtk.RadioButton numberbutton;
 
-		private global::Gtk.Image numberbuttonimage;
+		private global::VAS.UI.Helpers.ImageView numberbuttonimage;
 
 		private global::Gtk.RadioButton penbutton;
 
-		private global::Gtk.Image penbuttonimage;
+		private global::VAS.UI.Helpers.ImageView penbuttonimage;
 
 		private global::Gtk.RadioButton playerbutton;
 
-		private global::Gtk.Image playerbuttonimage;
+		private global::VAS.UI.Helpers.ImageView playerbuttonimage;
 
 		private global::Gtk.RadioButton rectanglebutton;
 
-		private global::Gtk.Image rectanglebuttonimage;
+		private global::VAS.UI.Helpers.ImageView rectanglebuttonimage;
 
 		private global::Gtk.RadioButton rectanglefilledbutton;
 
-		private global::Gtk.Image rectanglefilledbuttonimage;
+		private global::VAS.UI.Helpers.ImageView rectanglefilledbuttonimage;
 
 		private global::Gtk.RadioButton selectbutton;
 
-		private global::Gtk.Image selectbuttonimage;
+		private global::VAS.UI.Helpers.ImageView selectbuttonimage;
 
 		private global::Gtk.RadioButton textbutton;
 
-		private global::Gtk.Image textbuttonimage;
+		private global::VAS.UI.Helpers.ImageView textbuttonimage;
 
 		private global::Gtk.RadioButton zoombutton;
 
-		private global::Gtk.Image zoombuttonimage;
+		private global::VAS.UI.Helpers.ImageView zoombuttonimage;
 
 		private global::Gtk.HBox zoombox;
 
@@ -76,11 +76,11 @@ namespace VAS.UI.Dialog
 
 		private global::Gtk.HBox zoomscalebox;
 
-		private global::Gtk.Image zoomoutimage;
+		private global::VAS.UI.Helpers.ImageView zoomoutimage;
 
 		private global::Gtk.HScale zoomscale;
 
-		private global::Gtk.Image zoominimage;
+		private global::VAS.UI.Helpers.ImageView zoominimage;
 
 		private global::Gtk.Frame linesframe;
 
@@ -205,7 +205,7 @@ namespace VAS.UI.Dialog
 			this.anglebutton.Group = new global::GLib.SList (global::System.IntPtr.Zero);
 			this.anglebutton.Remove (this.anglebutton.Child);
 			// Container child anglebutton.Gtk.Container+ContainerChild
-			this.anglebuttonimage = new global::Gtk.Image ();
+			this.anglebuttonimage = new global::VAS.UI.Helpers.ImageView ();
 			this.anglebuttonimage.Name = "anglebuttonimage";
 			this.anglebutton.Add (this.anglebuttonimage);
 			this.toolstable.Add (this.anglebutton);
@@ -225,7 +225,7 @@ namespace VAS.UI.Dialog
 			this.crossbutton.Group = this.anglebutton.Group;
 			this.crossbutton.Remove (this.crossbutton.Child);
 			// Container child crossbutton.Gtk.Container+ContainerChild
-			this.crossbuttonimage = new global::Gtk.Image ();
+			this.crossbuttonimage = new global::VAS.UI.Helpers.ImageView ();
 			this.crossbuttonimage.Name = "crossbuttonimage";
 			this.crossbutton.Add (this.crossbuttonimage);
 			this.toolstable.Add (this.crossbutton);
@@ -245,7 +245,7 @@ namespace VAS.UI.Dialog
 			this.ellipsebutton.Group = this.anglebutton.Group;
 			this.ellipsebutton.Remove (this.ellipsebutton.Child);
 			// Container child ellipsebutton.Gtk.Container+ContainerChild
-			this.ellipsebuttonimage = new global::Gtk.Image ();
+			this.ellipsebuttonimage = new global::VAS.UI.Helpers.ImageView ();
 			this.ellipsebuttonimage.Name = "ellipsebuttonimage";
 			this.ellipsebutton.Add (this.ellipsebuttonimage);
 			this.toolstable.Add (this.ellipsebutton);
@@ -265,7 +265,7 @@ namespace VAS.UI.Dialog
 			this.ellipsefilledbutton.Group = this.anglebutton.Group;
 			this.ellipsefilledbutton.Remove (this.ellipsefilledbutton.Child);
 			// Container child ellipsefilledbutton.Gtk.Container+ContainerChild
-			this.ellipsefilledbuttonimage = new global::Gtk.Image ();
+			this.ellipsefilledbuttonimage = new global::VAS.UI.Helpers.ImageView ();
 			this.ellipsefilledbuttonimage.Name = "ellipsefilledbuttonimage";
 			this.ellipsefilledbutton.Add (this.ellipsefilledbuttonimage);
 			this.toolstable.Add (this.ellipsefilledbutton);
@@ -285,7 +285,7 @@ namespace VAS.UI.Dialog
 			this.eraserbutton.Group = this.anglebutton.Group;
 			this.eraserbutton.Remove (this.eraserbutton.Child);
 			// Container child eraserbutton.Gtk.Container+ContainerChild
-			this.eraserbuttonimage = new global::Gtk.Image ();
+			this.eraserbuttonimage = new global::VAS.UI.Helpers.ImageView ();
 			this.eraserbuttonimage.Name = "eraserbuttonimage";
 			this.eraserbutton.Add (this.eraserbuttonimage);
 			this.toolstable.Add (this.eraserbutton);
@@ -303,7 +303,7 @@ namespace VAS.UI.Dialog
 			this.linebutton.Group = this.anglebutton.Group;
 			this.linebutton.Remove (this.linebutton.Child);
 			// Container child linebutton.Gtk.Container+ContainerChild
-			this.linebuttonimage = new global::Gtk.Image ();
+			this.linebuttonimage = new global::VAS.UI.Helpers.ImageView ();
 			this.linebuttonimage.Name = "linebuttonimage";
 			this.linebutton.Add (this.linebuttonimage);
 			this.toolstable.Add (this.linebutton);
@@ -321,7 +321,7 @@ namespace VAS.UI.Dialog
 			this.numberbutton.Group = this.anglebutton.Group;
 			this.numberbutton.Remove (this.numberbutton.Child);
 			// Container child numberbutton.Gtk.Container+ContainerChild
-			this.numberbuttonimage = new global::Gtk.Image ();
+			this.numberbuttonimage = new global::VAS.UI.Helpers.ImageView ();
 			this.numberbuttonimage.Name = "numberbuttonimage";
 			this.numberbutton.Add (this.numberbuttonimage);
 			this.toolstable.Add (this.numberbutton);
@@ -341,7 +341,7 @@ namespace VAS.UI.Dialog
 			this.penbutton.Group = this.anglebutton.Group;
 			this.penbutton.Remove (this.penbutton.Child);
 			// Container child penbutton.Gtk.Container+ContainerChild
-			this.penbuttonimage = new global::Gtk.Image ();
+			this.penbuttonimage = new global::VAS.UI.Helpers.ImageView ();
 			this.penbuttonimage.Name = "penbuttonimage";
 			this.penbutton.Add (this.penbuttonimage);
 			this.toolstable.Add (this.penbutton);
@@ -359,7 +359,7 @@ namespace VAS.UI.Dialog
 			this.playerbutton.Group = this.anglebutton.Group;
 			this.playerbutton.Remove (this.playerbutton.Child);
 			// Container child playerbutton.Gtk.Container+ContainerChild
-			this.playerbuttonimage = new global::Gtk.Image ();
+			this.playerbuttonimage = new global::VAS.UI.Helpers.ImageView ();
 			this.playerbuttonimage.Name = "playerbuttonimage";
 			this.playerbutton.Add (this.playerbuttonimage);
 			this.toolstable.Add (this.playerbutton);
@@ -377,7 +377,7 @@ namespace VAS.UI.Dialog
 			this.rectanglebutton.Group = this.anglebutton.Group;
 			this.rectanglebutton.Remove (this.rectanglebutton.Child);
 			// Container child rectanglebutton.Gtk.Container+ContainerChild
-			this.rectanglebuttonimage = new global::Gtk.Image ();
+			this.rectanglebuttonimage = new global::VAS.UI.Helpers.ImageView ();
 			this.rectanglebuttonimage.Name = "rectanglebuttonimage";
 			this.rectanglebutton.Add (this.rectanglebuttonimage);
 			this.toolstable.Add (this.rectanglebutton);
@@ -395,7 +395,7 @@ namespace VAS.UI.Dialog
 			this.rectanglefilledbutton.Group = this.anglebutton.Group;
 			this.rectanglefilledbutton.Remove (this.rectanglefilledbutton.Child);
 			// Container child rectanglefilledbutton.Gtk.Container+ContainerChild
-			this.rectanglefilledbuttonimage = new global::Gtk.Image ();
+			this.rectanglefilledbuttonimage = new global::VAS.UI.Helpers.ImageView ();
 			this.rectanglefilledbuttonimage.Name = "rectanglefilledbuttonimage";
 			this.rectanglefilledbutton.Add (this.rectanglefilledbuttonimage);
 			this.toolstable.Add (this.rectanglefilledbutton);
@@ -413,7 +413,7 @@ namespace VAS.UI.Dialog
 			this.selectbutton.Group = this.anglebutton.Group;
 			this.selectbutton.Remove (this.selectbutton.Child);
 			// Container child selectbutton.Gtk.Container+ContainerChild
-			this.selectbuttonimage = new global::Gtk.Image ();
+			this.selectbuttonimage = new global::VAS.UI.Helpers.ImageView ();
 			this.selectbuttonimage.Name = "selectbuttonimage";
 			this.selectbutton.Add (this.selectbuttonimage);
 			this.toolstable.Add (this.selectbutton);
@@ -429,7 +429,7 @@ namespace VAS.UI.Dialog
 			this.textbutton.Group = this.anglebutton.Group;
 			this.textbutton.Remove (this.textbutton.Child);
 			// Container child textbutton.Gtk.Container+ContainerChild
-			this.textbuttonimage = new global::Gtk.Image ();
+			this.textbuttonimage = new global::VAS.UI.Helpers.ImageView ();
 			this.textbuttonimage.Name = "textbuttonimage";
 			this.textbutton.Add (this.textbuttonimage);
 			this.toolstable.Add (this.textbutton);
@@ -449,7 +449,7 @@ namespace VAS.UI.Dialog
 			this.zoombutton.Group = this.anglebutton.Group;
 			this.zoombutton.Remove (this.zoombutton.Child);
 			// Container child zoombutton.Gtk.Container+ContainerChild
-			this.zoombuttonimage = new global::Gtk.Image ();
+			this.zoombuttonimage = new global::VAS.UI.Helpers.ImageView ();
 			this.zoombuttonimage.Name = "zoombuttonimage";
 			this.zoombutton.Add (this.zoombuttonimage);
 			this.toolstable.Add (this.zoombutton);
@@ -479,7 +479,7 @@ namespace VAS.UI.Dialog
 			this.zoomscalebox.Name = "zoomscalebox";
 			this.zoomscalebox.Spacing = 6;
 			// Container child zoomscalebox.Gtk.Box+BoxChild
-			this.zoomoutimage = new global::Gtk.Image ();
+			this.zoomoutimage = new global::VAS.UI.Helpers.ImageView ();
 			this.zoomoutimage.WidthRequest = 14;
 			this.zoomoutimage.HeightRequest = 8;
 			this.zoomoutimage.Name = "zoomoutimage";
@@ -502,7 +502,7 @@ namespace VAS.UI.Dialog
 			global::Gtk.Box.BoxChild w35 = ((global::Gtk.Box.BoxChild)(this.zoomscalebox [this.zoomscale]));
 			w35.Position = 1;
 			// Container child zoomscalebox.Gtk.Box+BoxChild
-			this.zoominimage = new global::Gtk.Image ();
+			this.zoominimage = new global::VAS.UI.Helpers.ImageView ();
 			this.zoominimage.WidthRequest = 14;
 			this.zoominimage.HeightRequest = 8;
 			this.zoominimage.Name = "zoominimage";

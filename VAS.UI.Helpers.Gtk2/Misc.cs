@@ -29,6 +29,7 @@ using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Store;
 using Color = Gdk.Color;
 using LColor = VAS.Core.Common.Color;
+using Image = VAS.Core.Common.Image;
 
 namespace VAS.UI.Helpers
 {
@@ -48,10 +49,9 @@ namespace VAS.UI.Helpers
 			return filter;
 		}
 
-		public static Pixbuf OpenImage (Widget widget)
+		public static Image OpenImage (Widget widget)
 		{
-			Pixbuf pimage = null;
-			StreamReader file;
+			Image image = null;
 			string filename;
 
 			filename = App.Current.Dialogs.OpenFile (Catalog.GetString ("Choose an image"),
@@ -61,41 +61,13 @@ namespace VAS.UI.Helpers
 				// using a StreamReader. Gdk.Pixbuf(string filePath) uses GLib to open the
 				// input file and doesn't support Win32 files path encoding
 				try {
-					file = new StreamReader (filename);
-					pimage = new Gdk.Pixbuf (file.BaseStream);
-					file.Close ();
+					image = new Image (filename);
 				} catch (Exception ex) {
 					Log.Exception (ex);
 					App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Image file format not supported"), widget);
 				}
 			}
-			return pimage;
-		}
-
-		public static Pixbuf Scale (Pixbuf pixbuf, int max_width, int max_height, bool dispose = true)
-		{
-			int ow, oh, h, w;
-
-			h = ow = pixbuf.Height;
-			w = oh = pixbuf.Width;
-			ow = max_width;
-			oh = max_height;
-
-			if (w > max_width || h > max_height) {
-				Pixbuf scalledPixbuf;
-				double rate = (double)w / (double)h;
-
-				if (h > w)
-					ow = (int)(oh * rate);
-				else
-					oh = (int)(ow / rate);
-				scalledPixbuf = pixbuf.ScaleSimple (ow, oh, Gdk.InterpType.Bilinear);
-				if (dispose)
-					pixbuf.Dispose ();
-				return scalledPixbuf;
-			} else {
-				return pixbuf;
-			}
+			return image;
 		}
 
 		static public double ShortToDouble (ushort val)

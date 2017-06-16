@@ -162,7 +162,7 @@ namespace VAS.UI.Component
 			labels = App.Current.ViewLocator.Retrieve ("TimelineLabelsView") as TimelineLabels;
 			labels.SetWidget (new WidgetWrapper (labelsarea));
 
-			focusbuttonimage.Pixbuf = Helpers.Misc.LoadIcon ("vas-dash-center-view", Gtk.IconSize.Menu, 0);
+			focusbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-dash-center-view", 13);
 
 			focusbutton.CanFocus = false;
 			focusbutton.Clicked += HandleFocusClicked;
@@ -182,8 +182,8 @@ namespace VAS.UI.Component
 			scrolledwindow1.Hadjustment.ValueChanged += HandleScrollEvent;
 			timeoutID = 0;
 
-			zoominimage.Pixbuf = Helpers.Misc.LoadIcon ("vas-zoom-in", 14);
-			zoomoutimage.Pixbuf = Helpers.Misc.LoadIcon ("vas-zoom-out", 14);
+			zoominimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-zoom-in", 14);
+			zoomoutimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-zoom-out", 14);
 
 			// Synchronize the zoom widget height with scrolledwindow's scrollbar's.
 			scrolledwindow1.HScrollbar.SizeAllocated += (object o, SizeAllocatedArgs args) => {

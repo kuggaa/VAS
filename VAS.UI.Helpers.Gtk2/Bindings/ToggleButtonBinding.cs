@@ -67,7 +67,7 @@ namespace VAS.UI.Helpers.Bindings
 				icon = Command.IconInactive ?? Command.Icon;
 			}
 
-			button.Configure (icon?.Value, Command.Text, Command.ToolTipText, null);
+			button.Configure (icon, Command.Text, Command.ToolTipText, null);
 			button.Sensitive = Command.CanExecute ();
 		}
 

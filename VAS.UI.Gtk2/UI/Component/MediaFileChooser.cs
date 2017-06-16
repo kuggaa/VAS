@@ -43,8 +43,8 @@ namespace VAS.UI.Component
 			nameentry.Visible = !String.IsNullOrEmpty (name);
 			nameentry.Text = name ?? "";
 
-			addbuttonimage.Pixbuf = Helpers.Misc.LoadIcon ("vas-browse", Gtk.IconSize.Button, 0);
-			clearbuttonimage.Pixbuf = Helpers.Misc.LoadIcon ("vas-delete", Gtk.IconSize.Button, 0);
+			addbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-browse", StyleConf.ButtonDialogIconSize);
+			clearbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-delete", StyleConf.ButtonDialogIconSize);
 
 			FilterName = "MP4";
 			FilterExtensions = new string [] { "*.mp4" };

@@ -18,20 +18,20 @@
 using System;
 using System.Collections.Generic;
 using Gtk;
+using VAS.Core;
 using VAS.Core.Common;
-using Misc = VAS.UI.Helpers.Misc;
-using Pixbuf = Gdk.Pixbuf;
+using Image = VAS.Core.Common.Image;
 
 namespace VAS.UI.Helpers
 {
-	
+
 	public class IconNotebookHelper
 	{
 
 		public IconNotebookHelper (Notebook notebook)
 		{
 			Notebook = notebook;
-			TabIcons = new Dictionary<Widget, Tuple<Pixbuf, Pixbuf>> (notebook.NPages);
+			TabIcons = new Dictionary<Widget, Tuple<Image, Image>> (notebook.NPages);
 			TabToolTips = new Dictionary<Widget, string> (notebook.NPages);
 			CurrentPage = notebook.CurrentPage;
 
@@ -44,7 +44,7 @@ namespace VAS.UI.Helpers
 			set;
 		}
 
-		Dictionary<Widget, Tuple<Pixbuf, Pixbuf>> TabIcons {
+		Dictionary<Widget, Tuple<Image, Image>> TabIcons {
 			get;
 			set;
 		}
@@ -68,8 +68,8 @@ namespace VAS.UI.Helpers
 		/// <param name="tooltiptext">Text to add to the tab of the widget as tooltip</param>
 		public void SetTabIcon (Widget widget, string icon, string activeIcon, string tooltiptext)
 		{
-			var pixIcon = Misc.LoadIcon (icon, StyleConf.NotebookTabIconSize, IconLookupFlags.ForceSvg);
-			var pixActiveIcon = Misc.LoadIcon (activeIcon, StyleConf.NotebookTabIconSize, IconLookupFlags.ForceSvg);
+			var pixIcon = App.Current.ResourcesLocator.LoadIcon (icon, StyleConf.NotebookTabIconSize);
+			var pixActiveIcon = App.Current.ResourcesLocator.LoadIcon (activeIcon, StyleConf.NotebookTabIconSize);
 			SetTabIcon (widget, pixIcon, pixActiveIcon, tooltiptext);
 		}
 
@@ -80,9 +80,9 @@ namespace VAS.UI.Helpers
 		/// <param name="pixIcon">Icon showed when the tab is not selected</param>
 		/// <param name="pixActiveIcon">Icon showed when the tab is selected</param>
 		/// <param name="tooltiptext">Text to add to the tab of the widget as tooltip</param>
-		public void SetTabIcon (Widget widget, Pixbuf pixIcon, Pixbuf pixActiveIcon, string tooltiptext)
+		public void SetTabIcon (Widget widget, Image pixIcon, Image pixActiveIcon, string tooltiptext)
 		{
-			TabIcons.Add (widget, new Tuple<Pixbuf, Pixbuf> (pixIcon, pixActiveIcon));
+			TabIcons.Add (widget, new Tuple<Image, Image> (pixIcon, pixActiveIcon));
 			TabToolTips.Add (widget, tooltiptext);
 		}
 
@@ -118,19 +118,18 @@ namespace VAS.UI.Helpers
 				return;
 			}
 
-			Gtk.Image img;
+			ImageView img;
 
-			img = Notebook.GetTabLabel (widget) as Gtk.Image;
+			img = Notebook.GetTabLabel (widget) as ImageView;
 			if (img == null) {
-				img = new Gtk.Image ();
-				img.WidthRequest = StyleConf.NotebookTabSize;
-				img.HeightRequest = StyleConf.NotebookTabSize;
+				img = new ImageView ();
+				img.SetSize (StyleConf.NotebookTabSize, StyleConf.NotebookTabSize);
+				img.Xpad = img.Ypad = (StyleConf.NotebookTabSize - StyleConf.NotebookTabIconSize) / 2;
 				Notebook.SetTabLabel (widget, img);
 			}
-
 			try {
 				var tuple = TabIcons [widget];
-				img.Pixbuf = active ? tuple.Item2 : tuple.Item1;
+				img.Image = active ? tuple.Item2 : tuple.Item1;
 				img.TooltipText = TabToolTips [widget];
 			} catch (KeyNotFoundException ex) {
 				Log.Warning ("No icon set for tab number <" + Notebook.PageNum (widget) + "> with child <" + widget + ">");
