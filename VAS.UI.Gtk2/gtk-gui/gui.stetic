@@ -29,7 +29,7 @@
                     <property name="MemberName" />
                     <property name="Type">Custom</property>
                     <child>
-                      <widget class="Gtk.Image" id="focusbuttonimage">
+                      <widget class="VAS.UI.Helpers.ImageView" id="focusbuttonimage">
                         <property name="MemberName" />
                       </widget>
                     </child>
@@ -61,7 +61,7 @@
                 <property name="MemberName" />
                 <property name="Spacing">6</property>
                 <child>
-                  <widget class="Gtk.Image" id="zoomoutimage">
+                  <widget class="VAS.UI.Helpers.ImageView" id="zoomoutimage">
                     <property name="MemberName" />
                     <property name="WidthRequest">14</property>
                     <property name="HeightRequest">8</property>
@@ -90,7 +90,7 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="Gtk.Image" id="zoominimage">
+                  <widget class="VAS.UI.Helpers.ImageView" id="zoominimage">
                     <property name="MemberName" />
                     <property name="WidthRequest">14</property>
                     <property name="HeightRequest">8</property>
@@ -390,7 +390,7 @@
                 <property name="CanFocus">True</property>
                 <property name="Type">Custom</property>
                 <child>
-                  <widget class="Gtk.Image" id="datebuttonimage">
+                  <widget class="VAS.UI.Helpers.ImageView" id="datebuttonimage">
                     <property name="MemberName" />
                   </widget>
                 </child>
@@ -470,7 +470,7 @@
                             <property name="UseUnderline">True</property>
                             <property name="Group">tools</property>
                             <child>
-                              <widget class="Gtk.Image" id="anglebuttonimage">
+                              <widget class="VAS.UI.Helpers.ImageView" id="anglebuttonimage">
                                 <property name="MemberName" />
                                 <property name="Tooltip" translatable="yes" />
                               </widget>
@@ -502,7 +502,7 @@
                             <property name="UseUnderline">True</property>
                             <property name="Group">tools</property>
                             <child>
-                              <widget class="Gtk.Image" id="crossbuttonimage">
+                              <widget class="VAS.UI.Helpers.ImageView" id="crossbuttonimage">
                                 <property name="MemberName" />
                                 <property name="Tooltip" translatable="yes" />
                               </widget>
@@ -534,7 +534,7 @@
                             <property name="UseUnderline">True</property>
                             <property name="Group">tools</property>
                             <child>
-                              <widget class="Gtk.Image" id="ellipsebuttonimage">
+                              <widget class="VAS.UI.Helpers.ImageView" id="ellipsebuttonimage">
                                 <property name="MemberName" />
                                 <property name="Tooltip" translatable="yes" />
                               </widget>
@@ -566,7 +566,7 @@
                             <property name="UseUnderline">True</property>
                             <property name="Group">tools</property>
                             <child>
-                              <widget class="Gtk.Image" id="ellipsefilledbuttonimage">
+                              <widget class="VAS.UI.Helpers.ImageView" id="ellipsefilledbuttonimage">
                                 <property name="MemberName" />
                                 <property name="Tooltip" translatable="yes" />
                               </widget>
@@ -598,7 +598,7 @@
                             <property name="UseUnderline">True</property>
                             <property name="Group">tools</property>
                             <child>
-                              <widget class="Gtk.Image" id="eraserbuttonimage">
+                              <widget class="VAS.UI.Helpers.ImageView" id="eraserbuttonimage">
                                 <property name="MemberName" />
                               </widget>
                             </child>
@@ -627,7 +627,7 @@
                             <property name="UseUnderline">True</property>
                             <property name="Group">tools</property>
                             <child>
-                              <widget class="Gtk.Image" id="linebuttonimage">
+                              <widget class="VAS.UI.Helpers.ImageView" id="linebuttonimage">
                                 <property name="MemberName" />
                                 <property name="Tooltip" translatable="yes" />
                               </widget>
@@ -657,7 +657,7 @@
                             <property name="UseUnderline">True</property>
                             <property name="Group">tools</property>
                             <child>
-                              <widget class="Gtk.Image" id="numberbuttonimage">
+                              <widget class="VAS.UI.Helpers.ImageView" id="numberbuttonimage">
                                 <property name="MemberName" />
                                 <property name="Tooltip" translatable="yes" />
                               </widget>
@@ -689,7 +689,7 @@
                             <property name="UseUnderline">True</property>
                             <property name="Group">tools</property>
                             <child>
-                              <widget class="Gtk.Image" id="penbuttonimage">
+                              <widget class="VAS.UI.Helpers.ImageView" id="penbuttonimage">
                                 <property name="MemberName" />
                                 <property name="Tooltip" translatable="yes" />
                               </widget>
@@ -719,7 +719,7 @@
                             <property name="UseUnderline">True</property>
                             <property name="Group">tools</property>
                             <child>
-                              <widget class="Gtk.Image" id="playerbuttonimage">
+                              <widget class="VAS.UI.Helpers.ImageView" id="playerbuttonimage">
                                 <property name="MemberName" />
                                 <property name="Tooltip" translatable="yes" />
                               </widget>
@@ -749,7 +749,7 @@
                             <property name="UseUnderline">True</property>
                             <property name="Group">tools</property>
                             <child>
-                              <widget class="Gtk.Image" id="rectanglebuttonimage">
+                              <widget class="VAS.UI.Helpers.ImageView" id="rectanglebuttonimage">
                                 <property name="MemberName" />
                                 <property name="Tooltip" translatable="yes" />
                               </widget>
@@ -779,7 +779,7 @@
                             <property name="UseUnderline">True</property>
                             <property name="Group">tools</property>
                             <child>
-                              <widget class="Gtk.Image" id="rectanglefilledbuttonimage">
+                              <widget class="VAS.UI.Helpers.ImageView" id="rectanglefilledbuttonimage">
                                 <property name="MemberName" />
                                 <property name="Tooltip" translatable="yes" />
                               </widget>
@@ -809,7 +809,7 @@
                             <property name="UseUnderline">True</property>
                             <property name="Group">tools</property>
                             <child>
-                              <widget class="Gtk.Image" id="selectbuttonimage">
+                              <widget class="VAS.UI.Helpers.ImageView" id="selectbuttonimage">
                                 <property name="MemberName" />
                                 <property name="Tooltip" translatable="yes" />
                               </widget>
@@ -837,7 +837,7 @@
                             <property name="UseUnderline">True</property>
                             <property name="Group">tools</property>
                             <child>
-                              <widget class="Gtk.Image" id="textbuttonimage">
+                              <widget class="VAS.UI.Helpers.ImageView" id="textbuttonimage">
                                 <property name="MemberName" />
                                 <property name="Tooltip" translatable="yes" />
                               </widget>
@@ -869,7 +869,7 @@
                             <property name="UseUnderline">True</property>
                             <property name="Group">tools</property>
                             <child>
-                              <widget class="Gtk.Image" id="zoombuttonimage">
+                              <widget class="VAS.UI.Helpers.ImageView" id="zoombuttonimage">
                                 <property name="MemberName" />
                                 <property name="Tooltip" translatable="yes" />
                               </widget>
@@ -916,7 +916,7 @@
                             <property name="MemberName" />
                             <property name="Spacing">6</property>
                             <child>
-                              <widget class="Gtk.Image" id="zoomoutimage">
+                              <widget class="VAS.UI.Helpers.ImageView" id="zoomoutimage">
                                 <property name="MemberName" />
                                 <property name="WidthRequest">14</property>
                                 <property name="HeightRequest">8</property>
@@ -945,7 +945,7 @@
                               </packing>
                             </child>
                             <child>
-                              <widget class="Gtk.Image" id="zoominimage">
+                              <widget class="VAS.UI.Helpers.ImageView" id="zoominimage">
                                 <property name="MemberName" />
                                 <property name="WidthRequest">14</property>
                                 <property name="HeightRequest">8</property>
@@ -1587,7 +1587,7 @@
                 <property name="CanFocus">True</property>
                 <property name="Type">Custom</property>
                 <child>
-                  <widget class="Gtk.Image" id="clearbuttonimage">
+                  <widget class="VAS.UI.Helpers.ImageView" id="clearbuttonimage">
                     <property name="MemberName" />
                   </widget>
                 </child>
@@ -1605,7 +1605,7 @@
                 <property name="CanFocus">True</property>
                 <property name="Type">Custom</property>
                 <child>
-                  <widget class="Gtk.Image" id="addbuttonimage">
+                  <widget class="VAS.UI.Helpers.ImageView" id="addbuttonimage">
                     <property name="MemberName" />
                   </widget>
                 </child>

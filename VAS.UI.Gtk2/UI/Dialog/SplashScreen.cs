@@ -22,6 +22,7 @@ using Gdk;
 using Gtk;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
+using VAS.UI.Helpers;
 
 namespace VAS.UI.Dialog
 {
@@ -33,7 +34,7 @@ namespace VAS.UI.Dialog
 
 		Fixed fixed1;
 		ProgressBar progressbar1;
-		Gtk.Image splashimage;
+		ImageView splashimage;
 
 		Dictionary<Guid, ProgressStatus> statusDict;
 		IProgress<ProgressStatus> progress;
@@ -43,7 +44,7 @@ namespace VAS.UI.Dialog
 
 			Build (image.Width, image.Height);
 
-			splashimage.Pixbuf = image.Value;
+			splashimage.Image = image;
 			Resizable = false;
 			Decorated = false;
 			SetPosition (Gtk.WindowPosition.CenterAlways);
@@ -98,9 +99,8 @@ namespace VAS.UI.Dialog
 			w1.X = width * 20 / 100;
 			w1.Y = height - 50;
 
-			splashimage = new Gtk.Image ();
-			splashimage.WidthRequest = width;
-			splashimage.HeightRequest = height;
+			splashimage = new ImageView ();
+			splashimage.SetSize (width, height);
 			fixed1.Add (splashimage);
 
 			Add (fixed1);

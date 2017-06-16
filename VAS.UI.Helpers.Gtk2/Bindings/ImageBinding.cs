@@ -28,15 +28,14 @@ namespace VAS.UI.Helpers.Bindings
 	/// </summary>
 	public class ImageBinding : PropertyBinding<Image>
 	{
-		Gtk.Image image;
+		ImageView imageView;
 		int width, height;
 
-		public ImageBinding (Gtk.Image image, Expression<Func<IViewModel, Image>> propertyExpression,
+		public ImageBinding (ImageView image, Expression<Func<IViewModel, Image>> propertyExpression,
 							 int width = 0, int height = 0) : base (propertyExpression)
 		{
-			this.image = image;
-			this.width = width;
-			this.height = height;
+			imageView = image;
+			imageView.SetSize (width, height);
 		}
 
 		protected override void BindView ()
@@ -49,11 +48,7 @@ namespace VAS.UI.Helpers.Bindings
 
 		protected override void WriteViewValue (Image val)
 		{
-			if (width != 0 && height != 0) {
-				image.Pixbuf = val?.Scale (width, height).Value;
-			} else {
-				image.Pixbuf = val?.Value;
-			}
+			imageView.Image = val;
 		}
 	}
 }

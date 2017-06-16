@@ -92,7 +92,7 @@ namespace VAS.UI.Helpers.Bindings
 		/// <param name="propertyExpression">Property expression.</param>
 		/// <param name="width">Width.</param>
 		/// <param name="height">Height.</param>
-		public static ImageBinding Bind (this Gtk.Image image, Expression<Func<IViewModel, Image>> propertyExpression, int width = 0, int height = 0)
+		public static ImageBinding Bind (this ImageView image, Expression<Func<IViewModel, Image>> propertyExpression, int width = 0, int height = 0)
 		{
 			return new ImageBinding (image, propertyExpression, width, height);
 		}

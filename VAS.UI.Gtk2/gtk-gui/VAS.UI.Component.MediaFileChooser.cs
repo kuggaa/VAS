@@ -15,19 +15,19 @@ namespace VAS.UI.Component
 
 		private global::Gtk.Button clearbutton;
 
-		private global::Gtk.Image clearbuttonimage;
+		private global::VAS.UI.Helpers.ImageView clearbuttonimage;
 
 		private global::Gtk.Button entrybutton_addbutton;
 
-		private global::Gtk.Image addbuttonimage;
+		private global::VAS.UI.Helpers.ImageView addbuttonimage;
 
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);
-			// Widget VAS.UI.UI.Component.MediaFileChooser
+			// Widget VAS.UI.Component.MediaFileChooser
 			global::Stetic.BinContainer.Attach (this);
-			this.Name = "VAS.UI.UI.Component.MediaFileChooser";
-			// Container child VAS.UI.UI.Component.MediaFileChooser.Gtk.Container+ContainerChild
+			this.Name = "VAS.UI.Component.MediaFileChooser";
+			// Container child VAS.UI.Component.MediaFileChooser.Gtk.Container+ContainerChild
 			this.fileentryeventbox = new global::Gtk.EventBox ();
 			this.fileentryeventbox.Name = "fileentryeventbox";
 			// Container child fileentryeventbox.Gtk.Container+ContainerChild
@@ -67,7 +67,7 @@ namespace VAS.UI.Component
 			this.clearbutton.CanFocus = true;
 			this.clearbutton.Name = "clearbutton";
 			// Container child clearbutton.Gtk.Container+ContainerChild
-			this.clearbuttonimage = new global::Gtk.Image ();
+			this.clearbuttonimage = new global::VAS.UI.Helpers.ImageView ();
 			this.clearbuttonimage.Name = "clearbuttonimage";
 			this.clearbutton.Add (this.clearbuttonimage);
 			this.hbox1.Add (this.clearbutton);
@@ -80,7 +80,7 @@ namespace VAS.UI.Component
 			this.entrybutton_addbutton.CanFocus = true;
 			this.entrybutton_addbutton.Name = "entrybutton_addbutton";
 			// Container child entrybutton_addbutton.Gtk.Container+ContainerChild
-			this.addbuttonimage = new global::Gtk.Image ();
+			this.addbuttonimage = new global::VAS.UI.Helpers.ImageView ();
 			this.addbuttonimage.Name = "addbuttonimage";
 			this.entrybutton_addbutton.Add (this.addbuttonimage);
 			this.hbox1.Add (this.entrybutton_addbutton);
