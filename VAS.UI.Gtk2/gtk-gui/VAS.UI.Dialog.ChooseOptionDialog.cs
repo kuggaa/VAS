@@ -12,9 +12,9 @@ namespace VAS.UI.Dialog
 
 		private global::Gtk.Button buttonOk;
 
-		protected virtual void Build()
+		protected virtual void Build ()
 		{
-			global::Stetic.Gui.Initialize(this);
+			global::Stetic.Gui.Initialize (this);
 			// Widget VAS.UI.Dialog.ChooseOptionDialog
 			this.Name = "VAS.UI.Dialog.ChooseOptionDialog";
 			this.Title = "";
@@ -30,15 +30,15 @@ namespace VAS.UI.Dialog
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
-			this.alignment1 = new global::Gtk.Alignment(0.5F, 0.5F, 0F, 0F);
+			this.alignment1 = new global::Gtk.Alignment (0.5F, 0.5F, 0F, 0F);
 			this.alignment1.Name = "alignment1";
 			// Container child alignment1.Gtk.Container+ContainerChild
-			this.optionsbox = new global::Gtk.VBox();
+			this.optionsbox = new global::Gtk.VBox ();
 			this.optionsbox.Name = "optionsbox";
 			this.optionsbox.Spacing = 6;
-			this.alignment1.Add(this.optionsbox);
-			w1.Add(this.alignment1);
-			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(w1[this.alignment1]));
+			this.alignment1.Add (this.optionsbox);
+			w1.Add (this.alignment1);
+			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(w1 [this.alignment1]));
 			w3.Position = 0;
 			// Internal child VAS.UI.Dialog.ChooseOptionDialog.ActionArea
 			global::Gtk.HButtonBox w4 = this.ActionArea;
@@ -47,37 +47,36 @@ namespace VAS.UI.Dialog
 			w4.BorderWidth = ((uint)(5));
 			w4.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
-			this.buttonCancel = new global::Gtk.Button();
+			this.buttonCancel = new global::Gtk.Button ();
 			this.buttonCancel.CanDefault = true;
 			this.buttonCancel.CanFocus = true;
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.UseStock = true;
 			this.buttonCancel.UseUnderline = true;
 			this.buttonCancel.Label = "gtk-cancel";
-			this.AddActionWidget(this.buttonCancel, -6);
-			global::Gtk.ButtonBox.ButtonBoxChild w5 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w4[this.buttonCancel]));
+			this.AddActionWidget (this.buttonCancel, -6);
+			global::Gtk.ButtonBox.ButtonBoxChild w5 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w4 [this.buttonCancel]));
 			w5.Expand = false;
 			w5.Fill = false;
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
-			this.buttonOk = new global::Gtk.Button();
+			this.buttonOk = new global::Gtk.Button ();
 			this.buttonOk.CanDefault = true;
 			this.buttonOk.CanFocus = true;
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.UseStock = true;
 			this.buttonOk.UseUnderline = true;
 			this.buttonOk.Label = "gtk-ok";
-			this.AddActionWidget(this.buttonOk, -5);
-			global::Gtk.ButtonBox.ButtonBoxChild w6 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w4[this.buttonOk]));
+			this.AddActionWidget (this.buttonOk, -5);
+			global::Gtk.ButtonBox.ButtonBoxChild w6 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w4 [this.buttonOk]));
 			w6.Position = 1;
 			w6.Expand = false;
 			w6.Fill = false;
-			if ((this.Child != null))
-			{
-				this.Child.ShowAll();
+			if ((this.Child != null)) {
+				this.Child.ShowAll ();
 			}
 			this.DefaultWidth = 504;
 			this.DefaultHeight = 191;
-			this.Show();
+			this.Show ();
 		}
 	}
 }

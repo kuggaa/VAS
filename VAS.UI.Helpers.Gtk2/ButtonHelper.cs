@@ -17,11 +17,10 @@
 //
 
 using System;
-using Gdk;
 using Gtk;
 using VAS.Core.Common;
 using VAS.Core.MVVMC;
-using Image = Gtk.Image;
+using Image = VAS.Core.Common.Image;
 
 namespace VAS.UI.Helpers
 {
@@ -111,26 +110,26 @@ namespace VAS.UI.Helpers
 		/// </summary>
 		/// <param name="button">Button.</param>
 		/// <param name="icon">Icon.</param>
-		public static void SetImage (this Button button, Pixbuf icon)
+		public static void SetImage (this Button button, Image icon)
 		{
 			if (icon == null) {
 				return;
 			}
 
-			Image image = null;
+			ImageView image = null;
 
 			foreach (var container in button.Children) {
-				if (container is Image) {
-					image = (Image)container;
+				if (container is ImageView) {
+					image = (ImageView)container;
 					break;
 				}
 			}
 
 			if (image == null) {
-				image = new Image ();
+				image = new ImageView ();
 				button.Image = image;
 			}
-			image.Pixbuf = icon;
+			image.Image = icon;
 		}
 
 		/// <summary>
@@ -141,7 +140,7 @@ namespace VAS.UI.Helpers
 		/// <param name="text">Text.</param>
 		/// <param name="tooltipText">Tooltip text.</param>
 		/// <param name="callback">Callback.</param>
-		public static void Configure (this Button button, Pixbuf icon, string text, string tooltipText, EventHandler callback)
+		public static void Configure (this Button button, Image icon, string text, string tooltipText, EventHandler callback)
 		{
 			if (icon != null) {
 				button.SetImage (icon);
@@ -162,7 +161,7 @@ namespace VAS.UI.Helpers
 		// FIXME: this method should be gone when we use the ButtonBindings everywhere
 		public static void BindManually (this Button button, Command command, object parameter = null)
 		{
-			button.Configure (command.Icon?.Value, command.Text, command.ToolTipText, null);
+			button.Configure (command.Icon, command.Text, command.ToolTipText, null);
 
 			button.Sensitive = command.CanExecute (parameter);
 			EventHandler handler = (sender, e) => {
@@ -207,6 +206,10 @@ namespace VAS.UI.Helpers
 			button.HeightRequest = buttonSize;
 			if (button.Image != null) {
 				button.ImagePosition = PositionType.Left;
+				var imageView = button.Image as ImageView;
+				if (imageView != null) {
+					imageView.SetSize (buttonSize - 5, buttonSize - 5);
+				}
 			}
 			button.CanFocus = false;
 			button.FocusOnClick = false;

@@ -62,6 +62,7 @@
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Bindings\SpinnerBinding.cs" />
     <Compile Include="Bindings\ComboBoxBinding.cs" />
+    <Compile Include="ImageView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -71,6 +72,7 @@
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Mono.Cairo" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -82,6 +84,10 @@
     <ProjectReference Include="..\VAS.Core\VAS.Core.Net45.csproj">
       <Project>{08AE7734-B995-4E0D-AD8F-38F597E0D4DF}</Project>
       <Name>VAS.Core.Net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VAS.Drawing.Cairo\VAS.Drawing.Cairo.csproj">
+      <Project>{AE98609B-353C-4CE4-A5B7-606BB4EE3576}</Project>
+      <Name>VAS.Drawing.Cairo</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

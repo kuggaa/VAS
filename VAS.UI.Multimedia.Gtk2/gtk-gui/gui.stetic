@@ -187,7 +187,7 @@
                             <property name="Relief">None</property>
                             <property name="Active">True</property>
                             <child>
-                              <widget class="Gtk.Image" id="viewportsSwitchImage">
+                              <widget class="VAS.UI.Helpers.ImageView" id="viewportsSwitchImage">
                                 <property name="MemberName" />
                               </widget>
                             </child>
@@ -206,7 +206,7 @@
                             <property name="FocusOnClick">False</property>
                             <property name="Relief">None</property>
                             <child>
-                              <widget class="Gtk.Image" id="zoomLevelImage">
+                              <widget class="VAS.UI.Helpers.ImageView" id="zoomLevelImage">
                                 <property name="MemberName" />
                               </widget>
                             </child>
@@ -282,7 +282,7 @@
                                         <property name="Type">Custom</property>
                                         <property name="Relief">None</property>
                                         <child>
-                                          <widget class="Gtk.Image" id="closebuttonimage">
+                                          <widget class="VAS.UI.Helpers.ImageView" id="closebuttonimage">
                                             <property name="MemberName" />
                                           </widget>
                                         </child>
@@ -301,7 +301,7 @@
                                         <property name="Type">Custom</property>
                                         <property name="Relief">None</property>
                                         <child>
-                                          <widget class="Gtk.Image" id="drawbuttonimage">
+                                          <widget class="VAS.UI.Helpers.ImageView" id="drawbuttonimage">
                                             <property name="MemberName" />
                                           </widget>
                                         </child>
@@ -320,7 +320,7 @@
                                         <property name="Type">Custom</property>
                                         <property name="Relief">None</property>
                                         <child>
-                                          <widget class="Gtk.Image" id="playbuttonimage">
+                                          <widget class="VAS.UI.Helpers.ImageView" id="playbuttonimage">
                                             <property name="MemberName" />
                                           </widget>
                                         </child>
@@ -340,7 +340,7 @@
                                         <property name="Type">Custom</property>
                                         <property name="Relief">None</property>
                                         <child>
-                                          <widget class="Gtk.Image" id="pausebuttonimage">
+                                          <widget class="VAS.UI.Helpers.ImageView" id="pausebuttonimage">
                                             <property name="MemberName" />
                                           </widget>
                                         </child>
@@ -360,7 +360,7 @@
                                         <property name="Type">Custom</property>
                                         <property name="Relief">None</property>
                                         <child>
-                                          <widget class="Gtk.Image" id="prevbuttonimage">
+                                          <widget class="VAS.UI.Helpers.ImageView" id="prevbuttonimage">
                                             <property name="MemberName" />
                                           </widget>
                                         </child>
@@ -381,7 +381,7 @@
                                         <property name="Type">Custom</property>
                                         <property name="Relief">None</property>
                                         <child>
-                                          <widget class="Gtk.Image" id="nextbuttonimage">
+                                          <widget class="VAS.UI.Helpers.ImageView" id="nextbuttonimage">
                                             <property name="MemberName" />
                                           </widget>
                                         </child>
@@ -435,7 +435,7 @@
                                     <property name="Type">Custom</property>
                                     <property name="Relief">None</property>
                                     <child>
-                                      <widget class="Gtk.Image" id="centerplayheadbuttonimage">
+                                      <widget class="VAS.UI.Helpers.ImageView" id="centerplayheadbuttonimage">
                                         <property name="MemberName" />
                                       </widget>
                                     </child>
@@ -534,7 +534,7 @@
                                         <property name="Type">Custom</property>
                                         <property name="Relief">None</property>
                                         <child>
-                                          <widget class="Gtk.Image" id="volumebuttonimage">
+                                          <widget class="VAS.UI.Helpers.ImageView" id="volumebuttonimage">
                                             <property name="MemberName" />
                                           </widget>
                                         </child>
@@ -553,7 +553,7 @@
                                         <property name="Type">Custom</property>
                                         <property name="Relief">None</property>
                                         <child>
-                                          <widget class="Gtk.Image" id="detachbuttonimage">
+                                          <widget class="VAS.UI.Helpers.ImageView" id="detachbuttonimage">
                                             <property name="MemberName" />
                                           </widget>
                                         </child>
@@ -734,7 +734,7 @@
                     <property name="Type">Custom</property>
                     <property name="Relief">None</property>
                     <child>
-                      <widget class="Gtk.Image" id="recimage">
+                      <widget class="VAS.UI.Helpers.ImageView" id="recimage">
                         <property name="MemberName" />
                         <property name="Xpad">5</property>
                         <property name="Ypad">5</property>
@@ -756,7 +756,7 @@
                     <property name="Type">Custom</property>
                     <property name="Relief">None</property>
                     <child>
-                      <widget class="Gtk.Image" id="stopimage">
+                      <widget class="VAS.UI.Helpers.ImageView" id="stopimage">
                         <property name="MemberName" />
                         <property name="Xpad">5</property>
                         <property name="Ypad">5</property>
@@ -778,7 +778,7 @@
                     <property name="Type">Custom</property>
                     <property name="Relief">None</property>
                     <child>
-                      <widget class="Gtk.Image" id="pauseimage">
+                      <widget class="VAS.UI.Helpers.ImageView" id="pauseimage">
                         <property name="MemberName" />
                         <property name="Xpad">5</property>
                         <property name="Ypad">5</property>
@@ -800,7 +800,7 @@
                     <property name="Type">Custom</property>
                     <property name="Relief">None</property>
                     <child>
-                      <widget class="Gtk.Image" id="resumeimage">
+                      <widget class="VAS.UI.Helpers.ImageView" id="resumeimage">
                         <property name="MemberName" />
                         <property name="Xpad">5</property>
                         <property name="Ypad">5</property>
@@ -822,7 +822,7 @@
                     <property name="Type">Custom</property>
                     <property name="Relief">None</property>
                     <child>
-                      <widget class="Gtk.Image" id="saveimage">
+                      <widget class="VAS.UI.Helpers.ImageView" id="saveimage">
                         <property name="MemberName" />
                         <property name="Xpad">5</property>
                         <property name="Ypad">5</property>
@@ -844,7 +844,7 @@
                     <property name="Type">Custom</property>
                     <property name="Relief">None</property>
                     <child>
-                      <widget class="Gtk.Image" id="cancelimage">
+                      <widget class="VAS.UI.Helpers.ImageView" id="cancelimage">
                         <property name="MemberName" />
                         <property name="Xpad">5</property>
                         <property name="Ypad">5</property>
@@ -891,7 +891,7 @@
                         <property name="Type">Custom</property>
                         <property name="Relief">None</property>
                         <child>
-                          <widget class="Gtk.Image" id="deletelastimage">
+                          <widget class="VAS.UI.Helpers.ImageView" id="deletelastimage">
                             <property name="MemberName" />
                             <property name="Xpad">5</property>
                             <property name="Ypad">5</property>
@@ -913,7 +913,7 @@
                         <property name="Type">Custom</property>
                         <property name="Relief">None</property>
                         <child>
-                          <widget class="Gtk.Image" id="playlastimage">
+                          <widget class="VAS.UI.Helpers.ImageView" id="playlastimage">
                             <property name="MemberName" />
                             <property name="Xpad">5</property>
                             <property name="Ypad">5</property>
@@ -966,7 +966,7 @@
                 <property name="Visible">False</property>
                 <property name="Spacing">6</property>
                 <child>
-                  <widget class="Gtk.Image" id="replayimage">
+                  <widget class="VAS.UI.Helpers.ImageView" id="replayimage">
                     <property name="MemberName" />
                   </widget>
                   <packing>
@@ -1018,7 +1018,7 @@
                 <property name="Visible">False</property>
                 <property name="Spacing">6</property>
                 <child>
-                  <widget class="Gtk.Image" id="liveimage">
+                  <widget class="VAS.UI.Helpers.ImageView" id="liveimage">
                     <property name="MemberName" />
                   </widget>
                   <packing>

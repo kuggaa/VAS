@@ -10,7 +10,7 @@ namespace VAS.UI
 
 		private global::Gtk.HBox replayhbox;
 
-		private global::Gtk.Image replayimage;
+		private global::VAS.UI.Helpers.ImageView replayimage;
 
 		private global::Gtk.Label replaylabel;
 
@@ -18,7 +18,7 @@ namespace VAS.UI
 
 		private global::Gtk.HBox livebox;
 
-		private global::Gtk.Image liveimage;
+		private global::VAS.UI.Helpers.ImageView liveimage;
 
 		private global::Gtk.Label livelabel;
 
@@ -44,7 +44,7 @@ namespace VAS.UI
 			this.replayhbox.Name = "replayhbox";
 			this.replayhbox.Spacing = 6;
 			// Container child replayhbox.Gtk.Box+BoxChild
-			this.replayimage = new global::Gtk.Image ();
+			this.replayimage = new global::VAS.UI.Helpers.ImageView ();
 			this.replayimage.Name = "replayimage";
 			this.replayhbox.Add (this.replayimage);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.replayhbox [this.replayimage]));
@@ -77,7 +77,7 @@ namespace VAS.UI
 			this.livebox.Name = "livebox";
 			this.livebox.Spacing = 6;
 			// Container child livebox.Gtk.Box+BoxChild
-			this.liveimage = new global::Gtk.Image ();
+			this.liveimage = new global::VAS.UI.Helpers.ImageView ();
 			this.liveimage.Name = "liveimage";
 			this.livebox.Add (this.liveimage);
 			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.livebox [this.liveimage]));

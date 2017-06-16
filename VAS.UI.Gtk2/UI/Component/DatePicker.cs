@@ -16,7 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using VAS.UI.Helpers;
+using VAS.Core;
 
 namespace VAS.UI.UI.Component
 {
@@ -31,7 +31,7 @@ namespace VAS.UI.UI.Component
 		{
 			this.Build ();
 
-			datebuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-calendar", Gtk.IconSize.Button, 0);
+			datebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-calendar", 24);
 
 			datebutton.Clicked += HandleClicked;
 			dateentry.Changed += HandleChanged;

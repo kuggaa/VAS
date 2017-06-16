@@ -15,6 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // 
+using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
@@ -36,8 +37,8 @@ namespace VAS.UI
 		{
 			this.Build ();
 			replayhbox.HeightRequest = livebox.HeightRequest = StyleConf.PlayerCapturerControlsHeight;
-			replayimage.Pixbuf = Misc.LoadIcon ("longomatch-replay", StyleConf.PlayerCapturerIconSize);
-			liveimage.Pixbuf = Misc.LoadIcon ("longomatch-live", StyleConf.PlayerCapturerIconSize);
+			replayimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-replay", StyleConf.PlayerCapturerIconSize);
+			liveimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-live", StyleConf.PlayerCapturerIconSize);
 			livelabel.ModifyFg (Gtk.StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteActive));
 			replaylabel.ModifyFg (Gtk.StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteActive));
 			livebox.Visible = replayhbox.Visible = true;

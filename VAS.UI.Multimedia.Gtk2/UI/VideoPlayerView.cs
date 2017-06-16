@@ -82,27 +82,27 @@ namespace VAS.UI
 				AdjustSizeToDuration = true,
 			};
 
-			closebuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-cancel-rec",
+			closebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-cancel-rec",
 				StyleConf.PlayerCapturerIconSize);
-			drawbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-control-draw",
+			drawbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-control-draw",
 				StyleConf.PlayerCapturerIconSize);
-			playbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-control-play",
+			playbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-control-play",
 				StyleConf.PlayerCapturerIconSize);
-			pausebuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-control-pause",
+			pausebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-control-pause",
 				StyleConf.PlayerCapturerIconSize);
-			prevbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-control-rw",
+			prevbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-control-rw",
 				StyleConf.PlayerCapturerIconSize);
-			nextbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-control-ff",
+			nextbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-control-ff",
 				StyleConf.PlayerCapturerIconSize);
-			volumebuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-control-volume-hi",
+			volumebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-control-volume-hi",
 				StyleConf.PlayerCapturerIconSize);
-			detachbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-control-detach",
+			detachbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-control-detach",
 				StyleConf.PlayerCapturerIconSize);
-			viewportsSwitchImage.Pixbuf = Misc.LoadIcon ("longomatch-video-device",
+			viewportsSwitchImage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-video-device",
 				22);
-			zoomLevelImage.Pixbuf = Misc.LoadIcon ("longomatch-search",
+			zoomLevelImage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-search",
 				22);
-			centerplayheadbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-dash-center-view",
+			centerplayheadbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-dash-center-view",
 				StyleConf.PlayerCapturerIconSize);
 
 			// Force tooltips to be translatable as there seems to be a bug in stetic 
@@ -319,7 +319,7 @@ namespace VAS.UI
 
 		void SetVolumeIcon (string name)
 		{
-			volumebuttonimage.Pixbuf = Misc.LoadIcon (name, IconSize.Button, 0);
+			volumebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon (name, StyleConf.PlayerCapturerIconSize);
 		}
 
 		void UpdateComboboxes ()
@@ -944,11 +944,11 @@ namespace VAS.UI
 		void HandlePlayerAttachedChanged ()
 		{
 			if (playerVM.PlayerAttached) {
-				detachbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-control-attach",
+				detachbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-control-attach",
 					StyleConf.PlayerCapturerIconSize);
 				detachbutton.TooltipMarkup = Catalog.GetString ("Attach window");
 			} else {
-				detachbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-control-detach",
+				detachbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-control-detach",
 					StyleConf.PlayerCapturerIconSize);
 				detachbutton.TooltipMarkup = Catalog.GetString ("Detach window");
 			}

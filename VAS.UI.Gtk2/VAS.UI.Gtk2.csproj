@@ -8,6 +8,8 @@
 		<RootNamespace>VAS.UI</RootNamespace>
 		<AssemblyName>VAS.UI</AssemblyName>
 		<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+		<ProductVersion>8.0.30703</ProductVersion>
+		<SchemaVersion>2.0</SchemaVersion>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<DebugSymbols>true</DebugSymbols>
@@ -109,6 +111,7 @@
 		<Compile Include="gtk-gui\VAS.UI.Dialog.HotKeySelectorDialog.cs" />
 		<Compile Include="UI\Component\HotKeyView.cs" />
 		<Compile Include="gtk-gui\VAS.UI.Component.HotKeyView.cs" />
+		<Compile Include="UI\TreeView\CellRendererImage.cs" />
 	</ItemGroup>
 	<Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 	<ItemGroup>

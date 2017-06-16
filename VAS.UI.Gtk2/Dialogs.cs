@@ -177,7 +177,7 @@ namespace VAS.UI
 
 		public Task<Image> OpenImage (object parent = null)
 		{
-			return Task.FromResult (new Image (Helpers.Misc.OpenImage (parent as Widget)));
+			return Task.FromResult (Helpers.Misc.OpenImage (parent as Widget));
 		}
 	}
 }

@@ -34,27 +34,27 @@ namespace VAS.UI
 
 		private global::Gtk.Button recbutton;
 
-		private global::Gtk.Image recimage;
+		private global::VAS.UI.Helpers.ImageView recimage;
 
 		private global::Gtk.Button stopbutton;
 
-		private global::Gtk.Image stopimage;
+		private global::VAS.UI.Helpers.ImageView stopimage;
 
 		private global::Gtk.Button pausebutton;
 
-		private global::Gtk.Image pauseimage;
+		private global::VAS.UI.Helpers.ImageView pauseimage;
 
 		private global::Gtk.Button resumebutton;
 
-		private global::Gtk.Image resumeimage;
+		private global::VAS.UI.Helpers.ImageView resumeimage;
 
 		private global::Gtk.Button savebutton;
 
-		private global::Gtk.Image saveimage;
+		private global::VAS.UI.Helpers.ImageView saveimage;
 
 		private global::Gtk.Button cancelbutton;
 
-		private global::Gtk.Image cancelimage;
+		private global::VAS.UI.Helpers.ImageView cancelimage;
 
 		private global::Gtk.VSeparator vseparator2;
 
@@ -64,11 +64,11 @@ namespace VAS.UI
 
 		private global::Gtk.Button deletelastbutton;
 
-		private global::Gtk.Image deletelastimage;
+		private global::VAS.UI.Helpers.ImageView deletelastimage;
 
 		private global::Gtk.Button playlastbutton;
 
-		private global::Gtk.Image playlastimage;
+		private global::VAS.UI.Helpers.ImageView playlastimage;
 
 		protected virtual void Build ()
 		{
@@ -178,7 +178,7 @@ namespace VAS.UI
 			this.recbutton.Name = "recbutton";
 			this.recbutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child recbutton.Gtk.Container+ContainerChild
-			this.recimage = new global::Gtk.Image ();
+			this.recimage = new global::VAS.UI.Helpers.ImageView ();
 			this.recimage.Name = "recimage";
 			this.recimage.Xpad = 5;
 			this.recimage.Ypad = 5;
@@ -195,7 +195,7 @@ namespace VAS.UI
 			this.stopbutton.Name = "stopbutton";
 			this.stopbutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child stopbutton.Gtk.Container+ContainerChild
-			this.stopimage = new global::Gtk.Image ();
+			this.stopimage = new global::VAS.UI.Helpers.ImageView ();
 			this.stopimage.Name = "stopimage";
 			this.stopimage.Xpad = 5;
 			this.stopimage.Ypad = 5;
@@ -212,7 +212,7 @@ namespace VAS.UI
 			this.pausebutton.Name = "pausebutton";
 			this.pausebutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child pausebutton.Gtk.Container+ContainerChild
-			this.pauseimage = new global::Gtk.Image ();
+			this.pauseimage = new global::VAS.UI.Helpers.ImageView ();
 			this.pauseimage.Name = "pauseimage";
 			this.pauseimage.Xpad = 5;
 			this.pauseimage.Ypad = 5;
@@ -229,7 +229,7 @@ namespace VAS.UI
 			this.resumebutton.Name = "resumebutton";
 			this.resumebutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child resumebutton.Gtk.Container+ContainerChild
-			this.resumeimage = new global::Gtk.Image ();
+			this.resumeimage = new global::VAS.UI.Helpers.ImageView ();
 			this.resumeimage.Name = "resumeimage";
 			this.resumeimage.Xpad = 5;
 			this.resumeimage.Ypad = 5;
@@ -246,7 +246,7 @@ namespace VAS.UI
 			this.savebutton.Name = "savebutton";
 			this.savebutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child savebutton.Gtk.Container+ContainerChild
-			this.saveimage = new global::Gtk.Image ();
+			this.saveimage = new global::VAS.UI.Helpers.ImageView ();
 			this.saveimage.Name = "saveimage";
 			this.saveimage.Xpad = 5;
 			this.saveimage.Ypad = 5;
@@ -263,7 +263,7 @@ namespace VAS.UI
 			this.cancelbutton.Name = "cancelbutton";
 			this.cancelbutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child cancelbutton.Gtk.Container+ContainerChild
-			this.cancelimage = new global::Gtk.Image ();
+			this.cancelimage = new global::VAS.UI.Helpers.ImageView ();
 			this.cancelimage.Name = "cancelimage";
 			this.cancelimage.Xpad = 5;
 			this.cancelimage.Ypad = 5;
@@ -299,7 +299,7 @@ namespace VAS.UI
 			this.deletelastbutton.Name = "deletelastbutton";
 			this.deletelastbutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child deletelastbutton.Gtk.Container+ContainerChild
-			this.deletelastimage = new global::Gtk.Image ();
+			this.deletelastimage = new global::VAS.UI.Helpers.ImageView ();
 			this.deletelastimage.Name = "deletelastimage";
 			this.deletelastimage.Xpad = 5;
 			this.deletelastimage.Ypad = 5;
@@ -316,7 +316,7 @@ namespace VAS.UI
 			this.playlastbutton.Name = "playlastbutton";
 			this.playlastbutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child playlastbutton.Gtk.Container+ContainerChild
-			this.playlastimage = new global::Gtk.Image ();
+			this.playlastimage = new global::VAS.UI.Helpers.ImageView ();
 			this.playlastimage.Name = "playlastimage";
 			this.playlastimage.Xpad = 5;
 			this.playlastimage.Ypad = 5;
@@ -346,4 +346,3 @@ namespace VAS.UI
 		}
 	}
 }
-

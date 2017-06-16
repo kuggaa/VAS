@@ -1,4 +1,4 @@
-﻿//
+//
 //  Copyright (C) 2016 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -68,22 +68,22 @@ namespace VAS.UI.Dialog
 
 			selectbutton.Active = true;
 
-			selectbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-select", 20);
-			eraserbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-eraser", 20);
-			penbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-pencil", 20);
-			textbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-text", 20);
-			linebuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-arrow", 20);
-			crossbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-mark", 20);
-			rectanglebuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-square", 20);
-			ellipsebuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-circle", 20);
-			rectanglefilledbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-square-fill", 20);
-			ellipsefilledbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-circle-fill", 20);
-			playerbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-person", 20);
-			numberbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-counter", 20);
-			anglebuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-angle", 20);
-			zoombuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-search", 20);
-			zoomoutimage.Pixbuf = Misc.LoadIcon ("longomatch-zoom-out", 14);
-			zoominimage.Pixbuf = Misc.LoadIcon ("longomatch-zoom-in", 14);
+			selectbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-select", 20);
+			eraserbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-eraser", 20);
+			penbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-pencil", 20);
+			textbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-text", 20);
+			linebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-arrow", 20);
+			crossbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-mark", 20);
+			rectanglebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-square", 20);
+			ellipsebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-circle", 20);
+			rectanglefilledbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-square-fill", 20);
+			ellipsefilledbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-circle-fill", 20);
+			playerbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-person", 20);
+			numberbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-counter", 20);
+			anglebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-angle", 20);
+			zoombuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-search", 20);
+			zoomoutimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-zoom-out", 14);
+			zoominimage.Image = App.Current.ResourcesLocator.LoadIcon ("longomatch-zoom-in", 14);
 
 			selectbutton.Toggled += HandleToolClicked;
 			eraserbutton.Toggled += HandleToolClicked;

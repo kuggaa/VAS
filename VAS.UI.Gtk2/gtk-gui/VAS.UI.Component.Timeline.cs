@@ -12,17 +12,17 @@ namespace VAS.UI.Component
 
 		private global::Gtk.Button focusbutton;
 
-		private global::Gtk.Image focusbuttonimage;
+		private global::VAS.UI.Helpers.ImageView focusbuttonimage;
 
 		private global::Gtk.DrawingArea labelsarea;
 
 		private global::Gtk.HBox zoomhbox;
 
-		private global::Gtk.Image zoomoutimage;
+		private global::VAS.UI.Helpers.ImageView zoomoutimage;
 
 		private global::Gtk.HScale focusscale;
 
-		private global::Gtk.Image zoominimage;
+		private global::VAS.UI.Helpers.ImageView zoominimage;
 
 		private global::Gtk.VBox vbox1;
 
@@ -53,7 +53,7 @@ namespace VAS.UI.Component
 			this.focusbutton = new global::Gtk.Button ();
 			this.focusbutton.Name = "focusbutton";
 			// Container child focusbutton.Gtk.Container+ContainerChild
-			this.focusbuttonimage = new global::Gtk.Image ();
+			this.focusbuttonimage = new global::VAS.UI.Helpers.ImageView ();
 			this.focusbuttonimage.Name = "focusbuttonimage";
 			this.focusbutton.Add (this.focusbuttonimage);
 			this.hbox2.Add (this.focusbutton);
@@ -75,7 +75,7 @@ namespace VAS.UI.Component
 			this.zoomhbox.Name = "zoomhbox";
 			this.zoomhbox.Spacing = 6;
 			// Container child zoomhbox.Gtk.Box+BoxChild
-			this.zoomoutimage = new global::Gtk.Image ();
+			this.zoomoutimage = new global::VAS.UI.Helpers.ImageView ();
 			this.zoomoutimage.WidthRequest = 14;
 			this.zoomoutimage.HeightRequest = 8;
 			this.zoomoutimage.Name = "zoomoutimage";
@@ -98,7 +98,7 @@ namespace VAS.UI.Component
 			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.zoomhbox [this.focusscale]));
 			w6.Position = 1;
 			// Container child zoomhbox.Gtk.Box+BoxChild
-			this.zoominimage = new global::Gtk.Image ();
+			this.zoominimage = new global::VAS.UI.Helpers.ImageView ();
 			this.zoominimage.WidthRequest = 14;
 			this.zoominimage.HeightRequest = 8;
 			this.zoominimage.Name = "zoominimage";

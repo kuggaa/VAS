@@ -38,14 +38,14 @@ namespace VAS.Tests.Core
 		[Test ()]
 		public void TestLoadIconResource ()
 		{
-			Image img = resources.LoadImage ("longomatch-dark-bg.svg");
+			Image img = App.Current.ResourcesLocator.LoadImage ("longomatch-dark-bg.svg");
 			Assert.IsNotNull (img);
 		}
 
 		[Test ()]
 		public void TestLoadImageResource ()
 		{
-			Image img = resources.LoadImage ("longomatch.svg");
+			Image img = App.Current.ResourcesLocator.LoadImage ("longomatch.svg");
 			Assert.IsNotNull (img);
 		}
 
@@ -54,7 +54,7 @@ namespace VAS.Tests.Core
 		{
 			Assert.Throws<System.IO.FileNotFoundException> (
 				delegate {
-					var img = resources.LoadImage ("not-found.svg");
+					var img = App.Current.ResourcesLocator.LoadImage ("not-found.svg");
 				});
 		}
 	}
