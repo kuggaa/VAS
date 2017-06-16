@@ -59,6 +59,12 @@ namespace VAS.Core.Common
 			Value = LoadFromStream (stream, (int)(width * DeviceScaleFactor), (int)(height * DeviceScaleFactor));
 		}
 
+		public BaseImage (byte [] data, int width, int height, int stride)
+		{
+			DeviceScaleFactor = App.Current.GUIToolkit.DeviceScaleFactor;
+			Value = LoadFromData (stream, (int)(width * DeviceScaleFactor), (int)(height * DeviceScaleFactor));
+		}
+
 		protected override void DisposeManagedResources ()
 		{
 			base.DisposeManagedResources ();
@@ -184,6 +190,8 @@ namespace VAS.Core.Common
 		protected abstract T LoadFromStream (Stream stream);
 
 		protected abstract T LoadFromStream (Stream stream, int width, int height);
+
+		protected abstract T LoadFromData (byte [] data, int width, int height, int stride);
 
 		protected abstract T Scale (T pix, int maxWidth, int maxHeight);
 

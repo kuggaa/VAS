@@ -77,6 +77,9 @@
 		<Reference Include="System.Core" />
 		<Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
 		<Reference Include="Mono.Posix" />
+    <Reference Include="SkiaSharp">
+      <HintPath>..\..\packages\SkiaSharp.1.58.0\lib\net45\SkiaSharp.dll</HintPath>
+    </Reference>
 	</ItemGroup>
 	<Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 	<ProjectExtensions>

@@ -532,7 +532,16 @@ namespace VAS.Multimedia.Player
 			managed = unmanaged.ScaleSimple (outwidth, outheight, Gdk.InterpType.Bilinear);
 			unmanaged.Dispose ();
 			lgm_video_player_unref_pixbuf (raw_ret);
-			return new Image (managed);
+
+			if (managed != null) {
+				int size = managed.Rowstride * managed.Height;
+				var pixels = new byte [size];
+				// Copy to our pixels array
+				Marshal.Copy (managed.Pixels, pixels, 0, size);
+				managed.Dispose ();
+				return new Image (pixels, managed.Width, managed.Height, managed.Rowstride);
+			}
+			return null;
 		}
 
 		public void Expose ()
@@ -562,7 +571,7 @@ namespace VAS.Multimedia.Player
 		public Image GetFrame (Time pos, bool accurate, int outwidth = -1, int outheight = -1)
 		{
 			Image img = null;
-			
+
 			Pause ();
 			Seek (pos, accurate, true);
 			img = GetCurrentFrame (outwidth, outheight);

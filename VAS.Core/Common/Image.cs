@@ -17,23 +17,23 @@
 // 
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using Gdk;
+using SkiaSharp;
 
 namespace VAS.Core.Common
 {
 	[Serializable]
-	public class Image : BaseImage<Pixbuf>
+	public class Image : BaseImage<SKBitmap>
 	{
 		const string FILE_EXTENSION = "png";
 
 		public Image (int width, int height)
 		{
-			Value = new Pixbuf (Colorspace.Rgb, true, 32, width, height);
+			Value = new SKBitmap (width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
 		}
 
-		public Image (Pixbuf image) : base (image)
+		public Image (SKBitmap image) : base (image)
 		{
 		}
 
@@ -42,6 +42,10 @@ namespace VAS.Core.Common
 		}
 
 		public Image (string filepath, int width, int height) : base (filepath, width, height)
+		{
+		}
+
+		public Image (byte [] data, int width, int height, int stride) : base (data, width, height, stride)
 		{
 		}
 
@@ -63,7 +67,16 @@ namespace VAS.Core.Common
 			}
 		}
 
-		protected override Pixbuf LoadFromFile (string filepath)
+		protected override SKBitmap LoadFromFile (string filepath)
+		{
+			using (var fileStream = File.OpenRead (filepath)) {
+				using (var stream = new SKManagedStream (fileStream)) {
+					return SKBitmap.Decode (stream);
+				}
+			}
+		}
+
+		protected override SKBitmap LoadFromFile (string filepath, int width, int height)
 		{
 			int idx = filepath.LastIndexOf ('.');
 			var path = filepath.Substring (0, idx) + "@2x" + filepath.Substring (idx);
@@ -72,16 +85,22 @@ namespace VAS.Core.Common
 				return new Pixbuf (path);
 			}
 			return new Pixbuf (filepath);
+			SKBitmap bitmap = LoadFromFile (filepath);
+			// FIXME: Scale
+			return bitmap;
 		}
 
-		protected override Pixbuf LoadFromFile (string filepath, int width, int height)
+		protected override SKBitmap LoadFromStream (Stream fileStream)
 		{
-			return new Pixbuf (filepath, width, height);
+			using (var stream = new SKManagedStream (fileStream)) {
+				return SKBitmap.Decode (stream);
+			}
 		}
 
-		protected override Pixbuf LoadFromStream (Stream stream)
+		protected override SKBitmap LoadFromData (byte [] data, int width, int height, int stride)
 		{
-			return new Pixbuf (stream);
+			SKBitmap bitmap = new SKBitmap (width, height, SKColorType.Rgba8888, SKAlphaType.Opaque);
+			throw new NotImplementedException ();
 		}
 
 		protected override Pixbuf LoadFromStream (Stream stream, int width, int height)
@@ -93,12 +112,17 @@ namespace VAS.Core.Common
 		{
 			if (Value == null)
 				return null;
-			return Value.SaveToBuffer ("png");
+
+			using (var image = SKImage.FromBitmap (Value)) {
+				using (var data = image.Encode (SKEncodedImageFormat.Png, 100)) {
+					return data.ToArray ();
+				}
+			}
 		}
 
 		public static Image Deserialize (byte [] ser)
 		{
-			return new Image (new Pixbuf (ser));
+			return new Image (SKBitmap.Decode (ser));
 		}
 
 		public override Image Scale (int maxWidth, int maxHeight)
@@ -108,19 +132,18 @@ namespace VAS.Core.Common
 
 		public override IntPtr LockPixels ()
 		{
-			return Value.Pixels;
+			return Value.GetPixels ();
 		}
 
 		public override void UnlockPixels (IntPtr pixels)
 		{
 		}
 
-		protected override Pixbuf Scale (Pixbuf pix, int maxWidth, int maxHeight)
+		protected override SKBitmap Scale (SKBitmap pix, int maxWidth, int maxHeight)
 		{
 			int width, height;
-
 			ComputeScale (pix.Width, pix.Height, maxWidth, maxHeight, ScaleMode.AspectFit, out width, out height);
-			return pix.ScaleSimple (width, height, Gdk.InterpType.Bilinear);
+			return pix.Resize (new SKImageInfo (width, height), SKBitmapResizeMethod.Lanczos3);
 		}
 
 		/// <summary>
@@ -129,11 +152,12 @@ namespace VAS.Core.Common
 		/// <param name="filename">Filename.</param>
 		public override void Save (string filename)
 		{
-			//HACK: Force gdk_pixbuf_save_utf8 call if windows OS. Otherwhise call gdk_pixbuf_save
-			if (Environment.OSVersion.Platform == PlatformID.Win32NT) {
-				Value.SaveUtf (filename, FILE_EXTENSION);
-			} else {
-				Value.Save (filename, FILE_EXTENSION);
+			using (var image = SKImage.FromBitmap (Value)) {
+				using (var data = image.Encode (SKEncodedImageFormat.Png, 100)) {
+					using (var stream = File.OpenWrite (filename)) {
+						data.SaveTo (stream);
+					}
+				}
 			}
 		}
 
@@ -149,13 +173,7 @@ namespace VAS.Core.Common
 
 		public override Image Composite (Image image)
 		{
-			Pixbuf dest = new Pixbuf (Value.Colorspace, true, Value.BitsPerSample, Width, Height);
-			Value.Composite (dest, 0, 0, Width, Height, 0, 0, 1, 1,
-				Gdk.InterpType.Bilinear, 255);
-			image.Value.Composite (dest, 0, 0, image.Width, image.Height, 0, 0, 1, 1,
-				Gdk.InterpType.Bilinear, 255);
-			return new Image (dest);
+			return image;
 		}
-
 	}
 }

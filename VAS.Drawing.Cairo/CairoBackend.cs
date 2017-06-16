@@ -30,6 +30,7 @@ using FontWeight = VAS.Core.Common.FontWeight;
 using Image = VAS.Core.Common.Image;
 using LineStyle = VAS.Core.Common.LineStyle;
 using Point = VAS.Core.Common.Point;
+using SkiaSharp;
 
 namespace VAS.Drawing.Cairo
 {
@@ -510,19 +511,18 @@ namespace VAS.Drawing.Cairo
 		public Image Copy (ICanvas canvas, Area area)
 		{
 			Image img;
-			Pixmap pm;
 			global::Cairo.Context ctx;
 
-			pm = new Pixmap (null, (int)area.Width, (int)area.Height, 24);
-			ctx = Gdk.CairoHelper.Create (pm);
+			img = new Image ((int)area.Width, (int)area.Height);
+			var imgSurface = new ImageSurface (img.LockPixels (), Format.ARGB32, img.Width,
+							  img.Height, img.Width * 4);
+			ctx = new global::Cairo.Context (imgSurface);
 			disableScalling = true;
 			using (CairoContext c = new CairoContext (ctx)) {
 				ctx.Translate (-area.Start.X, -area.Start.Y);
 				canvas.Draw (c, null);
 			}
 			disableScalling = false;
-			img = new Image (Pixbuf.FromDrawable (pm, Colormap.System, 0, 0, 0, 0,
-				(int)area.Width, (int)area.Height));
 			return img;
 		}
 

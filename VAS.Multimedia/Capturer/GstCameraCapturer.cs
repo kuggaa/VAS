@@ -496,7 +496,16 @@ namespace VAS.Multimedia.Capturer
 				 * so that p.Dipose() sets it to 0 and triggers the pixbuf destroy function
 				 * that frees the associated data*/
 				gst_camera_capturer_unref_pixbuf (raw_ret);
-				return new Image (p);
+
+				if (p != null) {
+					int size = p.Rowstride * p.Height;
+					var pixels = new byte [size];
+					// Copy to our pixels array
+					Marshal.Copy (p.Pixels, pixels, 0, size);
+					p.Dispose ();
+					return new Image (pixels, p.Width, p.Height, p.Rowstride);
+				}
+				return null;
 			}
 		}
 
