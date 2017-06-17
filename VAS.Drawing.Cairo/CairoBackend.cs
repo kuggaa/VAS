@@ -405,13 +405,15 @@ namespace VAS.Drawing.Cairo
 			CContext.NewPath ();
 		}
 
-		public void DrawImage (Image image)
+		public void DrawImage (Image image, float alpha = 1)
 		{
-			Gdk.CairoHelper.SetSourcePixbuf (CContext, image.Value, 0, 0);
-			CContext.Paint ();
+			var pixbuf = image.Value;
+			Gdk.CairoHelper.SetSourcePixbuf (CContext, pixbuf, 0, 0);
+			CContext.PaintWithAlpha (alpha);
 		}
 
-		public void DrawImage (Point start, double width, double height, Image image, ScaleMode mode, bool masked = false)
+		public void DrawImage (Point start, double width, double height, Image image, ScaleMode mode,
+							   bool masked = false, float alpha = 1)
 		{
 			double scaleX, scaleY;
 			Point offset;
@@ -423,14 +425,14 @@ namespace VAS.Drawing.Cairo
 			if (masked) {
 				CContext.PushGroup ();
 				Gdk.CairoHelper.SetSourcePixbuf (CContext, image.Value, 0, 0);
-				CContext.Paint ();
+				CContext.PaintWithAlpha (alpha);
 				var src = CContext.PopGroup ();
 				SetColor (FillColor);
 				CContext.Mask (src);
 				src.Dispose ();
 			} else {
 				Gdk.CairoHelper.SetSourcePixbuf (CContext, image.Value, 0, 0);
-				CContext.Paint ();
+				CContext.PaintWithAlpha (alpha);
 			}
 			CContext.Restore ();
 		}
