@@ -24,7 +24,7 @@ using VAS.Core.MVVMC;
 namespace VAS.Core.Common
 {
 	[Serializable]
-	public class Color: BindableBase
+	public class Color : BindableBase
 	{
 		public Color (byte r, byte g, byte b, byte a = byte.MaxValue)
 		{
@@ -110,14 +110,14 @@ namespace VAS.Core.Common
 		static public Color Parse (string colorHex)
 		{
 			byte r, g, b, a = Byte.MaxValue;
-			
+
 			if (!colorHex.StartsWith ("#")) {
 				return null;
 			}
 			if (colorHex.Length != 7 && colorHex.Length != 9) {
 				return null;
 			}
-			
+
 			try {
 				r = Byte.Parse (colorHex.Substring (1, 2), NumberStyles.HexNumber);
 				g = Byte.Parse (colorHex.Substring (3, 2), NumberStyles.HexNumber);

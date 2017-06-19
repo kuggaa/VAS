@@ -15,14 +15,28 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using VAS.Core.MVVMC;
-using VAS.Core.Store;
 
-namespace VAS.Core.ViewModel
+namespace VAS.Core.ViewModel.Statistics
 {
-	public class SeriesCollectionVM : NestedViewModel<SeriesVM>
+	/// <summary>
+	/// Viewmodel for the horizontal series bar graphic
+	/// </summary>
+	public class BarChartVM : ChartVM
 	{
+		/// <summary>
+		/// Series collection
+		/// </summary>
+		/// <value>The series collection.</value>
+		public SeriesCollectionVM Series {
+			get;
+			set;
+		}
 
+		/// <summary>
+		/// Gets or sets a value indicating the height of the bars in the collection
+		/// </summary>
+		/// <value><c>true</c> if height; otherwise, <c>false</c>.</value>
+		public double Height { get; set; }
 	}
 }
