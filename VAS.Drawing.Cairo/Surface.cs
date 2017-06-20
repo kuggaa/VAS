@@ -31,18 +31,22 @@ namespace VAS.Drawing.Cairo
 		public Surface (int width, int height, Image image, bool warnOnDispose = true)
 		{
 			this.warnOnDispose = warnOnDispose;
-			surface = new ImageSurface (Format.ARGB32, width, height);
 			if (image != null) {
-				using (Context context = new Context (surface)) {
-					Gdk.CairoHelper.SetSourcePixbuf (context, image.Value, 0, 0);
-					context.Paint ();
+				DeviceScaleFactor = image.DeviceScaleFactor;
+			} else {
+				DeviceScaleFactor = App.Current.GUIToolkit.DeviceScaleFactor;
+			}
+			surface = new ImageSurface (Format.ARGB32, (int)(width * DeviceScaleFactor), (int)(height * DeviceScaleFactor));
+			if (image != null) {
+				using (CairoContext ccontext = new CairoContext (surface)) {
+					var oldContext = App.Current.DrawingToolkit.Context;
+					App.Current.DrawingToolkit.Context = ccontext;
+					// The image must be drawn using it's real size, since the backend ImageSurface's size is also scalled
+					App.Current.DrawingToolkit.DrawImage (new Core.Common.Point (0, 0), image.Width * image.DeviceScaleFactor,
+														  image.Height * image.DeviceScaleFactor, image, ScaleMode.AspectFit);
+					App.Current.DrawingToolkit.Context = oldContext;
 				}
 			}
-		}
-
-		public Surface (string filename)
-		{
-			surface = new ImageSurface (filename);
 		}
 
 		~Surface ()
@@ -70,20 +74,27 @@ namespace VAS.Drawing.Cairo
 
 		public IContext Context {
 			get {
-				return new CairoContext (surface);
+				var ctx = new CairoContext (surface);
+				(ctx.Value as global::Cairo.Context).Scale (DeviceScaleFactor, DeviceScaleFactor);
+				return ctx;
 			}
 		}
 
 		public int Width {
 			get {
-				return surface.Width;
+				return (int)(surface.Width / DeviceScaleFactor);
 			}
 		}
 
 		public int Height {
 			get {
-				return surface.Height;
+				return (int)(surface.Height / DeviceScaleFactor);
 			}
+		}
+
+		public float DeviceScaleFactor {
+			get;
+			protected set;
 		}
 
 		public Image Copy ()

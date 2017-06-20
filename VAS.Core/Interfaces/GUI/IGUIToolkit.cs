@@ -29,6 +29,13 @@ namespace VAS.Core.Interfaces.GUI
 {
 	public interface IGUIToolkit
 	{
+		/// <summary>
+		/// Gets the current device scale factor, 1 in regular monitor or > 1 in HiDPI ones.
+		/// </summary>
+		float DeviceScaleFactor {
+			get;
+		}
+
 		/* Plugable views */
 		void Register<I, C> (int priority);
 

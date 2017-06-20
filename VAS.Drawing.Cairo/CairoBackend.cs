@@ -416,7 +416,9 @@ namespace VAS.Drawing.Cairo
 			double scaleX, scaleY;
 			Point offset;
 
-			image.ScaleFactor ((int)width, (int)height, mode, out scaleX, out scaleY, out offset);
+			BaseImage<Pixbuf>.ScaleFactor ((int)(image.Width * image.DeviceScaleFactor),
+										   (int)(image.Height * image.DeviceScaleFactor),
+										   (int)width, (int)height, mode, out scaleX, out scaleY, out offset);
 			CContext.Save ();
 			CContext.Translate (start.X + offset.X, start.Y + offset.Y);
 			CContext.Scale (scaleX, scaleY);
@@ -481,17 +483,10 @@ namespace VAS.Drawing.Cairo
 
 		public void DrawSurface (ISurface surface, Point p = null)
 		{
-			ImageSurface image;
-
-			image = surface.Value as ImageSurface;
 			if (p == null) {
-				CContext.SetSourceSurface (image, 0, 0);
-				CContext.Paint ();
-			} else {
-				CContext.SetSourceSurface (image, (int)p.X, (int)p.Y);
-				CContext.Rectangle (p.X, p.Y, image.Width, image.Height);
-				CContext.Fill ();
+				p = new Point (0, 0);
 			}
+			DrawSurface (p, surface.Width, surface.Height, surface, ScaleMode.AspectFit);
 		}
 
 		public void DrawSurface (Point start, double width, double height, ISurface surface, ScaleMode mode)
@@ -499,11 +494,16 @@ namespace VAS.Drawing.Cairo
 			double scaleX, scaleY;
 			Point offset;
 
-			BaseImage<Pixbuf>.ScaleFactor (surface.Width, surface.Height, (int)width, (int)height, mode, out scaleX, out scaleY, out offset);
+			BaseImage<Pixbuf>.ScaleFactor ((int)(surface.Width * surface.DeviceScaleFactor),
+										   (int)(surface.Height * surface.DeviceScaleFactor),
+										   (int)width, (int)height, mode, out scaleX, out scaleY, out offset);
 			CContext.Save ();
 			CContext.Translate (offset.X + start.X, offset.Y + start.Y);
 			CContext.Scale (scaleX, scaleY);
-			DrawSurface (surface, new Point (0, 0));
+			ImageSurface image = surface.Value as ImageSurface;
+			CContext.SetSourceSurface (image, 0, 0);
+			CContext.Rectangle (0, 0, image.Width, image.Height);
+			CContext.Fill ();
 			CContext.Restore ();
 		}
 

@@ -65,6 +65,12 @@ namespace VAS.Core.Common
 
 		protected override Pixbuf LoadFromFile (string filepath)
 		{
+			int idx = filepath.LastIndexOf ('.');
+			var path = filepath.Substring (0, idx) + "@2x" + filepath.Substring (idx);
+			if (File.Exists (path)) {
+				DeviceScaleFactor = 2;
+				return new Pixbuf (path);
+			}
 			return new Pixbuf (filepath);
 		}
 
