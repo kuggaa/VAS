@@ -491,6 +491,10 @@ namespace VAS.Core.Common
 		/// The image is scalled keeping DAR to fit in the defined area, adding black borders if needed.
 		/// </summary>
 		AspectFit,
+		/// <summary>
+		/// Respect the original image size, centering it in the available space.
+		/// </summary>
+		Keep,
 	}
 
 	public enum OperatingSystemID
