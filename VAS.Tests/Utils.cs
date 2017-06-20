@@ -515,8 +515,7 @@ namespace VAS.Tests
 				if (!scaled) {
 					img = new Image (tmpFile);
 				} else {
-					img = new Image (tmpFile);
-					img.ScaleInplace (20, 20);
+					img = new Image (tmpFile, 20, 20);
 				}
 			} catch (Exception ex) {
 				Assert.Fail (ex.Message);

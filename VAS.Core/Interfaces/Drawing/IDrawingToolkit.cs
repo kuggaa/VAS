@@ -36,6 +36,8 @@ namespace VAS.Core.Interfaces.Drawing
 		int Width { get; }
 
 		int Height { get; }
+
+		float DeviceScaleFactor { get; }
 	}
 
 	public interface IDrawingToolkit

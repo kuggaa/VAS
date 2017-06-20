@@ -17,8 +17,11 @@
 //
 using System;
 using System.IO;
+using System.Reflection;
+using Moq;
 using NUnit.Framework;
 using VAS.Core.Common;
+using VAS.Core.Interfaces.GUI;
 using Constants = VAS.Core.Common.Constants;
 
 namespace VAS.Tests.Core.Common
@@ -28,7 +31,7 @@ namespace VAS.Tests.Core.Common
 	{
 		Image img;
 
-		
+
 		[SetUp ()]
 		public void LoadImageFromFile ()
 		{
@@ -55,7 +58,7 @@ namespace VAS.Tests.Core.Common
 		[Test ()]
 		public void TestSerialize ()
 		{
-			byte[] buf = img.Serialize ();
+			byte [] buf = img.Serialize ();
 			Assert.AreEqual (buf.Length, 102);
 			img = Image.Deserialize (buf);
 			Assert.AreEqual (img.Width, 16);
@@ -66,17 +69,17 @@ namespace VAS.Tests.Core.Common
 		public void TestScale ()
 		{
 			Image img2 = img.Scale (20, 20);
-			Assert.AreNotSame (img, img2); 
+			Assert.AreNotSame (img, img2);
 			Assert.AreEqual (img2.Width, 20);
 			Assert.AreEqual (img2.Height, 20);
-			
+
 			img = img.Scale (20, 30);
 			Assert.AreEqual (img.Width, 20);
 			Assert.AreEqual (img.Height, 20);
 			img = img.Scale (25, 20);
 			Assert.AreEqual (img.Width, 20);
 			Assert.AreEqual (img.Height, 20);
-			
+
 			img.ScaleInplace ();
 			Assert.AreEqual (img.Width, Constants.MAX_THUMBNAIL_SIZE);
 			Assert.AreEqual (img.Height, Constants.MAX_THUMBNAIL_SIZE);
@@ -103,7 +106,7 @@ namespace VAS.Tests.Core.Common
 			Image img3 = img2.Composite (img);
 			Assert.AreEqual (img3.Width, 20);
 			Assert.AreEqual (img3.Height, 20);
-			
+
 		}
 
 		void AssertImageScale (int imgWidth, int imgHeight, int reqWidth, int reqHeight, ScaleMode mode)
@@ -155,6 +158,38 @@ namespace VAS.Tests.Core.Common
 			Assert.IsTrue ((scaleY - (double)240 / 150) < 0.1);
 			Assert.AreEqual (0, offset.X);
 			Assert.AreEqual (-25, offset.Y);
+		}
+
+		[Test]
+		public void CreateImage_FromFileName2x_LoadsHiResVariant ()
+		{
+			Image img = null;
+			string tmpFile = Path.GetTempFileName ();
+			string tmpFile2x = tmpFile + "@2x.svg";
+			tmpFile += ".svg";
+
+			using (Stream resource = Assembly.GetExecutingAssembly ().GetManifestResourceStream ("dibujo.svg")) {
+				using (Stream output = File.OpenWrite (tmpFile2x)) {
+					resource.CopyTo (output);
+				}
+				img = new Image (tmpFile);
+			}
+			Assert.AreEqual (2, img.DeviceScaleFactor);
+			Assert.AreEqual (8, img.Width);
+			Assert.AreEqual (8, img.Height);
+			File.Delete (tmpFile2x);
+		}
+
+		[Test]
+		public void CreateImage_FromFileNameWithSizeDeviceScale2x_LoadsScalledImaged ()
+		{
+			var mock = new Mock<IGUIToolkit> ();
+			App.Current.GUIToolkit = mock.Object;
+			mock.SetupGet (g => g.DeviceScaleFactor).Returns (2);
+			img = Utils.LoadImageFromFile (true);
+			Assert.AreEqual (2, img.DeviceScaleFactor);
+			Assert.AreEqual (20, img.Width);
+			Assert.AreEqual (20, img.Height);
 		}
 	}
 }
