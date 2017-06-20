@@ -407,9 +407,7 @@ namespace VAS.Drawing.Cairo
 
 		public void DrawImage (Image image, float alpha = 1)
 		{
-			var pixbuf = image.Value;
-			Gdk.CairoHelper.SetSourcePixbuf (CContext, pixbuf, 0, 0);
-			CContext.PaintWithAlpha (alpha);
+			DrawImage (new Point (0, 0), image.Width, image.Height, image, ScaleMode.Keep, false, alpha);
 		}
 
 		public void DrawImage (Point start, double width, double height, Image image, ScaleMode mode,

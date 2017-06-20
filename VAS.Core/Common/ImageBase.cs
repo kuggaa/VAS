@@ -99,14 +99,25 @@ namespace VAS.Core.Common
 			int oHeight = 0;
 
 			ComputeScale (imgWidth, imgHeight, destWidth, destHeight, mode, out oWidth, out oHeight);
-			scaleX = (double)oWidth / imgWidth;
-			scaleY = (double)oHeight / imgHeight;
-			offset = new Point ((double)(destWidth - oWidth) / 2, (double)(destHeight - oHeight) / 2);
+			if (mode == ScaleMode.Keep) {
+				scaleX = 1;
+				scaleY = 1;
+				offset = new Point ((double)(destWidth - imgWidth) / 2, (double)(destHeight - imgHeight) / 2);
+			} else {
+				scaleX = (double)oWidth / imgWidth;
+				scaleY = (double)oHeight / imgHeight;
+				offset = new Point ((double)(destWidth - oWidth) / 2, (double)(destHeight - oHeight) / 2);
+			}
 		}
 
 		public static void ComputeScale (int inWidth, int inHeight, int reqOutWidth, int reqOutHeight,
 										 ScaleMode mode, out int outWidth, out int outHeight)
 		{
+			if (mode == ScaleMode.Keep) {
+				outWidth = inWidth;
+				outHeight = inHeight;
+			}
+
 			outWidth = reqOutWidth;
 			outHeight = reqOutHeight;
 
