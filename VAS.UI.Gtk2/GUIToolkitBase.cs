@@ -78,6 +78,22 @@ namespace VAS.UI
 			}
 		}
 
+		public float DeviceScaleFactor {
+			get {
+				// On Windows, the device can return non-round values, 1.2, 1.5, but we always round up.
+				double scaleFactor = 1;
+				Widget widget = MainWindow as Widget;
+				if (widget != null) {
+					scaleFactor = widget.GetScaleFactor ();
+				} else {
+					//  screen
+					Gdk.Screen screen = Gdk.Display.Default.DefaultScreen;
+					scaleFactor = screen.GetScaleFactor (0);
+				}
+				return (float)(Math.Ceiling (scaleFactor));
+			}
+		}
+
 		public virtual void Register<I, C> (int priority)
 		{
 			registry.Register<I, C> (priority);
