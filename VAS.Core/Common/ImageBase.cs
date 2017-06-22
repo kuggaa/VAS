@@ -88,6 +88,7 @@ namespace VAS.Core.Common
 		public void ScaleFactor (int destWidth, int destHeight, ScaleMode mode,
 								 out double scaleX, out double scaleY, out Point offset)
 		{
+			//ScaleFactor (GetWidth (), GetHeight (), destWidth, destHeight, mode, out scaleX, out scaleY, out offset);
 			ScaleFactor (Width, Height, destWidth, destHeight, mode, out scaleX, out scaleY, out offset);
 		}
 
