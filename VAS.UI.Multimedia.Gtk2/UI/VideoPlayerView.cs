@@ -99,10 +99,12 @@ namespace VAS.UI
 				StyleConf.PlayerCapturerIconSize);
 			viewportsSwitchImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-video-device",
 				22);
-			zoomLevelImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-search",
+			zoomLevelImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-zoom",
 				22);
 			centerplayheadbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-dash-center-view",
 				StyleConf.PlayerCapturerIconSize);
+			DurationButtonImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-duration",
+													   22);
 
 			// Force tooltips to be translatable as there seems to be a bug in stetic 
 			// code generation for translatable tooltips.
@@ -823,7 +825,11 @@ namespace VAS.UI
 			center_playhead_box.Visible =
 				mode == PlayerViewOperationMode.SimpleWithControls;
 
-			camerasbox.Visible =
+			viewportsSwitchButton.Visible =
+				mode == PlayerViewOperationMode.Analysis ||
+				mode == PlayerViewOperationMode.SimpleWithControls;
+
+			zoomLevelButton.Visible =
 				mode == PlayerViewOperationMode.Analysis ||
 				mode == PlayerViewOperationMode.SimpleWithControls;
 
