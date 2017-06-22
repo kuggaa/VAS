@@ -186,10 +186,14 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
-		public Time Step {
-			set {
-				Player.Step = value;
-			}
+		/// <summary>
+		/// Gets or sets the current step level.
+		/// This value is only used for display in the view. To change the steps use <see cref="SetSteps"/>
+		/// </summary>
+		/// <value>The new steps jump.</value>
+		public double Step {
+			get;
+			set;
 		}
 
 		public List<IViewPort> ViewPorts {
@@ -415,6 +419,15 @@ namespace VAS.Core.ViewModel
 		public void SetVolume (double volume)
 		{
 			Player.Volume = volume;
+		}
+
+		/// <summary>
+		/// Changes the current player step value.
+		/// </summary>
+		/// <param name="steps">Steps.</param>
+		public void SetSteps (double steps)
+		{
+			Player.SetSteps (steps);
 		}
 		#endregion
 	}

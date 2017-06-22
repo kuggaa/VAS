@@ -895,6 +895,20 @@ namespace VAS.Services
 			ApplyROI (cfg);
 		}
 
+		/// <summary>
+		/// Sets the steps to perform jumps in the video player.
+		/// </summary>
+		/// <param name="steps">Steps.</param>
+		public void SetSteps (double steps)
+		{
+			if (steps < App.Current.StepList.Min () || steps > App.Current.StepList.Max ()) {
+				Log.Error ("Steps are not between the supported boundaries : " + steps);
+				return;
+			}
+			Step = new Time { TotalSeconds = (int)steps };
+			playerVM.Step = steps;
+		}
+
 		public void MoveROI (Point diff)
 		{
 			CameraConfig cfg = CamerasConfig [0];
