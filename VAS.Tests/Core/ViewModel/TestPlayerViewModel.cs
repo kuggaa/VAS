@@ -17,6 +17,7 @@
 //
 using Moq;
 using NUnit.Framework;
+using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.ViewModel;
 
@@ -73,6 +74,30 @@ namespace VAS.Tests.Core.ViewModel
 			viewModel.Volume = 5;
 
 			Assert.AreEqual (0, playerController.Object.Volume);
+		}
+
+		[Test]
+		public void SetZoom_ViewModelUpdated ()
+		{
+			var playerController = new Mock<IVideoPlayerController> ();
+			playerController.SetupAllProperties ();
+			var viewModel = new VideoPlayerVM { Player = playerController.Object };
+
+			viewModel.SetZoom (3);
+
+			playerController.Verify (p => p.SetZoom (3));
+		}
+
+		[Test]
+		public void MoveROI_ROIMoved ()
+		{
+			var playerController = new Mock<IVideoPlayerController> ();
+			playerController.SetupAllProperties ();
+			var viewModel = new VideoPlayerVM { Player = playerController.Object };
+
+			viewModel.MoveROI (new Point (1, 3));
+
+			playerController.Verify (p => p.MoveROI (new Point (1, 3)));
 		}
 	}
 }

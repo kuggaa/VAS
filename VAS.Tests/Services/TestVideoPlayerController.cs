@@ -329,6 +329,7 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (streamLength, duration);
 			Assert.AreEqual (new Time (0), curTime);
 			Assert.AreEqual (fileSet, mfs);
+			Assert.AreEqual (playerVM.Zoom, 1);
 
 			App.Current.EventsBroker.Unsubscribe<MultimediaErrorEvent> (et);
 		}
@@ -970,8 +971,8 @@ namespace VAS.Tests.Services
 
 			/* Change again the cameras visible */
 			player.CamerasConfig = new ObservableCollection<CameraConfig> {
-					new CameraConfig (2),
-					new CameraConfig (3)
+					new CameraConfig (1),
+					new CameraConfig (0)
 				};
 			Assert.AreEqual (evt.CamerasConfig, new List<CameraConfig> { new CameraConfig (0) });
 			player.LoadEvent (evt, new Time (0), true);
@@ -983,7 +984,7 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (0, elementLoaded);
 			Assert.AreEqual (0, brokerElementLoaded);
 			// Check that cameras have been restored
-			Assert.AreEqual (new List<CameraConfig> { new CameraConfig (2), new CameraConfig (3) }, player.CamerasConfig);
+			Assert.AreEqual (new List<CameraConfig> { new CameraConfig (1), new CameraConfig (0) }, player.CamerasConfig);
 		}
 
 		[Test ()]
@@ -1747,6 +1748,61 @@ namespace VAS.Tests.Services
 
 			Assert.AreEqual (new Time (30), playerVM.Duration);
 			Assert.AreEqual (new Time (30), playerVM.AbsoluteDuration);
+		}
+
+		[Test]
+		public void SetZoom_InBoundaries_ZoomChanged ()
+		{
+			PreparePlayer ();
+			player.SetZoom (2);
+
+			Assert.AreEqual (2, playerVM.Zoom);
+		}
+
+		[Test]
+		public void SetZoom_OutLowerBoundary_ZoomNotChanged ()
+		{
+			PreparePlayer ();
+			player.SetZoom (0);
+
+			Assert.AreEqual (1, playerVM.Zoom);
+		}
+
+		[Test]
+		public void SetZoom_OutHigherBoundary_ZoomNotChanged ()
+		{
+			PreparePlayer ();
+			player.SetZoom (8);
+
+			Assert.AreEqual (1, playerVM.Zoom);
+		}
+
+		[Test]
+		public void MoveROI_InBoundaries_ROIUpdated ()
+		{
+			PreparePlayer ();
+			var camConfig = player.CamerasConfig [0];
+			var oldROI = camConfig.RegionOfInterest = new Area (0, 0, 200, 100);
+			player.ApplyROI (camConfig);
+			player.MoveROI (new Point (-10, -20));
+			var newROI = player.CamerasConfig [0].RegionOfInterest;
+
+			Assert.AreEqual (oldROI.Start.X + 10, newROI.Start.X);
+			Assert.AreEqual (oldROI.Start.Y + 20, newROI.Start.Y);
+		}
+
+		[Test]
+		public void MoveROI_OutBoundaries_ROICliped ()
+		{
+			PreparePlayer ();
+			var camConfig = player.CamerasConfig [0];
+			var oldROI = camConfig.RegionOfInterest = new Area (0, 0, 200, 100);
+			player.ApplyROI (camConfig);
+			player.MoveROI (new Point (10, 20));
+			var newROI = player.CamerasConfig [0].RegionOfInterest;
+
+			Assert.AreEqual (oldROI.Start.X, newROI.Start.X);
+			Assert.AreEqual (oldROI.Start.Y, newROI.Start.Y);
 		}
 
 		void HandleElementLoadedEvent (object element, bool hasNext)

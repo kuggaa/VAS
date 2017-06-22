@@ -61,7 +61,10 @@ namespace VAS.UI
 			drawingWindow.ButtonReleaseEvent += HandleButtonReleaseEvent;
 			drawingWindow.Realized += HandleRealized;
 			drawingWindow.Unrealized += HandleUnrealized;
-			drawingWindow.AddEvents ((int)(Gdk.EventMask.ButtonPressMask | Gdk.EventMask.ButtonReleaseMask | Gdk.EventMask.PointerMotionMask | Gdk.EventMask.ScrollMask));
+			drawingWindow.LeaveNotifyEvent += HandleLeaveNotifyEventHandler; ;
+			drawingWindow.AddEvents ((int)(Gdk.EventMask.ButtonPressMask | Gdk.EventMask.ButtonReleaseMask |
+										   Gdk.EventMask.PointerMotionMask | Gdk.EventMask.ScrollMask |
+										   Gdk.EventMask.LeaveNotifyMask));
 
 			videoeventbox.ButtonPressEvent += HandleButtonPressEvent;
 			videoeventbox.ButtonReleaseEvent += HandleButtonReleaseEvent;
@@ -195,6 +198,11 @@ namespace VAS.UI
 			if (UnReadyEvent != null) {
 				UnReadyEvent (this, null);
 			}
+		}
+
+		void HandleLeaveNotifyEventHandler (object o, LeaveNotifyEventArgs args)
+		{
+			HandleButtonReleaseEvent (drawingWindow, new ButtonReleaseEventArgs ());
 		}
 	}
 }
