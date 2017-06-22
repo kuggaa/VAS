@@ -70,6 +70,16 @@ namespace VAS.Core.ViewModel
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets the current zoom level.
+		/// This value is only used for display in the view. To change the zoom use <see cref="SetZoom"/>
+		/// </summary>
+		/// <value>The new zoom.</value>
+		public double Zoom {
+			get;
+			set;
+		}
+
 		public bool Playing {
 			get;
 			set;
@@ -305,11 +315,6 @@ namespace VAS.Core.ViewModel
 			Player.Open (fileset?.Model, play);
 		}
 
-		public void ApplyROI (CameraConfig cameraConfig)
-		{
-			Player.ApplyROI (cameraConfig);
-		}
-
 		public void LoadEvent (TimelineEvent e, bool playing)
 		{
 			if (e?.Duration.MSeconds == 0) {
@@ -364,6 +369,25 @@ namespace VAS.Core.ViewModel
 					Current = true
 				}
 			);
+		}
+
+		/// <summary>
+		/// Changes the current zoom value using a value that goes from 1 (100%) to 2(200%)
+		/// </summary>
+		/// <param name="zoomLevel">Zoom level.</param>
+		public void SetZoom (double zoomLevel)
+		{
+			Player.SetZoom (zoomLevel);
+		}
+
+		/// <summary>
+		/// Moves the current RegionOfInterest for the active camera by the vector expressed between
+		/// the origin of coordinaties and the <paramref name="diff"/> point.
+		/// </summary>
+		/// <param name="diff">Diff.</param>
+		public void MoveROI (Point diff)
+		{
+			Player.MoveROI (diff);
 		}
 
 		/// <summary>
