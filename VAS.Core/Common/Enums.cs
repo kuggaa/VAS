@@ -624,5 +624,4 @@ namespace VAS.Core.Common
 		BOTTOM_LEFT,
 		BOTTOM_RIGHT
 	}
-
 }

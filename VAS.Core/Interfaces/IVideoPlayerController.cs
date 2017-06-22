@@ -221,6 +221,12 @@ namespace VAS.Core.Interfaces
 		void SetZoom (double zoomLevel);
 
 		/// <summary>
+		/// Sets the steps to perform jumps in the video player.
+		/// </summary>
+		/// <param name="steps">Steps.</param>
+		void SetSteps (double steps);
+
+		/// <summary>
 		/// Moves the current RegionOfInterest by the vector expressed between the origin of
 		/// coordinaties and the <paramref name="diff"/> point for the main.
 		/// </summary>
