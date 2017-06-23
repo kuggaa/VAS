@@ -81,27 +81,27 @@ namespace VAS.UI
 				AdjustSizeToDuration = true,
 			};
 
-			closebuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-cancel-rec",
+			closebuttonimage.Pixbuf = Misc.LoadIcon ("vas-cancel-rec",
 				StyleConf.PlayerCapturerIconSize);
-			drawbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-control-draw",
+			drawbuttonimage.Pixbuf = Misc.LoadIcon ("vas-control-draw",
 				StyleConf.PlayerCapturerIconSize);
-			playbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-control-play",
+			playbuttonimage.Pixbuf = Misc.LoadIcon ("vas-control-play",
 				StyleConf.PlayerCapturerIconSize);
-			pausebuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-control-pause",
+			pausebuttonimage.Pixbuf = Misc.LoadIcon ("vas-control-pause",
 				StyleConf.PlayerCapturerIconSize);
-			prevbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-control-rw",
+			prevbuttonimage.Pixbuf = Misc.LoadIcon ("vas-control-rw",
 				StyleConf.PlayerCapturerIconSize);
-			nextbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-control-ff",
+			nextbuttonimage.Pixbuf = Misc.LoadIcon ("vas-control-ff",
 				StyleConf.PlayerCapturerIconSize);
-			volumebuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-control-volume-hi",
+			volumebuttonimage.Pixbuf = Misc.LoadIcon ("vas-control-volume-hi",
 				StyleConf.PlayerCapturerIconSize);
-			detachbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-control-detach",
+			detachbuttonimage.Pixbuf = Misc.LoadIcon ("vas-control-detach",
 				StyleConf.PlayerCapturerIconSize);
-			viewportsSwitchImage.Pixbuf = Misc.LoadIcon ("longomatch-video-device",
+			viewportsSwitchImage.Pixbuf = Misc.LoadIcon ("vas-video-device",
 				22);
-			zoomLevelImage.Pixbuf = Misc.LoadIcon ("longomatch-search",
+			zoomLevelImage.Pixbuf = Misc.LoadIcon ("vas-search",
 				22);
-			centerplayheadbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-dash-center-view",
+			centerplayheadbuttonimage.Pixbuf = Misc.LoadIcon ("vas-dash-center-view",
 				StyleConf.PlayerCapturerIconSize);
 
 			// Force tooltips to be translatable as there seems to be a bug in stetic 
@@ -487,7 +487,7 @@ namespace VAS.UI
 			} else if (prevLevel <= 0.5 && level > 0.5) {
 				SetVolumeIcon ("longomatch-control-volume-med");
 			} else if (prevLevel < 1 && level == 1) {
-				SetVolumeIcon ("longomatch-control-volume-hi");
+				SetVolumeIcon ("vas-control-volume-hi");
 			}
 			playerVM.SetVolume (level);
 			if (level == 0)
@@ -864,11 +864,11 @@ namespace VAS.UI
 		void HandlePlayerAttachedChanged ()
 		{
 			if (playerVM.PlayerAttached) {
-				detachbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-control-attach",
+				detachbuttonimage.Pixbuf = Misc.LoadIcon ("vas-control-attach",
 					StyleConf.PlayerCapturerIconSize);
 				detachbutton.TooltipMarkup = Catalog.GetString ("Attach window");
 			} else {
-				detachbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-control-detach",
+				detachbuttonimage.Pixbuf = Misc.LoadIcon ("vas-control-detach",
 					StyleConf.PlayerCapturerIconSize);
 				detachbutton.TooltipMarkup = Catalog.GetString ("Detach window");
 			}

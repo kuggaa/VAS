@@ -41,13 +41,13 @@ namespace VAS.Core.ViewModel
 		{
 			AddButton = new Command<string> (
 				(s) => App.Current.EventsBroker.Publish (new CreateDashboardButtonEvent { Name = s })) {
-				Icon = App.Current.ResourcesLocator.LoadIcon ("longomatch-add", App.Current.Style.ButtonNormalWidth),
+				Icon = App.Current.ResourcesLocator.LoadIcon ("vas-add", App.Current.Style.ButtonNormalWidth),
 				Text = Catalog.GetString ("Add"),
 			};
 
 			DeleteButton = new Command<DashboardButtonVM> (
 				(s) => App.Current.EventsBroker.Publish (new DeleteEvent<DashboardButtonVM> { Object = s })) {
-				Icon = App.Current.ResourcesLocator.LoadIcon ("longomatch-delete", App.Current.Style.ButtonNormalWidth),
+				Icon = App.Current.ResourcesLocator.LoadIcon ("vas-delete", App.Current.Style.ButtonNormalWidth),
 				Text = Catalog.GetString ("Delete"),
 			};
 
@@ -58,7 +58,7 @@ namespace VAS.Core.ViewModel
 
 			DeleteLink = new Command<ActionLinkVM> (
 				(s) => App.Current.EventsBroker.Publish (new DeleteEvent<ActionLinkVM> { Object = s })) {
-				Icon = App.Current.ResourcesLocator.LoadIcon ("longomatch-delete", App.Current.Style.ButtonNormalWidth),
+				Icon = App.Current.ResourcesLocator.LoadIcon ("vas-delete", App.Current.Style.ButtonNormalWidth),
 				Text = Catalog.GetString ("Delete"),
 			};
 
@@ -73,19 +73,19 @@ namespace VAS.Core.ViewModel
 			};
 
 			ToggleActionLinks = new Command<bool> ((p) => ShowLinks = p) {
-				Icon = App.Current.ResourcesLocator.LoadIcon ("longomatch-link-active", App.Current.Style.ButtonNormalWidth),
-				IconInactive = App.Current.ResourcesLocator.LoadIcon ("longomatch-link-disabled", App.Current.Style.ButtonNormalWidth),
+				Icon = App.Current.ResourcesLocator.LoadIcon ("vas-link-active", App.Current.Style.ButtonNormalWidth),
+				IconInactive = App.Current.ResourcesLocator.LoadIcon ("vas-link-disabled", App.Current.Style.ButtonNormalWidth),
 				ToolTipText = Catalog.GetString ("Edit action links"),
 			};
 
 			ChangeDashboardMode = new Command<DashboardMode> ((p) => Mode = p) {
-				Icon = App.Current.ResourcesLocator.LoadIcon ("longomatch-dash-edit_active", App.Current.Style.ButtonNormalWidth),
-				IconInactive = App.Current.ResourcesLocator.LoadIcon ("longomatch-dash-edit", App.Current.Style.ButtonNormalWidth),
+				Icon = App.Current.ResourcesLocator.LoadIcon ("vas-dash-edit-active", App.Current.Style.ButtonNormalWidth),
+				IconInactive = App.Current.ResourcesLocator.LoadIcon ("vas-dash-edit", App.Current.Style.ButtonNormalWidth),
 				ToolTipText = Catalog.GetString ("Edit dashboard"),
 			};
 
 			TogglePopupWindow = new Command<bool> ((p) => DisablePopupWindow = !p) {
-				Icon = App.Current.ResourcesLocator.LoadIcon ("longomatch-popup", App.Current.Style.ButtonNormalWidth),
+				Icon = App.Current.ResourcesLocator.LoadIcon ("vas-popup", App.Current.Style.ButtonNormalWidth),
 				ToolTipText = Catalog.GetString ("Disable popup window"),
 			};
 

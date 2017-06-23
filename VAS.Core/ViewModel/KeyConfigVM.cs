@@ -34,7 +34,7 @@ namespace VAS.Core.ViewModel
 		public KeyConfigVM ()
 		{
 			EditCommand = new AsyncCommand (EditKey, () => { return true; });
-			EditCommand.Icon = App.Current.ResourcesLocator.LoadIcon ("longomatch-control-draw");
+			EditCommand.Icon = App.Current.ResourcesLocator.LoadIcon ("vas-control-draw");
 			EditCommand.ToolTipText = Catalog.GetString ("Edit Shortcut");
 		}
 		/// <summary>
