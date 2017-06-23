@@ -17,12 +17,10 @@
 //
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Gdk;
+using System.Runtime.InteropServices;
+using AppKit;
 using Newtonsoft.Json;
 using SkiaSharp;
-using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using Color = VAS.Core.Common.Color;
@@ -138,7 +136,7 @@ namespace VAS.Drawing.Skia
 
 		public ISurface CreateSurfaceFromResource (string resourceName, bool warnOnDispose = true)
 		{
-			Image img = Resources.LoadImage (resourceName);
+			Image img = App.Current.ResourcesLocator.LoadImage (resourceName);
 			return CreateSurface (img.Width, img.Height, img, warnOnDispose);
 		}
 
@@ -190,6 +188,7 @@ namespace VAS.Drawing.Skia
 				SKRect deviceRect = inverse.MapRect (userRect);
 				return deviceRect.ToArea ();
 			} else {
+				return a;
 				throw new InvalidOperationException ();
 			}
 		}
@@ -317,12 +316,12 @@ namespace VAS.Drawing.Skia
 			Paint.Typeface = null;
 		}
 
-		public void DrawImage (Image image)
+		public void DrawImage (Image image, float alpha = 1)
 		{
 			Canvas.DrawImage (image.ToSKImage (), 0, 0, Paint);
 		}
 
-		public void DrawImage (Point start, double width, double height, Image image, ScaleMode mode, bool masked = false)
+		public void DrawImage (Point start, double width, double height, Image image, ScaleMode mode, bool masked = false, float alpha = 1)
 		{
 			double scaleX, scaleY;
 			Point offset;
@@ -337,6 +336,7 @@ namespace VAS.Drawing.Skia
 				Canvas.Save ();
 				Canvas.Translate ((float)(offset.X + start.X), (float)(offset.Y + start.Y));
 				Canvas.Scale ((float)scaleX, (float)scaleY);
+				// FIXME: Implement alhpa
 				Canvas.DrawImage (image.ToSKImage (), 0, 0, paint);
 				Canvas.Restore ();
 			}
@@ -468,6 +468,12 @@ namespace VAS.Drawing.Skia
 			}
 		}
 
+
+		[DllImport ("libgdk-quartz-2.0.0.dylib")]
+		static extern IntPtr gdk_quartz_window_get_nsview (IntPtr handle);
+
+		[DllImport ("libgdk-quartz-2.0.0.dylib")]
+		static extern void gdk_window_ensure_native (IntPtr handle);
 	}
 
 	/// <summary>

@@ -62,7 +62,7 @@ namespace VAS.Core.Common
 		public BaseImage (byte [] data, int width, int height, int stride)
 		{
 			DeviceScaleFactor = App.Current.GUIToolkit.DeviceScaleFactor;
-			Value = LoadFromData (stream, (int)(width * DeviceScaleFactor), (int)(height * DeviceScaleFactor));
+			Value = LoadFromData (data, (int)(width * DeviceScaleFactor), (int)(height * DeviceScaleFactor), stride);
 		}
 
 		protected override void DisposeManagedResources ()

@@ -10,38 +10,37 @@ namespace VAS.UI
 
 		private global::VAS.UI.VideoWindow viewport;
 
-		protected virtual void Build()
+		protected virtual void Build ()
 		{
-			global::Stetic.Gui.Initialize(this);
+			global::Stetic.Gui.Initialize (this);
 			// Widget VAS.UI.SubViewport
-			global::Stetic.BinContainer.Attach(this);
+			global::Stetic.BinContainer.Attach (this);
 			this.Name = "VAS.UI.SubViewport";
 			// Container child VAS.UI.SubViewport.Gtk.Container+ContainerChild
-			this.totalbox = new global::Gtk.VBox();
+			this.totalbox = new global::Gtk.VBox ();
 			this.totalbox.Name = "totalbox";
 			// Container child totalbox.Gtk.Box+BoxChild
-			this.cameracombobox = global::Gtk.ComboBox.NewText();
+			this.cameracombobox = global::Gtk.ComboBox.NewText ();
 			this.cameracombobox.Events = ((global::Gdk.EventMask)(256));
 			this.cameracombobox.Name = "cameracombobox";
-			this.totalbox.Add(this.cameracombobox);
-			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.totalbox[this.cameracombobox]));
+			this.totalbox.Add (this.cameracombobox);
+			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.totalbox [this.cameracombobox]));
 			w1.Position = 0;
 			w1.Expand = false;
 			w1.Fill = false;
 			// Container child totalbox.Gtk.Box+BoxChild
-			this.viewport = new global::VAS.UI.VideoWindow();
+			this.viewport = new global::VAS.UI.VideoWindow ();
 			this.viewport.Events = ((global::Gdk.EventMask)(256));
 			this.viewport.Name = "viewport";
 			this.viewport.Ratio = 1F;
-			this.totalbox.Add(this.viewport);
-			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.totalbox[this.viewport]));
+			this.totalbox.Add (this.viewport);
+			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.totalbox [this.viewport]));
 			w2.Position = 1;
-			this.Add(this.totalbox);
-			if ((this.Child != null))
-			{
-				this.Child.ShowAll();
+			this.Add (this.totalbox);
+			if ((this.Child != null)) {
+				this.Child.ShowAll ();
 			}
-			this.Hide();
+			this.Hide ();
 		}
 	}
 }

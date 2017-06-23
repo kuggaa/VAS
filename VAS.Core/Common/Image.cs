@@ -69,6 +69,12 @@ namespace VAS.Core.Common
 
 		protected override SKBitmap LoadFromFile (string filepath)
 		{
+			int idx = filepath.LastIndexOf ('.');
+			var path = filepath.Substring (0, idx) + "@2x" + filepath.Substring (idx);
+			if (File.Exists (path)) {
+				DeviceScaleFactor = 2;
+				filepath = path;
+			}
 			using (var fileStream = File.OpenRead (filepath)) {
 				using (var stream = new SKManagedStream (fileStream)) {
 					return SKBitmap.Decode (stream);
@@ -78,13 +84,6 @@ namespace VAS.Core.Common
 
 		protected override SKBitmap LoadFromFile (string filepath, int width, int height)
 		{
-			int idx = filepath.LastIndexOf ('.');
-			var path = filepath.Substring (0, idx) + "@2x" + filepath.Substring (idx);
-			if (File.Exists (path)) {
-				DeviceScaleFactor = 2;
-				return new Pixbuf (path);
-			}
-			return new Pixbuf (filepath);
 			SKBitmap bitmap = LoadFromFile (filepath);
 			// FIXME: Scale
 			return bitmap;
@@ -97,15 +96,18 @@ namespace VAS.Core.Common
 			}
 		}
 
+		protected override SKBitmap LoadFromStream (Stream fileStream, int width, int height)
+		{
+			// FIXME: Scale
+			using (var stream = new SKManagedStream (fileStream)) {
+				return SKBitmap.Decode (stream);
+			}
+		}
+
 		protected override SKBitmap LoadFromData (byte [] data, int width, int height, int stride)
 		{
 			SKBitmap bitmap = new SKBitmap (width, height, SKColorType.Rgba8888, SKAlphaType.Opaque);
-			throw new NotImplementedException ();
-		}
-
-		protected override Pixbuf LoadFromStream (Stream stream, int width, int height)
-		{
-			return new Pixbuf (stream, width, height);
+			return bitmap;
 		}
 
 		public override byte [] Serialize ()

@@ -101,10 +101,6 @@
 			<Project>{E75E30DC-C1CF-4683-9A36-65B91EF10095}</Project>
 			<Name>VAS.UI.Helpers.Gtk2</Name>
 		</ProjectReference>
-		<ProjectReference Include="..\VAS.Drawing.Cairo\VAS.Drawing.Cairo.csproj">
-			<Project>{AE98609B-353C-4CE4-A5B7-606BB4EE3576}</Project>
-			<Name>VAS.Drawing.Cairo</Name>
-		</ProjectReference>
 		<ProjectReference Include="..\VAS.Drawing\VAS.Drawing.Net45.csproj">
 			<Project>{F99F378C-8C75-4888-A173-C7B4EC2D37E0}</Project>
 			<Name>VAS.Drawing.Net45</Name>

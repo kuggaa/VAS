@@ -6,7 +6,6 @@
   </configuration>
   <import>
     <widget-library name="../../../bin/VAS.UI.Helpers.Gtk2.dll" />
-    <widget-library name="../../../bin/VAS.Drawing.Cairo.dll" />
     <widget-library name="../../../bin/VAS.UI.Multimedia.Gtk2.dll" internal="true" />
   </import>
   <widget class="Gtk.Window" id="VAS.UI.VolumeWindow" design-size="31 204">

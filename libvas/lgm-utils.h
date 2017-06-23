@@ -31,6 +31,7 @@
 #include <gio/gio.h>
 #include <glib/gi18n.h>
 #include <gdk/gdk.h>
+#include <Cocoa/Cocoa.h>
 
 #ifdef WIN32
 #define EXPORT __declspec (dllexport)
@@ -150,6 +151,8 @@ EXPORT GstDiscovererResult lgm_discover_uri (const gchar *uri, guint64 *duration
     GError **err);
 EXPORT guintptr lgm_get_window_handle (GdkWindow *window);
 EXPORT void lgm_set_window_handle (GstXOverlay *overlay, guintptr window_handle);
+
+EXPORT void lgm_add_subview (GdkWindow *window, CALayer *layer);
 
 void lgm_init_debug();
 gchar * lgm_filename_to_uri (const gchar *filena);

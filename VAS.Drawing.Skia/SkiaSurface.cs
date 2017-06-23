@@ -68,6 +68,11 @@ namespace VAS.Drawing.Skia
 			}
 		}
 
+		public float DeviceScaleFactor {
+			get;
+			protected set;
+		} = 1;
+
 		public int Width {
 			get;
 			protected set;
@@ -89,8 +94,10 @@ namespace VAS.Drawing.Skia
 			bitmap = new SKBitmap (width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
 			if (image != null) {
 				using (var ctx = new SkiaContext (new SKCanvas (bitmap))) {
+					var oldCtx = App.Current.DrawingToolkit.Context;
 					App.Current.DrawingToolkit.Context = ctx;
 					App.Current.DrawingToolkit.DrawImage (image);
+					App.Current.DrawingToolkit.Context = oldCtx;
 				}
 			}
 			Width = width;

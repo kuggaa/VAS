@@ -32,6 +32,8 @@ using Image = VAS.Core.Common.Image;
 using Point = VAS.Core.Common.Point;
 using Rectangle = Gdk.Rectangle;
 using VASDrawing = VAS.Core.Handlers.Drawing;
+using Foundation;
+using CoreGraphics;
 
 namespace VAS.Drawing.Skia
 {
@@ -44,7 +46,7 @@ namespace VAS.Drawing.Skia
 		public event ShowTooltipHandler ShowTooltipEvent;
 		public event VASDrawing.SizeChangedHandler SizeChangedEvent;
 
-		SKCanvasLayer layer;
+		SKGLLayer layer;
 		int currentWidth, currentHeight;
 		double lastX, lastY;
 		bool canMove, inButtonPress;
@@ -57,9 +59,9 @@ namespace VAS.Drawing.Skia
 			AddEvents ((int)EventMask.ButtonPressMask);
 			AddEvents ((int)EventMask.ButtonReleaseMask);
 			AddEvents ((int)EventMask.KeyPressMask);
-			ExposeEvent += HandleExposeEvent;
 			MotionNotifyEvent += HandleMotionNotifyEvent;
 			Realized += HandleRealized;
+			//WidgetFlags |= Gtk.WidgetFlags.NoWindow;
 		}
 
 		public override void Dispose ()
@@ -221,9 +223,7 @@ namespace VAS.Drawing.Skia
 			if (cursorStr == null) {
 				GdkWindow.Cursor = cursor;
 			} else {
-				Image img = Resources.LoadImage (System.IO.Path.Combine ("images/cursors", cursorStr));
-				Cursor c = new Cursor (Display, img.Value, 0, 0);
-				GdkWindow.Cursor = c;
+				Image img = App.Current.ResourcesLocator.LoadImage (System.IO.Path.Combine ("images/cursors", cursorStr));
 			}
 		}
 
@@ -424,51 +424,22 @@ namespace VAS.Drawing.Skia
 			return true;
 		}
 
-		void HandleExposeEvent (object o, ExposeEventArgs args)
-		{
-			Rectangle r;
-			Area a;
-			bool size_changed;
-
-			size_changed = Allocation.Height != currentHeight;
-			size_changed |= Allocation.Width != currentWidth;
-			currentWidth = Allocation.Width;
-			currentHeight = Allocation.Height;
-			if (size_changed && SizeChangedEvent != null) {
-				SizeChangedEvent ();
-			}
-
-			r = args.Event.Area;
-			a = new Area (new Point (r.X, r.Y), r.Width, r.Height);
-			Draw (a);
-		}
-
-		void Layer_PaintSurface (object sender, SKPaintSurfaceEventArgs e)
+		void Layer_PaintSurface (object sender, SKPaintGLSurfaceEventArgs e)
 		{
 			var c = new SkiaContext (e.Surface);
-			Console.WriteLine (e.Info.Rect);
+			Console.WriteLine (e.RenderTarget.Rect);
+			(c.Value as SKCanvas).DrawColor (new SKColor (255, 0, 0));
 			DrawEvent (c, null);
 		}
 
-		[DllImport ("libgdk-quartz-2.0.0.dylib")]
-		static extern IntPtr gdk_quartz_window_get_nsview (IntPtr handle);
-
-		[DllImport ("libgdk-quartz-2.0.0.dylib")]
-		static extern void gdk_window_ensure_native (IntPtr handle);
+		[DllImport ("libvas.dylib")]
+		static extern void lgm_add_subview (IntPtr view, IntPtr layer);
 
 		void HandleRealized (object sender, EventArgs e)
 		{
-			gdk_window_ensure_native (GdkWindow.Handle);
-			NSView view = new NSView ();
-			view.Handle = gdk_quartz_window_get_nsview (GdkWindow.Handle);
-
-			NSView subview = new NSView (view.Bounds);
-			layer = new SKCanvasLayer ();
+			layer = new SKGLLayer ();
 			layer.PaintSurface += Layer_PaintSurface;
-			view.AddSubview (view);
-			subview.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable;
-			subview.Layer = layer;
-			subview.WantsLayer = true;
+			lgm_add_subview (GdkWindow.Handle, layer.Handle);
 		}
 	}
 }

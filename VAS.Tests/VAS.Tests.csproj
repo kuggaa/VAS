@@ -207,10 +207,6 @@
       <Project>{4F1F28AB-3D1F-4F3F-95A4-2E08B448317C}</Project>
       <Name>VAS.UI.Gtk2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\VAS.Drawing.Cairo\VAS.Drawing.Cairo.csproj">
-      <Project>{AE98609B-353C-4CE4-A5B7-606BB4EE3576}</Project>
-      <Name>VAS.Drawing.Cairo</Name>
-    </ProjectReference>
     <ProjectReference Include="..\VAS.Drawing\VAS.Drawing.Net45.csproj">
       <Project>{F99F378C-8C75-4888-A173-C7B4EC2D37E0}</Project>
       <Name>VAS.Drawing.Net45</Name>

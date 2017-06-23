@@ -19,10 +19,8 @@ using System;
 using Gdk;
 using Gtk;
 using VAS.Core.Common;
-using VAS.Drawing.Cairo;
 using Image = VAS.Core.Common.Image;
 using Point = VAS.Core.Common.Point;
-using Color = VAS.Core.Common.Color;
 
 namespace VAS.UI.Helpers
 {
@@ -33,13 +31,12 @@ namespace VAS.UI.Helpers
 	/// smaller than the allocated space.
 	/// </summary>
 	[System.ComponentModel.ToolboxItem (true)]
-	public class ImageView : Gtk.Misc
+	public class ImageView : SkiaDrawingArea
 	{
 		Image image;
 
 		public ImageView ()
 		{
-			WidgetFlags |= WidgetFlags.AppPaintable | WidgetFlags.NoWindow;
 		}
 
 		public ImageView (Image image) : this ()
@@ -119,8 +116,7 @@ namespace VAS.UI.Helpers
 			if (image != null) {
 				var alloc = Allocation;
 				alloc.Inflate (-Xpad, -Ypad);
-				using (var ctx = CairoHelper.Create (evnt.Window)) {
-					var context = new CairoContext (ctx);
+				using (var ctx = App.Current.DrawingToolkit.CreateContextFromNativeWindow (evnt.Window)) {
 					var width = WidthRequest != -1 ? WidthRequest : image.Width;
 					var height = HeightRequest != -1 ? HeightRequest : image.Height;
 					var point = new Point (alloc.X, alloc.Y);
@@ -136,7 +132,7 @@ namespace VAS.UI.Helpers
 						height = alloc.Height;
 					}
 
-					App.Current.DrawingToolkit.Context = context;
+					App.Current.DrawingToolkit.Context = ctx;
 					var r = evnt.Area;
 					App.Current.DrawingToolkit.Clip (new Area (new Point (r.X, r.Y), r.Width, r.Height));
 					var alpha = IsParentUnsensitive ? 0.4f : 1f;

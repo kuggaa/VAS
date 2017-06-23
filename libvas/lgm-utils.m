@@ -30,6 +30,7 @@
 #include <gdk/gdkwin32.h>
 #elif defined (GDK_WINDOWING_QUARTZ)
 #include <gdk/gdkquartz.h>
+#include <Cocoa/Cocoa.h>
 #endif
 
 GstAutoplugSelectResult
@@ -41,6 +42,19 @@ lgm_filter_video_decoders (GstElement * object, GstPad * arg0,
     return GST_AUTOPLUG_SELECT_SKIP;
   }
   return GST_AUTOPLUG_SELECT_TRY;
+}
+
+void lgm_add_subview (GdkWindow *window, CALayer *layer)
+{
+  gdk_window_ensure_native (window);
+  NSView * parent = gdk_quartz_window_get_nsview (window);
+  NSView *child = [[NSView alloc] initWithFrame: [parent bounds]];
+  [child initWithFrame: [parent bounds]];
+  [parent addSubview:child];
+  [child setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
+  [child setLayer:layer];
+  [child setWantsLayer:YES];
+  layer.backgroundColor = [NSColor blackColor].CGColor;
 }
 
 guintptr
