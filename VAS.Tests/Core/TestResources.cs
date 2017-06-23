@@ -38,14 +38,14 @@ namespace VAS.Tests.Core
 		[Test ()]
 		public void TestLoadIconResource ()
 		{
-			Image img = resources.LoadImage ("longomatch-dark-bg.svg");
+			Image img = resources.LoadImage ("vas-dark-bg.svg");
 			Assert.IsNotNull (img);
 		}
 
 		[Test ()]
 		public void TestLoadImageResource ()
 		{
-			Image img = resources.LoadImage ("longomatch.svg");
+			Image img = resources.LoadImage ("vas-longomatch.svg");
 			Assert.IsNotNull (img);
 		}
 

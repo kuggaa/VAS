@@ -68,22 +68,22 @@ namespace VAS.UI.Dialog
 
 			selectbutton.Active = true;
 
-			selectbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-select", 20);
-			eraserbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-eraser", 20);
-			penbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-pencil", 20);
-			textbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-text", 20);
-			linebuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-arrow", 20);
-			crossbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-mark", 20);
-			rectanglebuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-square", 20);
-			ellipsebuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-circle", 20);
-			rectanglefilledbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-square-fill", 20);
-			ellipsefilledbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-circle-fill", 20);
-			playerbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-person", 20);
-			numberbuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-counter", 20);
-			anglebuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-angle", 20);
-			zoombuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-search", 20);
-			zoomoutimage.Pixbuf = Misc.LoadIcon ("longomatch-zoom-out", 14);
-			zoominimage.Pixbuf = Misc.LoadIcon ("longomatch-zoom-in", 14);
+			selectbuttonimage.Pixbuf = Misc.LoadIcon ("vas-select", 20);
+			eraserbuttonimage.Pixbuf = Misc.LoadIcon ("vas-eraser", 20);
+			penbuttonimage.Pixbuf = Misc.LoadIcon ("vas-pencil", 20);
+			textbuttonimage.Pixbuf = Misc.LoadIcon ("vas-text", 20);
+			linebuttonimage.Pixbuf = Misc.LoadIcon ("vas-arrow", 20);
+			crossbuttonimage.Pixbuf = Misc.LoadIcon ("vas-mark", 20);
+			rectanglebuttonimage.Pixbuf = Misc.LoadIcon ("vas-square", 20);
+			ellipsebuttonimage.Pixbuf = Misc.LoadIcon ("vas-circle", 20);
+			rectanglefilledbuttonimage.Pixbuf = Misc.LoadIcon ("vas-square-fill", 20);
+			ellipsefilledbuttonimage.Pixbuf = Misc.LoadIcon ("vas-circle-fill", 20);
+			playerbuttonimage.Pixbuf = Misc.LoadIcon ("vas-person", 20);
+			numberbuttonimage.Pixbuf = Misc.LoadIcon ("vas-counter", 20);
+			anglebuttonimage.Pixbuf = Misc.LoadIcon ("vas-angle", 20);
+			zoombuttonimage.Pixbuf = Misc.LoadIcon ("vas-search", 20);
+			zoomoutimage.Pixbuf = Misc.LoadIcon ("vas-zoom-out", 14);
+			zoominimage.Pixbuf = Misc.LoadIcon ("vas-zoom-in", 14);
 
 			selectbutton.Toggled += HandleToolClicked;
 			eraserbutton.Toggled += HandleToolClicked;

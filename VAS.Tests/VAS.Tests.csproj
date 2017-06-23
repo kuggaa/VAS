@@ -181,10 +181,10 @@
   <Import Project="$(SolutionDir)\packages\SQLitePCL.native.sqlite3.v110_xp.0.9.1\build\SQLitePCL.native.sqlite3.v110_xp.targets" Condition="Exists('$(SolutionDir)\packages\SQLitePCL.native.sqlite3.v110_xp.0.9.1\build\SQLitePCL.native.sqlite3.v110_xp.targets')" />
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="data\longomatch-dark-bg.svg">
+    <None Include="data\vas-dark-bg.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\longomatch.svg">
+    <None Include="data\vas-longomatch.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -241,8 +241,8 @@
     <Folder Include="Helpers\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Core\dibujo.svg">
-      <LogicalName>dibujo.svg</LogicalName>
+    <EmbeddedResource Include="Core\vas-dibujo.svg">
+      <LogicalName>vas-dibujo.svg</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ProjectExtensions>
