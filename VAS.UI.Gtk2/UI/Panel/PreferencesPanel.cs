@@ -49,6 +49,7 @@ namespace VAS.UI.Panel
 			treeview.EnableTreeLines = false;
 			treeview.Selection.Mode = SelectionMode.Single;
 			treeview.Selection.Changed += HandleSelectionChanged;
+			Bind ();
 		}
 
 		/// <summary>
