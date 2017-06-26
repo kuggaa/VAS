@@ -171,6 +171,11 @@ namespace VAS.Drawing.Widgets
 			}
 			set {
 				tool = value;
+				if (tool == DrawTool.Pen) {
+					widget.MoveWaitMS = 10;
+				} else {
+					widget.MoveWaitMS = 200;
+				}
 				widget?.SetCursorForTool (tool);
 			}
 		}
