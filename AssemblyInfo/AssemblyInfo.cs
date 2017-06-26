@@ -26,14 +26,14 @@ using System.Runtime.CompilerServices;
 // change them to the information which is associated with the assembly
 // you compile.
 
-[assembly: AssemblyTitle("VAS")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("Fluendo S.A.")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
+[assembly: AssemblyTitle ("VAS")]
+[assembly: AssemblyDescription ("")]
+[assembly: AssemblyConfiguration ("")]
+[assembly: AssemblyCompany ("")]
+[assembly: AssemblyProduct ("")]
+[assembly: AssemblyCopyright ("Fluendo S.A.")]
+[assembly: AssemblyTrademark ("")]
+[assembly: AssemblyCulture ("")]
 
 // The assembly version has following format :
 //
@@ -42,14 +42,16 @@ using System.Runtime.CompilerServices;
 // You can specify all values by your own or you can build default build and revision
 // numbers with the '*' character (the default):
 
-[assembly: AssemblyVersion("1.3.7.262")]
-[assembly: AssemblyFileVersion("1.3.7.262-28bf-dirty")]
-[assembly: AssemblyInformationalVersion("1.3.7.262-28bf-dirty")]
+[assembly: AssemblyVersion ("1.3.7.262")]
+[assembly: AssemblyFileVersion ("1.3.7.262-28bf-dirty")]
+[assembly: AssemblyInformationalVersion ("1.3.7.262-28bf-dirty")]
 
 // The following attributes specify the key for the sign of your assembly. See the
 // .NET Framework documentation for more information about signing.
 // This is not required, if you don't want signing let these attributes like they're.
-[assembly: AssemblyDelaySign(false)]
-[assembly: AssemblyKeyFile("")]
-[assembly: InternalsVisibleTo("Tests")]
-[assembly: InternalsVisibleTo("VAS.Tests")]
+[assembly: AssemblyDelaySign (false)]
+[assembly: AssemblyKeyFile ("")]
+[assembly: InternalsVisibleTo ("Tests")]
+[assembly: InternalsVisibleTo ("VAS.Tests")]
+[assembly: InternalsVisibleTo ("FluVAS.Tests")]
+[assembly: InternalsVisibleTo ("LongoMatch.Plugins.Pro.Tests")]
