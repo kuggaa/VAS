@@ -747,9 +747,6 @@ namespace VAS.UI
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.PlayerAttached))) {
 				HandlePlayerAttachedChanged ();
 			}
-			if (ViewModel.NeedsSync (e, nameof (ViewModel.ShowDetachButton))) {
-				detachbutton.Visible = playerVM.ShowDetachButton;
-			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Playing))) {
 				HandlePlayingChanged ();
 			}
@@ -826,7 +823,6 @@ namespace VAS.UI
 				mode == PlayerViewOperationMode.Synchronization;
 
 			detachbutton.Visible =
-				mode == PlayerViewOperationMode.Synchronization ||
 				mode == PlayerViewOperationMode.Analysis ||
 				mode == PlayerViewOperationMode.SimpleWithControls;
 
