@@ -475,18 +475,19 @@ namespace VAS.UI
 		void HandleVolumeChanged (double level)
 		{
 			double prevLevel;
+			prevLevel = playerVM.Volume * 100;
 
-			prevLevel = playerVM.Volume;
-			if (prevLevel > 0 && level == 0) {
-				SetVolumeIcon ("longomatch-control-volume-off");
-			} else if (prevLevel > 0.5 && level <= 0.5) {
-				SetVolumeIcon ("longomatch-control-volume-low");
-			} else if (prevLevel <= 0.5 && level > 0.5) {
-				SetVolumeIcon ("longomatch-control-volume-med");
-			} else if (prevLevel < 1 && level == 1) {
+			if (level == 0) {
+				SetVolumeIcon ("vas-control-volume-off");
+			} else if ((prevLevel >= 50 || prevLevel == 0) && level < 50) {
+				SetVolumeIcon ("vas-control-volume-low");
+			} else if ((prevLevel < 50 || prevLevel == 100) && level >= 50 && level < 100) {
+				SetVolumeIcon ("vas-control-volume-med");
+			} else if (level == 100) {
 				SetVolumeIcon ("vas-control-volume-hi");
 			}
-			playerVM.SetVolume (level);
+
+			playerVM.SetVolume (level / 100);
 			if (level == 0)
 				muted = true;
 			else

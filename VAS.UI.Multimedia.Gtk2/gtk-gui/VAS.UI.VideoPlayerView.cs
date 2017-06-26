@@ -72,15 +72,15 @@ namespace VAS.UI
 
 		private global::Gtk.Button playbutton;
 
-		private global::Gtk.Image playbuttonimage;
+		private global::VAS.UI.Helpers.ImageView playbuttonimage;
 
 		private global::Gtk.Button pausebutton;
 
-		private global::Gtk.Image pausebuttonimage;
+		private global::VAS.UI.Helpers.ImageView pausebuttonimage;
 
 		private global::Gtk.Button nextbutton;
 
-		private global::Gtk.Image nextbuttonimage;
+		private global::VAS.UI.Helpers.ImageView nextbuttonimage;
 
 		private global::Gtk.Alignment rightBlockAlignment;
 
@@ -94,7 +94,7 @@ namespace VAS.UI
 
 		private global::Gtk.Button jumpsButton;
 
-		private global::Gtk.Image jumpsButtonImage;
+		private global::VAS.UI.Helpers.ImageView jumpsButtonImage;
 
 		private global::Gtk.Label jumpsLabel;
 
@@ -104,7 +104,7 @@ namespace VAS.UI
 
 		private global::Gtk.Button zoomLevelButton;
 
-		private global::Gtk.Image zoomLevelImage;
+		private global::VAS.UI.Helpers.ImageView zoomLevelImage;
 
 		private global::Gtk.Label zoomLabel;
 
@@ -114,7 +114,7 @@ namespace VAS.UI
 
 		private global::Gtk.Button rateLevelButton;
 
-		private global::Gtk.Image rateLevelButtonImage;
+		private global::VAS.UI.Helpers.ImageView rateLevelButtonImage;
 
 		private global::Gtk.Label rateLabel;
 
@@ -122,7 +122,7 @@ namespace VAS.UI
 
 		private global::Gtk.ToggleButton DurationButton;
 
-		private global::Gtk.Image DurationButtonImage;
+		private global::VAS.UI.Helpers.ImageView DurationButtonImage;
 
 		private global::Gtk.Label durationLabel;
 
@@ -130,7 +130,7 @@ namespace VAS.UI
 
 		private global::Gtk.ToggleButton viewportsSwitchButton;
 
-		private global::Gtk.Image viewportsSwitchImage;
+		private global::VAS.UI.Helpers.ImageView viewportsSwitchImage;
 
 		private global::Gtk.VSeparator viewportsSwitchSeparator;
 
@@ -138,7 +138,7 @@ namespace VAS.UI
 
 		private global::Gtk.Button centerplayheadbutton;
 
-		private global::Gtk.Image centerplayheadbuttonimage;
+		private global::VAS.UI.Helpers.ImageView centerplayheadbuttonimage;
 
 		private global::Gtk.VSeparator vseparator8;
 
@@ -148,7 +148,7 @@ namespace VAS.UI
 
 		private global::Gtk.Button volumebutton;
 
-		private global::Gtk.Image volumebuttonimage;
+		private global::VAS.UI.Helpers.ImageView volumebuttonimage;
 
 		protected virtual void Build()
 		{
@@ -264,7 +264,7 @@ namespace VAS.UI
 			this.closebutton.Name = "closebutton";
 			this.closebutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child closebutton.Gtk.Container+ContainerChild
-			this.closebuttonimage = new global::Gtk.Image();
+			this.closebuttonimage = new global::VAS.UI.Helpers.ImageView();
 			this.closebuttonimage.Name = "closebuttonimage";
 			this.closebutton.Add(this.closebuttonimage);
 			this.hbox2.Add(this.closebutton);
@@ -278,7 +278,7 @@ namespace VAS.UI
 			this.drawbutton.Name = "drawbutton";
 			this.drawbutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child drawbutton.Gtk.Container+ContainerChild
-			this.drawbuttonimage = new global::Gtk.Image();
+			this.drawbuttonimage = new global::VAS.UI.Helpers.ImageView();
 			this.drawbuttonimage.Name = "drawbuttonimage";
 			this.drawbutton.Add(this.drawbuttonimage);
 			this.hbox2.Add(this.drawbutton);
@@ -362,7 +362,7 @@ namespace VAS.UI
 			this.prevbutton.Name = "prevbutton";
 			this.prevbutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child prevbutton.Gtk.Container+ContainerChild
-			this.prevbuttonimage = new global::Gtk.Image();
+			this.prevbuttonimage = new global::VAS.UI.Helpers.ImageView();
 			this.prevbuttonimage.Name = "prevbuttonimage";
 			this.prevbutton.Add(this.prevbuttonimage);
 			this.buttonsbox.Add(this.prevbutton);
@@ -376,7 +376,7 @@ namespace VAS.UI
 			this.playbutton.Name = "playbutton";
 			this.playbutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child playbutton.Gtk.Container+ContainerChild
-			this.playbuttonimage = new global::Gtk.Image();
+			this.playbuttonimage = new global::VAS.UI.Helpers.ImageView();
 			this.playbuttonimage.Name = "playbuttonimage";
 			this.playbutton.Add(this.playbuttonimage);
 			this.buttonsbox.Add(this.playbutton);
@@ -390,7 +390,7 @@ namespace VAS.UI
 			this.pausebutton.Name = "pausebutton";
 			this.pausebutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child pausebutton.Gtk.Container+ContainerChild
-			this.pausebuttonimage = new global::Gtk.Image();
+			this.pausebuttonimage = new global::VAS.UI.Helpers.ImageView();
 			this.pausebuttonimage.Name = "pausebuttonimage";
 			this.pausebutton.Add(this.pausebuttonimage);
 			this.buttonsbox.Add(this.pausebutton);
@@ -405,7 +405,7 @@ namespace VAS.UI
 			this.nextbutton.Name = "nextbutton";
 			this.nextbutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child nextbutton.Gtk.Container+ContainerChild
-			this.nextbuttonimage = new global::Gtk.Image();
+			this.nextbuttonimage = new global::VAS.UI.Helpers.ImageView();
 			this.nextbuttonimage.Name = "nextbuttonimage";
 			this.nextbutton.Add(this.nextbuttonimage);
 			this.buttonsbox.Add(this.nextbutton);
@@ -452,7 +452,7 @@ namespace VAS.UI
 			this.jumpsButton.Xalign = 0F;
 			this.jumpsButton.Yalign = 0F;
 			// Container child jumpsButton.Gtk.Container+ContainerChild
-			this.jumpsButtonImage = new global::Gtk.Image();
+			this.jumpsButtonImage = new global::VAS.UI.Helpers.ImageView();
 			this.jumpsButtonImage.Name = "jumpsButtonImage";
 			this.jumpsButtonImage.Xalign = 0F;
 			this.jumpsButtonImage.Yalign = 0F;
@@ -498,7 +498,7 @@ namespace VAS.UI
 			this.zoomLevelButton.FocusOnClick = false;
 			this.zoomLevelButton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child zoomLevelButton.Gtk.Container+ContainerChild
-			this.zoomLevelImage = new global::Gtk.Image();
+			this.zoomLevelImage = new global::VAS.UI.Helpers.ImageView();
 			this.zoomLevelImage.Name = "zoomLevelImage";
 			this.zoomLevelButton.Add(this.zoomLevelImage);
 			this.zoomBox.Add(this.zoomLevelButton);
@@ -538,7 +538,7 @@ namespace VAS.UI
 			this.rateLevelButton.FocusOnClick = false;
 			this.rateLevelButton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child rateLevelButton.Gtk.Container+ContainerChild
-			this.rateLevelButtonImage = new global::Gtk.Image();
+			this.rateLevelButtonImage = new global::VAS.UI.Helpers.ImageView();
 			this.rateLevelButtonImage.Name = "rateLevelButtonImage";
 			this.rateLevelButton.Add(this.rateLevelButtonImage);
 			this.rateBox.Add(this.rateLevelButton);
@@ -567,7 +567,7 @@ namespace VAS.UI
 			this.DurationButton.Name = "DurationButton";
 			this.DurationButton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child DurationButton.Gtk.Container+ContainerChild
-			this.DurationButtonImage = new global::Gtk.Image();
+			this.DurationButtonImage = new global::VAS.UI.Helpers.ImageView();
 			this.DurationButtonImage.Name = "DurationButtonImage";
 			this.DurationButton.Add(this.DurationButtonImage);
 			this.durationBox.Add(this.DurationButton);
@@ -601,7 +601,7 @@ namespace VAS.UI
 			this.viewportsSwitchButton.Name = "viewportsSwitchButton";
 			this.viewportsSwitchButton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child viewportsSwitchButton.Gtk.Container+ContainerChild
-			this.viewportsSwitchImage = new global::Gtk.Image();
+			this.viewportsSwitchImage = new global::VAS.UI.Helpers.ImageView();
 			this.viewportsSwitchImage.Name = "viewportsSwitchImage";
 			this.viewportsSwitchButton.Add(this.viewportsSwitchImage);
 			this.hbox3.Add(this.viewportsSwitchButton);
@@ -626,7 +626,7 @@ namespace VAS.UI
 			this.centerplayheadbutton.Name = "centerplayheadbutton";
 			this.centerplayheadbutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child centerplayheadbutton.Gtk.Container+ContainerChild
-			this.centerplayheadbuttonimage = new global::Gtk.Image();
+			this.centerplayheadbuttonimage = new global::VAS.UI.Helpers.ImageView();
 			this.centerplayheadbuttonimage.Name = "centerplayheadbuttonimage";
 			this.centerplayheadbutton.Add(this.centerplayheadbuttonimage);
 			this.center_playhead_box.Add(this.centerplayheadbutton);
@@ -654,7 +654,7 @@ namespace VAS.UI
 			this.detachbutton.Name = "detachbutton";
 			this.detachbutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child detachbutton.Gtk.Container+ContainerChild
-			this.detachbuttonimage = new global::Gtk.Image();
+			this.detachbuttonimage = new global::VAS.UI.Helpers.ImageView();
 			this.detachbuttonimage.Name = "detachbuttonimage";
 			this.detachbutton.Add(this.detachbuttonimage);
 			this.hbox3.Add(this.detachbutton);
@@ -669,7 +669,7 @@ namespace VAS.UI
 			this.volumebutton.Name = "volumebutton";
 			this.volumebutton.Relief = ((global::Gtk.ReliefStyle)(2));
 			// Container child volumebutton.Gtk.Container+ContainerChild
-			this.volumebuttonimage = new global::Gtk.Image();
+			this.volumebuttonimage = new global::VAS.UI.Helpers.ImageView();
 			this.volumebuttonimage.Name = "volumebuttonimage";
 			this.volumebutton.Add(this.volumebuttonimage);
 			this.hbox3.Add(this.volumebutton);
