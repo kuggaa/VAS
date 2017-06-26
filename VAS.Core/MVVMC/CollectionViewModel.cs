@@ -89,14 +89,14 @@ namespace VAS.Core.MVVMC
 
 			// If there's a typeMapping defined for the specific type
 			if (TypeMappings.TryGetValue (modelType, out viewModelType)) {
-				Log.Debug ($"TypeMapping found {modelType} => {viewModelType}");
+				Log.Verbose ($"TypeMapping found {modelType} => {viewModelType}");
 				viewModel = (TViewModel)Activator.CreateInstance (viewModelType);
 			} else {
 				// If there isn't, get the first mapping that matches a parent class
 				foreach (var type in TypeMappings.Keys) {
 					if (type.IsAssignableFrom (modelType)) {
 						if (TypeMappings.TryGetValue (type, out viewModelType)) {
-							Log.Debug ($"TypeMapping found {modelType} => {viewModelType}");
+							Log.Verbose ($"TypeMapping found {modelType} => {viewModelType}");
 							viewModel = (TViewModel)Activator.CreateInstance (viewModelType);
 							break;
 						}
@@ -104,7 +104,7 @@ namespace VAS.Core.MVVMC
 				}
 			}
 			if (viewModel == null) {
-				Log.Debug ($"TypeMapping not found for {modelType}. Using the base ViewModel {typeof (TViewModel).Name}");
+				Log.Verbose ($"TypeMapping not found for {modelType}. Using the base ViewModel {typeof (TViewModel).Name}");
 				viewModel = new TViewModel ();
 			}
 			viewModel.Model = model;
