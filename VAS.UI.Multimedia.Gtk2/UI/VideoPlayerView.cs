@@ -248,7 +248,7 @@ namespace VAS.UI
 
 		void Reset ()
 		{
-			zoomLevelButton.Visible = false;
+			zoomBox.Visible = false;
 			DrawingsVisible = false;
 			timelabel.Text = "";
 			muted = false;
@@ -804,7 +804,7 @@ namespace VAS.UI
 				mode == PlayerViewOperationMode.Analysis ||
 				mode == PlayerViewOperationMode.SimpleWithControls;
 
-			zoomLevelButton.Visible =
+			zoomBox.Visible =
 				mode == PlayerViewOperationMode.Analysis ||
 				mode == PlayerViewOperationMode.SimpleWithControls;
 
@@ -874,10 +874,10 @@ namespace VAS.UI
 				UpdateComboboxes ();
 				DebugCamerasVisible ();
 				SubViewPortsVisible = ViewModel.SupportsMultipleCameras;
-				zoomLevelButton.Visible = true;
+				zoomBox.Visible = true;
 			} else {
 				SubViewPortsVisible = false;
-				zoomLevelButton.Visible = false;
+				zoomBox.Visible = false;
 			}
 		}
 	}
