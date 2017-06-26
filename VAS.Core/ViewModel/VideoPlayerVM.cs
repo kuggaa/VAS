@@ -43,6 +43,7 @@ namespace VAS.Core.ViewModel
 		{
 			CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
 			CurrentTime = new Time (0);
+			Step = new Time { TotalSeconds = 10 };
 		}
 
 		public bool ControlsSensitive {
@@ -188,10 +189,10 @@ namespace VAS.Core.ViewModel
 
 		/// <summary>
 		/// Gets or sets the current step level.
-		/// This value is only used for display in the view. To change the steps use <see cref="SetSteps"/>
+		/// This value is only used for display in the view. To change the steps use <see cref="SetStep"/>
 		/// </summary>
 		/// <value>The new steps jump.</value>
-		public double Step {
+		public Time Step {
 			get;
 			set;
 		}
@@ -425,9 +426,9 @@ namespace VAS.Core.ViewModel
 		/// Changes the current player step value.
 		/// </summary>
 		/// <param name="steps">Steps.</param>
-		public void SetSteps (double steps)
+		public void SetStep (Time step)
 		{
-			Player.SetSteps (steps);
+			Player.SetStep (step);
 		}
 		#endregion
 	}

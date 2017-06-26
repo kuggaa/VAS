@@ -42,7 +42,8 @@ namespace VAS.UI
 			lessbutton.Clicked += OnLessbuttonClicked;
 			scale.Adjustment.Upper = upperValue;
 			scale.Adjustment.Lower = lowerValue;
-			scale.Adjustment.PageIncrement = pageIncrement;
+			scale.Adjustment.PageIncrement = buttonIncrement;
+			scale.Adjustment.StepIncrement = pageIncrement;
 			scale.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 8"));
 			scale.ValueChanged += OnScaleValueChanged;
 			scale.FormatValue += HandleScaleFormatValue;
