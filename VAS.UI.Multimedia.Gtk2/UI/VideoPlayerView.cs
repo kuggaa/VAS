@@ -101,7 +101,7 @@ namespace VAS.UI
 				StyleConf.PlayerCapturerIconSize);
 			detachbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-detach",
 				StyleConf.PlayerCapturerIconSize);
-			viewportsSwitchImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-video-device",
+			viewportsSwitchImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-multicam",
 				22);
 			zoomLevelImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-zoom",
 				22);
@@ -109,9 +109,9 @@ namespace VAS.UI
 				StyleConf.PlayerCapturerIconSize);
 			DurationButtonImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-duration",
 													   22);
-			jumpsButtonImage.Pixbuf = Misc.LoadIcon ("vas-jumps",
+			jumpsButtonImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-jumps",
 			22);
-			rateLevelButtonImage.Pixbuf = Misc.LoadIcon ("vas-speed",
+			rateLevelButtonImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-speed",
 			22);
 
 			// Force tooltips to be translatable as there seems to be a bug in stetic 
@@ -360,7 +360,7 @@ namespace VAS.UI
 		void UpdateTime ()
 		{
 			if (playerVM.CurrentTime != null && playerVM.Duration != null) {
-				timelabel.Text = playerVM.CurrentTime.ToMSecondsString (true) + "/" + playerVM.Duration.ToMSecondsString ();
+				timelabel.Text = playerVM.CurrentTime.ToMSecondsString (true);
 			}
 		}
 
