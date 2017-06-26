@@ -186,7 +186,6 @@
                                     <child>
                                       <widget class="Gtk.Label" id="eventNameLabel">
                                         <property name="MemberName" />
-                                        <property name="LabelProp" translatable="yes">Event type 1</property>
                                       </widget>
                                       <packing>
                                         <property name="Position">2</property>

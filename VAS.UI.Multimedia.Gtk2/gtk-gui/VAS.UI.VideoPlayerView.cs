@@ -287,7 +287,6 @@ namespace VAS.UI
 			// Container child hbox2.Gtk.Box+BoxChild
 			this.eventNameLabel = new global::Gtk.Label();
 			this.eventNameLabel.Name = "eventNameLabel";
-			this.eventNameLabel.LabelProp = global::Mono.Unix.Catalog.GetString("Event type 1");
 			this.hbox2.Add(this.eventNameLabel);
 			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.eventNameLabel]));
 			w15.Position = 2;

@@ -757,7 +757,14 @@ namespace VAS.UI
 				nextbutton.Sensitive = playerVM.HasNext;
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.PlayElement))) {
-				closebutton.Visible = playerVM.PlayElement != null;
+				if (playerVM.PlayElement != null) {
+					closebutton.Visible = true;
+					eventNameLabel.Visible = true;
+					eventNameLabel.Text = playerVM.PlayElement.ToString ();
+				} else {
+					closebutton.Visible = false;
+					eventNameLabel.Visible = false;
+				}
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Rate))) {
 				ignoreRate = true;
