@@ -208,13 +208,12 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="Gtk.VBox" id="vbox2">
+                                      <widget class="Gtk.VBox" id="timeBox">
                                         <property name="MemberName" />
                                         <property name="Spacing">6</property>
                                         <child>
-                                          <widget class="Gtk.Label" id="timeTitleLabel">
+                                          <widget class="Gtk.Label" id="timeLabel">
                                             <property name="MemberName" />
-                                            <property name="LabelProp" translatable="yes">Time</property>
                                           </widget>
                                           <packing>
                                             <property name="Position">0</property>
@@ -224,7 +223,7 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <widget class="Gtk.Label" id="timelabel">
+                                          <widget class="Gtk.Label" id="totalTimeLabel">
                                             <property name="MemberName" />
                                           </widget>
                                           <packing>
@@ -399,7 +398,6 @@
                                         <child>
                                           <widget class="Gtk.VBox" id="vbox3">
                                             <property name="MemberName" />
-                                            <property name="Spacing">6</property>
                                             <child>
                                               <widget class="Gtk.Button" id="jumpsButton">
                                                 <property name="MemberName" />
@@ -407,9 +405,13 @@
                                                 <property name="Type">Custom</property>
                                                 <property name="FocusOnClick">False</property>
                                                 <property name="Relief">None</property>
+                                                <property name="Xalign">0</property>
+                                                <property name="Yalign">0</property>
                                                 <child>
                                                   <widget class="VAS.UI.Helpers.ImageView" id="jumpsButtonImage">
                                                     <property name="MemberName" />
+                                                    <property name="Xalign">0</property>
+                                                    <property name="Yalign">0</property>
                                                   </widget>
                                                 </child>
                                               </widget>
@@ -461,7 +463,6 @@
                                     <child>
                                       <widget class="Gtk.VBox" id="zoomBox">
                                         <property name="MemberName" />
-                                        <property name="Spacing">6</property>
                                         <child>
                                           <widget class="Gtk.Button" id="zoomLevelButton">
                                             <property name="MemberName" />
@@ -515,7 +516,6 @@
                                     <child>
                                       <widget class="Gtk.VBox" id="rateBox">
                                         <property name="MemberName" />
-                                        <property name="Spacing">6</property>
                                         <child>
                                           <widget class="Gtk.Button" id="rateLevelButton">
                                             <property name="MemberName" />
@@ -559,7 +559,6 @@
                                     <child>
                                       <widget class="Gtk.VBox" id="durationBox">
                                         <property name="MemberName" />
-                                        <property name="Spacing">6</property>
                                         <child>
                                           <widget class="Gtk.ToggleButton" id="DurationButton">
                                             <property name="MemberName" />
@@ -628,7 +627,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="Gtk.VSeparator" id="vseparator7">
+                                      <widget class="Gtk.VSeparator" id="viewportsSwitchSeparator">
                                         <property name="MemberName" />
                                       </widget>
                                       <packing>
@@ -1337,7 +1336,7 @@
             <property name="PageIncrement">3</property>
             <property name="PageSize">1</property>
             <property name="StepIncrement">1</property>
-            <property name="Value">22</property>
+            <property name="Value">1</property>
             <property name="DrawValue">True</property>
             <property name="Digits">0</property>
             <property name="ValuePos">Bottom</property>

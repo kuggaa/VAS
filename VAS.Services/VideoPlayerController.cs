@@ -40,9 +40,6 @@ namespace VAS.Services
 {
 	public class VideoPlayerController : ControllerBase, IVideoPlayerController
 	{
-		const int LONG_SEEK_SECONDS = 10;
-		const int SHORT_SEEK_SECONDS = 2;
-
 		public event TimeChangedHandler TimeChangedEvent;
 		public event StateChangeHandler PlaybackStateChangedEvent;
 		public event LoadDrawingsHandler LoadDrawingsEvent;
@@ -110,7 +107,6 @@ namespace VAS.Services
 			videoTS = new Time (0);
 			imageLoadedTS = new Time (0);
 			duration = new Time (0);
-			Step = new Time (5000);
 			timer = new Timer (HandleTimeout);
 			TimerDisposed = new ManualResetEvent (false);
 			ready = false;
@@ -292,11 +288,6 @@ namespace VAS.Services
 			get {
 				return FileSet != null;
 			}
-		}
-
-		public virtual Time Step {
-			get;
-			set;
 		}
 
 		public virtual bool Active {
@@ -601,7 +592,7 @@ namespace VAS.Services
 			if (StillImageLoaded) {
 				return;
 			}
-			PerformStep (Step);
+			PerformStep (playerVM.Step);
 		}
 
 		public virtual void StepBackward ()
@@ -610,7 +601,7 @@ namespace VAS.Services
 			if (StillImageLoaded) {
 				return;
 			}
-			PerformStep (new Time (-Step.MSeconds));
+			PerformStep (new Time (-playerVM.Step.MSeconds));
 		}
 
 		public virtual void FramerateUp ()
@@ -879,6 +870,9 @@ namespace VAS.Services
 				Log.Error ("Zoom level is not between the supported boundaries : " + zoomLevel);
 				return;
 			}
+			if (CamerasConfig == null) {
+				return;
+			}
 			CameraConfig cfg = CamerasConfig [0];
 			Point origin = cfg.RegionOfInterest.Center;
 			MediaFile file = FileSet [cfg.Index];
@@ -898,15 +892,14 @@ namespace VAS.Services
 		/// <summary>
 		/// Sets the steps to perform jumps in the video player.
 		/// </summary>
-		/// <param name="steps">Steps.</param>
-		public void SetSteps (double steps)
+		/// <param name="step">Steps.</param>
+		public void SetStep (Time step)
 		{
-			if (steps < App.Current.StepList.Min () || steps > App.Current.StepList.Max ()) {
-				Log.Error ("Steps are not between the supported boundaries : " + steps);
+			if (step.TotalSeconds < App.Current.StepList.Min () || step.TotalSeconds > App.Current.StepList.Max ()) {
+				Log.Error ("Steps are not between the supported boundaries : " + step.TotalSeconds);
 				return;
 			}
-			Step = new Time { TotalSeconds = (int)steps };
-			playerVM.Step = steps;
+			playerVM.Step = new Time { TotalSeconds = (int)step.TotalSeconds };
 		}
 
 		public void MoveROI (Point diff)
@@ -961,19 +954,19 @@ namespace VAS.Services
 				),
 				new KeyAction (
 					App.Current.HotkeysService.GetByName("PLAYER_SEEK_LEFT_SHORT"),
-					() => PerformStep (new Time { TotalSeconds = -SHORT_SEEK_SECONDS })
+					() => SeekToPreviousFrame()
 				),
 				new KeyAction (
 					App.Current.HotkeysService.GetByName("PLAYER_SEEK_LEFT_LONG"),
-					() => PerformStep (new Time { TotalSeconds = -LONG_SEEK_SECONDS })
+					() => StepBackward()
 				),
 				new KeyAction (
 					App.Current.HotkeysService.GetByName("PLAYER_SEEK_RIGHT_SHORT"),
-					() => PerformStep (new Time { TotalSeconds = SHORT_SEEK_SECONDS })
+					() => SeekToNextFrame()
 				),
 				new KeyAction (
 					App.Current.HotkeysService.GetByName("PLAYER_SEEK_RIGHT_LONG"),
-					() => PerformStep (new Time { TotalSeconds = LONG_SEEK_SECONDS })
+					() => StepForward()
 				),
 				new KeyAction (
 					App.Current.HotkeysService.GetByName("PLAYER_NEXT_ELEMENT"),

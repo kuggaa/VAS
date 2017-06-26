@@ -52,11 +52,11 @@ namespace VAS.UI
 
 		private global::Gtk.VSeparator vseparator2;
 
-		private global::Gtk.VBox vbox2;
+		private global::Gtk.VBox timeBox;
 
-		private global::Gtk.Label timeTitleLabel;
+		private global::Gtk.Label timeLabel;
 
-		private global::Gtk.Label timelabel;
+		private global::Gtk.Label totalTimeLabel;
 
 		private global::Gtk.VSeparator vseparator1;
 
@@ -132,7 +132,7 @@ namespace VAS.UI
 
 		private global::Gtk.Image viewportsSwitchImage;
 
-		private global::Gtk.VSeparator vseparator7;
+		private global::Gtk.VSeparator viewportsSwitchSeparator;
 
 		private global::Gtk.HBox center_playhead_box;
 
@@ -305,28 +305,27 @@ namespace VAS.UI
 			w16.Expand = false;
 			w16.Fill = false;
 			// Container child hbox2.Gtk.Box+BoxChild
-			this.vbox2 = new global::Gtk.VBox();
-			this.vbox2.Name = "vbox2";
-			this.vbox2.Spacing = 6;
-			// Container child vbox2.Gtk.Box+BoxChild
-			this.timeTitleLabel = new global::Gtk.Label();
-			this.timeTitleLabel.Name = "timeTitleLabel";
-			this.timeTitleLabel.LabelProp = global::Mono.Unix.Catalog.GetString("Time");
-			this.vbox2.Add(this.timeTitleLabel);
-			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.timeTitleLabel]));
+			this.timeBox = new global::Gtk.VBox();
+			this.timeBox.Name = "timeBox";
+			this.timeBox.Spacing = 6;
+			// Container child timeBox.Gtk.Box+BoxChild
+			this.timeLabel = new global::Gtk.Label();
+			this.timeLabel.Name = "timeLabel";
+			this.timeBox.Add(this.timeLabel);
+			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.timeBox[this.timeLabel]));
 			w17.Position = 0;
 			w17.Expand = false;
 			w17.Fill = false;
-			// Container child vbox2.Gtk.Box+BoxChild
-			this.timelabel = new global::Gtk.Label();
-			this.timelabel.Name = "timelabel";
-			this.vbox2.Add(this.timelabel);
-			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.timelabel]));
+			// Container child timeBox.Gtk.Box+BoxChild
+			this.totalTimeLabel = new global::Gtk.Label();
+			this.totalTimeLabel.Name = "totalTimeLabel";
+			this.timeBox.Add(this.totalTimeLabel);
+			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.timeBox[this.totalTimeLabel]));
 			w18.Position = 1;
 			w18.Expand = false;
 			w18.Fill = false;
-			this.hbox2.Add(this.vbox2);
-			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.vbox2]));
+			this.hbox2.Add(this.timeBox);
+			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.timeBox]));
 			w19.PackType = ((global::Gtk.PackType)(1));
 			w19.Position = 4;
 			w19.Expand = false;
@@ -444,16 +443,19 @@ namespace VAS.UI
 			// Container child jumpsbox.Gtk.Box+BoxChild
 			this.vbox3 = new global::Gtk.VBox();
 			this.vbox3.Name = "vbox3";
-			this.vbox3.Spacing = 6;
 			// Container child vbox3.Gtk.Box+BoxChild
 			this.jumpsButton = new global::Gtk.Button();
 			this.jumpsButton.CanFocus = true;
 			this.jumpsButton.Name = "jumpsButton";
 			this.jumpsButton.FocusOnClick = false;
 			this.jumpsButton.Relief = ((global::Gtk.ReliefStyle)(2));
+			this.jumpsButton.Xalign = 0F;
+			this.jumpsButton.Yalign = 0F;
 			// Container child jumpsButton.Gtk.Container+ContainerChild
 			this.jumpsButtonImage = new global::Gtk.Image();
 			this.jumpsButtonImage.Name = "jumpsButtonImage";
+			this.jumpsButtonImage.Xalign = 0F;
+			this.jumpsButtonImage.Yalign = 0F;
 			this.jumpsButton.Add(this.jumpsButtonImage);
 			this.vbox3.Add(this.jumpsButton);
 			global::Gtk.Box.BoxChild w36 = ((global::Gtk.Box.BoxChild)(this.vbox3[this.jumpsButton]));
@@ -489,7 +491,6 @@ namespace VAS.UI
 			// Container child hbox3.Gtk.Box+BoxChild
 			this.zoomBox = new global::Gtk.VBox();
 			this.zoomBox.Name = "zoomBox";
-			this.zoomBox.Spacing = 6;
 			// Container child zoomBox.Gtk.Box+BoxChild
 			this.zoomLevelButton = new global::Gtk.Button();
 			this.zoomLevelButton.CanFocus = true;
@@ -529,7 +530,6 @@ namespace VAS.UI
 			// Container child hbox3.Gtk.Box+BoxChild
 			this.rateBox = new global::Gtk.VBox();
 			this.rateBox.Name = "rateBox";
-			this.rateBox.Spacing = 6;
 			// Container child rateBox.Gtk.Box+BoxChild
 			this.rateLevelButton = new global::Gtk.Button();
 			this.rateLevelButton.Sensitive = false;
@@ -562,7 +562,6 @@ namespace VAS.UI
 			// Container child hbox3.Gtk.Box+BoxChild
 			this.durationBox = new global::Gtk.VBox();
 			this.durationBox.Name = "durationBox";
-			this.durationBox.Spacing = 6;
 			// Container child durationBox.Gtk.Box+BoxChild
 			this.DurationButton = new global::Gtk.ToggleButton();
 			this.DurationButton.Name = "DurationButton";
@@ -611,10 +610,10 @@ namespace VAS.UI
 			w56.Expand = false;
 			w56.Fill = false;
 			// Container child hbox3.Gtk.Box+BoxChild
-			this.vseparator7 = new global::Gtk.VSeparator();
-			this.vseparator7.Name = "vseparator7";
-			this.hbox3.Add(this.vseparator7);
-			global::Gtk.Box.BoxChild w57 = ((global::Gtk.Box.BoxChild)(this.hbox3[this.vseparator7]));
+			this.viewportsSwitchSeparator = new global::Gtk.VSeparator();
+			this.viewportsSwitchSeparator.Name = "viewportsSwitchSeparator";
+			this.hbox3.Add(this.viewportsSwitchSeparator);
+			global::Gtk.Box.BoxChild w57 = ((global::Gtk.Box.BoxChild)(this.hbox3[this.viewportsSwitchSeparator]));
 			w57.Position = 7;
 			w57.Expand = false;
 			w57.Fill = false;
