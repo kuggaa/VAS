@@ -28,9 +28,6 @@ public class Loader
 		var storableTypeFinder = new TypeFinder (ModuleDefinition, AssemblyResolver, ISTORABLE);
 		storableTypeFinder.Execute ();
 
-		var exceptionFinder = new ExceptionFinder (ModuleDefinition, AssemblyResolver);
-		exceptionFinder.Execute ();
-
 		var checkLoadedInjector = new MethodFinder (ModuleDefinition, CHECK_IS_LOADED, 0);
 
 		var typeResolver = new TypeResolver ();
