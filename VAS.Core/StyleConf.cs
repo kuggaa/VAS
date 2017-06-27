@@ -246,10 +246,12 @@ namespace VAS.Core.Common
 		public const int WatermarkPadding = 20;
 		public const double WatermarkHeightNormalization = 0.087;
 
+		// Misc icons
 		public const string Spinner = "images/vas-spinner.gif";
 		public const string SpinnerMedium = "images/vas-spinner-m.gif";
 		public const string SpinnerLarge = "images/vas-spinner-l.gif";
 
+		public const string MissingVideo = "icons/hicolor/scalable/actions/vas-missing-video" + IMAGE_EXT;
 
 		public StyleConf ()
 		{
