@@ -1622,17 +1622,12 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="VAS.UI.Dialog.VideoEditionProperties" design-size="567 421">
+  <widget class="Gtk.Dialog" id="VAS.UI.Dialog.VideoEditionProperties" design-size="567 439">
     <property name="MemberName" />
-    <property name="WidthRequest">440</property>
-    <property name="HeightRequest">340</property>
     <property name="Title" translatable="yes">Video Properties</property>
     <property name="WindowPosition">CenterOnParent</property>
     <property name="Modal">True</property>
     <property name="Resizable">False</property>
-    <property name="AllowGrow">False</property>
-    <property name="DefaultWidth">440</property>
-    <property name="DefaultHeight">340</property>
     <property name="Gravity">Center</property>
     <property name="SkipPagerHint">True</property>
     <property name="SkipTaskbarHint">True</property>
@@ -1694,6 +1689,7 @@
                     <property name="BottomAttach">4</property>
                     <property name="LeftAttach">1</property>
                     <property name="RightAttach">2</property>
+                    <property name="XPadding">5</property>
                     <property name="AutoSize">False</property>
                     <property name="XOptions">Fill</property>
                     <property name="YOptions">Fill</property>
@@ -1741,6 +1737,7 @@
                     <property name="BottomAttach">3</property>
                     <property name="LeftAttach">1</property>
                     <property name="RightAttach">2</property>
+                    <property name="XPadding">5</property>
                     <property name="AutoSize">False</property>
                     <property name="XOptions">Shrink, Fill</property>
                     <property name="YOptions">Fill</property>
@@ -1822,6 +1819,7 @@
                   <packing>
                     <property name="LeftAttach">1</property>
                     <property name="RightAttach">2</property>
+                    <property name="XPadding">5</property>
                     <property name="AutoSize">False</property>
                     <property name="XOptions">Shrink, Fill</property>
                     <property name="YOptions">Fill</property>
@@ -1844,6 +1842,7 @@
                     <property name="BottomAttach">2</property>
                     <property name="LeftAttach">1</property>
                     <property name="RightAttach">2</property>
+                    <property name="XPadding">5</property>
                     <property name="AutoSize">False</property>
                     <property name="XOptions">Shrink, Fill</property>
                     <property name="YOptions">Fill</property>
@@ -1871,6 +1870,7 @@
                     <property name="BottomAttach">5</property>
                     <property name="LeftAttach">1</property>
                     <property name="RightAttach">2</property>
+                    <property name="XPadding">5</property>
                     <property name="AutoSize">False</property>
                     <property name="XOptions">Fill</property>
                     <property name="YOptions">Fill</property>
@@ -1941,6 +1941,7 @@
                   <packing>
                     <property name="Position">1</property>
                     <property name="AutoSize">True</property>
+                    <property name="Padding">5</property>
                   </packing>
                 </child>
               </widget>
@@ -1977,6 +1978,7 @@
                   <packing>
                     <property name="Position">1</property>
                     <property name="AutoSize">True</property>
+                    <property name="Padding">5</property>
                   </packing>
                 </child>
               </widget>
