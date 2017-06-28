@@ -49,7 +49,6 @@ namespace VAS.UI.Common
 		protected TreeModelSort sort;
 
 		protected TViewModel activatedViewModel;
-		protected Menu menu;
 
 		//DragDrop variables
 		protected TargetList targets;
@@ -220,7 +219,7 @@ namespace VAS.UI.Common
 
 			if (!parent.Equals (TreeIter.Zero)) {
 				iter = store.InsertWithValues (parent, index, subViewModel);
-				dictionaryStore[subViewModel].Add (iter);
+				dictionaryStore [subViewModel].Add (iter);
 			} else {
 				iter = store.InsertWithValues (index, subViewModel);
 				dictionaryStore [subViewModel].Add (iter);
@@ -489,7 +488,7 @@ namespace VAS.UI.Common
 				firstSelected = model.GetValue (iter, COL_DATA);
 				model.GetIter (out iter, path);
 				currentSelected = model.GetValue (iter, COL_DATA);
-				if (currentSelected.GetType ().IsAssignableFrom (firstSelected.GetType ())) {
+				if (currentSelected.GetType ().BaseType == firstSelected.GetType ().BaseType) {
 					return true;
 				}
 				return false;
@@ -557,7 +556,7 @@ namespace VAS.UI.Common
 
 		protected virtual bool AllowDrop (IViewModel destination)
 		{
-			return App.Current.DragContext.SourceDataType.IsAssignableFrom (destination.GetType ());
+			return App.Current.DragContext.SourceDataType.BaseType == destination.GetType ().BaseType;
 		}
 
 		protected virtual bool HandleDragReceived (List<IViewModel> draggedViewModels, int x, int y, bool internalDrop)
@@ -590,7 +589,7 @@ namespace VAS.UI.Common
 						TreeIter parent;
 						//Get the parentVM for every drag ViewModel
 						foreach (IViewModel vm in draggedViewModels) {
-							foreach (TreeIter element in dictionaryStore[vm]) {
+							foreach (TreeIter element in dictionaryStore [vm]) {
 								if (Model.IterParent (out parent, element)) {
 									INestedViewModel sourceParentVM = Model.GetValue (parent, COL_DATA) as INestedViewModel;
 									if (!elementsToRemove.ContainsKey (sourceParentVM)) {
