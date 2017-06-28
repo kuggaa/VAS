@@ -24,7 +24,7 @@ namespace VAS.UI.Helpers
 	/// <summary>
 	/// Helper for navigation to url's when ads are clicked.
 	/// </summary>
-	public static class UrlHelper
+	public static class AdsUrlHelper
 	{
 		/// <summary>
 		/// Navigates to the specified url.
@@ -34,9 +34,13 @@ namespace VAS.UI.Helpers
 		public static void Start (string url, string sourcePoint = null)
 		{
 			try {
+				// FIXME: If there is no ticketId pass the serialId until the web supports retrieving the ticket id
+				// in case is not in the configuration
+				string ticketIdValue = App.Current.Config.LicenseCode ?? App.Current.LicenseManager.ContainerId;
+				url += $"?ticketID={ticketIdValue}";
 #if !DEBUG
 				if (!string.IsNullOrEmpty (sourcePoint)) {
-					url += $"?utm_source=RiftAnalyst&utm_medium={sourcePoint}&sessionid={App.Current.KPIService.SessionID}&userid={App.Current.KPIService.UserID}";
+					url += $"&utm_source=RiftAnalyst&utm_medium={sourcePoint}&sessionid={App.Current.KPIService.SessionID}&userid={App.Current.Device.ID}";
 				}
 #endif
 				Process.Start (url);
