@@ -114,6 +114,8 @@
 		<Compile Include="UI\TreeView\CanvasObjectCellRenderer.cs" />
 		<Compile Include="UI\TreeView\CellRendererImage.cs" />
 		<Compile Include="UI\Menu\MenuBase.cs" />
+		<Compile Include="UI\Dialog\EditPlaylistElementProperties.cs" />
+		<Compile Include="gtk-gui\VAS.UI.Dialog.EditPlaylistElementProperties.cs" />
 	</ItemGroup>
 	<Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 	<ItemGroup>

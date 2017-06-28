@@ -57,6 +57,8 @@ namespace VAS.Core.ViewModel
 			InsertVideoCommand.Text = Catalog.GetString ("External Video");
 			InsertImageCommand = new Command<PlaylistPosition> (InsertImage, HasChildsItemsSelected);
 			InsertImageCommand.Text = Catalog.GetString ("External Image");
+			EditPlaylistElementCommand = new Command (EditPlaylistElement, JustOneElementSelectedAndIsNotVideo);
+			EditPlaylistElementCommand.Text = Catalog.GetString ("Edit Properties");
 		}
 
 		/// <summary>
@@ -128,6 +130,12 @@ namespace VAS.Core.ViewModel
 			protected set;
 		}
 
+		[PropertyChanged.DoNotNotify]
+		public Command EditPlaylistElementCommand {
+			get;
+			protected set;
+		}
+
 		public MenuVM PlaylistMenu {
 			get {
 				var menu = new MenuVM ();
@@ -154,6 +162,7 @@ namespace VAS.Core.ViewModel
 					new MenuNodeVM (InsertImageCommand, PlaylistPosition.After)
 				});
 				menu.ViewModels.AddRange (new List<MenuNodeVM> {
+					new MenuNodeVM (EditPlaylistElementCommand),
 					new MenuNodeVM (menuInsertBefore, Catalog.GetString("Insert before")),
 					new MenuNodeVM (menuInsertAfter, Catalog.GetString("Insert after")),
 					new MenuNodeVM (DeleteCommand, name:Catalog.GetString("Delete"))
@@ -209,7 +218,7 @@ namespace VAS.Core.ViewModel
 			return selection;
 		}
 
-		protected bool HasChildsItemsSelected ()
+		bool HasChildsItemsSelected ()
 		{
 			if (!Selection.Any ()) {
 				foreach (var playlist in ViewModels) {
@@ -219,6 +228,17 @@ namespace VAS.Core.ViewModel
 				}
 			}
 			return false;
+		}
+
+		bool JustOneElementSelectedAndIsNotVideo ()
+		{
+			List<PlaylistElementVM> elements = new List<PlaylistElementVM> ();
+			if (!Selection.Any ()) {
+				foreach (var playlist in ViewModels) {
+					elements.AddRange (playlist.Selection);
+				}
+			}
+			return (elements.Count == 1 && !(elements [0] is PlaylistVideoVM));
 		}
 
 		void New ()
@@ -261,6 +281,23 @@ namespace VAS.Core.ViewModel
 					Position = position
 				}
 			);
+		}
+
+		void EditPlaylistElement ()
+		{
+			App.Current.EventsBroker.Publish (new EditEvent<PlaylistElementVM> {
+				Object = GetFirstSelectedPlaylistElement ()
+			});
+		}
+
+		PlaylistElementVM GetFirstSelectedPlaylistElement ()
+		{
+			foreach (var playlist in ViewModels) {
+				if (playlist.Selection.Any ()) {
+					return playlist.Selection.First ();
+				}
+			}
+			return null;
 		}
 
 		/// <summary>

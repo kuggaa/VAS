@@ -21,6 +21,7 @@ using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
+using VAS.Core.Store.Playlists;
 
 namespace VAS.Core.ViewModel
 {
@@ -71,6 +72,23 @@ namespace VAS.Core.ViewModel
 
 	public class PlaylistPlayElementVM : PlaylistElementVM
 	{
+		public new PlaylistPlayElement Model {
+			get {
+				return (PlaylistPlayElement)base.Model;
+			}
+			set {
+				base.Model = value;
+			}
+		}
+
+		public string Title {
+			get {
+				return Model.Title;
+			}
+			set {
+				Model.Title = value;
+			}
+		}
 	}
 
 	public class PlaylistVideoVM : PlaylistElementVM
