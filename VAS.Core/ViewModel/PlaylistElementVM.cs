@@ -68,4 +68,16 @@ namespace VAS.Core.ViewModel
 			}
 		}
 	}
+
+	public class PlaylistPlayElementVM : PlaylistElementVM
+	{
+	}
+
+	public class PlaylistVideoVM : PlaylistElementVM
+	{
+	}
+
+	public class PlaylistImageVM : PlaylistElementVM
+	{
+	}
 }

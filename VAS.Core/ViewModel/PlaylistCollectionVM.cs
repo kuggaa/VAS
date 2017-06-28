@@ -49,6 +49,14 @@ namespace VAS.Core.ViewModel
 			NewCommand = new Command (New, () => Limitation == null || Limitation.Count < Limitation.Maximum);
 			NewCommand.Icon = newIcon;
 			NewCommand.ToolTipText = Catalog.GetString ("New Playlist");
+			EditCommand = new Command (Edit, () => { return Selection.Count == 1; });
+			EditCommand.Text = Catalog.GetString ("Edit Name");
+			RenderCommand = new Command (Render, () => { return Selection.Count == 1; });
+			RenderCommand.Text = Catalog.GetString ("Render");
+			InsertVideoCommand = new Command<PlaylistPosition> (InsertVideo, HasChildsItemsSelected);
+			InsertVideoCommand.Text = Catalog.GetString ("External Video");
+			InsertImageCommand = new Command<PlaylistPosition> (InsertImage, HasChildsItemsSelected);
+			InsertImageCommand.Text = Catalog.GetString ("External Image");
 		}
 
 		/// <summary>
@@ -87,6 +95,73 @@ namespace VAS.Core.ViewModel
 			get;
 			protected set;
 		}
+
+		/// <summary>
+		/// Gets or sets the command to edit Playlists
+		/// </summary>
+		/// <value>The edit command.</value>
+		[PropertyChanged.DoNotNotify]
+		public Command EditCommand {
+			get;
+			protected set;
+		}
+
+		/// <summary>
+		/// Gets or sets the command to render playlists
+		/// </summary>
+		/// <value>The render command.</value>
+		[PropertyChanged.DoNotNotify]
+		public Command RenderCommand {
+			get;
+			protected set;
+		}
+
+		[PropertyChanged.DoNotNotify]
+		public Command InsertVideoCommand {
+			get;
+			protected set;
+		}
+
+		[PropertyChanged.DoNotNotify]
+		public Command InsertImageCommand {
+			get;
+			protected set;
+		}
+
+		public MenuVM PlaylistMenu {
+			get {
+				var menu = new MenuVM ();
+				menu.ViewModels.AddRange (new List<MenuNodeVM> {
+					new MenuNodeVM (EditCommand),
+					new MenuNodeVM (RenderCommand),
+					new MenuNodeVM (DeleteCommand, name:Catalog.GetString("Delete"))
+				});
+				return menu;
+			}
+		}
+
+		public MenuVM PlaylistElementMenu {
+			get {
+				var menu = new MenuVM ();
+				var menuInsertBefore = new MenuVM ();
+				var menuInsertAfter = new MenuVM ();
+				menuInsertBefore.ViewModels.AddRange (new List<MenuNodeVM> {
+					new MenuNodeVM (InsertVideoCommand, PlaylistPosition.Before),
+					new MenuNodeVM (InsertImageCommand, PlaylistPosition.Before)
+				});
+				menuInsertAfter.ViewModels.AddRange (new List<MenuNodeVM> {
+					new MenuNodeVM (InsertVideoCommand, PlaylistPosition.After),
+					new MenuNodeVM (InsertImageCommand, PlaylistPosition.After)
+				});
+				menu.ViewModels.AddRange (new List<MenuNodeVM> {
+					new MenuNodeVM (menuInsertBefore, Catalog.GetString("Insert before")),
+					new MenuNodeVM (menuInsertAfter, Catalog.GetString("Insert after")),
+					new MenuNodeVM (DeleteCommand, name:Catalog.GetString("Delete"))
+				});
+				return menu;
+			}
+		}
+
 		/// <summary>
 		/// Loads the playlist into the VideoPlayer
 		/// </summary>
@@ -134,6 +209,18 @@ namespace VAS.Core.ViewModel
 			return selection;
 		}
 
+		protected bool HasChildsItemsSelected ()
+		{
+			if (!Selection.Any ()) {
+				foreach (var playlist in ViewModels) {
+					if (playlist.Selection.Any ()) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
 		void New ()
 		{
 			App.Current.EventsBroker.Publish (new CreateEvent<Playlist> ());
@@ -142,6 +229,38 @@ namespace VAS.Core.ViewModel
 		void Delete ()
 		{
 			App.Current.EventsBroker.Publish (new DeleteEvent<Playlist> ());
+		}
+
+		void Edit ()
+		{
+			App.Current.EventsBroker.Publish (new EditEvent<Playlist> { Object = Selection.First ().Model });
+		}
+
+		void Render ()
+		{
+			App.Current.EventsBroker.Publish (
+				new RenderPlaylistEvent {
+					Playlist = Selection.First ().Model
+				}
+			);
+		}
+
+		void InsertVideo (PlaylistPosition position)
+		{
+			App.Current.EventsBroker.Publish (
+				new InsertVideoInPlaylistEvent {
+					Position = position
+				}
+			);
+		}
+
+		void InsertImage (PlaylistPosition position)
+		{
+			App.Current.EventsBroker.Publish (
+				new InsertImageInPlaylistEvent {
+					Position = position
+				}
+			);
 		}
 
 		/// <summary>

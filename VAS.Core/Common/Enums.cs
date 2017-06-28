@@ -624,4 +624,14 @@ namespace VAS.Core.Common
 		BOTTOM_LEFT,
 		BOTTOM_RIGHT
 	}
+
+	/// <summary>
+	/// Playlist Position.
+	/// </summary>
+	public enum PlaylistPosition
+	{
+		Before,
+		After
+	}
 }
+
