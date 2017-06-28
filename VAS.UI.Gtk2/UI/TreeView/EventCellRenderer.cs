@@ -46,6 +46,8 @@ namespace VAS.UI.Component
 		protected const int DRAWINGS_IMAGE_HEIGHT = 16;
 		protected const int EYE_IMAGE_WIDTH = 32;
 		protected const int EYE_IMAGE_HEIGHT = 16;
+		const double MINIATURE_WIDTH = 32;
+		const double MINIATURE_HEIGHT = 32;
 
 		protected static Point cursor;
 		protected static double offsetX, offsetY = 0;
@@ -200,6 +202,8 @@ namespace VAS.UI.Component
 					var vm = (PlaylistVM)ViewModel;
 					RenderType (vm.Name, vm.Count (), App.Current.Style.PaletteText, App.Current.DrawingToolkit, context, bkg, cell, state);
 					RenderSelection (App.Current.DrawingToolkit, context, bkg, cell, state, false);
+				} else if (ViewModel is PlaylistImageVM || ViewModel is PlaylistVideoVM) {
+					RenderPlaylistElement ((PlaylistElementVM)ViewModel, App.Current.DrawingToolkit, context, bkg, cell, state);
 				}
 			}
 		}
@@ -233,18 +237,35 @@ namespace VAS.UI.Component
 			Point textP = new Point (StyleConf.ListTextOffset, backgroundArea.Start.Y);
 			tk.Context = context;
 			tk.Begin ();
-			RenderBackgroundAndEventTypeText (tk, backgroundArea, textP, cellArea.Width - textP.X, name, App.Current.Style.PaletteBackground, color);
+			RenderBackgroundAndTitleText (tk, backgroundArea, textP, cellArea.Width - textP.X, name, App.Current.Style.PaletteBackground, color);
 			RenderCount (childsCount, tk, backgroundArea, cellArea);
 			RenderSeparationLine (tk, context, backgroundArea);
 			tk.End ();
 		}
 
-		void RenderBackgroundAndEventTypeText (IDrawingToolkit tk, Area backgroundArea, Point textP, double textW, string text, Color backgroundColor, Color textColor)
+		protected void RenderBackground (IDrawingToolkit tk, Area backgroundArea, Color backgroundColor)
 		{
 			/* Background */
 			tk.LineWidth = 0;
 			tk.FillColor = backgroundColor;
 			tk.DrawRectangle (backgroundArea.Start, backgroundArea.Width, backgroundArea.Height);
+		}
+
+		protected void RenderChildText (IDrawingToolkit tk, Area backgroundArea, Point textP, double textW, string text, Color textColor)
+		{
+			/* Text */
+			tk.StrokeColor = textColor;
+			tk.FontSize = 12;
+			tk.FontWeight = FontWeight.Normal;
+			tk.FontAlignment = FontAlignment.Left;
+			textP.Y = textP.Y + (backgroundArea.Height / 2) - 2;
+			tk.DrawText (textP, textW, -2, text, false, true);
+		}
+
+		void RenderBackgroundAndTitleText (IDrawingToolkit tk, Area backgroundArea, Point textP, double textW, string text, Color backgroundColor, Color textColor)
+		{
+			/* Background */
+			RenderBackground (tk, backgroundArea, backgroundColor);
 
 			/* Text */
 			tk.StrokeColor = textColor;
@@ -341,16 +362,39 @@ namespace VAS.UI.Component
 			}
 		}
 
-		protected void RenderPrelit (TimelineEventVM vm, IDrawingToolkit tk, IContext context,
+		protected void RenderPrelit (bool selected, IDrawingToolkit tk, IContext context,
 						   Area backgroundArea, Area cellArea, CellState state)
 		{
-			if (!state.HasFlag (CellState.Prelit) && !(vm.Selected || state.HasFlag (CellState.Selected))) {
+			if (!state.HasFlag (CellState.Prelit) && !(selected || state.HasFlag (CellState.Selected))) {
 				Point pos = new Point (backgroundArea.Start.X + LEFT_OFFSET + COLOR_RECTANGLE_WIDTH, backgroundArea.Start.Y);
 				tk.FillColor = Color.BlackTransparent;
 				tk.StrokeColor = Color.Transparent;
 				tk.DrawRectangle (pos, backgroundArea.Width, backgroundArea.Height);
 			}
+		}
 
+		protected void RenderImage (IDrawingToolkit tk, Point p, VAS.Core.Common.Image image,
+								  double width, double height)
+		{
+			if (image != null) {
+				tk.DrawImage (p, width, height, image, ScaleMode.AspectFit);
+			}
+		}
+
+		void RenderPlaylistElement (PlaylistElementVM vm, IDrawingToolkit tk, IContext context, Area backgroundArea, Area cellArea, CellState state)
+		{
+			tk.Context = context;
+			tk.Begin ();
+			Point textPoint = new Point (backgroundArea.Left + LEFT_OFFSET + (2 * SPACING) + COLOR_RECTANGLE_WIDTH +
+										 MINIATURE_WIDTH + SPACING, cellArea.Start.Y);
+			double textWidth = (cellArea.Right - RIGTH_OFFSET - EYE_IMAGE_WIDTH - SPACING) - textPoint.X;
+			RenderBackground (tk, backgroundArea, App.Current.Style.PaletteBackgroundDark);
+			RenderSelection (tk, context, backgroundArea, cellArea, state, false);
+			RenderPrelit (vm.Selected, tk, context, backgroundArea, cellArea, state);
+			RenderChildText (tk, backgroundArea, textPoint, textWidth, vm.Description, App.Current.Style.PaletteText);
+			Point p = new Point (backgroundArea.Left + LEFT_OFFSET + COLOR_RECTANGLE_WIDTH + SPACING, cellArea.Start.Y + VERTICAL_OFFSET);
+			RenderImage (tk, p, vm.Miniature, MINIATURE_WIDTH, MINIATURE_HEIGHT);
+			tk.End ();
 		}
 	}
 }
