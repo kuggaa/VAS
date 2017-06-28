@@ -24,6 +24,9 @@ using VAS.UI.Helpers;
 
 namespace VAS.UI.Menus
 {
+	/// <summary>
+	/// Menu base class that creates a Menu based on a MenuVM passed to the view
+	/// </summary>
 	public class MenuBase : Menu, IView<MenuVM>
 	{
 		MenuVM menuVM;
@@ -60,6 +63,9 @@ namespace VAS.UI.Menus
 				return menuVM;
 			}
 			set {
+				if (menuVM != null) {
+					RemoveMenu ();
+				}
 				menuVM = value;
 				if (menuVM != null) {
 					CreateMenu (menuVM);
@@ -95,6 +101,13 @@ namespace VAS.UI.Menus
 					CreateMenu (menuNode.Submenu, (Menu)item.Submenu);
 					menu.Append (item);
 				}
+			}
+		}
+
+		void RemoveMenu ()
+		{
+			foreach (var item in Children) {
+				Remove (item);
 			}
 		}
 	}

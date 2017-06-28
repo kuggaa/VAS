@@ -67,7 +67,7 @@ namespace VAS.Core
 		/// </summary>
 		/// <returns>The file.</returns>
 		/// <param name="parent">Parent widget.</param>
-		MediaFile OpenMediaFile (object parent);
+		MediaFile OpenMediaFile (object parent = null);
 
 		/// <summary>
 		/// Selects a file containing an image from the filesystem.

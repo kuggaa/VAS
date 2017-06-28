@@ -64,6 +64,10 @@ namespace VAS.Core.MVVMC
 			}
 		}
 
+		/// <summary>
+		/// Gets the type mappings, where Key is the Model and Value the ViewModel to create
+		/// </summary>
+		/// <value>The type mappings.</value>
 		public Dictionary<Type, Type> TypeMappings {
 			get;
 			private set;

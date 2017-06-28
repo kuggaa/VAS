@@ -25,6 +25,7 @@ using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Hotkeys;
+using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
@@ -65,7 +66,10 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.SubscribeAsync<CreateEvent<Playlist>> (HandleNewPlaylist);
 			App.Current.EventsBroker.SubscribeAsync<DeletePlaylistEvent> (HandleDeletePlaylist);
 			App.Current.EventsBroker.SubscribeAsync<DeleteEvent<Playlist>> (HandleDeleteSelectedItems);
+			App.Current.EventsBroker.SubscribeAsync<EditEvent<Playlist>> (HandleEditSelectedPlaylist);
 			App.Current.EventsBroker.Subscribe<RenderPlaylistEvent> (HandleRenderPlaylist);
+			App.Current.EventsBroker.Subscribe<InsertVideoInPlaylistEvent> (HandleInsertVideoInPlaylist);
+			App.Current.EventsBroker.SubscribeAsync<InsertImageInPlaylistEvent> (HandleInsertImageInPlaylist);
 			App.Current.EventsBroker.Subscribe<LoadPlaylistElementEvent> (HandleLoadPlaylistElement);
 			App.Current.EventsBroker.Subscribe<LoadEventEvent> (HandleLoadPlayEvent);
 			App.Current.EventsBroker.Subscribe<TimeNodeChangedEvent> (HandlePlayChanged);
@@ -79,7 +83,10 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.UnsubscribeAsync<CreateEvent<Playlist>> (HandleNewPlaylist);
 			App.Current.EventsBroker.UnsubscribeAsync<DeletePlaylistEvent> (HandleDeletePlaylist);
 			App.Current.EventsBroker.UnsubscribeAsync<DeleteEvent<Playlist>> (HandleDeleteSelectedItems);
+			App.Current.EventsBroker.UnsubscribeAsync<EditEvent<Playlist>> (HandleEditSelectedPlaylist);
 			App.Current.EventsBroker.Unsubscribe<RenderPlaylistEvent> (HandleRenderPlaylist);
+			App.Current.EventsBroker.Unsubscribe<InsertVideoInPlaylistEvent> (HandleInsertVideoInPlaylist);
+			App.Current.EventsBroker.UnsubscribeAsync<InsertImageInPlaylistEvent> (HandleInsertImageInPlaylist);
 			App.Current.EventsBroker.Unsubscribe<LoadPlaylistElementEvent> (HandleLoadPlaylistElement);
 			App.Current.EventsBroker.Unsubscribe<LoadEventEvent> (HandleLoadPlayEvent);
 			App.Current.EventsBroker.Unsubscribe<TimeNodeChangedEvent> (HandlePlayChanged);
@@ -224,6 +231,42 @@ namespace VAS.Services.Controller
 			}
 		}
 
+		void HandleInsertVideoInPlaylist (InsertVideoInPlaylistEvent e)
+		{
+			MediaFile file = App.Current.Dialogs.OpenMediaFile ();
+			if (file != null) {
+				PlaylistVideo video = new PlaylistVideo (file);
+				InsertPlaylistElements (video, e.Position);
+			}
+		}
+
+		async Task HandleInsertImageInPlaylist (InsertImageInPlaylistEvent e)
+		{
+			Image image = await App.Current.Dialogs.OpenImage ();
+			if (image != null) {
+				PlaylistImage plimage = new PlaylistImage (image, new Time (5000));
+				InsertPlaylistElements (plimage, e.Position);
+			}
+		}
+
+		void InsertPlaylistElements (IPlaylistElement element, PlaylistPosition position)
+		{
+			foreach (var playlist in playlistViewModel.LimitedViewModels) {
+				bool save = false;
+				foreach (var ple in playlist.Selection) {
+					int index = playlist.ViewModels.IndexOf (ple);
+					if (position == PlaylistPosition.After) {
+						index++;
+					}
+					playlist.Model.Elements.Insert (index, element.Clone (SerializationType.Json));
+					save = true;
+				}
+				if (save) {
+					Save (playlist.Model);
+				}
+			}
+		}
+
 		async Task HandleDeleteSelectedItems (DeleteEvent<Playlist> e)
 		{
 			bool removed = false;
@@ -271,6 +314,16 @@ namespace VAS.Services.Controller
 			e.ReturnValue = true;
 		}
 
+		async Task HandleEditSelectedPlaylist (EditEvent<Playlist> e)
+		{
+			string name = await App.Current.Dialogs.QueryMessage (Catalog.GetString ("Name:"), null,
+																  e.Object.Name);
+			if (!String.IsNullOrEmpty (name)) {
+				e.Object.Name = name;
+			}
+			Save (e.Object);
+		}
+
 		//FIXME: this should be in Player controller when decoupled from PalyerVM
 		void HandlePlayChanged (TimeNodeChangedEvent e)
 		{
@@ -300,6 +353,10 @@ namespace VAS.Services.Controller
 		{
 			if (e.PropertyName == "Selection") {
 				playlistViewModel.DeleteCommand.EmitCanExecuteChanged ();
+				playlistViewModel.RenderCommand.EmitCanExecuteChanged ();
+				playlistViewModel.EditCommand.EmitCanExecuteChanged ();
+				playlistViewModel.InsertVideoCommand.EmitCanExecuteChanged ();
+				playlistViewModel.InsertImageCommand.EmitCanExecuteChanged ();
 			}
 		}
 	}

@@ -170,7 +170,7 @@ namespace VAS.UI
 			return ((GUIToolkitBase)App.Current.GUIToolkit).GetParentWidget (parent);
 		}
 
-		public MediaFile OpenMediaFile (object parent)
+		public MediaFile OpenMediaFile (object parent = null)
 		{
 			return Helpers.Misc.OpenFile (parent);
 		}

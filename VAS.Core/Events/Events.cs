@@ -209,6 +209,16 @@ namespace VAS.Core.Events
 		public Playlist Playlist { get; set; }
 	}
 
+	public class InsertVideoInPlaylistEvent : Event
+	{
+		public PlaylistPosition Position { get; set; }
+	}
+
+	public class InsertImageInPlaylistEvent : Event
+	{
+		public PlaylistPosition Position { get; set; }
+	}
+
 	public class DeletePlaylistEvent : Event
 	{
 		public Playlist Playlist { get; set; }
