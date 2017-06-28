@@ -18,6 +18,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CSharp.RuntimeBinder;
@@ -31,6 +32,7 @@ using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
+using VAS.Services.State;
 
 namespace VAS.Services.Controller
 {
@@ -70,6 +72,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Subscribe<RenderPlaylistEvent> (HandleRenderPlaylist);
 			App.Current.EventsBroker.Subscribe<InsertVideoInPlaylistEvent> (HandleInsertVideoInPlaylist);
 			App.Current.EventsBroker.SubscribeAsync<InsertImageInPlaylistEvent> (HandleInsertImageInPlaylist);
+			App.Current.EventsBroker.SubscribeAsync<EditEvent<PlaylistElementVM>> (HandleEditPlaylistElement);
 			App.Current.EventsBroker.Subscribe<LoadPlaylistElementEvent> (HandleLoadPlaylistElement);
 			App.Current.EventsBroker.Subscribe<LoadEventEvent> (HandleLoadPlayEvent);
 			App.Current.EventsBroker.Subscribe<TimeNodeChangedEvent> (HandlePlayChanged);
@@ -87,6 +90,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Unsubscribe<RenderPlaylistEvent> (HandleRenderPlaylist);
 			App.Current.EventsBroker.Unsubscribe<InsertVideoInPlaylistEvent> (HandleInsertVideoInPlaylist);
 			App.Current.EventsBroker.UnsubscribeAsync<InsertImageInPlaylistEvent> (HandleInsertImageInPlaylist);
+			App.Current.EventsBroker.UnsubscribeAsync<EditEvent<PlaylistElementVM>> (HandleEditPlaylistElement);
 			App.Current.EventsBroker.Unsubscribe<LoadPlaylistElementEvent> (HandleLoadPlaylistElement);
 			App.Current.EventsBroker.Unsubscribe<LoadEventEvent> (HandleLoadPlayEvent);
 			App.Current.EventsBroker.Unsubscribe<TimeNodeChangedEvent> (HandlePlayChanged);
@@ -249,6 +253,17 @@ namespace VAS.Services.Controller
 			}
 		}
 
+		async Task HandleEditPlaylistElement (EditEvent<PlaylistElementVM> e)
+		{
+			dynamic properties = new ExpandoObject ();
+			properties.PlaylistElement = e.Object;
+			await App.Current.StateController.MoveToModal (EditPlaylistElementState.NAME, properties, true);
+			var playlist = playlistViewModel.ViewModels.FirstOrDefault ((arg) => arg.ViewModels.Contains (e.Object));
+			if (playlist != null) {
+				Save (playlist.Model);
+			}
+		}
+
 		void InsertPlaylistElements (IPlaylistElement element, PlaylistPosition position)
 		{
 			foreach (var playlist in playlistViewModel.LimitedViewModels) {
@@ -357,6 +372,7 @@ namespace VAS.Services.Controller
 				playlistViewModel.EditCommand.EmitCanExecuteChanged ();
 				playlistViewModel.InsertVideoCommand.EmitCanExecuteChanged ();
 				playlistViewModel.InsertImageCommand.EmitCanExecuteChanged ();
+				playlistViewModel.EditPlaylistElementCommand.EmitCanExecuteChanged ();
 			}
 		}
 	}
