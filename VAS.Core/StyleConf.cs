@@ -195,7 +195,7 @@ namespace VAS.Core.Common
 		public const string ButtonAlert = "icons/hicolor/scalable/actions/vas-alert" + IMAGE_EXT;
 		public const string DownloadButton = "icons/hicolor/scalable/actions/vas-import" + IMAGE_EXT;
 		public const string DeleteButton = "icons/hicolor/scalable/actions/vas-delete" + IMAGE_EXT;
-		public const string PlayButton = "icons/hicolor/scalable/actions/video_c_play" + IMAGE_EXT;
+		public const string PlayButton = "icons/hicolor/scalable/actions/vas-video-c-play" + IMAGE_EXT;
 
 		public const int FilterTreeViewToogleWidth = 30;
 		public const int FilterTreeViewOnlyRightOffset = 10;
