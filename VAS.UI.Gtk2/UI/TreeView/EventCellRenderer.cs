@@ -251,7 +251,7 @@ namespace VAS.UI.Component
 			tk.DrawRectangle (backgroundArea.Start, backgroundArea.Width, backgroundArea.Height);
 		}
 
-		protected void RenderChildText (IDrawingToolkit tk, Area backgroundArea, Point textP, double textW, string text, Color textColor)
+		protected void RenderChildLongText (IDrawingToolkit tk, Area backgroundArea, Point textP, double textW, string text, Color textColor)
 		{
 			/* Text */
 			tk.StrokeColor = textColor;
@@ -260,6 +260,15 @@ namespace VAS.UI.Component
 			tk.FontAlignment = FontAlignment.Left;
 			textP.Y = textP.Y + (backgroundArea.Height / 2) - 2;
 			tk.DrawText (textP, textW, -2, text, false, true);
+		}
+
+		protected void RenderChildText (IDrawingToolkit tk, Point p, int width, int height, string text, Color textColor)
+		{
+			tk.StrokeColor = textColor;
+			tk.FontSize = 12;
+			tk.FontWeight = FontWeight.Normal;
+			tk.FontAlignment = FontAlignment.Left;
+			tk.DrawText (p, width, height, text, false, true);
 		}
 
 		void RenderBackgroundAndTitleText (IDrawingToolkit tk, Area backgroundArea, Point textP, double textW, string text, Color backgroundColor, Color textColor)
@@ -318,15 +327,6 @@ namespace VAS.UI.Component
 			}
 			tk.DrawSurface (p, App.Current.Style.ButtonNormalWidth, App.Current.Style.ButtonNormalHeight, background, ScaleMode.AspectFit);
 			tk.DrawSurface (p, App.Current.Style.IconLargeHeight, App.Current.Style.IconLargeHeight, PlayIcon, ScaleMode.AspectFit);
-		}
-
-		protected void RenderActionText (IDrawingToolkit tk, Point p, int width, int height, TimelineEventVM vm, Color textColor)
-		{
-			tk.StrokeColor = textColor;
-			tk.FontSize = 12;
-			tk.FontWeight = FontWeight.Normal;
-			tk.FontAlignment = FontAlignment.Left;
-			tk.DrawText (p, width, height, vm.Name, false, true);
 		}
 
 		protected void RenderLocationIcon (IDrawingToolkit tk, Area backgroundArea, Area cellArea, bool HasLocation)
@@ -391,7 +391,7 @@ namespace VAS.UI.Component
 			RenderBackground (tk, backgroundArea, App.Current.Style.PaletteBackgroundDark);
 			RenderSelection (tk, context, backgroundArea, cellArea, state, false);
 			RenderPrelit (vm.Selected, tk, context, backgroundArea, cellArea, state);
-			RenderChildText (tk, backgroundArea, textPoint, textWidth, vm.Description, App.Current.Style.PaletteText);
+			RenderChildLongText (tk, backgroundArea, textPoint, textWidth, vm.Description, App.Current.Style.PaletteText);
 			Point p = new Point (backgroundArea.Left + LEFT_OFFSET + COLOR_RECTANGLE_WIDTH + SPACING, cellArea.Start.Y + VERTICAL_OFFSET);
 			RenderImage (tk, p, vm.Miniature, MINIATURE_WIDTH, MINIATURE_HEIGHT);
 			tk.End ();
