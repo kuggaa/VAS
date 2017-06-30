@@ -41,10 +41,12 @@ namespace VAS.UI
 	/// <summary>
 	/// IGUIToolkit common implementation
 	/// </summary>
-	public abstract class GUIToolkitBase : IGUIToolkit
+	public abstract class GUIToolkitBase : IGUIToolkit, INavigation
 	{
 		Gtk.Window mainWindow;
 		Registry registry;
+		TaskCompletionSource<bool> tcs;
+		bool taskResult;
 
 		protected GUIToolkitBase ()
 		{
@@ -148,7 +150,12 @@ namespace VAS.UI
 
 		public abstract Project ChooseProject (List<Project> projects);
 
-		public abstract void LoadPanel (IPanel panel);
+		/// <summary>
+		/// Pushes the specified panel to show it. This task does not finish until the panel is shown.
+		/// </summary>
+		/// <returns>The view.</returns>
+		/// <param name="panel">Panel.</param>
+		public abstract bool LoadPanel (IPanel panel);
 
 		public abstract void ShowProjectStats (Project project);
 
@@ -235,8 +242,38 @@ namespace VAS.UI
 			return null;
 		}
 
+		public Task<bool> Push (IPanel panel)
+		{
+			tcs = new TaskCompletionSource<bool> ();
+			taskResult = LoadPanel (panel);
+			GLib.Idle.Add (SetTaskCompletionResult);
+			return tcs.Task;
+		}
+
+		public Task<bool> Pop (IPanel panel)
+		{
+			// In Gtk+ poping a panel is equivalent to replacing the current panel with the previous panel
+			// in the stack
+			return Push (panel);
+		}
+
+		public Task PushModal (IPanel panel, IPanel parent)
+		{
+			tcs = new TaskCompletionSource<bool> ();
+			ShowModalWindow (panel, parent);
+			GLib.Idle.Add (SetTaskCompletionResult);
+			return tcs.Task;
+		}
+
+		public Task PopModal (IPanel panel)
+		{
+			RemoveModalPanelAndWindow (panel);
+			return AsyncHelpers.Return ();
+		}
+
 		protected void ShowModalWindow (IPanel panel, IPanel parent)
 		{
+			taskResult = true;
 			var dialog = panel as Gtk.Dialog;
 			if (dialog != null) {
 				dialog.TransientFor = ((Bin)parent).Toplevel as Window;
@@ -283,6 +320,16 @@ namespace VAS.UI
 			CanvasFromDrawableObjectRegistry.AddMapping (typeof (Quadrilateral), typeof (QuadrilateralObject), "VAS.Drawing");
 			CanvasFromDrawableObjectRegistry.AddMapping (typeof (Rectangle), typeof (RectangleObject), "VAS.Drawing");
 			CanvasFromDrawableObjectRegistry.AddMapping (typeof (Text), typeof (TextObject), "VAS.Drawing");
+		}
+
+		/// <summary>
+		/// Sets the task completion result as true when the main thread has finished showing the panel.
+		/// </summary>
+		/// <returns><c>true</c>, if task completion result was set, <c>false</c> otherwise.</returns>
+		bool SetTaskCompletionResult ()
+		{
+			tcs.SetResult (taskResult);
+			return false;
 		}
 	}
 }
