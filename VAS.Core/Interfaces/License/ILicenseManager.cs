@@ -23,12 +23,19 @@ namespace VAS.Core.Interfaces.License
 	public interface ILicenseManager
 	{
 		/// <summary>
+		/// Identifier of the license container (serial number)
+		/// </summary>
+		/// <value>The container identifier.</value>
+		string ContainerId { get; }
+
+		/// <summary>
 		/// Gets the license status.
 		/// </summary>
 		/// <value>The license status.</value>
 		ILicenseStatus LicenseStatus {
 			get;
 		}
+
 		/// <summary>
 		/// Init the license manager
 		/// </summary>

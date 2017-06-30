@@ -58,7 +58,7 @@
     <Compile Include="Bindings\CheckBoxBinding.cs" />
     <Compile Include="Bindings\SpinBinding.cs" />
     <Compile Include="Bindings\ColorButtonBinding.cs" />
-    <Compile Include="UrlHelper.cs" />
+    <Compile Include="AdsUrlHelper.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Bindings\SpinnerBinding.cs" />
     <Compile Include="Bindings\ComboBoxBinding.cs" />
