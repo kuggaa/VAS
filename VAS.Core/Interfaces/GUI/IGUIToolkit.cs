@@ -46,7 +46,7 @@ namespace VAS.Core.Interfaces.GUI
 
 		Project ChooseProject (List<Project> projects);
 
-		void LoadPanel (IPanel panel);
+		bool LoadPanel (IPanel panel);
 
 		void ShowProjectStats (Project project);
 
