@@ -506,7 +506,7 @@ namespace VAS.Tests
 			Image img = null;
 			string tmpFile = Path.GetTempFileName ();
 
-			using (Stream resource = Assembly.GetExecutingAssembly ().GetManifestResourceStream ("dibujo.svg")) {
+			using (Stream resource = Assembly.GetExecutingAssembly ().GetManifestResourceStream ("vas-dibujo.svg")) {
 				using (Stream output = File.OpenWrite (tmpFile)) {
 					resource.CopyTo (output);
 				}

@@ -75,21 +75,21 @@ namespace VAS.UI
 			deletelastbutton.TooltipMarkup = Catalog.GetString ("Delete event");
 			playlastbutton.TooltipMarkup = Catalog.GetString ("Replay event");
 
-			recimage.Pixbuf = Misc.LoadIcon ("longomatch-control-record",
+			recimage.Pixbuf = Misc.LoadIcon ("vas-control-record",
 				StyleConf.PlayerCapturerIconSize);
-			stopimage.Pixbuf = Misc.LoadIcon ("longomatch-stop",
+			stopimage.Pixbuf = Misc.LoadIcon ("vas-stop",
 				StyleConf.PlayerCapturerIconSize);
-			pauseimage.Pixbuf = Misc.LoadIcon ("longomatch-pause-clock",
+			pauseimage.Pixbuf = Misc.LoadIcon ("vas-pause-clock",
 				StyleConf.PlayerCapturerIconSize);
-			resumeimage.Pixbuf = Misc.LoadIcon ("longomatch-resume-clock",
+			resumeimage.Pixbuf = Misc.LoadIcon ("vas-resume-clock",
 				StyleConf.PlayerCapturerIconSize);
-			saveimage.Pixbuf = Misc.LoadIcon ("longomatch-save",
+			saveimage.Pixbuf = Misc.LoadIcon ("vas-save",
 				StyleConf.PlayerCapturerIconSize);
-			cancelimage.Pixbuf = Misc.LoadIcon ("longomatch-cancel-rec",
+			cancelimage.Pixbuf = Misc.LoadIcon ("vas-cancel-rec",
 				StyleConf.PlayerCapturerIconSize);
-			deletelastimage.Pixbuf = Misc.LoadIcon ("longomatch-delete",
+			deletelastimage.Pixbuf = Misc.LoadIcon ("vas-delete",
 				StyleConf.PlayerCapturerIconSize);
-			playlastimage.Pixbuf = Misc.LoadIcon ("longomatch-control-play",
+			playlastimage.Pixbuf = Misc.LoadIcon ("vas-control-play",
 				StyleConf.PlayerCapturerIconSize);
 			lasteventbox.Visible = false;
 			deletelastbutton.Clicked += HandleDeleteLast;

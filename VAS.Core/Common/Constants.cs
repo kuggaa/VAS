@@ -33,10 +33,10 @@ namespace VAS.Core.Common
 #endif
 
 		// FIXME: Fields, goals, etc are from LongoMatch, we need a more flexible structure.
-		public const string FIELD_BACKGROUND = "images/fields/field-full" + IMAGE_EXT;
-		public const string HALF_FIELD_BACKGROUND = "images/fields/field-half" + IMAGE_EXT;
-		public const string HHALF_FIELD_BACKGROUND = "images/fields/field-full-teameditor" + IMAGE_EXT;
-		public const string GOAL_BACKGROUND = "images/fields/field-goal" + IMAGE_EXT;
+		public const string FIELD_BACKGROUND = "images/fields/lm-field-full" + IMAGE_EXT;
+		public const string HALF_FIELD_BACKGROUND = "images/fields/lm-field-half" + IMAGE_EXT;
+		public const string HHALF_FIELD_BACKGROUND = "images/fields/lm-field-full-teameditor" + IMAGE_EXT;
+		public const string GOAL_BACKGROUND = "images/fields/lm-field-goal" + IMAGE_EXT;
 
 		public const int DB_VERSION = 1;
 
@@ -50,12 +50,12 @@ namespace VAS.Core.Common
 		public const int MAX_BACKGROUND_WIDTH = 800;
 		public const int MAX_BACKGROUND_HEIGHT = 800;
 
-		public const string LINE_NORMAL = "images/tools/line" + IMAGE_EXT;
-		public const string LINE_DASHED = "images/tools/dash-line" + IMAGE_EXT;
-		public const string LINE_ARROW = "images/tools/line-arrow" + IMAGE_EXT;
-		public const string LINE_DOUBLE_ARROW = "images/tools/line-double-arrow" + IMAGE_EXT;
-		public const string LINE_DOT = "images/tools/line-dot" + IMAGE_EXT;
-		public const string LINE_DOUBLE_DOT = "images/tools/line-double-dot" + IMAGE_EXT;
+		public const string LINE_NORMAL = "images/tools/vas-line" + IMAGE_EXT;
+		public const string LINE_DASHED = "images/tools/vas-dash-line" + IMAGE_EXT;
+		public const string LINE_ARROW = "images/tools/vas-line-arrow" + IMAGE_EXT;
+		public const string LINE_DOUBLE_ARROW = "images/tools/vas-line-double-arrow" + IMAGE_EXT;
+		public const string LINE_DOT = "images/tools/vas-line-dot" + IMAGE_EXT;
+		public const string LINE_DOUBLE_DOT = "images/tools/vas-line-double-dot" + IMAGE_EXT;
 
 		public const string TimelineEventsDND = "timeline-events-dnd";
 		public const string PlaylistElementsDND = "playlist-elements-dnd";
