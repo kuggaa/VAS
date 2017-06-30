@@ -31,7 +31,7 @@ namespace VAS.UI.UI.Component
 		{
 			this.Build ();
 
-			datebuttonimage.Pixbuf = Misc.LoadIcon ("longomatch-calendar", Gtk.IconSize.Button, 0);
+			datebuttonimage.Pixbuf = Misc.LoadIcon ("vas-calendar", Gtk.IconSize.Button, 0);
 
 			datebutton.Clicked += HandleClicked;
 			dateentry.Changed += HandleChanged;
