@@ -110,7 +110,7 @@ namespace VAS.Core.Store.Playlists
 		[PropertyChanged.DoNotNotify]
 		public string Description {
 			get {
-				return (Play.Name + "\n" + TagsDescription () + "\n" + TimesDesription ());
+				return (Title + "\n" + TagsDescription () + "\n" + TimesDesription ());
 			}
 		}
 
