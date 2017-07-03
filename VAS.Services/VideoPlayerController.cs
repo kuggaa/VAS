@@ -231,7 +231,7 @@ namespace VAS.Services
 		public virtual Time CurrentTime {
 			get {
 				if (StillImageLoaded) {
-					return imageLoadedTS;
+					return new Time (imageLoadedTS.MSeconds);
 				} else {
 					return player.CurrentTime;
 				}
@@ -678,11 +678,7 @@ namespace VAS.Services
 		public void UpdatePlayingState (bool playing)
 		{
 			if (loadedPlaylistElement != null) {
-				loadedPlaylistElement.Selected = playing;
-				var playElement = (loadedPlaylistElement as PlaylistPlayElement);
-				if (playElement != null) {
-					playElement.Play.Playing = playing;
-				}
+				loadedPlaylistElement.Playing = playing;
 			}
 
 			if (loadedEvent != null) {
@@ -730,6 +726,7 @@ namespace VAS.Services
 				LoadFrameDrawing (element as PlaylistDrawing, playing);
 			}
 			UpdateDuration ();
+			UpdatePlayingState (true);
 			LoadedPlaylist.SetActive (element);
 			EmitElementLoaded (element, playlist);
 		}
@@ -1499,7 +1496,7 @@ namespace VAS.Services
 			}
 
 			if (StillImageLoaded) {
-				Time relativeTime = imageLoadedTS;
+				Time relativeTime = currentTime;
 
 				if (Mode == VideoPlayerOperationMode.Presentation) {
 					relativeTime += LoadedPlaylist.GetCurrentStartTime ();
@@ -1514,6 +1511,7 @@ namespace VAS.Services
 						imageLoadedTS.MSeconds += TIMEOUT_MS;
 					}
 				}
+
 				return true;
 			} else {
 				Time relativeTime = currentTime;

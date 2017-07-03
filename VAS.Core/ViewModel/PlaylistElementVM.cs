@@ -51,12 +51,16 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
-		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.PlaylistElementVM"/> is selected.
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.PlaylistElementVM"/> is playing.
 		/// </summary>
-		/// <value><c>true</c> if selected; otherwise, <c>false</c>.</value>
-		public bool Selected {
-			get;
-			set;
+		/// <value><c>true</c> if playing; otherwise, <c>false</c>.</value>
+		public bool Playing {
+			get {
+				return Model.Playing;
+			}
+			set {
+				Model.Playing = value;
+			}
 		}
 
 		/// <summary>
@@ -96,6 +100,10 @@ namespace VAS.Core.ViewModel
 	}
 
 	public class PlaylistImageVM : PlaylistElementVM
+	{
+	}
+
+	public class PlaylistDrawingVM : PlaylistElementVM
 	{
 	}
 }

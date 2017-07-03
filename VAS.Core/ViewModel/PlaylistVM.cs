@@ -35,6 +35,8 @@ namespace VAS.Core.ViewModel
 			SubViewModel.TypeMappings.Add (typeof (PlaylistPlayElement), typeof (PlaylistPlayElementVM));
 			SubViewModel.TypeMappings.Add (typeof (PlaylistVideo), typeof (PlaylistVideoVM));
 			SubViewModel.TypeMappings.Add (typeof (PlaylistImage), typeof (PlaylistImageVM));
+			SubViewModel.TypeMappings.Add (typeof (PlaylistDrawing), typeof (PlaylistDrawingVM));
+
 		}
 
 		/// <summary>

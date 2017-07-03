@@ -34,7 +34,7 @@ namespace VAS.Core.Interfaces
 			get;
 		}
 
-		bool Selected {
+		bool Playing {
 			get;
 			set;
 		}
