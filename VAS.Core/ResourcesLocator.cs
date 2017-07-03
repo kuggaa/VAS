@@ -104,7 +104,12 @@ namespace VAS.Core
 		/// <param name="size">Desired size.</param>
 		public Image LoadIcon (string name, int size = 0)
 		{
-			return LoadImage ("icons/hicolor/scalable/actions/" + name + StyleConf.IMAGE_EXT, size, size);
+			try {
+				return LoadImage ("icons/hicolor/scalable/actions/" + name + StyleConf.IMAGE_EXT, size, size);
+			} catch (FileNotFoundException) {
+				return LoadImage ("icons/hicolor/scalable/apps/" + name + StyleConf.IMAGE_EXT, size, size);
+			}
 		}
+
 	}
 }
