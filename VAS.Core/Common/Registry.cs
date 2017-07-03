@@ -91,7 +91,8 @@ namespace VAS.Core.Common
 			if (!elements.ContainsKey (interfac)) {
 				elements [interfac] = new List<RegistryElement> ();
 			}
-			elements [interfac].Add (new RegistryElement (type, priority));
+			RegistryElement element = new RegistryElement (type, priority);
+			AddElement (interfac, element);
 			Log.Information (string.Format ("Registered {0} in {1} with priority {2}", type, interfac, priority));
 		}
 
@@ -115,7 +116,7 @@ namespace VAS.Core.Common
 		/// <param name="priority">Priority.</param>
 		public void Register (Type interfac, object instance, int priority = 0)
 		{
-			if (!interfac.IsAssignableFrom(instance.GetType ())) {
+			if (!interfac.IsAssignableFrom (instance.GetType ())) {
 				throw new InvalidOperationException ("Registered instance does not implement the proper interface");
 			}
 
@@ -125,7 +126,8 @@ namespace VAS.Core.Common
 
 			RegistryElement element = new RegistryElement (instance.GetType (), priority);
 			element.Instance = instance;
-			elements [interfac].Add (element);
+
+			AddElement (interfac, element);
 			Log.Information (string.Format ("Registered instance of type {0} in {1} with priority {2}", instance.GetType (), interfac, priority));
 		}
 
@@ -162,6 +164,18 @@ namespace VAS.Core.Common
 			if (!elements.ContainsKey (interfac)) {
 				throw new Exception (String.Format ("No {0} available in the {0} registry",
 					interfac, name));
+			}
+		}
+
+		void AddElement (Type interfac, RegistryElement element)
+		{
+			int index = elements [interfac].FindIndex (elem => elem.Priority == element.Priority);
+			if (index != -1) {
+				Log.Error ("Two items registered with the same priority." +
+						   $"Replacing {elements [interfac] [index]} with {element}");
+				elements [interfac] [index] = element;
+			} else {
+				elements [interfac].Add (element);
 			}
 		}
 
