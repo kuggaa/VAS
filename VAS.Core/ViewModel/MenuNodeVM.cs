@@ -34,6 +34,9 @@ namespace VAS.Core.ViewModel
 		{
 			Command = command;
 			CommandParameter = commandParameter;
+			if (name == null) {
+				name = Command.Text;
+			}
 			Name = name;
 		}
 
@@ -47,21 +50,49 @@ namespace VAS.Core.ViewModel
 			Name = name;
 		}
 
+		/// <summary>
+		/// Gets the command to execute
+		/// </summary>
+		/// <value>The command.</value>
 		public Command Command {
 			get;
 		}
 
+		/// <summary>
+		/// Gets the command parameter.
+		/// </summary>
+		/// <value>The command parameter.</value>
 		public object CommandParameter {
 			get;
 		}
 
+		/// <summary>
+		/// Gets the submenu.
+		/// </summary>
+		/// <value>The submenu.</value>
 		public MenuVM Submenu {
 			get;
 		}
 
+		/// <summary>
+		/// Gets or sets the name.
+		/// </summary>
+		/// <value>The name.</value>
 		public string Name {
 			get;
 			set;
+		}
+
+		/// <summary>
+		/// Updates the Command can execute.
+		/// </summary>
+		public void UpdateCanExecute ()
+		{
+			if (Submenu != null) {
+				Submenu.UpdateCanExecute ();
+			} else {
+				Command.EmitCanExecuteChanged ();
+			}
 		}
 	}
 }
