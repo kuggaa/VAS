@@ -259,6 +259,30 @@ namespace VAS.Tests.Services
 			Assert.IsTrue (player.Opened);
 		}
 
+		[Test]
+		public void Open_InvalidFileSet_NoDataLoaded ()
+		{
+			// Arrange
+			viewPortMock = new Mock<IViewPort> ();
+			viewPortMock.SetupAllProperties ();
+			player.ViewPorts = new List<IViewPort> { viewPortMock.Object };
+			Assert.IsFalse (player.Opened);
+
+			var media = new MediaFileSet ();
+			var file = new MediaFile { FilePath = "invalid" };
+			media.Add (file);
+
+			// Act
+			player.Open (media);
+
+			// Assert
+			playerMock.Verify (p => p.Pause (false), Times.Once ());
+			viewPortMock.VerifySet (v => v.Message = "No video loaded", Times.Once ());
+			viewPortMock.VerifySet (v => v.MessageVisible = true, Times.Once ());
+			Assert.IsTrue (player.Opened);
+			Assert.IsNull (playerVM.AbsoluteDuration);
+		}
+
 		[Test ()]
 		public void TestOpenNullFileSet ()
 		{
