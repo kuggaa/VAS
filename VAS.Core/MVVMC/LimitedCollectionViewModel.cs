@@ -113,6 +113,12 @@ namespace VAS.Core.MVVMC
 			return LimitedViewModels;
 		}
 
+		protected override void SetModel (RangeObservableCollection<TModel> model)
+		{
+			base.SetModel (model);
+			FillLimitedViewModels (base.ViewModels);
+		}
+
 		protected override void HandleViewModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
 			FillLimitedViewModels (base.ViewModels);
@@ -128,7 +134,7 @@ namespace VAS.Core.MVVMC
 				viewmodels = viewmodels.Take (Limitation.Maximum);
 			}
 
-			LimitedViewModels.Replace (viewmodels);
+			LimitedViewModels?.Replace (viewmodels);
 		}
 
 		void LimitationPropertyChanged (object sender, PropertyChangedEventArgs e)
