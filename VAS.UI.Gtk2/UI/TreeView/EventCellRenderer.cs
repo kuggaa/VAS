@@ -255,11 +255,10 @@ namespace VAS.UI.Component
 		{
 			/* Text */
 			tk.StrokeColor = textColor;
-			tk.FontSize = 12;
-			tk.FontWeight = FontWeight.Normal;
+			tk.FontSize = 11;
+			tk.FontWeight = FontWeight.Light;
 			tk.FontAlignment = FontAlignment.Left;
-			textP.Y = textP.Y + (backgroundArea.Height / 2) - 2;
-			tk.DrawText (textP, textW, -2, text, false, true);
+			tk.DrawText (textP, textW, backgroundArea.Height, text, false, true);
 		}
 
 		protected void RenderChildText (IDrawingToolkit tk, Point p, int width, int height, string text, Color textColor)
@@ -381,6 +380,15 @@ namespace VAS.UI.Component
 			}
 		}
 
+		protected void RenderColorStrip (IDrawingToolkit tk, Area backgroundArea, Color color)
+		{
+			Point p = new Point (backgroundArea.Left + LEFT_OFFSET, backgroundArea.Start.Y);
+			//Draw Color strip
+			tk.FillColor = color;
+			tk.StrokeColor = color;
+			tk.DrawRectangle (p, COLOR_RECTANGLE_WIDTH, backgroundArea.Height);
+		}
+
 		void RenderPlaylistElement (PlaylistElementVM vm, IDrawingToolkit tk, IContext context, Area backgroundArea, Area cellArea, CellState state)
 		{
 			tk.Context = context;
@@ -389,9 +397,10 @@ namespace VAS.UI.Component
 										 MINIATURE_WIDTH + SPACING, cellArea.Start.Y);
 			double textWidth = (cellArea.Right - RIGTH_OFFSET - EYE_IMAGE_WIDTH - SPACING) - textPoint.X;
 			RenderBackground (tk, backgroundArea, App.Current.Style.PaletteBackgroundDark);
-			RenderSelection (tk, context, backgroundArea, cellArea, state, false);
+			RenderSelection (tk, context, backgroundArea, cellArea, state, true);
 			RenderPrelit (vm.Playing, tk, context, backgroundArea, cellArea, state);
-			RenderChildLongText (tk, backgroundArea, textPoint, textWidth, vm.Description, App.Current.Style.PaletteText);
+			RenderChildText (tk, textPoint, (int)textWidth, (int)cellArea.Height, vm.Description, App.Current.Style.PaletteText);
+			RenderColorStrip (tk, backgroundArea, App.Current.Style.Text_Highlight);
 			Point p = new Point (backgroundArea.Left + LEFT_OFFSET + COLOR_RECTANGLE_WIDTH + SPACING, cellArea.Start.Y + VERTICAL_OFFSET);
 			RenderImage (tk, p, vm.Miniature, MINIATURE_WIDTH, MINIATURE_HEIGHT);
 			RenderEye (tk, backgroundArea, cellArea, vm.Playing);
