@@ -43,7 +43,7 @@
       <Package>nunit</Package>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>$(SolutionDir)\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>$(SolutionDir)\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Package>newtonsoft-json</Package>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
