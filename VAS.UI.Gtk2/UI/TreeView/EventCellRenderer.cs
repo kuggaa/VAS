@@ -390,10 +390,11 @@ namespace VAS.UI.Component
 			double textWidth = (cellArea.Right - RIGTH_OFFSET - EYE_IMAGE_WIDTH - SPACING) - textPoint.X;
 			RenderBackground (tk, backgroundArea, App.Current.Style.PaletteBackgroundDark);
 			RenderSelection (tk, context, backgroundArea, cellArea, state, false);
-			RenderPrelit (vm.Selected, tk, context, backgroundArea, cellArea, state);
+			RenderPrelit (vm.Playing, tk, context, backgroundArea, cellArea, state);
 			RenderChildLongText (tk, backgroundArea, textPoint, textWidth, vm.Description, App.Current.Style.PaletteText);
 			Point p = new Point (backgroundArea.Left + LEFT_OFFSET + COLOR_RECTANGLE_WIDTH + SPACING, cellArea.Start.Y + VERTICAL_OFFSET);
 			RenderImage (tk, p, vm.Miniature, MINIATURE_WIDTH, MINIATURE_HEIGHT);
+			RenderEye (tk, backgroundArea, cellArea, vm.Playing);
 			tk.End ();
 		}
 	}

@@ -72,7 +72,7 @@ namespace VAS.UI.Dialog
 
 				plElement = value;
 				if (plElement != null) {
-					if (plElement is PlaylistImageVM) {
+					if (plElement is PlaylistImageVM || plElement is PlaylistDrawingVM) {
 						slidetable.Visible = true;
 						durationspinbutton.Value = plElement.Duration.Seconds;
 					} else {
@@ -93,14 +93,10 @@ namespace VAS.UI.Dialog
 
 		public void OnLoad ()
 		{
-			//durationspinbutton.ValueChanged += HandleDurationChanged;
-			//nameentry.Changed += HandleNameChanged;
 		}
 
 		public void OnUnload ()
 		{
-			//durationspinbutton.ValueChanged -= HandleDurationChanged;
-			//nameentry.Changed -= HandleNameChanged;
 		}
 
 		public void SetViewModel (object viewModel)

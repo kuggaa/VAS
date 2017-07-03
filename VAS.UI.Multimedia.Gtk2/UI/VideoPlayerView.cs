@@ -759,6 +759,7 @@ namespace VAS.UI
 					closebutton.Visible = false;
 					eventNameLabel.Visible = false;
 				}
+				HandlePlayElementChanged ();
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Rate))) {
 				rateWindow.SetValue (App.Current.RateList.IndexOf (playerVM.Rate));
@@ -800,6 +801,20 @@ namespace VAS.UI
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.ShowCenterPlayHeadButton))) {
 				center_playhead_box.Visible = ViewModel.ShowCenterPlayHeadButton;
+			}
+		}
+
+		void HandlePlayElementChanged ()
+		{
+			closebutton.Visible = playerVM.PlayElement != null;
+			if (playerVM.PlayElement is PlaylistDrawing) {
+				PlaylistDrawing drawing = (PlaylistDrawing)playerVM.PlayElement;
+				LoadImage (null, drawing.Drawing);
+			} else if (playerVM.PlayElement is PlaylistImage) {
+				PlaylistImage image = (PlaylistImage)playerVM.PlayElement;
+				LoadImage (image.Image, null);
+			} else {
+				DrawingsVisible = false;
 			}
 		}
 

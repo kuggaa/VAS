@@ -24,7 +24,7 @@ using VAS.Core.MVVMC;
 namespace VAS.Core.Store.Playlists
 {
 	[Serializable]
-	public class PlaylistDrawing: BindableBase, IPlaylistElement
+	public class PlaylistDrawing : BindableBase, IPlaylistElement
 	{
 		public PlaylistDrawing (FrameDrawing drawing)
 		{
@@ -33,8 +33,7 @@ namespace VAS.Core.Store.Playlists
 		}
 
 		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool Selected {
+		public bool Playing {
 			get;
 			set;
 		}
