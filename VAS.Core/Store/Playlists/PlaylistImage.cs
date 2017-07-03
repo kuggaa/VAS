@@ -61,7 +61,7 @@ namespace VAS.Core.Store.Playlists
 
 		public string Description {
 			get {
-				return Duration.ToSecondsString ();
+				return $"{Catalog.GetString ("Image")} ({Duration.ToSecondsString ()})";
 			}
 		}
 	}
