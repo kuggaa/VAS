@@ -132,6 +132,7 @@ namespace VAS.Core.Store
 			protected set;
 		}
 
+		[JsonProperty]
 		public virtual RangeObservableCollection<Playlist> Playlists {
 			get;
 			protected set;
