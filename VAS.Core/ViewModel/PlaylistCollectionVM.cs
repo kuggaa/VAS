@@ -20,6 +20,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.MVVMC;
@@ -55,7 +56,7 @@ namespace VAS.Core.ViewModel
 			RenderCommand.Text = Catalog.GetString ("Render");
 			InsertVideoCommand = new Command<PlaylistPosition> (InsertVideo, HasChildsItemsSelected);
 			InsertVideoCommand.Text = Catalog.GetString ("External Video");
-			InsertImageCommand = new Command<PlaylistPosition> (InsertImage, HasChildsItemsSelected);
+			InsertImageCommand = new AsyncCommand<PlaylistPosition> (InsertImage, HasChildsItemsSelected);
 			InsertImageCommand.Text = Catalog.GetString ("External Image");
 			EditPlaylistElementCommand = new Command (EditPlaylistElement, JustOneElementSelectedAndIsNotVideo);
 			EditPlaylistElementCommand.Text = Catalog.GetString ("Edit Properties");
@@ -125,7 +126,7 @@ namespace VAS.Core.ViewModel
 		}
 
 		[PropertyChanged.DoNotNotify]
-		public Command InsertImageCommand {
+		public AsyncCommand<PlaylistPosition> InsertImageCommand {
 			get;
 			protected set;
 		}
@@ -274,9 +275,9 @@ namespace VAS.Core.ViewModel
 			);
 		}
 
-		void InsertImage (PlaylistPosition position)
+		Task InsertImage (PlaylistPosition position)
 		{
-			App.Current.EventsBroker.Publish (
+			return App.Current.EventsBroker.Publish (
 				new InsertImageInPlaylistEvent {
 					Position = position
 				}
