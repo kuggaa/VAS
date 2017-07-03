@@ -12,7 +12,7 @@ namespace VAS.UI.UI.Component
 
 		private global::Gtk.Button datebutton;
 
-		private global::Gtk.Image datebuttonimage;
+		private global::VAS.UI.Helpers.ImageView datebuttonimage;
 
 		protected virtual void Build ()
 		{
@@ -42,7 +42,7 @@ namespace VAS.UI.UI.Component
 			this.datebutton.CanFocus = true;
 			this.datebutton.Name = "datebutton";
 			// Container child datebutton.Gtk.Container+ContainerChild
-			this.datebuttonimage = new global::Gtk.Image ();
+			this.datebuttonimage = new global::VAS.UI.Helpers.ImageView ();
 			this.datebuttonimage.Name = "datebuttonimage";
 			this.datebutton.Add (this.datebuttonimage);
 			this.hbox2.Add (this.datebutton);

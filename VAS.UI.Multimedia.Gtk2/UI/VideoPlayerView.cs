@@ -81,27 +81,27 @@ namespace VAS.UI
 				AdjustSizeToDuration = true,
 			};
 
-			closebuttonimage.Pixbuf = Misc.LoadIcon ("vas-cancel-rec",
+			closebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-cancel-rec",
 				StyleConf.PlayerCapturerIconSize);
-			drawbuttonimage.Pixbuf = Misc.LoadIcon ("vas-control-draw",
+			drawbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-draw",
 				StyleConf.PlayerCapturerIconSize);
-			playbuttonimage.Pixbuf = Misc.LoadIcon ("vas-control-play",
+			playbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-play",
 				StyleConf.PlayerCapturerIconSize);
-			pausebuttonimage.Pixbuf = Misc.LoadIcon ("vas-control-pause",
+			pausebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-pause",
 				StyleConf.PlayerCapturerIconSize);
-			prevbuttonimage.Pixbuf = Misc.LoadIcon ("vas-control-rw",
+			prevbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-rw",
 				StyleConf.PlayerCapturerIconSize);
-			nextbuttonimage.Pixbuf = Misc.LoadIcon ("vas-control-ff",
+			nextbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-ff",
 				StyleConf.PlayerCapturerIconSize);
-			volumebuttonimage.Pixbuf = Misc.LoadIcon ("vas-control-volume-hi",
+			volumebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-volume-hi",
 				StyleConf.PlayerCapturerIconSize);
-			detachbuttonimage.Pixbuf = Misc.LoadIcon ("vas-control-detach",
+			detachbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-detach",
 				StyleConf.PlayerCapturerIconSize);
-			viewportsSwitchImage.Pixbuf = Misc.LoadIcon ("vas-video-device",
+			viewportsSwitchImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-video-device",
 				22);
-			zoomLevelImage.Pixbuf = Misc.LoadIcon ("vas-search",
+			zoomLevelImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-search",
 				22);
-			centerplayheadbuttonimage.Pixbuf = Misc.LoadIcon ("vas-dash-center-view",
+			centerplayheadbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-dash-center-view",
 				StyleConf.PlayerCapturerIconSize);
 
 			// Force tooltips to be translatable as there seems to be a bug in stetic 
@@ -332,7 +332,7 @@ namespace VAS.UI
 
 		void SetVolumeIcon (string name)
 		{
-			volumebuttonimage.Pixbuf = Misc.LoadIcon (name, IconSize.Button, 0);
+			volumebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon (name, StyleConf.PlayerCapturerIconSize);
 		}
 
 		void UpdateComboboxes ()
@@ -864,11 +864,11 @@ namespace VAS.UI
 		void HandlePlayerAttachedChanged ()
 		{
 			if (playerVM.PlayerAttached) {
-				detachbuttonimage.Pixbuf = Misc.LoadIcon ("vas-control-attach",
+				detachbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-attach",
 					StyleConf.PlayerCapturerIconSize);
 				detachbutton.TooltipMarkup = Catalog.GetString ("Attach window");
 			} else {
-				detachbuttonimage.Pixbuf = Misc.LoadIcon ("vas-control-detach",
+				detachbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-detach",
 					StyleConf.PlayerCapturerIconSize);
 				detachbutton.TooltipMarkup = Catalog.GetString ("Detach window");
 			}

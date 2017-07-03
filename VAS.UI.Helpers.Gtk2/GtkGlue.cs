@@ -24,17 +24,76 @@ namespace VAS
 {
 	public static class GtkGlue
 	{
-		[DllImport ("libgtk-2.0.dll") /* willfully unmapped */]
-		static extern void gtk_menu_item_set_label (IntPtr menu, IntPtr label);
+		const string LIBGDK = "libgdk-2.0.dll";
+		const string LIBGTK = "libgtk-2.0.dll";
+		const string LIBPANGO = "libpango-1.0.dll";
+		const string LIBGDK_PIXBUF = "libgdk_pixbuf-2.0.dll";
+		const string LIBVAS = "libvas.dll";
 
-		[DllImport ("libgtk-2.0.dll") /* willfully unmapped */]
-		static extern IntPtr gtk_message_dialog_get_message_area (IntPtr dialog);
-
-		[DllImport ("libvas.dll")]
+		[DllImport (LIBVAS)]
 		static extern void lgm_gtk_glue_gdk_event_button_set_button (IntPtr evt, uint button);
 
-		[DllImport ("libpango-1.0.dll")]
+		[DllImport (LIBPANGO)]
 		static extern void pango_layout_set_height (IntPtr layout, int height);
+
+		[DllImport (LIBGTK)]
+		static extern void gtk_menu_item_set_label (IntPtr menu, IntPtr label);
+
+		[DllImport (LIBGTK)]
+		static extern IntPtr gtk_message_dialog_get_message_area (IntPtr dialog);
+
+		[DllImport (LIBGTK, CallingConvention = CallingConvention.Cdecl)]
+		static extern double gtk_widget_get_scale_factor (IntPtr widget);
+
+		[DllImport (LIBGDK, CallingConvention = CallingConvention.Cdecl)]
+		static extern double gdk_screen_get_monitor_scale_factor (IntPtr widget, int monitor);
+
+		[DllImport (LIBGDK_PIXBUF, CallingConvention = CallingConvention.Cdecl)]
+		static extern void gdk_pixbuf_set_hires_variant (IntPtr px, IntPtr variant2x);
+
+		[DllImport (LIBGDK_PIXBUF, CallingConvention = CallingConvention.Cdecl)]
+		static extern IntPtr gdk_pixbuf_get_hires_variant (IntPtr px);
+
+		/// <summary>
+		/// Gets the high resolution @2x variant of the pixbuf
+		/// </summary>
+		/// <returns>The high resolution variant.</returns>
+		/// <param name="px">The Pixbuf.</param>
+		public static Pixbuf GetHiResVariant (this Pixbuf px)
+		{
+			return new Pixbuf (gdk_pixbuf_get_hires_variant (px.Handle));
+		}
+
+		/// <summary>
+		/// Sets the high resolution @2x variant of the pixbuf
+		/// </summary>
+		/// <returns>The high resolution variant.</returns>
+		/// <param name="px">Px.</param>
+		public static void SetHiResVariant (this Pixbuf px, Pixbuf variant2x)
+		{
+			gdk_pixbuf_set_hires_variant (px.Handle, variant2x.Handle);
+		}
+
+		/// <summary>
+		/// Gets the current scale factor of the widget.
+		/// </summary>
+		/// <returns>The scale factor.</returns>
+		/// <param name="widget">The widget.</param>
+		public static double GetScaleFactor (this Widget widget)
+		{
+			return gtk_widget_get_scale_factor (widget.Handle);
+		}
+
+		/// <summary>
+		/// Gets the scale factor of the monitor.
+		/// </summary>
+		/// <returns>The scale factor.</returns>
+		/// <param name="screen">Screen.</param>
+		/// <param name="monitor">Monitor.</param>
+		public static double GetScaleFactor (this Screen screen, int monitor)
+		{
+			return gdk_screen_get_monitor_scale_factor (screen.Handle, monitor);
+		}
 
 		public static void SetLabel (this MenuItem menu, string label)
 		{
@@ -47,7 +106,6 @@ namespace VAS
 
 			return new VBox (handle);
 		}
-
 
 		public static void SetButton (this EventButton ev, uint button)
 		{

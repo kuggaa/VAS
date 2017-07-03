@@ -280,8 +280,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 		ISurface LoadBorder (string name)
 		{
-			Image img = App.Current.ResourcesLocator.LoadImage (name);
-			img.Scale (StyleConf.TimelineCategoryHeight, StyleConf.TimelineCategoryHeight);
+			Image img = App.Current.ResourcesLocator.LoadImage (name, StyleConf.TimelineCategoryHeight);
 			return App.Current.DrawingToolkit.CreateSurface (img.Width, img.Height, img);
 		}
 	}

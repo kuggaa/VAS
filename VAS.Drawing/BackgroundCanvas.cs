@@ -28,6 +28,7 @@ namespace VAS.Drawing
 		public event EventHandler RegionOfInterestChanged;
 
 		Image background;
+		ISurface backgroundSurface;
 		Area regionOfInterest;
 
 		public BackgroundCanvas (IWidget widget) : base (widget)
@@ -44,12 +45,20 @@ namespace VAS.Drawing
 		/// </summary>
 		public Image Background {
 			set {
+				if (backgroundSurface != null) {
+					backgroundSurface.Dispose ();
+					backgroundSurface = null;
+				}
 				background = value;
+				if (value != null) {
+					backgroundSurface = App.Current.DrawingToolkit.CreateSurface (background.Width, background.Height, background);
+				}
 				HandleSizeChangedEvent ();
 			}
 			get {
 				return background;
 			}
+
 		}
 
 		/// <summary>
@@ -104,8 +113,8 @@ namespace VAS.Drawing
 			DrawBackground ();
 
 			Begin (context);
-			if (Background != null) {
-				tk.DrawImage (Background);
+			if (backgroundSurface != null) {
+				tk.DrawSurface (backgroundSurface);
 			}
 			DrawObjects (area);
 			End ();
