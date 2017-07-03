@@ -305,7 +305,7 @@ namespace VAS.Tests
 
 		Image GetDummyImage (int width = 0, int height = 0)
 		{
-			string svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16px\" height=\"16px\"/>";
+			string svg = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->\r\n<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\r\n<svg version=\"1.1\" id=\"Layer_1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\"\r\n\t width=\"25px\" height=\"25px\" viewBox=\"0 0 25 25\" enable-background=\"new 0 0 25 25\" xml:space=\"preserve\">\r\n<g>\r\n\t<polygon fill=\"#0A0A0A\" points=\"20.12,11.465 12.499,4.219 4.88,11.465 8.225,11.465 8.225,17.572 16.774,17.572 16.774,11.465 \t\r\n\t\t\"/>\r\n\t<rect x=\"7.48\" y=\"18.806\" fill=\"#0A0A0A\" width=\"10.039\" height=\"1.976\"/>\r\n</g>\r\n</svg>";
 			using (Stream s = new MemoryStream (Encoding.UTF8.GetBytes (svg))) {
 				if (width != 0 && height != 0) {
 					return new Image (s, width, height);
