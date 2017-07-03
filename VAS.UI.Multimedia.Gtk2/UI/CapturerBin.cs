@@ -75,21 +75,21 @@ namespace VAS.UI
 			deletelastbutton.TooltipMarkup = Catalog.GetString ("Delete event");
 			playlastbutton.TooltipMarkup = Catalog.GetString ("Replay event");
 
-			recimage.Pixbuf = Misc.LoadIcon ("vas-control-record",
+			recimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-record",
 				StyleConf.PlayerCapturerIconSize);
-			stopimage.Pixbuf = Misc.LoadIcon ("vas-stop",
+			stopimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-stop",
 				StyleConf.PlayerCapturerIconSize);
-			pauseimage.Pixbuf = Misc.LoadIcon ("vas-pause-clock",
+			pauseimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-pause-clock",
 				StyleConf.PlayerCapturerIconSize);
-			resumeimage.Pixbuf = Misc.LoadIcon ("vas-resume-clock",
+			resumeimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-resume-clock",
 				StyleConf.PlayerCapturerIconSize);
-			saveimage.Pixbuf = Misc.LoadIcon ("vas-save",
+			saveimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-save",
 				StyleConf.PlayerCapturerIconSize);
-			cancelimage.Pixbuf = Misc.LoadIcon ("vas-cancel-rec",
+			cancelimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-cancel-rec",
 				StyleConf.PlayerCapturerIconSize);
-			deletelastimage.Pixbuf = Misc.LoadIcon ("vas-delete",
+			deletelastimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-delete",
 				StyleConf.PlayerCapturerIconSize);
-			playlastimage.Pixbuf = Misc.LoadIcon ("vas-control-play",
+			playlastimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-play",
 				StyleConf.PlayerCapturerIconSize);
 			lasteventbox.Visible = false;
 			deletelastbutton.Clicked += HandleDeleteLast;
@@ -167,8 +167,8 @@ namespace VAS.UI
 		public virtual Time CurrentCaptureTime {
 			get {
 				int timeDiff;
-				
-				timeDiff = (int)(DateTime.UtcNow - currentPeriodStart).TotalMilliseconds; 
+
+				timeDiff = (int)(DateTime.UtcNow - currentPeriodStart).TotalMilliseconds;
 				return new Time (accumTime.MSeconds + timeDiff);
 			}
 		}
@@ -180,7 +180,7 @@ namespace VAS.UI
 				} else {
 					return new Time (0);
 				}
-				
+
 			}
 		}
 
@@ -200,7 +200,7 @@ namespace VAS.UI
 			if (!ReadyToCapture) {
 				return;
 			}
-			
+
 			if (currentPeriod != null) {
 				string msg = Catalog.GetString ("Period recording already started");
 				App.Current.Dialogs.WarningMessage (msg, this);
@@ -208,14 +208,14 @@ namespace VAS.UI
 			}
 			recbutton.Visible = false;
 			pausebutton.Visible = savebutton.Visible = stopbutton.Visible = true;
-			
+
 			if (PeriodsNames != null && PeriodsNames.Count > Periods.Count) {
 				periodName = PeriodsNames [Periods.Count];
 			} else {
 				periodName = (Periods.Count + 1).ToString ();
 			}
 			currentPeriod = new Period { Name = periodName };
-			
+
 			currentTimeNode = currentPeriod.Start (accumTime, periodName);
 			currentTimeNode.Stop = currentTimeNode.Start;
 			currentPeriodStart = DateTime.UtcNow;
@@ -240,7 +240,7 @@ namespace VAS.UI
 				App.Current.Dialogs.WarningMessage (msg, this);
 				return;
 			}
-			
+
 			GLib.Source.Remove (timeoutID);
 			currentPeriod.Stop (CurrentCaptureTime);
 			accumTime = CurrentCaptureTime;
@@ -437,13 +437,13 @@ namespace VAS.UI
 				videowindow.Visible = false;
 				return;
 			}
-			
+
 			/* We need to use Matroska for live replay and remux when the capture is done */
 			muxer = settings.EncodingSettings.EncodingProfile.Muxer;
 			if (muxer == VideoMuxerType.Avi || muxer == VideoMuxerType.Mp4) {
 				settings.EncodingSettings.EncodingProfile.Muxer = VideoMuxerType.Matroska;
 			}
-			Capturer.Configure (settings, videowindow.WindowHandle); 
+			Capturer.Configure (settings, videowindow.WindowHandle);
 			settings.EncodingSettings.EncodingProfile.Muxer = muxer;
 			delayStart = false;
 			Capturer.Run ();
@@ -522,7 +522,7 @@ namespace VAS.UI
 		protected virtual void HandleDeleteLast (object sender, EventArgs e)
 		{
 			if (lastevent != null) {
-				App.Current.EventsBroker.Publish <EventsDeletedEvent> (
+				App.Current.EventsBroker.Publish<EventsDeletedEvent> (
 					new EventsDeletedEvent {
 						TimelineEvents = new List<TimelineEvent> { lastevent }
 					}
@@ -530,7 +530,7 @@ namespace VAS.UI
 				lastevent = null;
 				lasteventbox.Visible = false;
 			}
-			
+
 		}
 
 		protected virtual void HandleMediaInfo (int width, int height, int parN, int parD)

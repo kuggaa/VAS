@@ -16,39 +16,18 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using System.Linq.Expressions;
-using VAS.Core.Common;
-using VAS.Core.Interfaces.MVVMC;
-using VAS.Core.MVVMC;
+using System.Runtime.InteropServices;
 
-namespace VAS.UI.Helpers.Bindings
+namespace VAS.Drawing.Cairo
 {
-	/// <summary>
-	/// Property binding for images.
-	/// </summary>
-	public class ImageBinding : PropertyBinding<Image>
+	public static class PangoGlue
 	{
-		ImageView imageView;
-		int width, height;
+		[DllImport ("libpango-1.0.dll")]
+		static extern void pango_layout_set_height (IntPtr layout, int height);
 
-		public ImageBinding (ImageView image, Expression<Func<IViewModel, Image>> propertyExpression,
-							 int width = 0, int height = 0) : base (propertyExpression)
+		public static void SetPangoLayoutHeight (this Pango.Layout layout, int height)
 		{
-			imageView = image;
-			imageView.SetSize (width, height);
-		}
-
-		protected override void BindView ()
-		{
-		}
-
-		protected override void UnbindView ()
-		{
-		}
-
-		protected override void WriteViewValue (Image val)
-		{
-			imageView.Image = val;
+			pango_layout_set_height (layout.Handle, height);
 		}
 	}
 }

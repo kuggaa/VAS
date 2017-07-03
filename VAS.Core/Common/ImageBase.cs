@@ -44,7 +44,8 @@ namespace VAS.Core.Common
 
 		public BaseImage (string filename, int width, int height)
 		{
-			Value = LoadFromFile (filename, width, height);
+			DeviceScaleFactor = App.Current.GUIToolkit.DeviceScaleFactor;
+			Value = LoadFromFile (filename, (int)(width * DeviceScaleFactor), (int)(height * DeviceScaleFactor));
 		}
 
 		public BaseImage (Stream stream)
@@ -54,7 +55,8 @@ namespace VAS.Core.Common
 
 		public BaseImage (Stream stream, int width, int height)
 		{
-			Value = LoadFromStream (stream, width, height);
+			DeviceScaleFactor = App.Current.GUIToolkit.DeviceScaleFactor;
+			Value = LoadFromStream (stream, (int)(width * DeviceScaleFactor), (int)(height * DeviceScaleFactor));
 		}
 
 		protected override void DisposeManagedResources ()
@@ -70,15 +72,20 @@ namespace VAS.Core.Common
 
 		public int Width {
 			get {
-				return GetWidth ();
+				return (int)(GetWidth () / DeviceScaleFactor);
 			}
 		}
 
 		public int Height {
 			get {
-				return GetHeight ();
+				return (int)(GetHeight () / DeviceScaleFactor);
 			}
 		}
+
+		public float DeviceScaleFactor {
+			get;
+			protected set;
+		} = 1;
 
 		public void ScaleInplace ()
 		{
@@ -98,14 +105,25 @@ namespace VAS.Core.Common
 			int oHeight = 0;
 
 			ComputeScale (imgWidth, imgHeight, destWidth, destHeight, mode, out oWidth, out oHeight);
-			scaleX = (double)oWidth / imgWidth;
-			scaleY = (double)oHeight / imgHeight;
-			offset = new Point ((double)(destWidth - oWidth) / 2, (double)(destHeight - oHeight) / 2);
+			if (mode == ScaleMode.Keep) {
+				scaleX = 1;
+				scaleY = 1;
+				offset = new Point ((double)(destWidth - imgWidth) / 2, (double)(destHeight - imgHeight) / 2);
+			} else {
+				scaleX = (double)oWidth / imgWidth;
+				scaleY = (double)oHeight / imgHeight;
+				offset = new Point ((double)(destWidth - oWidth) / 2, (double)(destHeight - oHeight) / 2);
+			}
 		}
 
 		public static void ComputeScale (int inWidth, int inHeight, int reqOutWidth, int reqOutHeight,
 										 ScaleMode mode, out int outWidth, out int outHeight)
 		{
+			if (mode == ScaleMode.Keep) {
+				outWidth = inWidth;
+				outHeight = inHeight;
+			}
+
 			outWidth = reqOutWidth;
 			outHeight = reqOutHeight;
 

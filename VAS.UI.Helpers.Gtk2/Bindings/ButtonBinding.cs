@@ -65,7 +65,7 @@ namespace VAS.UI.Helpers.Bindings
 
 		void UpdateButton ()
 		{
-			button.Configure ((image ?? Command.Icon)?.Value,
+			button.Configure (image ?? Command.Icon,
 							  text ?? Command.Text,
 							  Command.ToolTipText, null);
 			button.Sensitive = Command.CanExecute ();

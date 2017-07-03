@@ -1,4 +1,4 @@
-﻿//
+//
 //  Copyright (C) 2016 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -30,6 +30,7 @@ using VAS.Drawing.Cairo;
 using VAS.Drawing.Widgets;
 using VAS.Services.State;
 using VAS.Services.ViewModel;
+using VAS.UI.Component;
 using VAS.UI.Helpers;
 using Color = VAS.Core.Common.Color;
 using Drawable = VAS.Core.Store.Drawables.Drawable;
@@ -42,6 +43,7 @@ namespace VAS.UI.Dialog
 	public abstract partial class DrawingTool : Gtk.Dialog, IPanel<DrawingToolVM>
 	{
 		const int MOVE_OFFSET = 5;
+		const int TOOL_HEIGHT = 24;
 
 		readonly Blackboard blackboard;
 		TimelineEvent play;
@@ -68,22 +70,22 @@ namespace VAS.UI.Dialog
 
 			selectbutton.Active = true;
 
-			selectbuttonimage.Pixbuf = Misc.LoadIcon ("vas-select", 20);
-			eraserbuttonimage.Pixbuf = Misc.LoadIcon ("vas-eraser", 20);
-			penbuttonimage.Pixbuf = Misc.LoadIcon ("vas-pencil", 20);
-			textbuttonimage.Pixbuf = Misc.LoadIcon ("vas-text", 20);
-			linebuttonimage.Pixbuf = Misc.LoadIcon ("vas-arrow", 20);
-			crossbuttonimage.Pixbuf = Misc.LoadIcon ("vas-mark", 20);
-			rectanglebuttonimage.Pixbuf = Misc.LoadIcon ("vas-square", 20);
-			ellipsebuttonimage.Pixbuf = Misc.LoadIcon ("vas-circle", 20);
-			rectanglefilledbuttonimage.Pixbuf = Misc.LoadIcon ("vas-square-fill", 20);
-			ellipsefilledbuttonimage.Pixbuf = Misc.LoadIcon ("vas-circle-fill", 20);
-			playerbuttonimage.Pixbuf = Misc.LoadIcon ("vas-person", 20);
-			numberbuttonimage.Pixbuf = Misc.LoadIcon ("vas-counter", 20);
-			anglebuttonimage.Pixbuf = Misc.LoadIcon ("vas-angle", 20);
-			zoombuttonimage.Pixbuf = Misc.LoadIcon ("vas-search", 20);
-			zoomoutimage.Pixbuf = Misc.LoadIcon ("vas-zoom-out", 14);
-			zoominimage.Pixbuf = Misc.LoadIcon ("vas-zoom-in", 14);
+			selectbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-select", 20);
+			eraserbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-eraser", 20);
+			penbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-pencil", 20);
+			textbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-text", 20);
+			linebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-arrow", 20);
+			crossbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-mark", 20);
+			rectanglebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-square", 20);
+			ellipsebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-circle", 20);
+			rectanglefilledbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-square-fill", 20);
+			ellipsefilledbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-circle-fill", 20);
+			playerbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-person", 20);
+			numberbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-counter", 20);
+			anglebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-angle", 20);
+			zoombuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-search", 20);
+			zoomoutimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-zoom-out", 14);
+			zoominimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-zoom-in", 14);
 
 			selectbutton.Toggled += HandleToolClicked;
 			eraserbutton.Toggled += HandleToolClicked;
@@ -404,16 +406,17 @@ namespace VAS.UI.Dialog
 		void FillLineStyle ()
 		{
 			ListStore formatStore;
-			CellRendererPixbuf renderer = new CellRendererPixbuf ();
+			CellRendererImage renderer = new CellRendererImage ();
+			renderer.Height = TOOL_HEIGHT;
 
-			formatStore = new ListStore (typeof (Gdk.Pixbuf), typeof (LineStyle));
-			formatStore.AppendValues (App.Current.ResourcesLocator.LoadImage (Constants.LINE_NORMAL).Value,
+			formatStore = new ListStore (typeof (Image), typeof (LineStyle));
+			formatStore.AppendValues (App.Current.ResourcesLocator.LoadImage (Constants.LINE_NORMAL),
 				LineStyle.Normal);
-			formatStore.AppendValues (App.Current.ResourcesLocator.LoadImage (Constants.LINE_DASHED).Value,
+			formatStore.AppendValues (App.Current.ResourcesLocator.LoadImage (Constants.LINE_DASHED),
 				LineStyle.Dashed);
 			stylecombobox.Clear ();
 			stylecombobox.PackStart (renderer, true);
-			stylecombobox.AddAttribute (renderer, "pixbuf", 0);
+			stylecombobox.AddAttribute (renderer, "Image", 0);
 			stylecombobox.Model = formatStore;
 			stylecombobox.Active = 0;
 			stylecombobox.Changed += HandleLineStyleChanged;
@@ -422,22 +425,23 @@ namespace VAS.UI.Dialog
 		void FillLineType ()
 		{
 			ListStore formatStore;
-			CellRendererPixbuf renderer = new CellRendererPixbuf ();
+			CellRendererImage renderer = new CellRendererImage ();
+			renderer.Height = TOOL_HEIGHT;
 
-			formatStore = new ListStore (typeof (Gdk.Pixbuf), typeof (LineStyle));
-			formatStore.AppendValues (App.Current.ResourcesLocator.LoadImage (Constants.LINE_NORMAL).Value,
+			formatStore = new ListStore (typeof (Image), typeof (LineStyle));
+			formatStore.AppendValues (App.Current.ResourcesLocator.LoadImage (Constants.LINE_NORMAL),
 				LineType.Simple);
-			formatStore.AppendValues (App.Current.ResourcesLocator.LoadImage (Constants.LINE_ARROW).Value,
+			formatStore.AppendValues (App.Current.ResourcesLocator.LoadImage (Constants.LINE_ARROW),
 				LineType.Arrow);
-			formatStore.AppendValues (App.Current.ResourcesLocator.LoadImage (Constants.LINE_DOUBLE_ARROW).Value,
+			formatStore.AppendValues (App.Current.ResourcesLocator.LoadImage (Constants.LINE_DOUBLE_ARROW),
 				LineType.DoubleArrow);
-			formatStore.AppendValues (App.Current.ResourcesLocator.LoadImage (Constants.LINE_DOT).Value,
+			formatStore.AppendValues (App.Current.ResourcesLocator.LoadImage (Constants.LINE_DOT),
 				LineType.Dot);
-			formatStore.AppendValues (App.Current.ResourcesLocator.LoadImage (Constants.LINE_DOUBLE_DOT).Value,
+			formatStore.AppendValues (App.Current.ResourcesLocator.LoadImage (Constants.LINE_DOUBLE_DOT),
 				LineType.DoubleDot);
 			typecombobox.Clear ();
 			typecombobox.PackStart (renderer, true);
-			typecombobox.AddAttribute (renderer, "pixbuf", 0);
+			typecombobox.AddAttribute (renderer, "Image", 0);
 			typecombobox.Model = formatStore;
 			typecombobox.Active = 0;
 			typecombobox.Changed += HandleLineTypeChanged;

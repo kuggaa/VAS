@@ -36,6 +36,8 @@ namespace VAS.Core.Interfaces.Drawing
 		int Width { get; }
 
 		int Height { get; }
+
+		float DeviceScaleFactor { get; }
 	}
 
 	public interface IDrawingToolkit
@@ -103,9 +105,9 @@ namespace VAS.Core.Interfaces.Drawing
 
 		void DrawText (Point point, double width, double height, string text, bool escape = false, bool ellipsize = false);
 
-		void DrawImage (Image image);
+		void DrawImage (Image image, float alpha = 1);
 
-		void DrawImage (Point start, double width, double height, Image image, ScaleMode mode, bool masked = false);
+		void DrawImage (Point start, double width, double height, Image image, ScaleMode mode, bool masked = false, float alpha = 1);
 
 		void DrawCircleImage (Point center, double radius, Image image);
 

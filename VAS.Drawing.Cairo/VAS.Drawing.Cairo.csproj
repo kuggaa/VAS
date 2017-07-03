@@ -36,6 +36,7 @@
     <Compile Include="..\AssemblyInfo\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="PangoGlue.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -52,10 +53,9 @@
       <Project>{08AE7734-B995-4E0D-AD8F-38F597E0D4DF}</Project>
       <Name>VAS.Core.Net45</Name>
     </ProjectReference>
-    <ProjectReference Include="..\VAS.UI.Helpers.Gtk2\VAS.UI.Helpers.Gtk2.csproj">
-      <Project>{E75E30DC-C1CF-4683-9A36-65B91EF10095}</Project>
-      <Name>VAS.UI.Helpers.Gtk2</Name>
-    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="VAS.Drawing.Cairo.dll.config" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
