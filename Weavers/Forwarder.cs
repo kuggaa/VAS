@@ -85,9 +85,6 @@ namespace Weavers
 			var bindableBaseTypeFinder = new TypeFinder (ModuleDefinition, AssemblyResolver, BINDABLE_BASE);
 			bindableBaseType = bindableBaseTypeFinder.Execute ();
 
-			var exceptionFinder = new ExceptionFinder (ModuleDefinition, AssemblyResolver);
-			exceptionFinder.Execute ();
-
 			// Find the ConnectChild () method
 			var connectFinder = new MethodFinder (ModuleDefinition, CONNECT, 3);
 			connectMethod = connectFinder.Execute (bindableBaseType);
@@ -157,7 +154,8 @@ namespace Weavers
 			}
 
 			var fullName = typeDef.FullName;
-			if (typeDef.Interfaces != null && typeDef.Interfaces.Any (x => x.Name == COLLECTION_CHANGED || x.Name == PROPERTY_CHANGED)) {
+			if (typeDef.Interfaces != null && typeDef.Interfaces.Any (x => x.InterfaceType.Name == COLLECTION_CHANGED ||
+																	  x.InterfaceType.Name == PROPERTY_CHANGED)) {
 				return true;
 			}
 			if (typeDef.BaseType == null) {
