@@ -168,7 +168,7 @@ namespace VAS.Tests.Core.Common
 			string tmpFile2x = tmpFile + "@2x.svg";
 			tmpFile += ".svg";
 
-			using (Stream resource = Assembly.GetExecutingAssembly ().GetManifestResourceStream ("dibujo.svg")) {
+			using (Stream resource = Assembly.GetExecutingAssembly ().GetManifestResourceStream ("vas-dibujo.svg")) {
 				using (Stream output = File.OpenWrite (tmpFile2x)) {
 					resource.CopyTo (output);
 				}
