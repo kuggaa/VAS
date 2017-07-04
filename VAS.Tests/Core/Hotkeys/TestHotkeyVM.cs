@@ -37,6 +37,7 @@ namespace VAS.Tests.Core.Hotkeys
 			hotkey = new HotKey { Key = (int)App.Current.Keyboard.KeyvalFromName ("w"), Modifier = 100 };
 			guiToolkitMock = new Mock<IGUIToolkit> ();
 			guiToolkitMock.Setup (m => m.SelectHotkey (It.IsAny<HotKey> (), null)).Returns (hotkey);
+			guiToolkitMock.SetupGet (o => o.DeviceScaleFactor).Returns (1.0f);
 			App.Current.GUIToolkit = guiToolkitMock.Object;
 		}
 

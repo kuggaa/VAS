@@ -184,6 +184,7 @@ namespace VAS.Tests.Core.Common
 		public void CreateImage_FromFileNameWithSizeDeviceScale2x_LoadsScalledImaged ()
 		{
 			var mock = new Mock<IGUIToolkit> ();
+			mock.SetupGet (o => o.DeviceScaleFactor).Returns (1.0f);
 			App.Current.GUIToolkit = mock.Object;
 			mock.SetupGet (g => g.DeviceScaleFactor).Returns (2);
 			img = Utils.LoadImageFromFile (true);

@@ -43,6 +43,8 @@ namespace VAS.Tests.Core.HotKeys
 			App.Current.KeyContextManager.NewKeyContexts (new List<KeyContext> ());
 
 			mockToolkit = new Mock<IGUIToolkit> ();
+			mockToolkit.SetupGet (o => o.DeviceScaleFactor).Returns (1.0f);
+
 			App.Current.GUIToolkit = mockToolkit.Object;
 
 			App.Current.DependencyRegistry.Register<ITimer, Timer> (1);
