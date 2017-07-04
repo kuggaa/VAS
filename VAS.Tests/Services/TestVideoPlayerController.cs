@@ -78,6 +78,7 @@ namespace VAS.Tests.Services
 
 			var ftk = new Mock<IGUIToolkit> ();
 			ftk.Setup (m => m.Invoke (It.IsAny<EventHandler> ())).Callback<EventHandler> (e => e (null, null));
+			ftk.SetupGet (o => o.DeviceScaleFactor).Returns (1.0f);
 			App.Current.GUIToolkit = ftk.Object;
 
 			mfs = new MediaFileSet ();

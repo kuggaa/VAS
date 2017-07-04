@@ -73,10 +73,11 @@ namespace VAS.Tests.Services
 			mtk.Setup (m => m.GetFramesCapturer ()).Returns (capturerMock.Object);
 
 			// and guitoolkit
-			var gtk = Mock.Of<IGUIToolkit> ();
+			var gtk = new Mock<IGUIToolkit> ();
+			gtk.SetupGet (o => o.DeviceScaleFactor).Returns (1.0f);
 
 			// And eventbroker
-			App.Current.GUIToolkit = gtk;
+			App.Current.GUIToolkit = gtk.Object;
 			App.Current.MultimediaToolkit = mtk.Object;
 			App.Current.DrawingToolkit = new CairoBackend ();
 			App.Current.EventsBroker = new EventsBroker ();

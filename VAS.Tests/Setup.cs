@@ -66,6 +66,9 @@ namespace VAS.Tests
 			mockLicenseStatus.SetupGet (obj => obj.Limited).Returns (true);
 			App.Current.LicenseManager = mockLicenseManager.Object;
 			App.Current.ResourcesLocator = new DummyResourcesLocator ();
+			var mockToolkit = new Mock<IGUIToolkit> ();
+			App.Current.GUIToolkit = mockToolkit.Object;
+			mockToolkit.SetupGet (o => o.DeviceScaleFactor).Returns (1.0f);
 		}
 	}
 
