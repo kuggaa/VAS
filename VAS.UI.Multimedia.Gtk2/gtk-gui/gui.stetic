@@ -196,23 +196,11 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="Gtk.VSeparator" id="vseparator2">
-                                        <property name="MemberName" />
-                                      </widget>
-                                      <packing>
-                                        <property name="PackType">End</property>
-                                        <property name="Position">3</property>
-                                        <property name="AutoSize">True</property>
-                                        <property name="Expand">False</property>
-                                        <property name="Fill">False</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="Gtk.VBox" id="timeBox">
+                                      <widget class="Gtk.HBox" id="timeHBox">
                                         <property name="MemberName" />
                                         <property name="Spacing">6</property>
                                         <child>
-                                          <widget class="Gtk.Label" id="timeLabel">
+                                          <widget class="Gtk.VSeparator" id="vseparator1">
                                             <property name="MemberName" />
                                           </widget>
                                           <packing>
@@ -223,8 +211,30 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <widget class="Gtk.Label" id="totalTimeLabel">
+                                          <widget class="Gtk.VBox" id="timeVBox">
                                             <property name="MemberName" />
+                                            <child>
+                                              <widget class="Gtk.Label" id="timeLabel">
+                                                <property name="MemberName" />
+                                              </widget>
+                                              <packing>
+                                                <property name="Position">0</property>
+                                                <property name="AutoSize">True</property>
+                                                <property name="Expand">False</property>
+                                                <property name="Fill">False</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <widget class="Gtk.Label" id="totalTimeLabel">
+                                                <property name="MemberName" />
+                                              </widget>
+                                              <packing>
+                                                <property name="Position">1</property>
+                                                <property name="AutoSize">True</property>
+                                                <property name="Expand">False</property>
+                                                <property name="Fill">False</property>
+                                              </packing>
+                                            </child>
                                           </widget>
                                           <packing>
                                             <property name="Position">1</property>
@@ -233,22 +243,21 @@
                                             <property name="Fill">False</property>
                                           </packing>
                                         </child>
+                                        <child>
+                                          <widget class="Gtk.VSeparator" id="vseparator2">
+                                            <property name="MemberName" />
+                                          </widget>
+                                          <packing>
+                                            <property name="Position">2</property>
+                                            <property name="AutoSize">True</property>
+                                            <property name="Expand">False</property>
+                                            <property name="Fill">False</property>
+                                          </packing>
+                                        </child>
                                       </widget>
                                       <packing>
                                         <property name="PackType">End</property>
-                                        <property name="Position">4</property>
-                                        <property name="AutoSize">True</property>
-                                        <property name="Expand">False</property>
-                                        <property name="Fill">False</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="Gtk.VSeparator" id="vseparator1">
-                                        <property name="MemberName" />
-                                      </widget>
-                                      <packing>
-                                        <property name="PackType">End</property>
-                                        <property name="Position">5</property>
+                                        <property name="Position">3</property>
                                         <property name="AutoSize">True</property>
                                         <property name="Expand">False</property>
                                         <property name="Fill">False</property>
@@ -401,6 +410,8 @@
                                             <child>
                                               <widget class="Gtk.Button" id="jumpsButton">
                                                 <property name="MemberName" />
+                                                <property name="WidthRequest">21</property>
+                                                <property name="HeightRequest">21</property>
                                                 <property name="CanFocus">True</property>
                                                 <property name="Type">Custom</property>
                                                 <property name="FocusOnClick">False</property>
@@ -466,6 +477,8 @@
                                         <child>
                                           <widget class="Gtk.Button" id="zoomLevelButton">
                                             <property name="MemberName" />
+                                            <property name="WidthRequest">21</property>
+                                            <property name="HeightRequest">21</property>
                                             <property name="CanFocus">True</property>
                                             <property name="Type">Custom</property>
                                             <property name="FocusOnClick">False</property>
@@ -519,6 +532,8 @@
                                         <child>
                                           <widget class="Gtk.Button" id="rateLevelButton">
                                             <property name="MemberName" />
+                                            <property name="WidthRequest">21</property>
+                                            <property name="HeightRequest">21</property>
                                             <property name="Sensitive">False</property>
                                             <property name="CanFocus">True</property>
                                             <property name="Type">Custom</property>
@@ -562,6 +577,8 @@
                                         <child>
                                           <widget class="Gtk.ToggleButton" id="DurationButton">
                                             <property name="MemberName" />
+                                            <property name="WidthRequest">21</property>
+                                            <property name="HeightRequest">21</property>
                                             <property name="Visible">False</property>
                                             <property name="Type">Custom</property>
                                             <property name="Relief">None</property>
