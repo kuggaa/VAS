@@ -44,10 +44,8 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="UI\CapturerBin.cs" />
-		<Compile Include="UI\VolumeWindow.cs" />
 		<Compile Include="gtk-gui\generated.cs" />
 		<Compile Include="gtk-gui\VAS.UI.CapturerBin.cs" />
-		<Compile Include="gtk-gui\VAS.UI.VolumeWindow.cs" />
 		<Compile Include="UI\VideoPlayerCapturerBin.cs" />
 		<Compile Include="gtk-gui\VAS.UI.VideoPlayerCapturerBin.cs" />
 		<Compile Include="UI\Utils\Remuxer.cs" />
@@ -60,6 +58,8 @@
 		<Compile Include="UI\SubViewport.cs" />
 		<Compile Include="gtk-gui\VAS.UI.SubViewport.cs" />
 		<Compile Include="Init.cs" />
+		<Compile Include="UI\SliderView.cs" />
+		<Compile Include="gtk-gui\VAS.UI.SliderView.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="gtk-gui\gui.stetic">

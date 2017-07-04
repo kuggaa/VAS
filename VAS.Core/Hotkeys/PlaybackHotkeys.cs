@@ -66,13 +66,13 @@ namespace VAS.Core.Hotkeys
 				},
 				new KeyConfig {
 					Name = "PLAYER_RATE_INCREMENT",
-					Key = App.Current.Keyboard.ParseName ("<Control_L>+<Shift_L>+Right"),
+					Key = App.Current.Keyboard.ParseName ("Up"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Speed up")
 				},
 				new KeyConfig {
 					Name = "PLAYER_RATE_DECREMENT",
-					Key = App.Current.Keyboard.ParseName ("<Control_L>+<Shift_L>+Left"),
+					Key = App.Current.Keyboard.ParseName ("Down"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Speed down")
 				},

@@ -43,6 +43,7 @@ namespace VAS.Core.ViewModel
 		{
 			CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
 			CurrentTime = new Time (0);
+			Step = new Time { TotalSeconds = 10 };
 		}
 
 		public bool ControlsSensitive {
@@ -186,10 +187,14 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the current step level.
+		/// This value is only used for display in the view. To change the steps use <see cref="SetStep"/>
+		/// </summary>
+		/// <value>The new steps jump.</value>
 		public Time Step {
-			set {
-				Player.Step = value;
-			}
+			get;
+			set;
 		}
 
 		public List<IViewPort> ViewPorts {
@@ -415,6 +420,15 @@ namespace VAS.Core.ViewModel
 		public void SetVolume (double volume)
 		{
 			Player.Volume = volume;
+		}
+
+		/// <summary>
+		/// Changes the current player step value.
+		/// </summary>
+		/// <param name="steps">Steps.</param>
+		public void SetStep (Time step)
+		{
+			Player.SetStep (step);
 		}
 		#endregion
 	}

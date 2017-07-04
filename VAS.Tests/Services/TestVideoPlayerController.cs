@@ -538,7 +538,7 @@ namespace VAS.Tests.Services
 			player.StepForward ();
 			Assert.AreEqual (1, loadDrawingsChanged);
 			Assert.AreEqual (1, timeChanged);
-			playerMock.Verify (p => p.Seek (currentTime + player.Step, true, false), Times.Once ());
+			playerMock.Verify (p => p.Seek (currentTime + playerVM.Step, true, false), Times.Once ());
 
 			playerMock.ResetCalls ();
 			loadDrawingsChanged = 0;
@@ -546,7 +546,7 @@ namespace VAS.Tests.Services
 			player.StepBackward ();
 			Assert.AreEqual (1, loadDrawingsChanged);
 			Assert.AreEqual (1, timeChanged);
-			playerMock.Verify (p => p.Seek (currentTime - player.Step, true, false), Times.Once ());
+			playerMock.Verify (p => p.Seek (currentTime - playerVM.Step, true, false), Times.Once ());
 
 			/* Now with an image loaded */
 			playerMock.ResetCalls ();
@@ -566,12 +566,12 @@ namespace VAS.Tests.Services
 			player.StepForward ();
 			Assert.AreEqual (0, loadDrawingsChanged);
 			Assert.AreEqual (0, timeChanged);
-			playerMock.Verify (p => p.Seek (currentTime + player.Step, true, false), Times.Never ());
+			playerMock.Verify (p => p.Seek (currentTime + playerVM.Step, true, false), Times.Never ());
 
 			player.StepBackward ();
 			Assert.AreEqual (0, loadDrawingsChanged);
 			Assert.AreEqual (0, timeChanged);
-			playerMock.Verify (p => p.Seek (currentTime - player.Step, true, false), Times.Never ());
+			playerMock.Verify (p => p.Seek (currentTime - playerVM.Step, true, false), Times.Never ());
 
 			/* Now with an event loaded */
 			currentTime = new Time (5000);
@@ -600,7 +600,7 @@ namespace VAS.Tests.Services
 			player.StepForward ();
 			Assert.AreEqual (1, loadDrawingsChanged);
 			Assert.AreEqual (1, timeChanged);
-			playerMock.Verify (p => p.Seek (currentTime + player.Step, true, false), Times.Once ());
+			playerMock.Verify (p => p.Seek (currentTime + playerVM.Step, true, false), Times.Once ());
 
 			playerMock.ResetCalls ();
 			currentTime = new Time (6000);
@@ -609,7 +609,7 @@ namespace VAS.Tests.Services
 			player.StepBackward ();
 			Assert.AreEqual (1, loadDrawingsChanged);
 			Assert.AreEqual (1, timeChanged);
-			playerMock.Verify (p => p.Seek (currentTime - player.Step, true, false), Times.Once ());
+			playerMock.Verify (p => p.Seek (currentTime - playerVM.Step, true, false), Times.Once ());
 		}
 
 		[Test ()]
