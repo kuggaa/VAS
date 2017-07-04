@@ -825,7 +825,7 @@ namespace VAS.UI
 				mode == PlayerViewOperationMode.LiveAnalysisReview ||
 				mode == PlayerViewOperationMode.Synchronization;
 
-			timeBox.Visible =
+			timeHBox.Visible =
 				mode == PlayerViewOperationMode.Analysis ||
 				mode == PlayerViewOperationMode.LiveAnalysisReview ||
 				mode == PlayerViewOperationMode.Synchronization;
