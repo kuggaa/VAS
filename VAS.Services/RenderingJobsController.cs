@@ -303,14 +303,14 @@ namespace VAS.Services
 				}
 				videoEditor.AddSegment (file.FilePath, (lastTS + file.Offset).MSeconds,
 										fd.Render.MSeconds - lastTS.MSeconds,
-										element.Rate, play.Name, file.HasAudio, roi);
+										element.Rate, element.Title, file.HasAudio, roi);
 				// Drawings have already been cropped to ROI by the canvas, we pass an empty area
-				videoEditor.AddImageSegment (image_path, 0, fd.Pause.MSeconds, play.Name, new Area ());
+				videoEditor.AddImageSegment (image_path, 0, fd.Pause.MSeconds, element.Title, new Area ());
 				lastTS = fd.Render;
 			}
 			videoEditor.AddSegment (file.FilePath, (lastTS + file.Offset).MSeconds,
 				play.Stop.MSeconds - lastTS.MSeconds,
-				element.Rate, play.Name, file.HasAudio, roi);
+				element.Rate, element.Title, file.HasAudio, roi);
 			return true;
 		}
 
