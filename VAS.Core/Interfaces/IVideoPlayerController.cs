@@ -59,11 +59,6 @@ namespace VAS.Core.Interfaces
 		Image CurrentFrame { get; }
 
 		/// <summary>
-		/// The time to step in <see cref="StepForward"/> and <see cref="StepBackward"/>.
-		/// </summary>
-		Time Step { get; set; }
-
-		/// <summary>
 		/// When set to <c>true</c> clock ticks will be ignored.
 		/// This can be used by the view to prevent updates after a seek
 		/// when seeking through the seek bar.
@@ -219,6 +214,12 @@ namespace VAS.Core.Interfaces
 		/// </summary>
 		/// <param name="zoomLevel">The new zoom level, where 1 is 100%.</param>
 		void SetZoom (double zoomLevel);
+
+		/// <summary>
+		/// Sets the steps to perform jumps in the video player.
+		/// </summary>
+		/// <param name="steps">Steps.</param>
+		void SetStep (Time step);
 
 		/// <summary>
 		/// Moves the current RegionOfInterest by the vector expressed between the origin of

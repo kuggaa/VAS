@@ -50,18 +50,21 @@ namespace VAS.UI
 		public event ClickedHandler CenterPlayheadClicked;
 
 		const int SCALE_FPS = 25;
-		bool muted, ignoreRate, drawingsVisible;
+		bool muted, drawingsVisible;
 		bool roiMoved, wasPlaying;
 		double previousVLevel = 1;
 		uint dragTimerID;
 		Blackboard blackboard;
-		List<double> rateList;
 		List<CameraConfig> cameraConfigsOutOfScreen;
 		Point moveStart;
 		Timerule timerule;
 		VideoPlayerVM playerVM;
-		VolumeWindow vwin;
-		Menu zoomMenu;
+		SliderView volumeWindow;
+		SliderView jumpsWindow;
+		SliderView zoomWindow;
+		SliderView rateWindow;
+		double rateLevel;
+		int zoomLevel;
 
 		#region Constructors
 
@@ -81,6 +84,12 @@ namespace VAS.UI
 				AdjustSizeToDuration = true,
 			};
 
+			rateLabel.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 8px"));
+			jumpsLabel.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 8px"));
+			zoomLabel.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 8px"));
+			totalTimeLabel.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 10px"));
+			totalTimeLabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.Text_DarkColor));
+
 			closebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-cancel-rec",
 				StyleConf.PlayerCapturerIconSize);
 			drawbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-draw",
@@ -97,40 +106,45 @@ namespace VAS.UI
 				StyleConf.PlayerCapturerIconSize);
 			detachbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-detach",
 				StyleConf.PlayerCapturerIconSize);
-			viewportsSwitchImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-video-device",
+			viewportsSwitchImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-multicam",
 				22);
-			zoomLevelImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-search",
-				22);
+			zoomLevelImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-zoom",
+				15);
 			centerplayheadbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-dash-center-view",
 				StyleConf.PlayerCapturerIconSize);
+			DurationButtonImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-duration",
+													   15);
+			jumpsButtonImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-jumps",
+			15);
+			rateLevelButtonImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-speed",
+			15);
 
 			// Force tooltips to be translatable as there seems to be a bug in stetic 
 			// code generation for translatable tooltips.
-			ratescale.TooltipMarkup = Catalog.GetString ("Playback speed");
+			rateLevelButton.TooltipMarkup = Catalog.GetString ("Playback speed");
 			closebutton.TooltipMarkup = Catalog.GetString ("Close loaded event");
 			drawbutton.TooltipMarkup = Catalog.GetString ("Draw frame");
 			playbutton.TooltipMarkup = Catalog.GetString ("Play");
 			pausebutton.TooltipMarkup = Catalog.GetString ("Pause");
 			prevbutton.TooltipMarkup = Catalog.GetString ("Previous");
 			nextbutton.TooltipMarkup = Catalog.GetString ("Next");
-			jumpspinbutton.TooltipMarkup = Catalog.GetString ("Jump in seconds. Hold the Shift key with the direction keys to activate it.");
+			jumpsButton.TooltipMarkup = Catalog.GetString ("Jump in seconds. Hold the Shift key with the direction keys to activate it.");
 			volumebutton.TooltipMarkup = Catalog.GetString ("Volume");
 			detachbutton.TooltipMarkup = Catalog.GetString ("Detach window");
 			centerplayheadbutton.TooltipMarkup = Catalog.GetString ("Center Playhead");
 
-			vwin = new VolumeWindow ();
+			volumeWindow = new SliderView (0, 101, 1, 1);
+			volumeWindow.FormatValue = (double val) => { return val + "%"; };
+			jumpsWindow = new SliderView (0, App.Current.StepList.Count, 1, 1);
+			jumpsWindow.FormatValue = (double val) => { return App.Current.StepList [(int)val] + "s"; };
+			zoomWindow = new SliderView (0, App.Current.ZoomLevels.Count, 1, 1);
+			zoomWindow.FormatValue = (double val) => { return (App.Current.ZoomLevels [(int)val] * 100) + "%"; };
+			rateWindow = new SliderView (0, App.Current.RateList.Count, 1, 1);
+			rateWindow.FormatValue = (double val) => { return App.Current.RateList [(int)val] + "X"; };
+
 			blackboard = new Blackboard (new WidgetWrapper (blackboarddrawingarea));
 			blackboarddrawingarea.Visible = false;
 			blackboarddrawingarea.NoShowAll = true;
-
-			CreateZoomMenu ();
-
-			//Set ratescale specific values
-			ratescale.Adjustment.Upper = App.Current.UpperRate;
-			ratescale.Adjustment.Lower = App.Current.LowerRate;
-			ratescale.Adjustment.PageIncrement = App.Current.RatePageIncrement;
-			ratescale.Adjustment.Value = App.Current.DefaultRate;
-			rateList = App.Current.RateList;
 
 			ConnectSignals ();
 
@@ -140,7 +154,6 @@ namespace VAS.UI
 
 			maineventbox.ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteBackground));
 
-			ratescale.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 8"));
 			controlsbox.HeightRequest = StyleConf.PlayerCapturerControlsHeight;
 
 			cameraConfigsOutOfScreen = new List<CameraConfig> ();
@@ -178,7 +191,6 @@ namespace VAS.UI
 				}
 				playerVM = value;
 				if (playerVM != null) {
-					playerVM.Step = new Time { TotalSeconds = jumpspinbutton.ValueAsInt };
 					timerule.ViewModel = playerVM;
 					playerVM.PropertyChanged += PlayerVMPropertyChanged;
 					Reset ();
@@ -238,18 +250,24 @@ namespace VAS.UI
 
 		void Reset ()
 		{
-			zoomLevelButton.Visible = false;
+			zoomBox.Visible = false;
 			DrawingsVisible = false;
-			timelabel.Text = "";
+			totalTimeLabel.Text = "";
+			timeLabel.Text = "";
 			muted = false;
-			ignoreRate = false;
 			viewportsSwitchButton.Active = true;
 			SubViewPortsVisible = true;
+			zoomLevel = 0;
+			zoomLabel.Text = "100%";
+			jumpsLabel.Text = $"10s";
 		}
 
 		void ConnectSignals ()
 		{
-			vwin.VolumeChanged += HandleVolumeChanged;
+			volumeWindow.ValueChanged += HandleVolumeChanged;
+			jumpsWindow.ValueChanged += HandleStepsChanged;
+			zoomWindow.ValueChanged += HandleZoomChanged;
+			rateWindow.ValueChanged += HandleRateChanged;
 			closebutton.Clicked += HandleClosebuttonClicked;
 			prevbutton.Clicked += HandlePrevbuttonClicked;
 			nextbutton.Clicked += HandleNextbuttonClicked;
@@ -257,11 +275,8 @@ namespace VAS.UI
 			pausebutton.Clicked += HandlePausebuttonClicked;
 			drawbutton.Clicked += HandleDrawButtonClicked;
 			volumebutton.Clicked += HandleVolumebuttonClicked;
-			ratescale.FormatValue += HandleRateFormatValue;
-			ratescale.ValueChanged += HandleRateValueChanged;
-			ratescale.ButtonPressEvent += HandleRatescaleButtonPress;
-			ratescale.ButtonReleaseEvent += HandleRatescaleButtonRelease;
-			jumpspinbutton.ValueChanged += HandleJumpValueChanged;
+			rateLevelButton.Clicked += HandleRateButtonClicked;
+			jumpsButton.Clicked += HandleJumpsButtonClicked;
 			viewportsSwitchButton.Toggled += HandleViewPortsToggled;
 			zoomLevelButton.Clicked += HandleZoomClicked;
 			centerplayheadbutton.Clicked += HandleCenterPlayheadClicked;
@@ -287,11 +302,6 @@ namespace VAS.UI
 			blackboarddrawingarea.QueueDraw ();
 		}
 
-		float GetRateFromScale ()
-		{
-			return (float)rateList [(int)ratescale.Value - (int)App.Current.LowerRate];
-		}
-
 		void ConnectWindow (VideoWindow window)
 		{
 			window.ButtonPressEvent += OnSubViewportButtonPressEvent;
@@ -315,19 +325,6 @@ namespace VAS.UI
 
 			subviewport3.Index = 3;
 			ConnectWindow (subviewport3.Viewport);
-		}
-
-		void CreateZoomMenu ()
-		{
-			zoomMenu = new Menu ();
-			foreach (double zoomLevel in App.Current.ZoomLevels) {
-				MenuItem item = new MenuItem ($"{zoomLevel * 100}%");
-				item.Activated += (object sender, EventArgs e) => {
-					playerVM.SetZoom (zoomLevel);
-				};
-				zoomMenu.Append (item);
-			}
-			zoomMenu.ShowAll ();
 		}
 
 		void SetVolumeIcon (string name)
@@ -367,7 +364,8 @@ namespace VAS.UI
 		void UpdateTime ()
 		{
 			if (playerVM.CurrentTime != null && playerVM.Duration != null) {
-				timelabel.Text = playerVM.CurrentTime.ToMSecondsString (true) + "/" + playerVM.Duration.ToMSecondsString ();
+				timeLabel.Text = playerVM.CurrentTime.ToMSecondsString (true);
+				totalTimeLabel.Text = playerVM.Duration.ToSecondsString ();
 			}
 		}
 
@@ -471,29 +469,34 @@ namespace VAS.UI
 
 		void HandleVolumebuttonClicked (object sender, System.EventArgs e)
 		{
-			vwin.SetLevel (playerVM.Volume);
-			vwin.Show ();
+			volumeWindow.Show ();
 		}
 
 		void HandleVolumeChanged (double level)
 		{
 			double prevLevel;
+			prevLevel = playerVM.Volume * 100;
 
-			prevLevel = playerVM.Volume;
-			if (prevLevel > 0 && level == 0) {
-				SetVolumeIcon ("longomatch-control-volume-off");
-			} else if (prevLevel > 0.5 && level <= 0.5) {
-				SetVolumeIcon ("longomatch-control-volume-low");
-			} else if (prevLevel <= 0.5 && level > 0.5) {
-				SetVolumeIcon ("longomatch-control-volume-med");
-			} else if (prevLevel < 1 && level == 1) {
+			if (level == 0) {
+				SetVolumeIcon ("vas-control-volume-off");
+			} else if ((prevLevel >= 50 || prevLevel == 0) && level < 50) {
+				SetVolumeIcon ("vas-control-volume-low");
+			} else if ((prevLevel < 50 || prevLevel == 100) && level >= 50 && level < 100) {
+				SetVolumeIcon ("vas-control-volume-med");
+			} else if (level == 100) {
 				SetVolumeIcon ("vas-control-volume-hi");
 			}
-			playerVM.SetVolume (level);
+
+			playerVM.SetVolume (level / 100);
 			if (level == 0)
 				muted = true;
 			else
 				muted = false;
+		}
+
+		void HandleStepsChanged (double val)
+		{
+			playerVM.SetStep (new Time { TotalSeconds = App.Current.StepList [(int)val] });
 		}
 
 		void HandlePausebuttonClicked (object sender, EventArgs e)
@@ -516,62 +519,24 @@ namespace VAS.UI
 			playerVM.Next ();
 		}
 
-		void HandleRateFormatValue (object o, FormatValueArgs args)
+		void HandleRateButtonClicked (object sender, System.EventArgs e)
 		{
-			int val = (int)args.Value - (int)App.Current.LowerRate;
-			if (rateList != null && val < rateList.Count) {
-				args.RetVal = rateList [val] + "X";
-			}
+			rateWindow.Show ();
 		}
 
-		void HandleRateValueChanged (object sender, EventArgs e)
+		void HandleRateChanged (double val)
 		{
-			float val = GetRateFromScale ();
-
+			double rateLevel = App.Current.RateList [(int)val];
 			// Mute for rate != 1
-			if (val != 1 && playerVM.Volume != 0) {
+			if (rateLevel != 1 && playerVM.Volume != 0) {
 				previousVLevel = playerVM.Volume;
 				playerVM.SetVolume (0);
-			} else if (val != 1 && muted)
+			} else if (rateLevel != 1 && muted)
 				previousVLevel = 0;
-			else if (val == 1)
+			else if (rateLevel == 1)
 				playerVM.SetVolume (previousVLevel);
 
-			if (!ignoreRate) {
-				playerVM.SetRate (val);
-			}
-		}
-
-		/// <summary>
-		/// Handles the ratescale button press.
-		/// Default button 1 action is used in button 2 and button 3 
-		/// </summary>
-		/// <param name="o">source</param>
-		/// <param name="args">Arguments.</param>
-		[GLib.ConnectBefore]
-		void HandleRatescaleButtonPress (object o, ButtonPressEventArgs args)
-		{
-			if (args.Event.Button == 1) {
-				args.Event.SetButton (2);
-			} else {
-				args.Event.SetButton (1);
-			}
-		}
-
-		/// <summary>
-		/// Handles the ratescale button release.
-		/// Default button 1 action is used in button 2 and button 3 
-		/// </summary>
-		/// <param name="o">source</param>
-		/// <param name="args">Arguments.</param>
-		[GLib.ConnectBefore]
-		void HandleRatescaleButtonRelease (object o, ButtonReleaseEventArgs args)
-		{
-			if (args.Event.Button == 1) {
-				args.Event.SetButton (2);
-			} else {
-				args.Event.SetButton (1);
-			}
+			playerVM.SetRate (rateLevel);
 		}
 
 		void OnMainViewportVideoDragStartedEvent (object o, ButtonPressEventArgs args)
@@ -731,9 +696,9 @@ namespace VAS.UI
 			playerVM.DrawFrame ();
 		}
 
-		void HandleJumpValueChanged (object sender, EventArgs e)
+		void HandleJumpsButtonClicked (object sender, System.EventArgs e)
 		{
-			playerVM.Step = new Time (jumpspinbutton.ValueAsInt * 1000);
+			jumpsWindow.Show ();
 		}
 
 		void HandleReady (object sender, EventArgs e)
@@ -755,7 +720,14 @@ namespace VAS.UI
 
 		void HandleZoomClicked (object sender, EventArgs e)
 		{
-			zoomMenu.Popup ();
+			zoomWindow.Show ();
+		}
+
+		void HandleZoomChanged (double level)
+		{
+			zoomLevel = (int)level;
+			playerVM.SetZoom (App.Current.ZoomLevels [(int)level]);
+			zoomLabel.Text = $"{App.Current.ZoomLevels [(int)level] * 100}%";
 		}
 
 		#endregion
@@ -766,13 +738,10 @@ namespace VAS.UI
 				HandleModeChanged ();
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.ControlsSensitive))) {
-				controlsbox.Sensitive = ratescale.Sensitive = playerVM.ControlsSensitive;
+				controlsbox.Sensitive = rateLevelButton.Sensitive = playerVM.ControlsSensitive;
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.PlayerAttached))) {
 				HandlePlayerAttachedChanged ();
-			}
-			if (ViewModel.NeedsSync (e, nameof (ViewModel.ShowDetachButton))) {
-				detachbutton.Visible = playerVM.ShowDetachButton;
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Playing))) {
 				HandlePlayingChanged ();
@@ -781,13 +750,29 @@ namespace VAS.UI
 				nextbutton.Sensitive = playerVM.HasNext;
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.PlayElement))) {
-				closebutton.Visible = playerVM.PlayElement != null;
+				if (playerVM.PlayElement != null) {
+					closebutton.Visible = true;
+					eventNameLabel.Visible = true;
+					eventNameLabel.Text = playerVM.PlayElement.ToString ();
+				} else {
+					closebutton.Visible = false;
+					eventNameLabel.Visible = false;
+				}
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Rate))) {
-				ignoreRate = true;
-				int index = App.Current.RateList.FindIndex (p => (float)p == playerVM.Rate);
-				ratescale.Value = index + App.Current.LowerRate;
-				ignoreRate = false;
+				rateWindow.SetValue (App.Current.RateList.IndexOf (playerVM.Rate));
+				rateLabel.Text = $"{playerVM.Rate}X";
+			}
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.Volume))) {
+				volumeWindow.SetValue (playerVM.Volume * 100);
+			}
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.Zoom))) {
+				zoomWindow.SetValue (App.Current.ZoomLevels.IndexOf (playerVM.Zoom));
+				zoomLabel.Text = $"{playerVM.Zoom * 100}%";
+			}
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.Step))) {
+				jumpsWindow.SetValue (App.Current.StepList.IndexOf (playerVM.Step.TotalSeconds));
+				jumpsLabel.Text = $"{playerVM.Step.TotalSeconds}s";
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Seekable))) {
 				timerule.ObjectsCanMove = playerVM.Seekable;
@@ -823,7 +808,15 @@ namespace VAS.UI
 			center_playhead_box.Visible =
 				mode == PlayerViewOperationMode.SimpleWithControls;
 
-			camerasbox.Visible =
+			viewportsSwitchButton.Visible =
+				mode == PlayerViewOperationMode.Analysis ||
+				mode == PlayerViewOperationMode.SimpleWithControls;
+
+			viewportsSwitchSeparator.Visible =
+				mode == PlayerViewOperationMode.Analysis ||
+				mode == PlayerViewOperationMode.SimpleWithControls;
+
+			zoomBox.Visible =
 				mode == PlayerViewOperationMode.Analysis ||
 				mode == PlayerViewOperationMode.SimpleWithControls;
 
@@ -832,13 +825,12 @@ namespace VAS.UI
 				mode == PlayerViewOperationMode.LiveAnalysisReview ||
 				mode == PlayerViewOperationMode.Synchronization;
 
-			timelabel.Visible =
+			timeBox.Visible =
 				mode == PlayerViewOperationMode.Analysis ||
 				mode == PlayerViewOperationMode.LiveAnalysisReview ||
 				mode == PlayerViewOperationMode.Synchronization;
 
 			detachbutton.Visible =
-				mode == PlayerViewOperationMode.Synchronization ||
 				mode == PlayerViewOperationMode.Analysis ||
 				mode == PlayerViewOperationMode.SimpleWithControls;
 
@@ -893,10 +885,10 @@ namespace VAS.UI
 				UpdateComboboxes ();
 				DebugCamerasVisible ();
 				SubViewPortsVisible = ViewModel.SupportsMultipleCameras;
-				zoomLevelButton.Visible = true;
+				zoomBox.Visible = true;
 			} else {
 				SubViewPortsVisible = false;
-				zoomLevelButton.Visible = false;
+				zoomBox.Visible = false;
 			}
 		}
 	}

@@ -469,6 +469,15 @@ namespace VAS
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets the step value list for the videoplayer.
+		/// </summary>
+		/// <value>The step list.</value>
+		public List<int> StepList {
+			get;
+			set;
+		}
+
 		public double DefaultRate {
 			get;
 			set;
