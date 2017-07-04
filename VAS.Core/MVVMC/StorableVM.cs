@@ -28,6 +28,8 @@ namespace VAS.Core.MVVMC
 	public class StorableVM<TModel> : ViewModelBase<TModel>
 		where TModel : class, IStorable, INotifyPropertyChanged
 	{
+		bool synced;
+
 		[JsonIgnore]
 		[PropertyChanged.DoNotCheckEquality]
 		public override TModel Model {
@@ -36,6 +38,7 @@ namespace VAS.Core.MVVMC
 			}
 			set {
 				base.Model = value;
+				synced = false;
 				SyncPreloadedModel ();
 				if (Model == null || Model.IsLoaded) {
 					SyncLoadedModel ();
@@ -48,12 +51,16 @@ namespace VAS.Core.MVVMC
 		/// </summary>
 		protected virtual void SyncLoadedModel ()
 		{
+			if (synced)
+				return;
+			synced = true;
 		}
 
 		/// <summary>
 		/// Synchronizes the preloaded Model properties with the ViewModel.
 		/// </summary>
 		protected virtual void SyncPreloadedModel ()
+
 		{
 		}
 

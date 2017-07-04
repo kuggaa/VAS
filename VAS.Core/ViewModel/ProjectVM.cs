@@ -181,6 +181,7 @@ namespace VAS.Core.ViewModel
 
 		protected override void SyncLoadedModel ()
 		{
+			base.SyncLoadedModel ();
 			Playlists.Model = Model.Playlists;
 			EventTypes.Model = Model.EventTypes;
 			Timers.Model = Model.Timers;

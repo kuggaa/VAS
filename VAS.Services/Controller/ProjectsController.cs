@@ -173,11 +173,16 @@ namespace VAS.Services.Controller
 
 		async void HandleSelectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
-			TModel loadedProject = null;
+			//TModel loadedProject = null;
 
 			ProjectVM<TModel> projectVM = ViewModel.Selection.FirstOrDefault ();
 
-			if (projectVM != null) {
+			// FIXME: Rift and Longo are not using this code but yes the mobile app of longo
+			// Improve the performance by:
+			// >> Cloning a preloaded a project
+			// >> Using the stored viewmodels instead of creating new ones
+
+			/*if (projectVM != null) {
 				if (ViewModel.LoadedProject.Edited == true) {
 					await Save (ViewModel.LoadedProject.Model, false);
 				}
@@ -193,7 +198,8 @@ namespace VAS.Services.Controller
 				ViewModel.DeleteSensitive = loadedProject != null;
 				ViewModel.ExportSensitive = loadedProject != null;
 				ViewModel.SaveSensitive = false;
-			}
+			}*/
+
 			//Update commands
 			ViewModel.OpenCommand.EmitCanExecuteChanged ();
 			ViewModel.DeleteCommand.EmitCanExecuteChanged ();
