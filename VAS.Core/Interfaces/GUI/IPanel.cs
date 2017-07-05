@@ -41,4 +41,13 @@ namespace VAS.Core.Interfaces.GUI
 	public interface IPanel<TViewModel> : IPanel, IView<TViewModel> where TViewModel : IViewModel
 	{
 	}
+
+	public interface IPanelTab : IPanel
+	{
+		string StateName { get; }
+	}
+
+	public interface IPanelTab<TViewModel> : IPanelTab, IPanel<TViewModel> where TViewModel : IViewModel
+	{
+	}
 }
