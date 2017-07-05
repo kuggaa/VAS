@@ -1341,7 +1341,7 @@
             <property name="Type">Custom</property>
             <property name="Relief">None</property>
             <child>
-              <widget class="Gtk.Image" id="moreButtonImage">
+              <widget class="VAS.UI.Helpers.ImageView" id="moreButtonImage">
                 <property name="MemberName" />
                 <property name="WidthRequest">22</property>
                 <property name="HeightRequest">22</property>
@@ -1385,92 +1385,7 @@
             <property name="Type">Custom</property>
             <property name="Relief">None</property>
             <child>
-              <widget class="Gtk.Image" id="lessButtonImage">
-                <property name="MemberName" />
-                <property name="WidthRequest">22</property>
-                <property name="HeightRequest">22</property>
-              </widget>
-            </child>
-          </widget>
-          <packing>
-            <property name="Position">2</property>
-            <property name="AutoSize">True</property>
-            <property name="Expand">False</property>
-            <property name="Fill">False</property>
-          </packing>
-        </child>
-      </widget>
-    </child>
-  </widget>
-  <widget class="Gtk.Window" id="VAS.UI.SliderView" design-size="30 205">
-    <property name="MemberName" />
-    <property name="WidthRequest">30</property>
-    <property name="HeightRequest">205</property>
-    <property name="Visible">False</property>
-    <property name="Title" translatable="yes" />
-    <property name="WindowPosition">Mouse</property>
-    <property name="Decorated">False</property>
-    <property name="DestroyWithParent">True</property>
-    <property name="SkipPagerHint">True</property>
-    <property name="SkipTaskbarHint">True</property>
-    <signal name="FocusOutEvent" handler="OnFocusOutEvent" />
-    <child>
-      <widget class="Gtk.VBox" id="vbox2">
-        <property name="MemberName" />
-        <child>
-          <widget class="Gtk.Button" id="morebutton">
-            <property name="MemberName" />
-            <property name="WidthRequest">25</property>
-            <property name="HeightRequest">25</property>
-            <property name="Tooltip" translatable="yes">Pause</property>
-            <property name="Type">Custom</property>
-            <property name="Relief">None</property>
-            <child>
-              <widget class="Gtk.Image" id="moreButtonImage">
-                <property name="MemberName" />
-                <property name="WidthRequest">22</property>
-                <property name="HeightRequest">22</property>
-              </widget>
-            </child>
-          </widget>
-          <packing>
-            <property name="Position">0</property>
-            <property name="AutoSize">True</property>
-            <property name="Expand">False</property>
-            <property name="Fill">False</property>
-          </packing>
-        </child>
-        <child>
-          <widget class="Gtk.VScale" id="scale">
-            <property name="MemberName" />
-            <property name="Tooltip" translatable="yes">Playback speed</property>
-            <property name="UpdatePolicy">Discontinuous</property>
-            <property name="Inverted">True</property>
-            <property name="Lower">1</property>
-            <property name="Upper">30</property>
-            <property name="PageIncrement">3</property>
-            <property name="PageSize">1</property>
-            <property name="StepIncrement">1</property>
-            <property name="Value">22</property>
-            <property name="DrawValue">True</property>
-            <property name="Digits">0</property>
-            <property name="ValuePos">Bottom</property>
-          </widget>
-          <packing>
-            <property name="Position">1</property>
-            <property name="AutoSize">True</property>
-          </packing>
-        </child>
-        <child>
-          <widget class="Gtk.Button" id="lessbutton">
-            <property name="MemberName" />
-            <property name="WidthRequest">25</property>
-            <property name="HeightRequest">25</property>
-            <property name="Tooltip" translatable="yes">Pause</property>
-            <property name="Type">Custom</property>
-            <property name="Relief">None</property>
-            <child>
-              <widget class="Gtk.Image" id="lessButtonImage">
+              <widget class="VAS.UI.Helpers.ImageView" id="lessButtonImage">
                 <property name="MemberName" />
                 <property name="WidthRequest">22</property>
                 <property name="HeightRequest">22</property>

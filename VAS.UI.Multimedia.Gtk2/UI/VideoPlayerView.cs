@@ -133,6 +133,7 @@ namespace VAS.UI
 			volumebutton.TooltipMarkup = Catalog.GetString ("Volume");
 			detachbutton.TooltipMarkup = Catalog.GetString ("Detach window");
 			centerplayheadbutton.TooltipMarkup = Catalog.GetString ("Center Playhead");
+			zoomLevelButton.TooltipMarkup = Catalog.GetString ("Zoom");
 
 			volumeWindow = new SliderView (0, 101, 1, 1);
 			volumeWindow.FormatValue = (double val) => { return val + "%"; };
