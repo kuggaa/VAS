@@ -50,16 +50,6 @@ namespace VAS.Core.ViewModel
 			NewCommand = new Command (New, () => Limitation == null || Limitation.Count < Limitation.Maximum);
 			NewCommand.Icon = newIcon;
 			NewCommand.ToolTipText = Catalog.GetString ("New Playlist");
-			EditCommand = new Command (Edit, () => { return Selection.Count == 1; });
-			EditCommand.Text = Catalog.GetString ("Edit Name");
-			RenderCommand = new Command (Render, () => { return Selection.Count == 1; });
-			RenderCommand.Text = Catalog.GetString ("Render");
-			InsertVideoCommand = new Command<PlaylistPosition> (InsertVideo, HasChildsItemsSelected);
-			InsertVideoCommand.Text = Catalog.GetString ("External Video");
-			InsertImageCommand = new AsyncCommand<PlaylistPosition> (InsertImage, HasChildsItemsSelected);
-			InsertImageCommand.Text = Catalog.GetString ("External Image");
-			EditPlaylistElementCommand = new Command (EditPlaylistElement, JustOneElementSelectedAndIsNotVideo);
-			EditPlaylistElementCommand.Text = Catalog.GetString ("Edit Properties");
 			PlaylistMenu = CreatePlaylistMenu ();
 			PlaylistElementMenu = CreatePlaylistElementMenu ();
 		}
@@ -102,47 +92,17 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
-		/// Gets or sets the command to edit Playlists
+		/// Gets the playlist menu.
 		/// </summary>
-		/// <value>The edit command.</value>
-		[PropertyChanged.DoNotNotify]
-		public Command EditCommand {
-			get;
-			protected set;
-		}
-
-		/// <summary>
-		/// Gets or sets the command to render playlists
-		/// </summary>
-		/// <value>The render command.</value>
-		[PropertyChanged.DoNotNotify]
-		public Command RenderCommand {
-			get;
-			protected set;
-		}
-
-		[PropertyChanged.DoNotNotify]
-		public Command InsertVideoCommand {
-			get;
-			protected set;
-		}
-
-		[PropertyChanged.DoNotNotify]
-		public AsyncCommand<PlaylistPosition> InsertImageCommand {
-			get;
-			protected set;
-		}
-
-		[PropertyChanged.DoNotNotify]
-		public Command EditPlaylistElementCommand {
-			get;
-			protected set;
-		}
-
+		/// <value>The playlist menu.</value>
 		public MenuVM PlaylistMenu {
 			get;
 		}
 
+		/// <summary>
+		/// Gets the playlist element menu.
+		/// </summary>
+		/// <value>The playlist element menu.</value>
 		public MenuVM PlaylistElementMenu {
 			get;
 		}
@@ -206,7 +166,7 @@ namespace VAS.Core.ViewModel
 			return false;
 		}
 
-		bool JustOneElementSelectedAndIsNotVideo ()
+		bool CheckJustOneElementSelectedAndIsNotVideo ()
 		{
 			List<PlaylistElementVM> elements = new List<PlaylistElementVM> ();
 			if (!Selection.Any ()) {
@@ -278,10 +238,14 @@ namespace VAS.Core.ViewModel
 
 		MenuVM CreatePlaylistMenu ()
 		{
+			var editCommand = new Command (Edit, () => { return Selection.Count == 1; });
+			editCommand.Text = Catalog.GetString ("Edit Name");
+			var renderCommand = new Command (Render, () => { return Selection.Count == 1; });
+			renderCommand.Text = Catalog.GetString ("Render");
 			var menu = new MenuVM ();
 			menu.ViewModels.AddRange (new List<MenuNodeVM> {
-					new MenuNodeVM (EditCommand),
-					new MenuNodeVM (RenderCommand),
+					new MenuNodeVM (editCommand),
+					new MenuNodeVM (renderCommand),
 					new MenuNodeVM (DeleteCommand, name:Catalog.GetString("Delete"))
 				});
 			return menu;
@@ -289,19 +253,26 @@ namespace VAS.Core.ViewModel
 
 		MenuVM CreatePlaylistElementMenu ()
 		{
+			var insertVideoCommand = new Command<PlaylistPosition> (InsertVideo, HasChildsItemsSelected);
+			insertVideoCommand.Text = Catalog.GetString ("External Video");
+			var insertImageCommand = new AsyncCommand<PlaylistPosition> (InsertImage, HasChildsItemsSelected);
+			insertImageCommand.Text = Catalog.GetString ("External Image");
+			var editPlaylistElementCommand = new Command (EditPlaylistElement, CheckJustOneElementSelectedAndIsNotVideo);
+			editPlaylistElementCommand.Text = Catalog.GetString ("Edit Properties");
+
 			var menu = new MenuVM ();
 			var menuInsertBefore = new MenuVM ();
 			var menuInsertAfter = new MenuVM ();
 			menuInsertBefore.ViewModels.AddRange (new List<MenuNodeVM> {
-					new MenuNodeVM (InsertVideoCommand, PlaylistPosition.Before),
-					new MenuNodeVM (InsertImageCommand, PlaylistPosition.Before)
+					new MenuNodeVM (insertVideoCommand, PlaylistPosition.Before),
+					new MenuNodeVM (insertImageCommand, PlaylistPosition.Before)
 				});
 			menuInsertAfter.ViewModels.AddRange (new List<MenuNodeVM> {
-					new MenuNodeVM (InsertVideoCommand, PlaylistPosition.After),
-					new MenuNodeVM (InsertImageCommand, PlaylistPosition.After)
+					new MenuNodeVM (insertVideoCommand, PlaylistPosition.After),
+					new MenuNodeVM (insertImageCommand, PlaylistPosition.After)
 				});
 			menu.ViewModels.AddRange (new List<MenuNodeVM> {
-					new MenuNodeVM (EditPlaylistElementCommand),
+					new MenuNodeVM (editPlaylistElementCommand),
 					new MenuNodeVM (menuInsertBefore, Catalog.GetString("Insert before")),
 					new MenuNodeVM (menuInsertAfter, Catalog.GetString("Insert after")),
 					new MenuNodeVM (DeleteCommand, name:Catalog.GetString("Delete"))
