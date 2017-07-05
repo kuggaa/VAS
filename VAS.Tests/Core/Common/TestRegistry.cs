@@ -69,7 +69,7 @@ namespace VAS.Tests.Core.Common
 		{
 			Registry reg = new Registry ("test");
 			reg.Register<IDummyObjectInterface, DummyObjectLow> (0);
-			reg.Register<IDummyObjectInterface, DummyObjectHigh> (0);
+			reg.Register<IDummyObjectInterface, DummyObjectHigh> (1);
 
 			List<IDummyObjectInterface> elements1 = reg.RetrieveAll<IDummyObjectInterface> (InstanceType.New);
 			List<IDummyObjectInterface> elements2 = reg.RetrieveAll<IDummyObjectInterface> (InstanceType.New);
@@ -87,7 +87,7 @@ namespace VAS.Tests.Core.Common
 		{
 			Registry reg = new Registry ("test");
 			reg.Register<IDummyObjectInterface, DummyObjectLow> (0);
-			reg.Register<IDummyObjectInterface, DummyObjectHigh> (0);
+			reg.Register<IDummyObjectInterface, DummyObjectHigh> (1);
 
 			List<IDummyObjectInterface> elements1 = reg.RetrieveAll<IDummyObjectInterface> (InstanceType.Default);
 			List<IDummyObjectInterface> elements2 = reg.RetrieveAll<IDummyObjectInterface> (InstanceType.Default);
@@ -98,6 +98,35 @@ namespace VAS.Tests.Core.Common
 			Assert.AreEqual (1, elements1.OfType<DummyObjectHigh> ().Count ());
 			CollectionAssert.AreEqual (elements1.OfType<DummyObjectLow> (), elements2.OfType<DummyObjectLow> ());
 			CollectionAssert.AreEqual (elements1.OfType<DummyObjectHigh> (), elements2.OfType<DummyObjectHigh> ());
+		}
+
+		[Test]
+		public void Register_TwiceWithSamePriority_OnlyLastRegistered ()
+		{
+			Registry reg = new Registry ("test");
+			reg.Register<IDummyObjectInterface, DummyObjectLow> (0);
+			reg.Register<IDummyObjectInterface, DummyObjectHigh> (0);
+
+			List<IDummyObjectInterface> elements1 = reg.RetrieveAll<IDummyObjectInterface> (InstanceType.New);
+
+			Assert.AreEqual (1, elements1.Count);
+			Assert.AreEqual (0, elements1.OfType<DummyObjectLow> ().Count ());
+			Assert.AreEqual (1, elements1.OfType<DummyObjectHigh> ().Count ());
+		}
+
+		[Test]
+		public void Register_ExternalInstance_RetrieveSame ()
+		{
+			Registry reg = new Registry ("test");
+			DummyObjectLow instance = new DummyObjectLow ();
+			reg.Register<IDummyObjectInterface> (instance, 0);
+
+			IDummyObjectInterface o1 = reg.Retrieve<IDummyObjectInterface> (InstanceType.Default);
+			IDummyObjectInterface o2 = reg.Retrieve<IDummyObjectInterface> (InstanceType.Default);
+
+			Assert.IsNotNull (o1);
+			Assert.IsNotNull (o2);
+			Assert.AreSame (o1, o2);
 		}
 	}
 }
