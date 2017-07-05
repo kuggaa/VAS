@@ -46,17 +46,6 @@ namespace VAS.Core.Store.Templates
 			}
 		}
 
-		/// <summary>
-		/// Gets or sets the document version.
-		/// </summary>
-		/// <value>The version.</value>
-		[DefaultValue (0)]
-		[JsonProperty (DefaultValueHandling = DefaultValueHandling.Populate)]
-		public int Version {
-			get;
-			set;
-		}
-
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public bool Static {

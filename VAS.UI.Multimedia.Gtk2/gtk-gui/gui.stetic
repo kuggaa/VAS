@@ -186,7 +186,7 @@
                                     <child>
                                       <widget class="Gtk.Label" id="eventNameLabel">
                                         <property name="MemberName" />
-                                        <property name="WidthRequest">100</property>
+                                        <property name="WidthRequest">0</property>
                                       </widget>
                                       <packing>
                                         <property name="Position">2</property>

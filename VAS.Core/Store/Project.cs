@@ -89,16 +89,6 @@ namespace VAS.Core.Store
 			set;
 		}
 
-		/// <value>
-		/// Document version
-		/// </value>
-		[DefaultValue (0)]
-		[JsonProperty (DefaultValueHandling = DefaultValueHandling.Populate)]
-		public int Version {
-			get;
-			set;
-		}
-
 		[JsonProperty]
 		public RangeObservableCollection<TimelineEvent> Timeline {
 			get;

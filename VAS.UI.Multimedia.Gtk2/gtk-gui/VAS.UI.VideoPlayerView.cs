@@ -292,7 +292,7 @@ namespace VAS.UI
 			w14.Fill = false;
 			// Container child hbox2.Gtk.Box+BoxChild
 			this.eventNameLabel = new global::Gtk.Label();
-			this.eventNameLabel.WidthRequest = 100;
+			this.eventNameLabel.WidthRequest = 0;
 			this.eventNameLabel.Name = "eventNameLabel";
 			this.hbox2.Add(this.eventNameLabel);
 			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.eventNameLabel]));
