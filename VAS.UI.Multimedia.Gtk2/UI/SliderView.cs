@@ -16,11 +16,12 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using System.Collections.Generic;
 using Gtk;
 using Pango;
 using VAS.Core.Common;
+using VAS.UI.Helpers;
 using Handlers = VAS.Core.Handlers;
+using Misc = VAS.UI.Helpers.Misc;
 
 namespace VAS.UI
 {
@@ -36,8 +37,12 @@ namespace VAS.UI
 			this.Build ();
 			this.buttonIncrement = buttonIncrement;
 			this.lowerValue = lowerValue;
-			moreButtonImage.Pixbuf = Helpers.Misc.LoadIcon ("vas-plus", StyleConf.PlayerCapturerIconSize);
-			lessButtonImage.Pixbuf = Helpers.Misc.LoadIcon ("vas-minus", StyleConf.PlayerCapturerIconSize);
+
+			moreButtonImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-plus", App.Current.Style.IconSmallWidth);
+			lessButtonImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-minus", App.Current.Style.IconSmallWidth);
+			morebutton.ApplyStyle (StyleConf.ButtonNormal, App.Current.Style.IconSmallWidth);
+			lessbutton.ApplyStyle (StyleConf.ButtonNormal, App.Current.Style.IconSmallWidth);
+
 			morebutton.Clicked += OnMorebuttonClicked;
 			lessbutton.Clicked += OnLessbuttonClicked;
 			scale.Adjustment.Upper = upperValue;
@@ -49,6 +54,8 @@ namespace VAS.UI
 			scale.FormatValue += HandleScaleFormatValue;
 			scale.ButtonPressEvent += HandleScaleFormatValue;
 			scale.ButtonReleaseEvent += HandleScaleFormatValue;
+
+			Misc.SetFocus (this, false);
 		}
 
 		/// <summary>
