@@ -20,10 +20,19 @@ using VAS.Core.MVVMC;
 
 namespace VAS.Core.ViewModel
 {
+	/// <summary>
+	/// Menu ViewModel, used to contain a collection of MenuNodeVM
+	/// </summary>
 	public class MenuVM : NestedViewModel<MenuNodeVM>
 	{
-		public MenuVM ()
+		/// <summary>
+		/// Updates the MenuNodeVM commands can execute.
+		/// </summary>
+		public void UpdateCanExecute ()
 		{
+			foreach (var item in ViewModels) {
+				item.UpdateCanExecute ();
+			}
 		}
 	}
 }

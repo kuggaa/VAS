@@ -368,11 +368,8 @@ namespace VAS.Services.Controller
 		{
 			if (e.PropertyName == "Selection") {
 				playlistViewModel.DeleteCommand.EmitCanExecuteChanged ();
-				playlistViewModel.RenderCommand.EmitCanExecuteChanged ();
-				playlistViewModel.EditCommand.EmitCanExecuteChanged ();
-				playlistViewModel.InsertVideoCommand.EmitCanExecuteChanged ();
-				playlistViewModel.InsertImageCommand.EmitCanExecuteChanged ();
-				playlistViewModel.EditPlaylistElementCommand.EmitCanExecuteChanged ();
+				playlistViewModel.PlaylistMenu.UpdateCanExecute ();
+				playlistViewModel.PlaylistElementMenu.UpdateCanExecute ();
 			}
 		}
 	}
