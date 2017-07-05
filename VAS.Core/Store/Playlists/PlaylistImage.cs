@@ -44,8 +44,7 @@ namespace VAS.Core.Store.Playlists
 		}
 
 		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool Selected {
+		public bool Playing {
 			get;
 			set;
 		}
@@ -62,7 +61,7 @@ namespace VAS.Core.Store.Playlists
 
 		public string Description {
 			get {
-				return Duration.ToSecondsString ();
+				return $"{Catalog.GetString ("Image")} ({Duration.ToSecondsString ()})";
 			}
 		}
 	}

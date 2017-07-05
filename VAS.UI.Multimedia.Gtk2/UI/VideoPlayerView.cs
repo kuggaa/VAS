@@ -751,14 +751,7 @@ namespace VAS.UI
 				nextbutton.Sensitive = playerVM.HasNext;
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.PlayElement))) {
-				if (playerVM.PlayElement != null) {
-					closebutton.Visible = true;
-					eventNameLabel.Visible = true;
-					eventNameLabel.Text = (playerVM.PlayElement as PlaylistPlayElement).Play.Name;
-				} else {
-					closebutton.Visible = false;
-					eventNameLabel.Visible = false;
-				}
+				HandlePlayElementChanged ();
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Rate))) {
 				rateWindow.SetValue (App.Current.RateList.IndexOf (playerVM.Rate));
@@ -800,6 +793,31 @@ namespace VAS.UI
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.ShowCenterPlayHeadButton))) {
 				center_playhead_box.Visible = ViewModel.ShowCenterPlayHeadButton;
+			}
+		}
+
+		void HandlePlayElementChanged ()
+		{
+			if (playerVM.PlayElement is PlaylistPlayElement) {
+				DrawingsVisible = false;
+				closebutton.Visible = true;
+				eventNameLabel.Visible = true;
+				eventNameLabel.Text = (playerVM.PlayElement as PlaylistPlayElement).Play.Name;
+			} else if (playerVM.PlayElement is TimelineEvent) {
+				DrawingsVisible = false;
+				closebutton.Visible = true;
+				eventNameLabel.Visible = true;
+				eventNameLabel.Text = (playerVM.PlayElement as TimelineEvent).Name;
+			} else if (playerVM.PlayElement is PlaylistDrawing) {
+				PlaylistDrawing drawing = (PlaylistDrawing)playerVM.PlayElement;
+				LoadImage (null, drawing.Drawing);
+			} else if (playerVM.PlayElement is PlaylistImage) {
+				PlaylistImage image = (PlaylistImage)playerVM.PlayElement;
+				LoadImage (image.Image, null);
+			} else {
+				DrawingsVisible = false;
+				closebutton.Visible = false;
+				eventNameLabel.Visible = false;
 			}
 		}
 

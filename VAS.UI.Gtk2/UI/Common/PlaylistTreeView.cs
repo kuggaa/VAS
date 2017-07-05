@@ -31,7 +31,8 @@ namespace VAS.UI.Common
 	[System.ComponentModel.ToolboxItem (true)]
 	public class PlaylistTreeView : TreeViewBase<PlaylistCollectionVM, Playlist, PlaylistVM>
 	{
-		protected PlaylistMenu playlistMenu;
+		protected MenuBase playlistMenu;
+		protected MenuBase playlistElementMenu;
 
 		public PlaylistTreeView ()
 		{
@@ -48,27 +49,27 @@ namespace VAS.UI.Common
 
 		protected override void OnDestroyed ()
 		{
-			if (ViewModel != null) {
-				ViewModel.PropertyChanged -= HandleViewModelPropertyChanged;
-			}
 			playlistMenu.Dispose ();
 			base.OnDestroyed ();
 		}
 
-		public override void SetViewModel (object viewModel)
-		{
-			if (ViewModel != null) {
-				ViewModel.PropertyChanged -= HandleViewModelPropertyChanged;
+		public override PlaylistCollectionVM ViewModel {
+			get {
+				return base.ViewModel;
 			}
-			base.SetViewModel (viewModel);
-			if (ViewModel != null) {
-				ViewModel.PropertyChanged += HandleViewModelPropertyChanged;
+			set {
+				base.ViewModel = value;
+				if (value != null) {
+					playlistMenu.ViewModel = value.PlaylistMenu;
+					playlistElementMenu.ViewModel = value.PlaylistElementMenu;
+				}
 			}
 		}
 
 		protected virtual void CreateMenu ()
 		{
-			playlistMenu = new PlaylistMenu ();
+			playlistMenu = new MenuBase ();
+			playlistElementMenu = new MenuBase ();
 		}
 
 		protected virtual void CreateViews ()
@@ -142,8 +143,11 @@ namespace VAS.UI.Common
 
 		protected override void ShowMenu ()
 		{
-			if (ViewModel.Selection.Count () > 0)
-				playlistMenu.ShowMenu (null, ViewModel.Selection [0].Model, true);
+			if (ViewModel.Selection.Count () > 0) {
+				playlistMenu.ShowMenu ();
+			} else {
+				playlistElementMenu.ShowMenu ();
+			}
 		}
 
 		protected override bool MoveElements (Dictionary<INestedViewModel, List<IViewModel>> elementsToRemove,

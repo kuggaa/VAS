@@ -28,7 +28,6 @@ namespace VAS.Core.Store.Playlists
 	[Serializable]
 	public class PlaylistPlayElement : BindableBase, IPlaylistElement
 	{
-
 		public PlaylistPlayElement (TimelineEvent play)
 		{
 			Play = play;
@@ -47,10 +46,13 @@ namespace VAS.Core.Store.Playlists
 		}
 
 		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool Selected {
-			get;
-			set;
+		public bool Playing {
+			get {
+				return Play.Playing;
+			}
+			set {
+				Play.Playing = value;
+			}
 		}
 
 		/// <summary>
@@ -110,7 +112,7 @@ namespace VAS.Core.Store.Playlists
 		[PropertyChanged.DoNotNotify]
 		public string Description {
 			get {
-				return (Play.Name + "\n" + TagsDescription () + "\n" + TimesDesription ());
+				return (Title + "\n" + TagsDescription () + "\n" + TimesDesription ());
 			}
 		}
 
