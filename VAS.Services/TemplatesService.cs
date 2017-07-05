@@ -20,7 +20,7 @@ namespace VAS.Services
 
 		readonly MethodInfo methodDefaultTemplate;
 		protected List<T> systemTemplates;
-		IStorage storage;
+		protected IStorage storage;
 
 		public TemplatesProvider (IStorage storage)
 		{

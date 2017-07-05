@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using Newtonsoft.Json;
 using VAS.Core.Common;
@@ -350,6 +351,16 @@ namespace VAS.Core.Store
 		public RangeObservableCollection<Tag> Tags {
 			get;
 			private set;
+		}
+
+		/// <value>
+		/// Document version
+		/// </value>
+		[DefaultValue (0)]
+		[JsonProperty (DefaultValueHandling = DefaultValueHandling.Populate)]
+		public int Version {
+			get;
+			set;
 		}
 
 		public string TagsDescription ()
