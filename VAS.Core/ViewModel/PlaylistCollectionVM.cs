@@ -60,6 +60,8 @@ namespace VAS.Core.ViewModel
 			InsertImageCommand.Text = Catalog.GetString ("External Image");
 			EditPlaylistElementCommand = new Command (EditPlaylistElement, JustOneElementSelectedAndIsNotVideo);
 			EditPlaylistElementCommand.Text = Catalog.GetString ("Edit Properties");
+			PlaylistMenu = CreatePlaylistMenu ();
+			PlaylistElementMenu = CreatePlaylistElementMenu ();
 		}
 
 		/// <summary>
@@ -138,38 +140,11 @@ namespace VAS.Core.ViewModel
 		}
 
 		public MenuVM PlaylistMenu {
-			get {
-				var menu = new MenuVM ();
-				menu.ViewModels.AddRange (new List<MenuNodeVM> {
-					new MenuNodeVM (EditCommand),
-					new MenuNodeVM (RenderCommand),
-					new MenuNodeVM (DeleteCommand, name:Catalog.GetString("Delete"))
-				});
-				return menu;
-			}
+			get;
 		}
 
 		public MenuVM PlaylistElementMenu {
-			get {
-				var menu = new MenuVM ();
-				var menuInsertBefore = new MenuVM ();
-				var menuInsertAfter = new MenuVM ();
-				menuInsertBefore.ViewModels.AddRange (new List<MenuNodeVM> {
-					new MenuNodeVM (InsertVideoCommand, PlaylistPosition.Before),
-					new MenuNodeVM (InsertImageCommand, PlaylistPosition.Before)
-				});
-				menuInsertAfter.ViewModels.AddRange (new List<MenuNodeVM> {
-					new MenuNodeVM (InsertVideoCommand, PlaylistPosition.After),
-					new MenuNodeVM (InsertImageCommand, PlaylistPosition.After)
-				});
-				menu.ViewModels.AddRange (new List<MenuNodeVM> {
-					new MenuNodeVM (EditPlaylistElementCommand),
-					new MenuNodeVM (menuInsertBefore, Catalog.GetString("Insert before")),
-					new MenuNodeVM (menuInsertAfter, Catalog.GetString("Insert after")),
-					new MenuNodeVM (DeleteCommand, name:Catalog.GetString("Delete"))
-				});
-				return menu;
-			}
+			get;
 		}
 
 		/// <summary>
@@ -299,6 +274,39 @@ namespace VAS.Core.ViewModel
 				}
 			}
 			return null;
+		}
+
+		MenuVM CreatePlaylistMenu ()
+		{
+			var menu = new MenuVM ();
+			menu.ViewModels.AddRange (new List<MenuNodeVM> {
+					new MenuNodeVM (EditCommand),
+					new MenuNodeVM (RenderCommand),
+					new MenuNodeVM (DeleteCommand, name:Catalog.GetString("Delete"))
+				});
+			return menu;
+		}
+
+		MenuVM CreatePlaylistElementMenu ()
+		{
+			var menu = new MenuVM ();
+			var menuInsertBefore = new MenuVM ();
+			var menuInsertAfter = new MenuVM ();
+			menuInsertBefore.ViewModels.AddRange (new List<MenuNodeVM> {
+					new MenuNodeVM (InsertVideoCommand, PlaylistPosition.Before),
+					new MenuNodeVM (InsertImageCommand, PlaylistPosition.Before)
+				});
+			menuInsertAfter.ViewModels.AddRange (new List<MenuNodeVM> {
+					new MenuNodeVM (InsertVideoCommand, PlaylistPosition.After),
+					new MenuNodeVM (InsertImageCommand, PlaylistPosition.After)
+				});
+			menu.ViewModels.AddRange (new List<MenuNodeVM> {
+					new MenuNodeVM (EditPlaylistElementCommand),
+					new MenuNodeVM (menuInsertBefore, Catalog.GetString("Insert before")),
+					new MenuNodeVM (menuInsertAfter, Catalog.GetString("Insert after")),
+					new MenuNodeVM (DeleteCommand, name:Catalog.GetString("Delete"))
+				});
+			return menu;
 		}
 
 		/// <summary>
