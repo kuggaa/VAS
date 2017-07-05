@@ -117,7 +117,7 @@ namespace VAS.Tests.Services
 				FileSet = mfs
 			};
 			evt2 = new TimelineEvent {
-				Start = new Time (1000), Stop = new Time (10000),
+				Start = new Time (1000), Stop = new Time (20000),
 				CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) },
 				FileSet = mfs
 			};
@@ -603,7 +603,7 @@ namespace VAS.Tests.Services
 			playerMock.Verify (p => p.Seek (currentTime + playerVM.Step, true, false), Times.Once ());
 
 			playerMock.ResetCalls ();
-			currentTime = new Time (6000);
+			currentTime = new Time (15000);
 			loadDrawingsChanged = 0;
 			timeChanged = 0;
 			player.StepBackward ();
