@@ -1,5 +1,5 @@
-//
-//  Copyright (C) 2014 Andoni Morales Alastruey
+﻿//
+//  Copyright (C) 2017 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,32 +15,24 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System.ComponentModel;
-using VAS.Core.Common;
-using VAS.Core.Store;
+using System;
+using VAS.Core.MVVMC;
 
-namespace VAS.Core.Interfaces
+namespace VAS.Core.ViewModel
 {
 	/// <summary>
-	/// Each of the items in a playlist.
+	/// Menu ViewModel, used to contain a collection of MenuNodeVM
 	/// </summary>
-	public interface IPlaylistElement : IChanged, INotifyPropertyChanged
+	public class MenuVM : NestedViewModel<MenuNodeVM>
 	{
-		string Description {
-			get;
-		}
-
-		Image Miniature {
-			get;
-		}
-
-		bool Playing {
-			get;
-			set;
-		}
-
-		Time Duration {
-			get;
+		/// <summary>
+		/// Updates the MenuNodeVM commands can execute.
+		/// </summary>
+		public void UpdateCanExecute ()
+		{
+			foreach (var item in ViewModels) {
+				item.UpdateCanExecute ();
+			}
 		}
 	}
 }

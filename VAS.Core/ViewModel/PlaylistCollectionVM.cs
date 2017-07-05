@@ -20,6 +20,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.MVVMC;
@@ -49,6 +50,8 @@ namespace VAS.Core.ViewModel
 			NewCommand = new Command (New, () => Limitation == null || Limitation.Count < Limitation.Maximum);
 			NewCommand.Icon = newIcon;
 			NewCommand.ToolTipText = Catalog.GetString ("New Playlist");
+			PlaylistMenu = CreatePlaylistMenu ();
+			PlaylistElementMenu = CreatePlaylistElementMenu ();
 		}
 
 		/// <summary>
@@ -87,6 +90,23 @@ namespace VAS.Core.ViewModel
 			get;
 			protected set;
 		}
+
+		/// <summary>
+		/// Gets the playlist menu.
+		/// </summary>
+		/// <value>The playlist menu.</value>
+		public MenuVM PlaylistMenu {
+			get;
+		}
+
+		/// <summary>
+		/// Gets the playlist element menu.
+		/// </summary>
+		/// <value>The playlist element menu.</value>
+		public MenuVM PlaylistElementMenu {
+			get;
+		}
+
 		/// <summary>
 		/// Loads the playlist into the VideoPlayer
 		/// </summary>
@@ -134,6 +154,29 @@ namespace VAS.Core.ViewModel
 			return selection;
 		}
 
+		bool HasChildsItemsSelected ()
+		{
+			if (!Selection.Any ()) {
+				foreach (var playlist in ViewModels) {
+					if (playlist.Selection.Any ()) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		bool CheckJustOneElementSelectedAndIsNotVideo ()
+		{
+			List<PlaylistElementVM> elements = new List<PlaylistElementVM> ();
+			if (!Selection.Any ()) {
+				foreach (var playlist in ViewModels) {
+					elements.AddRange (playlist.Selection);
+				}
+			}
+			return (elements.Count == 1 && !(elements [0] is PlaylistVideoVM));
+		}
+
 		void New ()
 		{
 			App.Current.EventsBroker.Publish (new CreateEvent<Playlist> ());
@@ -142,6 +185,99 @@ namespace VAS.Core.ViewModel
 		void Delete ()
 		{
 			App.Current.EventsBroker.Publish (new DeleteEvent<Playlist> ());
+		}
+
+		void Edit ()
+		{
+			App.Current.EventsBroker.Publish (new EditEvent<Playlist> { Object = Selection.First ().Model });
+		}
+
+		void Render ()
+		{
+			App.Current.EventsBroker.Publish (
+				new RenderPlaylistEvent {
+					Playlist = Selection.First ().Model
+				}
+			);
+		}
+
+		void InsertVideo (PlaylistPosition position)
+		{
+			App.Current.EventsBroker.Publish (
+				new InsertVideoInPlaylistEvent {
+					Position = position
+				}
+			);
+		}
+
+		Task InsertImage (PlaylistPosition position)
+		{
+			return App.Current.EventsBroker.Publish (
+				new InsertImageInPlaylistEvent {
+					Position = position
+				}
+			);
+		}
+
+		void EditPlaylistElement ()
+		{
+			App.Current.EventsBroker.Publish (new EditEvent<PlaylistElementVM> {
+				Object = GetFirstSelectedPlaylistElement ()
+			});
+		}
+
+		PlaylistElementVM GetFirstSelectedPlaylistElement ()
+		{
+			foreach (var playlist in ViewModels) {
+				if (playlist.Selection.Any ()) {
+					return playlist.Selection.First ();
+				}
+			}
+			return null;
+		}
+
+		MenuVM CreatePlaylistMenu ()
+		{
+			var editCommand = new Command (Edit, () => { return Selection.Count == 1; });
+			editCommand.Text = Catalog.GetString ("Edit Name");
+			var renderCommand = new Command (Render, () => { return Selection.Count == 1; });
+			renderCommand.Text = Catalog.GetString ("Render");
+			var menu = new MenuVM ();
+			menu.ViewModels.AddRange (new List<MenuNodeVM> {
+					new MenuNodeVM (editCommand),
+					new MenuNodeVM (renderCommand),
+					new MenuNodeVM (DeleteCommand, name:Catalog.GetString("Delete"))
+				});
+			return menu;
+		}
+
+		MenuVM CreatePlaylistElementMenu ()
+		{
+			var insertVideoCommand = new Command<PlaylistPosition> (InsertVideo, HasChildsItemsSelected);
+			insertVideoCommand.Text = Catalog.GetString ("External Video");
+			var insertImageCommand = new AsyncCommand<PlaylistPosition> (InsertImage, HasChildsItemsSelected);
+			insertImageCommand.Text = Catalog.GetString ("External Image");
+			var editPlaylistElementCommand = new Command (EditPlaylistElement, CheckJustOneElementSelectedAndIsNotVideo);
+			editPlaylistElementCommand.Text = Catalog.GetString ("Edit Properties");
+
+			var menu = new MenuVM ();
+			var menuInsertBefore = new MenuVM ();
+			var menuInsertAfter = new MenuVM ();
+			menuInsertBefore.ViewModels.AddRange (new List<MenuNodeVM> {
+					new MenuNodeVM (insertVideoCommand, PlaylistPosition.Before),
+					new MenuNodeVM (insertImageCommand, PlaylistPosition.Before)
+				});
+			menuInsertAfter.ViewModels.AddRange (new List<MenuNodeVM> {
+					new MenuNodeVM (insertVideoCommand, PlaylistPosition.After),
+					new MenuNodeVM (insertImageCommand, PlaylistPosition.After)
+				});
+			menu.ViewModels.AddRange (new List<MenuNodeVM> {
+					new MenuNodeVM (editPlaylistElementCommand),
+					new MenuNodeVM (menuInsertBefore, Catalog.GetString("Insert before")),
+					new MenuNodeVM (menuInsertAfter, Catalog.GetString("Insert after")),
+					new MenuNodeVM (DeleteCommand, name:Catalog.GetString("Delete"))
+				});
+			return menu;
 		}
 
 		/// <summary>

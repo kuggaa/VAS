@@ -1,5 +1,5 @@
-//
-//  Copyright (C) 2014 Andoni Morales Alastruey
+﻿//
+//  Copyright (C) 2017 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,32 +15,25 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System.ComponentModel;
-using VAS.Core.Common;
-using VAS.Core.Store;
+using System;
+using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.ViewModel;
 
-namespace VAS.Core.Interfaces
+namespace VAS.Services.State
 {
-	/// <summary>
-	/// Each of the items in a playlist.
-	/// </summary>
-	public interface IPlaylistElement : IChanged, INotifyPropertyChanged
+	public class EditPlaylistElementState : ScreenState<PlaylistElementVM>
 	{
-		string Description {
-			get;
+		public const string NAME = "EditPlaylistElement";
+
+		public override string Name {
+			get {
+				return NAME;
+			}
 		}
 
-		Image Miniature {
-			get;
-		}
-
-		bool Playing {
-			get;
-			set;
-		}
-
-		Time Duration {
-			get;
+		protected override void CreateViewModel (dynamic data)
+		{
+			ViewModel = data.PlaylistElement;
 		}
 	}
 }

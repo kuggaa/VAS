@@ -18,6 +18,7 @@
 using Gtk;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
+using VAS.Core.ViewModel;
 
 namespace VAS.UI.Helpers
 {
@@ -32,6 +33,8 @@ namespace VAS.UI.Helpers
 				label = menuLabel;
 			} else if (!string.IsNullOrEmpty (command.Text)) {
 				label = command.Text;
+			} else if (!string.IsNullOrEmpty (command.ToolTipText)) {
+				label = command.ToolTipText;
 			}
 
 			MenuItem item = new MenuItem (label);
@@ -47,6 +50,20 @@ namespace VAS.UI.Helpers
 			command.CanExecuteChanged += (sender, e) => item.Sensitive = command.CanExecute ();
 			item.Show ();
 			return item;
+		}
+
+		public static MenuItem CreateMenuItem (this MenuNodeVM node, string menuLabel = null, AccelGroup group = null,
+											   string key = null, object commandParam = null)
+		{
+			string label = "";
+
+			if (!string.IsNullOrEmpty (menuLabel)) {
+				label = menuLabel;
+			} else if (!string.IsNullOrEmpty (node.Name)) {
+				label = node.Name;
+			}
+
+			return CreateMenuItem (node.Command, label, commandParam: node.CommandParameter);
 		}
 	}
 }

@@ -640,6 +640,23 @@ namespace VAS.Tests
 			}
 			return result;
 		}
+
+		public static Command GetCommandFromMenu (MenuVM menu, string menuname)
+		{
+			foreach (var menuNode in menu.ViewModels.Where ((arg) => arg.Submenu == null)) {
+				if (menuNode.Name != null && menuNode.Name == menuname) {
+					return menuNode.Command;
+				} else if (menuNode.Command.Text == menuname) {
+					return menuNode.Command;
+				}
+			}
+
+			foreach (var menuNode in menu.ViewModels.Where ((arg) => arg.Submenu != null)) {
+				return GetCommandFromMenu (menuNode.Submenu, menuname);
+			}
+
+			return null;
+		}
 	}
 
 	class CustomDummyClassForTest

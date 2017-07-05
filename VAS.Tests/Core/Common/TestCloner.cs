@@ -104,36 +104,36 @@ namespace VAS.Tests.Core.Common
 		public void TestClone_CloneIgnore_PlaylistDrawing ()
 		{
 			var playlistDrawing = new PlaylistDrawing (new FrameDrawing ());
-			playlistDrawing.Selected = true;
+			playlistDrawing.Playing = true;
 			var playlistDrawing2 = playlistDrawing.Clone ();
-			Assert.AreEqual (playlistDrawing.Selected, playlistDrawing2.Selected);
-			playlistDrawing.Selected = false;
+			Assert.AreEqual (playlistDrawing.Playing, playlistDrawing2.Playing);
+			playlistDrawing.Playing = false;
 			playlistDrawing2 = playlistDrawing.Clone ();
-			Assert.AreEqual (playlistDrawing.Selected, playlistDrawing2.Selected);
+			Assert.AreEqual (playlistDrawing.Playing, playlistDrawing2.Playing);
 		}
 
 		[Test ()]
 		public void TestClone_CloneIgnore_PlaylistPlayElement ()
 		{
 			var playlistPlayElement = new PlaylistPlayElement (new TimelineEvent ());
-			playlistPlayElement.Selected = true;
+			playlistPlayElement.Playing = true;
 			var playlistPlayElement2 = playlistPlayElement.Clone ();
-			Assert.AreEqual (playlistPlayElement.Selected, playlistPlayElement2.Selected);
-			playlistPlayElement.Selected = false;
+			Assert.AreEqual (playlistPlayElement.Playing, playlistPlayElement2.Playing);
+			playlistPlayElement.Playing = false;
 			playlistPlayElement2 = playlistPlayElement.Clone ();
-			Assert.AreEqual (playlistPlayElement.Selected, playlistPlayElement2.Selected);
+			Assert.AreEqual (playlistPlayElement.Playing, playlistPlayElement2.Playing);
 		}
 
 		[Test ()]
 		public void TestClone_CloneIgnore_PlaylistVideo ()
 		{
 			var playlistVideo = new PlaylistVideo (new MediaFile ());
-			playlistVideo.Selected = true;
+			playlistVideo.Playing = true;
 			var playlistVideo2 = playlistVideo.Clone ();
-			Assert.AreEqual (playlistVideo.Selected, playlistVideo2.Selected);
-			playlistVideo.Selected = false;
+			Assert.AreEqual (playlistVideo.Playing, playlistVideo2.Playing);
+			playlistVideo.Playing = false;
 			playlistVideo2 = playlistVideo.Clone ();
-			Assert.AreEqual (playlistVideo.Selected, playlistVideo2.Selected);
+			Assert.AreEqual (playlistVideo.Playing, playlistVideo2.Playing);
 		}
 
 		[Test ()]

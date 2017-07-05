@@ -21,6 +21,7 @@ using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
+using VAS.Core.Store.Playlists;
 
 namespace VAS.Core.ViewModel
 {
@@ -50,12 +51,16 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
-		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.PlaylistElementVM"/> is selected.
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.PlaylistElementVM"/> is playing.
 		/// </summary>
-		/// <value><c>true</c> if selected; otherwise, <c>false</c>.</value>
-		public bool Selected {
-			get;
-			set;
+		/// <value><c>true</c> if playing; otherwise, <c>false</c>.</value>
+		public bool Playing {
+			get {
+				return Model.Playing;
+			}
+			set {
+				Model.Playing = value;
+			}
 		}
 
 		/// <summary>
@@ -67,5 +72,38 @@ namespace VAS.Core.ViewModel
 				return Model.Duration;
 			}
 		}
+	}
+
+	public class PlaylistPlayElementVM : PlaylistElementVM
+	{
+		public new PlaylistPlayElement Model {
+			get {
+				return (PlaylistPlayElement)base.Model;
+			}
+			set {
+				base.Model = value;
+			}
+		}
+
+		public string Title {
+			get {
+				return Model.Title;
+			}
+			set {
+				Model.Title = value;
+			}
+		}
+	}
+
+	public class PlaylistVideoVM : PlaylistElementVM
+	{
+	}
+
+	public class PlaylistImageVM : PlaylistElementVM
+	{
+	}
+
+	public class PlaylistDrawingVM : PlaylistElementVM
+	{
 	}
 }

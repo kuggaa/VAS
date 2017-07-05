@@ -30,6 +30,15 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class PlaylistVM : NestedSubViewModel<Playlist, PlaylistVM, IPlaylistElement, PlaylistElementVM>
 	{
+		public PlaylistVM ()
+		{
+			SubViewModel.TypeMappings.Add (typeof (PlaylistPlayElement), typeof (PlaylistPlayElementVM));
+			SubViewModel.TypeMappings.Add (typeof (PlaylistVideo), typeof (PlaylistVideoVM));
+			SubViewModel.TypeMappings.Add (typeof (PlaylistImage), typeof (PlaylistImageVM));
+			SubViewModel.TypeMappings.Add (typeof (PlaylistDrawing), typeof (PlaylistDrawingVM));
+
+		}
+
 		/// <summary>
 		/// Gets or sets the name of the playlist.
 		/// </summary>

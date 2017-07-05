@@ -50,8 +50,7 @@ namespace VAS.Core.Store.Playlists
 		}
 
 		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public bool Selected {
+		public bool Playing {
 			get;
 			set;
 		}

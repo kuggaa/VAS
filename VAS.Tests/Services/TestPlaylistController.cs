@@ -22,14 +22,17 @@ using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using VAS.Core;
+using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
 using VAS.Services.Controller;
+using VAS.Services.State;
 using VAS.Services.ViewModel;
 
 namespace VAS.Tests.Services
@@ -38,6 +41,16 @@ namespace VAS.Tests.Services
 	public class TestPlaylistController
 	{
 		const string name = "name";
+		//Menu Names Constants
+		const string PLAYLIST_EDIT = "Edit Name";
+		const string PLAYLIST_RENDER = "Render";
+		const string PLAYLIST_DELETE = "Delete";
+		const string ELEMENT_EDIT = "Edit Properties";
+		const string ELEMENT_INSERT_BEFORE = "Insert before";
+		const string ELEMENT_INSERT_AFTER = "Insert after";
+		const string ELEMENT_IMAGE = "External Image";
+		const string ELEMENT_VIDEO = "External Video";
+		const string ELEMENT_DELETE = "Delete";
 
 		Mock<IGUIToolkit> mockGuiToolkit;
 		VideoPlayerVM videoPlayerVM;
@@ -47,6 +60,7 @@ namespace VAS.Tests.Services
 		PlaylistController controller;
 		PlaylistCollectionVM playlistCollectionVM;
 		ProjectVM projectVM;
+		Mock<IStateController> mockStateController;
 
 		[TestFixtureSetUp]
 		public void FixtureSetup ()
@@ -58,6 +72,8 @@ namespace VAS.Tests.Services
 			storageMock = new Mock<IStorage> ();
 			storageManagerMock.Object.ActiveDB = storageMock.Object;
 			App.Current.DatabaseManager = storageManagerMock.Object;
+			mockStateController = new Mock<IStateController> ();
+			App.Current.StateController = mockStateController.Object;
 		}
 
 		[SetUp]
@@ -72,6 +88,12 @@ namespace VAS.Tests.Services
 			mockDialogs.Setup (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (),
 													 It.IsAny<object> ())).Returns (AsyncHelpers.Return (name));
 			mockDialogs.Setup (m => m.QuestionMessage (It.IsAny<string> (), null, null)).Returns (AsyncHelpers.Return (true));
+			mockDialogs.Setup (m => m.OpenMediaFile (null)).Returns (new MediaFile { Duration = new Time (2500) });
+			mockDialogs.Setup (m => m.OpenImage (null)).ReturnsAsync (App.Current.ResourcesLocator.LoadImage ("asdf"));
+			mockGuiToolkit.Setup (m => m.ConfigureRenderingJob (It.IsAny<Playlist> ())).Returns (
+				new List<EditionJob> { new EditionJob (new Playlist (), new EncodingSettings ()) });
+			mockGuiToolkit.SetupGet (o => o.DeviceScaleFactor).Returns (1.0f);
+			mockStateController.Setup (s => s.MoveToModal (EditPlaylistElementState.NAME, It.IsAny<object> (), true)).ReturnsAsync (true);
 		}
 
 		[TearDown]
@@ -104,6 +126,15 @@ namespace VAS.Tests.Services
 			var viewModel = new ProjectAnalysisVM<ProjectVM> { Project = projectVM, VideoPlayer = videoPlayerVM };
 			controller.SetViewModel (viewModel);
 			controller.Start ();
+		}
+
+		void AddSomePlaylistElements ()
+		{
+			var newPlaylist = new Playlist ();
+			newPlaylist.Elements.Add (new PlaylistPlayElement (new TimelineEvent { Start = new Time (0), Stop = new Time (2000) }));
+			newPlaylist.Elements.Add (new PlaylistImage (new Image (20, 20), new Time (1000)));
+			newPlaylist.Elements.Add (new PlaylistVideo (new MediaFile { Duration = new Time (5000) }));
+			playlistCollectionVM.Model.Add (newPlaylist);
 		}
 
 		[Test]
@@ -504,6 +535,390 @@ namespace VAS.Tests.Services
 			// Assert
 			storageMock.Verify (s => s.Store<Playlist> (playlist, true), Times.Never ());
 			storageMock.Verify (s => s.Store<Playlist> (playlist2, true), Times.Never ());
+		}
+
+		[Test]
+		public void DeleteCommand_PlaylistSelection_CanExecute ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+
+			Assert.IsFalse (playlistCollectionVM.DeleteCommand.CanExecute ());
+
+			playlistCollectionVM.Select (playlistCollectionVM.ViewModels [0]);
+
+			Assert.IsTrue (playlistCollectionVM.DeleteCommand.CanExecute ());
+		}
+
+		[Test]
+		public void DeleteCommand_PlaylistElementSelection_CanExecute ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+
+			Assert.IsFalse (playlistCollectionVM.DeleteCommand.CanExecute ());
+
+			playlistCollectionVM.ViewModels [0].Select (playlistCollectionVM.ViewModels [0].ViewModels [0]);
+
+			Assert.IsTrue (playlistCollectionVM.DeleteCommand.CanExecute ());
+		}
+
+		[Test]
+		public void EditCommand_OnePlaylistSelection_CanExecute ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+			Command editCommand = Utils.GetCommandFromMenu (playlistCollectionVM.PlaylistMenu, PLAYLIST_EDIT);
+
+
+			Assert.IsFalse (editCommand.CanExecute ());
+
+			playlistCollectionVM.Select (playlistCollectionVM.ViewModels [0]);
+
+			Assert.IsTrue (editCommand.CanExecute ());
+		}
+
+		[Test]
+		public void EditCommand_TwoPlaylistSelection_CanNotExecute ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+			playlistCollectionVM.Model.Add (new Playlist ());
+			Command editCommand = Utils.GetCommandFromMenu (playlistCollectionVM.PlaylistMenu, PLAYLIST_EDIT);
+
+			Assert.IsFalse (editCommand.CanExecute ());
+
+			playlistCollectionVM.SelectionReplace (playlistCollectionVM.ViewModels);
+
+			Assert.IsFalse (editCommand.CanExecute ());
+		}
+
+		[Test]
+		public void RenderCommand_OnePlaylistSelection_CanExecute ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+			Command renderCommand = Utils.GetCommandFromMenu (playlistCollectionVM.PlaylistMenu, PLAYLIST_RENDER);
+
+			Assert.IsFalse (renderCommand.CanExecute ());
+
+			playlistCollectionVM.Select (playlistCollectionVM.ViewModels [0]);
+
+			Assert.IsTrue (renderCommand.CanExecute ());
+		}
+
+		[Test]
+		public void RenderCommand_TwoPlaylistSelection_CanNotExecute ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+			playlistCollectionVM.Model.Add (new Playlist ());
+			Command renderCommand = Utils.GetCommandFromMenu (playlistCollectionVM.PlaylistMenu, PLAYLIST_RENDER);
+
+			Assert.IsFalse (renderCommand.CanExecute ());
+
+			playlistCollectionVM.SelectionReplace (playlistCollectionVM.ViewModels);
+
+			Assert.IsFalse (renderCommand.CanExecute ());
+		}
+
+		[Test]
+		public void InsertVideoCommand_PlaylistElementSelection_CanExecute ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+			Command insertVideoCommand = Utils.GetCommandFromMenu (playlistCollectionVM.PlaylistElementMenu, ELEMENT_VIDEO);
+
+			Assert.IsFalse (insertVideoCommand.CanExecute ());
+
+			playlistCollectionVM.ViewModels [0].Select (playlistCollectionVM.ViewModels [0].ViewModels [0]);
+
+			Assert.IsTrue (insertVideoCommand.CanExecute ());
+		}
+
+		[Test]
+		public void InsertVideoCommand_ManyPlaylistElementSelection_CanExecute ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+			Command insertVideoCommand = Utils.GetCommandFromMenu (playlistCollectionVM.PlaylistElementMenu, ELEMENT_VIDEO);
+
+			Assert.IsFalse (insertVideoCommand.CanExecute ());
+
+			playlistCollectionVM.ViewModels [0].SelectionReplace (playlistCollectionVM.ViewModels [0].ViewModels);
+
+			Assert.IsTrue (insertVideoCommand.CanExecute ());
+		}
+
+		[Test]
+		public void InsertImageCommand_PlaylistElementSelection_CanExecute ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+			Command insertImageCommand = Utils.GetCommandFromMenu (playlistCollectionVM.PlaylistElementMenu, ELEMENT_IMAGE);
+
+			Assert.IsFalse (insertImageCommand.CanExecute ());
+
+			playlistCollectionVM.ViewModels [0].Select (playlistCollectionVM.ViewModels [0].ViewModels [0]);
+
+			Assert.IsTrue (insertImageCommand.CanExecute ());
+		}
+
+		[Test]
+		public void InsertAudioCommand_ManyPlaylistElementSelection_CanExecute ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+			Command insertImageCommand = Utils.GetCommandFromMenu (playlistCollectionVM.PlaylistElementMenu, ELEMENT_IMAGE);
+
+			Assert.IsFalse (insertImageCommand.CanExecute ());
+
+			playlistCollectionVM.ViewModels [0].SelectionReplace (playlistCollectionVM.ViewModels [0].ViewModels);
+
+			Assert.IsTrue (insertImageCommand.CanExecute ());
+		}
+
+		[Test]
+		public void EditPlaylistElementCommand_PlaylistPlaySelected_CanExecute ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+			Command editElementCommand = Utils.GetCommandFromMenu (playlistCollectionVM.PlaylistElementMenu, ELEMENT_EDIT);
+
+			Assert.IsFalse (editElementCommand.CanExecute ());
+
+			playlistCollectionVM.ViewModels [0].Select (playlistCollectionVM.ViewModels [0].ViewModels [0]);
+
+			Assert.IsTrue (editElementCommand.CanExecute ());
+		}
+
+		[Test]
+		public void EditPlaylistElementCommand_PlaylistVideoSelected_CanNotExecute ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+			Command editElementCommand = Utils.GetCommandFromMenu (playlistCollectionVM.PlaylistElementMenu, ELEMENT_EDIT);
+
+			Assert.IsFalse (editElementCommand.CanExecute ());
+
+			playlistCollectionVM.ViewModels [0].Select (playlistCollectionVM.ViewModels [0].ViewModels [2]);
+
+			Assert.IsFalse (editElementCommand.CanExecute ());
+		}
+
+		[Test]
+		public void EditPlaylistElementCommand_PlaylistImageSelected_CanExecute ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+			Command editElementCommand = Utils.GetCommandFromMenu (playlistCollectionVM.PlaylistElementMenu, ELEMENT_EDIT);
+
+			Assert.IsFalse (editElementCommand.CanExecute ());
+
+			playlistCollectionVM.ViewModels [0].Select (playlistCollectionVM.ViewModels [0].ViewModels [1]);
+
+			Assert.IsTrue (editElementCommand.CanExecute ());
+		}
+
+		[Test]
+		public void EditPlaylistElementCommand_TwoPlaylistPlaySelected_CanNotExecute ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+			playlistCollectionVM.ViewModels [0].Model.Elements.Add (
+				new PlaylistPlayElement (new TimelineEvent { Start = new Time (0), Stop = new Time (2000) }));
+			Command editElementCommand = Utils.GetCommandFromMenu (playlistCollectionVM.PlaylistElementMenu, ELEMENT_EDIT);
+
+			Assert.IsFalse (editElementCommand.CanExecute ());
+
+			playlistCollectionVM.ViewModels [0].Selection.Add (playlistCollectionVM.ViewModels [0].ViewModels [0]);
+			playlistCollectionVM.ViewModels [0].Selection.Add (playlistCollectionVM.ViewModels [0].ViewModels [3]);
+
+			Assert.IsFalse (editElementCommand.CanExecute ());
+		}
+
+		[Test]
+		public void EditPlaylistElementCommand_TwoPlaylistImageSelected_CanNotExecute ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+			playlistCollectionVM.ViewModels [0].Model.Elements.Add (
+				new PlaylistImage (new Image (20, 20), new Time (9000)));
+			Command editElementCommand = Utils.GetCommandFromMenu (playlistCollectionVM.PlaylistElementMenu, ELEMENT_EDIT);
+
+			Assert.IsFalse (editElementCommand.CanExecute ());
+
+			playlistCollectionVM.ViewModels [0].Selection.Add (playlistCollectionVM.ViewModels [0].ViewModels [1]);
+			playlistCollectionVM.ViewModels [0].Selection.Add (playlistCollectionVM.ViewModels [0].ViewModels [3]);
+
+			Assert.IsFalse (editElementCommand.CanExecute ());
+		}
+
+		[Test]
+		public void DeleteSelectedPlaylists ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+
+			Assert.AreEqual (1, playlistCollectionVM.ViewModels.Count);
+
+			playlistCollectionVM.Select (playlistCollectionVM.ViewModels [0]);
+			playlistCollectionVM.DeleteCommand.Execute ();
+
+			Assert.AreEqual (0, playlistCollectionVM.ViewModels.Count);
+		}
+
+		[Test]
+		public void DeleteSelectedPlaylistElements ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+
+			Assert.AreEqual (3, playlistCollectionVM.ViewModels [0].ViewModels.Count);
+
+			playlistCollectionVM.ViewModels [0].Select (playlistCollectionVM.ViewModels [0].ViewModels [0]);
+			playlistCollectionVM.DeleteCommand.Execute ();
+
+			Assert.AreEqual (2, playlistCollectionVM.ViewModels [0].ViewModels.Count);
+		}
+
+		[Test]
+		public void EditSelectedPlaylist ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+			var currentName = playlistCollectionVM.ViewModels [0].Name = "test";
+			Command editCommand = Utils.GetCommandFromMenu (playlistCollectionVM.PlaylistMenu, PLAYLIST_EDIT);
+
+			playlistCollectionVM.Select (playlistCollectionVM.ViewModels [0]);
+			editCommand.Execute ();
+
+			mockDialogs.Verify (guitoolkit => guitoolkit.QueryMessage (It.IsAny<string> (),
+				It.IsAny<string> (), It.IsAny<string> (), It.IsAny<object> ()), Times.Once ());
+			Assert.AreNotEqual (currentName, playlistCollectionVM.ViewModels [0].Name);
+			Assert.AreEqual (name, playlistCollectionVM.ViewModels [0].Name);
+		}
+
+		[Test]
+		public void RenderSelectedPlaylist ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+			Command renderCommand = Utils.GetCommandFromMenu (playlistCollectionVM.PlaylistMenu, PLAYLIST_RENDER);
+
+			playlistCollectionVM.Select (playlistCollectionVM.ViewModels [0]);
+			renderCommand.Execute ();
+
+			mockGuiToolkit.Verify (toolkit => toolkit.ConfigureRenderingJob (It.IsAny<Playlist> ()), Times.Once ());
+		}
+
+		[Test]
+		public void InsertVideoAfter_OneSelection ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+			int indexSelected = 0;
+			Command insertVideoCommand = Utils.GetCommandFromMenu (playlistCollectionVM.PlaylistElementMenu, ELEMENT_VIDEO);
+
+			Assert.AreEqual (3, playlistCollectionVM.ViewModels [0].ViewModels.Count);
+
+			playlistCollectionVM.ViewModels [0].Select (playlistCollectionVM.ViewModels [0].ViewModels [indexSelected]);
+			insertVideoCommand.Execute (PlaylistPosition.After);
+
+			mockDialogs.Verify (guitoolkit => guitoolkit.OpenMediaFile (null), Times.Once ());
+			Assert.AreEqual (4, playlistCollectionVM.ViewModels [0].ViewModels.Count);
+			Assert.IsInstanceOf (typeof (PlaylistVideoVM), playlistCollectionVM.ViewModels [0].ViewModels [indexSelected + 1]);
+		}
+
+		[Test]
+		public void InsertVideoBefore_OneSelection ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+			int indexSelected = 0;
+			Command insertVideoCommand = Utils.GetCommandFromMenu (playlistCollectionVM.PlaylistElementMenu, ELEMENT_VIDEO);
+
+			Assert.AreEqual (3, playlistCollectionVM.ViewModels [0].ViewModels.Count);
+
+			playlistCollectionVM.ViewModels [0].Select (playlistCollectionVM.ViewModels [0].ViewModels [indexSelected]);
+			insertVideoCommand.Execute (PlaylistPosition.Before);
+
+			mockDialogs.Verify (guitoolkit => guitoolkit.OpenMediaFile (null), Times.Once ());
+			Assert.AreEqual (4, playlistCollectionVM.ViewModels [0].ViewModels.Count);
+			Assert.IsInstanceOf (typeof (PlaylistVideoVM), playlistCollectionVM.ViewModels [0].ViewModels [indexSelected]);
+		}
+
+		[Test]
+		public void InsertVideoAfter_TwoSelection ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+			int indexSelected1 = 0;
+			int indexSelected2 = 2;
+			Command insertVideoCommand = Utils.GetCommandFromMenu (playlistCollectionVM.PlaylistElementMenu, ELEMENT_VIDEO);
+
+			Assert.AreEqual (3, playlistCollectionVM.ViewModels [0].ViewModels.Count);
+
+			playlistCollectionVM.ViewModels [0].Selection.Add (playlistCollectionVM.ViewModels [0].ViewModels [indexSelected1]);
+			playlistCollectionVM.ViewModels [0].Selection.Add (playlistCollectionVM.ViewModels [0].ViewModels [indexSelected2]);
+			insertVideoCommand.Execute (PlaylistPosition.After);
+
+			mockDialogs.Verify (guitoolkit => guitoolkit.OpenMediaFile (null), Times.Once ());
+			Assert.AreEqual (5, playlistCollectionVM.ViewModels [0].ViewModels.Count);
+			Assert.IsInstanceOf (typeof (PlaylistVideoVM), playlistCollectionVM.ViewModels [0].ViewModels [indexSelected1 + 1]);
+			Assert.IsInstanceOf (typeof (PlaylistVideoVM), playlistCollectionVM.ViewModels [0].ViewModels [indexSelected2 + 1]);
+		}
+
+		[Test]
+		public async Task InsertImageAfter_OneSelection ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+			int indexSelected = 0;
+			Command insertImageCommand = Utils.GetCommandFromMenu (playlistCollectionVM.PlaylistElementMenu, ELEMENT_IMAGE);
+
+			Assert.AreEqual (3, playlistCollectionVM.ViewModels [0].ViewModels.Count);
+
+			playlistCollectionVM.ViewModels [0].Selection.Add (playlistCollectionVM.ViewModels [0].ViewModels [indexSelected]);
+			await insertImageCommand.ExecuteAsync (PlaylistPosition.After);
+
+			mockDialogs.Verify (guitoolkit => guitoolkit.OpenImage (null), Times.Once ());
+			Assert.AreEqual (4, playlistCollectionVM.ViewModels [0].ViewModels.Count);
+			Assert.IsInstanceOf (typeof (PlaylistImageVM), playlistCollectionVM.ViewModels [0].ViewModels [indexSelected + 1]);
+		}
+
+		[Test]
+		public async Task InsertImageBefore_TwoSelection ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+			int indexSelected1 = 0;
+			int indexSelected2 = 2;
+			Command insertImageCommand = Utils.GetCommandFromMenu (playlistCollectionVM.PlaylistElementMenu, ELEMENT_IMAGE);
+
+			Assert.AreEqual (3, playlistCollectionVM.ViewModels [0].ViewModels.Count);
+
+			playlistCollectionVM.ViewModels [0].Selection.Add (playlistCollectionVM.ViewModels [0].ViewModels [indexSelected1]);
+			playlistCollectionVM.ViewModels [0].Selection.Add (playlistCollectionVM.ViewModels [0].ViewModels [indexSelected2]);
+			await insertImageCommand.ExecuteAsync (PlaylistPosition.Before);
+
+			mockDialogs.Verify (guitoolkit => guitoolkit.OpenImage (null), Times.Once ());
+			Assert.AreEqual (5, playlistCollectionVM.ViewModels [0].ViewModels.Count);
+			Assert.IsInstanceOf (typeof (PlaylistImageVM), playlistCollectionVM.ViewModels [0].ViewModels [indexSelected1]);
+			Assert.IsInstanceOf (typeof (PlaylistImageVM), playlistCollectionVM.ViewModels [0].ViewModels [indexSelected2]);
+		}
+
+		[Test]
+		public void EditPlaylistImage ()
+		{
+			SetupWithStorage ();
+			AddSomePlaylistElements ();
+			Command command = Utils.GetCommandFromMenu (playlistCollectionVM.PlaylistElementMenu, ELEMENT_EDIT);
+
+			playlistCollectionVM.ViewModels [0].Selection.Add (playlistCollectionVM.ViewModels [0].ViewModels [1]);
+			command.Execute ();
+
+			mockStateController.Verify (s => s.MoveToModal (EditPlaylistElementState.NAME, It.IsAny<object> (), true), Times.Once ());
 		}
 
 		class PlaylistControllerWithProject : PlaylistController
