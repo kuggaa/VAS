@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using VAS.Core;
+using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.GUI;
@@ -42,7 +43,8 @@ namespace VAS.Tests.Core.Common
 		public void InitializeStateController ()
 		{
 			sc = new StateController ();
-			App.Current.EventsBroker.Subscribe<NavigationEvent> (HandleTransitionEvent);
+			App.Current.EventsBroker.Subscribe<NavigationEvent> (HandleTransitionEvent,
+																 filter: ev => ev.State == StateNavigationEvent.Successful);
 			lastNavigationEvent = null;
 		}
 

@@ -208,7 +208,8 @@ namespace VAS.Services
 			App.Current.EventsBroker.Subscribe<DrawingSavedToProjectEvent> (HandleDrawingSavedToProject);
 			App.Current.EventsBroker.Subscribe<ProjectCreatedEvent> (HandleNewProject);
 			App.Current.EventsBroker.Subscribe<OpenedProjectEvent> (HandleOpenProject);
-			App.Current.EventsBroker.Subscribe<NavigationEvent> (HandleNavigationEvent);
+			App.Current.EventsBroker.Subscribe<NavigationEvent> (HandleNavigationEvent,
+																 filter: ev => ev.State == StateNavigationEvent.Successful);
 			GeneralTimer.Start ();
 
 			return true;

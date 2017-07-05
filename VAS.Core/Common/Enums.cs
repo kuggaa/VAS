@@ -624,4 +624,14 @@ namespace VAS.Core.Common
 		BOTTOM_LEFT,
 		BOTTOM_RIGHT
 	}
+
+	/// <summary>
+	/// State of navigation event.
+	/// </summary>
+	public enum StateNavigationEvent
+	{
+		Starting,
+		Successful,
+		Failed
+	}
 }

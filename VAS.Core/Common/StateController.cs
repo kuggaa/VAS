@@ -344,6 +344,7 @@ namespace VAS.Core
 
 		async Task<bool> PushNavigationState (string transition, IScreenState state)
 		{
+			bool success = true;
 			NavigationState navState;
 			if (transition == home?.Name) {
 				navState = home;
@@ -351,91 +352,139 @@ namespace VAS.Core
 				navState = new NavigationState (transition, state);
 				navigationStateStack.Add (navState);
 			}
-			if (!await App.Current.Navigation.Push (state.Panel)) {
-				return false;
+
+			await App.Current.EventsBroker.Publish (new NavigationEvent {
+				Name = transition,
+				State = StateNavigationEvent.Starting
+			});
+
+			if (success && !await App.Current.Navigation.Push (state.Panel)) {
+				success = false;
 			}
-			if (!await navState.Show ()) {
-				return false;
+			if (success && !await navState.Show ()) {
+				success = false;
 			}
-			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = transition });
-			return true;
+
+			await SendNavigationEvent (transition, success);
+			return success;
 		}
 
 		async Task<bool> PopNavigationState ()
 		{
+			bool success = true;
 			NavigationState navigationState = navigationStateStack [navigationStateStack.Count - 1];
 			IScreenState screenToPop = navigationState.ScreenState;
 			navigationStateStack.RemoveAt (navigationStateStack.Count - 1);
-
 			NavigationState lastState = LastNavigationState ();
-			if (!await screenToPop.HideState ()) {
-				return false;
+
+			await App.Current.EventsBroker.Publish (new NavigationEvent {
+				Name = Current,
+				State = StateNavigationEvent.Starting
+			});
+			if (success && !await screenToPop.HideState ()) {
+				success = false;
 			}
-			if (!await App.Current.Navigation.Pop (lastState?.ScreenState.Panel)) {
-				return false;
+
+			if (success && !await App.Current.Navigation.Pop (lastState?.ScreenState.Panel)) {
+				success = false;
 			}
-			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = Current });
-			if (!await navigationState.Unload ()) {
-				return false;
+
+			if (success && !await navigationState.Unload ()) {
+				success = false;
 			}
-			screenToPop.Dispose ();
+
+			if (success) {
+				screenToPop.Dispose ();
+			}
+			await SendNavigationEvent (Current, success);
 			return true;
 		}
 
 		async Task<bool> PopToNavigationState (NavigationState state)
 		{
+			bool success = true;
 			int index = navigationStateStack.FindIndex ((ns) => ns == state);
 			if (index == -1) {
 				return false;
 			}
+			await App.Current.EventsBroker.Publish (new NavigationEvent {
+				Name = state.Name,
+				State = StateNavigationEvent.Starting
+			});
+
 			for (int i = navigationStateStack.Count - 1; i > index; i--) {
 				if (!await navigationStateStack [i].Hide ()) {
-					return false;
+					success = false;
+					break;
 				}
 				if (!await navigationStateStack [i].Unload ()) {
-					return false;
+					success = false;
+					break;
 				}
 				navigationStateStack [i].ScreenState.Dispose ();
 				navigationStateStack.RemoveAt (i);
 				if (!await App.Current.Navigation.Pop (null)) {
-					return false;
+					success = false;
+					break;
 				}
 			}
-			if (!await state.Show ()) {
-				return false;
+
+			if (success && !await App.Current.Navigation.Push (state.ScreenState.Panel)) {
+				success = false;
 			}
-			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = state.Name });
-			return await App.Current.Navigation.Push (state.ScreenState.Panel);
+			if (success && !await state.Show ()) {
+				success = false;
+			}
+			await SendNavigationEvent (state.Name, success);
+			return success;
 		}
 
 		async Task<bool> PushModalState (NavigationState state, IScreenState current)
 		{
-			modalStateStack.Add (state);
-			if (!await state.Show ()) {
-				return false;
-			}
+			bool success = true;
 
-			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = state.ScreenState.Name, IsModal = true });
+			modalStateStack.Add (state);
+
+			await App.Current.EventsBroker.Publish (new NavigationEvent {
+				Name = state.ScreenState.Name,
+				IsModal = true,
+				State = StateNavigationEvent.Successful
+			});
+
 			await App.Current.Navigation.PushModal (state.ScreenState.Panel, current.Panel);
-			return true;
+
+			if (success && !await state.Show ()) {
+				success = false;
+			}
+			await SendNavigationEvent (state.Name, success, true);
+			return success;
 		}
 
 		async Task<bool> PopModalState (NavigationState current)
 		{
+			bool success = true;
 			NavigationState navigationState = modalStateStack [modalStateStack.Count - 1];
 			IScreenState screenToPop = navigationState.ScreenState;
+			await App.Current.EventsBroker.Publish (new NavigationEvent {
+				Name = Current,
+				IsModal = modalStateStack.Any (),
+				State = StateNavigationEvent.Starting
+			});
 
-			if (!await screenToPop.HideState ()) {
-				return false;
+			if (success && !await screenToPop.HideState ()) {
+				success = false;
 			}
-			if (!await navigationState.Unload ()) {
-				return false;
+			if (success && !await navigationState.Unload ()) {
+				success = false;
 			}
 			modalStateStack.RemoveAt (modalStateStack.Count - 1);
-			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = Current, IsModal = modalStateStack.Any () });
+
 			await App.Current.Navigation.PopModal (screenToPop.Panel);
-			screenToPop.Dispose ();
-			return true;
+			if (success) {
+				screenToPop.Dispose ();
+			}
+			await SendNavigationEvent (Current, success, modalStateStack.Any ());
+			return success;
 		}
 
 		async Task<bool> PopAllModalStates ()
@@ -447,6 +496,16 @@ namespace VAS.Core
 				}
 			}
 			return true;
+		}
+
+		Task SendNavigationEvent (string name, bool success, bool isModal = false)
+		{
+			var stateNav = success ? StateNavigationEvent.Successful : StateNavigationEvent.Failed;
+			return App.Current.EventsBroker.Publish (new NavigationEvent {
+				Name = name,
+				IsModal = isModal,
+				State = stateNav
+			});
 		}
 
 		NavigationState LastStateFromTransition (string transition)

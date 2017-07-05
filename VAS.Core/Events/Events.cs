@@ -450,6 +450,12 @@ namespace VAS.Core.Events
 		/// <value><c>true</c> if it is a modal state; otherwise, <c>false</c>.</value>
 		public bool IsModal { get; set; }
 
+		/// <summary>
+		/// Gets or sets the state.
+		/// </summary>
+		/// <value>The state.</value>
+		public StateNavigationEvent State { get; set; }
+
 	}
 
 	/// <summary>
