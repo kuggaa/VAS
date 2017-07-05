@@ -32,6 +32,7 @@ using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
+using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
 using VAS.Drawing.Cairo;
 using VAS.Drawing.Widgets;
@@ -753,7 +754,7 @@ namespace VAS.UI
 				if (playerVM.PlayElement != null) {
 					closebutton.Visible = true;
 					eventNameLabel.Visible = true;
-					eventNameLabel.Text = playerVM.PlayElement.ToString ();
+					eventNameLabel.Text = (playerVM.PlayElement as PlaylistPlayElement).Play.Name;
 				} else {
 					closebutton.Visible = false;
 					eventNameLabel.Visible = false;
