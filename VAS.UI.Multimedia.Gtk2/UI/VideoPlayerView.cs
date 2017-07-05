@@ -751,14 +751,6 @@ namespace VAS.UI
 				nextbutton.Sensitive = playerVM.HasNext;
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.PlayElement))) {
-				if (playerVM.PlayElement != null) {
-					closebutton.Visible = true;
-					eventNameLabel.Visible = true;
-					eventNameLabel.Text = (playerVM.PlayElement as PlaylistPlayElement).Play.Name;
-				} else {
-					closebutton.Visible = false;
-					eventNameLabel.Visible = false;
-				}
 				HandlePlayElementChanged ();
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Rate))) {
@@ -806,8 +798,17 @@ namespace VAS.UI
 
 		void HandlePlayElementChanged ()
 		{
-			closebutton.Visible = playerVM.PlayElement != null;
-			if (playerVM.PlayElement is PlaylistDrawing) {
+			if (playerVM.PlayElement is PlaylistPlayElement) {
+				DrawingsVisible = false;
+				closebutton.Visible = true;
+				eventNameLabel.Visible = true;
+				eventNameLabel.Text = (playerVM.PlayElement as PlaylistPlayElement).Play.Name;
+			} else if (playerVM.PlayElement is TimelineEvent) {
+				DrawingsVisible = false;
+				closebutton.Visible = true;
+				eventNameLabel.Visible = true;
+				eventNameLabel.Text = (playerVM.PlayElement as TimelineEvent).Name;
+			} else if (playerVM.PlayElement is PlaylistDrawing) {
 				PlaylistDrawing drawing = (PlaylistDrawing)playerVM.PlayElement;
 				LoadImage (null, drawing.Drawing);
 			} else if (playerVM.PlayElement is PlaylistImage) {
@@ -815,6 +816,8 @@ namespace VAS.UI
 				LoadImage (image.Image, null);
 			} else {
 				DrawingsVisible = false;
+				closebutton.Visible = false;
+				eventNameLabel.Visible = false;
 			}
 		}
 
