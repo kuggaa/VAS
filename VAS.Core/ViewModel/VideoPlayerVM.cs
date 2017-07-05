@@ -44,6 +44,8 @@ namespace VAS.Core.ViewModel
 			CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
 			CurrentTime = new Time (0);
 			Step = new Time { TotalSeconds = 10 };
+			ShowDetachButton = true;
+			ShowCenterPlayHeadButton = true;
 		}
 
 		public bool ControlsSensitive {
@@ -169,6 +171,16 @@ namespace VAS.Core.ViewModel
 		public bool ShowDetachButton {
 			set;
 			get;
+		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.VideoPlayerVM"/> show
+		/// center playhead button is shown.
+		/// </summary>
+		/// <value><c>true</c> if show multiplayer button; otherwise, <c>false</c>.</value>
+		public bool ShowCenterPlayHeadButton {
+			get;
+			set;
 		}
 
 		public IVideoPlayerController Player {

@@ -228,7 +228,7 @@ namespace VAS.UI
 		public bool SubViewPortsVisible {
 			set {
 				bool b = value && (ViewModel.FileSet == null || ViewModel.FileSet.ViewModels.Count > 1);
-				viewportsSwitchButton.Visible = b;
+				viewportsBox.Visible = b;
 				subviewportsbox.Visible = b && viewportsSwitchButton.Active;
 			}
 		}
@@ -794,6 +794,12 @@ namespace VAS.UI
 				ViewModel.NeedsSync (e, nameof (ViewModel.SupportsMultipleCameras))) {
 				HandleCamerasConfigChanged ();
 			}
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.ShowDetachButton))) {
+				detachbutton.Visible = ViewModel.ShowDetachButton;
+			}
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.ShowCenterPlayHeadButton))) {
+				center_playhead_box.Visible = ViewModel.ShowCenterPlayHeadButton;
+			}
 		}
 
 		void HandleModeChanged ()
@@ -805,14 +811,7 @@ namespace VAS.UI
 				mode == PlayerViewOperationMode.LiveAnalysisReview ||
 				mode == PlayerViewOperationMode.SimpleWithControls;
 
-			center_playhead_box.Visible =
-				mode == PlayerViewOperationMode.SimpleWithControls;
-
-			viewportsSwitchButton.Visible =
-				mode == PlayerViewOperationMode.Analysis ||
-				mode == PlayerViewOperationMode.SimpleWithControls;
-
-			viewportsSwitchSeparator.Visible =
+			viewportsBox.Visible =
 				mode == PlayerViewOperationMode.Analysis ||
 				mode == PlayerViewOperationMode.SimpleWithControls;
 
@@ -829,10 +828,6 @@ namespace VAS.UI
 				mode == PlayerViewOperationMode.Analysis ||
 				mode == PlayerViewOperationMode.LiveAnalysisReview ||
 				mode == PlayerViewOperationMode.Synchronization;
-
-			detachbutton.Visible =
-				mode == PlayerViewOperationMode.Analysis ||
-				mode == PlayerViewOperationMode.SimpleWithControls;
 
 			timerulearea.Visible =
 				mode == PlayerViewOperationMode.SimpleWithControls ||
