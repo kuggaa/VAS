@@ -199,17 +199,21 @@ namespace VAS.UI.Helpers
 			}
 		}
 
-		static void ApplyStyle (this Button button, string buttonStyle, int buttonSize)
+		/// <summary>
+		/// Applies the style to a button with the option to also define the size.
+		/// </summary>
+		/// <param name="button">Button.</param>
+		/// <param name="buttonStyle">Button style.</param>
+		/// <param name="buttonSize">Button size.</param>
+		public static void ApplyStyle (this Button button, string buttonStyle, int buttonSize)
 		{
 			button.Name = buttonStyle;
 			button.WidthRequest = buttonSize;
 			button.HeightRequest = buttonSize;
-			if (button.Image != null) {
+			var imageView = button.Image as ImageView ?? button.Child as ImageView;
+			if (imageView != null) {
 				button.ImagePosition = PositionType.Left;
-				var imageView = button.Image as ImageView;
-				if (imageView != null) {
-					imageView.SetSize (buttonSize - 5, buttonSize - 5);
-				}
+				imageView.SetSize (buttonSize - 5, buttonSize - 5);
 			}
 			button.CanFocus = false;
 			button.FocusOnClick = false;
