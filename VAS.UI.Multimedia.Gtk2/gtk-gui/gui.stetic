@@ -200,7 +200,7 @@
                                         <property name="MemberName" />
                                         <property name="Spacing">6</property>
                                         <child>
-                                          <widget class="Gtk.VSeparator" id="vseparator1">
+                                          <widget class="Gtk.VSeparator" id="timeLeftSeparator">
                                             <property name="MemberName" />
                                           </widget>
                                           <packing>
@@ -244,7 +244,7 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <widget class="Gtk.VSeparator" id="vseparator2">
+                                          <widget class="Gtk.VSeparator" id="timeRightSeparator">
                                             <property name="MemberName" />
                                           </widget>
                                           <packing>
@@ -394,7 +394,7 @@
                                         <property name="MemberName" />
                                         <property name="Spacing">6</property>
                                         <child>
-                                          <widget class="Gtk.VSeparator" id="vseparator3">
+                                          <widget class="Gtk.VSeparator" id="jumpsLeftSeparator">
                                             <property name="MemberName" />
                                           </widget>
                                           <packing>
@@ -453,7 +453,7 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <widget class="Gtk.VSeparator" id="vseparator4">
+                                          <widget class="Gtk.VSeparator" id="jumpsRightSeparator">
                                             <property name="MemberName" />
                                           </widget>
                                           <packing>
@@ -516,7 +516,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="Gtk.VSeparator" id="vseparator5">
+                                      <widget class="Gtk.VSeparator" id="zoomSeparator">
                                         <property name="MemberName" />
                                       </widget>
                                       <packing>
@@ -574,6 +574,7 @@
                                     <child>
                                       <widget class="Gtk.VBox" id="durationBox">
                                         <property name="MemberName" />
+                                        <property name="Visible">False</property>
                                         <child>
                                           <widget class="Gtk.ToggleButton" id="DurationButton">
                                             <property name="MemberName" />
@@ -615,7 +616,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="Gtk.VSeparator" id="vseparator6">
+                                      <widget class="Gtk.VSeparator" id="durationSeparator">
                                         <property name="MemberName" />
                                       </widget>
                                       <packing>
@@ -626,29 +627,41 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="Gtk.ToggleButton" id="viewportsSwitchButton">
+                                      <widget class="Gtk.HBox" id="viewportsBox">
                                         <property name="MemberName" />
-                                        <property name="Type">Custom</property>
-                                        <property name="Relief">None</property>
+                                        <property name="Spacing">6</property>
                                         <child>
-                                          <widget class="VAS.UI.Helpers.ImageView" id="viewportsSwitchImage">
+                                          <widget class="Gtk.ToggleButton" id="viewportsSwitchButton">
+                                            <property name="MemberName" />
+                                            <property name="Type">Custom</property>
+                                            <property name="Relief">None</property>
+                                            <child>
+                                              <widget class="VAS.UI.Helpers.ImageView" id="viewportsSwitchImage">
+                                                <property name="MemberName" />
+                                              </widget>
+                                            </child>
+                                          </widget>
+                                          <packing>
+                                            <property name="Position">0</property>
+                                            <property name="AutoSize">True</property>
+                                            <property name="Expand">False</property>
+                                            <property name="Fill">False</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="Gtk.VSeparator" id="viewportsSeparator">
                                             <property name="MemberName" />
                                           </widget>
+                                          <packing>
+                                            <property name="Position">1</property>
+                                            <property name="AutoSize">True</property>
+                                            <property name="Expand">False</property>
+                                            <property name="Fill">False</property>
+                                          </packing>
                                         </child>
                                       </widget>
                                       <packing>
                                         <property name="Position">6</property>
-                                        <property name="AutoSize">True</property>
-                                        <property name="Expand">False</property>
-                                        <property name="Fill">False</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="Gtk.VSeparator" id="viewportsSwitchSeparator">
-                                        <property name="MemberName" />
-                                      </widget>
-                                      <packing>
-                                        <property name="Position">7</property>
                                         <property name="AutoSize">True</property>
                                         <property name="Expand">False</property>
                                         <property name="Fill">False</property>
@@ -677,7 +690,7 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <widget class="Gtk.VSeparator" id="vseparator8">
+                                          <widget class="Gtk.VSeparator" id="centerPlayHeadSeparator">
                                             <property name="MemberName" />
                                           </widget>
                                           <packing>
@@ -690,7 +703,7 @@
                                         </child>
                                       </widget>
                                       <packing>
-                                        <property name="Position">8</property>
+                                        <property name="Position">7</property>
                                         <property name="AutoSize">True</property>
                                         <property name="Expand">False</property>
                                         <property name="Fill">False</property>
@@ -710,7 +723,7 @@
                                       </widget>
                                       <packing>
                                         <property name="PackType">End</property>
-                                        <property name="Position">9</property>
+                                        <property name="Position">8</property>
                                         <property name="AutoSize">True</property>
                                         <property name="Expand">False</property>
                                         <property name="Fill">False</property>
@@ -730,7 +743,7 @@
                                       </widget>
                                       <packing>
                                         <property name="PackType">End</property>
-                                        <property name="Position">10</property>
+                                        <property name="Position">9</property>
                                         <property name="AutoSize">True</property>
                                         <property name="Expand">False</property>
                                         <property name="Fill">False</property>
