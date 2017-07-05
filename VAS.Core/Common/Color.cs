@@ -54,6 +54,14 @@ namespace VAS.Core.Common
 			set;
 		}
 
+		public void SetAlpha (float alpha)
+		{
+			if (alpha < 0 || alpha > 1) {
+				throw new FormatException ("Alpha must be a value between 0 and 1");
+			}
+			A = (byte)(byte.MaxValue * alpha);
+		}
+
 		public Color Copy (bool resetChanged = false)
 		{
 			Color c = new Color (R, G, B, A);

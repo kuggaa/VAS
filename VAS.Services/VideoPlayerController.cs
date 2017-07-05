@@ -376,7 +376,7 @@ namespace VAS.Services
 		public virtual void Open (MediaFileSet fileSet, bool play = false)
 		{
 			Log.Debug ("Opening file set");
-			if (fileSet == null || !fileSet.Any ()) {
+			if (fileSet == null || !fileSet.Any () || !fileSet.CheckFiles ()) {
 				Stop (false);
 				EmitTimeChanged (new Time (0), new Time (0));
 				FileSet = fileSet;
@@ -1558,7 +1558,7 @@ namespace VAS.Services
 				if (Mode == VideoPlayerOperationMode.Stretched) {
 					absoluteDuration = FileSet?.VisibleRegion.Duration;
 				} else {
-					absoluteDuration = FileSet?.Duration;
+					absoluteDuration = (FileSet?.CheckFiles () == true) ? FileSet.Duration : null;
 				}
 
 				if (StillImageLoaded) {
