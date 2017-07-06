@@ -42,6 +42,7 @@ namespace VAS
 		public ILicenseManager LicenseManager;
 		public IHotkeysService HotkeysService;
 		public IResourcesLocator ResourcesLocator;
+		public IFileSystemManager FileSystemManager;
 
 		public string homeDirectory = ".";
 		public string baseDirectory = ".";
@@ -186,6 +187,7 @@ namespace VAS
 			App.Current.KPIService = new KpiService ();
 			App.Current.DragContext = new DragContext ();
 			App.Current.ResourcesLocator = new ResourcesLocator ();
+			App.Current.FileSystemManager = new FileSystemManager ();
 		}
 
 		// copied from OneplayLongomMatch::CoreServices
