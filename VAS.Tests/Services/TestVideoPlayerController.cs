@@ -247,6 +247,8 @@ namespace VAS.Tests.Services
 
 			viewPortMock.VerifySet (v => v.MessageVisible = false, Times.Once ());
 			Assert.IsTrue (player.Opened);
+
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
 		}
 
 		[Test ()]
@@ -365,6 +367,8 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (playerVM.Zoom, 1);
 
 			App.Current.EventsBroker.Unsubscribe<MultimediaErrorEvent> (et);
+
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
 		}
 
 		[Test ()]
@@ -481,6 +485,8 @@ namespace VAS.Tests.Services
 			playerMock.Verify (p => p.Seek (currentTime, It.IsAny<bool> (), It.IsAny<bool> ()), Times.Never ());
 			Assert.AreEqual (2, drawingsCount);
 			playerMock.ResetCalls ();
+
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
 		}
 
 		[Test ()]
@@ -527,6 +533,8 @@ namespace VAS.Tests.Services
 			/* current time is now relative to the loaded segment's duration */
 			Assert.AreEqual (evt.Duration * 0.5, curTime);
 			Assert.AreEqual (evt.Duration, strLenght);
+
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
 		}
 
 		[Test ()]
@@ -649,6 +657,8 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (1, loadDrawingsChanged);
 			Assert.AreEqual (1, timeChanged);
 			playerMock.Verify (p => p.Seek (currentTime - playerVM.Step, true, false), Times.Once ());
+
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
 		}
 
 		[Test ()]
@@ -1424,6 +1434,8 @@ namespace VAS.Tests.Services
 			multiplayerMock.Verify (p => p.ApplyCamerasConfig (), Times.Once ());
 			Assert.AreEqual (cams2, player.CamerasConfig);
 			multiplayerMock.ResetCalls ();
+
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
 		}
 
 		[Test ()]
@@ -1808,6 +1820,7 @@ namespace VAS.Tests.Services
 			player.SetZoom (0);
 
 			Assert.AreEqual (1, playerVM.Zoom);
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
 		}
 
 		[Test]
@@ -1817,6 +1830,7 @@ namespace VAS.Tests.Services
 			PreparePlayer ();
 			player.SetZoom (8);
 			Assert.AreEqual (1, playerVM.Zoom);
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
 		}
 
 		[Test]
