@@ -218,7 +218,7 @@ namespace VAS.Core.Store
 					// Try to find the mediafiles in the search path
 					string file = Path.GetFileName (f.FilePath);
 					string newPath = Path.Combine (searchPath, file);
-					if (File.Exists (newPath)) {
+					if (App.Current.FileSystemManager.Exists (newPath)) {
 						f.FilePath = newPath;
 					} else {
 						return false;
