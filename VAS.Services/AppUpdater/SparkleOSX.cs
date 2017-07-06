@@ -66,7 +66,7 @@ namespace VAS.Services.AppUpdater
 		string GetBundlePath ()
 		{
 			string infoPlist = Path.Combine (App.Current.baseDirectory, "..", "Info.plist");
-			if (!App.Current.FileSystemService.Exists (infoPlist)) {
+			if (!App.Current.FileSystemManager.Exists (infoPlist)) {
 				throw new Exception ($"{infoPlist} not found");
 			}
 			string bundlePath = Path.GetFullPath (Path.Combine (infoPlist, "..", ".."));
