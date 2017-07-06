@@ -1861,6 +1861,142 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (oldROI.Start.Y, newROI.Start.Y);
 		}
 
+		[Test]
+		public void OpenVideo_ControlsSensitiveUpdated ()
+		{
+			PreparePlayer ();
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+			playerVM.ControlsSensitive = false;
+
+			player.Open (mfs);
+
+			Assert.IsTrue (playerVM.ControlsSensitive);
+		}
+
+		[Test]
+		public void LoadEvent_ControlsSensitiveUpdated ()
+		{
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+			PreparePlayer ();
+			playerVM.ControlsSensitive = false;
+			var mfsNew = new MediaFileSet ();
+			mfsNew.Add (new MediaFile {
+				FilePath = "test2",
+				VideoWidth = 320,
+				VideoHeight = 240,
+				Par = 1,
+				Duration = new Time { TotalSeconds = 5000 }
+			});
+			evt.FileSet = mfsNew;
+
+			player.LoadEvent (evt, currentTime, true);
+
+			Assert.IsTrue (playerVM.ControlsSensitive);
+		}
+
+		[Test]
+		public void LoadPlaylistVideo_ControlsSensitiveUpdated ()
+		{
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+			PreparePlayer ();
+			playerVM.ControlsSensitive = false;
+			var mfsNew = new MediaFileSet ();
+			mfsNew.Add (new MediaFile {
+				FilePath = "test2",
+				VideoWidth = 320,
+				VideoHeight = 240,
+				Par = 1,
+				Duration = new Time { TotalSeconds = 5000 }
+			});
+			PlaylistVideo vid = new PlaylistVideo (mfsNew [0]);
+
+			player.LoadPlaylistEvent (playlist, vid, true);
+
+			Assert.IsTrue (playerVM.ControlsSensitive);
+		}
+
+		[Test]
+		public void OpenVideo_PlayerVMFileSetUpdated ()
+		{
+			MediaFileSetVM fileset = null;
+			int calls = 0;
+			PreparePlayer ();
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+			playerVM.ControlsSensitive = false;
+			playerVM.PropertyChanged += (sender, e) => {
+				if (e.PropertyName == nameof (playerVM.FileSet)) {
+					fileset = playerVM.FileSet;
+					calls++;
+				}
+			};
+
+			player.Open (mfs);
+
+			Assert.AreEqual (1, calls);
+			Assert.AreSame (mfs, fileset.Model);
+		}
+
+		[Test]
+		public void LoadEvent_PlayerVMFileSetUpdated ()
+		{
+			MediaFileSetVM fileset = null;
+			int calls = 0;
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+			PreparePlayer ();
+			playerVM.ControlsSensitive = false;
+			var mfsNew = new MediaFileSet ();
+			mfsNew.Add (new MediaFile {
+				FilePath = "test2",
+				VideoWidth = 320,
+				VideoHeight = 240,
+				Par = 1,
+				Duration = new Time { TotalSeconds = 5000 }
+			});
+			evt.FileSet = mfsNew;
+			playerVM.PropertyChanged += (sender, e) => {
+				if (e.PropertyName == nameof (playerVM.FileSet)) {
+					fileset = playerVM.FileSet;
+					calls++;
+				}
+			};
+
+			player.LoadEvent (evt, currentTime, true);
+
+			Assert.AreEqual (1, calls);
+			Assert.AreSame (mfsNew, fileset.Model);
+		}
+
+		[Test]
+		public void LoadPlaylistVideo_PlayerVMFileSetUpdated ()
+		{
+			MediaFileSetVM fileset = null;
+			int calls = 0;
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+			PreparePlayer ();
+			playerVM.ControlsSensitive = false;
+			var mfsNew = new MediaFileSet ();
+			mfsNew.Add (new MediaFile {
+				FilePath = "test2",
+				VideoWidth = 320,
+				VideoHeight = 240,
+				Par = 1,
+				Duration = new Time { TotalSeconds = 5000 }
+			});
+			PlaylistVideo vid = new PlaylistVideo (mfsNew [0]);
+			playerVM.PropertyChanged += (sender, e) => {
+				if (e.PropertyName == nameof (playerVM.FileSet)) {
+					fileset = playerVM.FileSet;
+					calls++;
+				}
+			};
+
+			player.LoadPlaylistEvent (playlist, vid, true);
+
+			Assert.AreEqual (1, calls);
+			Assert.AreSame (mfsNew [0], fileset.Model [0]);
+		}
+
+
 		void HandleElementLoadedEvent (object element, bool hasNext)
 		{
 			elementLoaded++;
