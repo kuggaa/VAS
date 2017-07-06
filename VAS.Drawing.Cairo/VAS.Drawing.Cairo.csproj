@@ -55,7 +55,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="VAS.Drawing.Cairo.dll.config" />
+    <None Include="VAS.Drawing.Cairo.dll.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
