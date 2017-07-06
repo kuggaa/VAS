@@ -28,18 +28,18 @@ namespace VAS.Core.Common
 			get {
 				List<CultureInfo> langs;
 				string filename, localesDir;
-				
+
 				langs = new List<CultureInfo> ();
 				filename = String.Format ("{0}.mo", App.Current.SoftwareName.ToLower ());
 				localesDir = App.Current.RelativeToPrefix ("share/locale");
-				
+
 				langs.Add (new CultureInfo ("en"));
-				
+
 				if (!Directory.Exists (localesDir))
 					return langs;
-					
+
 				foreach (string dirpath in Directory.EnumerateDirectories (localesDir)) {
-					if (File.Exists (Path.Combine (dirpath, "LC_MESSAGES", filename))) {
+					if (App.Current.FileSystemManager.Exists (Path.Combine (dirpath, "LC_MESSAGES", filename))) {
 						try {
 							string localeName = Path.GetFileName (dirpath).Replace ("_", "-");
 							langs.Add (new CultureInfo (localeName));

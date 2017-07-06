@@ -176,7 +176,7 @@ namespace VAS.Core.Store
 
 		public bool Exists ()
 		{
-			return File.Exists (FilePath);
+			return App.Current.FileSystemManager.Exists (FilePath);
 		}
 	}
 }

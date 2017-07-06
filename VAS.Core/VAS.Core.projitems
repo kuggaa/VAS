@@ -262,6 +262,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Statistics\ChartVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MenuVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MenuNodeVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IFileSystemManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\FileSystemManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
