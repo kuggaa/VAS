@@ -96,7 +96,7 @@ namespace VAS.Core.Serialization
 									   FileAccess.Write, FileShare.None)) {
 				Save<T> (obj, stream, type);
 			}
-			if (File.Exists (filepath)) {
+			if (App.Current.FileSystemManager.Exists (filepath)) {
 				File.Replace (tmpPath, filepath, null);
 			} else {
 				File.Move (tmpPath, filepath);

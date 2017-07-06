@@ -50,12 +50,15 @@ namespace VAS.Tests.Services
 		Playlist playlist;
 		PlaylistController plController;
 		VideoPlayerVM playerVM;
+		Mock<IFileSystemManager> fileManager;
 
 		int elementLoaded;
 
 		[TestFixtureSetUp ()]
 		public void FixtureSetup ()
 		{
+			fileManager = new Mock<IFileSystemManager> ();
+			App.Current.FileSystemManager = fileManager.Object;
 			playerMock = new Mock<IVideoPlayer> ();
 			playerMock.SetupAllProperties ();
 			/* Mock properties without setter */
@@ -110,6 +113,7 @@ namespace VAS.Tests.Services
 		public void Setup ()
 		{
 			mtkMock.Setup (m => m.GetMultiPlayer ()).Throws (new Exception ());
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
 
 			evt = new TimelineEvent {
 				Start = new Time (100), Stop = new Time (200),
@@ -232,6 +236,8 @@ namespace VAS.Tests.Services
 		[Test ()]
 		public void TestOpenFileSet ()
 		{
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+
 			viewPortMock = new Mock<IViewPort> ();
 			viewPortMock.SetupAllProperties ();
 			player.ViewPorts = new List<IViewPort> { viewPortMock.Object };
@@ -311,6 +317,8 @@ namespace VAS.Tests.Services
 		[Test ()]
 		public void TestOpen ()
 		{
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+
 			int timeCount = 0;
 			bool multimediaError = false;
 			Time curTime = null, duration = null;
@@ -421,6 +429,8 @@ namespace VAS.Tests.Services
 		[Test ()]
 		public void TestSeek ()
 		{
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+
 			int drawingsCount = 0;
 			int timeChanged = 0;
 			Time curTime = new Time (0);
@@ -476,6 +486,8 @@ namespace VAS.Tests.Services
 		[Test ()]
 		public void TestSeekProportional ()
 		{
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+
 			int seekPos;
 			int timeChanged = 0;
 			Time curTime = new Time (0);
@@ -520,6 +532,9 @@ namespace VAS.Tests.Services
 		[Test ()]
 		public void TestStepping ()
 		{
+
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+
 			int timeChanged = 0;
 			int loadDrawingsChanged = 0;
 			Time curTime = new Time (0);
@@ -1331,6 +1346,7 @@ namespace VAS.Tests.Services
 		[Test ()]
 		public void TestMultiplayerCamerasConfig ()
 		{
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
 			TimelineEvent evt1;
 			ObservableCollection<CameraConfig> cams1, cams2;
 			Mock<IMultiVideoPlayer> multiplayerMock = new Mock<IMultiVideoPlayer> ();
@@ -1787,6 +1803,7 @@ namespace VAS.Tests.Services
 		[Test]
 		public void SetZoom_OutLowerBoundary_ZoomNotChanged ()
 		{
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
 			PreparePlayer ();
 			player.SetZoom (0);
 
@@ -1796,9 +1813,9 @@ namespace VAS.Tests.Services
 		[Test]
 		public void SetZoom_OutHigherBoundary_ZoomNotChanged ()
 		{
+			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
 			PreparePlayer ();
 			player.SetZoom (8);
-
 			Assert.AreEqual (1, playerVM.Zoom);
 		}
 
