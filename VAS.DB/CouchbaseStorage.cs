@@ -301,7 +301,8 @@ namespace VAS.DB
 		}
 
 		/// <summary>
-		/// Delete the specified storable object from the database. If the object is configured to delete its children,
+		/// Delete the specified storable object from the database.
+		/// If the object is configured to delete its children,
 		/// we perform a bulk deletion of all the documents with the the storable.ID prefix, which is faster than
 		/// parsing the object and it ensures that we don't leave orphaned documents in the DB
 		/// </summary>
