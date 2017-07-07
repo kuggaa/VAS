@@ -400,7 +400,9 @@ namespace VAS.Drawing
 			} else {
 				CursorMoved (userCoords);
 			}
-			MoveStart = userCoords;
+			//Need to calculate again the UserCoords because CursorMoved
+			//When zoom modifies the Translation
+			MoveStart = ToUserCoords (coords);
 		}
 
 		void HandleButtonReleasedEvent (Point coords, ButtonType type, ButtonModifier modifier)
