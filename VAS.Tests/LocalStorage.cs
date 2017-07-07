@@ -18,10 +18,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VAS;
+using VAS.Core.Common;
+using VAS.Core.Filters;
 using VAS.Core.Interfaces;
 using VAS.Core.Store;
-using VAS.Core.Filters;
-using VAS;
 
 namespace Tests
 {
@@ -90,7 +91,14 @@ namespace Tests
 
 		public void Delete<T> (T t) where T : IStorable
 		{
-			localStorage.Remove (t.ID);
+			Delete (t.ToEnumerable ());
+		}
+
+		public void Delete<T> (IEnumerable<T> storables) where T : IStorable
+		{
+			foreach (var storable in storables) {
+				localStorage.Remove (storable.ID);
+			}
 		}
 
 		public void Reset ()
