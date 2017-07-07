@@ -388,7 +388,6 @@ namespace VAS.Services
 			}
 
 			IgnoreTicks = false;
-			playerVM.ControlsSensitive = true;
 			ShowMessageInViewPorts (null, false);
 			if (ready) {
 				InternalOpen (fileSet, true, true, play, true);
@@ -1092,6 +1091,7 @@ namespace VAS.Services
 
 		protected virtual void EmitMediaFileSetLoaded (MediaFileSet fileSet, ObservableCollection<CameraConfig> camerasVisible)
 		{
+			playerVM.FileSet = new MediaFileSetVM { Model = fileSet };
 			playerVM.CamerasConfig = camerasVisible;
 			if (MediaFileSetLoadedEvent != null && !disposed) {
 				MediaFileSetLoadedEvent (fileSet, camerasVisible);
@@ -1276,6 +1276,7 @@ namespace VAS.Services
 				ValidateVisibleCameras ();
 				UpdateZoom ();
 				UpdatePar ();
+				playerVM.ControlsSensitive = true;
 				try {
 					Log.Debug ("Opening new file set " + fileSet);
 					if (multiPlayer != null) {
