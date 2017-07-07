@@ -35,7 +35,7 @@ using VAS.DB.Views;
 
 namespace VAS.DB
 {
-	public class CouchbaseStorage : IStorage
+	public abstract class CouchbaseStorage : IStorage
 	{
 		Database db;
 		Dictionary<Type, object> views;
@@ -90,6 +90,10 @@ namespace VAS.DB
 		public StorageInfo Info {
 			get;
 			set;
+		}
+
+		abstract protected Version Version {
+			get;
 		}
 
 		DateTime LastBackup {
@@ -403,7 +407,7 @@ namespace VAS.DB
 					Name = storageName,
 					LastBackup = DateTime.UtcNow,
 					LastCleanup = DateTime.UtcNow,
-					Version = new Version (Constants.DB_VERSION, 0),
+					Version = Version,
 					LastModified = DateTime.UtcNow
 				};
 				Store (Info);

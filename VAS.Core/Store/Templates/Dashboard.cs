@@ -58,7 +58,6 @@ namespace VAS.Core.Store.Templates
 			ID = Guid.NewGuid ();
 			List = new RangeObservableCollection<DashboardButton> ();
 			GamePeriods = new ObservableCollection<string> { "1", "2" };
-			Version = Constants.DB_VERSION;
 		}
 
 		protected override void DisposeManagedResources ()
