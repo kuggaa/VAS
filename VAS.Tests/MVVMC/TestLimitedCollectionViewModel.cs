@@ -264,6 +264,108 @@ namespace VAS.Tests.MVVMC
 			Assert.IsTrue (secondViewModelEqualsViewModel);
 		}
 
+		[Test]
+		public void ViewModelsCollectionChange_Add_UpdateModelsAndLimitationOk ()
+		{
+			// Arrange
+			LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> collection = new LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> ();
+			collection.Limitation = new LicenseLimitationVM { Model = new LicenseLimitation { Maximum = 1, Enabled = true } };
+
+			// Act
+			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
+			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
+
+			// Assert
+			Assert.AreEqual (2, collection.Model.Count);
+			Assert.AreEqual (1, collection.ViewModels.Count);
+			Assert.AreEqual (2, ((CollectionViewModel<Utils.PlayerDummy, DummyPlayerVM>)collection).ViewModels.Count);
+			Assert.AreEqual (1, collection.LimitedViewModels.Count);
+		}
+
+		[Test]
+		public void ViewModelsCollectionChange_Remove_UpdateModelsAndLimitationOk ()
+		{
+			// Arrange
+			LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> collection = new LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> ();
+			collection.Limitation = new LicenseLimitationVM { Model = new LicenseLimitation { Maximum = 1, Enabled = true } };
+			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
+			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
+
+			// Act
+			var vmToRemove = collection.ViewModels.First ();
+			collection.ViewModels.Remove (vmToRemove);
+
+			// Assert
+			Assert.AreEqual (1, collection.Model.Count);
+			Assert.AreEqual (1, collection.ViewModels.Count);
+			Assert.AreEqual (1, ((CollectionViewModel<Utils.PlayerDummy, DummyPlayerVM>)collection).ViewModels.Count);
+			Assert.AreEqual (1, collection.LimitedViewModels.Count);
+			Assert.IsFalse (collection.ViewModels.Contains (vmToRemove));
+		}
+
+		[Test]
+		public void RemoveModelFromCollection_VMAddedToLimitedVM_UpdatedOk ()
+		{
+			// Arrange
+			LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> collection = new LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> ();
+			collection.Limitation = new LicenseLimitationVM { Model = new LicenseLimitation { Maximum = 1, Enabled = true } };
+			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
+			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
+
+			// Act
+			var vmToRemove = collection.ViewModels.First ();
+			collection.Model.Remove (vmToRemove.Model);
+
+			// Assert
+			Assert.AreEqual (1, collection.Model.Count);
+			Assert.AreEqual (1, collection.ViewModels.Count);
+			Assert.AreEqual (1, ((CollectionViewModel<Utils.PlayerDummy, DummyPlayerVM>)collection).ViewModels.Count);
+			Assert.AreEqual (1, collection.LimitedViewModels.Count);
+			Assert.IsFalse (collection.ViewModels.Contains (vmToRemove));
+		}
+
+		[Test]
+		public void ReplaceModelFromCollection_VMAddedToLimitedVM_UpdatedOk ()
+		{
+			// Arrange
+			LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> collection = new LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> ();
+			collection.Limitation = new LicenseLimitationVM { Model = new LicenseLimitation { Maximum = 1, Enabled = true } };
+			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
+			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
+
+			// Act
+			var model = new Utils.PlayerDummy ();
+			collection.Model.Replace (new List<Utils.PlayerDummy> { model });
+
+			// Assert
+			Assert.AreEqual (1, collection.Model.Count);
+			Assert.AreEqual (1, collection.ViewModels.Count);
+			Assert.AreEqual (1, ((CollectionViewModel<Utils.PlayerDummy, DummyPlayerVM>)collection).ViewModels.Count);
+			Assert.AreEqual (1, collection.LimitedViewModels.Count);
+			Assert.IsTrue (collection.ViewModels.Any (x => x.Model == model));
+		}
+
+		[Test]
+		public void ViewModelsCollectionChange_Replace_UpdateModelsAndLimitationOk ()
+		{
+			// Arrange
+			LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> collection = new LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> ();
+			collection.Limitation = new LicenseLimitationVM { Model = new LicenseLimitation { Maximum = 1, Enabled = true } };
+			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
+			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
+
+			// Act
+			var vmToReplace = new DummyPlayerVM { Model = new Utils.PlayerDummy () };
+			collection.ViewModels.Replace (new List<DummyPlayerVM> { vmToReplace });
+
+			// Assert
+			Assert.AreEqual (1, collection.Model.Count);
+			Assert.AreEqual (1, collection.ViewModels.Count);
+			Assert.AreEqual (1, ((CollectionViewModel<Utils.PlayerDummy, DummyPlayerVM>)collection).ViewModels.Count);
+			Assert.AreEqual (1, collection.LimitedViewModels.Count);
+			Assert.IsTrue (collection.ViewModels.Contains (vmToReplace));
+		}
+
 		List<Utils.PlayerDummy> CreateDummyPlayers ()
 		{
 			List<Utils.PlayerDummy> players = new List<Utils.PlayerDummy> ();

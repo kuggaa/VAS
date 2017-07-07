@@ -37,6 +37,7 @@ namespace VAS.Core.MVVMC
 		where TModel : StorableBase
 	{
 		LicenseLimitationVM limitation;
+		bool notifying;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:VAS.Core.MVVMC.LimitedCollectionViewModel`3"/> class.
@@ -46,6 +47,15 @@ namespace VAS.Core.MVVMC
 		{
 			this.SortByCreationDateDesc = sortByCreationDateDesc;
 			LimitedViewModels = new RangeObservableCollection<TViewModel> ();
+			LimitedViewModels.CollectionChanged += HandleViewModelsCollectionChanged;
+			base.ViewModels.CollectionChanged += HandleBaseViewModelModelsCollectionChanged;
+		}
+
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			LimitedViewModels.CollectionChanged -= HandleViewModelsCollectionChanged;
+			base.ViewModels.CollectionChanged += HandleBaseViewModelModelsCollectionChanged;
 		}
 
 		/// <summary>
@@ -119,10 +129,41 @@ namespace VAS.Core.MVVMC
 			FillLimitedViewModels (base.ViewModels);
 		}
 
-		protected override void HandleViewModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		protected new void HandleViewModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
+			if (notifying) {
+				return;
+			}
+
+			notifying = true;
+			switch (e.Action) {
+			case NotifyCollectionChangedAction.Add:
+				base.ViewModels.InsertRange (e.NewStartingIndex, e.NewItems.OfType<TViewModel> ());
+				break;
+
+			case NotifyCollectionChangedAction.Remove:
+				base.ViewModels.RemoveRange (e.OldItems.OfType<TViewModel> ());
+				break;
+
+			case NotifyCollectionChangedAction.Replace:
+			case NotifyCollectionChangedAction.Reset:
+				base.ViewModels.Clear ();
+				base.ViewModels.InsertRange (0, this.ViewModels);
+				break;
+			}
+
 			FillLimitedViewModels (base.ViewModels);
-			base.HandleViewModelsCollectionChanged (sender, e);
+			notifying = false;
+		}
+
+		protected void HandleBaseViewModelModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (notifying) {
+				return;
+			}
+			notifying = true;
+			FillLimitedViewModels (base.ViewModels);
+			notifying = false;
 		}
 
 		void FillLimitedViewModels (IEnumerable<TViewModel> viewmodels)

@@ -19,6 +19,8 @@ using System.Linq;
 using NUnit.Framework;
 using VAS.Core.Common;
 using VAS.Core.MVVMC;
+using VAS.Core.Store;
+using VAS.Core.ViewModel;
 
 namespace VAS.Tests.MVVMC
 {
@@ -122,6 +124,44 @@ namespace VAS.Tests.MVVMC
 			Assert.AreEqual (1, model.Count);
 			Assert.AreEqual (1, viewModel.Count ());
 		}
+
+		[Test]
+		public void Add_ViewModel_AddModelBeforeNotify ()
+		{
+			// Arrange
+			Utils.PlayerDummy m = new Utils.PlayerDummy ();
+			Utils.PlayerDummy modelNotified = null;
+			CollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> collection = new CollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> ();
+			collection.GetNotifyCollection ().CollectionChanged += (sender, e) => modelNotified = ((DummyPlayerVM)e.NewItems [0]).Model;
+
+			// Act
+			collection.ViewModels.Add (new DummyPlayerVM { Model = m });
+
+			// Assert
+			Assert.AreEqual (m, modelNotified);
+		}
+
+		// FIXME: Fix the collection view model notification
+		// forwarding is done before updating the model collection
+		/*[Test]
+		public void AddViewModel_AttachParentPropertychanged_AddModelBeforeNotify ()
+		{
+			// Arrange
+			MediaFile m = new MediaFile { Name = "test" };
+			MediaFile modelNotified = null;
+			MediaFileSetVM vm = new MediaFileSetVM ();
+			vm.PropertyChanged += (sender, e) => {
+				if (e.PropertyName == "Collection_ViewModels") {
+					modelNotified = vm.Model? [0];
+				}
+			};
+
+			// Act
+			vm.ViewModels.Add (new MediaFileVM { Model = m });
+
+			// Assert
+			Assert.AreEqual (m, modelNotified);
+		}*/
 	}
 }
 
