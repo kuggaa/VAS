@@ -150,7 +150,7 @@ namespace VAS.Core.MVVMC
 			ViewModels.InsertRange (index, viewModels);
 		}
 
-		protected virtual void HandleViewModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		protected override void HandleViewModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
 			if (editing) {
 				return;
@@ -159,13 +159,22 @@ namespace VAS.Core.MVVMC
 			switch (e.Action) {
 			case NotifyCollectionChangedAction.Add:
 				model.InsertRange (e.NewStartingIndex, e.NewItems.OfType<TViewModel> ().Select ((arg) => arg.Model));
+				foreach (TViewModel vm in e.NewItems) {
+					modelToViewModel [vm.Model] = vm;
+				}
 				break;
 			case NotifyCollectionChangedAction.Remove:
 				model.RemoveRange (e.OldItems.OfType<TViewModel> ().Select ((arg) => arg.Model));
+				foreach (TViewModel vm in e.OldItems) {
+					modelToViewModel [vm.Model] = vm;
+				}
 				break;
 			case NotifyCollectionChangedAction.Replace:
 			case NotifyCollectionChangedAction.Reset:
 				model.Replace (ViewModels.Select (vm => vm.Model));
+				foreach (TViewModel vm in ViewModels) {
+					modelToViewModel [vm.Model] = vm;
+				}
 				break;
 			}
 			editing = false;

@@ -51,11 +51,11 @@ namespace VAS.Core.MVVMC
 			}
 			private set {
 				if (viewModels != null) {
-					viewModels.CollectionChanged -= HandleViewModelsChanged;
+					viewModels.CollectionChanged -= HandleViewModelsCollectionChanged;
 				}
 				viewModels = value;
 				if (viewModels != null) {
-					viewModels.CollectionChanged += HandleViewModelsChanged;
+					viewModels.CollectionChanged += HandleViewModelsCollectionChanged;
 				}
 			}
 		}
@@ -162,7 +162,7 @@ namespace VAS.Core.MVVMC
 			RaisePropertyChanged ("Selection");
 		}
 
-		void HandleViewModelsChanged (object sender, NotifyCollectionChangedEventArgs e)
+		protected virtual void HandleViewModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
 			switch (e.Action) {
 			case NotifyCollectionChangedAction.Add:
