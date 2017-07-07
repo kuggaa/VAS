@@ -65,9 +65,9 @@ namespace VAS.Tests.MVVMC
 			Assert.AreEqual (1, viewModel.Model.Count);
 			viewModel.ViewModels.RemoveAt (0);
 			Assert.AreEqual (0, viewModel.Model.Count);
-			viewModel.ViewModels.Add (new DummyViewModel<BindableBase> ());
+			viewModel.ViewModels.Add (new DummyViewModel<BindableBase> { Model = new BindableBase () });
 			Assert.AreEqual (1, viewModel.Model.Count);
-			viewModel.ViewModels [0] = new DummyViewModel<BindableBase> ();
+			viewModel.ViewModels [0] = new DummyViewModel<BindableBase> { Model = new BindableBase () };
 			Assert.AreEqual (1, viewModel.Model.Count);
 		}
 

@@ -94,7 +94,7 @@ namespace VAS.Tests.Core.ViewModel
 		[Test]
 		public void TestAddButton_PropertiesInSync ()
 		{
-			TimedDashboardButtonVM viewModel = new TimedDashboardButtonVM ();
+			TimedDashboardButtonVM viewModel = new TimedDashboardButtonVM { Model = new TimedDashboardButton () };
 			viewModel.Mode = DashboardMode.Edit;
 			dashboard.Mode = DashboardMode.Code;
 			Time time = new Time (5000);
