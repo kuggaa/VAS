@@ -129,7 +129,7 @@ namespace VAS.Core.ViewModel
 
 		public MediaFileSetVM FileSet {
 			get;
-			protected set;
+			set;
 		}
 
 		public FrameDrawing FrameDrawing {
@@ -328,7 +328,6 @@ namespace VAS.Core.ViewModel
 
 		public void OpenFileSet (MediaFileSetVM fileset, bool play = false)
 		{
-			FileSet = fileset;
 			Player.Open (fileset?.Model, play);
 		}
 
