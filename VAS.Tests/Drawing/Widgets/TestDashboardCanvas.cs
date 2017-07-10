@@ -40,7 +40,7 @@ namespace VAS.Tests.Drawing.Widgets
 			App.Current.ViewLocator.Register ("AnalysisEventButtonView", typeof (DummyDashboardButtonView));
 			App.Current.ViewLocator.Register ("TimerButtonView", typeof (DummyDashboardButtonView));
 			var drawingToolkitMock = new Mock<IDrawingToolkit> ();
-			drawingToolkitMock.Setup (d => d.CreateSurfaceFromResource (It.IsAny<string> (), It.IsAny<bool> ())).
+			drawingToolkitMock.Setup (d => d.CreateSurfaceFromResource (It.IsAny<string> (), It.IsAny<bool> (), It.IsAny<bool> ())).
 				  Returns (Mock.Of<ISurface> ());
 			App.Current.DrawingToolkit = drawingToolkitMock.Object;
 		}
