@@ -25,6 +25,7 @@ using VAS.Core.MVVMC;
 using VAS.Core.ViewModel;
 using VAS.Services.State;
 using VAS.Services.ViewModel;
+using VAS.UI.Helpers.Bindings;
 using VAS.UI.TreeViews;
 
 namespace VAS.UI.UI.Component
@@ -33,6 +34,7 @@ namespace VAS.UI.UI.Component
 	[System.ComponentModel.ToolboxItem (true)]
 	public partial class JobsManagerView : Gtk.Bin, IPanel<JobsManagerVM>
 	{
+		BindingContext ctx;
 		JobsManagerVM viewModel;
 		JobsTreeView treeview;
 
@@ -44,10 +46,8 @@ namespace VAS.UI.UI.Component
 			treeviewbox.PackStart (treeview, true, true, 0);
 			cancelbutton.Visible = false;
 			retrybutton.Visible = false;
-			cancelbutton.Clicked += OnCancelbuttonClicked;
-			clearbutton.Clicked += OnClearbuttonClicked;
-			retrybutton.Clicked += OnRetrybuttonClicked;
 			acceptButton.Clicked += async (sender, e) => await App.Current.StateController.MoveBack ();
+			Bind ();
 		}
 
 		public override void Dispose ()
@@ -93,6 +93,7 @@ namespace VAS.UI.UI.Component
 				viewModel = value;
 				viewModel.Selection.CollectionChanged += HandleCollectionChanged;
 				treeview.ViewModel = value;
+				ctx.UpdateViewModel (viewModel);
 			}
 		}
 
@@ -116,19 +117,12 @@ namespace VAS.UI.UI.Component
 			ViewModel = viewModel as JobsManagerVM;
 		}
 
-		protected virtual void OnClearbuttonClicked (object sender, EventArgs e)
+		void Bind ()
 		{
-			ViewModel.ClearFinished ();
-		}
-
-		protected virtual void OnCancelbuttonClicked (object sender, EventArgs e)
-		{
-			ViewModel.Cancel (ViewModel.Selection.Select (jvm => jvm.Model).ToList ());
-		}
-
-		protected virtual void OnRetrybuttonClicked (object sender, EventArgs e)
-		{
-			ViewModel.Retry (ViewModel.Selection.Select (jvm => jvm.Model).ToList ());
+			ctx = this.GetBindingContext ();
+			ctx.Add (clearbutton.Bind (vm => ((JobsManagerVM)vm).ClearFinishedCommand));
+			ctx.Add (cancelbutton.Bind (vm => ((JobsManagerVM)vm).CancelSelectedCommand));
+			ctx.Add (retrybutton.Bind (vm => ((JobsManagerVM)vm).RetryCommand));
 		}
 
 		void HandleCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)

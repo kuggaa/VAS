@@ -25,7 +25,6 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class JobVM : ViewModelBase<Job>
 	{
-
 		/// <summary>
 		/// Gets the name of the <see cref="Job"/>.
 		/// </summary>
