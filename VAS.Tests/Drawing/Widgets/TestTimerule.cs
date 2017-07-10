@@ -38,7 +38,7 @@ namespace VAS.Tests.Drawing.Widgets
 		public void Setup ()
 		{
 			var drawingToolkitMock = new Mock<IDrawingToolkit> ();
-			drawingToolkitMock.Setup (d => d.CreateSurfaceFromResource (It.IsAny<string> (), It.IsAny<bool> ())).
+			drawingToolkitMock.Setup (d => d.CreateSurfaceFromResource (It.IsAny<string> (), It.IsAny<bool> (), It.IsAny<bool> ())).
 							  Returns (Mock.Of<ISurface> ());
 			App.Current.DrawingToolkit = drawingToolkitMock.Object;
 			widgetMock = new Mock<IWidget> ();
