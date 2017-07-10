@@ -17,6 +17,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
@@ -87,6 +88,17 @@ namespace VAS.Core.Store
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Guid ParentID {
+			get;
+			set;
+		}
+
+
+		/// <value>
+		/// Document version
+		/// </value>
+		[DefaultValue (0)]
+		[JsonProperty (DefaultValueHandling = DefaultValueHandling.Populate)]
+		public int Version {
 			get;
 			set;
 		}

@@ -38,8 +38,6 @@ namespace VAS.Core.Common
 		public const string HHALF_FIELD_BACKGROUND = "images/fields/lm-field-full-teameditor" + IMAGE_EXT;
 		public const string GOAL_BACKGROUND = "images/fields/lm-field-goal" + IMAGE_EXT;
 
-		public const int DB_VERSION = 1;
-
 		// FIXME: These are style constants, they should be somewhere style-specific
 		public const int BUTTON_WIDTH = 120;
 		public const int BUTTON_HEIGHT = 80;

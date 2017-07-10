@@ -29,7 +29,7 @@ using VAS.Core.Interfaces;
 
 namespace VAS.DB
 {
-	public class CouchbaseManager : IStorageManager
+	public abstract class CouchbaseManager : IStorageManager
 	{
 		protected readonly Manager manager;
 		protected IStorage activeDB;
@@ -140,6 +140,8 @@ namespace VAS.DB
 
 		#endregion
 
+		protected abstract IStorage CreateStorage (string name);
+
 		protected IStorage Add (string name, bool check)
 		{
 			if (check && manager.AllDatabaseNames.Contains (name)) {
@@ -154,11 +156,6 @@ namespace VAS.DB
 				Log.Exception (ex);
 				return null;
 			}
-		}
-
-		protected virtual IStorage CreateStorage (string name)
-		{
-			return new CouchbaseStorage (this, name);
 		}
 
 		/// <summary>

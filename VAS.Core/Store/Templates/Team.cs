@@ -28,12 +28,10 @@ namespace VAS.Core.Store.Templates
 	[Serializable]
 	public abstract class Team : StorableBase, IDisposable, ITemplate<Player>
 	{
-		public const int CURRENT_VERSION = 1;
 
 		public Team ()
 		{
 			ID = Guid.NewGuid ();
-			Version = Constants.DB_VERSION;
 			List = new RangeObservableCollection<Player> ();
 		}
 
@@ -44,17 +42,6 @@ namespace VAS.Core.Store.Templates
 			foreach (Player p in List) {
 				p.Dispose ();
 			}
-		}
-
-		/// <summary>
-		/// Gets or sets the document version.
-		/// </summary>
-		/// <value>The version.</value>
-		[DefaultValue (0)]
-		[JsonProperty (DefaultValueHandling = DefaultValueHandling.Populate)]
-		public int Version {
-			get;
-			set;
 		}
 
 		[JsonIgnore]

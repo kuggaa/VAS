@@ -53,7 +53,7 @@ namespace VAS.Tests.Core.Store.Templates
 		[Test]
 		public void TestVersion ()
 		{
-			Assert.AreEqual (Constants.DB_VERSION, new Utils.DashboardDummy ().Version);
+			Assert.AreEqual (0, new Utils.DashboardDummy ().Version);
 		}
 
 		[Test ()]

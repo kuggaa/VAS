@@ -46,6 +46,8 @@ namespace VAS.Tests.Core.Serialization
 		public string DocumentID { get; set; }
 
 		public Guid ParentID { get; set; }
+
+		public int Version { get; set; }
 	}
 
 	public class TestObject1: TestObjectBase
