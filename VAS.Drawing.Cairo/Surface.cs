@@ -28,13 +28,16 @@ namespace VAS.Drawing.Cairo
 		ImageSurface surface;
 		bool warnOnDispose;
 
-		public Surface (int width, int height, Image image, bool warnOnDispose = true)
+		public Surface (int width, int height, Image image, bool warnOnDispose = true, bool useDeviceScaleFactor = true)
 		{
+			DeviceScaleFactor = 1;
 			this.warnOnDispose = warnOnDispose;
-			if (image != null) {
-				DeviceScaleFactor = image.DeviceScaleFactor;
-			} else {
-				DeviceScaleFactor = App.Current.GUIToolkit.DeviceScaleFactor;
+			if (useDeviceScaleFactor) {
+				if (image != null) {
+					DeviceScaleFactor = image.DeviceScaleFactor;
+				} else {
+					DeviceScaleFactor = App.Current.GUIToolkit.DeviceScaleFactor;
+				}
 			}
 			surface = new ImageSurface (Format.ARGB32, (int)(width * DeviceScaleFactor), (int)(height * DeviceScaleFactor));
 			if (image != null) {
@@ -42,8 +45,8 @@ namespace VAS.Drawing.Cairo
 					var oldContext = App.Current.DrawingToolkit.Context;
 					App.Current.DrawingToolkit.Context = ccontext;
 					// The image must be drawn using it's real size, since the backend ImageSurface's size is also scalled
-					App.Current.DrawingToolkit.DrawImage (new Core.Common.Point (0, 0), image.Width * image.DeviceScaleFactor,
-														  image.Height * image.DeviceScaleFactor, image, ScaleMode.AspectFit);
+					App.Current.DrawingToolkit.DrawImage (new Core.Common.Point (0, 0), image.Width * DeviceScaleFactor,
+														  image.Height * DeviceScaleFactor, image, ScaleMode.AspectFit);
 					App.Current.DrawingToolkit.Context = oldContext;
 				}
 			}

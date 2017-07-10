@@ -150,21 +150,21 @@ namespace VAS.Drawing.Cairo
 			protected get;
 		}
 
-		public ISurface CreateSurfaceFromResource (string resourceName, bool warnOnDispose = true)
+		public ISurface CreateSurfaceFromResource (string resourceName, bool warnOnDispose = true, bool useDeviceScaleFactor = true)
 		{
 			Image img = App.Current.ResourcesLocator.LoadImage (resourceName);
-			return CreateSurface (img.Width, img.Height, img, warnOnDispose);
+			return CreateSurface (img.Width, img.Height, img, warnOnDispose, useDeviceScaleFactor);
 		}
 
-		public ISurface CreateSurface (string absolutePath, bool warnOnDispose = true)
+		public ISurface CreateSurface (string absolutePath, bool warnOnDispose = true, bool useDeviceScaleFactor = true)
 		{
 			Image img = new Image (absolutePath);
-			return CreateSurface (img.Width, img.Height, img, warnOnDispose);
+			return CreateSurface (img.Width, img.Height, img, warnOnDispose, useDeviceScaleFactor);
 		}
 
-		public ISurface CreateSurface (int width, int height, Image image = null, bool warnOnDispose = true)
+		public ISurface CreateSurface (int width, int height, Image image = null, bool warnOnDispose = true, bool useDeviceScaleFactor = true)
 		{
-			return new Surface (width, height, image, warnOnDispose);
+			return new Surface (width, height, image, warnOnDispose, useDeviceScaleFactor);
 		}
 
 		public void Clear (Color color)
