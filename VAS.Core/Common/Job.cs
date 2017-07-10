@@ -96,7 +96,7 @@ namespace VAS.Core.Common
 
 		public override string Name {
 			get {
-				return Playlist?.Name;
+				return Playlist?.Name ?? base.Name;
 			}
 		}
 	}
