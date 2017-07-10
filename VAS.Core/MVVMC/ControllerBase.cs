@@ -81,4 +81,28 @@ namespace VAS.Core.MVVMC
 
 		#endregion
 	}
+
+	public class ControllerBase<TViewModel> : ControllerBase
+		where TViewModel : IViewModel
+	{
+		TViewModel viewModel;
+
+		public virtual TViewModel ViewModel {
+			get {
+				return viewModel;
+			}
+
+			set {
+				if (started) {
+					throw new InvalidOperationException ("The ViewModel can't be changed while the controller is running");
+				}
+				viewModel = value;
+			}
+		}
+
+		public override void SetViewModel (IViewModel viewModel)
+		{
+			ViewModel = (TViewModel)viewModel;
+		}
+	}
 }

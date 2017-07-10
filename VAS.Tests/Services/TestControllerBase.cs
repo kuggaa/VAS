@@ -16,11 +16,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using System.Linq;
-using System.Threading;
-using Moq;
 using NUnit.Framework;
 using VAS.Core.Events;
+using VAS.Core.MVVMC;
 
 namespace VAS.Tests.Services
 {
@@ -135,6 +133,15 @@ namespace VAS.Tests.Services
 			Assert.DoesNotThrow (controller.Dispose);
 			Assert.IsTrue (managedDisposeCalled);
 			Assert.IsTrue (unmanagedDisposeCalled);
+		}
+
+		[Test]
+		public void SetViewModel_ControllerStarted_ExceptionThrown ()
+		{
+			var controller = new ControllerBase<ViewModelBase> ();
+			controller.Start ();
+
+			Assert.Throws<InvalidOperationException> (() => { controller.ViewModel = new ViewModelBase (); });
 		}
 
 		[Test]

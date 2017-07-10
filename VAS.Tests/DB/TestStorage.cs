@@ -161,7 +161,7 @@ namespace VAS.Tests.DB
 		[Test]
 		public void TestDeleteError ()
 		{
-			Assert.Throws<StorageException> (() => storage.Delete<Project> (null));
+			Assert.Throws<StorageException> (() => storage.Delete<Project> (new List<Project> { null }));
 		}
 
 		[Test]
@@ -489,6 +489,23 @@ namespace VAS.Tests.DB
 			Assert.IsNotNull (p2o);
 			Assert.AreEqual (p2.ID, p2o.ID);
 			Assert.AreEqual (p2.Name, p2o.Name);
+		}
+
+		[Test ()]
+		public void DeleteEnumerable_ElementsDeleted ()
+		{
+			// Arrange
+			PlayerDummy p1 = new PlayerDummy { Name = "P1" };
+			PlayerDummy p2 = new PlayerDummy { Name = "P2" };
+			List<PlayerDummy> list = new List<PlayerDummy> { p1, p2 };
+			storage.Store<PlayerDummy> (list);
+
+			// Action
+			storage.Delete<PlayerDummy> (list);
+
+			// Assett
+			Assert.IsNull (storage.Retrieve<PlayerDummy> (p1.ID));
+			Assert.IsNull (storage.Retrieve<PlayerDummy> (p2.ID));
 		}
 	}
 }
