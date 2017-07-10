@@ -53,7 +53,6 @@ namespace VAS.Core.Store
 			Periods = new RangeObservableCollection<Period> ();
 			Playlists = new RangeObservableCollection<Playlist> ();
 			EventTypes = new RangeObservableCollection<EventType> ();
-			Version = Constants.DB_VERSION;
 			LastModified = DateTime.Now;
 			ProjectType = ProjectType.FileProject;
 		}
@@ -85,16 +84,6 @@ namespace VAS.Core.Store
 		/// Media file asigned to this project
 		/// </summary>
 		virtual public MediaFileSet FileSet {
-			get;
-			set;
-		}
-
-		/// <value>
-		/// Document version
-		/// </value>
-		[DefaultValue (0)]
-		[JsonProperty (DefaultValueHandling = DefaultValueHandling.Populate)]
-		public int Version {
 			get;
 			set;
 		}

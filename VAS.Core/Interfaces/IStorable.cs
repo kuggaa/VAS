@@ -56,6 +56,11 @@ namespace VAS.Core.Interfaces
 		/// The ID of the <see cref="IStorable"/> parent or null if it has no parent.
 		/// </summary>
 		Guid ParentID { get; set; }
+
+		/// <value>
+		/// Document version
+		/// </value>
+		int Version { get; set; }
 	}
 }
 

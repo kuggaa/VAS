@@ -42,7 +42,7 @@ namespace VAS.Tests.DB
 			Directory.CreateDirectory (homePath);
 			Directory.CreateDirectory (dbPath);
 
-			storageManager = new CouchbaseManager (dbPath);
+			storageManager = new DummyCouchbaseManager (dbPath);
 		}
 
 		[TearDown]
