@@ -87,6 +87,13 @@ namespace VAS.Core.Interfaces
 		void Delete<T> (T t) where T : IStorable;
 
 		/// <summary>
+		/// Delete a collection of the specified object.
+		/// </summary>
+		/// <param name="storableEnumerable">The collection to delete.</param>
+		/// <typeparam name="T">The type of the object to delete.</typeparam>
+		void Delete<T> (IEnumerable<T> storableEnumerable) where T : IStorable;
+
+		/// <summary>
 		/// Reset this instance. Basically will reset the storage to its initial state.
 		/// On a FS it can mean to remove every file. On a DB it can mean to remove every entry.
 		/// Make sure you know what you are doing before using this.

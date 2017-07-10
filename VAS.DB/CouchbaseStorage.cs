@@ -295,12 +295,14 @@ namespace VAS.DB
 				}
 			}
 			foreach (var newObject in newDBObjects) {
+				// FIXME: StorageDeletedEvent should use a collection instead of having to send one event per storable
 				App.Current.EventsBroker.Publish (new StorageAddedEvent<T> { Object = newObject, Sender = this });
 			}
 		}
 
 		/// <summary>
-		/// Delete the specified storable object from the database. If the object is configured to delete its children,
+		/// Delete the specified storable object from the database.
+		/// If the object is configured to delete its children,
 		/// we perform a bulk deletion of all the documents with the the storable.ID prefix, which is faster than
 		/// parsing the object and it ensures that we don't leave orphaned documents in the DB
 		/// </summary>
@@ -308,26 +310,41 @@ namespace VAS.DB
 		/// <typeparam name="T">The type of the object to delete.</typeparam>
 		public void Delete<T> (T storable) where T : IStorable
 		{
+			Delete (storable.ToEnumerable ());
+		}
+
+		/// <summary>
+		/// Delete the specified collection of storable object from the database.
+		/// If the object is configured to delete its children, we perform a bulk deletion of all the documents with
+		/// the the storable.ID prefix, which is faster than parsing the object and it ensures that we don't leave
+		/// orphaned documents in the DB
+		/// </summary>
+		/// <param name="storables">The objects to delete.</param>
+		/// <typeparam name="T">The type of the object to delete.</typeparam>
+		public void Delete<T> (IEnumerable<T> storables) where T : IStorable
+		{
 			lock (mutex) {
 				bool success = db.RunInTransaction (() => {
 					try {
-						if (storable.DeleteChildren) {
-							Query query = db.CreateAllDocumentsQuery ();
-							// This should work, but raises an Exception in Couchbase.Lite
-							//query.StartKey = t.ID;
-							//query.EndKey = t.ID + "\uefff";
+						foreach (T storable in storables) {
+							if (storable.DeleteChildren) {
+								Query query = db.CreateAllDocumentsQuery ();
+								// This should work, but raises an Exception in Couchbase.Lite
+								//query.StartKey = t.ID;
+								//query.EndKey = t.ID + "\uefff";
 
-							// In UTF-8, from all the possible values in a GUID string, '0' is the first char in the
-							// list and 'f' would be the last one
-							string sepchar = DocumentsSerializer.ID_SEP_CHAR.ToString ();
-							query.StartKey = storable.ID + sepchar + "00000000-0000-0000-0000-000000000000";
-							query.EndKey = storable.ID + sepchar + "ffffffff-ffff-ffff-ffff-ffffffffffff";
-							query.InclusiveEnd = true;
-							foreach (var row in query.Run ()) {
-								row.Document.Delete ();
+								// In UTF-8, from all the possible values in a GUID string, '0' is the first char in the
+								// list and 'f' would be the last one
+								string sepchar = DocumentsSerializer.ID_SEP_CHAR.ToString ();
+								query.StartKey = storable.ID + sepchar + "00000000-0000-0000-0000-000000000000";
+								query.EndKey = storable.ID + sepchar + "ffffffff-ffff-ffff-ffff-ffffffffffff";
+								query.InclusiveEnd = true;
+								foreach (var row in query.Run ()) {
+									row.Document.Delete ();
+								}
 							}
+							db.GetDocument (storable.ID.ToString ()).Delete ();
 						}
-						db.GetDocument (storable.ID.ToString ()).Delete ();
 						return true;
 					} catch (Exception ex) {
 						Log.Exception (ex);
@@ -337,9 +354,12 @@ namespace VAS.DB
 				if (success) {
 					Info.LastModified = DateTime.UtcNow;
 					DocumentsSerializer.SaveObject (Info, db, null, false);
-					App.Current.EventsBroker.Publish (new StorageDeletedEvent<T> { Object = storable, Sender = this });
+					// FIXME: StorageDeletedEvent should use a collection instead of having to send one event per storable
+					foreach (T storable in storables) {
+						App.Current.EventsBroker.Publish (new StorageDeletedEvent<T> { Object = storable, Sender = this });
+					}
 				} else {
-					throw new StorageException (Catalog.GetString ("Error deleting object from the storage"));
+					throw new StorageException (Catalog.GetString ("Error deleting objects from the storage"));
 				}
 			}
 		}
