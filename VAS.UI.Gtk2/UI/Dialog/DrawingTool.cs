@@ -17,6 +17,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Gtk;
 using VAS.Core;
 using VAS.Core.Common;
@@ -60,8 +61,6 @@ namespace VAS.UI.Dialog
 		public DrawingTool ()
 		{
 			this.Build ();
-			savebutton.Clicked += OnSavebuttonClicked;
-			savetoprojectbutton.Clicked += OnSavetoprojectbuttonClicked;
 			blackboard = new Blackboard (new WidgetWrapper (drawingarea));
 			blackboard.ConfigureObjectEvent += HandleConfigureObjectEvent;
 			blackboard.ShowMenuEvent += HandleShowMenuEvent;
@@ -142,7 +141,6 @@ namespace VAS.UI.Dialog
 			linesizespinbutton.ValueChanged += (sender, e) => UpdateLineWidth ();
 			linesizespinbutton.Value = 2;
 
-			clearbutton.Clicked += HandleClearClicked;
 			zoomscale.CanFocus = false;
 			zoomscale.SetRange (1, 4);
 			zoomscale.SetIncrements (0.2, 0.2);
@@ -160,6 +158,20 @@ namespace VAS.UI.Dialog
 				hscrollbar.Visible = false;
 				wscrollbar.Visible = false;
 			}
+
+			var saveToFileCommand = new AsyncCommand (SaveToFile);
+			saveToFileCommand.Icon = App.Current.ResourcesLocator.LoadIcon ("vas-save", App.Current.Style.IconSmallWidth);
+			saveToFileCommand.Text = Catalog.GetString ("Save to File");
+			savebutton.BindManually (saveToFileCommand);
+
+			var saveToProjectCommand = new AsyncCommand (SaveToProject);
+			saveToProjectCommand.Icon = App.Current.ResourcesLocator.LoadIcon ("vas-save", App.Current.Style.IconSmallWidth);
+			saveToProjectCommand.Text = Catalog.GetString ("Save to Project");
+			savetoprojectbutton.BindManually (saveToProjectCommand);
+
+			var clearCommand = new Command (Clear);
+			clearCommand.Icon = App.Current.ResourcesLocator.LoadIcon ("vas-delete", App.Current.Style.IconSmallWidth);
+			clearbutton.BindManually (clearCommand);
 		}
 
 		public DrawingTool (Window parent) : this ()
@@ -517,7 +529,7 @@ namespace VAS.UI.Dialog
 			}
 		}
 
-		void HandleClearClicked (object sender, EventArgs e)
+		void Clear ()
 		{
 			string msg = Catalog.GetString ("Do you want to clear the drawing?");
 			if (MessagesHelpers.QuestionMessage (this, msg)) {
@@ -588,7 +600,8 @@ namespace VAS.UI.Dialog
 			blackboard.Tool = GetTool (lastButton);
 		}
 
-		async void OnSavebuttonClicked (object sender, System.EventArgs e)
+		//FIXME: We need to move the logic of this method to the ViewModel
+		async Task SaveToFile ()
 		{
 			string proposed_filename = String.Format ("{0}-{1}.png", App.Current.SoftwareName,
 										   DateTime.Now.ToShortDateString ().Replace ('/', '-'));
@@ -605,7 +618,7 @@ namespace VAS.UI.Dialog
 		}
 
 		//FIXME: We need to move the logic of this method to the ViewModel
-		async void OnSavetoprojectbuttonClicked (object sender, System.EventArgs e)
+		async Task SaveToProject ()
 		{
 			drawing.RegionOfInterest = blackboard.RegionOfInterest;
 			if (!play.Drawings.Contains (drawing)) {

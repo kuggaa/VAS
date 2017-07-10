@@ -44,14 +44,18 @@ namespace VAS.UI.TreeViews
 			base.OnDestroyed ();
 		}
 
-		public override void SetViewModel (object viewModel)
-		{
-			if (ViewModel != null) {
-				ViewModel.PropertyChanged -= HandleViewModelPropertyChanged;
+		public override JobsManagerVM ViewModel {
+			get {
+				return base.ViewModel;
 			}
-			base.SetViewModel (viewModel);
-			if (viewModel != null) {
-				ViewModel.PropertyChanged += HandleViewModelPropertyChanged;
+			set {
+				if (base.ViewModel != null) {
+					ViewModel.PropertyChanged -= HandleViewModelPropertyChanged;
+				}
+				base.ViewModel = value;
+				if (base.ViewModel != null) {
+					ViewModel.PropertyChanged += HandleViewModelPropertyChanged;
+				}
 			}
 		}
 

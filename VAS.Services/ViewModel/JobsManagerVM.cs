@@ -17,6 +17,7 @@
 //
 using System.Collections.Generic;
 using System.Linq;
+using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
@@ -27,6 +28,58 @@ namespace VAS.Services.ViewModel
 {
 	public class JobsManagerVM : CollectionViewModel<Job, JobVM>, IJobsManager
 	{
+		public JobsManagerVM ()
+		{
+			CancelCommand = new Command<IEnumerable<Job>> (Cancel);
+			CancelCommand.Icon = App.Current.ResourcesLocator.LoadIcon ("vas-close", App.Current.Style.IconSmallWidth);
+			ClearFinishedCommand = new Command (ClearFinished);
+			ClearFinishedCommand.Icon = App.Current.ResourcesLocator.LoadIcon ("vas-delete", App.Current.Style.IconSmallWidth);
+			ClearFinishedCommand.Text = Catalog.GetString ("Clear finished jobs");
+			CancelSelectedCommand = new Command (CancelSelected);
+			CancelSelectedCommand.Icon = App.Current.ResourcesLocator.LoadIcon ("vas-close", App.Current.Style.IconSmallWidth);
+			CancelSelectedCommand.Text = Catalog.GetString ("Cancel job");
+			RetryCommand = new Command (RetrySelected);
+			RetryCommand.Icon = App.Current.ResourcesLocator.LoadIcon ("vas-retry", App.Current.Style.IconSmallWidth);
+			RetryCommand.Text = Catalog.GetString ("Retry job");
+
+
+		}
+		/// <summary>
+		/// Gets or sets the cancel command.
+		/// </summary>
+		/// <value>The cancel command.</value>
+		public Command CancelCommand {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the clear finished command.
+		/// </summary>
+		/// <value>The clear finished command.</value>
+		public Command ClearFinishedCommand {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the cancel selected command.
+		/// </summary>
+		/// <value>The cancel selected command.</value>
+		public Command CancelSelectedCommand {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the retry command.
+		/// </summary>
+		/// <value>The retry command.</value>
+		public Command RetryCommand {
+			get;
+			set;
+		}
+
 		/// <summary>
 		/// Gets or sets the current job.
 		/// </summary>
@@ -82,6 +135,20 @@ namespace VAS.Services.ViewModel
 		public void ClearFinished ()
 		{
 			App.Current.EventsBroker.Publish (new ClearEvent<Job> ());
+		}
+
+		void RetrySelected ()
+		{
+			App.Current.EventsBroker.Publish (new RetryEvent<IEnumerable<Job>> {
+				Object = Selection.Select (jvm => jvm.Model).ToList ()
+			});
+		}
+
+		void CancelSelected ()
+		{
+			App.Current.EventsBroker.Publish (new CancelEvent<IEnumerable<Job>> {
+				Object = Selection.Select (jvm => jvm.Model).ToList ()
+			});
 		}
 		#endregion
 	}
