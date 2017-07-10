@@ -90,6 +90,7 @@ namespace VAS.UI
 			zoomLabel.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 8px"));
 			totalTimeLabel.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 10px"));
 			totalTimeLabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.Text_DarkColor));
+			eventNameLabel.Ellipsize = EllipsizeMode.End;
 
 			closebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-cancel-rec",
 				StyleConf.PlayerCapturerIconSize);
