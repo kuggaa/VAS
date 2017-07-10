@@ -28,12 +28,10 @@ namespace VAS.Core.Store.Templates
 	[Serializable]
 	public abstract class Team : StorableBase, IDisposable, ITemplate<Player>
 	{
-		public const int CURRENT_VERSION = 1;
 
 		public Team ()
 		{
 			ID = Guid.NewGuid ();
-			Version = Constants.DB_VERSION;
 			List = new RangeObservableCollection<Player> ();
 		}
 

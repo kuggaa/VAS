@@ -25,6 +25,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Couchbase.Lite;
 using Moq;
 using NUnit.Framework;
 using VAS.Core;
@@ -39,6 +40,7 @@ using VAS.Core.Serialization;
 using VAS.Core.Store;
 using VAS.Core.Store.Templates;
 using VAS.Core.ViewModel;
+using VAS.DB;
 using VAS.Drawing.CanvasObjects.Dashboard;
 using VAS.Drawing.CanvasObjects.Timeline;
 using VAS.Services;
@@ -48,6 +50,38 @@ using Timer = VAS.Core.Store.Timer;
 
 namespace VAS.Tests
 {
+	public class DummyCouchbaseManager : CouchbaseManager
+	{
+		public DummyCouchbaseManager (string dbDir) : base (dbDir)
+		{
+		}
+
+		protected override IStorage CreateStorage (string name)
+		{
+			return new DummyCouchbaseStorage (this, name);
+		}
+	}
+
+	public class DummyCouchbaseStorage : CouchbaseStorage
+	{
+		public DummyCouchbaseStorage (Database db) : base (db)
+		{
+		}
+
+		public DummyCouchbaseStorage (string dbDir, string storageName) : base (dbDir, storageName)
+		{
+		}
+
+		public DummyCouchbaseStorage (CouchbaseManager manager, string storageName) : base (manager, storageName)
+		{
+		}
+
+		protected override Version Version {
+			get {
+				return new Version (1, 1);
+			}
+		}
+	}
 
 	public class DummyPlaylistsManagerVM : IViewModel, IVideoPlayerDealer, IPlaylistCollectionDealer
 	{

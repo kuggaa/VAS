@@ -113,7 +113,8 @@ namespace VAS.Tests.DB
 			Directory.CreateDirectory (homePath);
 			Directory.CreateDirectory (dbPath);
 
-			storage = new CouchbaseStorage (dbPath, "test-db");
+			App.Current.DependencyRegistry.Register<IStorageManager, DummyCouchbaseManager> (1);
+			storage = new DummyCouchbaseStorage (dbPath, "test-db");
 			db = ((CouchbaseStorage)storage).Database;
 			// Remove the StorageInfo doc to get more understandable document count results
 			db.GetDocument (Guid.Empty.ToString ()).Delete ();

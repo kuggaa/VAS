@@ -38,8 +38,6 @@ namespace VAS.Core.Store.Templates
 	[Serializable]
 	abstract public class Dashboard : StorableBase, ITemplate<DashboardButton>, IDisposable
 	{
-
-		public const int CURRENT_VERSION = 1;
 		protected const int CAT_WIDTH = 120;
 		protected const int CAT_HEIGHT = 80;
 		protected const int MIN_WIDTH = 320;
@@ -58,7 +56,6 @@ namespace VAS.Core.Store.Templates
 			ID = Guid.NewGuid ();
 			List = new RangeObservableCollection<DashboardButton> ();
 			GamePeriods = new ObservableCollection<string> { "1", "2" };
-			Version = Constants.DB_VERSION;
 		}
 
 		protected override void DisposeManagedResources ()

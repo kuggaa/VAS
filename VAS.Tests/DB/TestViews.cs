@@ -77,7 +77,7 @@ namespace VAS.Tests.DB
 				Directory.Delete (dbPath, true);
 			}
 			try {
-				storage = new CouchbaseStorage (dbPath, "test-db");
+				storage = new DummyCouchbaseStorage (dbPath, "test-db");
 			} catch (Exception ex) {
 				throw ex;
 			}

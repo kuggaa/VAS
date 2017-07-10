@@ -53,7 +53,6 @@ namespace VAS.Core.Store
 			Periods = new RangeObservableCollection<Period> ();
 			Playlists = new RangeObservableCollection<Playlist> ();
 			EventTypes = new RangeObservableCollection<EventType> ();
-			Version = Constants.DB_VERSION;
 			LastModified = DateTime.Now;
 			ProjectType = ProjectType.FileProject;
 		}
