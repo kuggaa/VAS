@@ -194,7 +194,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\NestedSubViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypeVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TimerVM.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TimeNodeVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MediaFileVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventTypeTimelineVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\IAnalysisViewModel.cs" />
