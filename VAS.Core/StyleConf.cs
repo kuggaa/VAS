@@ -246,6 +246,15 @@ namespace VAS.Core.Common
 		public const int WatermarkPadding = 20;
 		public const double WatermarkHeightNormalization = 0.087;
 
+		// Dialog
+		public const string AcceptDialog = "icons/hicolor/scalable/actions/vas-dialog-accept" + IMAGE_EXT;
+		public const string CloseDialog = "icons/hicolor/scalable/actions/vas-dialog-close" + IMAGE_EXT;
+		public const string ConfirmDialog = "icons/hicolor/scalable/actions/vas-dialog-confirm" + IMAGE_EXT;
+		public const string DangerDialog = "icons/hicolor/scalable/actions/vas-dialog-danger" + IMAGE_EXT;
+		public const string ForbiddenDialog = "icons/hicolor/scalable/actions/vas-dialog-forbidden" + IMAGE_EXT;
+		public const string InfoDialog = "icons/hicolor/scalable/actions/vas-dialog-info" + IMAGE_EXT;
+		public const string WarningDialog = "icons/hicolor/scalable/actions/vas-dialog-warn" + IMAGE_EXT;
+
 		// Misc icons
 		public const string Spinner = "images/vas-spinner.gif";
 		public const string SpinnerMedium = "images/vas-spinner-m.gif";
