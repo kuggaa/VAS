@@ -49,12 +49,6 @@ namespace VAS.Tests.Services
 			SetupClass.Initialize ();
 		}
 
-		[TestFixtureTearDown]
-		public void TearDownOnce ()
-		{
-			controller.Stop ();
-		}
-
 		[SetUp]
 		public void Setup ()
 		{
