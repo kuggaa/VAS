@@ -25,6 +25,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using Couchbase.Lite;
 using Moq;
 using NUnit.Framework;
@@ -159,14 +160,14 @@ namespace VAS.Tests
 			}
 		}
 
-		public override void Start ()
+		public override async Task Start ()
 		{
-			base.Start ();
+			await base.Start ();
 		}
 
-		public override void Stop ()
+		public override async Task Stop ()
 		{
-			base.Stop ();
+			await base.Stop ();
 		}
 
 		public override void SetViewModel (IViewModel viewModel)

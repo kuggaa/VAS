@@ -160,22 +160,22 @@ namespace VAS.Services.State
 		{
 		}
 
-		Task<bool> InternalStopState ()
+		async Task<bool> InternalStopState ()
 		{
 			foreach (IController controller in Controllers) {
-				controller.Stop ();
+				await controller.Stop ();
 			}
 			App.Current.KeyContextManager.RemoveContext (KeyContext);
-			return AsyncHelpers.Return (true);
+			return true;
 		}
 
-		Task<bool> InternalStartState ()
+		async Task<bool> InternalStartState ()
 		{
 			foreach (IController controller in Controllers) {
-				controller.Start ();
+				await controller.Start ();
 			}
 			App.Current.KeyContextManager.AddContext (KeyContext);
-			return AsyncHelpers.Return (true);
+			return true;
 		}
 	}
 }

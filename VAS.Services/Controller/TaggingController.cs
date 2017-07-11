@@ -18,6 +18,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Hotkeys;
@@ -61,9 +62,9 @@ namespace VAS.Services.Controller
 		/// <summary>
 		/// Start this instance.
 		/// </summary>
-		public override void Start ()
+		public override async Task Start ()
 		{
-			base.Start ();
+			await base.Start ();
 			App.Current.EventsBroker.Subscribe<ClickedPCardEvent> (HandleClickedPCardEvent);
 			App.Current.EventsBroker.Subscribe<NewTagEvent> (HandleNewTagEvent);
 			App.Current.EventsBroker.Subscribe<CapturerTickEvent> (HandleCapturerTick);
@@ -76,9 +77,9 @@ namespace VAS.Services.Controller
 		/// <summary>
 		/// Stop this instance.
 		/// </summary>
-		public override void Stop ()
+		public override async Task Stop ()
 		{
-			base.Stop ();
+			await base.Stop ();
 			App.Current.EventsBroker.Unsubscribe<ClickedPCardEvent> (HandleClickedPCardEvent);
 			App.Current.EventsBroker.Unsubscribe<NewTagEvent> (HandleNewTagEvent);
 			App.Current.EventsBroker.Unsubscribe<CapturerTickEvent> (HandleCapturerTick);
