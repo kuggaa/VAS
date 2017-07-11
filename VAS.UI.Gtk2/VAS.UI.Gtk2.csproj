@@ -113,6 +113,8 @@
 		<Compile Include="gtk-gui\VAS.UI.Component.HotKeyView.cs" />
 		<Compile Include="UI\TreeView\CanvasObjectCellRenderer.cs" />
 		<Compile Include="UI\TreeView\CellRendererImage.cs" />
+		<Compile Include="UI\Component\MessageWidget.cs" />
+		<Compile Include="gtk-gui\VAS.UI.Component.MessageWidget.cs" />
 	</ItemGroup>
 	<Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 	<ItemGroup>

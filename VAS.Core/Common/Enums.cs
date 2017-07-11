@@ -73,7 +73,21 @@ namespace VAS.Core.Common
 		SortByCompetition = 4
 	}
 
-
+	public enum MessageBoxType
+	{
+		/// <summary>
+		/// Info message: This will give you some information.
+		/// </summary>
+		Info = 0,
+		/// <summary>
+		/// Warning message: This will alert you about something.
+		/// </summary>
+		Warning = 1,
+		/// <summary>
+		/// Error message: This will tell you that something very bad is happening.
+		/// </summary>
+		Error = 2
+	}
 
 	public enum JobState
 	{

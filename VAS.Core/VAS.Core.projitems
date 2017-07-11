@@ -260,6 +260,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Statistics\SeriesVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\CanvasBorderVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Statistics\ChartVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MessageVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
