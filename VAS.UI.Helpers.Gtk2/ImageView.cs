@@ -63,6 +63,15 @@ namespace VAS.UI.Helpers
 		}
 
 		/// <summary>
+		/// Gets or sets the filling color.
+		/// </summary>
+		/// <value>The color of the fill.</value>
+		public Color MaskColor {
+			get;
+			set;
+		}
+
+		/// <summary>
 		/// Gets a value indicating whether the parent of this <see cref="ImageView"/> is unsensitive
 		/// </summary>
 		/// <value><c>true</c> if is parent unsensitive; otherwise, <c>false</c>.</value>
@@ -148,7 +157,9 @@ namespace VAS.UI.Helpers
 					var r = evnt.Area;
 					App.Current.DrawingToolkit.Clip (new Area (new Point (r.X, r.Y), r.Width, r.Height));
 					var alpha = IsParentUnsensitive ? 0.4f : 1f;
-					App.Current.DrawingToolkit.DrawImage (point, width, height, image, ScaleMode.AspectFit, alpha: alpha);
+					App.Current.DrawingToolkit.FillColor = MaskColor;
+					App.Current.DrawingToolkit.DrawImage (point, width, height, image,
+														  ScaleMode.AspectFit, MaskColor != null, alpha);
 				}
 			}
 			return true;
