@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using VAS.Core.Common;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.MVVMC;
@@ -57,26 +58,28 @@ namespace VAS.Core.MVVMC
 		/// Start this controller.
 		/// This should be pre-called by child classes.
 		/// </summary>
-		public virtual void Start ()
+		public virtual Task Start ()
 		{
 			Log.Debug ($"Starting controller {GetType ()}");
 			if (started) {
 				throw new InvalidOperationException ("The controller is already running");
 			}
 			started = true;
+			return AsyncHelpers.Return ();
 		}
 
 		/// <summary>
 		/// Stop this controller.
 		/// This should be pre-called by child classes.
 		/// </summary>
-		public virtual void Stop ()
+		public virtual Task Stop ()
 		{
 			Log.Debug ($"Stopping controller {GetType ()}");
 			if (!started) {
 				throw new InvalidOperationException ("The controller is already stopped");
 			}
 			started = false;
+			return AsyncHelpers.Return ();
 		}
 
 		#endregion

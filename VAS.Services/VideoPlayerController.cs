@@ -21,6 +21,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
@@ -915,14 +916,14 @@ namespace VAS.Services
 
 		#region IController
 
-		public override void Start ()
+		public override async Task Start ()
 		{
-			base.Start ();
+			await base.Start ();
 		}
 
-		public override void Stop ()
+		public override async Task Stop ()
 		{
-			base.Stop ();
+			await base.Stop ();
 			Stop (true);
 		}
 

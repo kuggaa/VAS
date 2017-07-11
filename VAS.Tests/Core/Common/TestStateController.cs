@@ -535,14 +535,16 @@ namespace VAS.Tests.Core.Common
 		{
 		}
 
-		public void Start ()
+		public Task Start ()
 		{
 			Started = true;
+			return AsyncHelpers.Return ();
 		}
 
-		public void Stop ()
+		public Task Stop ()
 		{
 			Started = false;
+			return AsyncHelpers.Return ();
 		}
 	}
 
