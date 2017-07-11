@@ -165,6 +165,18 @@
                                       </packing>
                                     </child>
                                     <child>
+                                      <widget class="Gtk.Label" id="eventNameLabel">
+                                        <property name="MemberName" />
+                                        <property name="WidthRequest">110</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="Position">1</property>
+                                        <property name="AutoSize">True</property>
+                                        <property name="Expand">False</property>
+                                        <property name="Fill">False</property>
+                                      </packing>
+                                    </child>
+                                    <child>
                                       <widget class="Gtk.Button" id="drawbutton">
                                         <property name="MemberName" />
                                         <property name="Tooltip" translatable="yes">Draw frame</property>
@@ -175,19 +187,6 @@
                                             <property name="MemberName" />
                                           </widget>
                                         </child>
-                                      </widget>
-                                      <packing>
-                                        <property name="Position">1</property>
-                                        <property name="AutoSize">True</property>
-                                        <property name="Expand">False</property>
-                                        <property name="Fill">False</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="Gtk.Label" id="eventNameLabel">
-                                        <property name="MemberName" />
-                                        <property name="WidthRequest">110</property>
-                                        <property name="LabelProp" translatable="yes" />
                                       </widget>
                                       <packing>
                                         <property name="Position">2</property>

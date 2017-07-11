@@ -44,11 +44,11 @@ namespace VAS.UI
 
 		private global::VAS.UI.Helpers.ImageView closebuttonimage;
 
+		private global::Gtk.Label eventNameLabel;
+
 		private global::Gtk.Button drawbutton;
 
 		private global::VAS.UI.Helpers.ImageView drawbuttonimage;
-
-		private global::Gtk.Label eventNameLabel;
 
 		private global::Gtk.HBox timeHBox;
 
@@ -277,6 +277,15 @@ namespace VAS.UI
 			w12.Expand = false;
 			w12.Fill = false;
 			// Container child hbox2.Gtk.Box+BoxChild
+			this.eventNameLabel = new global::Gtk.Label();
+			this.eventNameLabel.WidthRequest = 110;
+			this.eventNameLabel.Name = "eventNameLabel";
+			this.hbox2.Add(this.eventNameLabel);
+			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.eventNameLabel]));
+			w13.Position = 1;
+			w13.Expand = false;
+			w13.Fill = false;
+			// Container child hbox2.Gtk.Box+BoxChild
 			this.drawbutton = new global::Gtk.Button();
 			this.drawbutton.TooltipMarkup = "Draw frame";
 			this.drawbutton.Name = "drawbutton";
@@ -286,16 +295,7 @@ namespace VAS.UI
 			this.drawbuttonimage.Name = "drawbuttonimage";
 			this.drawbutton.Add(this.drawbuttonimage);
 			this.hbox2.Add(this.drawbutton);
-			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.drawbutton]));
-			w14.Position = 1;
-			w14.Expand = false;
-			w14.Fill = false;
-			// Container child hbox2.Gtk.Box+BoxChild
-			this.eventNameLabel = new global::Gtk.Label();
-			this.eventNameLabel.WidthRequest = 110;
-			this.eventNameLabel.Name = "eventNameLabel";
-			this.hbox2.Add(this.eventNameLabel);
-			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.eventNameLabel]));
+			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.drawbutton]));
 			w15.Position = 2;
 			w15.Expand = false;
 			w15.Fill = false;
