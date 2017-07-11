@@ -316,6 +316,7 @@ namespace VAS.UI
 		void CreateWindows ()
 		{
 			mainviewport.ButtonReleaseEvent += OnMainViewportButtonReleaseEvent;
+			mainviewport.ScrollEvent += OnVideoboxScrollEvent;
 			ConnectWindow (mainviewport);
 			mainviewport.CanFocus = true;
 
