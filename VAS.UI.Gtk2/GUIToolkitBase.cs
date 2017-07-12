@@ -183,7 +183,7 @@ namespace VAS.UI
 
 		public virtual async Task<bool> Quit ()
 		{
-			if (!await App.Current.StateController.MoveToHome ()) {
+			if (!await App.Current.StateController.MoveToHome (true)) {
 				return false;
 			}
 			Log.Information ("Quit application");
