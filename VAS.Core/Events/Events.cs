@@ -462,6 +462,10 @@ namespace VAS.Core.Events
 
 	}
 
+	public class NavigatingEvent : Event
+	{
+	}
+
 	/// <summary>
 	/// Event to move <typeparam name="TChild"> elements of different parents:<typeparam name="TParent"> to another one at a specified index
 	/// </summary>

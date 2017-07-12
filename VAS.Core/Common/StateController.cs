@@ -79,6 +79,7 @@ namespace VAS.Core
 			try {
 				bool isModal = false;
 				NavigationState lastState = LastState (out isModal);
+				if (!CanMove (lastState) && !forceMove) return false;
 				if (!forceMove && lastState != null && lastState.Name == transition) {
 					Log.Debug ("Not moved to " + transition + "because we're already there");
 					return true;
@@ -153,6 +154,8 @@ namespace VAS.Core
 				NavigationState transitionState = new NavigationState (transition, state, !waitUntilClose);
 
 				NavigationState lastState = LastState ();
+				if (!CanMove (lastState)) return false;
+
 				if (!await lastState.Freeze (transitionState)) {
 					return false;
 				}
@@ -188,6 +191,7 @@ namespace VAS.Core
 			try {
 				bool triggeredFromModal;
 				NavigationState current = LastState (out triggeredFromModal);
+				if (!CanMove (current)) return false;
 				Log.Debug ("Moving Back");
 				if (current != null) {
 					if (!triggeredFromModal) {
@@ -223,6 +227,7 @@ namespace VAS.Core
 		{
 			try {
 				NavigationState state = LastStateFromTransition (transition);
+				if (!CanMove (state)) return false;
 				if (state == null) {
 					Log.Debug ("Moving failed because transition " + transition + " is not in history moves");
 					return false;
@@ -318,6 +323,16 @@ namespace VAS.Core
 		public Dictionary<string, Command> GetTransitionCommands ()
 		{
 			return transitionCommands;
+		}
+
+		// FIXME: Enqueue instead of blocking navigation
+		bool CanMove (NavigationState current)
+		{
+			bool canMove = current == null ||
+				(current.CurrentStatus == NavigationStateStatus.Shown ||
+				 current.CurrentStatus == NavigationStateStatus.Hidden);
+			if (canMove) App.Current.EventsBroker.Publish<NavigatingEvent> ();
+			return canMove;
 		}
 
 		/// <summary>
