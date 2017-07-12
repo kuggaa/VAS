@@ -79,11 +79,11 @@ namespace VAS.Core
 			try {
 				bool isModal = false;
 				NavigationState lastState = LastState (out isModal);
-				if (!CanMove (lastState) && !forceMove) return false;
 				if (!forceMove && lastState != null && lastState.Name == transition) {
 					Log.Debug ("Not moved to " + transition + "because we're already there");
 					return true;
 				}
+				if (!CanMove (lastState) && !forceMove) return false;
 				if (emptyStack) {
 					if (!await EmptyStateStack ()) {
 						return false;
@@ -227,11 +227,11 @@ namespace VAS.Core
 		{
 			try {
 				NavigationState state = LastStateFromTransition (transition);
-				if (!CanMove (state)) return false;
 				if (state == null) {
 					Log.Debug ("Moving failed because transition " + transition + " is not in history moves");
 					return false;
 				}
+				if (!CanMove (state)) return false;
 
 				if (home != null && state == home) {
 					return await MoveToHome ();
