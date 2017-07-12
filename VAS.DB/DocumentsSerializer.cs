@@ -65,7 +65,11 @@ namespace VAS.DB
 		{
 			if (context == null) {
 				context = new SerializationContext (db, obj.GetType ());
-				context.RootID = obj.ID;
+				if (obj.ParentID != Guid.Empty) {
+					context.RootID = obj.ParentID;
+				} else {
+					context.RootID = obj.ID;
+				}
 			}
 			context.SaveChildren = saveChildren;
 			context.Stack.Push (obj);
@@ -192,7 +196,7 @@ namespace VAS.DB
 		/// </summary>
 		/// <returns>The object id.</returns>
 		/// <param name="id">The document id.</param>
-		internal static Guid ParentIDFromString (string id)
+		public static Guid ParentIDFromString (string id)
 		{
 			string parentID = ParentIDStringFromString (id);
 			if (parentID != null) {
