@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Hotkeys;
@@ -39,18 +40,18 @@ namespace VAS.Services.Controller
 		VideoPlayerVM videoPlayerVM;
 
 
-		public override void Start ()
+		public override async Task Start ()
 		{
-			base.Start ();
+			await base.Start ();
 			App.Current.EventsBroker.Subscribe<SaveEvent<ProjectVM>> (HandleSave);
 			projectVM.FileSet.PropertyChanged += HandlePropertyChanged;
 			projectVM.Periods.PropertyChanged += HandlePropertyChanged;
 			videoPlayerVM.OpenFileSet (projectVM.FileSet);
 		}
 
-		public override void Stop ()
+		public override async Task Stop ()
 		{
-			base.Stop ();
+			await base.Stop ();
 			App.Current.EventsBroker.Unsubscribe<SaveEvent<ProjectVM>> (HandleSave);
 			projectVM.Periods.PropertyChanged -= HandlePropertyChanged;
 			projectVM.FileSet.PropertyChanged -= HandlePropertyChanged;

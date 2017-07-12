@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using VAS.Core.Events;
 using VAS.Core.MVVMC;
@@ -43,59 +44,59 @@ namespace VAS.Tests.Services
 		}
 
 		[TearDown]
-		public void TearDown ()
+		public async Task TearDown ()
 		{
 			if (controller != null) {
 				controller.managedDisposeCalled -= ManagedDisposeCalled;
 				controller.unmanagedDisposeCalled -= UnmanagedDisposeCalled;
 				if (controller.Started) {
-					controller.Stop ();
+					await controller.Stop ();
 				}
 			}
 		}
 
 		[Test]
-		public void TestStart ()
+		public async Task TestStart ()
 		{
 			// Act
-			controller.Start ();
+			await controller.Start ();
 
 			// Assert
 			Assert.IsTrue (controller.Started);
 		}
 
 		[Test]
-		public void TestStartTwice ()
+		public async Task TestStartTwice ()
 		{
 			// Arrange
-			controller.Start ();
+			await controller.Start ();
 
 			// Act & Assert
-			Assert.Throws<InvalidOperationException> (controller.Start);
+			Assert.Throws<InvalidOperationException> (async () => await controller.Start ());
 		}
 
 		[Test]
-		public void TestStop ()
+		public async Task TestStop ()
 		{
 			// Arrange
-			controller.Start ();
+			await controller.Start ();
 
 			// Act
-			controller.Stop ();
+			await controller.Stop ();
 
 			// Assert
 			Assert.IsFalse (controller.Started);
 		}
 
 		[Test]
-		public void TestStopTwice ()
+		public async Task TestStopTwice ()
 		{
 			// Arrange
-			controller.Start ();
-			controller.Stop ();
+			await controller.Start ();
+			await controller.Stop ();
 
 			// Act & Assert
-			Assert.Throws<InvalidOperationException> (controller.Stop);
+			Assert.Throws<InvalidOperationException> (async () => await controller.Stop ());
 		}
 
 		[Test]
@@ -104,14 +105,14 @@ namespace VAS.Tests.Services
 			// Arrange & Assume
 			Assert.IsFalse (controller.Started);
 			// Act & Assert
-			Assert.Throws<InvalidOperationException> (controller.Stop);
+			Assert.Throws<InvalidOperationException> (async () => await controller.Stop ());
 		}
 
 		[Test]
-		public void TestDispose ()
+		public async Task TestDispose ()
 		{
 			// Arrange
-			controller.Start ();
+			await controller.Start ();
 
 			// Act
 			controller.Dispose ();
@@ -164,7 +165,7 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
-		public void TestPublishBeforeGC ()
+		public async Task TestPublishBeforeGC ()
 		{
 			App.Current.EventsBroker = new EventsBroker ();
 
@@ -176,7 +177,7 @@ namespace VAS.Tests.Services
 			managedDisposeCalled = false;
 
 			// We create a new controller and add a WeakReference to it
-			WeakReference controllerRef = CreateAndLoseController ();
+			WeakReference controllerRef = await CreateAndLoseController ();
 			Assert.IsNotNull (controllerRef.Target);
 
 			// Act
@@ -189,7 +190,7 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
-		public void TestPublishAfterGC ()
+		public async Task TestPublishAfterGC ()
 		{
 			App.Current.EventsBroker = new EventsBroker ();
 
@@ -201,7 +202,7 @@ namespace VAS.Tests.Services
 			managedDisposeCalled = false;
 
 			// We create a new controller and add a WeakReference to it
-			WeakReference controllerRef = CreateAndLoseController ();
+			WeakReference controllerRef = await CreateAndLoseController ();
 			Assert.IsNotNull (controllerRef.Target);
 
 			GC.Collect ();
@@ -223,13 +224,13 @@ namespace VAS.Tests.Services
 		/// until the end of its scope
 		/// </summary>
 		/// <returns>A weak reference to the lost controller.</returns>
-		WeakReference CreateAndLoseController ()
+		async Task<WeakReference> CreateAndLoseController ()
 		{
 			AnswererDummyController controllerLocal = new AnswererDummyController ();
 			controllerLocal.answer += (sender, e) => answered = true;
 			controllerLocal.managedDisposeCalled += ManagedDisposeCalled;
 			controllerLocal.unmanagedDisposeCalled += UnmanagedDisposeCalled;
-			controllerLocal.Start ();
+			await controllerLocal.Start ();
 			WeakReference controllerRef = new WeakReference (controllerLocal);
 
 			controllerLocal = null;
@@ -254,15 +255,15 @@ namespace VAS.Tests.Services
 	{
 		public event EventHandler answer;
 
-		public override void Start ()
+		public override async Task Start ()
 		{
-			base.Start ();
+			await base.Start ();
 			App.Current.EventsBroker.Subscribe<NewTagEvent> (HandleAction);
 		}
 
-		public override void Stop ()
+		public override async Task Stop ()
 		{
-			base.Stop ();
+			await base.Stop ();
 			App.Current.EventsBroker.Unsubscribe<NewTagEvent> (HandleAction);
 		}
 

@@ -37,9 +37,9 @@ namespace VAS.Services.Controller
 	{
 		DashboardVM dashboardVM;
 
-		public override void Start ()
+		public override async Task Start ()
 		{
-			base.Start ();
+			await base.Start ();
 			App.Current.EventsBroker.Subscribe<CreateDashboardButtonEvent> (HandleCreateButton);
 			App.Current.EventsBroker.SubscribeAsync<DeleteEvent<DashboardButtonVM>> (HandleDeleteButton);
 			App.Current.EventsBroker.SubscribeAsync<DeleteEvent<ActionLinkVM>> (HandleRemoveLink);
@@ -48,7 +48,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Subscribe<DuplicateEvent<DashboardButtonVM>> (HandleDuplicateButton);
 		}
 
-		public override void Stop ()
+		public override async Task Stop ()
 		{
 			App.Current.EventsBroker.Unsubscribe<CreateDashboardButtonEvent> (HandleCreateButton);
 			App.Current.EventsBroker.UnsubscribeAsync<DeleteEvent<DashboardButtonVM>> (HandleDeleteButton);
@@ -56,7 +56,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.UnsubscribeAsync<ReplaceDashboardFieldEvent> (HandleReplaceField);
 			App.Current.EventsBroker.Unsubscribe<ResetDashboardFieldEvent> (HandleResetField);
 			App.Current.EventsBroker.Unsubscribe<DuplicateEvent<DashboardButtonVM>> (HandleDuplicateButton);
-			base.Stop ();
+			await base.Stop ();
 		}
 
 		public override IEnumerable<KeyAction> GetDefaultKeyActions ()

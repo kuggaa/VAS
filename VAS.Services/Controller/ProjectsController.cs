@@ -68,9 +68,9 @@ namespace VAS.Services.Controller
 			ViewModel = (ProjectsManagerVM<TModel, TViewModel>)viewModel;
 		}
 
-		public override void Start ()
+		public override async Task Start ()
 		{
-			base.Start ();
+			await base.Start ();
 			App.Current.EventsBroker.SubscribeAsync<ExportEvent<TModel>> (HandleExport);
 			App.Current.EventsBroker.SubscribeAsync<ImportEvent<TModel>> (HandleImport);
 			App.Current.EventsBroker.SubscribeAsync<UpdateEvent<TModel>> (HandleSave);
@@ -81,9 +81,9 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		public override void Stop ()
+		public override async Task Stop ()
 		{
-			base.Stop ();
+			await base.Stop ();
 			App.Current.EventsBroker.UnsubscribeAsync<ExportEvent<TModel>> (HandleExport);
 			App.Current.EventsBroker.UnsubscribeAsync<ImportEvent<TModel>> (HandleImport);
 			App.Current.EventsBroker.UnsubscribeAsync<UpdateEvent<TModel>> (HandleSave);
