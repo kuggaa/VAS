@@ -30,6 +30,7 @@ using VAS.Core.Store.Playlists;
 using VAS.Services.ViewModel;
 using VAS.Core.MVVMC;
 using VAS.Core.ViewModel;
+using System.Threading.Tasks;
 
 namespace VAS.Services
 {
@@ -77,9 +78,9 @@ namespace VAS.Services
 			return Enumerable.Empty<KeyAction> ();
 		}
 
-		public override void Start ()
+		public override async Task Start ()
 		{
-			base.Start ();
+			await base.Start ();
 			App.Current.EventsBroker.Subscribe<CreateEvent<Job>> (HandleAddJob);
 			App.Current.EventsBroker.Subscribe<RetryEvent<IEnumerable<Job>>> (HandleRetryJobs);
 			App.Current.EventsBroker.Subscribe<CancelEvent<IEnumerable<Job>>> (HandleCancelJobs);
@@ -87,9 +88,9 @@ namespace VAS.Services
 			status = ControllerStatus.Started;
 		}
 
-		public override void Stop ()
+		public override async Task Stop ()
 		{
-			base.Stop ();
+			await base.Stop ();
 			App.Current.EventsBroker.Unsubscribe<CreateEvent<Job>> (HandleAddJob);
 			App.Current.EventsBroker.Unsubscribe<RetryEvent<IEnumerable<Job>>> (HandleRetryJobs);
 			App.Current.EventsBroker.Unsubscribe<CancelEvent<IEnumerable<Job>>> (HandleCancelJobs);

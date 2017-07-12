@@ -17,6 +17,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using VAS.Core.Hotkeys;
 
 namespace VAS.Core.Interfaces.MVVMC
@@ -29,12 +30,12 @@ namespace VAS.Core.Interfaces.MVVMC
 		/// <summary>
 		/// Starts the Controller subscribing to the required events from the <see cref="EventsBroker"/>.
 		/// </summary>
-		void Start ();
+		Task Start ();
 
 		/// <summary>
 		/// Stop the Controller by un-subscribing to the events and resetting its state.
 		/// </summary>
-		void Stop ();
+		Task Stop ();
 
 		/// <summary>
 		/// Sets the ViewModel associated to this Controller.

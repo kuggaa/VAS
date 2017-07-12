@@ -20,6 +20,7 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Threading.Tasks;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
@@ -49,9 +50,9 @@ namespace VAS.Services.Controller
 		/// <value>The loaded play, null if no play.</value>
 		public TimelineEvent LoadedPlay { get; set; }
 
-		public override void Start ()
+		public override async Task Start ()
 		{
-			base.Start ();
+			await base.Start ();
 
 			App.Current.EventsBroker.Subscribe<DrawFrameEvent> (HandleDrawFrame);
 			App.Current.EventsBroker.Subscribe<SnapshotSeriesEvent> (HandleCreateSnaphotSeries);
@@ -64,9 +65,9 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Subscribe<PlaylistElementLoadedEvent> (HandlePlaylistElementLoaded);
 		}
 
-		public override void Stop ()
+		public override async Task Stop ()
 		{
-			base.Stop ();
+			await base.Stop ();
 
 			App.Current.EventsBroker.Unsubscribe<DrawFrameEvent> (HandleDrawFrame);
 			App.Current.EventsBroker.Unsubscribe<SnapshotSeriesEvent> (HandleCreateSnaphotSeries);
