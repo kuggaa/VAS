@@ -112,6 +112,7 @@ namespace VAS.UI.Helpers
 		/// <param name="icon">Icon.</param>
 		public static void SetImage (this Button button, Image icon)
 		{
+			Log.Information ("Entering SetImage");
 			if (icon == null) {
 				return;
 			}
@@ -121,15 +122,17 @@ namespace VAS.UI.Helpers
 			foreach (var container in button.Children) {
 				if (container is ImageView) {
 					image = (ImageView)container;
-					break;
+					image.Image = icon;
+					Log.Information ("Changing the image");
+					return;
 				}
 			}
 
 			if (image == null) {
-				image = new ImageView ();
+				image = new ImageView (icon);
 				button.Image = image;
+				Log.Information ("Adding new Image");
 			}
-			image.Image = icon;
 		}
 
 		/// <summary>
