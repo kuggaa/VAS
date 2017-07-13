@@ -62,5 +62,8 @@ namespace VAS.Core.Common
 		public const int TEMP_TAGGING_DURATION = 500;
 
 		public const string WATERMARK_RESOURCE_ID = "logo-watermark.svg";
+
+		// Interval to check for updates for the automatic updater
+		public const int APP_UPDATER_INTERVAL_SECONDS = 1 * 60 * 60;
 	}
 }
