@@ -145,6 +145,9 @@ namespace VAS.UI.Helpers
 		/// <param name="callback">Callback.</param>
 		public static void Configure (this Button button, Image icon, string text, string tooltipText, EventHandler callback)
 		{
+			if (icon != null && text != null) {
+				button.ImagePosition = PositionType.Left;
+			}
 			if (icon != null) {
 				button.SetImage (icon);
 			}
