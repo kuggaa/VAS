@@ -44,7 +44,7 @@ namespace VAS.Tests.Services
 		}
 
 		[TearDown]
-		public async Task TearDown ()
+		public async void TearDown ()
 		{
 			if (controller != null) {
 				controller.managedDisposeCalled -= ManagedDisposeCalled;
