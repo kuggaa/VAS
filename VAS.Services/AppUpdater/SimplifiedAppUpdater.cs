@@ -16,13 +16,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using System.IO;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
 
