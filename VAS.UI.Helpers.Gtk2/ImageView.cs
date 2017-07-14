@@ -47,9 +47,9 @@ namespace VAS.UI.Helpers
 			this.image = image;
 		}
 
-		public bool IsImageAndText {get;set;}
+		public bool IsImageAndText { get; set; }
 
-		public string ButtonText {get;set;}
+		public string ButtonText { get; set; }
 
 		/// <summary>
 		/// Gets or sets the image to render.
@@ -81,7 +81,7 @@ namespace VAS.UI.Helpers
 		/// <value><c>true</c> if is parent unsensitive; otherwise, <c>false</c>.</value>
 		bool IsParentUnsensitive {
 			get {
-				if(IsImageAndText) {
+				if (IsImageAndText) {
 					bool breakpoint = true;
 					var parentt = Parent;
 					parentt = parentt.Parent.Parent as Button;
@@ -113,12 +113,14 @@ namespace VAS.UI.Helpers
 		/// <param name="height">Height.</param>
 		public void SetSize (int width, int height)
 		{
-			if(IsImageAndText) {
-				string text = ButtonText;
-				bool needTobreak = true;
-			}
 			WidthRequest = width;
 			HeightRequest = height;
+			if (IsImageAndText) {
+				string text = ButtonText;
+				bool needTobreak = true;
+				Log.Information ($"SetSize button text = {text}");
+				Log.Information ($"SetSize with width = {WidthRequest} height = {WidthRequest}");
+			}
 			QueueResize ();
 		}
 
@@ -134,10 +136,6 @@ namespace VAS.UI.Helpers
 
 		protected override void OnSizeRequested (ref Requisition requisition)
 		{
-			if (IsImageAndText) {
-				string text = ButtonText;
-				bool needTobreak = true;
-			}
 			requisition.Width = Xpad * 2;
 			requisition.Height = Ypad * 2;
 			// If both WidthRequest and HeightRequest are set, we use them to determine the size of the widget.
@@ -150,6 +148,13 @@ namespace VAS.UI.Helpers
 				requisition.Width += image.Width;
 				requisition.Height += image.Height;
 			}
+			if (IsImageAndText) {
+				string text = ButtonText;
+				bool needTobreak = true;
+				Log.Information ($"OnSizeRequested button text = {text}");
+				Log.Information ($"OnSizeRequested with width = {requisition.Width} height = {requisition.Height}");
+			}
+
 		}
 
 		protected override bool OnExposeEvent (EventExpose evnt)
@@ -181,11 +186,11 @@ namespace VAS.UI.Helpers
 					App.Current.DrawingToolkit.FillColor = MaskColor;
 					App.Current.DrawingToolkit.DrawImage (point, width, height, image,
 														  ScaleMode.AspectFit, MaskColor != null, alpha);
-					if(IsImageAndText) {
+					if (IsImageAndText) {
 						string text = ButtonText;
-						bool needTobreak=true;
-						Log.Information($"Draw button text = {text}");
-						Log.Information($"Drawed ImageView at position {point} with width = {width} height = {height}");
+						bool needTobreak = true;
+						Log.Information ($"Draw button text = {text}");
+						Log.Information ($"Drawed ImageView at position {point} with width = {width} height = {height}");
 					}
 				}
 			}
