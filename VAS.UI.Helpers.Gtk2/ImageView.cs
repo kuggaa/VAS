@@ -47,6 +47,10 @@ namespace VAS.UI.Helpers
 			this.image = image;
 		}
 
+		public bool IsImageAndText {get;set;}
+
+		public string ButtonText {get;set;}
+
 		/// <summary>
 		/// Gets or sets the image to render.
 		/// </summary>
@@ -77,6 +81,14 @@ namespace VAS.UI.Helpers
 		/// <value><c>true</c> if is parent unsensitive; otherwise, <c>false</c>.</value>
 		bool IsParentUnsensitive {
 			get {
+				if(IsImageAndText) {
+					bool breakpoint = true;
+					var parentt = Parent;
+					parentt = parentt.Parent.Parent as Button;
+					if (parentt != null) {
+						ButtonText = ((Button)parentt).Label;
+					}
+				}
 				var parent = Parent;
 				if (parent != null) {
 					if (!parent.Sensitive) {
@@ -85,6 +97,7 @@ namespace VAS.UI.Helpers
 					// Handle correctly image in buttons
 					parent = parent.Parent.Parent as Button;
 					if (parent != null && !parent.Sensitive) {
+						ButtonText = ((Button)parent).Label;
 						return true;
 					}
 				}
@@ -100,6 +113,10 @@ namespace VAS.UI.Helpers
 		/// <param name="height">Height.</param>
 		public void SetSize (int width, int height)
 		{
+			if(IsImageAndText) {
+				string text = ButtonText;
+				bool needTobreak = true;
+			}
 			WidthRequest = width;
 			HeightRequest = height;
 			QueueResize ();
@@ -117,6 +134,10 @@ namespace VAS.UI.Helpers
 
 		protected override void OnSizeRequested (ref Requisition requisition)
 		{
+			if (IsImageAndText) {
+				string text = ButtonText;
+				bool needTobreak = true;
+			}
 			requisition.Width = Xpad * 2;
 			requisition.Height = Ypad * 2;
 			// If both WidthRequest and HeightRequest are set, we use them to determine the size of the widget.
@@ -134,6 +155,10 @@ namespace VAS.UI.Helpers
 		protected override bool OnExposeEvent (EventExpose evnt)
 		{
 			if (image != null) {
+				if(IsImageAndText) {
+					string text = ButtonText;
+					bool needTobreak=true;
+				}
 				var alloc = Allocation;
 				alloc.Inflate (-Xpad, -Ypad);
 				using (var ctx = CairoHelper.Create (evnt.Window)) {
