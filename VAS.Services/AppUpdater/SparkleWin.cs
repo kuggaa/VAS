@@ -50,6 +50,8 @@ namespace VAS.Services.AppUpdater
 		static extern void win_sparkle_set_shutdown_request_callback (
 			[param: MarshalAs (UnmanagedType.FunctionPtr)] ShutdownRequestCallback callback
 			);
+		[DllImport ("libsparkle.dll", CallingConvention = CallingConvention.Cdecl)]
+		static extern void win_sparkle_set_update_check_interval (int intervalSeconds);
 
 		CanShutdownCallback can_shutdown_callback;
 		ShutdownRequestCallback shutdown_request_callback;
@@ -59,6 +61,7 @@ namespace VAS.Services.AppUpdater
 			win_sparkle_set_automatic_check_for_updates (1);
 			win_sparkle_set_app_details (companyName, appName, version);
 			win_sparkle_set_appcast_url (feedURL);
+			win_sparkle_set_update_check_interval (Constants.APP_UPDATER_INTERVAL_SECONDS);
 			Log.Debug ("Registering win_sparkle_set_can_shutdown_callback");
 			can_shutdown_callback = HandleCanShutdownCallback;
 			win_sparkle_set_can_shutdown_callback (can_shutdown_callback);
