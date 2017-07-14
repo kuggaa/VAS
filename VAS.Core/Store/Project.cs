@@ -40,7 +40,6 @@ namespace VAS.Core.Store
 	[Serializable]
 	abstract public class Project : StorableBase, IComparable, IDisposable
 	{
-		public const int CURRENT_VERSION = 1;
 		DateTime lastModified;
 
 		#region Constructors
