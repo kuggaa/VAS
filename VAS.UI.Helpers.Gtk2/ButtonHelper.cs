@@ -110,7 +110,7 @@ namespace VAS.UI.Helpers
 		/// </summary>
 		/// <param name="button">Button.</param>
 		/// <param name="icon">Icon.</param>
-		public static void SetImage (this Button button, Image icon, bool hastext = false)
+		public static void SetImage (this Button button, Image icon, string text = null)
 		{
 			Log.Information ("Entering SetImage");
 			if (icon == null) {
@@ -123,8 +123,9 @@ namespace VAS.UI.Helpers
 				if (container is ImageView) {
 					image = (ImageView)container;
 					image.Image = icon;
-					if(hastext) {
+					if (!string.IsNullOrEmpty (text)) {
 						image.IsImageAndText = true;
+						image.ButtonText = text;
 					}
 					Log.Information ("Changing the image");
 					return;
@@ -132,8 +133,12 @@ namespace VAS.UI.Helpers
 			}
 
 			if (image == null) {
-				image = new ImageView (icon);
-				image.IsImageAndText = true;
+				image = new ImageView ();
+				image.Image = icon;
+				if (!string.IsNullOrEmpty (text)) {
+					image.IsImageAndText = true;
+					image.ButtonText = text;
+				}
 				button.Image = image;
 				Log.Information ("Adding new Image");
 			}
@@ -153,9 +158,9 @@ namespace VAS.UI.Helpers
 				button.ImagePosition = PositionType.Left;
 			}
 			if (icon != null) {
-				button.SetImage (icon);
+				button.SetImage (icon, text);
 			}
-			if (!string.IsNullOrEmpty(text)) {
+			if (!string.IsNullOrEmpty (text)) {
 				button.Label = text;
 			}
 			if (tooltipText != null) {
