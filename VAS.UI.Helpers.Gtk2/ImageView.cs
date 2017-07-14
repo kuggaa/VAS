@@ -61,6 +61,7 @@ namespace VAS.UI.Helpers
 			}
 			set {
 				image = value;
+				SetSize (image.Width, image.Height);
 				QueueDraw ();
 				QueueResize ();
 			}

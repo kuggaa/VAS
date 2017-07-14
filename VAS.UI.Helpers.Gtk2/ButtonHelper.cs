@@ -134,13 +134,16 @@ namespace VAS.UI.Helpers
 
 			if (image == null) {
 				image = new ImageView ();
-				image.Image = icon;
 				if (!string.IsNullOrEmpty (text)) {
 					image.IsImageAndText = true;
 					image.ButtonText = text;
+					Log.Information ("Adding new Image in a text button");
+				} else {
+					Log.Information ("Adding new Image");
 				}
+				image.Image = icon;
 				button.Image = image;
-				Log.Information ("Adding new Image");
+
 			}
 		}
 
