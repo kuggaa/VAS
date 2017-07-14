@@ -155,10 +155,6 @@ namespace VAS.UI.Helpers
 		protected override bool OnExposeEvent (EventExpose evnt)
 		{
 			if (image != null) {
-				if(IsImageAndText) {
-					string text = ButtonText;
-					bool needTobreak=true;
-				}
 				var alloc = Allocation;
 				alloc.Inflate (-Xpad, -Ypad);
 				using (var ctx = CairoHelper.Create (evnt.Window)) {
@@ -185,6 +181,12 @@ namespace VAS.UI.Helpers
 					App.Current.DrawingToolkit.FillColor = MaskColor;
 					App.Current.DrawingToolkit.DrawImage (point, width, height, image,
 														  ScaleMode.AspectFit, MaskColor != null, alpha);
+					if(IsImageAndText) {
+						string text = ButtonText;
+						bool needTobreak=true;
+						Log.Information($"Draw button text = {text}");
+						Log.Information($"Drawed ImageView at position {point} with width = {width} height = {height}");
+					}
 				}
 			}
 			return true;
