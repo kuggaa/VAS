@@ -25,6 +25,7 @@ using ObjCRuntime;
 using Sparkle;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
+using Constants = VAS.Core.Common.Constants;
 
 namespace VAS.Services.AppUpdater
 {
@@ -49,6 +50,7 @@ namespace VAS.Services.AppUpdater
 				updater.Delegate = new UpdaterDelegate ();
 				updater.FeedURL = new NSUrl (castURL);
 				updater.AutomaticallyChecksForUpdates = true;
+				updater.UpdateCheckInterval = Constants.APP_UPDATER_INTERVAL_SECONDS;
 			} catch (Exception ex) {
 				Log.Error ($"Updater will not start: {ex.Message}");
 			}
