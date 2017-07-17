@@ -343,8 +343,8 @@ namespace VAS.DB.Views
 							doc.ID = id;
 							doc.IsChanged = false;
 							doc.IsLoaded = false;
-							doc.Storage = storage;
 						}
+						doc.Storage = storage;
 						noErrors = true;
 					} catch (Exception ex) {
 						Log.Error ("Error deserializing document of type " + typeof (TReal) + " with ID: " + row.DocumentId);
