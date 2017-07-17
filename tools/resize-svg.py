@@ -54,6 +54,7 @@ def main ():
     files = [x for x in files if x.endswith('.svg') and not "@2x" in x]
     for f in files:
         if f == "data/icons/hicolor/scalable/actions/vas-missing-video.svg" or \
+        f == "data/icons/hicolor/scalable/actions/vas-dialog-error.svg" or \
         f == "icons/hicolor/scalable/actions/ra-tab-event-active" or \
         f == "icons/hicolor/scalable/actions/ra-tab-project-active":
          continue

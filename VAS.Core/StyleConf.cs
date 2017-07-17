@@ -254,6 +254,7 @@ namespace VAS.Core.Common
 		public const string ForbiddenDialog = "icons/hicolor/scalable/actions/vas-dialog-forbidden" + IMAGE_EXT;
 		public const string InfoDialog = "icons/hicolor/scalable/actions/vas-dialog-info" + IMAGE_EXT;
 		public const string WarningDialog = "icons/hicolor/scalable/actions/vas-dialog-warn" + IMAGE_EXT;
+		public const string ErrorDialog = "icons/hicolor/scalable/actions/vas-dialog-error" + IMAGE_EXT;
 
 		// Misc icons
 		public const string Spinner = "images/vas-spinner.gif";
@@ -261,6 +262,8 @@ namespace VAS.Core.Common
 		public const string SpinnerLarge = "images/vas-spinner-l.gif";
 
 		public const string MissingVideo = "icons/hicolor/scalable/actions/vas-missing-video" + IMAGE_EXT;
+
+		public const string RetryIcon = "vas-retry";
 
 		public StyleConf ()
 		{
@@ -340,6 +343,10 @@ namespace VAS.Core.Common
 		public Color Stat_Failure { get; set; }
 
 		public Color Text_Highlight { get; set; }
+
+		public Color Error { get; set; }
+
+		public Color Warning { get; set; }
 
 		//Sizes
 
