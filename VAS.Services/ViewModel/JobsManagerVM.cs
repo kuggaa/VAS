@@ -39,7 +39,7 @@ namespace VAS.Services.ViewModel
 			CancelSelectedCommand.Icon = App.Current.ResourcesLocator.LoadIcon ("vas-close", App.Current.Style.IconSmallWidth);
 			CancelSelectedCommand.Text = Catalog.GetString ("Cancel job");
 			RetryCommand = new Command (RetrySelected);
-			RetryCommand.Icon = App.Current.ResourcesLocator.LoadIcon ("vas-retry", App.Current.Style.IconSmallWidth);
+			RetryCommand.Icon = App.Current.ResourcesLocator.LoadIcon (StyleConf.RetryIcon, App.Current.Style.IconSmallWidth);
 			RetryCommand.Text = Catalog.GetString ("Retry job");
 
 
