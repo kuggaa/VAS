@@ -146,7 +146,7 @@ namespace VAS.Core.Common
 				}
 			}
 			if (result == "") {
-				throw new FileNotFoundException ();
+				throw new FileNotFoundException (filename);
 			}
 			return result;
 		}
