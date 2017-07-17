@@ -68,6 +68,7 @@ namespace VAS.Tests
 			App.Current.ResourcesLocator = new DummyResourcesLocator ();
 			var mockToolkit = new Mock<IGUIToolkit> ();
 			App.Current.GUIToolkit = mockToolkit.Object;
+			App.Current.FileSystemManager = new FileSystemManager ();
 			mockToolkit.SetupGet (o => o.DeviceScaleFactor).Returns (1.0f);
 		}
 	}
