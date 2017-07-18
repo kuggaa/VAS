@@ -39,6 +39,13 @@ namespace VAS.Services.ViewModel
 			DeleteCommand = new Command (Delete, () => Selection.Any ());
 		}
 
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			LoadedProject.Dispose ();
+			LoadedProject = null;
+		}
+
 		public override LicenseLimitationVM Limitation {
 			set {
 				if (Limitation != null) {

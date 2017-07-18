@@ -60,12 +60,27 @@ namespace VAS.Core.ViewModel
 
 		protected override void DisposeManagedResources ()
 		{
+			Filters.IgnoreEvents = true;
+			EventTypesTimeline.IgnoreEvents = true;
+			FullTimeline.IgnoreEvents = true;
+			if (Model != null) {
+				Model.IgnoreEvents = true;
+			}
 			base.DisposeManagedResources ();
-			FullTimeline.ViewModels.CollectionChanged -= HandleTimelineCollectionChanged;
-			EventTypesTimeline.ViewModels.CollectionChanged -= HandleEventTypesCollectionChanged;
+			if (Model != null) {
+				Model.Clear ();
+			}
 			Filters.Dispose ();
+			Filters = null;
+			EventTypesTimeline.ViewModels.CollectionChanged -= HandleEventTypesCollectionChanged;
 			EventTypesTimeline.Dispose ();
+			EventTypesTimeline = null;
+			FullTimeline.ViewModels.CollectionChanged -= HandleTimelineCollectionChanged;
 			FullTimeline.Dispose ();
+			FullTimeline = null;
+			TeamsTimeline.Dispose ();
+			TeamsTimeline = null;
+
 		}
 
 		/// <summary>

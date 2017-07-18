@@ -134,6 +134,7 @@ namespace VAS.Services
 			player.Dispose ();
 			player = null;
 			FileSet = null;
+			loadedPlaylist = null;
 		}
 
 		#endregion

@@ -63,6 +63,13 @@ namespace VAS.Core.Store
 			Name = name;
 		}
 
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			Preview.Dispose ();
+			Preview = null;
+		}
+
 		public string FilePath {
 			get;
 			set;

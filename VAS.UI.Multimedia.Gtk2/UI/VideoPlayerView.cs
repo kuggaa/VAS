@@ -173,8 +173,21 @@ namespace VAS.UI
 				dragTimerID = 0;
 			}
 
+			DisconnectSignals ();
 			blackboard.Dispose ();
+			blackboard = null;
 			timerule.Dispose ();
+			timerule = null;
+
+			volumeWindow.Dispose ();
+			volumeWindow = null;
+			jumpsWindow.Dispose ();
+			jumpsWindow = null;
+			zoomWindow.Dispose ();
+			zoomWindow = null;
+			rateWindow.Dispose ();
+			rateWindow = null;
+			ViewModel = null;
 
 			base.OnDestroyed ();
 		}
@@ -288,6 +301,29 @@ namespace VAS.UI
 				App.Current.EventsBroker.Publish (new DetachEvent ());
 			mainviewport.VideoDragStarted += OnMainViewportVideoDragStartedEvent;
 			mainviewport.VideoDragStopped += OnMainViewportVideoDragStoppedEvent;
+		}
+
+		void DisconnectSignals ()
+		{
+			volumeWindow.ValueChanged -= HandleVolumeChanged;
+			jumpsWindow.ValueChanged -= HandleStepsChanged;
+			zoomWindow.ValueChanged -= HandleZoomChanged;
+			rateWindow.ValueChanged -= HandleRateChanged;
+			closebutton.Clicked -= HandleClosebuttonClicked;
+			prevbutton.Clicked -= HandlePrevbuttonClicked;
+			nextbutton.Clicked -= HandleNextbuttonClicked;
+			playbutton.Clicked -= HandlePlaybuttonClicked;
+			pausebutton.Clicked -= HandlePausebuttonClicked;
+			drawbutton.Clicked -= HandleDrawButtonClicked;
+			volumebutton.Clicked -= HandleVolumebuttonClicked;
+			rateLevelButton.Clicked -= HandleRateButtonClicked;
+			jumpsButton.Clicked -= HandleJumpsButtonClicked;
+			viewportsSwitchButton.Toggled -= HandleViewPortsToggled;
+			zoomLevelButton.Clicked -= HandleZoomClicked;
+			centerplayheadbutton.Clicked -= HandleCenterPlayheadClicked;
+			timerule.CenterPlayheadClicked -= HandleCenterPlayheadClicked;
+			mainviewport.VideoDragStarted -= OnMainViewportVideoDragStartedEvent;
+			mainviewport.VideoDragStopped -= OnMainViewportVideoDragStoppedEvent;
 		}
 
 		void LoadImage (Image image, FrameDrawing drawing)

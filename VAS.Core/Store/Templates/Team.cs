@@ -42,6 +42,7 @@ namespace VAS.Core.Store.Templates
 			foreach (Player p in List) {
 				p.Dispose ();
 			}
+			List.Clear ();
 		}
 
 		[JsonIgnore]

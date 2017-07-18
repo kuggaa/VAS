@@ -36,6 +36,7 @@ namespace VAS.UI.Component
 		protected bool isSelecting;
 		protected bool loadEventsOnSelectionChanged;
 		TimelineVM viewModel;
+		CellRenderer cellRenderer;
 
 		public TimelineEventsTreeView ()
 		{
@@ -45,15 +46,19 @@ namespace VAS.UI.Component
 			Selection.Mode = SelectionMode.Multiple;
 			EnableGridLines = TreeViewGridLines.None;
 
-			AppendColumn (null, CreateCellRenderer (), RenderEvents);
+			cellRenderer = CreateCellRenderer ();
+			AppendColumn (null, cellRenderer, RenderEvents);
 			CreateFilterAndSort ();
 		}
 
 		protected override void OnDestroyed ()
 		{
-			ViewModel?.Dispose ();
 			ViewModel = null;
 			base.OnDestroyed ();
+			if (cellRenderer != null) {
+				cellRenderer.Dispose ();
+				cellRenderer = null;
+			}
 		}
 
 		public new TimelineVM ViewModel {

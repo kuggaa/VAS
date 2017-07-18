@@ -91,6 +91,16 @@ namespace VAS.UI.Common
 		{
 			Log.Verbose ($"Destroying {GetType ()}");
 			ViewModel = null;
+			dictionaryStore.Clear ();
+			dictionaryNestedParent.Clear ();
+			if (filter != null) {
+				filter.Dispose ();
+				filter = null;
+			}
+			if (sort != null) {
+				sort.Dispose ();
+				sort = null;
+			}
 			base.OnDestroyed ();
 
 			Disposed = true;
@@ -112,7 +122,10 @@ namespace VAS.UI.Common
 			set {
 				if (viewModel != null) {
 					Selection.Changed -= HandleTreeviewSelectionChanged;
-					viewModel.GetNotifyCollection ().CollectionChanged -= ViewModelCollectionChanged;
+					var collection = viewModel.GetNotifyCollection ();
+					if (collection != null) {
+						collection.CollectionChanged -= ViewModelCollectionChanged;
+					}
 					ClearSubViewModels ();
 				}
 				viewModel = value;
@@ -638,6 +651,9 @@ namespace VAS.UI.Common
 
 		void ClearSubViewModelListeners (IEnumerable<TViewModel> collection)
 		{
+			if (collection == null) {
+				return;
+			}
 			foreach (IViewModel item in collection) {
 				RemoveSubViewModelListener (item);
 				if (item is INestedViewModel) {
