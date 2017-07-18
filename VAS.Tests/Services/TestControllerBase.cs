@@ -137,12 +137,37 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
-		public void SetViewModel_ControllerStarted_ExceptionThrown ()
+		public async Task SetViewModel_ControllerStarted_ExceptionThrown ()
 		{
 			var controller = new ControllerBase<ViewModelBase> ();
-			controller.Start ();
+			controller.SetViewModel (new ViewModelBase ());
+			await controller.Start ();
 
 			Assert.Throws<InvalidOperationException> (() => { controller.ViewModel = new ViewModelBase (); });
+		}
+
+		[Test]
+		public async Task SetViewModel2_ControllerStarted_ExceptionThrown ()
+		{
+			var controller = new ControllerBase<ViewModelBase> ();
+			controller.SetViewModel (new ViewModelBase ());
+			await controller.Start ();
+
+			Assert.Throws<InvalidOperationException> (() => controller.SetViewModel (new ViewModelBase ()));
+		}
+
+		[Test]
+		public void Start_NoViewModel_ExceptionThrown ()
+		{
+			var controller = new ControllerBase<ViewModelBase> ();
+			Assert.Throws<InvalidOperationException> (async () => await controller.Start ());
+		}
+
+		[Test]
+		public void Stop_NoViewModel_ExceptionThrown ()
+		{
+			var controller = new ControllerBase<ViewModelBase> ();
+			Assert.Throws<InvalidOperationException> (async () => await controller.Stop ());
 		}
 
 		[Test]

@@ -49,6 +49,10 @@ namespace VAS.Services.State
 			if (ViewModelOwner) {
 				ViewModel?.Dispose ();
 			}
+			ViewModel = default (TViewModel);
+			Controllers.Clear ();
+			Panel = null;
+			KeyContext = null;
 		}
 
 		/// <summary>

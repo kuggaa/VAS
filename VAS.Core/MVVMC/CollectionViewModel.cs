@@ -45,10 +45,13 @@ namespace VAS.Core.MVVMC
 
 		protected override void DisposeManagedResources ()
 		{
+			ViewModels.IgnoreEvents = true;
+			Model.IgnoreEvents = true;
+			ViewModels.CollectionChanged -= HandleViewModelsCollectionChanged;
+			Model.CollectionChanged -= HandleModelsCollectionChanged;
 			base.DisposeManagedResources ();
-			foreach (var viewModel in ViewModels) {
-				viewModel.Dispose ();
-			}
+			modelToViewModel.Clear ();
+			Model = null;
 		}
 
 		/// <summary>
@@ -117,6 +120,9 @@ namespace VAS.Core.MVVMC
 
 		protected virtual void SetModel (RangeObservableCollection<TModel> model)
 		{
+			if (Disposed) {
+				return;
+			}
 			if (ViewModels != null) {
 				ViewModels.CollectionChanged -= HandleViewModelsCollectionChanged;
 			}

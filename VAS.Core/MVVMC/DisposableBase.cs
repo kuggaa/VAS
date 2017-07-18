@@ -17,6 +17,7 @@
 //
 using System;
 using VAS.Core.Common;
+using VAS.Core.Store;
 
 namespace VAS.Core.MVVMC
 {

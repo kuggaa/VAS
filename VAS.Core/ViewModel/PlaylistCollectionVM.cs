@@ -38,12 +38,20 @@ namespace VAS.Core.ViewModel
 
 		static PlaylistCollectionVM ()
 		{
+			LoadIcons ();
+		}
+
+		static void LoadIcons ()
+		{
 			deleteIcon = App.Current.ResourcesLocator.LoadIcon ("vas-delete", App.Current.Style.IconSmallWidth);
 			newIcon = App.Current.ResourcesLocator.LoadIcon ("vas-new-playlist", App.Current.Style.IconSmallWidth);
 		}
 
 		public PlaylistCollectionVM ()
 		{
+			if (deleteIcon == null || deleteIcon.Width == -1) {
+				LoadIcons ();
+			}
 			DeleteCommand = new Command (Delete, HasItemsSelected);
 			DeleteCommand.Icon = deleteIcon;
 			DeleteCommand.ToolTipText = Catalog.GetString ("Delete Playlists");
@@ -52,6 +60,17 @@ namespace VAS.Core.ViewModel
 			NewCommand.ToolTipText = Catalog.GetString ("New Playlist");
 			PlaylistMenu = CreatePlaylistMenu ();
 			PlaylistElementMenu = CreatePlaylistElementMenu ();
+		}
+
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			PlaylistMenu.Dispose ();
+			PlaylistMenu = null;
+			PlaylistElementMenu.Dispose ();
+			PlaylistElementMenu = null;
+			DeleteCommand = null;
+			NewCommand = null;
 		}
 
 		/// <summary>
@@ -97,6 +116,7 @@ namespace VAS.Core.ViewModel
 		/// <value>The playlist menu.</value>
 		public MenuVM PlaylistMenu {
 			get;
+			private set;
 		}
 
 		/// <summary>
@@ -105,6 +125,7 @@ namespace VAS.Core.ViewModel
 		/// <value>The playlist element menu.</value>
 		public MenuVM PlaylistElementMenu {
 			get;
+			private set;
 		}
 
 		/// <summary>

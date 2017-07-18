@@ -32,6 +32,13 @@ namespace VAS.Core.Store.Playlists
 			Drawing = drawing;
 		}
 
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			Drawing?.Dispose ();
+			Drawing = null;
+		}
+
 		[JsonIgnore]
 		public bool Playing {
 			get;

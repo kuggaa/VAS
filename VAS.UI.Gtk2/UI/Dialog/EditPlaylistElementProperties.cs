@@ -63,6 +63,43 @@ namespace VAS.UI.Dialog
 			Bind ();
 		}
 
+		public override void Dispose ()
+		{
+			Dispose (true);
+			base.Dispose ();
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (Disposed) {
+				return;
+			}
+			if (disposing) {
+				Destroy ();
+			}
+			Disposed = true;
+		}
+
+		protected override void OnDestroyed ()
+		{
+			Log.Verbose ($"Destroying {GetType ()}");
+
+			ctx.Dispose ();
+			ctx = null;
+			ViewModel.Dispose ();
+			ViewModel = null;
+			sizegroupLeft.Dispose ();
+			sizegroupLeft = null;
+			sizegroupRight.Dispose ();
+			sizegroupRight = null;
+			base.OnDestroyed ();
+
+			Disposed = true;
+		}
+
+		protected bool Disposed { get; private set; } = false;
+
+
 		public PlaylistElementVM ViewModel {
 			get {
 				return plElement;
