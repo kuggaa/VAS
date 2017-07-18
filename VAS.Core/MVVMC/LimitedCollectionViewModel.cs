@@ -55,7 +55,7 @@ namespace VAS.Core.MVVMC
 		{
 			base.DisposeManagedResources ();
 			LimitedViewModels.CollectionChanged -= HandleViewModelsCollectionChanged;
-			base.ViewModels.CollectionChanged += HandleBaseViewModelModelsCollectionChanged;
+			base.ViewModels.CollectionChanged -= HandleBaseViewModelModelsCollectionChanged;
 		}
 
 		/// <summary>
