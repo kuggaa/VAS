@@ -43,6 +43,13 @@ namespace VAS.Drawing.CanvasObjects
 	{
 		CanvasBorderVM vm;
 
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			ViewModel.Dispose ();
+			ViewModel = null;
+		}
+
 		/// <summary>
 		/// Gets or sets the view model.
 		/// </summary>

@@ -50,6 +50,36 @@ namespace VAS.UI.Component
 			ctx.Add (count_label.Bind (vm => ((LicenseLimitationVM)vm).Count, new Int32Converter ()));
 		}
 
+		public override void Dispose ()
+		{
+			Dispose (true);
+			base.Dispose ();
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (Disposed) {
+				return;
+			}
+			if (disposing) {
+				Destroy ();
+			}
+			Disposed = true;
+		}
+
+		protected override void OnDestroyed ()
+		{
+			Log.Verbose ($"Destroying {GetType ()}");
+			ViewModel = null;
+			ctx.Dispose ();
+			ctx = null;
+			base.OnDestroyed ();
+
+			Disposed = true;
+		}
+
+		protected bool Disposed { get; private set; } = false;
+
 		/// <summary>
 		/// Gets or sets the view model.
 		/// </summary>

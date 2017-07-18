@@ -35,6 +35,12 @@ namespace VAS.Core.ViewModel
 			Player = playerVM;
 		}
 
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			Player = null;
+		}
+
 		public Player Model {
 			get {
 				return Player.Model;

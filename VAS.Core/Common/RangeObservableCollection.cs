@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace VAS.Core.Common
 {
@@ -39,6 +40,13 @@ namespace VAS.Core.Common
 
 		public RangeObservableCollection (IEnumerable<T> collection) : base (collection)
 		{
+		}
+
+		[JsonIgnore]
+		[PropertyChanged.DoNotNotify]
+		public bool IgnoreEvents {
+			get;
+			set;
 		}
 
 		/// <summary>
@@ -106,6 +114,13 @@ namespace VAS.Core.Common
 			}
 			NotifyCollectionChangedEventArgs e = new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Reset);
 			OnCollectionChanged (e);
+		}
+
+		protected override void OnCollectionChanged (NotifyCollectionChangedEventArgs e)
+		{
+			if (!IgnoreEvents) {
+				base.OnCollectionChanged (e);
+			}
 		}
 	}
 }

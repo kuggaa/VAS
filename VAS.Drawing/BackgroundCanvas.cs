@@ -39,6 +39,13 @@ namespace VAS.Drawing
 		{
 		}
 
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			backgroundSurface?.Dispose ();
+			backgroundSurface = null;
+		}
+
 		/// <summary>
 		/// Sets the background image of the canvas.
 		/// This property is not optional

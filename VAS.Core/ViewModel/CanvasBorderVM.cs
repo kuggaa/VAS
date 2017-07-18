@@ -40,6 +40,14 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class CanvasBorderVM : ViewModelBase
 	{
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			CanvasObject.Dispose ();
+			CanvasObject = null;
+			BorderVM.Dispose ();
+			BorderVM = null;
+		}
 		/// <summary>
 		/// Gets or sets the canvas object.
 		/// </summary>

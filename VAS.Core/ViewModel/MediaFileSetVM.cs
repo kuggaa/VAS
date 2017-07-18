@@ -28,11 +28,19 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class MediaFileSetVM : CollectionViewModel<MediaFile, MediaFileVM>, IViewModel<MediaFileSet>
 	{
-		MediaFileSet model;
+		new MediaFileSet model;
 
 		public MediaFileSetVM ()
 		{
 			VisibleRegion = new TimeNodeVM ();
+		}
+
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			Model = null;
+			VisibleRegion.Dispose ();
+			VisibleRegion = null;
 		}
 
 		public new MediaFileSet Model {
@@ -41,9 +49,11 @@ namespace VAS.Core.ViewModel
 			}
 			set {
 				model = value;
-				base.Model = model.MediaFiles;
-				VisibleRegion.Model = model?.VisibleRegion ??
-					new TimeNode () { Start = new Time (0), Stop = new Time (0) };
+				if (model != null) {
+					base.Model = model.MediaFiles;
+					VisibleRegion.Model = model?.VisibleRegion ??
+						new TimeNode () { Start = new Time (0), Stop = new Time (0) };
+				}
 			}
 		}
 

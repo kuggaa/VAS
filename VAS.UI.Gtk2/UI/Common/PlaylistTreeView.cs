@@ -59,10 +59,8 @@ namespace VAS.UI.Common
 			}
 			set {
 				base.ViewModel = value;
-				if (value != null) {
-					playlistMenu.ViewModel = value.PlaylistMenu;
-					playlistElementMenu.ViewModel = value.PlaylistElementMenu;
-				}
+				playlistMenu.ViewModel = value?.PlaylistMenu;
+				playlistElementMenu.ViewModel = value?.PlaylistElementMenu;
 			}
 		}
 

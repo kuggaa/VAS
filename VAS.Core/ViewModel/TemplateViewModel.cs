@@ -86,6 +86,16 @@ namespace VAS.Core.ViewModel
 			GetNotifyCollection ().CollectionChanged += HandleViewModelsChanged;
 		}
 
+		protected override void DisposeManagedResources ()
+		{
+			GetNotifyCollection ().CollectionChanged -= HandleViewModelsChanged;
+			base.DisposeManagedResources ();
+			SubViewModel.Dispose ();
+			SubViewModel = null;
+			Selection.Clear ();
+			Selection = null;
+		}
+
 		public CollectionViewModel<TChildModel, TChildViewModel> SubViewModel {
 			get;
 			set;

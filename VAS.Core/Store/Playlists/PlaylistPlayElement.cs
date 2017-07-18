@@ -37,6 +37,14 @@ namespace VAS.Core.Store.Playlists
 			CamerasConfig = new ObservableCollection<CameraConfig> (play.CamerasConfig);
 		}
 
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			Play?.Dispose ();
+			Play = null;
+			CamerasConfig.Clear ();
+		}
+
 		/// <summary>
 		/// The event associated to this playlist element
 		/// </summary>

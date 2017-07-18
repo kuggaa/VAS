@@ -107,23 +107,23 @@ namespace VAS.Core.MVVMC
 			}
 		}
 
-		public override Task Start ()
+		public override async Task Start ()
 		{
+			await base.Start ();
 			if (ViewModel == null) {
 				throw new InvalidOperationException ($"The controller {GetType ()} needs a ViewModel before starting");
 			}
 			ConnectEvents ();
-			return base.Start ();
 		}
 
-		public override Task Stop ()
+		public override async Task Stop ()
 		{
+			await base.Stop ();
 			if (ViewModel == null) {
 				Log.Error ($"Controller {GetType ()} stopped without a ViewModel. This should never happen");
 				throw new InvalidOperationException ($"The controller {GetType ()} needs a ViewModel before stopping");
 			}
 			DisconnectEvents ();
-			return base.Stop ();
 		}
 
 		public override void SetViewModel (IViewModel viewModel)
