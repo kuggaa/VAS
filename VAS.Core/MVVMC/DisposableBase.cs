@@ -65,12 +65,12 @@ namespace VAS.Core.MVVMC
 		{
 			if (Disposed)
 				return;
+			Disposed = true;
 			if (disposing) {
 				Log.Verbose ($"Disposing {GetType ()}");
 				DisposeManagedResources ();
 			}
 			DisposeUnmanagedResources ();
-			Disposed = true;
 		}
 
 		protected bool Disposed { get; private set; } = false;
