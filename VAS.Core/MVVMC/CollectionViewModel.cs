@@ -120,25 +120,21 @@ namespace VAS.Core.MVVMC
 
 		protected virtual void SetModel (RangeObservableCollection<TModel> model)
 		{
-			if (Disposed) {
-				return;
-			}
 			if (ViewModels != null) {
 				ViewModels.CollectionChanged -= HandleViewModelsCollectionChanged;
+				ViewModels.Clear ();
 			}
 			if (this.model != null) {
 				this.model.CollectionChanged -= HandleModelsCollectionChanged;
 			}
-			ViewModels.Clear ();
 			modelToViewModel = new Dictionary<TModel, TViewModel> ();
 			this.model = model;
+			if (Disposed || model == null) {
+				return;
+			}
 			AddViewModels (0, this.model);
-			if (ViewModels != null) {
-				ViewModels.CollectionChanged += HandleViewModelsCollectionChanged;
-			}
-			if (this.model != null) {
-				this.model.CollectionChanged += HandleModelsCollectionChanged;
-			}
+			ViewModels.CollectionChanged += HandleViewModelsCollectionChanged;
+			this.model.CollectionChanged += HandleModelsCollectionChanged;
 		}
 
 		protected virtual void AddViewModels (int index, IEnumerable<TModel> models)

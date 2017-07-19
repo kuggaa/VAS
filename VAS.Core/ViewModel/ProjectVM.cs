@@ -61,7 +61,7 @@ namespace VAS.Core.ViewModel
 			FileSet.Dispose ();
 			Periods.Dispose ();
 		}
-		
+
 		/// <summary>
 		/// Gets the collection of periods in the project.
 		/// </summary>
@@ -200,7 +200,7 @@ namespace VAS.Core.ViewModel
 
 		protected override void SyncPreloadedModel ()
 		{
-			FileSet.Model = Model.FileSet;
+			FileSet.Model = Model?.FileSet;
 		}
 	}
 
