@@ -38,10 +38,12 @@ namespace VAS.Core.MVVMC
 			}
 			set {
 				base.Model = value;
-				synced = false;
-				SyncPreloadedModel ();
-				if (Model == null || Model.IsLoaded) {
-					SyncLoadedModel ();
+				if (!Disposed) {
+					synced = false;
+					SyncPreloadedModel ();
+					if (Model == null || Model.IsLoaded) {
+						SyncLoadedModel ();
+					}
 				}
 			}
 		}

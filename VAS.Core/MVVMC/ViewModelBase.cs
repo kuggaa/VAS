@@ -100,6 +100,7 @@ namespace VAS.Core.MVVMC
 		{
 			IgnoreEvents = true;
 			base.DisposeManagedResources ();
+			Model = null;
 		}
 
 		/// <summary>
