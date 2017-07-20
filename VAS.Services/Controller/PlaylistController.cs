@@ -18,6 +18,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,9 +37,8 @@ using VAS.Services.State;
 
 namespace VAS.Services.Controller
 {
-	public class PlaylistController : ControllerBase
+	public class PlaylistController : ControllerBase<PlaylistCollectionVM>
 	{
-		protected PlaylistCollectionVM playlistViewModel;
 		string confirmDeletePlaylist =
 			Catalog.GetString ("Do you really want to delete the selected playlist/s?");
 		string confirmDeletePlaylistElements =
@@ -103,13 +103,8 @@ namespace VAS.Services.Controller
 				return;
 			}
 
-			if (playlistViewModel != null) {
-				playlistViewModel.PropertyChanged -= HandlePropertyChanged;
-			}
-			playlistViewModel = ((IPlaylistCollectionDealer)viewModel).Playlists;
-			if (playlistViewModel != null) {
-				playlistViewModel.PropertyChanged += HandlePropertyChanged;
-			}
+			ViewModel = ((IPlaylistCollectionDealer)viewModel).Playlists;
+
 
 			PlayerVM = ((IVideoPlayerDealer)viewModel).VideoPlayer;
 		}
@@ -142,7 +137,7 @@ namespace VAS.Services.Controller
 				name = await App.Current.Dialogs.QueryMessage (Catalog.GetString ("Playlist name:"), null, name);
 				if (name != null) {
 					done = true;
-					if (playlistViewModel.ViewModels.Any (p => p.Name == name)) {
+					if (ViewModel.ViewModels.Any (p => p.Name == name)) {
 						string msg = Catalog.GetString ("A playlist already exists with the same name");
 						App.Current.Dialogs.ErrorMessage (msg);
 						done = false;
@@ -151,7 +146,7 @@ namespace VAS.Services.Controller
 			}
 			if (name != null) {
 				playlist = new Playlist { Name = name };
-				playlistViewModel.Model.Add (playlist);
+				ViewModel.Model.Add (playlist);
 				Save (playlist, true);
 				await App.Current.EventsBroker.Publish (new NewPlaylistEvent ());
 			}
@@ -181,7 +176,7 @@ namespace VAS.Services.Controller
 			if (playlist != null && ProjectViewModel == null) {
 				App.Current.DatabaseManager.ActiveDB.Delete (e.Playlist);
 			}
-			playlistViewModel.Model.Remove (e.Playlist);
+			ViewModel.Model.Remove (e.Playlist);
 			return AsyncHelpers.Return (true);
 		}
 
@@ -258,7 +253,7 @@ namespace VAS.Services.Controller
 			dynamic properties = new ExpandoObject ();
 			properties.PlaylistElement = e.Object;
 			await App.Current.StateController.MoveToModal (EditPlaylistElementState.NAME, properties, true);
-			var playlist = playlistViewModel.ViewModels.FirstOrDefault ((arg) => arg.ViewModels.Contains (e.Object));
+			var playlist = ViewModel.ViewModels.FirstOrDefault ((arg) => arg.ViewModels.Contains (e.Object));
 			if (playlist != null) {
 				Save (playlist.Model);
 			}
@@ -266,7 +261,7 @@ namespace VAS.Services.Controller
 
 		void InsertPlaylistElements (IPlaylistElement element, PlaylistPosition position)
 		{
-			foreach (var playlist in playlistViewModel.LimitedViewModels) {
+			foreach (var playlist in ViewModel.LimitedViewModels) {
 				bool save = false;
 				foreach (var ple in playlist.Selection) {
 					int index = playlist.ViewModels.IndexOf (ple);
@@ -288,7 +283,7 @@ namespace VAS.Services.Controller
 			bool questioned = false;
 			bool shouldRemove = true;
 
-			foreach (var playlistVM in playlistViewModel.Selection.ToList ()) {
+			foreach (var playlistVM in ViewModel.Selection.ToList ()) {
 				if (!questioned) {
 					if (!await App.Current.Dialogs.QuestionMessage (confirmDeletePlaylist, null)) {
 						break;
@@ -298,11 +293,11 @@ namespace VAS.Services.Controller
 				if (ProjectViewModel == null) {
 					App.Current.DatabaseManager.ActiveDB.Delete (playlistVM.Model);
 				}
-				playlistViewModel.Model.Remove (playlistVM.Model);
+				ViewModel.Model.Remove (playlistVM.Model);
 				removed = true;
 			}
 			if (!removed) {
-				foreach (var playlistVM in playlistViewModel.ViewModels) {
+				foreach (var playlistVM in ViewModel.ViewModels) {
 					if (!shouldRemove) {
 						break;
 					}
@@ -324,7 +319,7 @@ namespace VAS.Services.Controller
 					}
 				}
 			} else {
-				playlistViewModel.Selection.Clear ();
+				ViewModel.Selection.Clear ();
 			}
 			e.ReturnValue = true;
 		}
@@ -364,12 +359,13 @@ namespace VAS.Services.Controller
 			Save (e.ElementsToAdd.Key.Model, true);
 		}
 
-		void HandlePropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		protected override void HandleViewModelChanged (object sender, PropertyChangedEventArgs e)
 		{
+			base.HandleViewModelChanged (sender, e);
 			if (e.PropertyName == "Selection") {
-				playlistViewModel.DeleteCommand.EmitCanExecuteChanged ();
-				playlistViewModel.PlaylistMenu.UpdateCanExecute ();
-				playlistViewModel.PlaylistElementMenu.UpdateCanExecute ();
+				ViewModel.DeleteCommand.EmitCanExecuteChanged ();
+				ViewModel.PlaylistMenu.UpdateCanExecute ();
+				ViewModel.PlaylistElementMenu.UpdateCanExecute ();
 			}
 		}
 	}
