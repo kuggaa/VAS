@@ -17,6 +17,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using VAS.Core.Common;
@@ -82,11 +83,15 @@ namespace VAS.Core.MVVMC
 			return AsyncHelpers.Return ();
 		}
 
+		protected virtual void ConnectEvents () { }
+
+		protected virtual void DisconnectEvents () { }
+
 		#endregion
 	}
 
 	public class ControllerBase<TViewModel> : ControllerBase
-		where TViewModel : IViewModel
+		where TViewModel : class, IViewModel
 	{
 		TViewModel viewModel;
 
@@ -94,7 +99,6 @@ namespace VAS.Core.MVVMC
 			get {
 				return viewModel;
 			}
-
 			set {
 				if (started) {
 					throw new InvalidOperationException ("The ViewModel can't be changed while the controller is running");
@@ -103,9 +107,42 @@ namespace VAS.Core.MVVMC
 			}
 		}
 
+		public override Task Start ()
+		{
+			if (ViewModel == null) {
+				throw new InvalidOperationException ($"The controller {GetType ()} needs a ViewModel before starting");
+			}
+			ConnectEvents ();
+			return base.Start ();
+		}
+
+		public override Task Stop ()
+		{
+			if (ViewModel == null) {
+				Log.Error ($"Controller {GetType ()} stopped without a ViewModel. This should never happen");
+				throw new InvalidOperationException ($"The controller {GetType ()} needs a ViewModel before stopping");
+			}
+			DisconnectEvents ();
+			return base.Stop ();
+		}
+
 		public override void SetViewModel (IViewModel viewModel)
 		{
 			ViewModel = (TViewModel)viewModel;
+		}
+
+		protected override void ConnectEvents ()
+		{
+			ViewModel.PropertyChanged += HandleViewModelChanged;
+		}
+
+		protected override void DisconnectEvents ()
+		{
+			ViewModel.PropertyChanged -= HandleViewModelChanged;
+		}
+
+		protected virtual void HandleViewModelChanged (object sender, PropertyChangedEventArgs e)
+		{
 		}
 	}
 }
