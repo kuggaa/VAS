@@ -16,10 +16,18 @@ def format_viewbox(viewbox):
     return '[%s]' % ' '.join(["%r" % x for x in viewbox])
 
 def resize_svg(file_path, scale):
+    print "-- Processing {}".format(file_path)
     tree = ET.parse(file_path)
     svg = tree.getroot()
     if 'width' not in svg.keys() or 'height' not in svg.keys():
-        raise Exception('Width and Height not found in SVG header')
+
+        if 'viewBox' in svg.keys():
+            implysize = re.split('[ ,\t]+', svg.get('viewBox', '').strip())
+            svg.set('width', format_length(int(implysize[2])))
+            svg.set('height', format_length(int(implysize[3])))
+        else:
+            raise Exception('Width and Height not found in SVG header. Could not imply values from ViewBox')
+
     owidth = parse_length(svg.get('width'))
     oheight = parse_length(svg.get('height'))
     oviewbox = re.split('[ ,\t]+', svg.get('viewBox', '').strip())
@@ -53,12 +61,6 @@ def main ():
     files =  subprocess.check_output(["git", "ls-files", di]).split('\n')[:-1]
     files = [x for x in files if x.endswith('.svg') and not "@2x" in x]
     for f in files:
-        if f == "data/icons/hicolor/scalable/actions/vas-missing-video.svg" or \
-        f == "data/icons/hicolor/scalable/actions/vas-dialog-error.svg" or \
-        f == "icons/hicolor/scalable/actions/ra-tab-event-active" or \
-        f == "icons/hicolor/scalable/actions/ra-tab-project-active":
-         continue
-
         resize_svg(f, 2)
 
 if __name__ == '__main__':
