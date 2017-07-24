@@ -20,43 +20,13 @@ using VAS.Core.MVVMC;
 
 namespace VAS.Core.License
 {
-	/// <summary>
-	/// License limitation.
-	/// This class represent a generic count limitation.
-	/// </summary>
 	public class LicenseLimitation : BindableBase
 	{
-		int maximum;
-
 		/// <summary>
 		/// Gets or sets the name of the limitation.
 		/// </summary>
 		/// <value>The name of the limitation.</value>
 		public string Name { get; set; }
-
-		/// <summary>
-		/// Gets or sets the count of licensed items.
-		/// </summary>
-		/// <value>The count.</value>
-		public int Count { get; set; }
-
-		/// <summary>
-		/// Gets or sets the maximum number for the limitation.
-		/// </summary>
-		/// <value>The maximum.</value>
-		public int Maximum {
-			get {
-				// FIXME: Logic in the model?
-				int max = int.MaxValue;
-				if (Enabled) {
-					max = maximum;
-				}
-				return max;
-			}
-			set {
-				maximum = value;
-			}
-		}
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.License.LicenseLimitation"/> is enabled.

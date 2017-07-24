@@ -25,7 +25,7 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// LicenseLimitation ViewModel.
 	/// </summary>
-	public class LicenseLimitationVM : ViewModelBase<LicenseLimitation>
+	public class LicenseLimitationVM : ViewModelBase<CountLicenseLimitation>
 	{
 		Command upgradeCommand;
 
@@ -33,7 +33,7 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the model.
 		/// </summary>
 		/// <value>The model.</value>
-		public override LicenseLimitation Model {
+		public override CountLicenseLimitation Model {
 			get {
 				return base.Model;
 			}

@@ -102,7 +102,7 @@ namespace VAS.Services
 		/// Add the specified limitation by name.
 		/// </summary>
 		/// <param name="limitation">Limitation.</param>
-		public void Add (LicenseLimitation limitation, Command command = null)
+		public void Add (CountLicenseLimitation limitation, Command command = null)
 		{
 			if (Limitations.ContainsKey (limitation.Name)) {
 				throw new InvalidOperationException ("Limitations cannot be overwritten");
