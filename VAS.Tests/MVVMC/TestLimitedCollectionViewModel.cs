@@ -61,7 +61,7 @@ namespace VAS.Tests.MVVMC
 		[Test]
 		public void TestWithLimitationDisabledWithoutSort ()
 		{
-			LicenseLimitation ll = new LicenseLimitation { Enabled = false, Maximum = 2 };
+			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = false, Maximum = 2 };
 			col.SortByCreationDateDesc = false;
 
 			col.Limitation.Model = ll;
@@ -73,7 +73,7 @@ namespace VAS.Tests.MVVMC
 		[Test]
 		public void TestWithLimitationDisabledWithSort ()
 		{
-			LicenseLimitation ll = new LicenseLimitation { Enabled = false, Maximum = 2 };
+			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = false, Maximum = 2 };
 
 			col.Limitation.Model = ll;
 			col.Model.AddRange (players);
@@ -84,7 +84,7 @@ namespace VAS.Tests.MVVMC
 		[Test]
 		public void TestWithLimitationEnabledWithoutSort ()
 		{
-			LicenseLimitation ll = new LicenseLimitation { Enabled = true, Maximum = 2 };
+			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = true, Maximum = 2 };
 			col.SortByCreationDateDesc = false;
 
 			col.Limitation.Model = ll;
@@ -96,7 +96,7 @@ namespace VAS.Tests.MVVMC
 		[Test]
 		public void TestWithLimitationEnabledWithSort ()
 		{
-			LicenseLimitation ll = new LicenseLimitation { Enabled = true, Maximum = 2 };
+			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = true, Maximum = 2 };
 
 			col.Limitation.Model = ll;
 			col.Model.AddRange (players);
@@ -107,7 +107,7 @@ namespace VAS.Tests.MVVMC
 		[Test]
 		public void TestAddWithLimitationEnabledWithSort ()
 		{
-			LicenseLimitation ll = new LicenseLimitation { Enabled = true, Maximum = 3 };
+			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = true, Maximum = 3 };
 
 			col.Limitation.Model = ll;
 			col.Model.AddRange (players);
@@ -123,7 +123,7 @@ namespace VAS.Tests.MVVMC
 		[Test]
 		public void TestModifyMaxLimitationEnabledWithoutSort ()
 		{
-			LicenseLimitation ll = new LicenseLimitation { Enabled = true, Maximum = 3 };
+			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = true, Maximum = 3 };
 			col.SortByCreationDateDesc = false;
 			col.Limitation.Model = ll;
 			col.Model.AddRange (players);
@@ -141,7 +141,7 @@ namespace VAS.Tests.MVVMC
 		[Test]
 		public void TestModifyMaxLimitationEnabledWithSort ()
 		{
-			LicenseLimitation ll = new LicenseLimitation { Enabled = true, Maximum = 3 };
+			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = true, Maximum = 3 };
 
 			col.Limitation.Model = ll;
 			col.Model.AddRange (players);
@@ -159,7 +159,7 @@ namespace VAS.Tests.MVVMC
 		[Test]
 		public void TestModifyEnabledLimitationEnabledWithoutSort ()
 		{
-			LicenseLimitation ll = new LicenseLimitation { Enabled = false, Maximum = 3 };
+			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = false, Maximum = 3 };
 			col.SortByCreationDateDesc = false;
 			col.Limitation.Model = ll;
 			col.Model.AddRange (players);
@@ -177,7 +177,7 @@ namespace VAS.Tests.MVVMC
 		[Test]
 		public void TestModifyEnabledLimitationEnabledWithSort ()
 		{
-			LicenseLimitation ll = new LicenseLimitation { Enabled = false, Maximum = 3 };
+			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = false, Maximum = 3 };
 
 			col.Limitation.Model = ll;
 			col.Model.AddRange (players);
@@ -195,7 +195,7 @@ namespace VAS.Tests.MVVMC
 		[Test]
 		public void TestModifyEnabledLimitationEnableReversedWithoutSort ()
 		{
-			LicenseLimitation ll = new LicenseLimitation { Enabled = true, Maximum = 3 };
+			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = true, Maximum = 3 };
 			col.SortByCreationDateDesc = false;
 			col.Limitation.Model = ll;
 			col.Model.AddRange (players);
@@ -214,7 +214,7 @@ namespace VAS.Tests.MVVMC
 		[Test]
 		public void TestModifyEnabledLimitationEnabledReverseWithSort ()
 		{
-			LicenseLimitation ll = new LicenseLimitation { Enabled = true, Maximum = 3 };
+			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = true, Maximum = 3 };
 
 			col.Limitation.Model = ll;
 			col.Model.AddRange (players);
@@ -238,7 +238,7 @@ namespace VAS.Tests.MVVMC
 			bool getNotifyEqualsViewModel = false;
 			bool secondViewModelEqualsViewModel = false;
 
-			LicenseLimitation ll = new LicenseLimitation { Enabled = true, Maximum = 3 };
+			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = true, Maximum = 3 };
 			col.Limitation.Model = ll;
 
 			col.ViewModels.CollectionChanged += (sender, e) => receivedEvent = e;
@@ -269,7 +269,7 @@ namespace VAS.Tests.MVVMC
 		{
 			// Arrange
 			LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> collection = new LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> ();
-			collection.Limitation = new LicenseLimitationVM { Model = new LicenseLimitation { Maximum = 1, Enabled = true } };
+			collection.Limitation = new LicenseLimitationVM { Model = new CountLicenseLimitation { Maximum = 1, Enabled = true } };
 
 			// Act
 			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
@@ -287,7 +287,7 @@ namespace VAS.Tests.MVVMC
 		{
 			// Arrange
 			LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> collection = new LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> ();
-			collection.Limitation = new LicenseLimitationVM { Model = new LicenseLimitation { Maximum = 1, Enabled = true } };
+			collection.Limitation = new LicenseLimitationVM { Model = new CountLicenseLimitation { Maximum = 1, Enabled = true } };
 			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
 			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
 
@@ -308,7 +308,7 @@ namespace VAS.Tests.MVVMC
 		{
 			// Arrange
 			LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> collection = new LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> ();
-			collection.Limitation = new LicenseLimitationVM { Model = new LicenseLimitation { Maximum = 1, Enabled = true } };
+			collection.Limitation = new LicenseLimitationVM { Model = new CountLicenseLimitation { Maximum = 1, Enabled = true } };
 			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
 			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
 
@@ -329,7 +329,7 @@ namespace VAS.Tests.MVVMC
 		{
 			// Arrange
 			LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> collection = new LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> ();
-			collection.Limitation = new LicenseLimitationVM { Model = new LicenseLimitation { Maximum = 1, Enabled = true } };
+			collection.Limitation = new LicenseLimitationVM { Model = new CountLicenseLimitation { Maximum = 1, Enabled = true } };
 			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
 			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
 
@@ -350,7 +350,7 @@ namespace VAS.Tests.MVVMC
 		{
 			// Arrange
 			LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> collection = new LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> ();
-			collection.Limitation = new LicenseLimitationVM { Model = new LicenseLimitation { Maximum = 1, Enabled = true } };
+			collection.Limitation = new LicenseLimitationVM { Model = new CountLicenseLimitation { Maximum = 1, Enabled = true } };
 			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
 			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
 

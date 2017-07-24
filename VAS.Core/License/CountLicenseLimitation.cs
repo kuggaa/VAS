@@ -16,36 +16,39 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using System.Collections.Generic;
-using VAS.Core.License;
-using VAS.Core.MVVMC;
-using VAS.Core.ViewModel;
 
-namespace VAS.Core.Interfaces
+namespace VAS.Core.License
 {
 	/// <summary>
-	/// License limitations service.
-	/// This is the only point in the application where you can get the Limitation objects
+	/// License limitation.
+	/// This class represent a generic count limitation.
 	/// </summary>
-	public interface ILicenseLimitationsService : IService
+	public class CountLicenseLimitation : LicenseLimitation
 	{
-		/// <summary>
-		/// Gets the limitation.
-		/// </summary>
-		/// <returns>The limitation with the specified name, or null.</returns>
-		/// <param name="name">Limitation name.</param>
-		LicenseLimitationVM Get (string name);
+		int maximum;
 
 		/// <summary>
-		/// Gets all the limitations.
+		/// Gets or sets the count of licensed items.
 		/// </summary>
-		/// <returns>A collection with all the limitations.</returns>
-		IEnumerable<LicenseLimitationVM> GetAll ();
+		/// <value>The count.</value>
+		public int Count { get; set; }
 
 		/// <summary>
-		/// Add the specified limitation by name.
+		/// Gets or sets the maximum number for the limitation.
 		/// </summary>
-		/// <param name="limitation">Limitation.</param>
-		void Add (CountLicenseLimitation limitation, Command command = null);
+		/// <value>The maximum.</value>
+		public int Maximum {
+			get {
+				// FIXME: Logic in the model?
+				int max = int.MaxValue;
+				if (Enabled) {
+					max = maximum;
+				}
+				return max;
+			}
+			set {
+				maximum = value;
+			}
+		}
 	}
 }

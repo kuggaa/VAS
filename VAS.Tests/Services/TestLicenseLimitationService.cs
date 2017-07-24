@@ -34,18 +34,18 @@ namespace VAS.Tests.Services
 	public class TestLicenseLimitationService
 	{
 		ILicenseLimitationsService service;
-		LicenseLimitation limitationPlayers;
-		LicenseLimitation limitationPlayers2;
-		LicenseLimitation limitationTeams;
+		CountLicenseLimitation limitationPlayers;
+		CountLicenseLimitation limitationPlayers2;
+		CountLicenseLimitation limitationTeams;
 		Mock<ILicenseManager> mockLicenseManager;
 		Mock<ILicenseStatus> mockLicenseStatus;
 
 		[TestFixtureSetUp]
 		public void Init ()
 		{
-			limitationPlayers = new LicenseLimitation { Enabled = true, Maximum = 10, Name = "RAPlayers" };
-			limitationPlayers2 = new LicenseLimitation { Enabled = true, Maximum = 20, Name = "RAPlayers" };
-			limitationTeams = new LicenseLimitation { Enabled = true, Maximum = 5, Name = "Teams" };
+			limitationPlayers = new CountLicenseLimitation { Enabled = true, Maximum = 10, Name = "RAPlayers" };
+			limitationPlayers2 = new CountLicenseLimitation { Enabled = true, Maximum = 20, Name = "RAPlayers" };
+			limitationTeams = new CountLicenseLimitation { Enabled = true, Maximum = 5, Name = "Teams" };
 
 			mockLicenseManager = new Mock<ILicenseManager> ();
 			mockLicenseStatus = new Mock<ILicenseStatus> ();
@@ -104,7 +104,7 @@ namespace VAS.Tests.Services
 		[Test]
 		public void TestDisabledLimitation ()
 		{
-			service.Add (new LicenseLimitation {
+			service.Add (new CountLicenseLimitation {
 				Enabled = false,
 				Maximum = 10,
 				Count = 8,
@@ -127,7 +127,7 @@ namespace VAS.Tests.Services
 			mockLicenseStatus.SetupGet (obj => obj.Limited).Returns (true);
 
 			//Act
-			var limitation = new LicenseLimitation {
+			var limitation = new CountLicenseLimitation {
 				Enabled = false,
 				Maximum = 10,
 				Count = 8,
@@ -147,7 +147,7 @@ namespace VAS.Tests.Services
 			mockLicenseStatus.SetupGet (obj => obj.Limited).Returns (false);
 
 			//Act
-			var limitation = new LicenseLimitation {
+			var limitation = new CountLicenseLimitation {
 				Enabled = true,
 				Maximum = 10,
 				Count = 8,
