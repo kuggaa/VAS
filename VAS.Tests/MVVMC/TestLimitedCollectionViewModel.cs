@@ -36,7 +36,7 @@ namespace VAS.Tests.MVVMC
 		public void SetUp ()
 		{
 			col = new LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> ();
-			col.Limitation = new LicenseLimitationVM ();
+			col.Limitation = new CountLimitationVM ();
 			players = CreateDummyPlayers ();
 		}
 
@@ -269,7 +269,7 @@ namespace VAS.Tests.MVVMC
 		{
 			// Arrange
 			LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> collection = new LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> ();
-			collection.Limitation = new LicenseLimitationVM { Model = new CountLicenseLimitation { Maximum = 1, Enabled = true } };
+			collection.Limitation = new CountLimitationVM { Model = new CountLicenseLimitation { Maximum = 1, Enabled = true } };
 
 			// Act
 			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
@@ -287,7 +287,7 @@ namespace VAS.Tests.MVVMC
 		{
 			// Arrange
 			LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> collection = new LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> ();
-			collection.Limitation = new LicenseLimitationVM { Model = new CountLicenseLimitation { Maximum = 1, Enabled = true } };
+			collection.Limitation = new CountLimitationVM { Model = new CountLicenseLimitation { Maximum = 1, Enabled = true } };
 			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
 			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
 
@@ -308,7 +308,7 @@ namespace VAS.Tests.MVVMC
 		{
 			// Arrange
 			LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> collection = new LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> ();
-			collection.Limitation = new LicenseLimitationVM { Model = new CountLicenseLimitation { Maximum = 1, Enabled = true } };
+			collection.Limitation = new CountLimitationVM { Model = new CountLicenseLimitation { Maximum = 1, Enabled = true } };
 			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
 			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
 
@@ -329,7 +329,7 @@ namespace VAS.Tests.MVVMC
 		{
 			// Arrange
 			LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> collection = new LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> ();
-			collection.Limitation = new LicenseLimitationVM { Model = new CountLicenseLimitation { Maximum = 1, Enabled = true } };
+			collection.Limitation = new CountLimitationVM { Model = new CountLicenseLimitation { Maximum = 1, Enabled = true } };
 			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
 			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
 
@@ -350,7 +350,7 @@ namespace VAS.Tests.MVVMC
 		{
 			// Arrange
 			LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> collection = new LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> ();
-			collection.Limitation = new LicenseLimitationVM { Model = new CountLicenseLimitation { Maximum = 1, Enabled = true } };
+			collection.Limitation = new CountLimitationVM { Model = new CountLicenseLimitation { Maximum = 1, Enabled = true } };
 			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
 			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
 

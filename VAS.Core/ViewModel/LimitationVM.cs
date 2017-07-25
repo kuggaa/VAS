@@ -23,9 +23,46 @@ using VAS.Core.MVVMC;
 namespace VAS.Core.ViewModel
 {
 	/// <summary>
-	/// LicenseLimitation ViewModel.
+	/// Limitation ViewModel base class, used to Limit a something by using a LicenseLimitation as Model
 	/// </summary>
-	public class LicenseLimitationVM : ViewModelBase<CountLicenseLimitation>
+	public class LimitationVM : ViewModelBase<LicenseLimitation>
+	{
+		/// <summary>
+		/// Proxy property for LimitationName.
+		/// </summary>
+		/// <value>The name of the limitation.</value>
+		public string LimitationName {
+			get {
+				return Model?.Name;
+			}
+		}
+
+		/// <summary>
+		/// Proxy property for Enabled.
+		/// </summary>
+		/// <value><c>true</c> if enabled; otherwise, <c>false</c>.</value>
+		public bool Enabled {
+			get {
+				return Model?.Enabled ?? false;
+			}
+		}
+	}
+
+	/// <summary>
+	/// Feature limitation ViewModel, to limit application features.
+	/// It has the LimitationCommand that every ViewModel that has a FeatureLimitationVM
+	/// should use.
+	/// </summary>
+	public class FeatureLimitationVM : LimitationVM
+	{
+		//Used only for differentiation between a FeatureLimitationVM and a CountLimitationVM
+	}
+
+	/// <summary>
+	/// Count Limitation ViewModel, to limit the number of limited objects in the application
+	/// For example: projects, playlists, events, etc.
+	/// </summary>
+	public class CountLimitationVM : LimitationVM
 	{
 		Command upgradeCommand;
 
@@ -33,25 +70,15 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the model.
 		/// </summary>
 		/// <value>The model.</value>
-		public override CountLicenseLimitation Model {
+		public new CountLicenseLimitation Model {
 			get {
-				return base.Model;
+				return (CountLicenseLimitation)base.Model;
 			}
 			set {
 				base.Model = value;
 				if (UpgradeCommand != null) {
 					UpgradeCommand.Executable = Model.Enabled;
 				}
-			}
-		}
-
-		/// <summary>
-		/// Proxy property for LimitationNmae.
-		/// </summary>
-		/// <value>The name of the limitation.</value>
-		public string LimitationName {
-			get {
-				return Model?.Name;
 			}
 		}
 
@@ -75,16 +102,6 @@ namespace VAS.Core.ViewModel
 		public int Maximum {
 			get {
 				return Model?.Maximum ?? 0;
-			}
-		}
-
-		/// <summary>
-		/// Proxy property for Enabled.
-		/// </summary>
-		/// <value><c>true</c> if enabled; otherwise, <c>false</c>.</value>
-		public bool Enabled {
-			get {
-				return Model?.Enabled ?? false;
 			}
 		}
 

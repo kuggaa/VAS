@@ -26,7 +26,6 @@ using VAS.Core.Interfaces;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
-using VAS.Services.ViewModel;
 
 namespace VAS.UI.Menus
 {
@@ -86,7 +85,9 @@ namespace VAS.UI.Menus
 
 			// FIXME: Longomatch has not implemented the limitation service, remove the null check when it is done
 			if (App.Current.LicenseLimitationsService != null) {
-				LicenseLimitationVM limitation = App.Current.LicenseLimitationsService.Get ("Presentations");
+				//FIXME: Longomatch can have playlist at project level and application level, this should be reworked when count limitation
+				//applies to project (playlist) and application level (presentations)
+				CountLimitationVM limitation = App.Current.LicenseLimitationsService.Get<CountLimitationVM> ("Presentations");
 				if (limitation != null) {
 					item.Sensitive = limitation.Count < limitation.Maximum;
 				}
