@@ -30,9 +30,9 @@ namespace VAS.UI.Component
 	/// Widget to show limitations in the form [count/max][upgrade button].
 	/// </summary>
 	[System.ComponentModel.ToolboxItem (true)]
-	public partial class LimitationWidget : Gtk.Bin, IView<LicenseLimitationVM>
+	public partial class LimitationWidget : Gtk.Bin, IView<CountLimitationVM>
 	{
-		LicenseLimitationVM viewModel;
+		CountLimitationVM viewModel;
 		BindingContext ctx;
 
 		public LimitationWidget ()
@@ -45,9 +45,9 @@ namespace VAS.UI.Component
 			NoShowAll = true;
 			upgradeButton.ApplyStyleLimit ();
 			ctx = this.GetBindingContext ();
-			ctx.Add (upgradeButton.Bind (vm => ((LicenseLimitationVM)vm).UpgradeCommand));
-			ctx.Add (limit_label.Bind (vm => ((LicenseLimitationVM)vm).Maximum, new Int32Converter ()));
-			ctx.Add (count_label.Bind (vm => ((LicenseLimitationVM)vm).Count, new Int32Converter ()));
+			ctx.Add (upgradeButton.Bind (vm => ((CountLimitationVM)vm).UpgradeCommand));
+			ctx.Add (limit_label.Bind (vm => ((CountLimitationVM)vm).Maximum, new Int32Converter ()));
+			ctx.Add (count_label.Bind (vm => ((CountLimitationVM)vm).Count, new Int32Converter ()));
 		}
 
 		public override void Dispose ()
@@ -84,7 +84,7 @@ namespace VAS.UI.Component
 		/// Gets or sets the view model.
 		/// </summary>
 		/// <value>The view model.</value>
-		public LicenseLimitationVM ViewModel {
+		public CountLimitationVM ViewModel {
 			get {
 				return viewModel;
 			}
@@ -108,7 +108,7 @@ namespace VAS.UI.Component
 		/// <param name="viewModel">View model.</param>
 		public void SetViewModel (object viewModel)
 		{
-			ViewModel = (LicenseLimitationVM)viewModel;
+			ViewModel = (CountLimitationVM)viewModel;
 		}
 
 		void HandlePropertyChangedEventHandler (object sender, PropertyChangedEventArgs e)

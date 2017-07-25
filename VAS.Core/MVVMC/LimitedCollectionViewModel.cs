@@ -36,7 +36,7 @@ namespace VAS.Core.MVVMC
 		where TViewModel : IViewModel<TModel>, new()
 		where TModel : StorableBase
 	{
-		LicenseLimitationVM limitation;
+		CountLimitationVM limitation;
 		bool notifying;
 
 		/// <summary>
@@ -72,7 +72,7 @@ namespace VAS.Core.MVVMC
 		/// Gets or sets the limitation.
 		/// </summary>
 		/// <value>The limitation.</value>
-		public virtual LicenseLimitationVM Limitation {
+		public virtual CountLimitationVM Limitation {
 			get {
 				return limitation;
 			}
