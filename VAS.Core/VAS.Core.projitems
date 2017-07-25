@@ -265,6 +265,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\FileSystemManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)License\LicenseLimitation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\LimitationCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)License\FeatureLicenseLimitation.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

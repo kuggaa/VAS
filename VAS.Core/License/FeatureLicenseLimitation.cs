@@ -16,39 +16,17 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-
 namespace VAS.Core.License
 {
 	/// <summary>
-	/// Count License limitation.
-	/// This class represent a generic count limitation.
+	/// Feature license limitation.
+	/// Used for feature based limitations
 	/// </summary>
-	public class CountLicenseLimitation : LicenseLimitation
+	public class FeatureLicenseLimitation : LicenseLimitation
 	{
-		int maximum;
-
-		/// <summary>
-		/// Gets or sets the count of licensed items.
-		/// </summary>
-		/// <value>The count.</value>
-		public int Count { get; set; }
-
-		/// <summary>
-		/// Gets or sets the maximum number for the limitation.
-		/// </summary>
-		/// <value>The maximum.</value>
-		public int Maximum {
-			get {
-				// FIXME: Logic in the model?
-				int max = int.MaxValue;
-				if (Enabled) {
-					max = maximum;
-				}
-				return max;
-			}
-			set {
-				maximum = value;
-			}
+		public string FeatureName {
+			get;
+			set;
 		}
 	}
 }

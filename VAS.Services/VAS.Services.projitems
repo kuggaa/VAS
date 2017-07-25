@@ -42,6 +42,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Init.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ITeamCollectionDealer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)State\EditPlaylistElementState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)State\LimitationUpgradeState.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />
