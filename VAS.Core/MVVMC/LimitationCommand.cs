@@ -21,28 +21,55 @@ using System.Threading.Tasks;
 
 namespace VAS.Core.MVVMC
 {
+	/// <summary>
+	/// Limitation command, this commands adds an extra limitation
+	/// and can only be executed if the limitation passed in the
+	/// constructor is not enabled.
+	/// </summary>
 	public class LimitationCommand : Command
 	{
+		protected string limitationName;
+
 		protected LimitationCommand ()
 		{
 		}
 
 		public LimitationCommand (string limitationName, Action<object> execute) : base (execute)
 		{
-			LimitationName = limitationName;
+			Contract.Requires (execute != null);
+
+			this.limitationName = limitationName;
 		}
 
 		public LimitationCommand (string limitationName, Action execute) : base (execute)
 		{
-			LimitationName = limitationName;
+			Contract.Requires (execute != null);
+
+			this.limitationName = limitationName;
 		}
 
-		protected string LimitationName { get; set; }
+		public LimitationCommand (string limitationName, Action<object> execute, Func<object, bool> canExecute)
+			: base (execute, canExecute)
+		{
+			Contract.Requires (execute != null);
+			Contract.Requires (canExecute != null);
+
+			this.limitationName = limitationName;
+		}
+
+		public LimitationCommand (string limitationName, Action execute, Func<bool> canExecute)
+			: this (limitationName, o => execute (), o => canExecute ())
+		{
+			Contract.Requires (execute != null);
+			Contract.Requires (canExecute != null);
+		}
 
 		protected override Task InternalExecute (object parameter)
 		{
-
-			return base.InternalExecute (parameter);
+			if (App.Current.LicenseLimitationsService.CanExecuteFeature (limitationName)) {
+				return base.InternalExecute (parameter);
+			}
+			return App.Current.LicenseLimitationsService.MoveToUpgradeDialog (limitationName);
 		}
 	}
 
@@ -54,12 +81,29 @@ namespace VAS.Core.MVVMC
 
 			this.execute = execute;
 			Executable = true;
-			LimitationName = limitationName;
+			this.limitationName = limitationName;
 		}
 
-		public LimitationAsyncCommand (string limitationName, Func<Task> execute) : this (limitationName, o => execute ())
+		public LimitationAsyncCommand (string limitationName, Func<Task> execute)
+			: this (limitationName, o => execute ())
 		{
 			Contract.Requires (execute != null);
+		}
+
+		public LimitationAsyncCommand (string limitationName, Func<object, Task> execute, Func<object, bool> canExecute)
+			: this (limitationName, execute)
+		{
+			Contract.Requires (execute != null);
+			Contract.Requires (canExecute != null);
+
+			this.canExecute = canExecute;
+		}
+
+		public LimitationAsyncCommand (string limitationName, Func<Task> execute, Func<bool> canExecute)
+			: this (limitationName, o => execute (), o => canExecute ())
+		{
+			Contract.Requires (execute != null);
+			Contract.Requires (canExecute != null);
 		}
 	}
 
@@ -73,6 +117,20 @@ namespace VAS.Core.MVVMC
 		{
 			Contract.Requires (execute != null);
 		}
+
+		public LimitationCommand (string limitationName, Action<T> execute, Func<T, bool> canExecute)
+			: base (limitationName, o => execute ((T)o), o => canExecute ((T)o))
+		{
+			Contract.Requires (execute != null);
+			Contract.Requires (canExecute != null);
+		}
+
+		public LimitationCommand (string limitationName, Action<T> execute, Func<bool> canExecute)
+			: base (limitationName, o => execute ((T)o), (o) => canExecute ())
+		{
+			Contract.Requires (execute != null);
+			Contract.Requires (canExecute != null);
+		}
 	}
 
 	public class LimitationAsyncCommand<T> : LimitationCommand<T>
@@ -80,8 +138,25 @@ namespace VAS.Core.MVVMC
 		public LimitationAsyncCommand (string limitationName, Func<T, Task> execute)
 		{
 			Contract.Requires (execute != null);
+
 			this.execute = o => execute ((T)o);
-			LimitationName = limitationName;
+			this.limitationName = limitationName;
+		}
+
+		public LimitationAsyncCommand (string limitationName, Func<T, Task> execute, Func<T, bool> canExecute) : this (limitationName, execute)
+		{
+			Contract.Requires (execute != null);
+			Contract.Requires (canExecute != null);
+
+			this.canExecute = o => canExecute ((T)o);
+		}
+
+		public LimitationAsyncCommand (string limitationName, Func<T, Task> execute, Func<bool> canExecute) : this (limitationName, execute)
+		{
+			Contract.Requires (execute != null);
+			Contract.Requires (canExecute != null);
+
+			this.canExecute = o => canExecute ();
 		}
 	}
 }

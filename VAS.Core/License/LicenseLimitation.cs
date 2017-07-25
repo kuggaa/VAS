@@ -20,13 +20,17 @@ using VAS.Core.MVVMC;
 
 namespace VAS.Core.License
 {
+	/// <summary>
+	/// License limitation.
+	/// Base class for the limitations
+	/// </summary>
 	public class LicenseLimitation : BindableBase
 	{
 		/// <summary>
-		/// Gets or sets the name of the limitation.
+		/// Gets or sets the Registered name of the limitation.
 		/// </summary>
-		/// <value>The name of the limitation.</value>
-		public string Name { get; set; }
+		/// <value>The registered name of the limitation.</value>
+		public string RegisterName { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.License.LicenseLimitation"/> is enabled.

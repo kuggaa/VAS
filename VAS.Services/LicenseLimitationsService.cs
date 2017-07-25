@@ -17,12 +17,15 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
+using System.Threading.Tasks;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
 using VAS.Core.License;
 using VAS.Core.MVVMC;
 using VAS.Core.ViewModel;
+using VAS.Services.State;
 
 namespace VAS.Services
 {
@@ -31,11 +34,11 @@ namespace VAS.Services
 	/// </summary>
 	public abstract class LicenseLimitationsService : IService, ILicenseLimitationsService
 	{
-		protected Dictionary<string, LicenseLimitationVM> Limitations;
+		protected Dictionary<string, LimitationVM> Limitations;
 
 		public LicenseLimitationsService ()
 		{
-			Limitations = new Dictionary<string, LicenseLimitationVM> ();
+			Limitations = new Dictionary<string, LimitationVM> ();
 		}
 
 		/// <summary>
@@ -63,7 +66,8 @@ namespace VAS.Services
 		/// </summary>
 		public virtual bool Start ()
 		{
-			UpdateLimitatonVisibility ();
+			UpdateCountLimitations ();
+			UpdateFeatureLimitations ();
 			App.Current.EventsBroker.Subscribe<LicenseChangeEvent> (HandleLicenseChangeEvent);
 			return true;
 		}
@@ -78,24 +82,33 @@ namespace VAS.Services
 		}
 
 		/// <summary>
-		/// Gets the limitation.
+		/// Get the specified Limitation by name and type
 		/// </summary>
-		/// <returns>The limitation with the specified name, or null.</returns>
-		/// <param name="name">Limitation name.</param>
-		public LicenseLimitationVM Get (string name)
+		/// <param name="name">Limitation Name</param>
+		/// <typeparam name="T">The Limitation Type</typeparam>
+		public T Get<T> (string name) where T : LimitationVM
 		{
-			LicenseLimitationVM ret;
+			LimitationVM ret;
 			Limitations.TryGetValue (name, out ret);
-			return ret;
+			return ret as T;
 		}
 
 		/// <summary>
 		/// Gets all the limitations.
 		/// </summary>
 		/// <returns>A collection with all the limitations.</returns>
-		public IEnumerable<LicenseLimitationVM> GetAll ()
+		public IEnumerable<LimitationVM> GetAll ()
 		{
 			return Limitations.Values;
+		}
+
+		///// <summary>
+		///// Gets all the limitations of type T.
+		///// </summary>
+		///// <returns>A collection with all the limitations of type T</returns>
+		public IEnumerable<T> GetAll<T> () where T : LimitationVM
+		{
+			return Limitations.Values.OfType<T> ();
 		}
 
 		/// <summary>
@@ -104,29 +117,83 @@ namespace VAS.Services
 		/// <param name="limitation">Limitation.</param>
 		public void Add (CountLicenseLimitation limitation, Command command = null)
 		{
-			if (Limitations.ContainsKey (limitation.Name)) {
+			if (Limitations.ContainsKey (limitation.RegisterName)) {
 				throw new InvalidOperationException ("Limitations cannot be overwritten");
 			}
-			LicenseLimitationVM viewModel = new LicenseLimitationVM {
+			CountLimitationVM viewModel = new CountLimitationVM {
 				Model = limitation,
 			};
 			if (command != null) {
 				viewModel.UpgradeCommand = command;
 			}
-			Limitations [limitation.Name] = viewModel;
+			Limitations [limitation.RegisterName] = viewModel;
 		}
 
-		protected void UpdateLimitatonVisibility ()
+		/// <summary>
+		/// Add the specified feature limitation and command.
+		/// </summary>
+		/// <param name="limitation">Limitation.</param>
+		/// <param name="command">Limitation Command.</param>
+		public void Add (FeatureLicenseLimitation limitation)
+		{
+			if (Limitations.ContainsKey (limitation.RegisterName)) {
+				throw new InvalidOperationException ("Limitations cannot be overwritten");
+			}
+
+			FeatureLimitationVM viewModel = new FeatureLimitationVM {
+				Model = limitation
+			};
+			Limitations [limitation.RegisterName] = viewModel;
+		}
+
+		/// <summary>
+		/// Checks if a limitation feature can be executed
+		/// </summary>
+		/// <param name="name">Name of the feature limitation</param>
+		public bool CanExecuteFeature (string name)
+		{
+			var featureLimitVM = Get<FeatureLimitationVM> (name);
+
+			if (featureLimitVM == null) {
+				throw new InvalidOperationException ("Cannot get Feature, because it wasn't registered," +
+													 "register the feature prior calling this method");
+			}
+			return !featureLimitVM.Enabled;
+		}
+
+		/// <summary>
+		/// Moves to the upgrade dialog
+		/// </summary>
+		/// <returns>The Task of the transition </returns>
+		/// <param name="name">Name of the limitation</param>
+		public Task MoveToUpgradeDialog (string name)
+		{
+			var featureLimitVM = Get<FeatureLimitationVM> (name);
+
+			if (featureLimitVM == null) {
+				throw new InvalidOperationException ("Cannot get Feature, because it wasn't registered," +
+													 "register the feature prior calling this method");
+			}
+
+			dynamic properties = new ExpandoObject ();
+			properties.limitationVM = featureLimitVM;
+			return App.Current.StateController.MoveToModal (LimitationUpgradeState.NAME, properties);
+		}
+
+		protected void UpdateCountLimitations ()
 		{
 			bool enable = App.Current.LicenseManager.LicenseStatus.Limited;
-			foreach (var limitation in GetAll ().Select ((arg) => arg.Model)) {
+			foreach (var limitation in GetAll<CountLimitationVM> ().Select ((arg) => arg.Model)) {
 				limitation.Enabled = enable;
 			}
 		}
 
+		protected abstract void UpdateFeatureLimitations ();
+
 		void HandleLicenseChangeEvent (LicenseChangeEvent e)
 		{
-			UpdateLimitatonVisibility ();
+			UpdateCountLimitations ();
+			UpdateFeatureLimitations ();
 		}
 	}
 }

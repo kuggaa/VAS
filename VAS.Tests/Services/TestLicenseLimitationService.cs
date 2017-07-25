@@ -67,14 +67,14 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
-		public void TestAddLimitations ()
+		public void TestAddCountLimitations ()
 		{
 			service.Add (limitationPlayers);
 			service.Add (limitationTeams);
 
-			LicenseLimitationVM testLimitationPlayers = service.Get ("RAPlayers");
-			LicenseLimitationVM testLimitationTeams = service.Get ("Teams");
-			IEnumerable<LicenseLimitationVM> allLimitations = (service as DummyLicenseLimitationsService).GetAll ();
+			CountLimitationVM testLimitationPlayers = service.Get<CountLimitationVM> ("RAPlayers");
+			CountLimitationVM testLimitationTeams = service.Get<CountLimitationVM> ("Teams");
+			IEnumerable<LimitationVM> allLimitations = (service as DummyLicenseLimitationsService).GetAll ();
 
 			Assert.AreEqual (2, allLimitations.Count ());
 			Assert.IsTrue (testLimitationPlayers.Enabled);
@@ -92,10 +92,10 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
-		public void TestGetNonExisting ()
+		public void TestGetNonExisting_CountLimitation ()
 		{
-			LicenseLimitationVM limit = service.Get ("Non-existing limitation");
-			IEnumerable<LicenseLimitationVM> allLimitations = (service as DummyLicenseLimitationsService).GetAll ();
+			CountLimitationVM limit = service.Get<CountLimitationVM> ("Non-existing limitation");
+			IEnumerable<LimitationVM> allLimitations = (service as DummyLicenseLimitationsService).GetAll ();
 
 			Assert.AreEqual (0, allLimitations.Count ());
 			Assert.IsNull (limit);
@@ -111,8 +111,8 @@ namespace VAS.Tests.Services
 				Name = "Disabled"
 			});
 
-			LicenseLimitationVM limitation = service.Get ("Disabled");
-			IEnumerable<LicenseLimitationVM> allLimitations = (service as DummyLicenseLimitationsService).GetAll ();
+			CountLimitationVM limitation = service.Get<CountLimitationVM> ("Disabled");
+			IEnumerable<CountLimitationVM> allLimitations = (service as DummyLicenseLimitationsService).GetAll<CountLimitationVM> ();
 
 			Assert.AreEqual (1, allLimitations.Count ());
 			Assert.IsFalse (limitation.Enabled);

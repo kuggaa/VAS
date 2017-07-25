@@ -16,39 +16,24 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using VAS.Core.ViewModel;
 
-namespace VAS.Core.License
+namespace VAS.Services.State
 {
-	/// <summary>
-	/// Count License limitation.
-	/// This class represent a generic count limitation.
-	/// </summary>
-	public class CountLicenseLimitation : LicenseLimitation
+	public class LimitationUpgradeState : ScreenState<LimitationVM>
 	{
-		int maximum;
+		public const string NAME = "LimitationUpgrade";
 
-		/// <summary>
-		/// Gets or sets the count of licensed items.
-		/// </summary>
-		/// <value>The count.</value>
-		public int Count { get; set; }
-
-		/// <summary>
-		/// Gets or sets the maximum number for the limitation.
-		/// </summary>
-		/// <value>The maximum.</value>
-		public int Maximum {
+		public override string Name {
 			get {
-				// FIXME: Logic in the model?
-				int max = int.MaxValue;
-				if (Enabled) {
-					max = maximum;
-				}
-				return max;
+				return NAME;
 			}
-			set {
-				maximum = value;
-			}
+		}
+
+		protected override void CreateViewModel (dynamic data)
+		{
+			ViewModelOwner = false;
+			ViewModel = data.limitationVM;
 		}
 	}
 }

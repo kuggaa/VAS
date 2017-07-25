@@ -31,9 +31,9 @@ namespace VAS.Core.ViewModel
 		/// Proxy property for LimitationName.
 		/// </summary>
 		/// <value>The name of the limitation.</value>
-		public string LimitationName {
+		public string RegisterName {
 			get {
-				return Model?.Name;
+				return Model?.RegisterName;
 			}
 		}
 
@@ -55,7 +55,28 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class FeatureLimitationVM : LimitationVM
 	{
-		//Used only for differentiation between a FeatureLimitationVM and a CountLimitationVM
+		/// <summary>
+		/// Gets or sets the model.
+		/// </summary>
+		/// <value>The model.</value>
+		public new FeatureLicenseLimitation Model {
+			get {
+				return (FeatureLicenseLimitation)base.Model;
+			}
+			set {
+				base.Model = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets the name of the feature.
+		/// </summary>
+		/// <value>The name of the feature.</value>
+		public string FeatureName {
+			get {
+				return Model?.FeatureName;
+			}
+		}
 	}
 
 	/// <summary>
