@@ -16,11 +16,15 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using VAS.Core.ViewModel;
+using VAS.Services.ViewModel;
 
 namespace VAS.Services.State
 {
-	public class LimitationUpgradeState : ScreenState<LimitationVM>
+	/// <summary>
+	/// Upgrade limitation state, it is abstract because every application should
+	/// Configure the UpgradeLimitationVM
+	/// </summary>
+	public abstract class UpgradeLimitationState : ScreenState<UpgradeLimitationVM>
 	{
 		public const string NAME = "LimitationUpgrade";
 
@@ -28,12 +32,6 @@ namespace VAS.Services.State
 			get {
 				return NAME;
 			}
-		}
-
-		protected override void CreateViewModel (dynamic data)
-		{
-			ViewModelOwner = false;
-			ViewModel = data.limitationVM;
 		}
 	}
 }

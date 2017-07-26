@@ -265,6 +265,8 @@ namespace VAS.Core.Common
 
 		public const string RetryIcon = "vas-retry";
 
+		public const string UpgradeDialogBackground = "images/vas-upgrade-dialog-bg" + IMAGE_EXT;
+
 		public StyleConf ()
 		{
 			HomeTeamColor = Color.Red;

@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
+using VAS.Core;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
 using VAS.Core.License;
@@ -166,7 +167,7 @@ namespace VAS.Services
 		/// </summary>
 		/// <returns>The Task of the transition </returns>
 		/// <param name="name">Name of the limitation</param>
-		public Task MoveToUpgradeDialog (string name)
+		public Task<bool> MoveToUpgradeDialog (string name)
 		{
 			var featureLimitVM = Get<FeatureLimitationVM> (name);
 
@@ -174,10 +175,13 @@ namespace VAS.Services
 				throw new InvalidOperationException ("Cannot get Feature, because it wasn't registered," +
 													 "register the feature prior calling this method");
 			}
-
-			dynamic properties = new ExpandoObject ();
-			properties.limitationVM = featureLimitVM;
-			return App.Current.StateController.MoveToModal (LimitationUpgradeState.NAME, properties);
+			if (featureLimitVM.Enabled) {
+				dynamic properties = new ExpandoObject ();
+				properties.limitationVM = featureLimitVM;
+				return App.Current.StateController.MoveToModal (UpgradeLimitationState.NAME, properties);
+			} else {
+				return AsyncHelpers.Return (false);
+			}
 		}
 
 		protected void UpdateCountLimitations ()
