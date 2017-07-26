@@ -120,7 +120,7 @@ namespace VAS.UI.Helpers
 
 				label.SetLinkHandler (url => {
 					try {
-						AdsUrlHelper.Start (url);
+						Utils.OpenURL (url);
 					} catch (Exception ex) {
 						Log.WarningFormat ("Could not spawn process for url {0}\n{1}",
 							url, ex);

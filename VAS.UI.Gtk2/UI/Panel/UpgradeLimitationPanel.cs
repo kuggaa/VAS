@@ -207,7 +207,7 @@ namespace VAS.UI.Panel
 
 		void HandleLinkClicked (string obj)
 		{
-			AdsUrlHelper.Start (obj);
+			Utils.OpenURL (obj);
 		}
 	}
 }
