@@ -43,7 +43,6 @@ namespace VAS.UI.Panel
 		const int APPLY_SIZE = 13;
 		const int UNDECIDED_LABEL_SIZE = 10;
 
-
 		UpgradeLimitationVM viewModel;
 		BindingContext ctx;
 		ImageView captionBackground;
@@ -61,6 +60,7 @@ namespace VAS.UI.Panel
 			featuresCaption.ModifyFont (FontDescription.FromString ($"{App.Current.Style.Font} light {FEATURE_LABEL_SIZE}px"));
 
 			upgradeButton2 = ButtonHelper.CreateButton ();
+			upgradeButton2.Name = StyleConf.ButtonCallToActionRounded;
 			upgradeButton2.WidthRequest = 240;
 			upgradeButton2.HeightRequest = 40;
 			upgradeButton2.ModifyFont (FontDescription.FromString ($"{App.Current.Style.Font} bold {FEATURE_LABEL_SIZE}px"));
