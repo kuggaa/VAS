@@ -44,6 +44,15 @@ namespace VAS.Core.Store.Playlists
 			CreationDate = LastModified = DateTime.Now;
 		}
 
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			foreach (var element in Elements.OfType<IDisposable> ()) {
+				element.Dispose ();
+			}
+			Elements.Clear ();
+		}
+
 		#endregion
 
 		#region Properties

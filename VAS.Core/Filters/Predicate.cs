@@ -23,6 +23,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
+using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
 
@@ -73,10 +74,19 @@ namespace VAS.Core.Filters
 
 		public CompositePredicate ()
 		{
-			Elements = new ObservableCollection<IPredicate<T>> ();
+			Elements = new RangeObservableCollection<IPredicate<T>> ();
 		}
 
-		public ObservableCollection<IPredicate<T>> Elements {
+		protected override void DisposeManagedResources ()
+		{
+			Elements.IgnoreEvents = true;
+			base.DisposeManagedResources ();
+			Elements.Clear ();
+			expression = a => false;
+			UpdatePredicate ();
+		}
+
+		public RangeObservableCollection<IPredicate<T>> Elements {
 			get;
 			private set;
 		}

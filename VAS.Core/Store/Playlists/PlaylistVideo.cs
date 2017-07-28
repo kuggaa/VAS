@@ -32,6 +32,13 @@ namespace VAS.Core.Store.Playlists
 			File = file;
 		}
 
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			File.Dispose ();
+			File = null;
+		}
+
 		public MediaFile File {
 			get;
 			set;

@@ -28,7 +28,7 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// ViewModel for a Playlist containing a collection of <see cref="PlaylistElementVM"/>.
 	/// </summary>
-	public class PlaylistVM : NestedSubViewModel<Playlist, PlaylistVM, IPlaylistElement, PlaylistElementVM>
+	public class PlaylistVM : NestedSubViewModel<Playlist, IPlaylistElement, PlaylistElementVM>
 	{
 		public PlaylistVM ()
 		{

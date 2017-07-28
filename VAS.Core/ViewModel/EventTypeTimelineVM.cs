@@ -40,6 +40,12 @@ namespace VAS.Core.ViewModel
 		{
 		}
 
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			EventTypeVM = null;
+		}
+
 		public EventType Model {
 			get {
 				return EventTypeVM.Model;

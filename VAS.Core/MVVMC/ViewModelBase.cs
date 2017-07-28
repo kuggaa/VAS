@@ -96,6 +96,13 @@ namespace VAS.Core.MVVMC
 	{
 		T model;
 
+		protected override void DisposeManagedResources ()
+		{
+			IgnoreEvents = true;
+			base.DisposeManagedResources ();
+			Model = null;
+		}
+
 		/// <summary>
 		/// Gets or sets the model used by this ViewModel.
 		/// We disable Foody's equality check since we work sometimes with
@@ -110,7 +117,9 @@ namespace VAS.Core.MVVMC
 			}
 			set {
 				model = value;
-				Sync ();
+				if (!IgnoreEvents) {
+					Sync ();
+				}
 			}
 		}
 

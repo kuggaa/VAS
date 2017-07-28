@@ -39,6 +39,8 @@ using Timer = System.Threading.Timer;
 
 namespace VAS.Services
 {
+	// FIXME: This should inherit from ControllerBase<VideoPlayerVM> in order to manage events correctly
+	// but we need to refactor the way AnalysisHelperState is working.
 	public class VideoPlayerController : ControllerBase, IVideoPlayerController
 	{
 		public event TimeChangedHandler TimeChangedEvent;
@@ -132,6 +134,7 @@ namespace VAS.Services
 			player.Dispose ();
 			player = null;
 			FileSet = null;
+			loadedPlaylist = null;
 		}
 
 		#endregion

@@ -13,6 +13,13 @@ namespace VAS.Drawing.CanvasObjects.Statistics
 	{
 		BarChartVM viewModel;
 
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			ViewModel.Dispose ();
+			ViewModel = null;
+		}
+
 		public BarChartVM ViewModel {
 			get {
 				return viewModel;
