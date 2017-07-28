@@ -348,11 +348,6 @@ namespace VAS
 
 		#region Properties
 
-		public Image Background {
-			get;
-			set;
-		}
-
 		public string Copyright {
 			get;
 			set;
