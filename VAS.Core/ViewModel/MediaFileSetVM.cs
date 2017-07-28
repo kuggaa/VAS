@@ -28,7 +28,7 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// A ViewModel for <see cref="MediaFileSet"/>.
 	/// </summary>
-	public class MediaFileSetVM : NestedSubViewModel<MediaFileSet, MediaFileSetVM, MediaFile, MediaFileVM>
+	public class MediaFileSetVM : NestedSubViewModel<MediaFileSet, MediaFile, MediaFileVM>
 	{
 		public MediaFileSetVM ()
 		{
