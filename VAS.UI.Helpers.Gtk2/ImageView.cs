@@ -73,7 +73,8 @@ namespace VAS.UI.Helpers
 		protected override void OnDestroyed ()
 		{
 			Log.Verbose ($"Destroying {GetType ()}");
-			Image.Dispose ();
+			// FIXME: We should dispose this but it crashes things like the subtoolbar
+			//Image.Dispose ();
 			Image = null;
 			base.OnDestroyed ();
 
