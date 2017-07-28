@@ -83,7 +83,7 @@ namespace VAS.Tests.Core.ViewModel
 			playerController.SetupAllProperties ();
 			var viewModel = new VideoPlayerVM { Player = playerController.Object };
 
-			viewModel.SetZoom (3);
+			viewModel.SetZoomCommand.Execute (3);
 
 			playerController.Verify (p => p.SetZoom (3));
 		}
