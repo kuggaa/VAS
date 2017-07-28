@@ -50,12 +50,22 @@ namespace VAS.Core.ViewModel
 			Name = name;
 		}
 
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			Command = null;
+			CommandParameter = null;
+			Submenu?.Dispose ();
+			Submenu = null;
+		}
+
 		/// <summary>
 		/// Gets the command to execute
 		/// </summary>
 		/// <value>The command.</value>
 		public Command Command {
 			get;
+			private set;
 		}
 
 		/// <summary>
@@ -64,6 +74,7 @@ namespace VAS.Core.ViewModel
 		/// <value>The command parameter.</value>
 		public object CommandParameter {
 			get;
+			private set;
 		}
 
 		/// <summary>
@@ -72,6 +83,7 @@ namespace VAS.Core.ViewModel
 		/// <value>The submenu.</value>
 		public MenuVM Submenu {
 			get;
+			private set;
 		}
 
 		/// <summary>

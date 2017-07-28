@@ -42,6 +42,7 @@ namespace VAS.Services.Controller
 
 		protected override void DisposeManagedResources ()
 		{
+			ViewModel.IgnoreEvents = true;
 			base.DisposeManagedResources ();
 			ViewModel = null;
 		}

@@ -41,6 +41,21 @@ namespace VAS.Core.MVVMC
 			Selection = new RangeObservableCollection<VMChilds> ();
 		}
 
+		protected override void DisposeManagedResources ()
+		{
+			ViewModels.IgnoreEvents = true;
+			Selection.IgnoreEvents = true;
+			base.DisposeManagedResources ();
+			if (ViewModels != null && ViewModels.Any ()) {
+				foreach (var viewModel in ViewModels) {
+					viewModel.Dispose ();
+				}
+				ViewModels.Clear ();
+			}
+			ViewModels = null;
+			Selection.Clear ();
+		}
+
 		/// <summary>
 		/// Gets the collection of child ViewModel
 		/// </summary>
@@ -107,8 +122,7 @@ namespace VAS.Core.MVVMC
 			} else if (Selection.Count == 1) {
 				Selection [0] = viewModel;
 			} else {
-				Selection.Clear ();
-				Selection.Add (viewModel);
+				Selection.Replace (viewModel.ToEnumerable ());
 			}
 		}
 

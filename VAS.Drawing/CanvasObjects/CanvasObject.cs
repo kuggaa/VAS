@@ -188,6 +188,12 @@ namespace VAS.Drawing.CanvasObjects
 
 		int selectionSize = 3;
 
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			IDrawableObject = null;
+		}
+
 		public IBlackboardObject IDrawableObject {
 			get {
 				return Drawable;

@@ -141,7 +141,9 @@ namespace VAS.Core.Common
 			string fileNameTmp, result = "";
 			foreach (string dataDir in App.Current.DataDir) {
 				fileNameTmp = Path.Combine (dataDir, filename);
+				Log.Verbose ($"Looking for data in {fileNameTmp}");
 				if (File.Exists (fileNameTmp)) {
+					Log.Verbose ($"Found {fileNameTmp}");
 					result = fileNameTmp;
 				}
 			}

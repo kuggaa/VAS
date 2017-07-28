@@ -19,6 +19,7 @@ using System;
 using Gdk;
 using Gtk;
 using VAS.Core;
+using VAS.Core.Common;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
@@ -52,29 +53,45 @@ namespace VAS.UI.Panel
 			Bind ();
 		}
 
-		/// <summary>
-		/// Occurs when the view is destroyed.
-		/// </summary>
-		protected override void OnDestroyed ()
-		{
-			OnUnload ();
-			base.OnDestroyed ();
-		}
-
-		/// <summary>
-		/// Releases all resource used by the <see cref="T:VAS.UI.UI.Panel.PreferencesPanel"/> object.
-		/// </summary>
-		/// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="T:VAS.UI.UI.Panel.PreferencesPanel"/>. The
-		/// <see cref="Dispose"/> method leaves the <see cref="T:VAS.UI.UI.Panel.PreferencesPanel"/> in an unusable state.
-		/// After calling <see cref="Dispose"/>, you must release all references to the
-		/// <see cref="T:VAS.UI.UI.Panel.PreferencesPanel"/> so the garbage collector can reclaim the memory that the
-		/// <see cref="T:VAS.UI.UI.Panel.PreferencesPanel"/> was occupying.</remarks>
 		public override void Dispose ()
 		{
-			Destroy ();
+			Dispose (true);
 			base.Dispose ();
 		}
 
+		protected virtual void Dispose (bool disposing)
+		{
+			if (Disposed) {
+				return;
+			}
+			if (disposing) {
+				Destroy ();
+			}
+			Disposed = true;
+		}
+
+
+		/// <Docs>Invoked to request that references to the object be released.</Docs>
+		/// <see cref="T:Gtk.Object's"></see>
+		/// <see cref="T:Gtk.Object.Destroy"></see>
+		/// <summary>
+		/// Raises the destroyed event.
+		/// </summary>
+		protected override void OnDestroyed ()
+		{
+			Log.Verbose ($"Destroying {GetType ()}");
+
+			ViewModel.Dispose ();
+			ViewModel = null;
+			ctx?.Dispose ();
+			ctx = null;
+
+			base.OnDestroyed ();
+
+			Disposed = true;
+		}
+
+		protected bool Disposed { get; private set; } = false;
 		/// <summary>
 		/// Gets the title.
 		/// </summary>

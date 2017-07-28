@@ -47,6 +47,42 @@ namespace VAS.UI.Helpers
 			this.image = image;
 		}
 
+		public override void Dispose ()
+		{
+			Dispose (true);
+			base.Dispose ();
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (Disposed) {
+				return;
+			}
+			if (disposing) {
+				Destroy ();
+			}
+			Disposed = true;
+		}
+
+		/// <Docs>Invoked to request that references to the object be released.</Docs>
+		/// <see cref="T:Gtk.Object's"></see>
+		/// <see cref="T:Gtk.Object.Destroy"></see>
+		/// <summary>
+		/// Raises the destroyed event.
+		/// </summary>
+		protected override void OnDestroyed ()
+		{
+			Log.Verbose ($"Destroying {GetType ()}");
+			// FIXME: We should dispose this but it crashes things like the subtoolbar
+			//Image.Dispose ();
+			Image = null;
+			base.OnDestroyed ();
+
+			Disposed = true;
+		}
+
+		protected bool Disposed { get; private set; } = false;
+
 		/// <summary>
 		/// Gets or sets the image to render.
 		/// </summary>
@@ -57,8 +93,10 @@ namespace VAS.UI.Helpers
 			}
 			set {
 				image = value;
-				QueueDraw ();
-				QueueResize ();
+				if (image != null) {
+					QueueDraw ();
+					QueueResize ();
+				}
 			}
 		}
 

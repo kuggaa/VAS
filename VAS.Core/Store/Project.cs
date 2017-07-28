@@ -69,10 +69,35 @@ namespace VAS.Core.Store
 		{
 			base.DisposeManagedResources ();
 			Dashboard?.Dispose ();
+			FileSet.Dispose ();
 			if (Timeline != null) {
 				foreach (TimelineEvent evt in Timeline) {
 					evt.Dispose ();
 				}
+			}
+			if (EventTypes != null) {
+				foreach (var eventType in EventTypes) {
+					eventType.Dispose ();
+				}
+				EventTypes.Clear ();
+			}
+			if (Timers != null) {
+				foreach (var element in Timers) {
+					element.Dispose ();
+				}
+				Timers.Clear ();
+			}
+			if (Periods != null) {
+				foreach (var element in Periods) {
+					element.Dispose ();
+				}
+				Periods.Clear ();
+			}
+			if (Playlists != null) {
+				foreach (var element in Playlists) {
+					element.Dispose ();
+				}
+				Playlists.Clear ();
 			}
 		}
 

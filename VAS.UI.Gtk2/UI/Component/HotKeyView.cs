@@ -17,6 +17,7 @@
 //
 using System;
 using Gtk;
+using VAS.Core.Common;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.ViewModel;
@@ -41,6 +42,42 @@ namespace VAS.UI.Component
 			Bind ();
 			ButtonHelper.ApplyStyleDialog (hotKeyButton);
 		}
+
+		public override void Dispose ()
+		{
+			Dispose (true);
+			base.Dispose ();
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (Disposed) {
+				return;
+			}
+			if (disposing) {
+				Destroy ();
+			}
+			Disposed = true;
+		}
+
+		protected override void OnDestroyed ()
+		{
+			Log.Verbose ($"Destroying {GetType ()}");
+
+			ctx.Dispose ();
+			ctx = null;
+			ViewModel.Dispose ();
+			ViewModel = null;
+			hotkeyLabel.Dispose ();
+			hotkeyLabel = null;
+
+			base.OnDestroyed ();
+
+			Disposed = true;
+		}
+
+		protected bool Disposed { get; private set; } = false;
+
 
 		/// <summary>
 		/// Gets or sets the view model.

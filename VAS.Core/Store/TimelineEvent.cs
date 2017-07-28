@@ -59,8 +59,18 @@ namespace VAS.Core.Store
 			base.DisposeManagedResources ();
 			Miniature?.Dispose ();
 			foreach (var drawing in Drawings) {
-				drawing.Miniature?.Dispose ();
+				drawing.Dispose ();
 			}
+			Drawings.Clear ();
+			foreach (var tag in Tags) {
+				tag.Dispose ();
+			}
+			Tags.Clear ();
+			Players.Clear ();
+			Teams.Clear ();
+			Project = null;
+			Storage = null;
+			EventType = null;
 		}
 
 		#endregion
