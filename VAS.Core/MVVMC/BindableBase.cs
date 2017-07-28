@@ -51,7 +51,6 @@ namespace VAS.Core.MVVMC
 		{
 			IgnoreEvents = true;
 			base.DisposeManagedResources ();
-			ConnectChild (this, null);
 		}
 
 		#region IChanged implementation
