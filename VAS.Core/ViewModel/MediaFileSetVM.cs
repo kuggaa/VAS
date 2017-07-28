@@ -15,8 +15,10 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using System.ComponentModel;
 using System.Linq;
+using VAS.Core.Common;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
@@ -26,10 +28,8 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// A ViewModel for <see cref="MediaFileSet"/>.
 	/// </summary>
-	public class MediaFileSetVM : CollectionViewModel<MediaFile, MediaFileVM>, IViewModel<MediaFileSet>
+	public class MediaFileSetVM : NestedSubViewModel<MediaFileSet, MediaFileSetVM, MediaFile, MediaFileVM>
 	{
-		new MediaFileSet model;
-
 		public MediaFileSetVM ()
 		{
 			VisibleRegion = new TimeNodeVM ();
@@ -43,14 +43,10 @@ namespace VAS.Core.ViewModel
 			VisibleRegion = null;
 		}
 
-		public new MediaFileSet Model {
-			get {
-				return model;
-			}
+		public override MediaFileSet Model {
 			set {
-				model = value;
+				base.Model = value;
 				if (model != null) {
-					base.Model = model.MediaFiles;
 					VisibleRegion.Model = model?.VisibleRegion ??
 						new TimeNode () { Start = new Time (0), Stop = new Time (0) };
 				}
@@ -104,13 +100,9 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
-		/// <summary>
-		/// Gets the file path.
-		/// </summary>
-		/// <value>The file path.</value>
-		public string FilePath {
+		public override RangeObservableCollection<MediaFile> ChildModels {
 			get {
-				return (Model.FirstOrDefault ()).FilePath;
+				return Model?.MediaFiles;
 			}
 		}
 
