@@ -39,7 +39,7 @@ namespace VAS.Tests.MVVMC
 	{
 	}
 
-	public class DummyNestedSubVM : NestedSubViewModel<DummyModelWithChildren, DummyNestedSubVM, DummyModelChild, DummyModelChildVM>
+	public class DummyNestedSubVM : NestedSubViewModel<DummyModelWithChildren, DummyModelChild, DummyModelChildVM>
 	{
 		public override RangeObservableCollection<DummyModelChild> ChildModels {
 			get {
