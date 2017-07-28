@@ -47,6 +47,12 @@ namespace VAS.Core.ViewModel
 
 		protected override void DisposeManagedResources ()
 		{
+			Timers.IgnoreEvents = true;
+			Timeline.IgnoreEvents = true;
+			Playlists.IgnoreEvents = true;
+			EventTypes.IgnoreEvents = true;
+			FileSet.IgnoreEvents = true;
+			Periods.IgnoreEvents = true;
 			base.DisposeManagedResources ();
 			Timers.Dispose ();
 			Timeline.Dispose ();
@@ -55,7 +61,7 @@ namespace VAS.Core.ViewModel
 			FileSet.Dispose ();
 			Periods.Dispose ();
 		}
-		
+
 		/// <summary>
 		/// Gets the collection of periods in the project.
 		/// </summary>
@@ -194,7 +200,7 @@ namespace VAS.Core.ViewModel
 
 		protected override void SyncPreloadedModel ()
 		{
-			FileSet.Model = Model.FileSet;
+			FileSet.Model = Model?.FileSet;
 		}
 	}
 

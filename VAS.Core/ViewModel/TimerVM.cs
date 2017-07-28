@@ -26,7 +26,7 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// ViewModel for <see cref="Timer"/> objects.
 	/// </summary>
-	public class TimerVM : NestedSubViewModel<Timer, TimerVM, TimeNode, TimeNodeVM>
+	public class TimerVM : NestedSubViewModel<Timer, TimeNode, TimeNodeVM>
 	{
 
 		/// <summary>

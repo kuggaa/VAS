@@ -57,7 +57,7 @@ namespace VAS.Core
 				return await MoveToHome (true);
 			} catch (Exception ex) {
 				Log.Exception (ex);
-				return false;
+				throw;
 			}
 		}
 
@@ -131,7 +131,7 @@ namespace VAS.Core
 				return await PushNavigationState (transition, state);
 			} catch (Exception ex) {
 				Log.Exception (ex);
-				return false;
+				throw;
 			}
 		}
 
@@ -173,7 +173,7 @@ namespace VAS.Core
 				return ok;
 			} catch (Exception ex) {
 				Log.Exception (ex);
-				return false;
+				throw;
 			}
 		}
 
@@ -214,7 +214,7 @@ namespace VAS.Core
 				return true;
 			} catch (Exception ex) {
 				Log.Exception (ex);
-				return false;
+				throw;
 			}
 		}
 
@@ -244,7 +244,7 @@ namespace VAS.Core
 				return await PopToNavigationState (state);
 			} catch (Exception ex) {
 				Log.Exception (ex);
-				return false;
+				throw;
 			}
 		}
 
@@ -263,7 +263,7 @@ namespace VAS.Core
 				return await MoveTo (home.Name, null, true, forceMove);
 			} catch (Exception ex) {
 				Log.Exception (ex);
-				return false;
+				throw;
 			}
 		}
 

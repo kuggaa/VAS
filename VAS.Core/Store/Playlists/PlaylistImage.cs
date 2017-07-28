@@ -38,6 +38,15 @@ namespace VAS.Core.Store.Playlists
 			Duration = duration;
 		}
 
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			Image?.Dispose ();
+			Image = null;
+			Miniature?.Dispose ();
+			Miniature = null;
+		}
+
 		public Image Image {
 			get;
 			set;

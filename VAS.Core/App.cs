@@ -125,6 +125,7 @@ namespace VAS
 					Log.Warning ("Prefix directory not found");
 				App.Current.DataDir.Add (App.Current.RelativeToPrefix (Path.Combine ("share", softwareName.ToLower ())));
 			}
+			Log.Debug ($"DataDir = [{string.Join (", ", App.Current.DataDir)}]");
 
 			if (Utils.OS == OperatingSystemID.Android) {
 				home = App.Current.baseDirectory;

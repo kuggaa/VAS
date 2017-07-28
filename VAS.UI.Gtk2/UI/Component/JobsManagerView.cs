@@ -71,7 +71,12 @@ namespace VAS.UI.UI.Component
 		{
 			Log.Verbose ($"Destroying {GetType ()}");
 
-			OnUnload ();
+			ctx.Dispose ();
+			ctx = null;
+			ViewModel.Dispose ();
+			ViewModel = null;
+			treeview.Dispose ();
+			treeview = null;
 
 			base.OnDestroyed ();
 

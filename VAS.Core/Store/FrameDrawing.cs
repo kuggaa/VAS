@@ -25,7 +25,7 @@ namespace VAS.Core.Store
 {
 
 	[Serializable]
-	public class FrameDrawing: BindableBase
+	public class FrameDrawing : BindableBase
 	{
 		const int DEFAULT_PAUSE_TIME = 5000;
 
@@ -41,6 +41,17 @@ namespace VAS.Core.Store
 			Drawables = new ObservableCollection<Drawable> ();
 			CameraConfig = new CameraConfig (0);
 			RegionOfInterest = new Area ();
+		}
+
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			Miniature?.Dispose ();
+			Freehand?.Dispose ();
+			foreach (var drawable in Drawables) {
+				drawable.Dispose ();
+			}
+			Drawables.Clear ();
 		}
 
 		public Image Miniature {

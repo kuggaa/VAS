@@ -51,6 +51,10 @@ namespace VAS.UI.Menus
 		protected override void OnDestroyed ()
 		{
 			Log.Verbose ($"Destroying {GetType ()}");
+
+			ViewModel?.Dispose ();
+			ViewModel = null;
+
 			base.OnDestroyed ();
 
 			Disposed = true;

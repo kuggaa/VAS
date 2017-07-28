@@ -121,6 +121,15 @@ namespace VAS.Core.Store
 			Tags = new ObservableCollection<Tag> ();
 		}
 
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			foreach (var tag in Tags) {
+				tag.Dispose ();
+			}
+			Tags.Clear ();
+		}
+
 		public ObservableCollection<Tag> Tags {
 			get;
 			set;

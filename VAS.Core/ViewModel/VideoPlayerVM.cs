@@ -48,6 +48,13 @@ namespace VAS.Core.ViewModel
 			ShowCenterPlayHeadButton = true;
 		}
 
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			Player.Dispose ();
+			Player = null;
+		}
+
 		public bool ControlsSensitive {
 			get;
 			set;
@@ -248,13 +255,6 @@ namespace VAS.Core.ViewModel
 		}
 
 		#region methods
-
-		protected override void DisposeManagedResources ()
-		{
-			base.DisposeManagedResources ();
-			Player.Dispose ();
-			Player = null;
-		}
 
 		public void Expose ()
 		{

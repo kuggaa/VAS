@@ -47,6 +47,12 @@ namespace VAS.Core.MVVMC
 			collectionToPropertyName = new Dictionary<INotifyCollectionChanged, string> ();
 		}
 
+		protected override void DisposeManagedResources ()
+		{
+			IgnoreEvents = true;
+			base.DisposeManagedResources ();
+		}
+
 		#region IChanged implementation
 
 		[JsonIgnore]
@@ -199,6 +205,9 @@ namespace VAS.Core.MVVMC
 
 		protected virtual void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
+			if (Disposed) {
+				return;
+			}
 			// Break potential infinite loop for objects with circular dependencies.
 			if (forwarding) {
 				return;
@@ -207,6 +216,13 @@ namespace VAS.Core.MVVMC
 			Log.Verbose ($"BindableBase {this} - Reception Forward PropertyName: {e.PropertyName} with sender: {sender}");
 			RaisePropertyChanged (e, sender);
 			forwarding = false;
+		}
+
+		protected virtual void OnPropertyChanged (PropertyChangedEventArgs e)
+		{
+			if (!IgnoreEvents) {
+				PropertyChanged?.Invoke (this, e);
+			}
 		}
 	}
 }

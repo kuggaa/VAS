@@ -36,38 +36,45 @@ namespace VAS.UI.Common
 			if (ViewModel == null) {
 				return;
 			}
-
-			List<TViewModel> selected = new List<TViewModel> ();
+			Dictionary<TViewModel, List<TChildViewModel>> selected =
+				new Dictionary<TViewModel, List<TChildViewModel>> ();
 			// Iterate selected rows
 			foreach (var path in Selection.GetSelectedRows ()) {
 				// Try if selected is parent
 				TViewModel selectedViewModel = GetValue (path.ToString ()) as TViewModel;
 				if (selectedViewModel != null) {
-					// Clear selection; It can be >0 if we first
-					// select a child and after that we select the parent
-					selectedViewModel.Selection.Clear ();
-					// Add parent to selected
-					selected.Add (selectedViewModel);
+					selected.Add (selectedViewModel, new List<TChildViewModel> ());
 				} else {
 					// Try if selected is a child
 					TChildViewModel selectedViewModelChild = GetValue (path.ToString ()) as TChildViewModel;
 					if (selectedViewModelChild != null) {
 						// Get parent
 						TViewModel vm = GetParentVM (path);
-						if (!selected.Any (x => x.Model.Equals (vm.Model))) {
-							vm.Selection.Clear ();
-							vm.Selection.Add (selectedViewModelChild);
-							selected.Add (vm as TViewModel);
+						if (!selected.ContainsKey (vm)) {
+							selected.Add (vm, new List<TChildViewModel> { selectedViewModelChild });
 						} else {
-							// Add selected child to parent selection
-							vm.Selection.Add (selectedViewModelChild);
+							selected [vm].Add (selectedViewModelChild);
 						}
 					}
 				}
 			}
 
-			// Replace parent selection with our selected list
-			ViewModel.SelectionReplace (selected);
+			// Replace parent selection with our selected list, only if it had changed
+			var oldSelections = ViewModel.Selection.Except (selected.Keys);
+			if (oldSelections.Any ()) {
+				foreach (var parent in oldSelections) {
+					if (parent.Selection.Any ()) {
+						parent.Selection.Clear ();
+					}
+				}
+				ViewModel.Selection.Replace (selected.Keys);
+			}
+
+			foreach (var parentSon in selected) {
+				if (parentSon.Value.Any ()) {
+					parentSon.Key.Selection.Replace (parentSon.Value);
+				}
+			}
 		}
 
 		object GetValue (string path)
