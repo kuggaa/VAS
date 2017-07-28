@@ -29,7 +29,7 @@ namespace VAS.Core.MVVMC
 		where TViewModel : IViewModel<TModel>
 		where TVMChild : IViewModel<TModelChild>, new()
 	{
-		TModel model;
+		protected TModel model;
 
 		public NestedSubViewModel ()
 		{
@@ -41,11 +41,10 @@ namespace VAS.Core.MVVMC
 		/// </summary>
 		/// <value>The model.</value>
 		[PropertyChanged.DoNotCheckEquality]
-		public TModel Model {
+		public virtual TModel Model {
 			get {
 				return model;
 			}
-
 			set {
 				model = value;
 				SubViewModel.Model = ChildModels;
