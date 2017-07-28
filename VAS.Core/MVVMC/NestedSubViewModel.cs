@@ -24,9 +24,8 @@ namespace VAS.Core.MVVMC
 	/// Base class for ViewModel's having a Model with child Model's, for example like the <see cref="PlaylistVM"/>
 	/// using a <see cref="Playlist"/> model containing <see cref="IPlaylistElement"/> children.
 	/// </summary>
-	public abstract class NestedSubViewModel<TModel, TViewModel, TModelChild, TVMChild> : NestedViewModel<TVMChild>, IViewModel<TModel>
+	public abstract class NestedSubViewModel<TModel, TModelChild, TVMChild> : NestedViewModel<TVMChild>, IViewModel<TModel>
 		where TModel : BindableBase
-		where TViewModel : IViewModel<TModel>
 		where TVMChild : IViewModel<TModelChild>, new()
 	{
 		protected TModel model;
