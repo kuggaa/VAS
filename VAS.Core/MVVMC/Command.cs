@@ -148,7 +148,7 @@ namespace VAS.Core.MVVMC
 			}
 		}
 
-		Task InternalExecute (object parameter)
+		protected virtual Task InternalExecute (object parameter)
 		{
 			if (!isExecuting) {
 				isExecuting = true;

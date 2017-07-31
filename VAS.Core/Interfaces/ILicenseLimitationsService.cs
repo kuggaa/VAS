@@ -17,6 +17,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using VAS.Core.License;
 using VAS.Core.MVVMC;
 using VAS.Core.ViewModel;
@@ -30,22 +31,47 @@ namespace VAS.Core.Interfaces
 	public interface ILicenseLimitationsService : IService
 	{
 		/// <summary>
-		/// Gets the limitation.
+		/// Get the specified Limitation by name and type
 		/// </summary>
-		/// <returns>The limitation with the specified name, or null.</returns>
-		/// <param name="name">Limitation name.</param>
-		LicenseLimitationVM Get (string name);
+		/// <param name="name">Limitation Name</param>
+		/// <typeparam name="T">The Limitation Type</typeparam>
+		T Get<T> (string name) where T : LimitationVM;
 
 		/// <summary>
 		/// Gets all the limitations.
 		/// </summary>
 		/// <returns>A collection with all the limitations.</returns>
-		IEnumerable<LicenseLimitationVM> GetAll ();
+		IEnumerable<LimitationVM> GetAll ();
 
 		/// <summary>
-		/// Add the specified limitation by name.
+		/// Gets all Count limitations.
+		/// </summary>
+		/// <returns>A collection with all the limitations.</returns>
+		IEnumerable<T> GetAll<T> () where T : LimitationVM;
+
+		/// <summary>
+		/// Add the specified count limitation by name.
 		/// </summary>
 		/// <param name="limitation">Limitation.</param>
-		void Add (LicenseLimitation limitation, Command command = null);
+		void Add (CountLicenseLimitation limitation, Command command = null);
+
+		/// <summary>
+		/// Add the specified feature limitation by name.
+		/// </summary>
+		/// <param name="limitation">Limitation.</param>
+		void Add (FeatureLicenseLimitation limitation);
+
+		/// <summary>
+		/// Checks if a limitation feature can be executed
+		/// </summary>
+		/// <param name="name">Name of the feature limitation</param>
+		bool CanExecuteFeature (string name);
+
+		/// <summary>
+		/// Moves to the upgrade dialog
+		/// </summary>
+		/// <returns>The Task of the transition </returns>
+		/// <param name="name">Name of the limitation</param>
+		Task<bool> MoveToUpgradeDialog (string name);
 	}
 }

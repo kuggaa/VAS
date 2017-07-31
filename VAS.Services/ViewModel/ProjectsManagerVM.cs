@@ -46,7 +46,7 @@ namespace VAS.Services.ViewModel
 			LoadedProject = null;
 		}
 
-		public override LicenseLimitationVM Limitation {
+		public override CountLimitationVM Limitation {
 			set {
 				if (Limitation != null) {
 					Limitation.PropertyChanged -= HandleLimitationChanged;

@@ -212,8 +212,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\StorableVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\ControllerBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IAppUpdater.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)License\LicenseLimitation.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\LicenseLimitationVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)License\CountLicenseLimitation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\LimitationVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ILicenseLimitationsService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\LimitedCollectionViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Events\StorageEvents.cs" />
@@ -263,6 +263,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MenuNodeVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IFileSystemManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\FileSystemManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)License\LicenseLimitation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\LimitationCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)License\FeatureLicenseLimitation.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

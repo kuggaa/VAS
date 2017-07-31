@@ -16,26 +16,39 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using VAS.Core.MVVMC;
 
 namespace VAS.Core.License
 {
 	/// <summary>
-	/// License limitation.
-	/// Base class for the limitations
+	/// Count License limitation.
+	/// This class represent a generic count limitation.
 	/// </summary>
-	public class LicenseLimitation : BindableBase
+	public class CountLicenseLimitation : LicenseLimitation
 	{
-		/// <summary>
-		/// Gets or sets the Registered name of the limitation.
-		/// </summary>
-		/// <value>The registered name of the limitation.</value>
-		public string RegisterName { get; set; }
+		int maximum;
 
 		/// <summary>
-		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.License.LicenseLimitation"/> is enabled.
+		/// Gets or sets the count of licensed items.
 		/// </summary>
-		/// <value><c>true</c> if enabled; otherwise, <c>false</c>.</value>
-		public bool Enabled { get; set; }
+		/// <value>The count.</value>
+		public int Count { get; set; }
+
+		/// <summary>
+		/// Gets or sets the maximum number for the limitation.
+		/// </summary>
+		/// <value>The maximum.</value>
+		public int Maximum {
+			get {
+				// FIXME: Logic in the model?
+				int max = int.MaxValue;
+				if (Enabled) {
+					max = maximum;
+				}
+				return max;
+			}
+			set {
+				maximum = value;
+			}
+		}
 	}
 }

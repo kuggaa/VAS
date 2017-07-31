@@ -16,26 +16,22 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using VAS.Core.MVVMC;
+using VAS.Services.ViewModel;
 
-namespace VAS.Core.License
+namespace VAS.Services.State
 {
 	/// <summary>
-	/// License limitation.
-	/// Base class for the limitations
+	/// Upgrade limitation state, it is abstract because every application should
+	/// Configure the UpgradeLimitationVM
 	/// </summary>
-	public class LicenseLimitation : BindableBase
+	public abstract class UpgradeLimitationState : ScreenState<UpgradeLimitationVM>
 	{
-		/// <summary>
-		/// Gets or sets the Registered name of the limitation.
-		/// </summary>
-		/// <value>The registered name of the limitation.</value>
-		public string RegisterName { get; set; }
+		public const string NAME = "LimitationUpgrade";
 
-		/// <summary>
-		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.License.LicenseLimitation"/> is enabled.
-		/// </summary>
-		/// <value><c>true</c> if enabled; otherwise, <c>false</c>.</value>
-		public bool Enabled { get; set; }
+		public override string Name {
+			get {
+				return NAME;
+			}
+		}
 	}
 }

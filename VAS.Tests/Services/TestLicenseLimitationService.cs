@@ -17,9 +17,11 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using Moq;
 using NUnit.Framework;
+using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
@@ -27,6 +29,7 @@ using VAS.Core.Interfaces.License;
 using VAS.Core.License;
 using VAS.Core.ViewModel;
 using VAS.Services;
+using VAS.Services.State;
 
 namespace VAS.Tests.Services
 {
@@ -34,23 +37,41 @@ namespace VAS.Tests.Services
 	public class TestLicenseLimitationService
 	{
 		ILicenseLimitationsService service;
-		LicenseLimitation limitationPlayers;
-		LicenseLimitation limitationPlayers2;
-		LicenseLimitation limitationTeams;
+		CountLicenseLimitation limitationPlayers;
+		CountLicenseLimitation limitationPlayers2;
+		CountLicenseLimitation limitationTeams;
+		FeatureLicenseLimitation limitationFeature;
+		FeatureLicenseLimitation limitationFeature2;
+		FeatureLicenseLimitation limitationFeatureDisabled;
 		Mock<ILicenseManager> mockLicenseManager;
 		Mock<ILicenseStatus> mockLicenseStatus;
+		IStateController currentStateController;
+		Mock<IStateController> mockStateController;
 
 		[TestFixtureSetUp]
 		public void Init ()
 		{
-			limitationPlayers = new LicenseLimitation { Enabled = true, Maximum = 10, Name = "RAPlayers" };
-			limitationPlayers2 = new LicenseLimitation { Enabled = true, Maximum = 20, Name = "RAPlayers" };
-			limitationTeams = new LicenseLimitation { Enabled = true, Maximum = 5, Name = "Teams" };
+			currentStateController = App.Current.StateController;
+			limitationPlayers = new CountLicenseLimitation { Enabled = true, Maximum = 10, RegisterName = "RAPlayers" };
+			limitationPlayers2 = new CountLicenseLimitation { Enabled = true, Maximum = 20, RegisterName = "RAPlayers" };
+			limitationTeams = new CountLicenseLimitation { Enabled = true, Maximum = 5, RegisterName = "Teams" };
+			limitationFeature = new FeatureLicenseLimitation { Enabled = true, RegisterName = "Feature 1" };
+			limitationFeature2 = new FeatureLicenseLimitation { Enabled = true, RegisterName = "Feature 1" };
+			limitationFeatureDisabled = new FeatureLicenseLimitation { Enabled = false, RegisterName = "Feature 2" };
 
 			mockLicenseManager = new Mock<ILicenseManager> ();
 			mockLicenseStatus = new Mock<ILicenseStatus> ();
 			App.Current.LicenseManager = mockLicenseManager.Object;
 			mockLicenseManager.SetupGet (obj => obj.LicenseStatus).Returns (mockLicenseStatus.Object);
+
+			mockStateController = new Mock<IStateController> ();
+			App.Current.StateController = mockStateController.Object;
+		}
+
+		[TestFixtureTearDown]
+		public void TestFixtureTearDown ()
+		{
+			App.Current.StateController = currentStateController;
 		}
 
 		[SetUp]
@@ -67,14 +88,14 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
-		public void TestAddLimitations ()
+		public void LimitationService_AddCountLimitations ()
 		{
 			service.Add (limitationPlayers);
 			service.Add (limitationTeams);
 
-			LicenseLimitationVM testLimitationPlayers = service.Get ("RAPlayers");
-			LicenseLimitationVM testLimitationTeams = service.Get ("Teams");
-			IEnumerable<LicenseLimitationVM> allLimitations = (service as DummyLicenseLimitationsService).GetAll ();
+			CountLimitationVM testLimitationPlayers = service.Get<CountLimitationVM> ("RAPlayers");
+			CountLimitationVM testLimitationTeams = service.Get<CountLimitationVM> ("Teams");
+			IEnumerable<LimitationVM> allLimitations = service.GetAll ();
 
 			Assert.AreEqual (2, allLimitations.Count ());
 			Assert.IsTrue (testLimitationPlayers.Enabled);
@@ -84,7 +105,24 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
-		public void TestAddLimitationsRepeated ()
+		public void LimitationService_AddFeatureLimitations ()
+		{
+			service.Add (limitationFeature);
+			service.Add (limitationFeatureDisabled);
+
+			FeatureLimitationVM testLimitationFeature1 = service.Get<FeatureLimitationVM> ("Feature 1");
+			FeatureLimitationVM testLimitationFeature2 = service.Get<FeatureLimitationVM> ("Feature 2");
+			IEnumerable<LimitationVM> allLimitations = service.GetAll ();
+
+			Assert.AreEqual (2, allLimitations.Count ());
+			Assert.IsTrue (testLimitationFeature1.Enabled);
+			Assert.AreEqual (limitationFeature.RegisterName, testLimitationFeature1.RegisterName);
+			Assert.IsFalse (testLimitationFeature2.Enabled);
+			Assert.AreEqual (limitationFeatureDisabled.RegisterName, testLimitationFeature2.RegisterName);
+		}
+
+		[Test]
+		public void LimitationService_AddCountLimitationsRepeated_ThrowsInvalidOperation ()
 		{
 			service.Add (limitationPlayers);
 			Assert.Throws<InvalidOperationException> (() => service.Add (limitationPlayers2));
@@ -92,27 +130,57 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
-		public void TestGetNonExisting ()
+		public void LimitationService_AddFeatureLimitationsRepeated_ThrowsInvalidOperation ()
 		{
-			LicenseLimitationVM limit = service.Get ("Non-existing limitation");
-			IEnumerable<LicenseLimitationVM> allLimitations = (service as DummyLicenseLimitationsService).GetAll ();
+			service.Add (limitationFeature);
+			Assert.Throws<InvalidOperationException> (() => service.Add (limitationFeature2));
+
+		}
+
+		[Test]
+		public void LimitationService_AddFeatureCountLimitationsSameName_ThrowsInvalidOperation ()
+		{
+			service.Add (new CountLicenseLimitation {
+				Enabled = false,
+				Maximum = 10,
+				Count = 8,
+				RegisterName = limitationFeature.RegisterName
+			});
+			Assert.Throws<InvalidOperationException> (() => service.Add (limitationFeature));
+		}
+
+		[Test]
+		public void LimitationService_GetNonExistingCountLimitation_ReturnsNull ()
+		{
+			CountLimitationVM limit = service.Get<CountLimitationVM> ("Non-existing limitation");
+			IEnumerable<LimitationVM> allLimitations = service.GetAll ();
 
 			Assert.AreEqual (0, allLimitations.Count ());
 			Assert.IsNull (limit);
 		}
 
 		[Test]
-		public void TestDisabledLimitation ()
+		public void LimitationService_GetNonExistingFeatureLimitation_ReturnsNull ()
 		{
-			service.Add (new LicenseLimitation {
+			FeatureLimitationVM limit = service.Get<FeatureLimitationVM> ("Non-existing limitation");
+			IEnumerable<LimitationVM> allLimitations = service.GetAll ();
+
+			Assert.AreEqual (0, allLimitations.Count ());
+			Assert.IsNull (limit);
+		}
+
+		[Test]
+		public void LimitationService_GetDisabledLimitation ()
+		{
+			service.Add (new CountLicenseLimitation {
 				Enabled = false,
 				Maximum = 10,
 				Count = 8,
-				Name = "Disabled"
+				RegisterName = "Disabled"
 			});
 
-			LicenseLimitationVM limitation = service.Get ("Disabled");
-			IEnumerable<LicenseLimitationVM> allLimitations = (service as DummyLicenseLimitationsService).GetAll ();
+			CountLimitationVM limitation = service.Get<CountLimitationVM> ("Disabled");
+			IEnumerable<CountLimitationVM> allLimitations = service.GetAll<CountLimitationVM> ();
 
 			Assert.AreEqual (1, allLimitations.Count ());
 			Assert.IsFalse (limitation.Enabled);
@@ -121,17 +189,17 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
-		public void TestEnableLimitationWithLicenseChange ()
+		public void LimitationService_LicenseChangeEvent_EnablesLimitation ()
 		{
 			//Arrange
 			mockLicenseStatus.SetupGet (obj => obj.Limited).Returns (true);
 
 			//Act
-			var limitation = new LicenseLimitation {
+			var limitation = new CountLicenseLimitation {
 				Enabled = false,
 				Maximum = 10,
 				Count = 8,
-				Name = "TestLimitation"
+				RegisterName = "TestLimitation"
 			};
 			service.Add (limitation);
 			App.Current.EventsBroker.Publish (new LicenseChangeEvent ());
@@ -141,23 +209,90 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
-		public void TestDisableLimitationWithLicenseChange ()
+		public void LimitationService_LicenseChangeEvent_DisablesLimitation ()
 		{
 			//Arrange
 			mockLicenseStatus.SetupGet (obj => obj.Limited).Returns (false);
 
 			//Act
-			var limitation = new LicenseLimitation {
+			var limitation = new CountLicenseLimitation {
 				Enabled = true,
 				Maximum = 10,
 				Count = 8,
-				Name = "TestLimitation"
+				RegisterName = "TestLimitation"
 			};
 			service.Add (limitation);
 			App.Current.EventsBroker.Publish (new LicenseChangeEvent ());
 
 			//Assert
 			Assert.IsFalse (limitation.Enabled);
+		}
+
+		[Test]
+		public void LimitationService_FeatureLimitationDisabled_CanExecuteFuture ()
+		{
+			service.Add (limitationFeatureDisabled);
+
+			var featureLimitationVM = service.Get<FeatureLimitationVM> (limitationFeatureDisabled.RegisterName);
+
+			Assert.IsTrue (service.CanExecuteFeature (featureLimitationVM.RegisterName));
+		}
+
+		[Test]
+		public void LimitationService_FeatureLimitationEnabled_CanNOTExecuteFuture ()
+		{
+			service.Add (limitationFeature);
+
+			var featureLimitationVM = service.Get<FeatureLimitationVM> (limitationFeature.RegisterName);
+
+			Assert.IsFalse (service.CanExecuteFeature (featureLimitationVM.RegisterName));
+		}
+
+		[Test]
+		public void LimitationService_FeatureLimitationNotExists_CanExecuteFuture ()
+		{
+			Assert.IsTrue (service.CanExecuteFeature ("Non-Existing-Limitation"));
+		}
+
+		[Test]
+		public void LimitationService_FeatureLimitationNotExists_DoNotMoveToUpgradeDialog ()
+		{
+			mockStateController.Setup (sc => sc.MoveToModal (UpgradeLimitationState.NAME, It.IsAny<object> (), false)).Returns (AsyncHelpers.Return (true));
+
+			service.MoveToUpgradeDialog ("Non-Existing-Limitation");
+
+			mockStateController.Verify (sc => sc.MoveToModal (UpgradeLimitationState.NAME, It.IsAny<object> (), false), Times.Never);
+		}
+
+		[Test]
+		public void LimitationService_LimitationEnabled_MoveToUpgradeDialogSuccess ()
+		{
+			service.Add (limitationFeature);
+			mockStateController.Setup (sc => sc.MoveToModal (UpgradeLimitationState.NAME, It.IsAny<object> (), false)).Returns (AsyncHelpers.Return (true));
+
+			var limitVM = service.Get<FeatureLimitationVM> (limitationFeature.RegisterName);
+			service.MoveToUpgradeDialog (limitationFeature.RegisterName);
+
+			mockStateController.Verify (sc => sc.MoveToModal (UpgradeLimitationState.NAME, It.Is<object> (
+				obj => IslimitationVMEqual (obj, limitVM)), false), Times.Once);
+		}
+
+		[Test]
+		public void LimitationService_LimitationDisabled_DoNotMoveToUpgradeDialog ()
+		{
+			service.Add (limitationFeatureDisabled);
+			mockStateController.Setup (sc => sc.MoveToModal (UpgradeLimitationState.NAME, It.IsAny<object> (), false)).Returns (AsyncHelpers.Return (true));
+
+			service.MoveToUpgradeDialog (limitationFeatureDisabled.RegisterName);
+
+			mockStateController.Verify (sc => sc.MoveToModal (UpgradeLimitationState.NAME, It.IsAny<object> (), false), Times.Never);
+		}
+
+		bool IslimitationVMEqual (object obj, LimitationVM limitVM)
+		{
+			var limitVMfirst = (obj as dynamic).limitationVM;
+
+			return limitVMfirst == limitVM;
 		}
 	}
 }

@@ -208,6 +208,29 @@ namespace VAS.Core.Common
 		}
 
 		/// <summary>
+		/// Opens the URL. if sourcePoint is specified it appends to the URL the necessary parameters for tracking
+		/// </summary>
+		/// <param name="url">URL.</param>
+		/// <param name="sourcePoint">Source point.</param>
+		public static void OpenURL (string url, string sourcePoint = null)
+		{
+			try {
+				// FIXME: If there is no ticketId pass the serialId until the web supports retrieving the ticket id
+				// in case is not in the configuration
+				string ticketIdValue = App.Current.Config.LicenseCode ?? App.Current.LicenseManager.ContainerId;
+				url += $"?ticketID={ticketIdValue}";
+#if !DEBUG
+				if (!string.IsNullOrEmpty (sourcePoint)) {
+					url += $"&utm_source={App.Current.SoftwareName}&utm_medium={sourcePoint}&sessionid={App.Current.KPIService.SessionID}&userid={App.Current.Device.ID}";
+				}
+#endif
+				Process.Start (url);
+			} catch (Exception ex) {
+				Log.Debug ("Failed opening url: " + ex);
+			}
+		}
+
+		/// <summary>
 		/// Checks the network connection.
 		/// </summary>
 		/// <returns><c>true</c>, if internet connection is OK, <c>false</c> otherwise.</returns>
