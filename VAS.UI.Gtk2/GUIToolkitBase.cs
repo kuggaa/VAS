@@ -298,6 +298,7 @@ namespace VAS.UI
 				panel.OnLoad ();
 			} else {
 				ExternalWindow modalWindow = new ExternalWindow ();
+				modalWindow.Resizable = false;
 				modalWindow.DefaultWidth = (panel as Gtk.Bin).WidthRequest;
 				modalWindow.DefaultHeight = (panel as Gtk.Bin).HeightRequest;
 				modalWindow.Title = panel.Title;
