@@ -21,6 +21,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using VAS.Core;
+using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
 using VAS.Core.License;
@@ -156,8 +157,9 @@ namespace VAS.Services
 			var featureLimitVM = Get<FeatureLimitationVM> (name);
 
 			if (featureLimitVM == null) {
-				throw new InvalidOperationException ("Cannot get Feature, because it wasn't registered," +
-													 "register the feature prior calling this method");
+				Log.Warning ("Cannot get Feature, because it wasn't registered," +
+													 " returning true");
+				return true;
 			}
 			return !featureLimitVM.Enabled;
 		}
@@ -172,8 +174,9 @@ namespace VAS.Services
 			var featureLimitVM = Get<FeatureLimitationVM> (name);
 
 			if (featureLimitVM == null) {
-				throw new InvalidOperationException ("Cannot get Feature, because it wasn't registered," +
-													 "register the feature prior calling this method");
+				Log.Warning ("Cannot get Feature, because it wasn't registered," +
+													 " Do not move to UpgradeDialog state");
+				return AsyncHelpers.Return (false);
 			}
 			if (featureLimitVM.Enabled) {
 				dynamic properties = new ExpandoObject ();
