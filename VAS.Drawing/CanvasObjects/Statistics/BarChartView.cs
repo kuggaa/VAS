@@ -56,6 +56,10 @@ namespace VAS.Drawing.CanvasObjects.Statistics
 			double end;
 			double totalX = ViewModel.Series.ViewModels.Sum (x => x.Elements);
 
+			if (ViewModel.Background != null) {
+				ViewModel.Background.Draw (tk, new Area (posX, posY, width, ViewModel.Height));
+			}
+
 			foreach (var serie in ViewModel.Series.Where (x => x.Elements != 0)) {
 				tk.FillColor = serie.Color;
 				tk.StrokeColor = serie.Color;

@@ -17,35 +17,36 @@
 //
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
-using VAS.Core.MVVMC;
 
-namespace VAS.Core.ViewModel.Statistics
+namespace VAS.Drawing.CanvasObjects.Blackboard
 {
 	/// <summary>
-	/// Viewmodel for the horizontal series bar graphic
+	/// Canvas object to draw a single image in the whole drawing area.
 	/// </summary>
-	public class BarChartVM : ChartVM
+	public class ImageCanvasObject : CanvasObject
 	{
 		/// <summary>
-		/// Series collection
+		/// Gets or sets the image.
 		/// </summary>
-		/// <value>The series collection.</value>
-		public SeriesCollectionVM Series {
-			get;
-			set;
+		/// <value>The image.</value>
+		public Image Image { get; set; }
+
+		/// <summary>
+		/// Gets or sets the scale mode.
+		/// </summary>
+		/// <value>The scale mode.</value>
+		public ScaleMode Mode { get; set; }
+
+		/// <summary>
+		/// Draws Image in the specified area.
+		/// </summary>
+		/// <param name="tk">Drawing toolkit.</param>
+		/// <param name="area">Area.</param>
+		public override void Draw (IDrawingToolkit tk, Area area)
+		{
+			tk.Begin ();
+			tk.DrawImage (area.TopLeft, area.Width, area.Height, Image, Mode);
+			tk.End ();
 		}
-
-		/// <summary>
-		/// Gets or sets a value indicating the height of the bars in the collection
-		/// </summary>
-		/// <value><c>true</c> if height; otherwise, <c>false</c>.</value>
-		public double Height { get; set; }
-
-		/// <summary>
-		/// Gets or sets the background image.
-		/// This image will be rendered under the series.
-		/// </summary>
-		/// <value>The background image.</value>
-		public ICanvasObject Background { get; set; }
 	}
 }
