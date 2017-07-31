@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 using VAS.Core.Common;
 
 namespace VAS.Core.Interfaces.License
@@ -39,6 +40,22 @@ namespace VAS.Core.Interfaces.License
 		/// </summary>
 		/// <value>The protected data.</value>
 		string ProtectedData {
+			get;
+		}
+
+		/// <summary>
+		/// Gets the name of the license.
+		/// </summary>
+		/// <value>The name of the license.</value>
+		string PlanName {
+			get;
+		}
+
+		/// <summary>
+		/// Gets the limitations.
+		/// </summary>
+		/// <value>The limitations.</value>
+		IEnumerable<string> Limitations {
 			get;
 		}
 	}

@@ -77,7 +77,7 @@ namespace VAS.Core.ViewModel
 		/// Sets the limitation view model.
 		/// </summary>
 		/// <value>The limitation.</value>
-		public override LicenseLimitationVM Limitation {
+		public override CountLimitationVM Limitation {
 			set {
 				if (Limitation != null) {
 					Limitation.PropertyChanged -= HandleLimitationChanged;

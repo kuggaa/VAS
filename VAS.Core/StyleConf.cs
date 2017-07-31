@@ -220,6 +220,7 @@ namespace VAS.Core.Common
 		public const string ButtonRemove = "ButtonRemove";
 		public const string ButtonFocus = "ButtonFocus";
 		public const string ButtonDialog = "ButtonDialog";
+		public const string ButtonCallToActionRounded = "ButtonCallToActionRounded";
 
 		//Limits Styles
 		public const string LabelLimit = "LabelLimit";
@@ -264,6 +265,8 @@ namespace VAS.Core.Common
 		public const string MissingVideo = "icons/hicolor/scalable/actions/vas-missing-video" + IMAGE_EXT;
 
 		public const string RetryIcon = "vas-retry";
+
+		public const string UpgradeDialogBackground = "images/vas-upgrade-dialog-bg" + IMAGE_EXT;
 
 		public StyleConf ()
 		{

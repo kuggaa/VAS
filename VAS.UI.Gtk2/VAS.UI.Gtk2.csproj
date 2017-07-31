@@ -116,6 +116,8 @@
 		<Compile Include="UI\Menu\MenuBase.cs" />
 		<Compile Include="UI\Dialog\EditPlaylistElementProperties.cs" />
 		<Compile Include="gtk-gui\VAS.UI.Dialog.EditPlaylistElementProperties.cs" />
+		<Compile Include="UI\Panel\UpgradeLimitationPanel.cs" />
+		<Compile Include="gtk-gui\VAS.UI.Panel.UpgradeLimitationPanel.cs" />
 	</ItemGroup>
 	<Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 	<ItemGroup>

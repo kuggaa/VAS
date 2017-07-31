@@ -30,13 +30,13 @@ using VAS.Core.ViewModel;
 namespace VAS.Core.MVVMC
 {
 	/// <summary>
-	/// CollectionViewModel with a limitation. It contains the number of elements specified by <see cref="LicenseLimitation"/>.Maximum
+	/// CollectionViewModel with a limitation. It contains the number of elements specified by <see cref="CountLicenseLimitation"/>.Maximum
 	/// </summary>
 	public class LimitedCollectionViewModel<TModel, TViewModel> : CollectionViewModel<TModel, TViewModel>
 		where TViewModel : IViewModel<TModel>, new()
 		where TModel : StorableBase
 	{
-		LicenseLimitationVM limitation;
+		CountLimitationVM limitation;
 		bool notifying;
 
 		/// <summary>
@@ -72,7 +72,7 @@ namespace VAS.Core.MVVMC
 		/// Gets or sets the limitation.
 		/// </summary>
 		/// <value>The limitation.</value>
-		public virtual LicenseLimitationVM Limitation {
+		public virtual CountLimitationVM Limitation {
 			get {
 				return limitation;
 			}
