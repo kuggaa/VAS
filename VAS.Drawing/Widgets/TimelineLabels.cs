@@ -124,11 +124,13 @@ namespace VAS.Drawing.Widgets
 		{
 			int i = eventTypesStartIndex;
 			foreach (EventTypeTimelineVM eventTypeVM in ViewModel.Project.Timeline.EventTypesTimeline.ViewModels) {
-				LabelView label = eventTypeToLabel [eventTypeVM];
-				if (label.Visible) {
-					label.OffsetY = i * label.Height;
-					label.BackgroundColor = Utils.ColorForRow (i);
-					i++;
+				if (eventTypeToLabel.ContainsKey (eventTypeVM)) {
+					LabelView label = eventTypeToLabel [eventTypeVM];
+					if (label.Visible) {
+						label.OffsetY = i * label.Height;
+						label.BackgroundColor = Utils.ColorForRow (i);
+						i++;
+					}
 				}
 			}
 			widget?.ReDraw ();
@@ -146,13 +148,13 @@ namespace VAS.Drawing.Widgets
 					break;
 				}
 			case NotifyCollectionChangedAction.Remove: {
-					foreach (EventTypeTimelineVM viewModel in e.OldItems.OfType<EventTypeTimelineVM> ()) {
+					foreach (EventTypeTimelineVM viewModel in e.OldItems.OfType<EventTypeTimelineVM> ().ToList ()) {
 						RemoveEventTypeLabel (viewModel);
 					}
 					break;
 				}
 			case NotifyCollectionChangedAction.Reset: {
-					foreach (EventTypeTimelineVM viewModel in eventTypeToLabel.Keys) {
+					foreach (EventTypeTimelineVM viewModel in eventTypeToLabel.Keys.ToList ()) {
 						RemoveEventTypeLabel (viewModel);
 					}
 					break;
