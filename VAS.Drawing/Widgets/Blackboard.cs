@@ -234,11 +234,12 @@ namespace VAS.Drawing.Widgets
 		/// </summary>
 		public void DeleteSelection ()
 		{
-			foreach (ICanvasDrawableObject o in Selections.Select (s => s.Drawable)) {
+			foreach (Selection s in Selections.ToList ()) {
+				UpdateSelection (s, false);
+				ICanvasDrawableObject o = (ICanvasDrawableObject)s.Drawable;
 				RemoveObject (o);
 				drawing.Drawables.Remove ((Drawable)o.IDrawableObject);
 			}
-			ClearSelection ();
 			UpdateCounters ();
 			widget?.ReDraw ();
 		}

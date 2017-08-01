@@ -64,10 +64,10 @@ namespace VAS.UI.Component
 		{
 			Log.Verbose ($"Destroying {GetType ()}");
 
-			ctx.Dispose ();
-			ctx = null;
 			ViewModel.Dispose ();
 			ViewModel = null;
+			ctx.Dispose ();
+			ctx = null;
 			hotkeyLabel.Dispose ();
 			hotkeyLabel = null;
 
