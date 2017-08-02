@@ -145,7 +145,7 @@ namespace VAS.Tests.MVVMC
 		{
 			// Arrange
 			bool executed = false;
-			mockLimitationService.Setup (lim => lim.CanExecuteFeature (limitationName)).Returns (true);
+			mockLimitationService.Setup (lim => lim.CanExecute (limitationName)).Returns (true);
 			var command = new LimitationCommand (limitationName, () => { executed = true; });
 
 			// Act
@@ -161,7 +161,7 @@ namespace VAS.Tests.MVVMC
 		{
 			// Arrange
 			bool executed = false;
-			mockLimitationService.Setup (lim => lim.CanExecuteFeature (limitationName)).Returns (false);
+			mockLimitationService.Setup (lim => lim.CanExecute (limitationName)).Returns (false);
 			var command = new LimitationCommand (limitationName, () => { executed = true; });
 
 			// Act

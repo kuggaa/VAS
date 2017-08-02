@@ -149,19 +149,25 @@ namespace VAS.Services
 		}
 
 		/// <summary>
-		/// Checks if a limitation feature can be executed
+		/// Checks if a limitation can be executed
 		/// </summary>
-		/// <param name="name">Name of the feature limitation</param>
-		public bool CanExecuteFeature (string name)
+		/// <param name="name">Name of the limitation</param>
+		public bool CanExecute (string name)
 		{
-			var featureLimitVM = Get<FeatureLimitationVM> (name);
-
-			if (featureLimitVM == null) {
-				Log.Warning ("Cannot get Feature, because it wasn't registered," +
-													 " returning true");
+			var limitationVM = Get<LimitationVM> (name);
+			if (limitationVM == null) {
+				Log.Warning ("Cannot get limitation because it wasn't registered." +
+													 " Returning true");
 				return true;
 			}
-			return !featureLimitVM.Enabled;
+			if (!limitationVM.Enabled) {
+				return true;
+			}
+			var countVM = limitationVM as CountLimitationVM;
+			if (countVM != null) {
+				return countVM.Count < countVM.Maximum;
+			}
+			return !limitationVM.Enabled;
 		}
 
 		/// <summary>
@@ -171,16 +177,16 @@ namespace VAS.Services
 		/// <param name="name">Name of the limitation</param>
 		public Task<bool> MoveToUpgradeDialog (string name)
 		{
-			var featureLimitVM = Get<FeatureLimitationVM> (name);
+			var limitationVM = Get<LimitationVM> (name);
 
-			if (featureLimitVM == null) {
+			if (limitationVM == null) {
 				Log.Warning ("Cannot get Feature, because it wasn't registered," +
 													 " Do not move to UpgradeDialog state");
 				return AsyncHelpers.Return (false);
 			}
-			if (featureLimitVM.Enabled) {
+			if (limitationVM.Enabled) {
 				dynamic properties = new ExpandoObject ();
-				properties.limitationVM = featureLimitVM;
+				properties.limitationVM = limitationVM;
 				return App.Current.StateController.MoveToModal (UpgradeLimitationState.NAME, properties);
 			} else {
 				return AsyncHelpers.Return (false);

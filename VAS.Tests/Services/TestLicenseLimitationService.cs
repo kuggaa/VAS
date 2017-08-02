@@ -235,7 +235,7 @@ namespace VAS.Tests.Services
 
 			var featureLimitationVM = service.Get<FeatureLimitationVM> (limitationFeatureDisabled.RegisterName);
 
-			Assert.IsTrue (service.CanExecuteFeature (featureLimitationVM.RegisterName));
+			Assert.IsTrue (service.CanExecute (featureLimitationVM.RegisterName));
 		}
 
 		[Test]
@@ -245,13 +245,13 @@ namespace VAS.Tests.Services
 
 			var featureLimitationVM = service.Get<FeatureLimitationVM> (limitationFeature.RegisterName);
 
-			Assert.IsFalse (service.CanExecuteFeature (featureLimitationVM.RegisterName));
+			Assert.IsFalse (service.CanExecute (featureLimitationVM.RegisterName));
 		}
 
 		[Test]
 		public void LimitationService_FeatureLimitationNotExists_CanExecuteFuture ()
 		{
-			Assert.IsTrue (service.CanExecuteFeature ("Non-Existing-Limitation"));
+			Assert.IsTrue (service.CanExecute ("Non-Existing-Limitation"));
 		}
 
 		[Test]
