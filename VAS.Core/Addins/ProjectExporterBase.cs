@@ -22,13 +22,13 @@ using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Plugins;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
 namespace VAS.Plugins
 {
 	public abstract class ProjectExporterBase : IProjectExporter
 	{
-
 		public abstract string Name {
 			get;
 		}
@@ -45,7 +45,13 @@ namespace VAS.Plugins
 			get;
 		}
 
-		protected abstract void ExportProject (Project project, string filename);
+		/// <summary>
+		/// Gets or sets a value indicating whether the exporta
+		/// </summary>
+		/// <value><c>true</c> if export done; otherwise, <c>false</c>.</value>
+		public bool ExportDone { get; set; }
+
+		protected abstract Task ExportProject (Project project, string filename);
 
 		public async Task Export (Project project, bool moveFileSet = false)
 		{
@@ -63,11 +69,11 @@ namespace VAS.Plugins
 			dialog = App.Current.Dialogs.BusyDialog (Catalog.GetString ("Exporting project..."));
 			try {
 				dialog.Show ();
-				await Task.Run (() => {
-					ExportProject (project, filename);
-				});
+				await ExportProject (project, filename);
 				dialog.Destroy ();
-				App.Current.Dialogs.InfoMessage (Catalog.GetString ("Project exported successfully"));
+				if (ExportDone) {
+					App.Current.Dialogs.InfoMessage (Catalog.GetString ("Project exported successfully"));
+				}
 			} catch (Exception ex) {
 				dialog.Destroy ();
 				App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Error exporting project"));
