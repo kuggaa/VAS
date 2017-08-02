@@ -137,6 +137,17 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
+		/// Proxy property for Remaining.
+		/// Maximum - Count
+		/// </summary>
+		/// <value>Remaining number.</value>
+		public int Remaining {
+			get {
+				return Maximum - Count;
+			}
+		}
+
+		/// <summary>
 		/// Command to upgrade away from this limitation.
 		/// </summary>
 		/// <value>The upgrade command.</value>
