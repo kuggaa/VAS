@@ -62,10 +62,10 @@ namespace VAS.Core.Interfaces
 		void Add (FeatureLicenseLimitation limitation);
 
 		/// <summary>
-		/// Checks if a limitation feature can be executed
+		/// Checks if a limitation can be executed
 		/// </summary>
-		/// <param name="name">Name of the feature limitation</param>
-		bool CanExecuteFeature (string name);
+		/// <param name="name">Name of the limitation</param>
+		bool CanExecute (string name);
 
 		/// <summary>
 		/// Moves to the upgrade dialog
