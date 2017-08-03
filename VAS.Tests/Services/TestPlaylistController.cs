@@ -80,6 +80,7 @@ namespace VAS.Tests.Services
 		public void Setup ()
 		{
 			mockDialogs = new Mock<IDialogs> ();
+			mockGuiToolkit.SetupGet (o => o.DeviceScaleFactor).Returns (1.0f);
 			App.Current.GUIToolkit = mockGuiToolkit.Object;
 			App.Current.Dialogs = mockDialogs.Object;
 			var videoController = new Mock<IVideoPlayerController> ().Object;
@@ -92,7 +93,6 @@ namespace VAS.Tests.Services
 			mockDialogs.Setup (m => m.OpenImage (null)).ReturnsAsync (App.Current.ResourcesLocator.LoadImage ("asdf"));
 			mockGuiToolkit.Setup (m => m.ConfigureRenderingJob (It.IsAny<Playlist> ())).Returns (
 				new List<EditionJob> { new EditionJob (new Playlist (), new EncodingSettings ()) });
-			mockGuiToolkit.SetupGet (o => o.DeviceScaleFactor).Returns (1.0f);
 			mockStateController.Setup (s => s.MoveToModal (EditPlaylistElementState.NAME, It.IsAny<object> (), true)).ReturnsAsync (true);
 		}
 
