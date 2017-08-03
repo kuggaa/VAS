@@ -48,8 +48,7 @@ namespace VAS.Core.ViewModel
 			ShowZoomCommand = new LimitationCommand (VASFeature.Zoom.ToString (), () => {
 				ShowZoom = true;
 			});
-			ShowZoomCommand.Icon = App.Current.ResourcesLocator.LoadIcon ("vas-zoom",
-				15);
+			ShowZoomCommand.Icon = App.Current.ResourcesLocator.LoadIcon ("vas-zoom", 15);
 			ShowZoomCommand.ToolTipText = Catalog.GetString ("Zoom");
 			SetZoomCommand = new LimitationCommand<double> (VASFeature.Zoom.ToString (), SetZoom);
 		}
