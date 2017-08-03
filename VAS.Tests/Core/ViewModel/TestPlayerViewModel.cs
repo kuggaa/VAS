@@ -77,18 +77,6 @@ namespace VAS.Tests.Core.ViewModel
 		}
 
 		[Test]
-		public void SetZoom_ViewModelUpdated ()
-		{
-			var playerController = new Mock<IVideoPlayerController> ();
-			playerController.SetupAllProperties ();
-			var viewModel = new VideoPlayerVM { Player = playerController.Object };
-
-			viewModel.SetZoomCommand.Execute (3);
-
-			playerController.Verify (p => p.SetZoom (3));
-		}
-
-		[Test]
 		public void MoveROI_ROIMoved ()
 		{
 			var playerController = new Mock<IVideoPlayerController> ();
@@ -98,6 +86,71 @@ namespace VAS.Tests.Core.ViewModel
 			viewModel.MoveROI (new Point (1, 3));
 
 			playerController.Verify (p => p.MoveROI (new Point (1, 3)));
+		}
+
+		[Test]
+		public void SetZoom_NoLimited_ViewModelUpdated ()
+		{
+			Mock<ILicenseLimitationsService> mockService = new Mock<ILicenseLimitationsService> ();
+			App.Current.LicenseLimitationsService = mockService.Object;
+			mockService.Setup (s => s.CanExecuteFeature (VASFeature.Zoom.ToString ())).Returns (true);
+			var playerController = new Mock<IVideoPlayerController> ();
+			playerController.SetupAllProperties ();
+			var viewModel = new VideoPlayerVM { Player = playerController.Object };
+
+			viewModel.SetZoomCommand.Execute (3.0);
+
+			playerController.Verify (p => p.SetZoom (3.0), Times.Once);
+		}
+
+
+		[Test]
+		public void SetZoom_Limited_MoveToUpgradeDialog ()
+		{
+			Mock<ILicenseLimitationsService> mockService = new Mock<ILicenseLimitationsService> ();
+			App.Current.LicenseLimitationsService = mockService.Object;
+			mockService.Setup (s => s.CanExecuteFeature (VASFeature.Zoom.ToString ())).Returns (false);
+			var playerController = new Mock<IVideoPlayerController> ();
+			playerController.SetupAllProperties ();
+			var viewModel = new VideoPlayerVM { Player = playerController.Object };
+
+			viewModel.SetZoomCommand.Execute (3.0);
+
+			mockService.Verify (s => s.MoveToUpgradeDialog (VASFeature.Zoom.ToString ()), Times.Once);
+		}
+
+		[Test]
+		public void ShowZoom_NoLimited_ViewModelUpdated ()
+		{
+			Mock<ILicenseLimitationsService> mockService = new Mock<ILicenseLimitationsService> ();
+			App.Current.LicenseLimitationsService = mockService.Object;
+			mockService.Setup (s => s.CanExecuteFeature (VASFeature.Zoom.ToString ())).Returns (true);
+			var playerController = new Mock<IVideoPlayerController> ();
+			playerController.SetupAllProperties ();
+			var viewModel = new VideoPlayerVM { Player = playerController.Object };
+
+			Assert.IsFalse (viewModel.ShowZoom);
+
+			viewModel.ShowZoomCommand.Execute ();
+
+			Assert.IsTrue (viewModel.ShowZoom);
+
+		}
+
+		[Test]
+		public void ShowZoom_Limited_MoveToUpgradeDialog ()
+		{
+			Mock<ILicenseLimitationsService> mockService = new Mock<ILicenseLimitationsService> ();
+			App.Current.LicenseLimitationsService = mockService.Object;
+			mockService.Setup (s => s.CanExecuteFeature (VASFeature.Zoom.ToString ())).Returns (false);
+			var playerController = new Mock<IVideoPlayerController> ();
+			playerController.SetupAllProperties ();
+			var viewModel = new VideoPlayerVM { Player = playerController.Object };
+
+			viewModel.ShowZoomCommand.Execute ();
+
+			mockService.Verify (s => s.MoveToUpgradeDialog (VASFeature.Zoom.ToString ()), Times.Once);
+
 		}
 	}
 }
