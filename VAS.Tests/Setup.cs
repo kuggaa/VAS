@@ -70,6 +70,7 @@ namespace VAS.Tests
 			App.Current.GUIToolkit = mockToolkit.Object;
 			App.Current.FileSystemManager = new FileSystemManager ();
 			mockToolkit.SetupGet (o => o.DeviceScaleFactor).Returns (1.0f);
+			App.Current.LicenseLimitationsService = new DummyLicenseLimitationsService ();
 		}
 	}
 
