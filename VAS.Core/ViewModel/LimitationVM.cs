@@ -28,9 +28,19 @@ namespace VAS.Core.ViewModel
 	public class LimitationVM : ViewModelBase<LicenseLimitation>
 	{
 		/// <summary>
-		/// Proxy property for LimitationName.
+		/// Proxy property for DisplayName.
 		/// </summary>
 		/// <value>The name of the limitation.</value>
+		public string DisplayName {
+			get {
+				return Model?.DisplayName;
+			}
+		}
+
+		/// <summary>
+		/// Proxy property for RegisterName.
+		/// </summary>
+		/// <value>The name registered for the limitation.</value>
 		public string RegisterName {
 			get {
 				return Model?.RegisterName;
@@ -65,16 +75,6 @@ namespace VAS.Core.ViewModel
 			}
 			set {
 				base.Model = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets the name of the feature.
-		/// </summary>
-		/// <value>The name of the feature.</value>
-		public string FeatureName {
-			get {
-				return Model?.FeatureName;
 			}
 		}
 
