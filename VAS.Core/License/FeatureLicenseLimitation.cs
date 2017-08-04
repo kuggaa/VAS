@@ -24,11 +24,6 @@ namespace VAS.Core.License
 	/// </summary>
 	public class FeatureLicenseLimitation : LicenseLimitation
 	{
-		public string FeatureName {
-			get;
-			set;
-		}
-
 		public string DetailInfo {
 			get;
 			set;
