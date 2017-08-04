@@ -49,6 +49,26 @@ namespace VAS.Services.Controller
 	{
 		TemplatesManagerViewModel<TModel, TViewModel, TChildModel, TChildViewModel> viewModel;
 		ITemplateProvider<TModel> provider;
+		LimitationAsyncCommand<CreateEvent<TModel>> newTemplateCommand;
+		LimitationAsyncCommand<CreateEvent<TModel>> NewTemplateCommand {
+			get {
+				if (newTemplateCommand == null) {
+					newTemplateCommand = new LimitationAsyncCommand<CreateEvent<TModel>> (TemplateName, New);
+				}
+
+				return newTemplateCommand;
+			}
+		}
+		LimitationAsyncCommand<ImportEvent<TModel>> importTemplateCommand;
+		LimitationAsyncCommand<ImportEvent<TModel>> ImportTemplateCommand {
+			get {
+				if (importTemplateCommand == null) {
+					importTemplateCommand = new LimitationAsyncCommand<ImportEvent<TModel>> (TemplateName, Import);
+				}
+
+				return importTemplateCommand;
+			}
+		}
 
 		protected override void DisposeManagedResources ()
 		{
@@ -143,10 +163,10 @@ namespace VAS.Services.Controller
 			await base.Start ();
 			provider.CollectionChanged += HandleProviderCollectionChanged;
 			App.Current.EventsBroker.SubscribeAsync<ExportEvent<TModel>> (HandleExport);
-			App.Current.EventsBroker.SubscribeAsync<ImportEvent<TModel>> (HandleImport);
+			App.Current.EventsBroker.SubscribeAsync<ImportEvent<TModel>> (async (ev) => await ImportTemplateCommand.ExecuteAsync (ev));
 			App.Current.EventsBroker.SubscribeAsync<UpdateEvent<TModel>> (HandleSave);
 			App.Current.EventsBroker.SubscribeAsync<OpenEvent<TModel>> (HandleOpen);
-			App.Current.EventsBroker.SubscribeAsync<CreateEvent<TModel>> (HandleNew);
+			App.Current.EventsBroker.SubscribeAsync<CreateEvent<TModel>> (async (ev) => await NewTemplateCommand.ExecuteAsync (ev));
 			App.Current.EventsBroker.SubscribeAsync<ChangeNameEvent<TModel>> (HandleChangeName);
 			App.Current.EventsBroker.SubscribeAsync<DeleteEvent<ObservableCollection<TModel>>> (HandleDelete);
 		}
@@ -156,10 +176,10 @@ namespace VAS.Services.Controller
 			await base.Stop ();
 			provider.CollectionChanged -= HandleProviderCollectionChanged;
 			App.Current.EventsBroker.UnsubscribeAsync<ExportEvent<TModel>> (HandleExport);
-			App.Current.EventsBroker.UnsubscribeAsync<ImportEvent<TModel>> (HandleImport);
+			App.Current.EventsBroker.UnsubscribeAsync<ImportEvent<TModel>> (async (ev) => await ImportTemplateCommand.ExecuteAsync (ev));
 			App.Current.EventsBroker.UnsubscribeAsync<UpdateEvent<TModel>> (HandleSave);
 			App.Current.EventsBroker.UnsubscribeAsync<OpenEvent<TModel>> (HandleOpen);
-			App.Current.EventsBroker.UnsubscribeAsync<CreateEvent<TModel>> (HandleNew);
+			App.Current.EventsBroker.UnsubscribeAsync<CreateEvent<TModel>> (async (ev) => await NewTemplateCommand.ExecuteAsync (ev));
 			App.Current.EventsBroker.UnsubscribeAsync<ChangeNameEvent<TModel>> (HandleChangeName);
 			App.Current.EventsBroker.UnsubscribeAsync<DeleteEvent<ObservableCollection<TModel>>> (HandleDelete);
 		}
@@ -249,7 +269,7 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		async Task HandleImport (ImportEvent<TModel> evt)
+		async Task Import (ImportEvent<TModel> evt)
 		{
 			string fileName, filterName;
 			string [] extensions;
@@ -302,7 +322,7 @@ namespace VAS.Services.Controller
 			await App.Current.StateController.MoveToModal (OpenTransitionName, properties);
 		}
 
-		async protected virtual Task HandleNew (CreateEvent<TModel> evt)
+		protected async Task New (CreateEvent<TModel> evt)
 		{
 			TModel template, templateToDelete;
 
