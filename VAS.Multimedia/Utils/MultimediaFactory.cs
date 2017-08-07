@@ -17,11 +17,13 @@
 //Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 //
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Store;
+using VAS.Core.ViewModel;
 using VAS.Multimedia.Capturer;
 using VAS.Multimedia.Editor;
 using VAS.Multimedia.Player;
@@ -46,7 +48,7 @@ namespace VAS.Multimedia
 			Register<IDiscoverer, GstDiscoverer> (0);
 		}
 
-		public void Register <I, C> (int priority)
+		public void Register<I, C> (int priority)
 		{
 			registry.Register<I, C> (priority);
 		}
@@ -58,6 +60,10 @@ namespace VAS.Multimedia
 
 		public IMultiVideoPlayer GetMultiPlayer ()
 		{
+			if (App.Current.LicenseLimitationsService.Get<FeatureLimitationVM> (VASFeature.OpenMultiCamera.ToString ()).Enabled) {
+				throw new InvalidOperationException ("MultiPlayer is not allowed due to a limitation of the current plan");
+			}
+
 			return registry.Retrieve<IMultiVideoPlayer> ();
 		}
 

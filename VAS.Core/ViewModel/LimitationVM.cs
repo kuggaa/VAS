@@ -77,6 +77,16 @@ namespace VAS.Core.ViewModel
 				return Model?.FeatureName;
 			}
 		}
+
+		/// <summary>
+		/// Gets the detail info.
+		/// </summary>
+		/// <value>The detail info.</value>
+		public string DetailInfo {
+			get {
+				return Model?.DetailInfo;
+			}
+		}
 	}
 
 	/// <summary>

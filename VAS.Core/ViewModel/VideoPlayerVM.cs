@@ -23,7 +23,6 @@ using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
-using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
@@ -46,6 +45,22 @@ namespace VAS.Core.ViewModel
 			Step = new Time { TotalSeconds = 10 };
 			ShowDetachButton = true;
 			ShowCenterPlayHeadButton = true;
+			ShowZoomCommand = new LimitationCommand (VASFeature.Zoom.ToString (), () => {
+				ShowZoom = true;
+			});
+			ShowZoomCommand.Icon = App.Current.ResourcesLocator.LoadIcon ("vas-zoom", 15);
+			ShowZoomCommand.ToolTipText = Catalog.GetString ("Zoom");
+			SetZoomCommand = new LimitationCommand<double> (VASFeature.Zoom.ToString (), SetZoom);
+		}
+
+		public LimitationCommand ShowZoomCommand {
+			get;
+			set;
+		}
+
+		public LimitationCommand<double> SetZoomCommand {
+			get;
+			set;
 		}
 
 		protected override void DisposeManagedResources ()
@@ -254,6 +269,12 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		[PropertyChanged.DoNotCheckEquality]
+		public bool ShowZoom {
+			get;
+			protected set;
+		} = false;
+
 		#region methods
 
 		public void Expose ()
@@ -391,7 +412,7 @@ namespace VAS.Core.ViewModel
 		/// Changes the current zoom value using a value that goes from 1 (100%) to 2(200%)
 		/// </summary>
 		/// <param name="zoomLevel">Zoom level.</param>
-		public void SetZoom (double zoomLevel)
+		void SetZoom (double zoomLevel)
 		{
 			Player.SetZoom (zoomLevel);
 		}
