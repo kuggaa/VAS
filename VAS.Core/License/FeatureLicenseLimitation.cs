@@ -28,5 +28,10 @@ namespace VAS.Core.License
 			get;
 			set;
 		}
+
+		public string DetailInfo {
+			get;
+			set;
+		}
 	}
 }

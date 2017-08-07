@@ -639,7 +639,9 @@ namespace VAS.Core.Common
 	/// </summary>
 	public enum VASFeature
 	{
-		Zoom
+		Zoom,
+		OpenMultiCamera,
+		CreateMultiCamera
 	}
 }
 
