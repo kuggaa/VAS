@@ -46,7 +46,7 @@ namespace VAS.Plugins
 		}
 
 		/// <summary>
-		/// Gets or sets a value indicating whether the exporta
+		/// Gets or sets a value indicating whether the exportation has been executed and completed.
 		/// </summary>
 		/// <value><c>true</c> if export done; otherwise, <c>false</c>.</value>
 		public bool ExportDone { get; set; }
