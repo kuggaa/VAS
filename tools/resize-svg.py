@@ -17,6 +17,15 @@ def format_viewbox(viewbox):
 
 def resize_svg(file_path, scale):
     print "-- Processing {}".format(file_path)
+    ET.register_namespace('', "http://www.w3.org/2000/svg")
+    ET.register_namespace('xlink', "http://www.w3.org/1999/xlink")
+    ET.register_namespace('dc', "http://purl.org/dc/elements/1.1/")
+    ET.register_namespace('cc', "http://creativecommons.org/ns#")
+    ET.register_namespace('rdf', "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+    ET.register_namespace('svg', "http://www.w3.org/2000/svg")
+    ET.register_namespace('sodipodi', "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd")
+    ET.register_namespace('inkscape', "http://www.inkscape.org/namespaces/inkscape")
+    ET.register_namespace('osb', "http://www.openswatchbook.org/uri/2009/osb")
     tree = ET.parse(file_path)
     svg = tree.getroot()
     if 'width' not in svg.keys() or 'height' not in svg.keys():
