@@ -18,7 +18,9 @@
 using System;
 using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
+using VAS.UI.Helpers;
 
 namespace VAS.UI.Component
 {
@@ -32,8 +34,9 @@ namespace VAS.UI.Component
 		string path;
 		string proposedFileName;
 		string proposedDirectoryName;
+		LimitationCommand addLimitationCommand;
 
-		public MediaFileChooser (String name)
+		public MediaFileChooser (String name, int index)
 		{
 			this.Build ();
 
@@ -52,7 +55,13 @@ namespace VAS.UI.Component
 
 			UpdateFile ();
 
-			entrybutton_addbutton.Clicked += HandleAddClicked;
+			// FIXME: Use a viewmodel and the proper bindings
+			// Warning: Note also that if the index is incremented from another part than the new panel the limitation will be also
+			// applied there.
+			addLimitationCommand = new LimitationCommand (VASFeature.CreateMultiCamera.ToString (), () => HandleAddClicked (null, null));
+			addLimitationCommand.LimitationCondition = () => index > 1;
+			entrybutton_addbutton.BindManually (addLimitationCommand);
+
 			clearbutton.Clicked += HandleClearClicked;
 			nameentry.Changed += HandleNameChanged;
 
@@ -62,7 +71,7 @@ namespace VAS.UI.Component
 			ProposedDirectoryName = String.Format ("{0}-{1}", App.Current.SoftwareName, DateTime.Now.ToShortDateString ());
 		}
 
-		public MediaFileChooser () : this (null)
+		public MediaFileChooser () : this (null, 0)
 		{
 		}
 

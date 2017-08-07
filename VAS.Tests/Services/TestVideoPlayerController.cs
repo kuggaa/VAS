@@ -1996,7 +1996,6 @@ namespace VAS.Tests.Services
 			Assert.AreSame (mfsNew [0], fileset.Model [0]);
 		}
 
-
 		void HandleElementLoadedEvent (object element, bool hasNext)
 		{
 			elementLoaded++;

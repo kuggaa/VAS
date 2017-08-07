@@ -51,7 +51,7 @@ namespace VAS.Tests.MVVMC
 		}
 
 		[Test]
-		public void LimitationCommand_InitExecutable ()
+		public void CanExecute_InitExecutable_Ok ()
 		{
 			var command = new LimitationCommand (limitationName, (obj) => { });
 
@@ -59,7 +59,7 @@ namespace VAS.Tests.MVVMC
 		}
 
 		[Test]
-		public void LimitationCommand_CanExecute_CommandOK ()
+		public void CanExecute_Command_OK ()
 		{
 			var command = new LimitationCommand (limitationName, () => { }, () => true);
 
@@ -67,7 +67,7 @@ namespace VAS.Tests.MVVMC
 		}
 
 		[Test]
-		public void LimitationCommand_CanExecute_CommandParametrizedCanExecuteOK ()
+		public void CanExecute_CommandParametrized_CanExecuteOK ()
 		{
 			var command = new LimitationCommand<bool> (limitationName, o => { }, o => o);
 
@@ -75,7 +75,7 @@ namespace VAS.Tests.MVVMC
 		}
 
 		[Test]
-		public void LimitationCommand_CanExecute_GenricCommandOK ()
+		public void CanExecute_GenricCommand_OK ()
 		{
 			var command = new LimitationCommand<bool> (limitationName, (o) => { }, () => true);
 
@@ -83,7 +83,7 @@ namespace VAS.Tests.MVVMC
 		}
 
 		[Test]
-		public void LimitationCommand_CanExecute_GenericCommandParametrizedCanExecuteOK ()
+		public void CanExecute_GenericCommandParametrized_CanExecuteOK ()
 		{
 			var command = new LimitationCommand<bool> (limitationName, o => { }, o => o);
 
@@ -92,7 +92,7 @@ namespace VAS.Tests.MVVMC
 
 
 		[Test]
-		public void LimitationCommand_CanExecute_AsyncCommandParametrizedCanExecuteOK ()
+		public void CanExecute_AsyncCommandParametrized_OK ()
 		{
 			var command = new LimitationAsyncCommand (limitationName, AsyncHelpers.Return, (o) => true);
 
@@ -100,7 +100,7 @@ namespace VAS.Tests.MVVMC
 		}
 
 		[Test]
-		public void LimitationCommand_CanExecute_AsyncCommandOK ()
+		public void CanExecute_AsyncCommand_OK ()
 		{
 			var command = new LimitationAsyncCommand (limitationName, AsyncHelpers.Return, () => true);
 
@@ -108,7 +108,7 @@ namespace VAS.Tests.MVVMC
 		}
 
 		[Test]
-		public void LimitationCommand_CanExecute_GenericAsyncCommandParametrizedCanExecuteOK ()
+		public void CanExecute_GenericAsyncCommandParametrized_OK ()
 		{
 			var command = new LimitationAsyncCommand<bool> (limitationName, o => { return AsyncHelpers.Return (o); }, (o) => true);
 
@@ -116,48 +116,111 @@ namespace VAS.Tests.MVVMC
 		}
 
 		[Test]
-		public void LimitationCommand_CanExecute_GenericAsyncCommandOK ()
+		public void CanExecute_GenericAsyncCommand_OK ()
 		{
+			// Arrange
 			var command = new LimitationAsyncCommand<bool> (limitationName, o => { return AsyncHelpers.Return (o); }, () => true);
 
+			// Act & Assert
 			Assert.IsTrue (command.CanExecute ());
 		}
 
 		[Test]
-		public void LimitationCommand_LimitationNotInitialized_Executed ()
+		public void Execute_LimitationNotInitialized_Executed ()
 		{
+			// Arrange
 			bool executed = false;
 			App.Current.LicenseLimitationsService = new DummyLicenseLimitationsService ();
 			var command = new LimitationCommand (limitationName, () => { executed = true; });
 
+			// Act
 			command.Execute ();
+
+			// Assert
 			Assert.IsTrue (executed);
 		}
 
 		[Test]
-		public void LimitationCommand_LimitationCanExecute_Executed ()
+		public void Execute_LimitationCanExecute_Executed ()
 		{
+			// Arrange
 			bool executed = false;
 			mockLimitationService.Setup (lim => lim.CanExecuteFeature (limitationName)).Returns (true);
 			var command = new LimitationCommand (limitationName, () => { executed = true; });
 
+			// Act
 			command.Execute ();
 
+			// Assert
 			Assert.IsTrue (executed);
 			mockLimitationService.Verify (lim => lim.MoveToUpgradeDialog (limitationName), Times.Never);
 		}
 
 		[Test]
-		public void LimitationCommand_LimitationCanNotExecute_MoveToUpgradeDialog ()
+		public void Execute_LimitationCanNotExecute_MoveToUpgradeDialog ()
 		{
+			// Arrange
 			bool executed = false;
 			mockLimitationService.Setup (lim => lim.CanExecuteFeature (limitationName)).Returns (false);
 			var command = new LimitationCommand (limitationName, () => { executed = true; });
 
+			// Act
 			command.Execute ();
 
+			// assert
 			Assert.IsFalse (executed);
 			mockLimitationService.Verify (lim => lim.MoveToUpgradeDialog (limitationName), Times.Once);
+		}
+
+		[Test]
+		public void Execute_ConditionSetToApplyLimit_MoveToUpgradeDialog ()
+		{
+			// Arrange
+			bool executed = false;
+			mockLimitationService.Setup (lim => lim.CanExecuteFeature (limitationName)).Returns (false);
+			var command = new LimitationCommand (limitationName, () => { executed = true; });
+			command.LimitationCondition = () => true;
+
+			// Act
+			command.Execute ();
+
+			// assert
+			Assert.IsFalse (executed);
+			mockLimitationService.Verify (lim => lim.MoveToUpgradeDialog (limitationName), Times.Once);
+		}
+
+		[Test]
+		public void Execute_ConditionSetToApplyLimitButFeatureCan_ExecuteOk ()
+		{
+			// Arrange
+			bool executed = false;
+			mockLimitationService.Setup (lim => lim.CanExecuteFeature (limitationName)).Returns (true);
+			var command = new LimitationCommand (limitationName, () => { executed = true; });
+			command.LimitationCondition = () => true;
+
+			// Act
+			command.Execute ();
+
+			// assert
+			Assert.IsTrue (executed);
+			mockLimitationService.Verify (lim => lim.MoveToUpgradeDialog (limitationName), Times.Never);
+		}
+
+		[Test]
+		public void Execute_FeatureCanExecuteButConditionSetToNotApplyLimit_ExecuteOk ()
+		{
+			// Arrange
+			bool executed = false;
+			mockLimitationService.Setup (lim => lim.CanExecuteFeature (limitationName)).Returns (false);
+			var command = new LimitationCommand (limitationName, () => { executed = true; });
+			command.LimitationCondition = () => false;
+
+			// Act
+			command.Execute ();
+
+			// assert
+			Assert.IsTrue (executed);
+			mockLimitationService.Verify (lim => lim.MoveToUpgradeDialog (limitationName), Times.Never);
 		}
 	}
 }
