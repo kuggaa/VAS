@@ -633,5 +633,13 @@ namespace VAS.Core.Common
 		Before,
 		After
 	}
+
+	/// <summary>
+	/// Common features between VAS applications
+	/// </summary>
+	public enum VASFeature
+	{
+		Zoom
+	}
 }
 

@@ -36,6 +36,7 @@ using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
 using VAS.Drawing.Cairo;
 using VAS.Drawing.Widgets;
+using VAS.UI.Helpers.Bindings;
 using DConstants = VAS.Drawing.Constants;
 using Image = VAS.Core.Common.Image;
 using Misc = VAS.UI.Helpers.Misc;
@@ -66,6 +67,7 @@ namespace VAS.UI
 		SliderView rateWindow;
 		double rateLevel;
 		int zoomLevel;
+		BindingContext ctx;
 
 		#region Constructors
 
@@ -110,8 +112,6 @@ namespace VAS.UI
 				StyleConf.PlayerCapturerIconSize);
 			viewportsSwitchImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-multicam",
 				22);
-			zoomLevelImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-zoom",
-				15);
 			centerplayheadbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-dash-center-view",
 				StyleConf.PlayerCapturerIconSize);
 			DurationButtonImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-duration",
@@ -134,7 +134,6 @@ namespace VAS.UI
 			volumebutton.TooltipMarkup = Catalog.GetString ("Volume");
 			detachbutton.TooltipMarkup = Catalog.GetString ("Detach window");
 			centerplayheadbutton.TooltipMarkup = Catalog.GetString ("Center Playhead");
-			zoomLevelButton.TooltipMarkup = Catalog.GetString ("Zoom");
 
 			volumeWindow = new SliderView (0, 101, 1, 1);
 			volumeWindow.FormatValue = (double val) => { return val + "%"; };
@@ -162,6 +161,7 @@ namespace VAS.UI
 			cameraConfigsOutOfScreen = new List<CameraConfig> ();
 
 			CreateWindows ();
+			Bind ();
 		}
 
 		#endregion
@@ -211,6 +211,7 @@ namespace VAS.UI
 					playerVM.PropertyChanged += PlayerVMPropertyChanged;
 					Reset ();
 					playerVM.Sync ();
+					ctx.UpdateViewModel (playerVM);
 				}
 			}
 		}
@@ -294,7 +295,6 @@ namespace VAS.UI
 			rateLevelButton.Clicked += HandleRateButtonClicked;
 			jumpsButton.Clicked += HandleJumpsButtonClicked;
 			viewportsSwitchButton.Toggled += HandleViewPortsToggled;
-			zoomLevelButton.Clicked += HandleZoomClicked;
 			centerplayheadbutton.Clicked += HandleCenterPlayheadClicked;
 			timerule.CenterPlayheadClicked += HandleCenterPlayheadClicked;
 			detachbutton.Clicked += (sender, e) =>
@@ -319,11 +319,16 @@ namespace VAS.UI
 			rateLevelButton.Clicked -= HandleRateButtonClicked;
 			jumpsButton.Clicked -= HandleJumpsButtonClicked;
 			viewportsSwitchButton.Toggled -= HandleViewPortsToggled;
-			zoomLevelButton.Clicked -= HandleZoomClicked;
 			centerplayheadbutton.Clicked -= HandleCenterPlayheadClicked;
 			timerule.CenterPlayheadClicked -= HandleCenterPlayheadClicked;
 			mainviewport.VideoDragStarted -= OnMainViewportVideoDragStartedEvent;
 			mainviewport.VideoDragStopped -= OnMainViewportVideoDragStoppedEvent;
+		}
+
+		void Bind ()
+		{
+			ctx = new BindingContext ();
+			ctx.Add (zoomLevelButton.Bind ((vm) => ((VideoPlayerVM)vm).ShowZoomCommand));
 		}
 
 		void LoadImage (Image image, FrameDrawing drawing)
@@ -766,7 +771,7 @@ namespace VAS.UI
 		void HandleZoomChanged (double level)
 		{
 			zoomLevel = (int)level;
-			playerVM.SetZoom (App.Current.ZoomLevels [(int)level]);
+			playerVM.SetZoomCommand.Execute (App.Current.ZoomLevels [(int)level]);
 			zoomLabel.Text = $"{App.Current.ZoomLevels [(int)level] * 100}%";
 		}
 
@@ -802,6 +807,11 @@ namespace VAS.UI
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Zoom))) {
 				zoomWindow.SetValue (App.Current.ZoomLevels.IndexOf (playerVM.Zoom));
 				zoomLabel.Text = $"{playerVM.Zoom * 100}%";
+			}
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.ShowZoom))) {
+				if (ViewModel.ShowZoom) {
+					zoomWindow.Show ();
+				}
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Step))) {
 				jumpsWindow.SetValue (App.Current.StepList.IndexOf (playerVM.Step.TotalSeconds));

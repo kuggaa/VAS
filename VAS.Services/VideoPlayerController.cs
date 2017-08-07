@@ -982,14 +982,14 @@ namespace VAS.Services
 				),
 				new KeyAction (
 					App.Current.HotkeysService.GetByName(PlaybackHotkeys.ZOOM_RESTORE),
-					() => SetZoom (App.Current.ZoomLevels[0])
+					() => playerVM.SetZoomCommand.Execute (App.Current.ZoomLevels[0])
 				),
 				new KeyAction (
 					App.Current.HotkeysService.GetByName(PlaybackHotkeys.ZOOM_INCREASE),
 					IncreaseZoom
 				),
 				new KeyAction (
-					App.Current.HotkeysService.GetByName(PlaybackHotkeys.ZOOM_INCREASE),
+					App.Current.HotkeysService.GetByName(PlaybackHotkeys.ZOOM_DECREASE),
 					DecreaseZoom
 				),
 			};
@@ -1591,7 +1591,7 @@ namespace VAS.Services
 		{
 			double? newLevel = App.Current.ZoomLevels.Where (l => l > playerVM.Zoom).OrderBy (l => l).FirstOrDefault ();
 			if (newLevel != 0) {
-				SetZoom ((double)newLevel);
+				playerVM.SetZoomCommand.Execute ((double)newLevel);
 			}
 		}
 
@@ -1599,7 +1599,7 @@ namespace VAS.Services
 		{
 			double? newLevel = App.Current.ZoomLevels.Where (l => l < playerVM.Zoom).OrderByDescending (l => l).FirstOrDefault ();
 			if (newLevel != 0) {
-				SetZoom ((double)newLevel);
+				playerVM.SetZoomCommand.Execute ((double)newLevel);
 			}
 		}
 
