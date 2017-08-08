@@ -85,7 +85,7 @@ namespace VAS.Core.MVVMC
 			if (item == null) {
 				return;
 			}
-			Select (ViewModels.First (vm => vm.Model.Equals (item)));
+			Select (ViewModels.FirstOrDefault (vm => vm.Model.Equals (item)));
 		}
 
 		protected virtual TViewModel CreateInstance (TModel model)
