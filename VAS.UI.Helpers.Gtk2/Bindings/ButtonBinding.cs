@@ -53,14 +53,20 @@ namespace VAS.UI.Helpers.Bindings
 
 		protected override void BindViewModel ()
 		{
-			if (Command != null) {
-				Command.CanExecuteChanged -= HandleCanExecuteChanged;
-			}
+			UnbindViewModel ();
 			base.BindViewModel ();
 			if (Command != null) {
 				UpdateButton ();
 				Command.CanExecuteChanged += HandleCanExecuteChanged;
 			}
+		}
+
+		protected override void UnbindViewModel ()
+		{
+			if (Command != null) {
+				Command.CanExecuteChanged -= HandleCanExecuteChanged;
+			}
+			base.UnbindViewModel ();
 		}
 
 		void UpdateButton ()
@@ -82,7 +88,9 @@ namespace VAS.UI.Helpers.Bindings
 			if (radioButton != null && radioButton.Active == false) {
 				return;
 			}
-			Command.Execute (Parameter);
+			if (Command != null) {
+				Command.Execute (Parameter);
+			}
 		}
 	}
 }
