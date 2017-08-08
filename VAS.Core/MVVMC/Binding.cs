@@ -52,6 +52,7 @@ namespace VAS.Core.MVVMC
 		{
 			if (binded) {
 				UnbindView ();
+				UnbindViewModel ();
 			}
 		}
 
