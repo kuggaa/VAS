@@ -41,6 +41,12 @@ namespace VAS.Core.MVVMC
 		/// <value>The condition.</value>
 		public Func<bool> LimitationCondition { get; set; }
 
+		/// <summary>
+		/// Gets or sets a value indicating whether operation was executed
+		/// </summary>
+		/// <value><c>true</c> if limitation was not applied; otherwise, <c>false</c>.</value>
+		public bool Executed { get; private set; }
+
 		public LimitationCommand (string limitationName, Action<object> execute) : base (execute)
 		{
 			Contract.Requires (execute != null);
@@ -74,8 +80,10 @@ namespace VAS.Core.MVVMC
 		protected override Task InternalExecute (object parameter)
 		{
 			if (!IsExecuteLimited ()) {
+				Executed = true;
 				return base.InternalExecute (parameter);
 			}
+
 			return App.Current.LicenseLimitationsService.MoveToUpgradeDialog (limitationName);
 		}
 
