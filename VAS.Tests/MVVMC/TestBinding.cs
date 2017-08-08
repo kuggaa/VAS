@@ -67,6 +67,7 @@ namespace VAS.Tests.MVVMC
 			binding.ViewModel = new ViewModelBase<BindableBase> ();
 
 			Assert.AreEqual (1, binding.viewBindCount);
+			Assert.AreEqual (1, binding.viewModelBindCount);
 		}
 
 		[Test]
@@ -79,6 +80,7 @@ namespace VAS.Tests.MVVMC
 			binding.Dispose ();
 
 			Assert.AreEqual (0, binding.viewBindCount);
+			Assert.AreEqual (0, binding.viewModelBindCount);
 		}
 
 		[Test]
@@ -89,7 +91,8 @@ namespace VAS.Tests.MVVMC
 			binding.ViewModel = new ViewModelBase<BindableBase> ();
 			binding.Dispose ();
 
-			Assert.AreEqual (1, binding.viewModelBindCount);
+			Assert.AreEqual (0, binding.viewBindCount);
+			Assert.AreEqual (0, binding.viewModelBindCount);
 		}
 	}
 }
