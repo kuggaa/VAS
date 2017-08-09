@@ -180,5 +180,15 @@ namespace VAS.Core.ViewModel
 			get;
 			set;
 		}
+
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="T:VAS.Core.ViewModel.MediaFileVM"/> is fake capture.
+		/// </summary>
+		/// <value><c>true</c> if is fake capture; otherwise, <c>false</c>.</value>
+		public bool IsFakeCapture {
+			get {
+				return Model.IsFakeCapture;
+			}
+		}
 	}
 }
