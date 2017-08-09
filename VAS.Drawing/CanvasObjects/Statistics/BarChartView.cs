@@ -1,6 +1,7 @@
 ﻿//
 //  Copyright (C) 2017 Fluendo S.A.
 //
+using System.ComponentModel;
 using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
@@ -24,13 +25,14 @@ namespace VAS.Drawing.CanvasObjects.Statistics
 			get {
 				return viewModel;
 			}
-
 			set {
+				if (viewModel != null) {
+					viewModel.PropertyChanged -= HandlePropertyChanged;
+				}
 				viewModel = value;
-				if (App.IsMainThread) {
-					ReDraw ();
-				} else {
-					App.Current.GUIToolkit.Invoke ((sender, e) => ReDraw ());
+				if (viewModel != null) {
+					viewModel.PropertyChanged += HandlePropertyChanged;
+					CallRedraw ();
 				}
 			}
 		}
@@ -69,6 +71,20 @@ namespace VAS.Drawing.CanvasObjects.Statistics
 			}
 
 			tk.End ();
+		}
+
+		void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			CallRedraw ();
+		}
+
+		void CallRedraw ()
+		{
+			if (App.IsMainThread) {
+				ReDraw ();
+			} else {
+				App.Current.GUIToolkit.Invoke ((sender, e) => ReDraw ());
+			}
 		}
 	}
 }

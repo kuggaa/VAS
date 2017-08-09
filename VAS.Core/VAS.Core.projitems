@@ -266,6 +266,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)License\LicenseLimitation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\LimitationCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)License\FeatureLicenseLimitation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\CountLimitationBarChartVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\PropertyToPropertyBinding.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\BindingsExtensions.cs" />
   </ItemGroup>
