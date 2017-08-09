@@ -26,11 +26,28 @@ namespace VAS.Core.License
 	/// </summary>
 	public class LicenseLimitation : BindableBase
 	{
+		string displayName;
+
 		/// <summary>
 		/// Gets or sets the Registered name of the limitation.
 		/// </summary>
 		/// <value>The registered name of the limitation.</value>
 		public string RegisterName { get; set; }
+
+		/// <summary>
+		/// Gets or sets the display name of the limitation.
+		/// This is the one that will be displayed in popups, etc.
+		/// If this is not set, it returns the RegisterName.
+		/// </summary>
+		/// <value>The display name of the limitation.</value>
+		public string DisplayName {
+			get {
+				return displayName ?? RegisterName;
+			}
+			set {
+				displayName = value;
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.License.LicenseLimitation"/> is enabled.

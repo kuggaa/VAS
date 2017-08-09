@@ -15,51 +15,38 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using VAS.Core.Common;
-using VAS.Core.MVVMC;
+using VAS.Core.Interfaces.Drawing;
 
-namespace VAS.Core.ViewModel.Statistics
+namespace VAS.Drawing.CanvasObjects.Blackboard
 {
 	/// <summary>
-	/// SeriesVM for stats representation.
+	/// Canvas object to draw a single image in the whole drawing area.
 	/// </summary>
-	public class SeriesVM : ViewModelBase
+	public class ImageCanvasObject : CanvasObject
 	{
-		public SeriesVM () { }
+		/// <summary>
+		/// Gets or sets the image.
+		/// </summary>
+		/// <value>The image.</value>
+		public Image Image { get; set; }
 
-		public SeriesVM (string title, int elements, Color color)
+		/// <summary>
+		/// Gets or sets the scale mode.
+		/// </summary>
+		/// <value>The scale mode.</value>
+		public ScaleMode Mode { get; set; }
+
+		/// <summary>
+		/// Draws Image in the specified area.
+		/// </summary>
+		/// <param name="tk">Drawing toolkit.</param>
+		/// <param name="area">Area.</param>
+		public override void Draw (IDrawingToolkit tk, Area area)
 		{
-			Title = title;
-			Elements = elements;
-			Color = color;
-		}
-
-		/// <summary>
-		/// Gets or sets the series' title.
-		/// </summary>
-		/// <value>The title.</value>
-		public string Title {
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// Gets or sets the elements quantity.
-		/// </summary>
-		/// <value>The elements.</value>
-		public int Elements {
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// Gets or sets the color.
-		/// </summary>
-		/// <value>The color.</value>
-		public Color Color {
-			get;
-			set;
+			tk.Begin ();
+			tk.DrawImage (area.TopLeft, area.Width, area.Height, Image, Mode);
+			tk.End ();
 		}
 	}
 }

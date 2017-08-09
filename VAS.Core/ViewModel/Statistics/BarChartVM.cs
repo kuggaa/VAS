@@ -15,6 +15,8 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using VAS.Core.Common;
+using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
 
 namespace VAS.Core.ViewModel.Statistics
@@ -38,5 +40,12 @@ namespace VAS.Core.ViewModel.Statistics
 		/// </summary>
 		/// <value><c>true</c> if height; otherwise, <c>false</c>.</value>
 		public double Height { get; set; }
+
+		/// <summary>
+		/// Gets or sets the background image.
+		/// This image will be rendered under the series.
+		/// </summary>
+		/// <value>The background image.</value>
+		public ICanvasObject Background { get; set; }
 	}
 }

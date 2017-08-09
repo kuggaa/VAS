@@ -221,6 +221,7 @@ namespace VAS.Core.Common
 		public const string ButtonFocus = "ButtonFocus";
 		public const string ButtonDialog = "ButtonDialog";
 		public const string ButtonCallToActionRounded = "ButtonCallToActionRounded";
+		public const string ButtonRegular = "ButtonRegular";
 
 		//Limits Styles
 		public const string LabelLimit = "LabelLimit";

@@ -70,5 +70,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\TextBorderRegionView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Statistics\TwoBarChartView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\CanvasBorderView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Blackboard\ImageCanvasObject.cs" />
   </ItemGroup>
 </Project>
