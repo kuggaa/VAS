@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using VAS.Core;
 using VAS.Core.Common;
@@ -27,6 +28,8 @@ using VAS.Core.Interfaces;
 using VAS.Core.License;
 using VAS.Core.MVVMC;
 using VAS.Core.ViewModel;
+using VAS.Core.ViewModel.Statistics;
+using VAS.Drawing.CanvasObjects.Blackboard;
 using VAS.Services.State;
 
 namespace VAS.Services
@@ -207,6 +210,23 @@ namespace VAS.Services
 		{
 			UpdateCountLimitations ();
 			UpdateFeatureLimitations ();
+		}
+
+		public CountLimitationBarChartVM CreateBarChartVM (string limitationName)
+		{
+			var limitation = Get<CountLimitationVM> (limitationName);
+			TwoBarChartVM barChart = new TwoBarChartVM (limitation.Maximum,
+														new SeriesVM { Title = "Remaining", Elements = limitation.Remaining, Color = Color.Green1 },
+														new SeriesVM { Title = "Current", Elements = limitation.Count, Color = Color.Transparent });
+			barChart.Height = 10;
+			barChart.Background = new ImageCanvasObject {
+				Image = App.Current.ResourcesLocator.LoadImage ("images/lm-widget-full-bar" + Constants.IMAGE_EXT),
+				Mode = ScaleMode.Fill
+			};
+
+			var result = new CountLimitationBarChartVM { Limitation = limitation, BarChart = barChart };
+			result.Bind ();
+			return result;
 		}
 	}
 }

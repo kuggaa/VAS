@@ -26,6 +26,8 @@ namespace VAS.Core.ViewModel.Statistics
 	/// </summary>
 	public class SeriesVM : ViewModelBase
 	{
+		public SeriesVM () { }
+
 		public SeriesVM (string title, int elements, Color color)
 		{
 			Title = title;

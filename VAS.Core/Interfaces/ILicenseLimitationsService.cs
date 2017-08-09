@@ -73,5 +73,12 @@ namespace VAS.Core.Interfaces
 		/// <returns>The Task of the transition </returns>
 		/// <param name="name">Name of the limitation</param>
 		Task<bool> MoveToUpgradeDialog (string name);
+
+		/// <summary>
+		/// Creates the VM used to display count limitations in the Limitation Widget
+		/// </summary>
+		/// <returns>The bar chart vm.</returns>
+		/// <param name="limitationName">Limitation name.</param>
+		CountLimitationBarChartVM CreateBarChartVM (string limitationName);
 	}
 }
