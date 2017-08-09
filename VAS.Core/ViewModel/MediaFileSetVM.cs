@@ -106,6 +106,16 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets the preview image.
+		/// </summary>
+		/// <value>The preview.</value>
+		public Image Preview {
+			get {
+				return Model.Preview;
+			}
+		}
+
 		protected override void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == "VisibleRegion") {
