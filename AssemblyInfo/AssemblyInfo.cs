@@ -53,5 +53,6 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyKeyFile ("")]
 [assembly: InternalsVisibleTo ("Tests")]
 [assembly: InternalsVisibleTo ("VAS.Tests")]
+[assembly: InternalsVisibleTo ("VAS.Tests.Gtk2")]
 [assembly: InternalsVisibleTo ("FluVAS.Tests")]
 [assembly: InternalsVisibleTo ("LongoMatch.Plugins.Pro.Tests")]

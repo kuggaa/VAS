@@ -72,7 +72,7 @@ namespace VAS.Core.ViewModel
 				Text = Catalog.GetString ("Change"),
 			};
 
-			ToggleActionLinks = new Command<bool> ((p) => ShowLinks = p) {
+			ToggleActionLinks = new LimitationCommand<bool> (VASFeature.LinkingButtons.ToString (), (p) => ShowLinks = p) {
 				Icon = App.Current.ResourcesLocator.LoadIcon ("vas-link-active", App.Current.Style.ButtonNormalWidth),
 				IconInactive = App.Current.ResourcesLocator.LoadIcon ("vas-link-disabled", App.Current.Style.ButtonNormalWidth),
 				ToolTipText = Catalog.GetString ("Edit action links"),
@@ -162,7 +162,7 @@ namespace VAS.Core.ViewModel
 		/// Gets the command to toggle the actions links visiblity.
 		/// </summary>
 		[PropertyChanged.DoNotNotify]
-		public Command<bool> ToggleActionLinks {
+		public LimitationCommand<bool> ToggleActionLinks {
 			get;
 			private set;
 		}

@@ -27,6 +27,7 @@ namespace VAS.UI.Helpers.Bindings
 	{
 		ToggleButton button;
 		object parameterInactive;
+		bool silenceToggledEvent;
 
 		public ToggleButtonBinding (ToggleButton button, Func<IViewModel, Command> commandFunc, object paramActive, object parameterInactive) : base (commandFunc, paramActive)
 		{
@@ -84,8 +85,19 @@ namespace VAS.UI.Helpers.Bindings
 
 		void HandleToggled (object sender, EventArgs args)
 		{
-			Command.Execute (button.Active ? Parameter : parameterInactive);
-			UpdateButton ();
+			if (!silenceToggledEvent) {
+				Command.Execute (button.Active ? Parameter : parameterInactive);
+
+				LimitationCommand limitedCommand = Command as LimitationCommand;
+				if (limitedCommand != null && !limitedCommand.Executed) {
+					silenceToggledEvent = true;
+					button.Toggle ();
+					button.Active = false;
+					silenceToggledEvent = false;
+				}
+
+				UpdateButton ();
+			}
 		}
 	}
 }

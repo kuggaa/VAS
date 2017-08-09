@@ -138,6 +138,7 @@ namespace VAS.Tests.MVVMC
 
 			// Assert
 			Assert.IsTrue (executed);
+			Assert.AreEqual (executed, command.Executed);
 		}
 
 		[Test]
@@ -169,6 +170,7 @@ namespace VAS.Tests.MVVMC
 
 			// assert
 			Assert.IsFalse (executed);
+			Assert.AreEqual (executed, command.Executed);
 			mockLimitationService.Verify (lim => lim.MoveToUpgradeDialog (limitationName), Times.Once);
 		}
 
