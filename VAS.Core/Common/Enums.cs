@@ -641,7 +641,8 @@ namespace VAS.Core.Common
 	{
 		Zoom,
 		OpenMultiCamera,
-		CreateMultiCamera
+		CreateMultiCamera,
+		LinkingButtons
 	}
 }
 
