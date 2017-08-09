@@ -93,7 +93,7 @@ namespace VAS.Tests.Core.ViewModel
 		{
 			Mock<ILicenseLimitationsService> mockService = new Mock<ILicenseLimitationsService> ();
 			App.Current.LicenseLimitationsService = mockService.Object;
-			mockService.Setup (s => s.CanExecuteFeature (VASFeature.Zoom.ToString ())).Returns (true);
+			mockService.Setup (s => s.CanExecute (VASFeature.Zoom.ToString ())).Returns (true);
 			var playerController = new Mock<IVideoPlayerController> ();
 			playerController.SetupAllProperties ();
 			var viewModel = new VideoPlayerVM { Player = playerController.Object };
@@ -109,7 +109,7 @@ namespace VAS.Tests.Core.ViewModel
 		{
 			Mock<ILicenseLimitationsService> mockService = new Mock<ILicenseLimitationsService> ();
 			App.Current.LicenseLimitationsService = mockService.Object;
-			mockService.Setup (s => s.CanExecuteFeature (VASFeature.Zoom.ToString ())).Returns (false);
+			mockService.Setup (s => s.CanExecute (VASFeature.Zoom.ToString ())).Returns (false);
 			var playerController = new Mock<IVideoPlayerController> ();
 			playerController.SetupAllProperties ();
 			var viewModel = new VideoPlayerVM { Player = playerController.Object };
@@ -124,7 +124,7 @@ namespace VAS.Tests.Core.ViewModel
 		{
 			Mock<ILicenseLimitationsService> mockService = new Mock<ILicenseLimitationsService> ();
 			App.Current.LicenseLimitationsService = mockService.Object;
-			mockService.Setup (s => s.CanExecuteFeature (VASFeature.Zoom.ToString ())).Returns (true);
+			mockService.Setup (s => s.CanExecute (VASFeature.Zoom.ToString ())).Returns (true);
 			var playerController = new Mock<IVideoPlayerController> ();
 			playerController.SetupAllProperties ();
 			var viewModel = new VideoPlayerVM { Player = playerController.Object };
@@ -142,7 +142,7 @@ namespace VAS.Tests.Core.ViewModel
 		{
 			Mock<ILicenseLimitationsService> mockService = new Mock<ILicenseLimitationsService> ();
 			App.Current.LicenseLimitationsService = mockService.Object;
-			mockService.Setup (s => s.CanExecuteFeature (VASFeature.Zoom.ToString ())).Returns (false);
+			mockService.Setup (s => s.CanExecute (VASFeature.Zoom.ToString ())).Returns (false);
 			var playerController = new Mock<IVideoPlayerController> ();
 			playerController.SetupAllProperties ();
 			var viewModel = new VideoPlayerVM { Player = playerController.Object };

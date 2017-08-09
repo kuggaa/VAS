@@ -62,10 +62,10 @@ namespace VAS.Core.Interfaces
 		void Add (FeatureLicenseLimitation limitation);
 
 		/// <summary>
-		/// Checks if a limitation feature can be executed
+		/// Checks if a limitation can be executed
 		/// </summary>
-		/// <param name="name">Name of the feature limitation</param>
-		bool CanExecuteFeature (string name);
+		/// <param name="name">Name of the limitation</param>
+		bool CanExecute (string name);
 
 		/// <summary>
 		/// Moves to the upgrade dialog
@@ -73,5 +73,12 @@ namespace VAS.Core.Interfaces
 		/// <returns>The Task of the transition </returns>
 		/// <param name="name">Name of the limitation</param>
 		Task<bool> MoveToUpgradeDialog (string name);
+
+		/// <summary>
+		/// Creates the VM used to display count limitations in the Limitation Widget
+		/// </summary>
+		/// <returns>The bar chart vm.</returns>
+		/// <param name="limitationName">Limitation name.</param>
+		CountLimitationBarChartVM CreateBarChartVM (string limitationName);
 	}
 }

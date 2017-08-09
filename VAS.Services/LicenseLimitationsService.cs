@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using VAS.Core;
 using VAS.Core.Common;
@@ -27,6 +28,8 @@ using VAS.Core.Interfaces;
 using VAS.Core.License;
 using VAS.Core.MVVMC;
 using VAS.Core.ViewModel;
+using VAS.Core.ViewModel.Statistics;
+using VAS.Drawing.CanvasObjects.Blackboard;
 using VAS.Services.State;
 
 namespace VAS.Services
@@ -149,19 +152,25 @@ namespace VAS.Services
 		}
 
 		/// <summary>
-		/// Checks if a limitation feature can be executed
+		/// Checks if a limitation can be executed
 		/// </summary>
-		/// <param name="name">Name of the feature limitation</param>
-		public bool CanExecuteFeature (string name)
+		/// <param name="name">Name of the limitation</param>
+		public bool CanExecute (string name)
 		{
-			var featureLimitVM = Get<FeatureLimitationVM> (name);
-
-			if (featureLimitVM == null) {
-				Log.Warning ("Cannot get Feature, because it wasn't registered," +
-													 " returning true");
+			var limitationVM = Get<LimitationVM> (name);
+			if (limitationVM == null) {
+				Log.Warning ("Cannot get limitation because it wasn't registered." +
+													 " Returning true");
 				return true;
 			}
-			return !featureLimitVM.Enabled;
+			if (!limitationVM.Enabled) {
+				return true;
+			}
+			var countVM = limitationVM as CountLimitationVM;
+			if (countVM != null) {
+				return countVM.Count < countVM.Maximum;
+			}
+			return !limitationVM.Enabled;
 		}
 
 		/// <summary>
@@ -171,16 +180,16 @@ namespace VAS.Services
 		/// <param name="name">Name of the limitation</param>
 		public Task<bool> MoveToUpgradeDialog (string name)
 		{
-			var featureLimitVM = Get<FeatureLimitationVM> (name);
+			var limitationVM = Get<LimitationVM> (name);
 
-			if (featureLimitVM == null) {
+			if (limitationVM == null) {
 				Log.Warning ("Cannot get Feature, because it wasn't registered," +
 													 " Do not move to UpgradeDialog state");
 				return AsyncHelpers.Return (false);
 			}
-			if (featureLimitVM.Enabled) {
+			if (limitationVM.Enabled) {
 				dynamic properties = new ExpandoObject ();
-				properties.limitationVM = featureLimitVM;
+				properties.limitationVM = limitationVM;
 				return App.Current.StateController.MoveToModal (UpgradeLimitationState.NAME, properties);
 			} else {
 				return AsyncHelpers.Return (false);
@@ -201,6 +210,23 @@ namespace VAS.Services
 		{
 			UpdateCountLimitations ();
 			UpdateFeatureLimitations ();
+		}
+
+		public CountLimitationBarChartVM CreateBarChartVM (string limitationName)
+		{
+			var limitation = Get<CountLimitationVM> (limitationName);
+			TwoBarChartVM barChart = new TwoBarChartVM (limitation.Maximum,
+														new SeriesVM { Title = "Remaining", Elements = limitation.Remaining, Color = Color.Green1 },
+														new SeriesVM { Title = "Current", Elements = limitation.Count, Color = Color.Transparent });
+			barChart.Height = 10;
+			barChart.Background = new ImageCanvasObject {
+				Image = App.Current.ResourcesLocator.LoadImage ("images/lm-widget-full-bar" + Constants.IMAGE_EXT),
+				Mode = ScaleMode.Fill
+			};
+
+			var result = new CountLimitationBarChartVM { Limitation = limitation, BarChart = barChart };
+			result.Bind ();
+			return result;
 		}
 	}
 }

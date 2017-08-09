@@ -18,6 +18,7 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
+using VAS.Core.ViewModel;
 
 namespace VAS.Core.MVVMC
 {
@@ -80,7 +81,7 @@ namespace VAS.Core.MVVMC
 
 		bool IsExecuteLimited ()
 		{
-			bool canExecuteFeature = App.Current.LicenseLimitationsService.CanExecuteFeature (limitationName);
+			bool canExecuteFeature = App.Current.LicenseLimitationsService.CanExecute (limitationName);
 			if (LimitationCondition != null && !canExecuteFeature) {
 				return LimitationCondition ();
 			}

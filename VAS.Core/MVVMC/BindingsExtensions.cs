@@ -16,17 +16,20 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-namespace VAS.Core.License
+using System.Linq.Expressions;
+using VAS.Core.Interfaces.MVVMC;
+
+namespace VAS.Core.MVVMC
 {
-	/// <summary>
-	/// Feature license limitation.
-	/// Used for feature based limitations
-	/// </summary>
-	public class FeatureLicenseLimitation : LicenseLimitation
+	public static class BindingsExtensions
 	{
-		public string DetailInfo {
-			get;
-			set;
+		/// <summary>
+		/// Bind the specified viewModel's property to a property by name.
+		/// </summary>
+		/// <param name="viewModel">ViewModel.</param>
+		public static PropertyToPropertyBinding<TProperty> Bind<TProperty> (this IViewModel viewModel, Expression<Func<IViewModel, TProperty>> setterExpression, Expression<Func<IViewModel, TProperty>> propertyExpression)
+		{
+			return new PropertyToPropertyBinding<TProperty> (viewModel, setterExpression, propertyExpression);
 		}
 	}
 }
