@@ -40,19 +40,22 @@ namespace VAS.Core
 		}
 
 		/// <summary>
-		/// Loads an icon <see cref="Image"/> using the icon name. If <paramref name="size"/>
-		/// is <c>null</c> it uses the original size of the image.
+		/// Loads the embedded image.
 		/// </summary>
-		/// <returns>The icon.</returns>
-		/// <param name="name">Name.</param>
-		/// <param name="size">Desired size.</param>
-		public override Image LoadIcon (string name, int size = 0)
+		/// <returns>The embedded image.</returns>
+		/// <param name="resourceId">Resource identifier.</param>
+		/// <param name="width">Width.</param>
+		/// <param name="height">Height.</param>
+		public override Image LoadEmbeddedImage (string resourceId, int width = 0, int height = 0)
 		{
-			try {
-				return LoadImage ("icons/hicolor/scalable/actions/" + name + StyleConf.IMAGE_EXT, size, size);
-			} catch (FileNotFoundException) {
-				return LoadImage ("icons/hicolor/scalable/apps/" + name + StyleConf.IMAGE_EXT, size, size);
+			var embeddedStream = GetEmbeddedResourceFileStream (resourceId);
+			if (embeddedStream != null) {
+				if (width != 0 && height != 0) {
+					return new Image (embeddedStream, width, height);
+				}
+				return new Image (embeddedStream);
 			}
+			return null;
 		}
 	}
 }
