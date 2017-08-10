@@ -34,7 +34,7 @@ using VAS.Services.ViewModel;
 
 namespace VAS.Services.Controller
 {
-	public class ProjectsController<TModel, TViewModel> : ControllerBase
+	public class ProjectsController<TModel, TViewModel> : ControllerBase<ProjectsManagerVM<TModel, TViewModel>>
 		where TModel : Project
 		where TViewModel : ProjectVM<TModel>, new()
 	{
@@ -47,7 +47,7 @@ namespace VAS.Services.Controller
 			ViewModel = null;
 		}
 
-		protected ProjectsManagerVM<TModel, TViewModel> ViewModel {
+		public override ProjectsManagerVM<TModel, TViewModel> ViewModel {
 			get {
 				return viewModel;
 			}
@@ -174,7 +174,7 @@ namespace VAS.Services.Controller
 
 		async void HandleSelectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
-			//TModel loadedProject = null;
+			TModel loadedProject = null;
 
 			ProjectVM<TModel> projectVM = ViewModel.Selection.FirstOrDefault ();
 
@@ -183,7 +183,7 @@ namespace VAS.Services.Controller
 			// >> Cloning a preloaded a project
 			// >> Using the stored viewmodels instead of creating new ones
 
-			/*if (projectVM != null) {
+			if (projectVM != null) {
 				if (ViewModel.LoadedProject.Edited == true) {
 					await Save (ViewModel.LoadedProject.Model, false);
 				}
@@ -191,15 +191,16 @@ namespace VAS.Services.Controller
 				// Load the model, creating a copy of the Project to edit changes in a different model in case the user
 				// does not want to save them.
 				TModel project = projectVM.Model;
-				loadedProject = project.Clone (SerializationType.Json);
+				// FIXME: Clone is slooooooow
+				loadedProject =  project.Clone();
 				project.IsChanged = false;
 				ViewModel.LoadedProject.Model = loadedProject;
+				loadedProject.IsChanged = false;
 
 				// Update controls visiblity
-				ViewModel.DeleteSensitive = loadedProject != null;
-				ViewModel.ExportSensitive = loadedProject != null;
-				ViewModel.SaveSensitive = false;
-			}*/
+				ViewModel.ExportCommand.EmitCanExecuteChanged ();
+				ViewModel.SaveCommand.EmitCanExecuteChanged ();
+			}
 
 			//Update commands
 			ViewModel.OpenCommand.EmitCanExecuteChanged ();
@@ -217,9 +218,9 @@ namespace VAS.Services.Controller
 			try {
 				IBusyDialog busy = App.Current.Dialogs.BusyDialog (Catalog.GetString ("Saving project..."), null);
 				busy.ShowSync (() => App.Current.DatabaseManager.ActiveDB.Store<TModel> (project));
-				// Update the ViewModel with the model clone used for editting.
-				ViewModel.ViewModels.FirstOrDefault (vm => vm.Model.Equals (project)).Model = project;
-				ViewModel.SaveSensitive = false;
+				// Update the ViewModel with the model clone used for editting. Clone it again so that they don't become binded.
+				ViewModel.ViewModels.FirstOrDefault (vm => vm.Model.Equals (project)).Model = project.Clone();
+				ViewModel.SaveCommand.EmitCanExecuteChanged ();
 				return true;
 			} catch (Exception ex) {
 				Log.Exception (ex);
