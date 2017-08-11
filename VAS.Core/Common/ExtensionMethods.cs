@@ -161,11 +161,13 @@ namespace VAS.Core.Common
 				if (destProperty == null) {
 					return;
 				}
-				object srcConvertedVal;
+				object srcConvertedVal = null;
 				if (srcValue is DateTime && destProperty.PropertyType.IsAssignableFrom (typeof (long))) {
 					srcConvertedVal = ((DateTime)srcValue).ToUnixTime ();
-				} else {
+				} else if (!destProperty.PropertyType.IsAssignableFrom (property.PropertyType)) {
 					srcConvertedVal = Convert.ChangeType (srcValue, destProperty.PropertyType);
+				} else {
+					srcConvertedVal = srcValue;
 				}
 				if (srcConvertedVal == null) {
 					return;
