@@ -169,7 +169,7 @@ namespace VAS.Services.Controller
 			if (project == null) {
 				return;
 			}
-			evt.ReturnValue = await Save (project, true);
+			evt.ReturnValue = await Save (project, evt.Force);
 		}
 
 		async void HandleSelectionChanged (object sender, NotifyCollectionChangedEventArgs e)
@@ -209,7 +209,10 @@ namespace VAS.Services.Controller
 
 		async Task<bool> Save (TModel project, bool force)
 		{
-			if (!force && project.IsChanged) {
+			if (!project.IsChanged) {
+				return false;
+			}
+			if (!force) {
 				string msg = Catalog.GetString ("Do you want to save the current project?");
 				if (!(await App.Current.Dialogs.QuestionMessage (msg, null, this))) {
 					return false;

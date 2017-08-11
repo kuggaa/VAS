@@ -207,6 +207,7 @@ namespace VAS.Core.ViewModel
 	public abstract class ProjectVM<TProject> : ProjectVM, IViewModel<TProject>
 		where TProject : Project
 	{
+		[PropertyChanged.DoNotCheckEquality]
 		public new TProject Model {
 			get {
 				return base.Model as TProject;
