@@ -303,6 +303,20 @@ namespace VAS.Tests
 		}
 	}
 
+	public class DummyTeamManagerVM : TemplatesManagerViewModel<Team, TeamVM, Player, PlayerVM>
+	{
+		public DummyTeamManagerVM (TeamVM vm)
+		{
+			LoadedTemplate = vm;
+		}
+
+		public TeamVM Team {
+			get {
+				return LoadedTemplate;
+			}
+		}
+	}
+
 	public class DummyResourcesLocator : IResourcesLocator
 	{
 		HashSet<Assembly> assemblies;
