@@ -48,8 +48,8 @@ namespace VAS.Core.ViewModel
 				return base.Model;
 			}
 			set {
-				ActionLinks.Model = value.ActionLinks;
-				HotKey.Model = value.HotKey;
+				ActionLinks.Model = value?.ActionLinks;
+				HotKey.Model = value?.HotKey;
 				base.Model = value;
 			}
 		}
