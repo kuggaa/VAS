@@ -305,7 +305,7 @@ namespace VAS.Services.Controller
 			await App.Current.StateController.MoveToModal (OpenTransitionName, properties);
 		}
 
-		protected async Task New (CreateEvent<TModel> evt)
+		protected async virtual Task HandleNew (CreateEvent<TModel> evt)
 		{
 			TModel template, templateToDelete;
 

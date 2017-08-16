@@ -16,8 +16,6 @@
     -->
     <StableRelease>False</StableRelease>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " />
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " />
   <ItemGroup>
     <None Include="..\tools\Init.ps1">
       <Link>tools\Init.ps1</Link>
