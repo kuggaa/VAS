@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -43,20 +43,18 @@
     <Reference Include="System.Xml" />
     <Reference Include="Mono.Posix" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>$(SolutionDir)\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Package>newtonsoft-json</Package>
-    </Reference>
-    <Reference Include="PropertyChanged">
-      <HintPath>$(SolutionDir)\packages\PropertyChanged.Fody.2.1.3\Lib\netstandard1.0\PropertyChanged.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <Import Project="VAS.Core.projitems" Label="Shared" Condition="Exists('VAS.Core.projitems')" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\.nuget\NuGet.targets" />
-  <Import Project="$(SolutionDir)\packages\Fody.2.1.0\build\portable-net+sl+win+wpa+wp\Fody.targets" />
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6' Or $(TargetFrameworkVersion) == 'v4.6.1' Or $(TargetFrameworkVersion) == 'v4.6.2' Or $(TargetFrameworkVersion) == 'v4.6.3' Or $(TargetFrameworkVersion) == 'v4.7')">
+      <PropertyGroup>
+        <__paket__Fody_targets>netstandard1.0\Fody</__paket__Fody_targets>
+      </PropertyGroup>
+    </When>
+  </Choose>
   <ItemGroup>
     <Compile Include="Common\Image.cs" />
     <Compile Include="Catalog.cs" />
@@ -78,11 +76,11 @@
     <Compile Include="GdkGlue.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Paket>True</Paket>
     </Content>
   </ItemGroup>
   <ItemGroup>
@@ -111,4 +109,27 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6' Or $(TargetFrameworkVersion) == 'v4.6.1' Or $(TargetFrameworkVersion) == 'v4.6.2' Or $(TargetFrameworkVersion) == 'v4.6.3' Or $(TargetFrameworkVersion) == 'v4.7')">
+      <ItemGroup>
+        <Reference Include="Newtonsoft.Json">
+          <HintPath>..\..\packages\Newtonsoft.Json\lib\net45\Newtonsoft.Json.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6' Or $(TargetFrameworkVersion) == 'v4.6.1' Or $(TargetFrameworkVersion) == 'v4.6.2' Or $(TargetFrameworkVersion) == 'v4.6.3' Or $(TargetFrameworkVersion) == 'v4.7')">
+      <ItemGroup>
+        <Reference Include="PropertyChanged">
+          <HintPath>..\..\packages\PropertyChanged.Fody\lib\netstandard1.0\PropertyChanged.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="..\..\packages\Fody\build\$(__paket__Fody_targets).targets" Condition="Exists('..\..\packages\Fody\build\$(__paket__Fody_targets).targets')" Label="Paket" />
 </Project>
