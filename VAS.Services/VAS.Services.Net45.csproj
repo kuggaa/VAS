@@ -72,9 +72,7 @@
     <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="FodyWeavers.xml">
-      <Paket>True</Paket>
-    </Content>
+    <Content Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppUpdater\SparkleOSX.cs" />
