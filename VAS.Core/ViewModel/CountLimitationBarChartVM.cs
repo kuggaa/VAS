@@ -15,6 +15,8 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System.ComponentModel;
+using VAS.Core.Common;
 using VAS.Core.MVVMC;
 using VAS.Core.ViewModel.Statistics;
 
@@ -26,6 +28,8 @@ namespace VAS.Core.ViewModel
 	public class CountLimitationBarChartVM : ViewModelBase
 	{
 		BindingContext ctx;
+		CountLimitationVM limitation;
+		TwoBarChartVM barChart;
 
 		public CountLimitationBarChartVM ()
 		{
@@ -47,8 +51,20 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		/// <value>The limitation.</value>
 		public CountLimitationVM Limitation {
-			get;
-			set;
+			get {
+				return limitation;
+			}
+
+			set {
+				if (limitation != null) {
+					limitation.PropertyChanged -= HandlePropertyChanged;
+				}
+				limitation = value;
+				if (limitation != null) {
+					limitation.PropertyChanged += HandlePropertyChanged;
+					HandlePropertyChanged (null, null);
+				}
+			}
 		}
 
 		/// <summary>
@@ -56,8 +72,25 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		/// <value>The bar chart.</value>
 		public TwoBarChartVM BarChart {
+			get {
+				return barChart;
+			}
+
+			set {
+				if (barChart != null) {
+					barChart.PropertyChanged -= HandlePropertyChanged;
+				}
+				barChart = value;
+				if (barChart != null) {
+					barChart.PropertyChanged += HandlePropertyChanged;
+					HandlePropertyChanged (null, null);
+				}
+			}
+		}
+
+		public string Text {
 			get;
-			set;
+			private set;
 		}
 
 		/// <summary>
@@ -68,6 +101,23 @@ namespace VAS.Core.ViewModel
 			ctx.Add (BarChart.LeftSerie.Bind ((vm) => ((SeriesVM)vm).Elements, (vm) => ((CountLimitationVM)vm).Remaining));
 			ctx.Add (BarChart.RightSerie.Bind ((vm) => ((SeriesVM)vm).Elements, (vm) => ((CountLimitationVM)vm).Count));
 			ctx.UpdateViewModel (Limitation);
+		}
+
+		void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if(Limitation == null || BarChart == null)
+			{
+				return;
+			}
+			if (NeedsSync (e?.PropertyName, nameof (Limitation.Count))) {
+				if (Limitation.Remaining <= 0) {
+					BarChart.RightSerie.Color = Color.Red;
+					Text = $"Oops! <b>No {Limitation.DisplayName.ToLower ()}</b> left in your plan!";
+				} else {
+					BarChart.RightSerie.Color = Color.Transparent;
+					Text = $"Only <b>{Limitation.Remaining} {Limitation.DisplayName.ToLower ()}</b> left in your plan!";
+				}
+			}
 		}
 	}
 }
