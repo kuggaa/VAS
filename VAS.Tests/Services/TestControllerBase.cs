@@ -206,7 +206,7 @@ namespace VAS.Tests.Services
 			Assert.IsNotNull (controllerRef.Target);
 
 			// Act
-			App.Current.EventsBroker.Publish<NewTagEvent> ();
+			await App.Current.EventsBroker.Publish<NewTagEvent> ();
 
 			// Assert
 			Assert.IsFalse (unmanagedDisposeCalled);
