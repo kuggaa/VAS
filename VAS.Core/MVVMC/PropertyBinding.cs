@@ -120,12 +120,16 @@ namespace VAS.Core.MVVMC
 
 		protected override void BindViewModel ()
 		{
-			ViewModel.PropertyChanged += HandlePropertyChanged;
+			if (ViewModel != null) {
+				ViewModel.PropertyChanged += HandlePropertyChanged;
+			}
 		}
 
 		protected override void UnbindViewModel ()
 		{
-			ViewModel.PropertyChanged -= HandlePropertyChanged;
+			if (ViewModel != null) {
+				ViewModel.PropertyChanged -= HandlePropertyChanged;
+			}
 		}
 
 		/// <summary>
