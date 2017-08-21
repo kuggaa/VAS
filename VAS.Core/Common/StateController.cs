@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VAS.Core.Common;
 using VAS.Core.Events;
@@ -22,12 +23,15 @@ namespace VAS.Core
 		NavigationState home;
 		List<NavigationState> navigationStateStack;
 		List<NavigationState> modalStateStack;
+		Dictionary<string, TaskCompletionSource<bool>> pendingNavigationStack;
 		Dictionary<string, Stack<Func<IScreenState>>> overwrittenTransitions;
 		Dictionary<string, Command> transitionCommands;
+		bool onGoingTransition;
 
 		public StateController ()
 		{
 			destination = new Dictionary<string, Func<IScreenState>> ();
+			pendingNavigationStack = new Dictionary<string, TaskCompletionSource<bool>> ();
 			navigationStateStack = new List<NavigationState> ();
 			modalStateStack = new List<NavigationState> ();
 			overwrittenTransitions = new Dictionary<string, Stack<Func<IScreenState>>> ();
@@ -83,7 +87,9 @@ namespace VAS.Core
 					Log.Debug ("Not moved to " + transition + "because we're already there");
 					return true;
 				}
-				if (!CanMove (lastState) && !forceMove) return false;
+
+				await WaitUntilCanMove (transition);
+
 				if (emptyStack) {
 					if (!await EmptyStateStack ()) {
 						return false;
@@ -153,9 +159,9 @@ namespace VAS.Core
 				IScreenState state = destination [transition] ();
 				NavigationState transitionState = new NavigationState (transition, state, !waitUntilClose);
 
-				NavigationState lastState = LastState ();
-				if (!CanMove (lastState)) return false;
+				await WaitUntilCanMove (transitionState.Name);
 
+				NavigationState lastState = LastState ();
 				if (!await lastState.Freeze (transitionState)) {
 					return false;
 				}
@@ -191,8 +197,9 @@ namespace VAS.Core
 			try {
 				bool triggeredFromModal;
 				NavigationState current = LastState (out triggeredFromModal);
-				if (!CanMove (current)) return false;
+				await WaitUntilCanMove (current.Name);
 				Log.Debug ("Moving Back");
+
 				if (current != null) {
 					if (!triggeredFromModal) {
 						if (!await PopNavigationState ()) {
@@ -231,7 +238,8 @@ namespace VAS.Core
 					Log.Debug ("Moving failed because transition " + transition + " is not in history moves");
 					return false;
 				}
-				if (!CanMove (state)) return false;
+
+				await WaitUntilCanMove (state.Name);
 
 				if (home != null && state == home) {
 					return await MoveToHome ();
@@ -325,14 +333,26 @@ namespace VAS.Core
 			return transitionCommands;
 		}
 
-		// FIXME: Enqueue instead of blocking navigation
-		bool CanMove (NavigationState current)
+		async Task WaitUntilCanMove (string transition)
 		{
-			bool canMove = current == null ||
-				(current.CurrentStatus == NavigationStateStatus.Shown ||
-				 current.CurrentStatus == NavigationStateStatus.Hidden);
-			if (canMove) App.Current.EventsBroker.Publish<NavigatingEvent> ();
-			return canMove;
+			if (onGoingTransition)
+			{
+				pendingNavigationStack.Add (transition, new TaskCompletionSource<bool>());
+				await pendingNavigationStack [transition].Task;
+				pendingNavigationStack.Remove (transition);
+			}
+
+			onGoingTransition = true;
+
+			await App.Current.EventsBroker.Publish<NavigatingEvent> ();
+		}
+
+		async Task NotifyNavigation (string transition, bool isModal = false)
+		{
+			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = transition, IsModal = isModal });
+
+			onGoingTransition = false;
+			pendingNavigationStack.FirstOrDefault ().Value?.SetResult (true);
 		}
 
 		/// <summary>
@@ -372,7 +392,8 @@ namespace VAS.Core
 			if (!await navState.Show ()) {
 				return false;
 			}
-			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = transition });
+
+			await NotifyNavigation (transition);
 			return true;
 		}
 
@@ -389,7 +410,8 @@ namespace VAS.Core
 			if (!await App.Current.Navigation.Pop (lastState?.ScreenState.Panel)) {
 				return false;
 			}
-			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = Current });
+
+			await NotifyNavigation (Current);
 			if (!await navigationState.Unload ()) {
 				return false;
 			}
@@ -419,7 +441,8 @@ namespace VAS.Core
 			if (!await state.Show ()) {
 				return false;
 			}
-			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = state.Name });
+
+			await NotifyNavigation (state.Name);
 			return await App.Current.Navigation.Push (state.ScreenState.Panel);
 		}
 
@@ -430,7 +453,7 @@ namespace VAS.Core
 				return false;
 			}
 
-			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = state.ScreenState.Name, IsModal = true });
+			await NotifyNavigation (state.ScreenState.Name, true);
 			await App.Current.Navigation.PushModal (state.ScreenState.Panel, current.Panel);
 			return true;
 		}
@@ -447,7 +470,7 @@ namespace VAS.Core
 				return false;
 			}
 			modalStateStack.RemoveAt (modalStateStack.Count - 1);
-			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = Current, IsModal = modalStateStack.Any () });
+			await NotifyNavigation (Current, modalStateStack.Any ());
 			await App.Current.Navigation.PopModal (screenToPop.Panel);
 			screenToPop.Dispose ();
 			return true;
@@ -528,7 +551,6 @@ namespace VAS.Core
 		NavigationState freezingState;
 		bool completeWhenUnload;
 
-
 		public NavigationState (string name, IScreenState screenState, bool completeWhenUnload = true)
 		{
 			Name = name;
@@ -544,6 +566,8 @@ namespace VAS.Core
 		public TaskCompletionSource<bool> Completion { get; }
 
 		public NavigationStateStatus CurrentStatus { get; private set; }
+
+		public bool IsModal { get; set; }
 
 		public override bool Equals (object obj)
 		{

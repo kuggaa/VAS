@@ -460,10 +460,10 @@ namespace VAS.Tests.Core.Common
 			await sc.SetHomeTransition ("Home", null);
 
 			bool hidden = false;
-			transition1StateMock.Setup (x => x.HideState ()).Callback (() => {
+			transition1StateMock.Setup (x => x.HideState ()).Callback (async () => {
 				if (!hidden) {
 					hidden = true;
-					sc.MoveTo ("Transition3", null);
+					await sc.MoveTo ("Transition3", null);
 				}
 			}).Returns (AsyncHelpers.Return (true));
 
@@ -472,7 +472,7 @@ namespace VAS.Tests.Core.Common
 			await sc.MoveTo ("Transition2", null);
 
 			// Assert
-			Assert.AreEqual ("Transition2", sc.Current);
+			Assert.AreEqual ("Transition3", sc.Current);
 		}
 
 
@@ -515,6 +515,61 @@ namespace VAS.Tests.Core.Common
 			Assert.IsFalse (ret);
 			Assert.AreEqual ("Transition1", sc.Current);
 			Assert.AreEqual (NavigationStateStatus.Shown, currentNavState.CurrentStatus);
+		}
+
+		[Test]
+		public async void TestMoveTo_LoadStateDoesTransition_WellNavigated ()
+		{
+			sc.Register ("Home", () => GetScreenStateDummy ("Home"));
+			var transition1StateMock = Utils.GetScreenStateMocked ("Transition1");
+			sc.Register ("Transition1", () => transition1StateMock.Object);
+			sc.Register ("Transition2", () => GetScreenStateDummy ("Transition2"));
+			await sc.SetHomeTransition ("Home", null);
+
+			transition1StateMock.Setup (x => x.LoadState (It.IsAny<object> ()))
+			                    .Callback (async () => await sc.MoveTo ("Transition2", null)).Returns (AsyncHelpers.Return (true));
+
+			await sc.MoveTo ("Transition1", null);
+
+			Assert.AreEqual ("Transition2", sc.Current);
+		}
+
+		[Test]
+		public async void TestMoveToModal_LoadStateDoesTransition_WellNavigated ()
+		{
+			sc.Register ("Home", () => GetScreenStateDummy ("Home"));
+			var transition1StateMock = Utils.GetScreenStateMocked ("Transition1");
+			sc.Register ("Transition1", () => transition1StateMock.Object);
+			sc.Register ("Transition2", () => GetScreenStateDummy ("Transition2"));
+			await sc.SetHomeTransition ("Home", null);
+
+			transition1StateMock.Setup (x => x.LoadState (It.IsAny<object> ()))
+								.Callback (async () => await sc.MoveToModal ("Transition2", null)).Returns (AsyncHelpers.Return (true));
+
+			await sc.MoveTo ("Transition1", null);
+
+			Assert.AreEqual ("Transition2", sc.Current);
+		}
+
+		[Test]
+		public async void TestMoveToModal_LoadStateDoesTwoTransitions_WellNavigated ()
+		{
+			sc.Register ("Home", () => GetScreenStateDummy ("Home"));
+			var transition1StateMock = Utils.GetScreenStateMocked ("Transition1");
+			var transition2StateMock = Utils.GetScreenStateMocked ("Transition2");
+			sc.Register ("Transition1", () => transition1StateMock.Object);
+			sc.Register ("Transition2", () => transition2StateMock.Object);
+			sc.Register ("Transition3", () => GetScreenStateDummy ("Transition3"));
+			await sc.SetHomeTransition ("Home", null);
+
+			transition1StateMock.Setup (x => x.LoadState (It.IsAny<object> ()))
+								.Callback (async () => await sc.MoveToModal ("Transition2", null)).Returns (AsyncHelpers.Return (true));
+			transition2StateMock.Setup (x => x.LoadState (It.IsAny<object> ()))
+								.Callback (async () => await sc.MoveToModal ("Transition3", null)).Returns (AsyncHelpers.Return (true));
+
+			await sc.MoveTo ("Transition1", null);
+
+			Assert.AreEqual ("Transition3", sc.Current);
 		}
 	}
 
