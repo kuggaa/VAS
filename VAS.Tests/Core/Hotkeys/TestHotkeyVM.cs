@@ -31,7 +31,7 @@ namespace VAS.Tests.Core.Hotkeys
 		HotKey hotkey;
 		HotKeyVM viewModel;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void TestsInit ()
 		{
 			hotkey = new HotKey { Key = (int)App.Current.Keyboard.KeyvalFromName ("w"), Modifier = 100 };

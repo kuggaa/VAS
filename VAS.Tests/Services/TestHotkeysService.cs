@@ -32,7 +32,7 @@ namespace VAS.Tests.Services
 		KeyConfig keyConfig2;
 		KeyConfig keyConfig1Dup;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void Init ()
 		{
 			keyConfig1 = new KeyConfig {

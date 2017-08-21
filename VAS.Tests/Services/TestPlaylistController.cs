@@ -62,7 +62,7 @@ namespace VAS.Tests.Services
 		ProjectVM projectVM;
 		Mock<IStateController> mockStateController;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void FixtureSetup ()
 		{
 			mockGuiToolkit = new Mock<IGUIToolkit> ();

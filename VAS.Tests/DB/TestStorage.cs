@@ -99,9 +99,10 @@ namespace VAS.Tests.DB
 		Database db;
 		IStorage storage;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void InitDB ()
 		{
+			Directory.SetCurrentDirectory (TestContext.CurrentContext.TestDirectory);
 			string tmpPath = Path.GetTempPath ();
 			string homePath = Path.Combine (tmpPath, "VAS");
 			string dbPath = Path.Combine (homePath, "db");
@@ -142,7 +143,7 @@ namespace VAS.Tests.DB
 				System.IO.Directory.CreateDirectory (App.Current.TempVideosDir);
 		}
 
-		[TestFixtureTearDown]
+		[OneTimeTearDown]
 		public void DeleteDB ()
 		{
 			Directory.Delete (db.Manager.Directory, true);
