@@ -770,8 +770,11 @@ namespace VAS.UI
 
 		void HandleZoomChanged (double level)
 		{
+			if (Math.Abs (level - zoomLevel) >= 0.001) {
+				playerVM.SetZoomCommand.Execute (App.Current.ZoomLevels [(int)level]);
+			}
+
 			zoomLevel = (int)level;
-			playerVM.SetZoomCommand.Execute (App.Current.ZoomLevels [(int)level]);
 			zoomLabel.Text = $"{App.Current.ZoomLevels [(int)level] * 100}%";
 		}
 
