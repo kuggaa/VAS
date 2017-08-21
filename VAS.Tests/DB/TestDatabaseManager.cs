@@ -28,7 +28,7 @@ namespace VAS.Tests.DB
 	{
 		IStorageManager storageManager;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void FixtureSetUp ()
 		{
 			string tmpPath = Path.GetTempPath ();

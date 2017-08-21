@@ -34,7 +34,7 @@ namespace VAS.Tests.Drawing.CanvasObjects.Timeline
 		EventTypeTimelineView timeline;
 
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void Init ()
 		{
 			App.Current.ViewLocator = new ViewLocator ();

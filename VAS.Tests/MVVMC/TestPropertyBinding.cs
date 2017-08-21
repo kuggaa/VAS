@@ -160,6 +160,19 @@ namespace VAS.Tests.MVVMC
 			child.Prop2 = 32;
 			Assert.AreEqual ("32", binding.val);
 		}
+
+		[Test]
+		public void Dispose_NullViewModel_NoException(){
+			DummyPropertyBinding binding = null;
+			var viewModel = new DummyPropertyViewModel ();
+
+			binding = new DummyPropertyBinding (vm => ((DummyPropertyViewModel)vm).Prop4, new Int32Converter ());
+
+			binding.ViewModel = viewModel;
+
+			binding.ViewModel = null;
+			Assert.DoesNotThrow(binding.Dispose);
+		}
 	}
 
 	class DummyPropertyViewModel : ViewModelBase<BindableBase>

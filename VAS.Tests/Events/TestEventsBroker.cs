@@ -39,7 +39,7 @@ namespace VAS.Tests.Events
 		[TearDown]
 		public void TearDown ()
 		{
-			SetupClass.Initialize ();
+			SetupClass.SetUp ();
 		}
 
 		[Test]

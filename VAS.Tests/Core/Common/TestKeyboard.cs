@@ -32,7 +32,7 @@ namespace VAS.Tests.Core.Common
 			"Primary"
 		};
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void SetUpOnce ()
 		{
 			keyboard = new Keyboard ();

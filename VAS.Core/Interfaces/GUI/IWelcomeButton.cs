@@ -15,6 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System.Threading.Tasks;
 using VAS.Core.Common;
 
 namespace VAS.Core.Interfaces.GUI
@@ -36,6 +37,6 @@ namespace VAS.Core.Interfaces.GUI
 		/// <summary>
 		/// Activates the button. It does the proper logic for when button is pressed.
 		/// </summary>
-		void Activate ();
+		Task Activate ();
 	}
 }

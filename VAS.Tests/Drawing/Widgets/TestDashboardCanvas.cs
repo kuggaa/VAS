@@ -33,7 +33,7 @@ namespace VAS.Tests.Drawing.Widgets
 		DashboardVM dashboard;
 		DashboardCanvas dashboardCanvas;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void Init ()
 		{
 			App.Current.ViewLocator = new ViewLocator ();
