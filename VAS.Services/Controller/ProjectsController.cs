@@ -38,28 +38,11 @@ namespace VAS.Services.Controller
 		where TModel : Project
 		where TViewModel : ProjectVM<TModel>, new()
 	{
-		ProjectsManagerVM<TModel, TViewModel> viewModel;
-
 		protected override void DisposeManagedResources ()
 		{
 			ViewModel.IgnoreEvents = true;
 			base.DisposeManagedResources ();
 			ViewModel = null;
-		}
-
-		public override ProjectsManagerVM<TModel, TViewModel> ViewModel {
-			get {
-				return viewModel;
-			}
-			set {
-				if (viewModel != null) {
-					viewModel.Selection.CollectionChanged -= HandleSelectionChanged;
-				}
-				viewModel = value;
-				if (started) {
-					viewModel.Selection.CollectionChanged += HandleSelectionChanged;
-				}
-			}
 		}
 
 		#region IController implementation
@@ -77,8 +60,8 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.SubscribeAsync<UpdateEvent<TModel>> (HandleSave);
 			App.Current.EventsBroker.SubscribeAsync<CreateEvent<TModel>> (HandleNew);
 			App.Current.EventsBroker.SubscribeAsync<DeleteEvent<TModel>> (HandleDelete);
-			if (viewModel != null) {
-				viewModel.Selection.CollectionChanged += HandleSelectionChanged;
+			if (ViewModel != null) {
+				ViewModel.Selection.CollectionChanged += HandleSelectionChanged;
 			}
 		}
 
@@ -90,8 +73,8 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.UnsubscribeAsync<UpdateEvent<TModel>> (HandleSave);
 			App.Current.EventsBroker.UnsubscribeAsync<CreateEvent<TModel>> (HandleNew);
 			App.Current.EventsBroker.UnsubscribeAsync<DeleteEvent<TModel>> (HandleDelete);
-			if (viewModel != null) {
-				viewModel.Selection.CollectionChanged -= HandleSelectionChanged;
+			if (ViewModel != null) {
+				ViewModel.Selection.CollectionChanged -= HandleSelectionChanged;
 			}
 		}
 
@@ -157,7 +140,7 @@ namespace VAS.Services.Controller
 				});
 				if (success) {
 					ViewModel.Model.Remove (project);
-					viewModel.Select (viewModel.Model.FirstOrDefault ());
+					ViewModel.Select (ViewModel.Model.FirstOrDefault ());
 					evt.ReturnValue = true;
 				}
 			}
