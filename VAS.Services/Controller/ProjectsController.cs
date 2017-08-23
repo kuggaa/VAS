@@ -196,7 +196,6 @@ namespace VAS.Services.Controller
 					project.IsChanged = false;
 					project.Model.IsChanged = false;
 				});
-				// Update the ViewModel with the model clone used for editting. Clone it again so that they don't become binded.
 				ViewModel.SaveCommand.EmitCanExecuteChanged ();
 				return true;
 			} catch (Exception ex) {
