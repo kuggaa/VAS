@@ -37,7 +37,7 @@ namespace VAS.Tests
 	public class SetupClass
 	{
 		[OneTimeSetUp]
-		public static void SetUp ()
+		public static void Setup ()
 		{
 			// Initialize VAS.Core by using a type, this will call the module initialization
 			VFS.SetCurrent (new FileSystem ());

@@ -270,6 +270,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\PropertyToPropertyBinding.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\BindingsExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\ResourcesLocatorBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\IStateful.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

@@ -57,7 +57,7 @@ namespace VAS.Services.Controller
 			await base.Start ();
 			App.Current.EventsBroker.SubscribeAsync<ExportEvent<TModel>> (HandleExport);
 			App.Current.EventsBroker.SubscribeAsync<ImportEvent<TModel>> (HandleImport);
-			App.Current.EventsBroker.SubscribeAsync<UpdateEvent<TModel>> (HandleSave);
+			App.Current.EventsBroker.SubscribeAsync<UpdateEvent<TViewModel>> (HandleSave);
 			App.Current.EventsBroker.SubscribeAsync<CreateEvent<TModel>> (HandleNew);
 			App.Current.EventsBroker.SubscribeAsync<DeleteEvent<TModel>> (HandleDelete);
 			if (ViewModel != null) {
@@ -70,7 +70,7 @@ namespace VAS.Services.Controller
 			await base.Stop ();
 			App.Current.EventsBroker.UnsubscribeAsync<ExportEvent<TModel>> (HandleExport);
 			App.Current.EventsBroker.UnsubscribeAsync<ImportEvent<TModel>> (HandleImport);
-			App.Current.EventsBroker.UnsubscribeAsync<UpdateEvent<TModel>> (HandleSave);
+			App.Current.EventsBroker.UnsubscribeAsync<UpdateEvent<TViewModel>> (HandleSave);
 			App.Current.EventsBroker.UnsubscribeAsync<CreateEvent<TModel>> (HandleNew);
 			App.Current.EventsBroker.UnsubscribeAsync<DeleteEvent<TModel>> (HandleDelete);
 			if (ViewModel != null) {
@@ -146,51 +146,38 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		async Task HandleSave (UpdateEvent<TModel> evt)
+		async Task HandleSave (UpdateEvent<TViewModel> evt)
 		{
-			TModel project = evt.Object;
+			TViewModel project = evt.Object;
 			if (project == null) {
 				return;
 			}
 			evt.ReturnValue = await Save (project, evt.Force);
 		}
 
-		async void HandleSelectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		protected virtual async void HandleSelectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
-			TModel loadedProject = null;
+			TViewModel selectedVM = ViewModel.Selection.FirstOrDefault ();
 
-			ProjectVM<TModel> projectVM = ViewModel.Selection.FirstOrDefault ();
-
-			// FIXME: Rift and Longo are not using this code but yes the mobile app of longo
-			// Improve the performance by:
-			// >> Cloning a preloaded a project
-			// >> Using the stored viewmodels instead of creating new ones
-
-			if (projectVM != null) {
-				if (ViewModel.LoadedProject.Edited == true) {
-					await Save (ViewModel.LoadedProject.Model, false);
+			if (selectedVM != null) {
+				if (ViewModel.LoadedProject.Model != null && ViewModel.LoadedProject.IsChanged) {
+					await Save (ViewModel.LoadedProject, false);
 				}
 
-				// Load the model, creating a copy of the Project to edit changes in a different model in case the user
+				// Load the model, creating a copy to edit changes in a different viewmodel in case the user
 				// does not want to save them.
-				TModel project = projectVM.Model;
-				// FIXME: Clone is slooooooow
-				loadedProject =  project.Clone();
-				project.IsChanged = false;
-				ViewModel.LoadedProject.Model = loadedProject;
-				loadedProject.IsChanged = false;
-
-				// Update controls visiblity
-				ViewModel.ExportCommand.EmitCanExecuteChanged ();
-				ViewModel.SaveCommand.EmitCanExecuteChanged ();
+				ViewModel.LoadedProject = new TViewModel { Model = selectedVM.Model, Stateful = true };
+				ViewModel.LoadedProject.IsChanged = false;
 			}
 
 			//Update commands
+			ViewModel.ExportCommand.EmitCanExecuteChanged ();
+			ViewModel.SaveCommand.EmitCanExecuteChanged ();
 			ViewModel.OpenCommand.EmitCanExecuteChanged ();
 			ViewModel.DeleteCommand.EmitCanExecuteChanged ();
 		}
 
-		async Task<bool> Save (TModel project, bool force)
+		protected async Task<bool> Save (TViewModel project, bool force)
 		{
 			if (!project.IsChanged) {
 				return false;
@@ -203,9 +190,13 @@ namespace VAS.Services.Controller
 			}
 			try {
 				IBusyDialog busy = App.Current.Dialogs.BusyDialog (Catalog.GetString ("Saving project..."), null);
-				busy.ShowSync (() => App.Current.DatabaseManager.ActiveDB.Store<TModel> (project));
+				busy.ShowSync (() => {
+					project.CommitState ();
+					App.Current.DatabaseManager.ActiveDB.Store (project.Model);
+					project.IsChanged = false;
+					project.Model.IsChanged = false;
+				});
 				// Update the ViewModel with the model clone used for editting. Clone it again so that they don't become binded.
-				ViewModel.ViewModels.FirstOrDefault (vm => vm.Model.Equals (project)).Model = project.Clone();
 				ViewModel.SaveCommand.EmitCanExecuteChanged ();
 				return true;
 			} catch (Exception ex) {
