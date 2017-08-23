@@ -31,13 +31,15 @@ namespace VAS.Services.ViewModel
 		where TModel : Project
 		where TViewModel : ProjectVM<TModel>, new()
 	{
+		TViewModel loadedProject;
+
 		public ProjectsManagerVM ()
 		{
 			LoadedProject = new TViewModel ();
 			NewCommand = new Command (New);
 			OpenCommand = new AsyncCommand<TViewModel> (Open, (arg) => Selection.Count == 1);
 			DeleteCommand = new AsyncCommand (Delete, () => Selection.Any ());
-			SaveCommand = new AsyncCommand (Save, () => LoadedProject?.Model != null && LoadedProject.Model.IsChanged);
+			SaveCommand = new AsyncCommand (Save, () => LoadedProject?.Model != null && LoadedProject.IsChanged);
 			ExportCommand = new AsyncCommand (Export, () => Selection.Count == 1);
 		}
 
@@ -61,8 +63,19 @@ namespace VAS.Services.ViewModel
 		}
 
 		public TViewModel LoadedProject {
-			get;
-			private set;
+			get {
+				return loadedProject;
+			}
+			set {
+				if (loadedProject != null) {
+					loadedProject.PropertyChanged -= HandleLoadedProjectChanged;
+				}
+				loadedProject = value;
+				if (loadedProject != null) {
+					loadedProject.PropertyChanged += HandleLoadedProjectChanged;
+					loadedProject.Sync ();
+				}
+			}
 		}
 
 		[PropertyChanged.DoNotNotify]
@@ -150,9 +163,8 @@ namespace VAS.Services.ViewModel
 
 		protected virtual async Task<bool> Save (bool force = true)
 		{
-			TModel project = LoadedProject.Model;
-			if (project != null) {
-				return await App.Current.EventsBroker.PublishWithReturn (new UpdateEvent<TModel> { Object = project, Force = force });
+			if (LoadedProject != null && LoadedProject.Model != null) {
+				return await App.Current.EventsBroker.PublishWithReturn (new UpdateEvent<TViewModel> { Object = LoadedProject, Force = force });
 			}
 			return false;
 		}
@@ -173,6 +185,14 @@ namespace VAS.Services.ViewModel
 		void CheckNewCommandEnabled ()
 		{
 			NewCommand.Executable = Limitation == null || Limitation.Count < Limitation.Maximum;
+		}
+
+		void HandleLoadedProjectChanged (object sender, PropertyChangedEventArgs e)
+		{
+			ExportCommand?.EmitCanExecuteChanged ();
+			SaveCommand?.EmitCanExecuteChanged ();
+			OpenCommand?.EmitCanExecuteChanged ();
+			DeleteCommand?.EmitCanExecuteChanged ();
 		}
 	}
 }
