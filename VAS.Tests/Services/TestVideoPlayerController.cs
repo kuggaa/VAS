@@ -26,6 +26,7 @@ using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.License;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
@@ -51,6 +52,7 @@ namespace VAS.Tests.Services
 		PlaylistController plController;
 		VideoPlayerVM playerVM;
 		Mock<IFileSystemManager> fileManager;
+		Mock<ILicenseLimitationsService> mockLimitationService;
 
 		int elementLoaded;
 
@@ -112,6 +114,11 @@ namespace VAS.Tests.Services
 		[SetUp ()]
 		public void Setup ()
 		{
+			mockLimitationService = new Mock<ILicenseLimitationsService> ();
+			mockLimitationService.Setup (x => x.Get<FeatureLimitationVM> (It.IsAny<string> ())).
+								 Returns (new FeatureLimitationVM ());
+			App.Current.LicenseLimitationsService = mockLimitationService.Object;
+
 			mtkMock.Setup (m => m.GetMultiPlayer ()).Throws (new Exception ());
 			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
 
@@ -1994,6 +2001,44 @@ namespace VAS.Tests.Services
 
 			Assert.AreEqual (1, calls);
 			Assert.AreSame (mfsNew [0], fileset.Model [0]);
+		}
+
+		[Test ()]
+		public void LoadZoomEvent_OpenZoomNotLimited_DoNotMoveToUpgradeDialog ()
+		{
+			mockLimitationService.Setup (x => x.Get<FeatureLimitationVM> (VASFeature.OpenZoom.ToString ())).
+								 Returns (new FeatureLimitationVM {
+									Model = new FeatureLicenseLimitation {
+										 Enabled = false
+									}
+								 });
+			mockLimitationService.Setup (x => x.CanExecute (VASFeature.OpenZoom.ToString ())).Returns (true);
+			PreparePlayer ();
+			evt.CamerasConfig [0].RegionOfInterest = new Area (0, 0, evt.FileSet[0].VideoWidth / 2, 10);
+
+			player.LoadEvent (evt, new Time (0), true);
+
+			mockLimitationService.Verify (x => x.MoveToUpgradeDialog (VASFeature.OpenZoom.ToString ()), Times.Never);
+			Assert.AreEqual (2.0, playerVM.Zoom);
+		}
+
+		[Test ()]
+		public void LoadZoomEvent_OpenZoomLimited_MoveToUpgradeDialog ()
+		{
+			mockLimitationService.Setup (x => x.Get<FeatureLimitationVM> (VASFeature.OpenZoom.ToString ())).
+								 Returns (new FeatureLimitationVM {
+									 Model = new FeatureLicenseLimitation {
+										 Enabled = true
+									 }
+								 });
+			mockLimitationService.Setup (x => x.CanExecute (VASFeature.OpenZoom.ToString ())).Returns (false);
+			PreparePlayer ();
+			evt.CamerasConfig [0].RegionOfInterest = new Area (0, 0, 10, 10);
+
+			player.LoadEvent (evt, new Time (0), true);
+
+			mockLimitationService.Verify (x => x.MoveToUpgradeDialog (VASFeature.OpenZoom.ToString ()), Times.Once);
+			Assert.AreEqual (1.0, playerVM.Zoom);
 		}
 
 		void HandleElementLoadedEvent (object element, bool hasNext)
