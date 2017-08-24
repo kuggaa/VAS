@@ -111,7 +111,7 @@
     <Compile Include="Core\ViewModel\TestTimelineVM.cs" />
     <Compile Include="Core\ViewModel\TestMediaFileSetVM.cs" />
     <Compile Include="Core\Common\TestRangeObservableCollection.cs" />
-    <Compile Include="Core\ViewModel\TestPlayerViewModel.cs" />
+    <Compile Include="Core\ViewModel\TestVideoPlayerViewModel.cs" />
     <Compile Include="Services\TestUserStatisticsService.cs" />
     <Compile Include="Services\TestTemplatesController.cs" />
     <Compile Include="LocalStorage.cs" />
