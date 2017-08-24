@@ -640,6 +640,7 @@ namespace VAS.Core.Common
 	public enum VASFeature
 	{
 		Zoom,
+		OpenZoom,
 		OpenMultiCamera,
 		CreateMultiCamera,
 		LinkingButtons
