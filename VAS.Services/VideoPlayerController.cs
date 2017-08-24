@@ -161,7 +161,7 @@ namespace VAS.Services
 						new ObservableCollection<CameraConfig> (value);
 				}
 				if (multiPlayer != null) {
-					multiPlayer.CamerasConfig = camerasConfig;
+					multiPlayer.CamerasConfig = CamerasConfig;
 				}
 				if (!skipApplyCamerasConfig && Opened) {
 					ApplyCamerasConfig ();
@@ -169,7 +169,14 @@ namespace VAS.Services
 			}
 			get {
 				if (camerasConfig != null) {
-					return camerasConfig.Clone ();
+					var camsConfig = camerasConfig.Clone ();
+					if (App.Current.LicenseLimitationsService.Get<FeatureLimitationVM>
+					    (VASFeature.OpenZoom.ToString ()).Enabled) {
+						foreach (var camConfig in camsConfig) {
+							camConfig.RegionOfInterest = new Area (0,0,0,0);
+						}
+					}
+					return camsConfig;
 				} else {
 					return null;
 				}
@@ -721,6 +728,7 @@ namespace VAS.Services
 				LoadSegment (ple.Play.FileSet, ple.Play.Start, ple.Play.Stop,
 					ple.Play.Start, ple.Rate, ple.CamerasConfig,
 					ple.CamerasLayout, playing);
+				playerVM.ZoomWarningCommand.Execute ();
 			} else if (element is PlaylistVideo) {
 				LoadVideo (element as PlaylistVideo, playing);
 			} else if (element is PlaylistImage) {
@@ -759,6 +767,7 @@ namespace VAS.Services
 				Log.Error ("Event does not have timing info: " + evt);
 			}
 			UpdateDuration ();
+			playerVM.ZoomWarningCommand.Execute ();
 			EmitElementLoaded (evt, null);
 		}
 
