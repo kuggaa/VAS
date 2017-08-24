@@ -52,7 +52,7 @@ namespace VAS.UI
 		public event ClickedHandler CenterPlayheadClicked;
 
 		const int SCALE_FPS = 25;
-		bool muted, drawingsVisible;
+		bool muted, drawingsVisible, updatingView;
 		bool roiMoved, wasPlaying;
 		double previousVLevel = 1;
 		uint dragTimerID;
@@ -770,9 +770,11 @@ namespace VAS.UI
 
 		void HandleZoomChanged (double level)
 		{
+			if (updatingView || zoomLevel == (int)level) {
+				return;
+			}
 			zoomLevel = (int)level;
 			playerVM.SetZoomCommand.Execute (App.Current.ZoomLevels [(int)level]);
-			zoomLabel.Text = $"{App.Current.ZoomLevels [(int)level] * 100}%";
 		}
 
 		#endregion
@@ -805,8 +807,10 @@ namespace VAS.UI
 				volumeWindow.SetValue (playerVM.Volume * 100);
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Zoom))) {
+				updatingView = true;
 				zoomWindow.SetValue (App.Current.ZoomLevels.IndexOf (playerVM.Zoom));
 				zoomLabel.Text = $"{playerVM.Zoom * 100}%";
+				updatingView = false;
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.ShowZoom))) {
 				if (ViewModel.ShowZoom) {
