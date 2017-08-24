@@ -269,6 +269,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\CountLimitationBarChartVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\PropertyToPropertyBinding.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\BindingsExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\ResourcesLocatorBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
