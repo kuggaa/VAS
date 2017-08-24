@@ -38,8 +38,8 @@ namespace VAS.Tests.Services
 	{
 		EventsController controller;
 		Mock<IVideoPlayerController> playerController;
-		TimelineEvent ev1, ev2;
-		TimelineEventVM evVM1, evVM2;
+		TimelineEvent ev1, ev2, ev11;
+		TimelineEventVM evVM1, evVM2, evVM11;
 		ProjectVM projectVM;
 		VideoPlayerVM videoPlayer;
 
@@ -81,14 +81,28 @@ namespace VAS.Tests.Services
 
 			controller.Start ();
 
+			var eventType1 = new EventType {
+				Name = "Test"
+			};
+			var eventType2 = new EventType {
+				Name = "Test2"
+			};
+
 			ev1 = new TimelineEvent ();
+			ev1.EventType = eventType1;
 			ev1.Start = new Time (0);
 			ev1.Stop = new Time (1000);
 			evVM1 = new TimelineEventVM { Model = ev1, Visible = true };
 			ev2 = new TimelineEvent ();
+			ev2.EventType = eventType1;
 			ev2.Start = new Time (2000);
 			ev2.Stop = new Time (3000);
 			evVM2 = new TimelineEventVM { Model = ev2, Visible = true };
+			ev11 = new TimelineEvent ();
+			ev11.EventType = eventType2;
+			ev11.Start = new Time (6000);
+			ev11.Stop = new Time (8000);
+			evVM11 = new TimelineEventVM { Model = ev11, Visible = true };
 		}
 
 		[TearDown]
@@ -135,6 +149,36 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
+		public void LoadTimelineEvents_DifferentEventType_NotOrderByStartTime ()
+		{
+			IEnumerable<TimelineEventVM> originalEventList = new List<TimelineEventVM> { evVM11, evVM1 };
+			List<TimelineEventVM> playedEventList = originalEventList.ToList ();
+
+			App.Current.EventsBroker.Publish (new LoadTimelineEventEvent<IEnumerable<TimelineEventVM>> {
+				Object = originalEventList
+			});
+
+			playerController.Verify (p => p.LoadPlaylistEvent (It.Is<Playlist> (pl => ComparePlaylist(pl, playedEventList)),
+															   It.Is<IPlaylistElement> (pe => ComparePlaylistElement (pe, ev11)),
+			                                                                    It.IsAny<bool> ()), Times.Once);
+		}
+
+		[Test]
+		public void LoadTimelineEvents_SameEventType_OrderByStartTime ()
+		{
+			IEnumerable<TimelineEventVM> originalEventList = new List<TimelineEventVM> { evVM2, evVM1 };
+			List<TimelineEventVM> playedEventList = new List<TimelineEventVM> { evVM1, evVM2 };
+
+			App.Current.EventsBroker.Publish (new LoadTimelineEventEvent<IEnumerable<TimelineEventVM>> {
+				Object = originalEventList
+			});
+
+			playerController.Verify (p => p.LoadPlaylistEvent (It.Is<Playlist> (pl => ComparePlaylist (pl, playedEventList)),
+															   It.Is<IPlaylistElement> (pe => ComparePlaylistElement (pe, ev1)),
+																				It.IsAny<bool> ()), Times.Once);
+		}
+
+		[Test]
 		public void TestLoadEventTypeTimelineVM ()
 		{
 			EventTypeTimelineVM eTypeVM = new EventTypeTimelineVM ();
@@ -144,6 +188,21 @@ namespace VAS.Tests.Services
 			eTypeVM.LoadEventType ();
 
 			playerController.Verify (p => p.LoadPlaylistEvent (It.Is<Playlist> (pl => pl.Elements.Count == 2),
+															   It.Is<IPlaylistElement> (pe => ComparePlaylistElement (pe, ev1)),
+															   It.IsAny<bool> ()), Times.Once);
+		}
+
+		[Test]
+		public void EventsController_LoadEventTypeTimelineVM_OrderedByStartTime ()
+		{
+			EventTypeTimelineVM eTypeVM = new EventTypeTimelineVM ();
+			eTypeVM.ViewModels.Add (evVM2);
+			eTypeVM.ViewModels.Add (evVM1);
+			List<TimelineEventVM> playedEventList = new List<TimelineEventVM> { evVM1, evVM2 };
+
+			eTypeVM.LoadEventType ();
+
+			playerController.Verify (p => p.LoadPlaylistEvent (It.Is<Playlist> (pl => ComparePlaylist (pl, playedEventList)),
 															   It.Is<IPlaylistElement> (pe => ComparePlaylistElement (pe, ev1)),
 															   It.IsAny<bool> ()), Times.Once);
 		}
@@ -273,6 +332,25 @@ namespace VAS.Tests.Services
 
 			playerController.Verify (p => p.Pause (false));
 			playerController.Verify (p => p.Seek (stop, true, false, true));
+		}
+
+		bool ComparePlaylist (Playlist playlist, List<TimelineEventVM> eventList)
+		{
+			if (playlist.Elements.Count () != eventList.Count ())
+			{
+				return false;
+			}
+
+			int count = playlist.Elements.Count ();
+
+			for (int i = 0; i < count; i++)
+			{
+				if (!ComparePlaylistElement (playlist.Elements[i],
+				                             eventList[i].Model)) {
+					return false;
+				}
+			}
+			return true;
 		}
 
 		bool ComparePlaylistElement (IPlaylistElement element, TimelineEvent ev)
