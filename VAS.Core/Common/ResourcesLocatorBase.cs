@@ -1,5 +1,5 @@
 ﻿//
-//  Copyright (C) 2017 Fluendo S.A.
+//  Copyright (C) 2015 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -16,29 +16,51 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 using VAS.Core.Common;
+using VAS.Core.Interfaces;
 
-namespace VAS.Core.Interfaces
+namespace VAS.Core
 {
 	/// <summary>
-	/// Interface to be implemented by the embeddedResourceLocator
+	/// Base class for the platform resource locators
 	/// </summary>
-	public interface IResourcesLocator
+	public abstract class ResourcesLocatorBase : IResourcesLocator
 	{
+		protected HashSet<Assembly> assemblies;
+
+		public ResourcesLocatorBase ()
+		{
+			assemblies = new HashSet<Assembly> ();
+		}
+
 		/// <summary>
 		/// Register the specified assembly with embedded resources
 		/// </summary>
 		/// <param name="assembly">Assembly.</param>
-		void Register (Assembly assembly);
+		public void Register (Assembly assembly)
+		{
+			assemblies.Add (assembly);
+		}
 
 		/// <summary>
 		/// Gets the embedded resource file stream.
 		/// </summary>
 		/// <returns>The embedded resource file stream.</returns>
 		/// <param name="resourceId">Resource identifier.</param>
-		Stream GetEmbeddedResourceFileStream (string resourceId);
+		public Stream GetEmbeddedResourceFileStream (string resourceId)
+		{
+			foreach (var assembly in assemblies) {
+				if (assembly.GetManifestResourceNames ().Contains (resourceId)) {
+					return assembly.GetManifestResourceStream (resourceId);
+				}
+			}
+			return null;
+		}
 
 		/// <summary>
 		/// Loads the embedded image.
@@ -47,7 +69,7 @@ namespace VAS.Core.Interfaces
 		/// <param name="resourceId">Resource identifier.</param>
 		/// <param name="width">Width.</param>
 		/// <param name="height">Height.</param>
-		Image LoadEmbeddedImage (string resourceId, int width = 0, int height = 0);
+		public abstract Image LoadEmbeddedImage (string resourceId, int width = 0, int height = 0);
 
 		/// <summary>
 		/// Loads an icon <see cref="Image"/> using the icon name. If <paramref name="width"/> or <paramref name="height"/>
@@ -58,7 +80,7 @@ namespace VAS.Core.Interfaces
 		/// <param name="name">Name.</param>
 		/// <param name="width">Width.</param>
 		/// <param name="height">Height.</param>
-		Image LoadImage (string name, int width = 0, int height = 0);
+		public abstract Image LoadImage (string name, int width = 0, int height = 0);
 
 		/// <summary>
 		/// Loads an icon <see cref="Image"/> using the icon name. If <paramref name="size"/>
@@ -67,14 +89,23 @@ namespace VAS.Core.Interfaces
 		/// <returns>The icon.</returns>
 		/// <param name="name">Name.</param>
 		/// <param name="size">Desired size.</param>
-		Image LoadIcon (string name, int size = 0);
+		public Image LoadIcon (string name, int size = 0)
+		{
+			try {
+				return LoadImage ("icons/hicolor/scalable/actions/" + name + StyleConf.IMAGE_EXT, size, size);
+			} catch (FileNotFoundException) {
+				return LoadImage ("icons/hicolor/scalable/apps/" + name + StyleConf.IMAGE_EXT, size, size);
+			}
+		}
 
 		/// <summary>
-		/// Given an image name converts it into a resource name
+		/// Tos the name of the resource.
 		/// </summary>
 		/// <returns>The resource name.</returns>
-		/// <param name="name">Image Name.</param>
-		string ToResourceName (string name);
+		/// <param name="name">Name.</param>
+		public virtual string ToResourceName (string name)
+		{
+			return name;
+		}
 	}
 }
-

@@ -15,48 +15,28 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using VAS.Core.Common;
-using VAS.Core.Interfaces;
 
 namespace VAS.Core
 {
-	public class ResourcesLocator : IResourcesLocator
+	class ResourcesLocator : ResourcesLocatorBase
 	{
-		HashSet<Assembly> assemblies;
-
-		public ResourcesLocator ()
-		{
-			assemblies = new HashSet<Assembly> ();
-		}
-
 		/// <summary>
-		/// Register the specified assembly with embedded resources
+		/// Loads an icon <see cref="Image"/> using the icon name. If <paramref name="width"/> or <paramref name="height"/>
+		/// are <c>null</c> it uses the size of the image. This is particularly useful with scalar images to
+		/// scale them to the requeried size without loosing quality in the up/down scaling.
 		/// </summary>
-		/// <param name="assembly">Assembly.</param>
-		public void Register (Assembly assembly)
+		/// <returns>The image.</returns>
+		/// <param name="name">Name.</param>
+		/// <param name="width">Width.</param>
+		/// <param name="height">Height.</param>
+		public override Image LoadImage (string name, int width = 0, int height = 0)
 		{
-			assemblies.Add (assembly);
-		}
-
-		/// <summary>
-		/// Gets the embedded resource file stream.
-		/// </summary>
-		/// <returns>The embedded resource file stream.</returns>
-		/// <param name="resourceId">Resource identifier.</param>
-		public Stream GetEmbeddedResourceFileStream (string resourceId)
-		{
-			foreach (var assembly in assemblies) {
-				if (assembly.GetManifestResourceNames ().Contains (resourceId)) {
-					return assembly.GetManifestResourceStream (resourceId);
-				}
+			if (width != 0 && height != 0) {
+				return new Image (Utils.GetDataFilePath (name), width, height);
 			}
-			return null;
+			return new Image (Utils.GetDataFilePath (name));
 		}
 
 		/// <summary>
@@ -66,7 +46,7 @@ namespace VAS.Core
 		/// <param name="resourceId">Resource identifier.</param>
 		/// <param name="width">Width.</param>
 		/// <param name="height">Height.</param>
-		public Image LoadEmbeddedImage (string resourceId, int width = 0, int height = 0)
+		public override Image LoadEmbeddedImage (string resourceId, int width = 0, int height = 0)
 		{
 			var embeddedStream = GetEmbeddedResourceFileStream (resourceId);
 			if (embeddedStream != null) {
@@ -77,39 +57,5 @@ namespace VAS.Core
 			}
 			return null;
 		}
-
-		/// <summary>
-		/// Loads an icon <see cref="Image"/> using the icon name. If <paramref name="width"/> or <paramref name="height"/>
-		/// are <c>null</c> it uses the size of the image. This is particularly useful with scalar images to
-		/// scale them to the requeried size without loosing quality in the up/down scaling.
-		/// </summary>
-		/// <returns>The image.</returns>
-		/// <param name="name">Name.</param>
-		/// <param name="width">Width.</param>
-		/// <param name="height">Height.</param>
-		public Image LoadImage (string name, int width = 0, int height = 0)
-		{
-			if (width != 0 && height != 0) {
-				return new Image (Utils.GetDataFilePath (name), width, height);
-			}
-			return new Image (Utils.GetDataFilePath (name));
-		}
-
-		/// <summary>
-		/// Loads an icon <see cref="Image"/> using the icon name. If <paramref name="size"/>
-		/// is <c>null</c> it uses the original size of the image.
-		/// </summary>
-		/// <returns>The icon.</returns>
-		/// <param name="name">Name.</param>
-		/// <param name="size">Desired size.</param>
-		public Image LoadIcon (string name, int size = 0)
-		{
-			try {
-				return LoadImage ("icons/hicolor/scalable/actions/" + name + StyleConf.IMAGE_EXT, size, size);
-			} catch (FileNotFoundException) {
-				return LoadImage ("icons/hicolor/scalable/apps/" + name + StyleConf.IMAGE_EXT, size, size);
-			}
-		}
-
 	}
 }
