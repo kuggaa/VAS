@@ -317,39 +317,16 @@ namespace VAS.Tests
 		}
 	}
 
-	public class DummyResourcesLocator : IResourcesLocator
+	public class DummyResourcesLocator : ResourcesLocatorBase
 	{
-		HashSet<Assembly> assemblies;
-
-		public DummyResourcesLocator ()
-		{
-			assemblies = new HashSet<Assembly> ();
-		}
-
-		public Stream GetEmbeddedResourceFileStream (string resourceId)
-		{
-			string svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16px\" height=\"16px\"/>";
-			return new MemoryStream (Encoding.UTF8.GetBytes (svg));
-		}
-
-		public Image LoadEmbeddedImage (string resourceId, int width = 0, int height = 0)
+		public override Image LoadEmbeddedImage (string resourceId, int width = 0, int height = 0)
 		{
 			return GetDummyImage (width, height);
 		}
 
-		public Image LoadIcon (string name, int size = 0)
-		{
-			return GetDummyImage (size, size);
-		}
-
-		public Image LoadImage (string name, int width = 0, int height = 0)
+		public override Image LoadImage (string name, int width = 0, int height = 0)
 		{
 			return GetDummyImage (width, height);
-		}
-
-		public void Register (Assembly assembly)
-		{
-			assemblies.Add (assembly);
 		}
 
 		Image GetDummyImage (int width = 0, int height = 0)
