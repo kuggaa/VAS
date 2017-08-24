@@ -233,13 +233,21 @@ namespace VAS.Services.Controller
 
 		void HandleLoadEventsList (LoadTimelineEventEvent<IEnumerable<TimelineEventVM>> e)
 		{
-			VideoPlayer.LoadEvents (e.Object.Select (vm => vm.Model), e.Playing);
+			var events = e.Object.Select (vm => vm.Model);
+			//Only order them if they have the same EventType
+			var firstEvent = events.FirstOrDefault ();
+			if (events.All (evt => evt.EventType == firstEvent.EventType)) {
+				events = events.OrderBy (evt => evt.Start);
+			}
+
+			VideoPlayer.LoadEvents (events, e.Playing);
 		}
 
 		void HandleLoadEventType (LoadTimelineEventEvent<EventTypeTimelineVM> e)
 		{
 			var timelineEvents = e.Object.ViewModels.Where ((arg) => arg.Visible == true)
-													.Select ((arg) => arg.Model);
+			                      .Select ((arg) => arg.Model)
+			                      .OrderBy (evt => evt.Start);
 			VideoPlayer.LoadEvents (timelineEvents, e.Playing);
 		}
 
