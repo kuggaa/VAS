@@ -19,6 +19,7 @@ using NUnit.Framework;
 using VAS.Core.Common;
 using VAS.Core;
 using VAS.Core.Interfaces;
+using System.IO;
 
 namespace VAS.Tests.Core
 {
@@ -27,11 +28,10 @@ namespace VAS.Tests.Core
 	{
 		IResourcesLocator resources;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void Setup ()
 		{
-			//FIXME: RelativePrefix cannot be used
-			App.Current.DataDir.Add ("./data/");
+			App.Current.DataDir.Add (Path.Combine(TestContext.CurrentContext.TestDirectory, "data"));
 			resources = new ResourcesLocator ();
 		}
 

@@ -48,7 +48,7 @@ namespace VAS.Tests.Services
 		IStateController currentStateController;
 		Mock<IStateController> mockStateController;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void Init ()
 		{
 			currentStateController = App.Current.StateController;
@@ -68,7 +68,7 @@ namespace VAS.Tests.Services
 			App.Current.StateController = mockStateController.Object;
 		}
 
-		[TestFixtureTearDown]
+		[OneTimeTearDown]
 		public void TestFixtureTearDown ()
 		{
 			App.Current.StateController = currentStateController;

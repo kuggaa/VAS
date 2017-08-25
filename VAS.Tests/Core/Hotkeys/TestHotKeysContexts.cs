@@ -29,7 +29,7 @@ namespace VAS.Tests.Core.HotKeys
 		KeyAction play, forward, fastForward, globalAction;
 		Mock<IGUIToolkit> mockToolkit;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void FixtureSetUp ()
 		{
 			InitKeyActions ();

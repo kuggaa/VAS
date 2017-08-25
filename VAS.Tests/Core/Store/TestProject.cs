@@ -30,7 +30,7 @@ namespace VAS.Tests.Core.Store
 	[TestFixture ()]
 	public class TestProject
 	{
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void FixtureSetUp ()
 		{
 			App.Current.ProjectExtension = ".tmp";

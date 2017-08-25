@@ -39,14 +39,14 @@ namespace VAS.Tests.Services
 		Mock<IVideoEditor> editorMock;
 		string file1, file2;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void SetUpOnce ()
 		{
 			file1 = Path.GetTempFileName ();
 			file2 = Path.GetTempFileName ();
 		}
 
-		[TestFixtureTearDown]
+		[OneTimeTearDown]
 		public void TearDownOnce ()
 		{
 			try {
@@ -54,7 +54,7 @@ namespace VAS.Tests.Services
 				File.Delete (file2);
 			} catch {
 			}
-			SetupClass.Initialize ();
+			SetupClass.SetUp ();
 		}
 
 		[SetUp]
