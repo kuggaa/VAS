@@ -190,7 +190,12 @@ namespace VAS.Services
 			if (limitationVM.Enabled) {
 				dynamic properties = new ExpandoObject ();
 				properties.limitationVM = limitationVM;
+				//Task.Run (async () => 
+				//await 
 				return App.Current.StateController.MoveToModal (UpgradeLimitationState.NAME, properties);
+				         //).GetAwaiter ().GetResult ();
+
+				//return AsyncHelpers.Return (true);
 			} else {
 				return AsyncHelpers.Return (false);
 			}

@@ -52,7 +52,7 @@ namespace VAS.Tests.Drawing.Widgets
 		ProjectVM projectVM;
 		Mock<IWidget> widgetMock;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void Init ()
 		{
 			App.Current.ViewLocator = new ViewLocator ();

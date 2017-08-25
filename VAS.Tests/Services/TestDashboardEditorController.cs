@@ -36,7 +36,7 @@ namespace VAS.Tests.Services
 		DashboardEditorController controller;
 		Mock<IDialogs> mockDialogs;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void Init ()
 		{
 			App.Current.HotkeysService = new HotkeysService ();

@@ -56,7 +56,7 @@ namespace VAS.Tests.Services
 
 		int elementLoaded;
 
-		[TestFixtureSetUp ()]
+		[OneTimeSetUp]
 		public void FixtureSetup ()
 		{
 			fileManager = new Mock<IFileSystemManager> ();

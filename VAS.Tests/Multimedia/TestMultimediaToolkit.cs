@@ -51,13 +51,13 @@ namespace VAS.Tests.Multimedia
 		Mock<ILicenseLimitationsService> mockLimitationService;
 		ILicenseLimitationsService currentService;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void TestFixtureSetUp ()
 		{
 			currentService = App.Current.LicenseLimitationsService;
 		}
 
-		[TestFixtureTearDown]
+		[OneTimeTearDown]
 		public void TestFixtureTearDown ()
 		{
 			App.Current.LicenseLimitationsService = currentService;

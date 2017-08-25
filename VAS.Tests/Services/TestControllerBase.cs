@@ -44,7 +44,7 @@ namespace VAS.Tests.Services
 		}
 
 		[TearDown]
-		public async void TearDown ()
+		public async Task TearDown ()
 		{
 			if (controller != null) {
 				controller.managedDisposeCalled -= ManagedDisposeCalled;
@@ -72,7 +72,7 @@ namespace VAS.Tests.Services
 			await controller.Start ();
 
 			// Act & Assert
-			Assert.Throws<InvalidOperationException> (async () => await controller.Start ());
+			Assert.ThrowsAsync<InvalidOperationException> (async () => await controller.Start ());
 		}
 
 		[Test]
@@ -96,7 +96,7 @@ namespace VAS.Tests.Services
 			await controller.Stop ();
 
 			// Act & Assert
-			Assert.Throws<InvalidOperationException> (async () => await controller.Stop ());
+			Assert.ThrowsAsync<InvalidOperationException> (controller.Stop);
 		}
 
 		[Test]
@@ -105,7 +105,7 @@ namespace VAS.Tests.Services
 			// Arrange & Assume
 			Assert.IsFalse (controller.Started);
 			// Act & Assert
-			Assert.Throws<InvalidOperationException> (async () => await controller.Stop ());
+			Assert.ThrowsAsync <InvalidOperationException> (async () => await controller.Stop());
 		}
 
 		[Test]
@@ -160,14 +160,14 @@ namespace VAS.Tests.Services
 		public void Start_NoViewModel_ExceptionThrown ()
 		{
 			var controller = new ControllerBase<ViewModelBase> ();
-			Assert.Throws<InvalidOperationException> (async () => await controller.Start ());
+			Assert.ThrowsAsync<InvalidOperationException> (async () => await controller.Start ());
 		}
 
 		[Test]
 		public void Stop_NoViewModel_ExceptionThrown ()
 		{
 			var controller = new ControllerBase<ViewModelBase> ();
-			Assert.Throws<InvalidOperationException> (async () => await controller.Stop ());
+			Assert.ThrowsAsync<InvalidOperationException> (async () => await controller.Stop ());
 		}
 
 		[Test]
@@ -230,13 +230,14 @@ namespace VAS.Tests.Services
 			WeakReference controllerRef = await CreateAndLoseController ();
 			Assert.IsNotNull (controllerRef.Target);
 
-			GC.Collect ();
-			GC.WaitForPendingFinalizers ();
-			Assert.IsNull (controllerRef.Target);
+			do {
+				GC.Collect ();
+				GC.WaitForPendingFinalizers ();
+			} while (controllerRef.Target != null);
 
 			// Act
 			// Publish an event to the collected controller
-			App.Current.EventsBroker.Publish<NewTagEvent> ();
+			await App.Current.EventsBroker.Publish<NewTagEvent> ();
 
 			// Assert
 			Assert.IsTrue (unmanagedDisposeCalled);

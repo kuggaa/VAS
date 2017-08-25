@@ -43,10 +43,10 @@ namespace VAS.Tests.Services
 		VideoPlayerVM videoPlayer;
 		bool hasSendedDashboardEvent;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void SetUpOnce ()
 		{
-			SetupClass.Initialize ();
+			SetupClass.SetUp ();
 		}
 
 		[SetUp]

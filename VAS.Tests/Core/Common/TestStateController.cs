@@ -99,7 +99,7 @@ namespace VAS.Tests.Core.Common
 		}
 
 		[Test]
-		public async void TestUnRegister_CheckDispose ()
+		public async Task TestUnRegister_CheckDispose ()
 		{
 			// Arrange
 			string transitionName = "newTransition";
@@ -126,7 +126,7 @@ namespace VAS.Tests.Core.Common
 		}
 
 		[Test]
-		public async void TestMoveTo ()
+		public async Task TestMoveTo ()
 		{
 			// Arrange
 			sc.Register ("newTransition", () => GetScreenStateDummy ("newTransition"));
@@ -142,7 +142,7 @@ namespace VAS.Tests.Core.Common
 
 
 		[Test]
-		public async void TestMoveTo_TrueEmptyStack ()
+		public async Task TestMoveTo_TrueEmptyStack ()
 		{
 			// Arrange
 			sc.Register ("newTransition", () => GetScreenStateDummy ("newTransition"));
@@ -163,7 +163,7 @@ namespace VAS.Tests.Core.Common
 		}
 
 		[Test]
-		public async void TestSetHomeTransition ()
+		public async Task TestSetHomeTransition ()
 		{
 			// Arrange
 			sc.Register ("newTransition", () => GetScreenStateDummy ("newTransition"));
@@ -178,7 +178,7 @@ namespace VAS.Tests.Core.Common
 		}
 
 		[Test]
-		public async void TestMoveToModal ()
+		public async Task TestMoveToModal ()
 		{
 			// Arrange
 			sc.Register ("home", () => GetScreenStateDummy ("home"));
@@ -194,7 +194,7 @@ namespace VAS.Tests.Core.Common
 		}
 
 		[Test]
-		public async void TestMoveBack ()
+		public async Task TestMoveBack ()
 		{
 			bool moveTransition;
 			// Arrange
@@ -217,7 +217,7 @@ namespace VAS.Tests.Core.Common
 		}
 
 		[Test]
-		public async void TestMoveBackTo ()
+		public async Task TestMoveBackTo ()
 		{
 			bool moveTransition;
 			// Arrange
@@ -243,7 +243,7 @@ namespace VAS.Tests.Core.Common
 		}
 
 		[Test]
-		public async void TestMoveToHome ()
+		public async Task TestMoveToHome ()
 		{
 			bool moveTransition;
 			// Arrange
@@ -271,7 +271,7 @@ namespace VAS.Tests.Core.Common
 		}
 
 		[Test]
-		public async void TestMoveToAndEmptyStack ()
+		public async Task TestMoveToAndEmptyStack ()
 		{
 			// Arrange
 			sc.Register ("Home", () => GetScreenStateDummy ("Home"));
@@ -291,7 +291,7 @@ namespace VAS.Tests.Core.Common
 		}
 
 		[Test]
-		public async void MoveToModal_WaitingForCompletion_FinalStateOriginalOne ()
+		public async Task MoveToModal_WaitingForCompletion_FinalStateOriginalOne ()
 		{
 			// Arrange
 			sc.Register ("Home", () => GetScreenStateDummy ("Home"));
@@ -309,7 +309,7 @@ namespace VAS.Tests.Core.Common
 		}
 
 		[Test]
-		public async void MoveToModal_NotWaitingForCompletion_FinalStateNewState ()
+		public async Task MoveToModal_NotWaitingForCompletion_FinalStateNewState ()
 		{
 			// Arrange
 			sc.Register ("Home", () => GetScreenStateDummy ("Home"));
@@ -325,7 +325,7 @@ namespace VAS.Tests.Core.Common
 		}
 
 		[Test]
-		public async void MoveToModal_ShowDialogAndMoveBack_StateUnfreezedOk ()
+		public async Task MoveToModal_ShowDialogAndMoveBack_StateUnfreezedOk ()
 		{
 			// Arrange
 			var backgroundStateMock = Utils.GetScreenStateMocked ("Home");
@@ -349,7 +349,7 @@ namespace VAS.Tests.Core.Common
 		}
 
 		[Test]
-		public async void MoveToModal_ShowDialogAndMoveBack_WaitForControllerToStart ()
+		public async Task MoveToModal_ShowDialogAndMoveBack_WaitForControllerToStart ()
 		{
 			// Arrange
 			DummyController fakeController = new DummyController ();
@@ -373,7 +373,7 @@ namespace VAS.Tests.Core.Common
 		}
 
 		[Test]
-		public async void MoveToModal_ShowDialogAndMoveToNewStateCleaningStack_Ok ()
+		public async Task MoveToModal_ShowDialogAndMoveToNewStateCleaningStack_Ok ()
 		{
 			// Arrange
 			var backgroundStateMock = Utils.GetScreenStateMocked ("Initial");
@@ -397,7 +397,7 @@ namespace VAS.Tests.Core.Common
 		}
 
 		[Test]
-		public async void MoveToModal_ShowDialogAndMoveToNewState_Ok ()
+		public async Task MoveToModal_ShowDialogAndMoveToNewState_Ok ()
 		{
 			// Arrange
 			var backgroundStateMock = Utils.GetScreenStateMocked ("Initial");
@@ -421,7 +421,7 @@ namespace VAS.Tests.Core.Common
 		}
 
 		[Test]
-		public async void MoveToModal_EmptyStackWhenStateFreezed_CompletesDialogTaskOk ()
+		public async Task MoveToModal_EmptyStackWhenStateFreezed_CompletesDialogTaskOk ()
 		{
 			// Arrange
 			var backgroundStateMock = Utils.GetScreenStateMocked ("First");
@@ -449,7 +449,7 @@ namespace VAS.Tests.Core.Common
 		}
 
 		[Test]
-		public async void MoveTo_HideStateDoesTransition_Ok ()
+		public async Task MoveTo_HideStateDoesTransition_Ok ()
 		{
 			// Arrange
 			var transition1StateMock = Utils.GetScreenStateMocked ("Transition1");
@@ -477,7 +477,7 @@ namespace VAS.Tests.Core.Common
 
 
 		[Test]
-		public async void TestMoveTo_EmptyStackAndLoadStateFails_HomeStateRestored ()
+		public async Task TestMoveTo_EmptyStackAndLoadStateFails_HomeStateRestored ()
 		{
 			// Arrange
 			var transition2StateMock = Utils.GetScreenStateMocked ("Transition1");
@@ -498,7 +498,7 @@ namespace VAS.Tests.Core.Common
 		}
 
 		[Test]
-		public async void TestMoveTo_LoadStateFails_PreviousStateRestored ()
+		public async Task TestMoveTo_LoadStateFails_PreviousStateRestored ()
 		{
 			// Arrange
 			var transition2StateMock = Utils.GetScreenStateMocked ("Transition1");

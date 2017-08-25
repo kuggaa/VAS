@@ -80,7 +80,7 @@ namespace VAS.Tests.Services
 		Mock<IController> mockRootController;
 		Mock<IPanel> mockPanel;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void FixtureSetup ()
 		{
 			App.Current.ViewLocator = new ViewLocator ();

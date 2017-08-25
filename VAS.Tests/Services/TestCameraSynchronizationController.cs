@@ -40,7 +40,7 @@ namespace VAS.Tests.Services
 		Mock<IVideoPlayerController> videoPlayerControllerMock;
 		Mock<IStateController> stateControllerMock;
 
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void Init ()
 		{
 			stateControllerMock = new Mock<IStateController> ();
