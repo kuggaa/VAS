@@ -74,7 +74,7 @@ namespace VAS.Tests.MVVMC
 			int evtCount = 0;
 			string name = null;
 			AnalysisEventType evt = new AnalysisEventType ();
-			evt.Tags = new ObservableCollection<Tag> ();
+			evt.Tags = new RangeObservableCollection<Tag> ();
 			evt.PropertyChanged += (sender, e) => {
 				evtCount++;
 				name = e.PropertyName;
@@ -93,7 +93,7 @@ namespace VAS.Tests.MVVMC
 			AnalysisEventType evt = new AnalysisEventType ();
 			evt.PropertyChanged += (sender, e) => evtCount++;
 
-			evt.Tags = new ObservableCollection<Tag> ();
+			evt.Tags = new RangeObservableCollection<Tag> ();
 
 			Assert.AreEqual (1, evtCount);
 		}
@@ -103,7 +103,7 @@ namespace VAS.Tests.MVVMC
 		{
 			int evtCount = 0;
 			AnalysisEventType evt = new AnalysisEventType ();
-			evt.Tags = new ObservableCollection<Tag> ();
+			evt.Tags = new RangeObservableCollection<Tag> ();
 
 			evt.Tags.Add (new Tag ("test"));
 			evt.PropertyChanged += (sender, e) => evtCount++;
@@ -118,7 +118,7 @@ namespace VAS.Tests.MVVMC
 			int evtCount = 0;
 			Tag tag = new Tag ("test");
 			AnalysisEventType evt = new AnalysisEventType ();
-			evt.Tags = new ObservableCollection<Tag> ();
+			evt.Tags = new RangeObservableCollection<Tag> ();
 
 			evt.Tags.Add (tag);
 			evt.Tags.Remove (tag);
