@@ -16,6 +16,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using Moq;
 using NUnit.Framework;
@@ -102,6 +104,158 @@ namespace VAS.Tests.Services
 			App.Current.KeyContextManager.HandleKeyPressed (App.Current.Keyboard.ParseName ("Delete"));
 
 			Assert.AreEqual (7, dashboardVM.ViewModels.Count);
+		}
+
+		[Test]
+		public void RemoveDashboardButton_SourceButton_ActionLinkRemoved ()
+		{
+			bool removed = false;
+			var link = CreateActionLink (dashboardVM.ViewModels [0].Model, dashboardVM.ViewModels [1].Model);
+			ActionLinkVM actionLinkVM = new ActionLinkVM ();
+			actionLinkVM.Model = link;
+			actionLinkVM.SourceButton = dashboardVM.ViewModels [0];
+			actionLinkVM.DestinationButton = dashboardVM.ViewModels [1];
+			dashboardVM.ViewModels [0].ActionLinks.ViewModels.Add (actionLinkVM);
+			dashboardVM.ViewModels [0].ActionLinks.GetNotifyCollection ().CollectionChanged += (sender, e) => {
+				if (e.Action == NotifyCollectionChangedAction.Remove) {
+					if ((e.OldItems[0] as ActionLinkVM).Model == link) {
+						removed = true;
+					}
+				}
+			};
+
+			var vm = dashboardVM.ViewModels [0];
+			dashboardVM.DeleteButton.Execute (vm);
+
+			Assert.IsTrue (removed);
+			Assert.IsFalse (vm.ActionLinks.ViewModels.Any ());
+			CollectionAssert.DoesNotContain (dashboardVM.ViewModels, vm);
+		}
+
+		[Test]
+		public void RemoveDashboardButton_DestinationButton_ActionLinkRemoved ()
+		{
+			bool removed = false;
+			var link = CreateActionLink (dashboardVM.ViewModels [0].Model, dashboardVM.ViewModels [1].Model);
+			ActionLinkVM actionLinkVM = new ActionLinkVM ();
+			actionLinkVM.Model = link;
+			actionLinkVM.SourceButton = dashboardVM.ViewModels [0];
+			actionLinkVM.DestinationButton = dashboardVM.ViewModels [1];
+			dashboardVM.ViewModels [0].ActionLinks.ViewModels.Add (actionLinkVM);
+			dashboardVM.ViewModels [0].ActionLinks.GetNotifyCollection ().CollectionChanged += (sender, e) => {
+				if (e.Action == NotifyCollectionChangedAction.Remove) {
+					if ((e.OldItems [0] as ActionLinkVM).Model == link) {
+						removed = true;
+					}
+				}
+			};
+
+			var vmWithLink = dashboardVM.ViewModels [0];
+			var vmRemoved = dashboardVM.ViewModels [1];
+			dashboardVM.DeleteButton.Execute (vmRemoved);
+
+			Assert.IsTrue (removed);
+			Assert.IsFalse (vmWithLink.ActionLinks.ViewModels.Any ());
+			CollectionAssert.DoesNotContain (dashboardVM.ViewModels, vmRemoved);
+		}
+
+		[Test]
+		public void RemoveEventTypesTags_SourceButton_ActionLinkRemoved ()
+		{
+			bool removed = false;
+			var sourceTag = (dashboardVM.ViewModels [0].Model as AnalysisEventButton).AnalysisEventType.
+			                                                                         Tags.FirstOrDefault ();
+			var destTag = (dashboardVM.ViewModels [1].Model as AnalysisEventButton).AnalysisEventType.
+			                                                                       Tags.FirstOrDefault ();
+			var link = CreateActionLink (dashboardVM.ViewModels [0].Model, dashboardVM.ViewModels [1].Model,
+			                             sourceTag, destTag);
+			ActionLinkVM actionLinkVM = new ActionLinkVM ();
+			actionLinkVM.Model = link;
+			actionLinkVM.SourceButton = dashboardVM.ViewModels [0];
+			actionLinkVM.DestinationButton = dashboardVM.ViewModels [1];
+			dashboardVM.ViewModels [0].ActionLinks.ViewModels.Add (actionLinkVM);
+			dashboardVM.ViewModels [0].ActionLinks.GetNotifyCollection ().CollectionChanged += (sender, e) => {
+				if (e.Action == NotifyCollectionChangedAction.Remove) {
+					if ((e.OldItems [0] as ActionLinkVM).Model == link) {
+						removed = true;
+					}
+				}
+			};
+
+			var vm = dashboardVM.ViewModels [0];
+			(vm.Model as AnalysisEventButton).AnalysisEventType.Tags.RemoveAt (0);
+
+			Assert.IsTrue (removed);
+			Assert.IsFalse (vm.ActionLinks.ViewModels.Any ());
+			CollectionAssert.Contains (dashboardVM.ViewModels, vm);
+			CollectionAssert.Contains (dashboardVM.ViewModels, dashboardVM.ViewModels [1]);
+		}
+
+		[Test]
+		public void RemoveEventTypesTags_DestinationButton_ActionLinksRemoved ()
+		{
+			bool removed = false;
+			var sourceTag = (dashboardVM.ViewModels [0].Model as AnalysisEventButton).AnalysisEventType.
+																					 Tags.FirstOrDefault ();
+			var destTag = (dashboardVM.ViewModels [1].Model as AnalysisEventButton).AnalysisEventType.
+																				   Tags.FirstOrDefault ();
+			var link = CreateActionLink (dashboardVM.ViewModels [0].Model, dashboardVM.ViewModels [1].Model,
+										 sourceTag, destTag);
+			ActionLinkVM actionLinkVM = new ActionLinkVM ();
+			actionLinkVM.Model = link;
+			actionLinkVM.SourceButton = dashboardVM.ViewModels [0];
+			actionLinkVM.DestinationButton = dashboardVM.ViewModels [1];
+			dashboardVM.ViewModels [0].ActionLinks.ViewModels.Add (actionLinkVM);
+			dashboardVM.ViewModels [0].ActionLinks.GetNotifyCollection ().CollectionChanged += (sender, e) => {
+				if (e.Action == NotifyCollectionChangedAction.Remove) {
+					if ((e.OldItems [0] as ActionLinkVM).Model == link) {
+						removed = true;
+					}
+				}
+			};
+
+			var vmWithLink = dashboardVM.ViewModels [0];
+			var vmTagsRemoved = dashboardVM.ViewModels [1];
+			(vmTagsRemoved.Model as AnalysisEventButton).AnalysisEventType.Tags.RemoveAt (0);
+
+			Assert.IsTrue (removed);
+			Assert.IsFalse (vmWithLink.ActionLinks.ViewModels.Any ());
+			CollectionAssert.Contains (dashboardVM.ViewModels, vmWithLink);
+			CollectionAssert.Contains (dashboardVM.ViewModels, vmTagsRemoved);
+		}
+
+		[Test]
+		public void Duplicate_EvenTypeButton_DestinationButtonsSameReference ()
+		{
+			var link = CreateActionLink (dashboardVM.ViewModels [0].Model, dashboardVM.ViewModels [1].Model);
+			ActionLinkVM actionLinkVM = new ActionLinkVM ();
+			actionLinkVM.Model = link;
+			actionLinkVM.SourceButton = dashboardVM.ViewModels [0];
+			actionLinkVM.DestinationButton = dashboardVM.ViewModels [1];
+			dashboardVM.ViewModels [0].ActionLinks.ViewModels.Add (actionLinkVM);
+
+			dashboardVM.DuplicateButton.Execute (dashboardVM.ViewModels [0]);
+			var duplicatedButton = dashboardVM.ViewModels.Last ();
+
+			Assert.AreSame (dashboardVM.ViewModels[1].Model,
+			                duplicatedButton.Model.ActionLinks[0].DestinationButton);
+			Assert.AreSame (duplicatedButton.Model, duplicatedButton.Model.ActionLinks[0].SourceButton);
+		}
+
+		ActionLink CreateActionLink (DashboardButton source, DashboardButton dest)
+		{
+			ActionLink link = new ActionLink ();
+			link.DestinationButton = dest;
+			link.SourceButton = source;
+			return link;
+		}
+
+		ActionLink CreateActionLink (DashboardButton source, DashboardButton dest, Tag sourceTag, Tag destTag)
+		{
+			ActionLink link = CreateActionLink (source, dest);
+			link.SourceTags = new ObservableCollection<Tag> { sourceTag };
+			link.DestinationTags = new ObservableCollection<Tag> { destTag };
+			return link;
 		}
 	}
 }
