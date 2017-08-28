@@ -35,6 +35,7 @@
   <ItemGroup>
     <Compile Include="TestBinding.cs" />
     <Compile Include="TestToggleButtonBinding.cs" />
+    <Compile Include="Helpers\TestCommandExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="paket.references" />
@@ -48,6 +49,9 @@
       <Project>{E75E30DC-C1CF-4683-9A36-65B91EF10095}</Project>
       <Name>VAS.UI.Helpers.Gtk2</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Helpers\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Choose>

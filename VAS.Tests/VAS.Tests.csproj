@@ -135,7 +135,6 @@
     <Compile Include="Core\Store\TestStorableBase.cs" />
     <Compile Include="MVVMC\TestCommand.cs" />
     <Compile Include="Drawing\Widgets\TestDashboardCanvas.cs" />
-    <Compile Include="Helpers\TestCommandExtensions.cs" />
     <Compile Include="Services\TestCameraSynchronizationController.cs" />
     <Compile Include="Services\TestDashboardEditorController.cs" />
     <Compile Include="Core\Hotkeys\TestHotkeyVM.cs" />
