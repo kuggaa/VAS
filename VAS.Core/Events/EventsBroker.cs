@@ -76,6 +76,18 @@ namespace VAS.Core.Events
 		}
 
 		/// <summary>
+		/// Helper method to publish a new <see cref="ReturningValueEvent"/> and return the return value set in the event.
+		/// </summary>
+		/// <returns>The return value of the event.</returns>
+		/// <param name="event">Event.</param>
+		/// <typeparam name="TEvent">The type of the event.</typeparam>
+		public async Task<TReturn> PublishWithReturn<TEvent, TReturn> (TEvent @event) where TEvent : ReturningValueEvent<TReturn>
+		{
+			await GetEvent<TEvent> ().Publish (@event);
+			return @event.ReturnValue;
+		}
+
+		/// <summary>
 		/// Subscribes to an event synchronously.
 		/// </summary>
 		/// <param name="action">Callback function called when the event is raised.</param>

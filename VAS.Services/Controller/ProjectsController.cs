@@ -34,32 +34,17 @@ using VAS.Services.ViewModel;
 
 namespace VAS.Services.Controller
 {
-	public class ProjectsController<TModel, TViewModel> : ControllerBase
+	public class ProjectsController<TModel, TViewModel> : ControllerBase<ProjectsManagerVM<TModel, TViewModel>>
 		where TModel : Project
 		where TViewModel : ProjectVM<TModel>, new()
 	{
-		ProjectsManagerVM<TModel, TViewModel> viewModel;
+		MediaFileSet originalMediaFileSet;
 
 		protected override void DisposeManagedResources ()
 		{
 			ViewModel.IgnoreEvents = true;
 			base.DisposeManagedResources ();
 			ViewModel = null;
-		}
-
-		protected ProjectsManagerVM<TModel, TViewModel> ViewModel {
-			get {
-				return viewModel;
-			}
-			set {
-				if (viewModel != null) {
-					viewModel.Selection.CollectionChanged -= HandleSelectionChanged;
-				}
-				viewModel = value;
-				if (started) {
-					viewModel.Selection.CollectionChanged += HandleSelectionChanged;
-				}
-			}
 		}
 
 		#region IController implementation
@@ -74,11 +59,11 @@ namespace VAS.Services.Controller
 			await base.Start ();
 			App.Current.EventsBroker.SubscribeAsync<ExportEvent<TModel>> (HandleExport);
 			App.Current.EventsBroker.SubscribeAsync<ImportEvent<TModel>> (HandleImport);
-			App.Current.EventsBroker.SubscribeAsync<UpdateEvent<TModel>> (HandleSave);
+			App.Current.EventsBroker.SubscribeAsync<UpdateEvent<TViewModel>> (HandleSave);
 			App.Current.EventsBroker.SubscribeAsync<CreateEvent<TModel>> (HandleNew);
 			App.Current.EventsBroker.SubscribeAsync<DeleteEvent<TModel>> (HandleDelete);
-			if (viewModel != null) {
-				viewModel.Selection.CollectionChanged += HandleSelectionChanged;
+			if (ViewModel != null) {
+				ViewModel.Selection.CollectionChanged += HandleSelectionChanged;
 			}
 		}
 
@@ -87,11 +72,11 @@ namespace VAS.Services.Controller
 			await base.Stop ();
 			App.Current.EventsBroker.UnsubscribeAsync<ExportEvent<TModel>> (HandleExport);
 			App.Current.EventsBroker.UnsubscribeAsync<ImportEvent<TModel>> (HandleImport);
-			App.Current.EventsBroker.UnsubscribeAsync<UpdateEvent<TModel>> (HandleSave);
+			App.Current.EventsBroker.UnsubscribeAsync<UpdateEvent<TViewModel>> (HandleSave);
 			App.Current.EventsBroker.UnsubscribeAsync<CreateEvent<TModel>> (HandleNew);
 			App.Current.EventsBroker.UnsubscribeAsync<DeleteEvent<TModel>> (HandleDelete);
-			if (viewModel != null) {
-				viewModel.Selection.CollectionChanged -= HandleSelectionChanged;
+			if (ViewModel != null) {
+				ViewModel.Selection.CollectionChanged -= HandleSelectionChanged;
 			}
 		}
 
@@ -157,69 +142,65 @@ namespace VAS.Services.Controller
 				});
 				if (success) {
 					ViewModel.Model.Remove (project);
-					viewModel.Select (viewModel.Model.FirstOrDefault ());
+					ViewModel.Select (ViewModel.Model.FirstOrDefault ());
 					evt.ReturnValue = true;
 				}
 			}
 		}
 
-		async Task HandleSave (UpdateEvent<TModel> evt)
+		async Task HandleSave (UpdateEvent<TViewModel> evt)
 		{
-			TModel project = evt.Object;
+			TViewModel project = evt.Object;
 			if (project == null) {
 				return;
 			}
-			evt.ReturnValue = await Save (project, true);
+			evt.ReturnValue = await Save (project, evt.Force);
 		}
 
-		async void HandleSelectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		protected virtual async void HandleSelectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
-			//TModel loadedProject = null;
+			TViewModel selectedVM = ViewModel.Selection.FirstOrDefault ();
 
-			ProjectVM<TModel> projectVM = ViewModel.Selection.FirstOrDefault ();
-
-			// FIXME: Rift and Longo are not using this code but yes the mobile app of longo
-			// Improve the performance by:
-			// >> Cloning a preloaded a project
-			// >> Using the stored viewmodels instead of creating new ones
-
-			/*if (projectVM != null) {
-				if (ViewModel.LoadedProject.Edited == true) {
-					await Save (ViewModel.LoadedProject.Model, false);
+			if (selectedVM != null) {
+				if (ViewModel.LoadedProject.Model != null && ViewModel.LoadedProject.IsChanged) {
+					await Save (ViewModel.LoadedProject, false);
 				}
 
-				// Load the model, creating a copy of the Project to edit changes in a different model in case the user
+				// Load the model, creating a copy to edit changes in a different viewmodel in case the user
 				// does not want to save them.
-				TModel project = projectVM.Model;
-				loadedProject = project.Clone (SerializationType.Json);
-				project.IsChanged = false;
-				ViewModel.LoadedProject.Model = loadedProject;
-
-				// Update controls visiblity
-				ViewModel.DeleteSensitive = loadedProject != null;
-				ViewModel.ExportSensitive = loadedProject != null;
-				ViewModel.SaveSensitive = false;
-			}*/
+				ViewModel.LoadedProject = new TViewModel { Model = selectedVM.Model, Stateful = true };
+				originalMediaFileSet = ViewModel.LoadedProject.FileSet.Model.Clone ();
+				ViewModel.LoadedProject.IsChanged = false;
+			}
 
 			//Update commands
+			ViewModel.ExportCommand.EmitCanExecuteChanged ();
+			ViewModel.SaveCommand.EmitCanExecuteChanged ();
 			ViewModel.OpenCommand.EmitCanExecuteChanged ();
 			ViewModel.DeleteCommand.EmitCanExecuteChanged ();
 		}
 
-		async Task<bool> Save (TModel project, bool force)
+		protected async Task<bool> Save (TViewModel project, bool force)
 		{
-			if (!force && project.IsChanged) {
+			if (!project.IsChanged) {
+				return false;
+			}
+			if (!force) {
 				string msg = Catalog.GetString ("Do you want to save the current project?");
 				if (!(await App.Current.Dialogs.QuestionMessage (msg, null, this))) {
+					ViewModel.LoadedProject.FileSet.Model.MediaFiles.Replace (originalMediaFileSet.MediaFiles);
 					return false;
 				}
 			}
 			try {
 				IBusyDialog busy = App.Current.Dialogs.BusyDialog (Catalog.GetString ("Saving project..."), null);
-				busy.ShowSync (() => App.Current.DatabaseManager.ActiveDB.Store<TModel> (project));
-				// Update the ViewModel with the model clone used for editting.
-				ViewModel.ViewModels.FirstOrDefault (vm => vm.Model.Equals (project)).Model = project;
-				ViewModel.SaveSensitive = false;
+				busy.ShowSync (() => {
+					project.CommitState ();
+					App.Current.DatabaseManager.ActiveDB.Store (project.Model);
+					project.IsChanged = false;
+					project.Model.IsChanged = false;
+				});
+				ViewModel.SaveCommand.EmitCanExecuteChanged ();
 				return true;
 			} catch (Exception ex) {
 				Log.Exception (ex);

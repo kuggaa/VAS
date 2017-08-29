@@ -119,6 +119,8 @@
 		<Compile Include="gtk-gui\VAS.UI.Dialog.EditPlaylistElementProperties.cs" />
 		<Compile Include="UI\Panel\UpgradeLimitationPanel.cs" />
 		<Compile Include="gtk-gui\VAS.UI.Panel.UpgradeLimitationPanel.cs" />
+		<Compile Include="UI\Bindings\DatePickerBinding.cs" />
+		<Compile Include="UI\Bindings\BindingsExtensions.cs" />
 	</ItemGroup>
 	<Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 	<ItemGroup>
@@ -128,6 +130,7 @@
 		<Folder Include="UI\TreeView\" />
 		<Folder Include="UI\Common\" />
 		<Folder Include="UI\Panel\" />
+		<Folder Include="UI\Bindings\" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\VAS.Core\VAS.Core.Net45.csproj">

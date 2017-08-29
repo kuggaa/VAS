@@ -479,4 +479,10 @@ namespace VAS.Core.Events
 	public class LicenseChangeEvent : Event
 	{
 	}
+
+	public class ReplaceMediaFileEvent : ReturningValueEvent<MediaFileVM>
+	{
+		public MediaFileSetVM OldFileSet { get; set; }
+		public MediaFileVM OldFile { get; set; }
+	}
 }

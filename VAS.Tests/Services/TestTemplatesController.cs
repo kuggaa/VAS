@@ -17,6 +17,7 @@
 //
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -37,10 +38,10 @@ namespace VAS.Tests.Services
 		string tempFile;
 
 		[SetUp]
-		public void SetUp ()
+		public async Task SetUp ()
 		{
 			templatesController = new DummyTemplatesController ();
-			templatesController.Start ();
+			await templatesController.Start ();
 			mockDialogs = new Mock<IDialogs> ();
 			App.Current.Dialogs = mockDialogs.Object;
 			mockDialogs.Setup (m => m.QuestionMessage (It.IsAny<string> (), null, It.IsAny<DummyTemplatesController> ())).Returns (AsyncHelpers.Return (true));
@@ -48,9 +49,9 @@ namespace VAS.Tests.Services
 		}
 
 		[TearDown]
-		public void TearDownOnce ()
+		public async Task TearDown ()
 		{
-			templatesController.Stop ();
+			await templatesController.Stop ();
 			try {
 				File.Delete (tempFile);
 			} catch {
