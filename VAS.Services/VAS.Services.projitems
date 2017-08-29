@@ -44,6 +44,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)State\EditPlaylistElementState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)State\UpgradeLimitationState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\UpgradeLimitationVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller\MediaFileSetController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />
