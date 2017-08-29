@@ -170,10 +170,10 @@ namespace VAS.Services
 			get {
 				if (camerasConfig != null) {
 					var camsConfig = camerasConfig.Clone ();
-					if (App.Current.LicenseLimitationsService.Get<FeatureLimitationVM>
-					    (VASFeature.OpenZoom.ToString ()).Enabled) {
+					if (App.Current.LicenseLimitationsService.CanExecute
+						(VASFeature.OpenZoom.ToString ())) {
 						foreach (var camConfig in camsConfig) {
-							camConfig.RegionOfInterest = new Area (0,0,0,0);
+							camConfig.RegionOfInterest = new Area (0, 0, 0, 0);
 						}
 					}
 					return camsConfig;
