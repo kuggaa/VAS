@@ -44,7 +44,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		protected static Image cancelImage;
 		static Image applyImage;
 		protected Dictionary<Rectangle, object> rects, buttonsRects;
-		Dictionary<string, List<Tag>> tagsByGroup;
+		Dictionary<string, List<TagVM>> tagsByGroup;
 		bool emitEvent, delayEvent, editClicked;
 		bool cancelClicked, applyClicked, moved;
 		int nrows;
@@ -55,7 +55,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		object applyButton = new object ();
 		protected Rectangle editRect, cancelRect, applyRect;
 		double catWidth, heightPerRow;
-		Dictionary<Tag, LinkAnchorView> subcatAnchors, cachedAnchors;
+		Dictionary<TagVM, LinkAnchorView> subcatAnchors, cachedAnchors;
 
 		public AnalysisEventButtonView () : base ()
 		{
@@ -81,7 +81,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 			MinWidth = 100;
 			MinHeight = HeaderHeight * 2;
-			subcatAnchors = new Dictionary<Tag, LinkAnchorView> ();
+			subcatAnchors = new Dictionary<TagVM, LinkAnchorView> ();
 		}
 
 		protected override void DisposeManagedResources ()
@@ -103,7 +103,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			set {
 				ButtonVM = value;
 				if (value != null) {
-					foreach (Tag tag in Button.AnalysisEventType.Tags) {
+					foreach (TagVM tag in value.Tags.ViewModels) {
 						AddSubcatAnchor (tag, new Point (0, 0), 100, HeaderHeight);
 					}
 				}
@@ -128,7 +128,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		// FIXME: View accessing the Model/ <value>The button.</value>
 		new AnalysisEventButton Button {
 			get {
-				return ViewModel.Model;
+				return ViewModel.TypedModel;
 			}
 		}
 
@@ -179,7 +179,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			int tagsPerRow = Math.Max (1, ViewModel.TagsPerRow);
 			nrows = 0;
 
-			foreach (List<Tag> tags in tagsByGroup.Values) {
+			foreach (List<TagVM> tags in tagsByGroup.Values) {
 				nrows += (int)Math.Ceiling ((float)tags.Count / tagsPerRow);
 			}
 		}
@@ -193,7 +193,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			ViewModel = (AnalysisEventButtonVM)viewModel;
 		}
 
-		public void ClickTag (Tag tag)
+		public void ClickTag (TagVM tag)
 		{
 			SelectedTags.Add (tag);
 			ReDraw ();
@@ -253,7 +253,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
-		void TagClicked (Tag tag)
+		void TagClicked (TagVM tag)
 		{
 			if (SelectedTags.Contains (tag)) {
 				SelectedTags.Remove (tag);
@@ -272,16 +272,16 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		void UpdateGroups ()
 		{
-			tagsByGroup = Button.AnalysisEventType.TagsByGroup;
+			tagsByGroup = ViewModel.TagsByGroup;
 		}
 
-		public List<Tag> SelectedTags {
+		public RangeObservableCollection<TagVM> SelectedTags {
 			get {
 				return ViewModel.SelectedTags;
 			}
 		}
 
-		void AddSubcatAnchor (Tag tag, Point point, double width, double height)
+		void AddSubcatAnchor (TagVM tag, Point point, double width, double height)
 		{
 			LinkAnchorView anchor;
 
@@ -289,7 +289,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				anchor = subcatAnchors [tag];
 				anchor.RelativePosition = point;
 			} else {
-				anchor = new LinkAnchorView (this, new List<Tag> { tag }, point);
+				anchor = new LinkAnchorView (this, new List<TagVM> { tag }, point);
 				anchor.RedrawEvent += (co, area) => {
 					EmitRedrawEvent (anchor, area);
 				};
@@ -310,8 +310,8 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			if (subsel != null) {
 				if (obj is AnalysisEventButton) {
 					CategoryClicked (Button);
-				} else if (obj is Tag) {
-					TagClicked (obj as Tag);
+				} else if (obj is TagVM) {
+					TagClicked (obj as TagVM);
 				} else if (obj == cancelButton) {
 					cancelClicked = true;
 				} else if (obj == editbutton) {
@@ -344,7 +344,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		/// </summary>
 		/// <returns>The anchor.</returns>
 		/// <param name="sourceTags">Source tags.</param>
-		public override LinkAnchorView GetAnchor (IList<Tag> sourceTags)
+		public override LinkAnchorView GetAnchor (IList<TagVM> sourceTags)
 		{
 			/* Only one tag is supported for now */
 			if (sourceTags == null || sourceTags.Count == 0) {
@@ -396,7 +396,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			emitEvent = delayEvent = moved = editClicked = applyClicked = false;
 		}
 
-		void DrawTagsGroup (IDrawingToolkit tk, List<Tag> tags, ref double yptr)
+		void DrawTagsGroup (IDrawingToolkit tk, List<TagVM> tags, ref double yptr)
 		{
 			double rowwidth;
 			Point start;
@@ -413,7 +413,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			for (int i = 0; i < tags.Count; i++) {
 				Point pos;
 				int col;
-				Tag tag;
+				TagVM tag;
 
 				row = i / tagsPerRow;
 				col = i % tagsPerRow;
@@ -545,7 +545,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 			foreach (Rectangle r in rects.Keys) {
 				object obj = rects [r];
-				if (obj is Tag && SelectedTags.Contains (obj as Tag)) {
+				if (obj is TagVM && SelectedTags.Contains (obj as TagVM)) {
 					tk.LineWidth = 0;
 					tk.FontWeight = FontWeight.Light;
 					tk.FillColor = TextColor;
@@ -553,7 +553,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 					tk.DrawRectangle (new Point (r.TopLeft.X, r.TopLeft.Y), r.Width, r.Height);
 					tk.StrokeColor = BackgroundColor;
 					tk.DrawText (new Point (r.TopLeft.X, r.TopLeft.Y), r.Width, r.Height,
-						(obj as Tag).Value);
+						(obj as TagVM).Value);
 				}
 			}
 		}
@@ -708,14 +708,14 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			DrawRecordButton (tk);
 			DrawHotkey (tk);
 
-			foreach (List<Tag> tags in tagsByGroup.Values) {
+			foreach (List<TagVM> tags in tagsByGroup.Values) {
 				DrawTagsGroup (tk, tags, ref yptr);
 			}
 
 			/* Remove anchor object that where not reused
 				 * eg: after removinga a subcategory tag */
-			foreach (Tag tag in subcatAnchors.Keys.ToList ()) {
-				if (!Button.AnalysisEventType.Tags.Contains (tag)) {
+			foreach (TagVM tag in subcatAnchors.Keys.ToList ()) {
+				if (!ViewModel.Tags.Contains (tag)) {
 					RemoveAnchor (subcatAnchors [tag]);
 				}
 			}

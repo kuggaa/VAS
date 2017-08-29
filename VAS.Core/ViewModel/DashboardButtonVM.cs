@@ -16,9 +16,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
@@ -247,12 +246,22 @@ namespace VAS.Core.ViewModel
 		Time currentTime;
 
 		/// <summary>
+		/// Gets the correctly Typed Model
+		/// </summary>
+		/// <value>The button.</value>
+		public TimedDashboardButton TypedModel {
+			get {
+				return (TimedDashboardButton)base.Model;
+			}
+		}
+
+		/// <summary>
 		/// Gets or sets the model.
 		/// </summary>
 		/// <value>The model.</value>
-		public new TimedDashboardButton Model {
+		public override DashboardButton Model {
 			get {
-				return (TimedDashboardButton)base.Model;
+				return TypedModel;
 			}
 			set {
 				base.Model = value;
@@ -265,10 +274,10 @@ namespace VAS.Core.ViewModel
 		/// <value>The tag mode.</value>
 		public TagMode TagMode {
 			get {
-				return Model.TagMode;
+				return TypedModel.TagMode;
 			}
 			set {
-				Model.TagMode = value;
+				TypedModel.TagMode = value;
 			}
 		}
 
@@ -278,10 +287,10 @@ namespace VAS.Core.ViewModel
 		/// <value>The start.</value>
 		public Time Start {
 			get {
-				return Model.Start;
+				return TypedModel.Start;
 			}
 			set {
-				Model.Start = value;
+				TypedModel.Start = value;
 			}
 		}
 
@@ -291,10 +300,10 @@ namespace VAS.Core.ViewModel
 		/// <value>The stop.</value>
 		public Time Stop {
 			get {
-				return Model.Stop;
+				return TypedModel.Stop;
 			}
 			set {
-				Model.Stop = value;
+				TypedModel.Stop = value;
 			}
 		}
 
@@ -334,17 +343,32 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class EventButtonVM : TimedDashboardButtonVM
 	{
+		public EventButtonVM ()
+		{
+			EventType = new EventTypeVM ();
+		}
+
+		/// <summary>
+		/// Gets the correctly Typed Model
+		/// </summary>
+		/// <value>The button.</value>
+		public new EventButton TypedModel {
+			get {
+				return (EventButton)base.Model;
+			}
+		}
+
 		/// <summary>
 		/// Gets or sets the model.
 		/// </summary>
 		/// <value>The model.</value>
-		public new EventButton Model {
+		public override DashboardButton Model {
 			get {
-				return (EventButton)base.Model;
+				return TypedModel;
 			}
 			set {
 				base.Model = value;
-				EventType = new EventTypeVM { Model = Model.EventType };
+				EventType.Model = ((EventButton)value)?.EventType;
 			}
 		}
 
@@ -365,19 +389,30 @@ namespace VAS.Core.ViewModel
 	{
 		public AnalysisEventButtonVM ()
 		{
-			SelectedTags = new List<Tag> ();
+			Tags = new CollectionViewModel<Tag, TagVM> ();
+		}
+
+		/// <summary>
+		/// Gets the correctly Typed Model
+		/// </summary>
+		/// <value>The button.</value>
+		public new AnalysisEventButton TypedModel {
+			get {
+				return (AnalysisEventButton)base.Model;
+			}
 		}
 
 		/// <summary>
 		/// Gets or sets the model.
 		/// </summary>
 		/// <value>The model.</value>
-		public new AnalysisEventButton Model {
+		public override DashboardButton Model {
 			get {
-				return (AnalysisEventButton)base.Model;
+				return TypedModel;
 			}
 			set {
 				base.Model = value;
+				Tags.Model = ((AnalysisEventButton)value)?.AnalysisEventType.Tags;
 			}
 		}
 
@@ -385,10 +420,8 @@ namespace VAS.Core.ViewModel
 		/// Gets the subcategories of the event
 		/// </summary>
 		/// <value>The tags.</value>
-		public IEnumerable<Tag> Tags {
-			get {
-				return Model.AnalysisEventType.Tags;
-			}
+		public CollectionViewModel<Tag, TagVM> Tags {
+			get;
 		}
 
 		/// <summary>
@@ -407,10 +440,10 @@ namespace VAS.Core.ViewModel
 		/// <value><c>true</c> if show subcategories; otherwise, <c>false</c>.</value>
 		public bool ShowSubcategories {
 			get {
-				return Model.ShowSubcategories;
+				return TypedModel.ShowSubcategories;
 			}
 			set {
-				Model.ShowSubcategories = value;
+				TypedModel.ShowSubcategories = value;
 			}
 		}
 
@@ -420,16 +453,23 @@ namespace VAS.Core.ViewModel
 		/// <value>The tags per row.</value>
 		public int TagsPerRow {
 			get {
-				return Model.TagsPerRow;
+				return TypedModel.TagsPerRow;
 			}
 			set {
-				Model.TagsPerRow = value;
+				TypedModel.TagsPerRow = value;
 			}
 		}
 
-		public List<Tag> SelectedTags {
-			get;
-			set;
+		public RangeObservableCollection<TagVM> SelectedTags {
+			get {
+				return Tags.Selection;
+			}
+		}
+
+		public Dictionary<string, List<TagVM>> TagsByGroup {
+			get {
+				return Tags.ViewModels.GroupBy (t => t.Group).ToDictionary (g => g.Key, g => g.ToList ());
+			}
 		}
 
 		public void Click ()
@@ -449,17 +489,15 @@ namespace VAS.Core.ViewModel
 				start = RecordingStart - Start;
 				eventTime = RecordingStart;
 			}
-			var tags = new List<Tag> ();
-			tags.AddRange (SelectedTags);
 
 			App.Current.EventsBroker.Publish (
 				new NewTagEvent {
-					EventType = Model.EventType,
+					EventType = TypedModel.EventType,
 					Start = start,
 					Stop = stop,
 					EventTime = eventTime,
 					Button = Model,
-					Tags = tags
+					Tags = SelectedTags.Select (t => t.Model)
 				}
 			);
 
@@ -474,16 +512,34 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class TagButtonVM : DashboardButtonVM
 	{
+		Time currentTime;
+
+		public TagButtonVM ()
+		{
+			Tag = new TagVM ();
+		}
+
+		/// <summary>
+		/// Gets the correctly Typed Model
+		/// </summary>
+		/// <value>The button.</value>
+		public TagButton TypedModel {
+			get {
+				return (TagButton)base.Model;
+			}
+		}
+
 		/// <summary>
 		/// Gets or sets the model.
 		/// </summary>
 		/// <value>The model.</value>
-		public new TagButton Model {
+		public override DashboardButton Model {
 			get {
-				return (TagButton)base.Model;
+				return TypedModel;
 			}
 			set {
 				base.Model = value;
+				Tag.Model = ((TagButton)value)?.Tag;
 			}
 		}
 
@@ -501,13 +557,9 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the tag.
 		/// </summary>
 		/// <value>The tag.</value>
-		public Tag Tag {
-			get {
-				return Model.Tag;
-			}
-			set {
-				Model.Tag = value;
-			}
+		public TagVM Tag {
+			get;
+			set;
 		}
 	}
 
@@ -528,9 +580,15 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the model.
 		/// </summary>
 		/// <value>The model.</value>
-		public new TimerButton Model {
+		public TimerButton TypedModel {
 			get {
 				return (TimerButton)base.Model;
+			}
+		}
+
+		public override DashboardButton Model {
+			get {
+				return TypedModel;
 			}
 			set {
 				base.Model = value;
@@ -553,10 +611,10 @@ namespace VAS.Core.ViewModel
 		/// <value>The timer.</value>
 		public Timer Timer {
 			get {
-				return Model.Timer;
+				return TypedModel.Timer;
 			}
 			set {
-				Model.Timer = value;
+				TypedModel.Timer = value;
 			}
 		}
 

@@ -271,6 +271,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\BindingsExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\ResourcesLocatorBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\IStateful.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TagVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

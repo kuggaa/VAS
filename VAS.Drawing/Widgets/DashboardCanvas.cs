@@ -86,7 +86,7 @@ namespace VAS.Drawing.Widgets
 			ViewModel = (DashboardVM)viewModel;
 		}
 
-		public void Click (DashboardButton b, Tag tag = null)
+		public void Click (DashboardButton b, TagVM tag = null)
 		{
 			DashboardButtonView co = Objects.OfType<DashboardButtonView> ().FirstOrDefault (o => o.Button == b);
 			if (tag != null && co is AnalysisEventButtonView) {
@@ -222,7 +222,7 @@ namespace VAS.Drawing.Widgets
 			if (sel != null && sel.Drawable is LinkAnchorView) {
 				LinkAnchorView anchor = sel.Drawable as LinkAnchorView;
 				ActionLinkVM link = new ActionLinkVM {
-					Model = new ActionLink { SourceTags = new ObservableCollection<Tag> (anchor.Tags) },
+					Model = new ActionLink { SourceTags = new RangeObservableCollection<Tag> (anchor.Tags.Select (t => t.Model)) },
 					SourceButton = anchor.Button.ButtonVM
 				};
 				movingLink = new ActionLinkView (anchor, null, link);
@@ -241,7 +241,7 @@ namespace VAS.Drawing.Widgets
 				if (destAnchor != null) {
 					ActionLinkVM link = movingLink.Link;
 					link.DestinationButton = destAnchor.Button.ButtonVM;
-					link.DestinationTags = new ObservableCollection<Tag> (destAnchor.Tags);
+					link.DestinationTags.ViewModels.AddRange (destAnchor.Tags);
 					link.SourceButton.ActionLinks.ViewModels.Add (link);
 					movingLink.Destination = destAnchor;
 					destAnchor.Highlighted = false;
@@ -355,7 +355,7 @@ namespace VAS.Drawing.Widgets
 			DashboardButtonView tagger;
 			EventButton button;
 			Time start = null, stop = null, eventTime = null;
-			List<Tag> tags = null;
+			List<TagVM> tags = null;
 
 			tagger = co as DashboardButtonView;
 
@@ -392,7 +392,7 @@ namespace VAS.Drawing.Widgets
 				eventTime = tagger.Start;
 			}
 
-			tags = new List<Tag> ();
+			tags = new List<TagVM> ();
 			if (tagger is AnalysisEventButtonView) {
 				tags.AddRange ((tagger as AnalysisEventButtonView).SelectedTags);
 			}
@@ -428,10 +428,10 @@ namespace VAS.Drawing.Widgets
 				LinkAnchorView sourceAnchor, destAnchor;
 				ActionLinkView linkObject;
 
-				sourceAnchor = buttonObject.GetAnchor (link.SourceTags);
+				sourceAnchor = buttonObject.GetAnchor (link.SourceTags.ViewModels);
 				try {
 					var but = buttonsDict [link.DestinationButton];
-					destAnchor = buttonsDict [link.DestinationButton].GetAnchor (link.DestinationTags);
+					destAnchor = buttonsDict [link.DestinationButton].GetAnchor (link.DestinationTags.ViewModels);
 				} catch {
 					Log.Error ("Skipping link with invalid destination tags");
 					continue;

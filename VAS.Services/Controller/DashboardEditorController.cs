@@ -37,11 +37,11 @@ namespace VAS.Services.Controller
 	/// </summary>
 	public class DashboardEditorController : ControllerBase<DashboardVM>
 	{
-		List<AnalysisEventType> eventTypes;
+		List<AnalysisEventButtonVM> eventButtons;
 
 		public DashboardEditorController()
 		{
-			eventTypes = new List<AnalysisEventType> ();
+			eventButtons = new List<AnalysisEventButtonVM> ();
 		}
 
 		public override async Task Start ()
@@ -69,13 +69,13 @@ namespace VAS.Services.Controller
 		protected override void ConnectEvents ()
 		{
 			base.ConnectEvents ();
-			ConnectEventTypes ();
+			ConnectTagChanges ();
 		}
 
 		protected override void DisconnectEvents ()
 		{
 			base.DisconnectEvents ();
-			DisconnectEventTypes ();
+			DisconnectTagChanges ();
 		}
 
 		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
@@ -89,25 +89,20 @@ namespace VAS.Services.Controller
 			ViewModel = ((IDashboardDealer)viewModel).Dashboard;
 		}
 
-		void ConnectEventTypes ()
+		void ConnectTagChanges ()
 		{
-			foreach (var vm in ViewModel.ViewModels) {
-				var eventType = (vm.Model as AnalysisEventButton)?.AnalysisEventType;
-				if (eventType != null) {
-					eventTypes.Add (eventType);
-					eventType.Tags.CollectionChanged += HandleTagsCollectionChanged;
-				}
+			foreach (var button in ViewModel.ViewModels.OfType<AnalysisEventButtonVM> ()) {
+				button.Tags.ViewModels.CollectionChanged += HandleTagsCollectionChanged;
+				eventButtons.Add (button);
 			}
 		}
 
-		void DisconnectEventTypes()
+		void DisconnectTagChanges()
 		{
-			foreach (var eventType in eventTypes) {
-				if (eventType != null) {
-					eventType.Tags.CollectionChanged -= HandleTagsCollectionChanged;
-				}
+			foreach (var button in eventButtons) {
+				button.Tags.ViewModels.CollectionChanged -= HandleTagsCollectionChanged;
 			}
-			eventTypes.Clear ();
+			eventButtons.Clear ();
 		}
 
 		void RemoveActionLinks (DashboardButtonVM button)
@@ -123,11 +118,11 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		void RemoveActionLinks (Tag tag)
+		void RemoveActionLinks (TagVM tag)
 		{
 			foreach (var b in ViewModel.ViewModels) {
-				var linksToRemove = b.ActionLinks.Where (al => ContainsSameReferenceTags (al.SourceTags, tag) ||
-				                                         ContainsSameReferenceTags (al.DestinationTags, tag));
+				var linksToRemove = b.ActionLinks.Where (al => ContainsSameReferenceTags(al.SourceTags, tag) ||
+				                                         ContainsSameReferenceTags(al.DestinationTags, tag));
 				if (linksToRemove.Any ()) {
 					b.ActionLinks.ViewModels.RemoveRange (linksToRemove);
 				}
@@ -142,10 +137,10 @@ namespace VAS.Services.Controller
 		/// <returns><c>true</c>, if tag references is contained in the list of tags, <c>false</c> otherwise.</returns>
 		/// <param name="tags">Tags.</param>
 		/// <param name="tag">Tag.</param>
-		bool ContainsSameReferenceTags (IEnumerable<Tag> tags, Tag tag)
+		bool ContainsSameReferenceTags (IEnumerable<TagVM> tags, TagVM tag)
 		{
 			foreach (var t in tags) {
-				if (ReferenceEquals (t, tag)) {
+				if (ReferenceEquals (t.Model, tag.Model)) {
 					return true;
 				}
 			}
@@ -156,8 +151,8 @@ namespace VAS.Services.Controller
 		protected override void HandleViewModelChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Model))) {
-				DisconnectEventTypes ();
-				ConnectEventTypes ();
+				DisconnectTagChanges ();
+				ConnectTagChanges ();
 			}
 		}
 
@@ -263,10 +258,11 @@ namespace VAS.Services.Controller
 			}
 		}
 
+		//FIXME: This should removed when the EventTypeTagsEditor dialog is ported to MVVM
 		void HandleTagsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
 			if (e.Action == NotifyCollectionChangedAction.Remove) {
-				foreach (Tag t in e.OldItems.OfType<Tag> ()) {
+				foreach (TagVM t in e.OldItems.OfType<TagVM> ()) {
 					RemoveActionLinks (t);
 				}
 			}

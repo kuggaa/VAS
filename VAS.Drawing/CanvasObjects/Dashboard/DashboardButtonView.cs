@@ -187,7 +187,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
-		public virtual LinkAnchorView GetAnchor (IList<Tag> sourceTags)
+		public virtual LinkAnchorView GetAnchor (IList<TagVM> sourceTags)
 		{
 			return anchor;
 		}
