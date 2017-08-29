@@ -38,6 +38,8 @@ namespace VAS.Services.Controller
 		where TModel : Project
 		where TViewModel : ProjectVM<TModel>, new()
 	{
+		MediaFileSet originalMediaFileSet;
+
 		protected override void DisposeManagedResources ()
 		{
 			ViewModel.IgnoreEvents = true;
@@ -167,6 +169,7 @@ namespace VAS.Services.Controller
 				// Load the model, creating a copy to edit changes in a different viewmodel in case the user
 				// does not want to save them.
 				ViewModel.LoadedProject = new TViewModel { Model = selectedVM.Model, Stateful = true };
+				originalMediaFileSet = ViewModel.LoadedProject.FileSet.Model.Clone ();
 				ViewModel.LoadedProject.IsChanged = false;
 			}
 
@@ -185,6 +188,7 @@ namespace VAS.Services.Controller
 			if (!force) {
 				string msg = Catalog.GetString ("Do you want to save the current project?");
 				if (!(await App.Current.Dialogs.QuestionMessage (msg, null, this))) {
+					ViewModel.LoadedProject.FileSet.Model.MediaFiles.Replace (originalMediaFileSet.MediaFiles);
 					return false;
 				}
 			}
