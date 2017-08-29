@@ -375,6 +375,7 @@ namespace VAS.Core.Common
 		Single,
 		Multiple,
 		MultipleWithModifier,
+		None
 	}
 
 	public enum PlayersIconSize
