@@ -137,12 +137,11 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				return false;
 			}
 
-			// FIXME: View using Model
 			/* Check if this link will result into a duplicated link */
-			foreach (ActionLink link in Source.Button.ButtonVM.Model.ActionLinks) {
-				if (link.DestinationButton == dest.Button.ButtonVM.Model &&
-					link.SourceTags.SequenceEqualSafe (Source.Tags) &&
-					link.DestinationTags.SequenceEqualSafe (dest.Tags)) {
+			foreach (ActionLinkVM link in Source.Button.ButtonVM.ActionLinks) {
+				if (link.DestinationButton == dest.Button.ButtonVM &&
+				    link.SourceTags.ViewModels.SequenceEqualSafe (Source.Tags) &&
+				    link.DestinationTags.ViewModels.SequenceEqualSafe (dest.Tags)) {
 					return false;
 				}
 			}

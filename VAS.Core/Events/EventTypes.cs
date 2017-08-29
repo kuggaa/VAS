@@ -36,7 +36,7 @@ namespace VAS.Core.Events
 
 		public ObservableCollection<Team> Teams { get; set; }
 
-		public List<Tag> Tags { get; set; }
+		public IEnumerable<Tag> Tags { get; set; }
 
 		public Time Start { get; set; }
 

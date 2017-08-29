@@ -22,6 +22,7 @@ using System.Linq;
 using Moq;
 using NUnit.Framework;
 using VAS.Core;
+using VAS.Core.Common;
 using VAS.Core.Hotkeys;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
@@ -253,8 +254,8 @@ namespace VAS.Tests.Services
 		ActionLink CreateActionLink (DashboardButton source, DashboardButton dest, Tag sourceTag, Tag destTag)
 		{
 			ActionLink link = CreateActionLink (source, dest);
-			link.SourceTags = new ObservableCollection<Tag> { sourceTag };
-			link.DestinationTags = new ObservableCollection<Tag> { destTag };
+			link.SourceTags = new RangeObservableCollection<Tag> { sourceTag };
+			link.DestinationTags = new RangeObservableCollection<Tag> { destTag };
 			return link;
 		}
 	}

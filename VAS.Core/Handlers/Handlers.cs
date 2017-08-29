@@ -32,7 +32,7 @@ namespace VAS.Core.Handlers
 {
 	/* A new play needs to be created for a specific category at the current play time */
 	public delegate void NewEventHandler (EventType eventType, List<Player> players, ObservableCollection<Team> team,
-		List<Tag> tags, Time start, Time stop, Time EventTime, DashboardButton btn);
+		List<TagVM> tags, Time start, Time stop, Time EventTime, DashboardButton btn);
 
 	/* An event was edited */
 	public delegate void TimeNodeChangedHandler (TimeNode tNode, Time time);
