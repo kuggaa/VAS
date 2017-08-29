@@ -45,8 +45,10 @@ namespace VAS.Core.Common
 		public const int MAX_THUMBNAIL_SIZE = 200;
 		public const int MAX_PLAYER_ICON_SIZE = 200;
 		public const int MAX_SHIELD_ICON_SIZE = 200;
+		public const int SHIELD_IMAGE_SIZE = 60;
 		public const int MAX_BACKGROUND_WIDTH = 800;
 		public const int MAX_BACKGROUND_HEIGHT = 800;
+		public const int PREVIEW_SIZE = 100;
 
 		public const string LINE_NORMAL = "images/tools/vas-line" + IMAGE_EXT;
 		public const string LINE_DASHED = "images/tools/vas-dash-line" + IMAGE_EXT;

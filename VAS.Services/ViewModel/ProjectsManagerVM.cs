@@ -31,18 +31,21 @@ namespace VAS.Services.ViewModel
 		where TModel : Project
 		where TViewModel : ProjectVM<TModel>, new()
 	{
+		TViewModel loadedProject;
+
 		public ProjectsManagerVM ()
 		{
 			LoadedProject = new TViewModel ();
 			NewCommand = new Command (New);
-			OpenCommand = new Command<TViewModel> (Open, (arg) => Selection.Count == 1);
-			DeleteCommand = new Command (Delete, () => Selection.Any ());
+			OpenCommand = new AsyncCommand<TViewModel> (Open, (arg) => Selection.Count == 1);
+			DeleteCommand = new AsyncCommand (Delete, () => Selection.Any ());
+			SaveCommand = new AsyncCommand (Save, () => LoadedProject?.Model != null && LoadedProject.IsChanged);
+			ExportCommand = new AsyncCommand (Export, () => Selection.Count == 1);
 		}
 
 		protected override void DisposeManagedResources ()
 		{
 			base.DisposeManagedResources ();
-			LoadedProject.Dispose ();
 			LoadedProject = null;
 		}
 
@@ -59,10 +62,20 @@ namespace VAS.Services.ViewModel
 			}
 		}
 
-		[PropertyChanged.DoNotNotify]
 		public TViewModel LoadedProject {
-			get;
-			private set;
+			get {
+				return loadedProject;
+			}
+			set {
+				if (loadedProject != null) {
+					loadedProject.PropertyChanged -= HandleLoadedProjectChanged;
+				}
+				loadedProject = value;
+				if (loadedProject != null) {
+					loadedProject.PropertyChanged += HandleLoadedProjectChanged;
+					loadedProject.Sync ();
+				}
+			}
 		}
 
 		[PropertyChanged.DoNotNotify]
@@ -83,43 +96,33 @@ namespace VAS.Services.ViewModel
 			protected set;
 		}
 
-		/// <summary>
-		/// Control whether the save button is clickable or not.
-		/// </summary>
-		/// <value><c>true</c> if save clickable; otherwise, <c>false</c>.</value>
-		public bool SaveSensitive {
+		[PropertyChanged.DoNotNotify]
+		public Command SaveCommand {
 			get;
-			set;
+			protected set;
 		}
 
-		/// <summary>
-		/// Control whether the delete button is clickable or not.
-		/// </summary>
-		/// <value><c>true</c> if delete clickable; otherwise, <c>false</c>.</value>
-		public bool DeleteSensitive {
+		[PropertyChanged.DoNotNotify]
+		public Command ExportCommand {
 			get;
-			set;
-		}
-
-		/// <summary>
-		/// Control whether the export button is clickable or not.
-		/// </summary>
-		/// <value><c>true</c> if delete clickable; otherwise, <c>false</c>.</value>
-		public bool ExportSensitive {
-			get;
-			set;
+			protected set;
 		}
 
 		/// <summary>
 		/// Command to export the currently loaded project.
 		/// </summary>
-		public Task<bool> Export (string format = null)
+		public async Task<bool> Export ()
+		{
+			return await Export (null);
+		}
+
+		public async Task<bool> Export (string format)
 		{
 			TModel template = Selection.FirstOrDefault ()?.Model;
 			if (template != null) {
-				return App.Current.EventsBroker.PublishWithReturn (new ExportEvent<TModel> { Object = template, Format = format });
+				return await App.Current.EventsBroker.PublishWithReturn (new ExportEvent<TModel> { Object = template, Format = format });
 			}
-			return AsyncHelpers.Return (false);
+			return false;
 		}
 
 		/// <summary>
@@ -141,10 +144,10 @@ namespace VAS.Services.ViewModel
 		/// <summary>
 		/// Command to delete the selected projects.
 		/// </summary>
-		protected virtual void Delete ()
+		protected virtual async Task Delete ()
 		{
 			foreach (TModel project in Selection.Select (vm => vm.Model).ToList ()) {
-				App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = project });
+				await App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = project });
 			}
 		}
 
@@ -152,21 +155,26 @@ namespace VAS.Services.ViewModel
 		/// Command to save the currently loaded project.
 		/// </summary>
 		/// <param name="force">If set to <c>true</c> does not prompt to save.</param>
-		public Task<bool> Save (bool force)
+		protected virtual async Task<bool> Save ()
 		{
-			TModel project = LoadedProject.Model;
-			if (project != null) {
-				return App.Current.EventsBroker.PublishWithReturn (new UpdateEvent<TModel> { Object = project, Force = force });
+			bool force = true;
+			return await Save (force);
+		}
+
+		protected virtual async Task<bool> Save (bool force = true)
+		{
+			if (LoadedProject != null && LoadedProject.Model != null) {
+				return await App.Current.EventsBroker.PublishWithReturn (new UpdateEvent<TViewModel> { Object = LoadedProject, Force = force });
 			}
-			return AsyncHelpers.Return (false);
+			return false;
 		}
 
 		/// <summary>
 		/// Command to Open a project
 		/// </summary>
-		protected virtual void Open (TViewModel viewModel)
+		protected virtual async Task Open (TViewModel viewModel)
 		{
-			App.Current.EventsBroker.Publish (new OpenEvent<TModel> { Object = viewModel?.Model });
+			await App.Current.EventsBroker.Publish (new OpenEvent<TModel> { Object = viewModel?.Model });
 		}
 
 		void HandleLimitationChanged (object sender, PropertyChangedEventArgs e)
@@ -177,6 +185,14 @@ namespace VAS.Services.ViewModel
 		void CheckNewCommandEnabled ()
 		{
 			NewCommand.Executable = Limitation == null || Limitation.Count < Limitation.Maximum;
+		}
+
+		void HandleLoadedProjectChanged (object sender, PropertyChangedEventArgs e)
+		{
+			ExportCommand?.EmitCanExecuteChanged ();
+			SaveCommand?.EmitCanExecuteChanged ();
+			OpenCommand?.EmitCanExecuteChanged ();
+			DeleteCommand?.EmitCanExecuteChanged ();
 		}
 	}
 }

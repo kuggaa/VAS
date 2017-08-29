@@ -168,6 +168,44 @@ namespace VAS.Tests.MVVMC
 		}
 
 		[Test]
+		public void PropertyToPropertyBinding_SetSource_DestinationUpdated ()
+		{
+			// Arrange
+			CountLimitationVM source = new CountLimitationVM {
+				Model = new CountLicenseLimitation {
+					DisplayName = "source",
+					RegisterName = "source",
+					Count = 1,
+					Maximum = 5,
+					Enabled = true
+				}
+			};
+			CountLimitationVM destination = new CountLimitationVM {
+				Model = new CountLicenseLimitation {
+					DisplayName = "destination",
+					RegisterName = "destination",
+					Count = 0,
+					Maximum = 0,
+					Enabled = false
+				}
+			};
+
+			var binding = new PropertyToPropertyBinding<int> (destination,
+												(vm) => ((CountLimitationVM)vm).Count,
+												(vm) => ((CountLimitationVM)vm).Count);
+
+			// Act
+			binding.ViewModel = source;
+
+			// Assert
+			Assert.AreEqual ("destination", destination.DisplayName);
+			Assert.AreEqual ("source", source.DisplayName);
+			Assert.AreEqual (source, binding.ViewModel);
+			Assert.AreEqual (source.Count, destination.Count);
+			Assert.AreEqual (1, destination.Count);
+		}
+
+		[Test]
 		public void PropertyToPropertyBinding_ChangedSource_BindedWithLast ()
 		{
 			// Arrange
@@ -255,7 +293,7 @@ namespace VAS.Tests.MVVMC
 			Assert.AreEqual ("source", source.DisplayName);
 			Assert.AreEqual (null, binding.ViewModel);
 			Assert.AreNotEqual (source.Count, destination.Count);
-			Assert.AreEqual (0, destination.Count);
+			Assert.AreEqual (1, destination.Count);
 		}
 
 		[Test]

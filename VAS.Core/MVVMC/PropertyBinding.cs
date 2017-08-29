@@ -122,6 +122,7 @@ namespace VAS.Core.MVVMC
 		{
 			if (ViewModel != null) {
 				ViewModel.PropertyChanged += HandlePropertyChanged;
+				HandlePropertyChanged (null, new PropertyChangedEventArgs (propertyName));
 			}
 		}
 

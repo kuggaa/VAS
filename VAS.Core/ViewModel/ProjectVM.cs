@@ -15,6 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -155,7 +156,7 @@ namespace VAS.Core.ViewModel
 		/// <value><c>true</c> if edited; otherwise, <c>false</c>.</value>
 		public bool Edited {
 			get {
-				return Model?.IsChanged == true;
+				return this.IsChanged == true;
 			}
 		}
 
@@ -204,9 +205,10 @@ namespace VAS.Core.ViewModel
 		}
 	}
 
-	public abstract class ProjectVM<TProject> : ProjectVM, IViewModel<TProject>
+	public abstract class ProjectVM<TProject> : ProjectVM, IViewModel<TProject>, IStateful
 		where TProject : Project
 	{
+		[PropertyChanged.DoNotCheckEquality]
 		public new TProject Model {
 			get {
 				return base.Model as TProject;
@@ -216,29 +218,11 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
-		/// <summary>
-		/// Command to export a project.
-		/// </summary>
-		public Task<bool> Export ()
-		{
-			return App.Current.EventsBroker.PublishWithReturn (new ExportEvent<TProject> { Object = Model });
+		public bool Stateful {
+			get;
+			set;
 		}
 
-		/// <summary>
-		/// Command to delete a project.
-		/// </summary>
-		public Task<bool> Delete ()
-		{
-			return App.Current.EventsBroker.PublishWithReturn (new DeleteEvent<TProject> { Object = Model });
-		}
-
-		/// <summary>
-		/// Command to save a project.
-		/// </summary>
-		/// <param name="force">If set to <c>true</c> does not prompt to save.</param>
-		public Task<bool> Save (bool force)
-		{
-			return App.Current.EventsBroker.PublishWithReturn (new UpdateEvent<TProject> { Object = Model, Force = force });
-		}
+		public abstract void CommitState ();
 	}
 }

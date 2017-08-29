@@ -78,18 +78,39 @@ namespace VAS.Tests.Core.ViewModel
 		}
 
 		[Test]
-		public void TestEdited ()
+		public void ModifyModel_ViewModelIsChanged ()
 		{
 			var model = Utils.CreateProject (true);
 			var viewModel = new DummyProjectVM {
 				Model = model
 			};
 			model.IsChanged = false;
+			viewModel.IsChanged = false;
 			Assert.IsFalse (viewModel.Edited);
 
 			model.Timeline.Clear ();
 
 			Assert.IsTrue (viewModel.Edited);
+			Assert.IsTrue (viewModel.IsChanged);
+			Assert.IsTrue (model.IsChanged);
+		}
+
+		[Test]
+		public void ModifyViewModel_ModelIsChanged ()
+		{
+			var model = Utils.CreateProject (true);
+			var viewModel = new DummyProjectVM {
+				Model = model
+			};
+			model.IsChanged = false;
+			viewModel.IsChanged = false;
+			Assert.IsFalse (viewModel.Edited);
+
+			model.Timeline.Clear ();
+
+			Assert.IsTrue (viewModel.Edited);
+			Assert.IsTrue (viewModel.IsChanged);
+			Assert.IsTrue (model.IsChanged);
 		}
 
 		[Test]
