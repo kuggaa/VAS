@@ -25,7 +25,6 @@ using VAS.Core.Common;
 using VAS.Core.Handlers;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.MVVMC;
-using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
 using VAS.Core.ViewModel;
@@ -45,7 +44,7 @@ namespace VAS.Drawing.Widgets
 		protected int templateWidth, templateHeight;
 		protected ActionLinkView movingLink;
 		protected LinkAnchorView destAnchor;
-		protected Dictionary<DashboardButton, DashboardButtonView> buttonsDict;
+		protected Dictionary<DashboardButtonVM, DashboardButtonView> buttonsDict;
 		protected Dictionary<ActionLinkVM, ActionLinkView> linksDict;
 
 		DashboardVM viewModel;
@@ -54,7 +53,7 @@ namespace VAS.Drawing.Widgets
 		{
 			Accuracy = 5;
 			BackgroundColor = App.Current.Style.PaletteBackground;
-			buttonsDict = new Dictionary<DashboardButton, DashboardButtonView> ();
+			buttonsDict = new Dictionary<DashboardButtonVM, DashboardButtonView> ();
 			linksDict = new Dictionary<ActionLinkVM, ActionLinkView> ();
 		}
 
@@ -302,19 +301,16 @@ namespace VAS.Drawing.Widgets
 		protected virtual void ClearCanvas ()
 		{
 			ClearObjects ();
+			foreach(var vm in buttonsDict.Keys) {
+				vm.ActionLinks.ViewModels.CollectionChanged -= HandleActionLinksCollectionChanged;
+			}
 			buttonsDict.Clear ();
 			linksDict.Clear ();
 		}
 
 		protected virtual void FillCanvas ()
 		{
-			foreach (DashboardButtonVM vm in ViewModel.ViewModels) {
-				AddButton (vm);
-			}
-
-			foreach (DashboardButtonView buttonObject in buttonsDict.Values) {
-				AddActionLinks (buttonObject);
-			}
+			AddButtonsWithActionLinks (ViewModel.ViewModels);
 			HandleSizeChangedEvent ();
 		}
 
@@ -423,7 +419,7 @@ namespace VAS.Drawing.Widgets
 			}
 			viewButton.ShowLinks = ViewModel.ShowLinks;
 			AddObject (viewButton);
-			buttonsDict.Add (viewButton.Button, viewButton);
+			buttonsDict.Add (vm, viewButton);
 			vm.ActionLinks.ViewModels.CollectionChanged += HandleActionLinksCollectionChanged;
 		}
 
@@ -434,8 +430,8 @@ namespace VAS.Drawing.Widgets
 
 				sourceAnchor = buttonObject.GetAnchor (link.SourceTags);
 				try {
-					var but = buttonsDict [link.DestinationButton.Model];
-					destAnchor = buttonsDict [link.DestinationButton.Model].GetAnchor (link.DestinationTags);
+					var but = buttonsDict [link.DestinationButton];
+					destAnchor = buttonsDict [link.DestinationButton].GetAnchor (link.DestinationTags);
 				} catch {
 					Log.Error ("Skipping link with invalid destination tags");
 					continue;
@@ -448,18 +444,21 @@ namespace VAS.Drawing.Widgets
 			}
 		}
 
-		void AddButtonWithActionLinks (DashboardButtonVM vm)
+		void AddButtonsWithActionLinks (IEnumerable<DashboardButtonVM> buttons)
 		{
-			AddButton (vm);
-			DashboardButtonView button = buttonsDict [vm.Model];
-			AddActionLinks (button);
+			foreach (var button in buttons) {
+				AddButton (button);
 
+			}
+			foreach (DashboardButtonView buttonObject in buttonsDict.Values) {
+				AddActionLinks (buttonObject);
+			}
 		}
 
 		void RemoveButton (DashboardButtonVM vm)
 		{
-			RemoveObject (buttonsDict [vm.Model]);
-			buttonsDict.Remove (vm.Model);
+			RemoveObject (buttonsDict [vm]);
+			buttonsDict.Remove (vm);
 			vm.ActionLinks.ViewModels.CollectionChanged -= HandleActionLinksCollectionChanged;
 		}
 
@@ -488,7 +487,7 @@ namespace VAS.Drawing.Widgets
 			ClearSelection ();
 			var selections = new List<Selection> ();
 			foreach (var button in ViewModel.Selection) {
-				var view = buttonsDict [button.Model];
+				var view = buttonsDict [button];
 				view.Selected = true;
 				selections.Add (new Selection (view, SelectionPosition.All));
 			}
@@ -499,9 +498,7 @@ namespace VAS.Drawing.Widgets
 		{
 			switch (e.Action) {
 			case NotifyCollectionChangedAction.Add:
-				foreach (DashboardButtonVM viewModel in e.NewItems.OfType<DashboardButtonVM> ()) {
-					AddButtonWithActionLinks (viewModel);
-				}
+				AddButtonsWithActionLinks (e.NewItems.OfType<DashboardButtonVM> ());
 				break;
 			case NotifyCollectionChangedAction.Remove:
 				foreach (DashboardButtonVM viewModel in e.OldItems.OfType<DashboardButtonVM> ()) {
