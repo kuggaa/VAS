@@ -115,8 +115,8 @@ namespace VAS.Tests.Services
 		public void Setup ()
 		{
 			mockLimitationService = new Mock<ILicenseLimitationsService> ();
-			mockLimitationService.Setup (x => x.Get<FeatureLimitationVM> (It.IsAny<string> ())).
-								 Returns (new FeatureLimitationVM ());
+			mockLimitationService.Setup (x => x.CanExecute (It.IsAny<string> ())).
+								 Returns (true);
 			App.Current.LicenseLimitationsService = mockLimitationService.Object;
 
 			mtkMock.Setup (m => m.GetMultiPlayer ()).Throws (new Exception ());
@@ -2006,15 +2006,11 @@ namespace VAS.Tests.Services
 		[Test ()]
 		public void LoadZoomEvent_OpenZoomNotLimited_DoNotMoveToUpgradeDialog ()
 		{
-			mockLimitationService.Setup (x => x.Get<FeatureLimitationVM> (VASFeature.OpenZoom.ToString ())).
-								 Returns (new FeatureLimitationVM {
-									Model = new FeatureLicenseLimitation {
-										 Enabled = false
-									}
-								 });
+			mockLimitationService.Setup (x => x.CanExecute (VASFeature.OpenZoom.ToString ())).
+								 Returns (true);
 			mockLimitationService.Setup (x => x.CanExecute (VASFeature.OpenZoom.ToString ())).Returns (true);
 			PreparePlayer ();
-			evt.CamerasConfig [0].RegionOfInterest = new Area (0, 0, evt.FileSet[0].VideoWidth / 2, 10);
+			evt.CamerasConfig [0].RegionOfInterest = new Area (0, 0, evt.FileSet [0].VideoWidth / 2, 10);
 
 			player.LoadEvent (evt, new Time (0), true);
 
@@ -2025,12 +2021,8 @@ namespace VAS.Tests.Services
 		[Test ()]
 		public void LoadZoomEvent_OpenZoomLimited_MoveToUpgradeDialog ()
 		{
-			mockLimitationService.Setup (x => x.Get<FeatureLimitationVM> (VASFeature.OpenZoom.ToString ())).
-								 Returns (new FeatureLimitationVM {
-									 Model = new FeatureLicenseLimitation {
-										 Enabled = true
-									 }
-								 });
+			mockLimitationService.Setup (x => x.CanExecute (VASFeature.OpenZoom.ToString ())).
+								 Returns (false);
 			mockLimitationService.Setup (x => x.CanExecute (VASFeature.OpenZoom.ToString ())).Returns (false);
 			PreparePlayer ();
 			evt.CamerasConfig [0].RegionOfInterest = new Area (0, 0, 10, 10);
