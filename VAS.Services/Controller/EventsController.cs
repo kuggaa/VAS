@@ -71,7 +71,9 @@ namespace VAS.Services.Controller
 
 			App.Current.EventsBroker.Subscribe<EventLoadedEvent> (HandleEventLoadedEvent);
 			App.Current.EventsBroker.Subscribe<PlaylistElementLoadedEvent> (HandlePlaylistElementLoaded);
-			VideoPlayer.PropertyChanged += HandlePlayerVMPropertyChanged;
+			if (VideoPlayer != null) {
+				VideoPlayer.PropertyChanged += HandlePlayerVMPropertyChanged;
+			}
 			HandleFiltersChanged ();
 			Timeline.Filters.PropertyChanged += HandlePropertyChanged;
 			if (Project?.Periods != null) {
