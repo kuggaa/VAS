@@ -118,7 +118,7 @@ namespace VAS.Core.Store
 
 		public AnalysisEventType ()
 		{
-			Tags = new ObservableCollection<Tag> ();
+			Tags = new RangeObservableCollection<Tag> ();
 		}
 
 		protected override void DisposeManagedResources ()
@@ -130,7 +130,7 @@ namespace VAS.Core.Store
 			Tags.Clear ();
 		}
 
-		public ObservableCollection<Tag> Tags {
+		public RangeObservableCollection<Tag> Tags {
 			get;
 			set;
 		}

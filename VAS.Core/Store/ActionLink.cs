@@ -33,8 +33,8 @@ namespace VAS.Core.Store
 		{
 			KeepGenericTags = true;
 			KeepPlayerTags = true;
-			SourceTags = new ObservableCollection<Tag> ();
-			DestinationTags = new ObservableCollection<Tag> ();
+			SourceTags = new RangeObservableCollection<Tag> ();
+			DestinationTags = new RangeObservableCollection<Tag> ();
 			TeamAction = TeamLinkAction.Keep;
 		}
 
@@ -66,7 +66,7 @@ namespace VAS.Core.Store
 		/// <summary>
 		/// A list of tags that needs to match in the source
 		/// </summary>
-		public ObservableCollection<Tag> SourceTags {
+		public RangeObservableCollection<Tag> SourceTags {
 			get;
 			set;
 		}
@@ -82,7 +82,7 @@ namespace VAS.Core.Store
 		/// <summary>
 		/// A list of tags that needs to be set in the destination
 		/// </summary>
-		public ObservableCollection<Tag> DestinationTags {
+		public RangeObservableCollection<Tag> DestinationTags {
 			get;
 			set;
 		}

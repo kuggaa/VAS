@@ -17,6 +17,8 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using VAS.Core;
@@ -33,9 +35,14 @@ namespace VAS.Services.Controller
 	/// <summary>
 	/// A controller to edit a <see cref="Dashboard"/>.
 	/// </summary>
-	public class DashboardEditorController : ControllerBase
+	public class DashboardEditorController : ControllerBase<DashboardVM>
 	{
-		DashboardVM dashboardVM;
+		List<AnalysisEventButtonVM> eventButtons;
+
+		public DashboardEditorController()
+		{
+			eventButtons = new List<AnalysisEventButtonVM> ();
+		}
 
 		public override async Task Start ()
 		{
@@ -59,15 +66,94 @@ namespace VAS.Services.Controller
 			await base.Stop ();
 		}
 
+		protected override void ConnectEvents ()
+		{
+			base.ConnectEvents ();
+			ConnectTagChanges ();
+		}
+
+		protected override void DisconnectEvents ()
+		{
+			base.DisconnectEvents ();
+			DisconnectTagChanges ();
+		}
+
 		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
 		{
 			yield return new KeyAction (App.Current.HotkeysService.GetByName (GeneralUIHotkeys.DELETE),
-										() => dashboardVM.DeleteButton.Execute (dashboardVM.Selection.FirstOrDefault ()), 10);
+			                            () => ViewModel.DeleteButton.Execute (ViewModel.Selection.FirstOrDefault ()), 10);
 		}
 
 		public override void SetViewModel (IViewModel viewModel)
 		{
-			dashboardVM = ((IDashboardDealer)viewModel).Dashboard;
+			ViewModel = ((IDashboardDealer)viewModel).Dashboard;
+		}
+
+		void ConnectTagChanges ()
+		{
+			foreach (var button in ViewModel.ViewModels.OfType<AnalysisEventButtonVM> ()) {
+				button.Tags.ViewModels.CollectionChanged += HandleTagsCollectionChanged;
+				eventButtons.Add (button);
+			}
+		}
+
+		void DisconnectTagChanges()
+		{
+			foreach (var button in eventButtons) {
+				button.Tags.ViewModels.CollectionChanged -= HandleTagsCollectionChanged;
+			}
+			eventButtons.Clear ();
+		}
+
+		void RemoveActionLinks (DashboardButtonVM button)
+		{
+			//Remove source ActionLinks
+			button.ActionLinks.ViewModels.RemoveRange (button.ActionLinks.ViewModels);
+			//Remove Dest ActionLinks
+			foreach (var b in ViewModel.ViewModels) {
+				var linksToRemove = b.ActionLinks.Where (al => al.DestinationButton == button);
+				if (linksToRemove.Any ()) {
+					b.ActionLinks.ViewModels.RemoveRange (linksToRemove);
+				}
+			}
+		}
+
+		void RemoveActionLinks (TagVM tag)
+		{
+			foreach (var b in ViewModel.ViewModels) {
+				var linksToRemove = b.ActionLinks.Where (al => ContainsSameReferenceTags(al.SourceTags, tag) ||
+				                                         ContainsSameReferenceTags(al.DestinationTags, tag));
+				if (linksToRemove.Any ()) {
+					b.ActionLinks.ViewModels.RemoveRange (linksToRemove);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Compare a Tag with list of Tags by Reference to know if it is contained inside the list.
+		/// We need a way to compare Tags by same reference, since <see cref="Tag"/> object
+		/// overrides Equals and compare just for value and group. 
+		/// </summary>
+		/// <returns><c>true</c>, if tag references is contained in the list of tags, <c>false</c> otherwise.</returns>
+		/// <param name="tags">Tags.</param>
+		/// <param name="tag">Tag.</param>
+		bool ContainsSameReferenceTags (IEnumerable<TagVM> tags, TagVM tag)
+		{
+			foreach (var t in tags) {
+				if (ReferenceEquals (t.Model, tag.Model)) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		protected override void HandleViewModelChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.Model))) {
+				DisconnectTagChanges ();
+				ConnectTagChanges ();
+			}
 		}
 
 		protected async Task HandleReplaceField (ReplaceDashboardFieldEvent arg)
@@ -95,7 +181,8 @@ namespace VAS.Services.Controller
 
 			string msg = Catalog.GetString ("Do you want to delete: ") + buttonVM.Name + "?";
 			if (await App.Current.Dialogs.QuestionMessage (msg, null, this)) {
-				dashboardVM.ViewModels.Remove (evt.Object);
+				RemoveActionLinks (evt.Object);
+				ViewModel.ViewModels.Remove (evt.Object);
 			}
 		}
 
@@ -118,8 +205,8 @@ namespace VAS.Services.Controller
 			DashboardButton button = CreateButton (evt.Name);
 
 			if (button != null) {
-				button.Position = new Point (dashboardVM.CanvasWidth, 0);
-				dashboardVM.Model.List.Add (button);
+				button.Position = new Point (ViewModel.CanvasWidth, 0);
+				ViewModel.Model.List.Add (button);
 			}
 		}
 
@@ -131,9 +218,16 @@ namespace VAS.Services.Controller
 			}
 			newButton.Position.X += 50;
 			newButton.Position.Y += 50;
-			dashboardVM.Model.List.Add (newButton);
-			arg.ReturnValue = dashboardVM.ViewModels.Last ();
-			dashboardVM.Select (arg.ReturnValue);
+
+			for (int i = 0; i < newButton.ActionLinks.Count (); i++) {
+				newButton.ActionLinks [i].SourceButton = newButton;
+				newButton.ActionLinks [i].DestinationButton =
+							 arg.Object.Model.ActionLinks [i].DestinationButton;
+			}
+
+			ViewModel.Model.List.Add (newButton);
+			arg.ReturnValue = ViewModel.ViewModels.Last ();
+			ViewModel.Select (arg.ReturnValue);
 		}
 
 		protected virtual DashboardButton CreateButton (string buttonType)
@@ -143,7 +237,7 @@ namespace VAS.Services.Controller
 			if (buttonType == "Tag") {
 				button = new TagButton { Tag = new Tag ("Tag", "") };
 			} else if (buttonType == "Category") {
-				button = dashboardVM.Model.CreateDefaultItem (dashboardVM.Model.List.Count);
+				button = ViewModel.Model.CreateDefaultItem (ViewModel.Model.List.Count);
 			}
 
 			return button;
@@ -153,16 +247,25 @@ namespace VAS.Services.Controller
 		{
 			switch (fieldPosition) {
 			case FieldPositionType.Field:
-				dashboardVM.FieldBackground = background ?? App.Current.FieldBackground;
+				ViewModel.FieldBackground = background ?? App.Current.FieldBackground;
 				break;
 			case FieldPositionType.HalfField:
-				dashboardVM.HalfFieldBackground = background ?? App.Current.HalfFieldBackground;
+				ViewModel.HalfFieldBackground = background ?? App.Current.HalfFieldBackground;
 				break;
 			case FieldPositionType.Goal:
-				dashboardVM.GoalBackground = background ?? App.Current.GoalBackground;
+				ViewModel.GoalBackground = background ?? App.Current.GoalBackground;
 				break;
 			}
 		}
 
+		//FIXME: This should removed when the EventTypeTagsEditor dialog is ported to MVVM
+		void HandleTagsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (e.Action == NotifyCollectionChangedAction.Remove) {
+				foreach (TagVM t in e.OldItems.OfType<TagVM> ()) {
+					RemoveActionLinks (t);
+				}
+			}
+		}
 	}
 }
