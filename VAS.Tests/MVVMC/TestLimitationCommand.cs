@@ -32,13 +32,13 @@ namespace VAS.Tests.MVVMC
 		ILicenseLimitationsService currentService;
 
 		[OneTimeSetUp]
-		public void TestFixtureSetUp ()
+		public void OneTimeSetUp ()
 		{
 			currentService = App.Current.LicenseLimitationsService;
 		}
 
 		[OneTimeTearDown]
-		public void TestFixtureTearDown ()
+		public void OneTimeTearDown ()
 		{
 			App.Current.LicenseLimitationsService = currentService;
 		}
