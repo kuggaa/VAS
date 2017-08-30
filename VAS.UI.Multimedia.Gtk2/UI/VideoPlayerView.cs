@@ -887,6 +887,14 @@ namespace VAS.UI
 				mode == PlayerViewOperationMode.Analysis ||
 				mode == PlayerViewOperationMode.SimpleWithControls;
 
+			jumpsbox.Visible =
+				mode == PlayerViewOperationMode.Analysis ||
+				mode == PlayerViewOperationMode.SimpleWithControls;
+
+			rateBox.Visible =
+				mode == PlayerViewOperationMode.Analysis ||
+				mode == PlayerViewOperationMode.SimpleWithControls;
+
 			zoomBox.Visible =
 				mode == PlayerViewOperationMode.Analysis ||
 				mode == PlayerViewOperationMode.SimpleWithControls;
