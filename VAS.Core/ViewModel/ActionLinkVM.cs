@@ -32,7 +32,19 @@ namespace VAS.Core.ViewModel
 
 		public ActionLinkVM ()
 		{
-			var k = 0;
+			SourceTags = new CollectionViewModel<Tag, TagVM> ();
+			DestinationTags = new CollectionViewModel<Tag, TagVM> ();
+		}
+
+		public override ActionLink Model {
+			get {
+				return base.Model;
+			}
+			set {
+				base.Model = value;
+				SourceTags.Model = value?.SourceTags;
+				DestinationTags.Model = value?.DestinationTags;
+			}
 		}
 
 		/// <summary>
@@ -66,9 +78,8 @@ namespace VAS.Core.ViewModel
 		/// <summary>
 		/// A list of tags that needs to match in the source
 		/// </summary>
-		public ObservableCollection<Tag> SourceTags {
-			get { return Model.SourceTags; }
-			set { Model.SourceTags = value; }
+		public CollectionViewModel<Tag,TagVM> SourceTags {
+			get;
 		}
 
 		/// <summary>
@@ -85,9 +96,8 @@ namespace VAS.Core.ViewModel
 		/// <summary>
 		/// A list of tags that needs to be set in the destination
 		/// </summary>
-		public ObservableCollection<Tag> DestinationTags {
-			get { return Model.DestinationTags; }
-			set { Model.DestinationTags = value; }
+		public CollectionViewModel<Tag, TagVM> DestinationTags {
+			get;
 		}
 
 		/// <summary>

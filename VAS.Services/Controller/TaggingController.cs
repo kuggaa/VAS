@@ -232,7 +232,7 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		void HandleSubCategoriesTagging (AnalysisEventButtonVM buttonVM, Tag subcategoryTagged = null)
+		void HandleSubCategoriesTagging (AnalysisEventButtonVM buttonVM, TagVM subcategoryTagged = null)
 		{
 			if (subcategoryTagged != null) {
 				buttonVM.SelectedTags.Add (subcategoryTagged);
@@ -242,7 +242,7 @@ namespace VAS.Services.Controller
 			foreach (var subcategory in buttonVM.Tags) {
 				KeyAction action = new KeyAction (new KeyConfig {
 					Name = subcategory.Value,
-					Key = subcategory.HotKey
+					Key = subcategory.HotKey.Model
 				}, () => HandleSubCategoriesTagging (buttonVM, subcategory));
 				tempContext.AddAction (action);
 			}

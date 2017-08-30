@@ -25,7 +25,6 @@ using VAS.Core.Common;
 using VAS.Core.Handlers;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.MVVMC;
-using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
 using VAS.Core.ViewModel;
@@ -45,7 +44,7 @@ namespace VAS.Drawing.Widgets
 		protected int templateWidth, templateHeight;
 		protected ActionLinkView movingLink;
 		protected LinkAnchorView destAnchor;
-		protected Dictionary<DashboardButton, DashboardButtonView> buttonsDict;
+		protected Dictionary<DashboardButtonVM, DashboardButtonView> buttonsDict;
 		protected Dictionary<ActionLinkVM, ActionLinkView> linksDict;
 
 		DashboardVM viewModel;
@@ -54,7 +53,7 @@ namespace VAS.Drawing.Widgets
 		{
 			Accuracy = 5;
 			BackgroundColor = App.Current.Style.PaletteBackground;
-			buttonsDict = new Dictionary<DashboardButton, DashboardButtonView> ();
+			buttonsDict = new Dictionary<DashboardButtonVM, DashboardButtonView> ();
 			linksDict = new Dictionary<ActionLinkVM, ActionLinkView> ();
 		}
 
@@ -87,7 +86,7 @@ namespace VAS.Drawing.Widgets
 			ViewModel = (DashboardVM)viewModel;
 		}
 
-		public void Click (DashboardButton b, Tag tag = null)
+		public void Click (DashboardButton b, TagVM tag = null)
 		{
 			DashboardButtonView co = Objects.OfType<DashboardButtonView> ().FirstOrDefault (o => o.Button == b);
 			if (tag != null && co is AnalysisEventButtonView) {
@@ -223,7 +222,7 @@ namespace VAS.Drawing.Widgets
 			if (sel != null && sel.Drawable is LinkAnchorView) {
 				LinkAnchorView anchor = sel.Drawable as LinkAnchorView;
 				ActionLinkVM link = new ActionLinkVM {
-					Model = new ActionLink { SourceTags = new ObservableCollection<Tag> (anchor.Tags) },
+					Model = new ActionLink { SourceTags = new RangeObservableCollection<Tag> (anchor.Tags.Select (t => t.Model)) },
 					SourceButton = anchor.Button.ButtonVM
 				};
 				movingLink = new ActionLinkView (anchor, null, link);
@@ -242,7 +241,7 @@ namespace VAS.Drawing.Widgets
 				if (destAnchor != null) {
 					ActionLinkVM link = movingLink.Link;
 					link.DestinationButton = destAnchor.Button.ButtonVM;
-					link.DestinationTags = new ObservableCollection<Tag> (destAnchor.Tags);
+					link.DestinationTags.ViewModels.AddRange (destAnchor.Tags);
 					link.SourceButton.ActionLinks.ViewModels.Add (link);
 					movingLink.Destination = destAnchor;
 					destAnchor.Highlighted = false;
@@ -302,35 +301,16 @@ namespace VAS.Drawing.Widgets
 		protected virtual void ClearCanvas ()
 		{
 			ClearObjects ();
+			foreach(var vm in buttonsDict.Keys) {
+				vm.ActionLinks.ViewModels.CollectionChanged -= HandleActionLinksCollectionChanged;
+			}
 			buttonsDict.Clear ();
 			linksDict.Clear ();
 		}
 
 		protected virtual void FillCanvas ()
 		{
-			foreach (DashboardButtonVM vm in ViewModel.ViewModels) {
-				AddButton (vm);
-			}
-
-			foreach (DashboardButtonView buttonObject in buttonsDict.Values) {
-				foreach (ActionLinkVM link in buttonObject.ButtonVM.ActionLinks) {
-					LinkAnchorView sourceAnchor, destAnchor;
-					ActionLinkView linkObject;
-
-					sourceAnchor = buttonObject.GetAnchor (link.SourceTags);
-					try {
-						destAnchor = buttonsDict [link.DestinationButton.Model].GetAnchor (link.DestinationTags);
-					} catch {
-						Log.Error ("Skipping link with invalid destination tags");
-						continue;
-					}
-					linkObject = new ActionLinkView (sourceAnchor, destAnchor, link);
-					link.SourceButton = buttonObject.ButtonVM;
-					linkObject.Visible = ViewModel.ShowLinks;
-					AddObject (linkObject);
-					linksDict.Add (link, linkObject);
-				}
-			}
+			AddButtonsWithActionLinks (ViewModel.ViewModels);
 			HandleSizeChangedEvent ();
 		}
 
@@ -375,7 +355,7 @@ namespace VAS.Drawing.Widgets
 			DashboardButtonView tagger;
 			EventButton button;
 			Time start = null, stop = null, eventTime = null;
-			List<Tag> tags = null;
+			List<TagVM> tags = null;
 
 			tagger = co as DashboardButtonView;
 
@@ -412,7 +392,7 @@ namespace VAS.Drawing.Widgets
 				eventTime = tagger.Start;
 			}
 
-			tags = new List<Tag> ();
+			tags = new List<TagVM> ();
 			if (tagger is AnalysisEventButtonView) {
 				tags.AddRange ((tagger as AnalysisEventButtonView).SelectedTags);
 			}
@@ -439,14 +419,46 @@ namespace VAS.Drawing.Widgets
 			}
 			viewButton.ShowLinks = ViewModel.ShowLinks;
 			AddObject (viewButton);
-			buttonsDict.Add (viewButton.Button, viewButton);
+			buttonsDict.Add (vm, viewButton);
 			vm.ActionLinks.ViewModels.CollectionChanged += HandleActionLinksCollectionChanged;
+		}
+
+		void AddActionLinks (DashboardButtonView buttonObject) {
+			foreach (ActionLinkVM link in buttonObject.ButtonVM.ActionLinks) {
+				LinkAnchorView sourceAnchor, destAnchor;
+				ActionLinkView linkObject;
+
+				sourceAnchor = buttonObject.GetAnchor (link.SourceTags.ViewModels);
+				try {
+					var but = buttonsDict [link.DestinationButton];
+					destAnchor = buttonsDict [link.DestinationButton].GetAnchor (link.DestinationTags.ViewModels);
+				} catch {
+					Log.Error ("Skipping link with invalid destination tags");
+					continue;
+				}
+				linkObject = new ActionLinkView (sourceAnchor, destAnchor, link);
+				link.SourceButton = buttonObject.ButtonVM;
+				linkObject.Visible = ViewModel.ShowLinks;
+				AddObject (linkObject);
+				linksDict.Add (link, linkObject);
+			}
+		}
+
+		void AddButtonsWithActionLinks (IEnumerable<DashboardButtonVM> buttons)
+		{
+			foreach (var button in buttons) {
+				AddButton (button);
+
+			}
+			foreach (DashboardButtonView buttonObject in buttonsDict.Values) {
+				AddActionLinks (buttonObject);
+			}
 		}
 
 		void RemoveButton (DashboardButtonVM vm)
 		{
-			RemoveObject (buttonsDict [vm.Model]);
-			buttonsDict.Remove (vm.Model);
+			RemoveObject (buttonsDict [vm]);
+			buttonsDict.Remove (vm);
 			vm.ActionLinks.ViewModels.CollectionChanged -= HandleActionLinksCollectionChanged;
 		}
 
@@ -475,7 +487,7 @@ namespace VAS.Drawing.Widgets
 			ClearSelection ();
 			var selections = new List<Selection> ();
 			foreach (var button in ViewModel.Selection) {
-				var view = buttonsDict [button.Model];
+				var view = buttonsDict [button];
 				view.Selected = true;
 				selections.Add (new Selection (view, SelectionPosition.All));
 			}
@@ -486,9 +498,7 @@ namespace VAS.Drawing.Widgets
 		{
 			switch (e.Action) {
 			case NotifyCollectionChangedAction.Add:
-				foreach (DashboardButtonVM viewModel in e.NewItems.OfType<DashboardButtonVM> ()) {
-					AddButton (viewModel);
-				}
+				AddButtonsWithActionLinks (e.NewItems.OfType<DashboardButtonVM> ());
 				break;
 			case NotifyCollectionChangedAction.Remove:
 				foreach (DashboardButtonVM viewModel in e.OldItems.OfType<DashboardButtonVM> ()) {
@@ -508,6 +518,7 @@ namespace VAS.Drawing.Widgets
 			if (e.Action == NotifyCollectionChangedAction.Remove) {
 				foreach (ActionLinkVM viewModel in e.OldItems.OfType<ActionLinkVM> ()) {
 					RemoveObject (linksDict[viewModel]);
+					linksDict.Remove (viewModel);
 					widget.ReDraw ();
 				}
 			}

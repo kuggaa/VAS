@@ -49,13 +49,13 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			OutPrelightIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.LinkOutPrelight, false);
 		}
 
-		public LinkAnchorView (DashboardButtonView button, List<Tag> tags, Point relPos)
+		public LinkAnchorView (DashboardButtonView button, List<TagVM> tags, Point relPos)
 		{
 			RelativePosition = relPos;
 			width = height = 0;
 			Button = button;
 			if (tags == null)
-				tags = new List<Tag> ();
+				tags = new List<TagVM> ();
 			Tags = tags;
 			iconHeight = InIcon.Height;
 			iconWidth = InIcon.Width;
@@ -97,7 +97,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
-		public List<Tag> Tags {
+		public List<TagVM> Tags {
 			get;
 			set;
 		}
