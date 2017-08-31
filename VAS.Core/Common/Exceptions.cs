@@ -142,4 +142,9 @@ namespace VAS.Core.Common
 			}
 		}
 	}
+
+	public class MigrationException : Exception
+	{
+		public MigrationException (string reason) : base (reason) { }
+	}
 }
