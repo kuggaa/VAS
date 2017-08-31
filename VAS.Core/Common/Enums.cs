@@ -643,7 +643,8 @@ namespace VAS.Core.Common
 		OpenZoom,
 		OpenMultiCamera,
 		CreateMultiCamera,
-		LinkingButtons
+		LinkingButtons,
+		Watermark
 	}
 }
 

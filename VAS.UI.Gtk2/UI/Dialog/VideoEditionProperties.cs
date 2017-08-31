@@ -21,6 +21,7 @@ using Gtk;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Store.Playlists;
+using VAS.Core.ViewModel;
 using VASMisc = VAS.UI.Helpers.Misc;
 
 namespace VAS.UI.Dialog
@@ -57,10 +58,11 @@ namespace VAS.UI.Dialog
 			};
 
 			watermarkcheckbutton.Active = App.Current.Config.AddWatermark;
-			//FIXME: This Logic should be changed once Longomatch initializes LicenseManager
+
 			if (App.Current.LicenseManager != null) {
-				watermarkcheckbutton.Sensitive = !App.Current.LicenseManager.LicenseStatus.Limited;
-				if (App.Current.LicenseManager.LicenseStatus.Limited) {
+				bool canRemoveWatermark = App.Current.LicenseLimitationsService.CanExecute (VASFeature.Watermark.ToString ());
+				watermarkcheckbutton.Sensitive = canRemoveWatermark;
+				if (!canRemoveWatermark) {
 					watermarkcheckbutton.Active = true;
 				}
 			}
