@@ -69,7 +69,7 @@ namespace VAS.Tests.Services
 		}
 
 		[OneTimeTearDown]
-		public void TestFixtureTearDown ()
+		public void OneTimeTearDown ()
 		{
 			App.Current.StateController = currentStateController;
 		}
