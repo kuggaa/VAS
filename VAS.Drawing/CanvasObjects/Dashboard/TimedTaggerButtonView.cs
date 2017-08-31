@@ -18,6 +18,7 @@
 
 using System.ComponentModel;
 using VAS.Core.Common;
+using VAS.Core.Store;
 using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
@@ -38,6 +39,12 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
+		public Time Start {
+			get {
+				return TimedButtonVM.Start;
+			}
+		}
+
 		protected bool Recording {
 			get;
 			set;
@@ -47,13 +54,18 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		{
 			if (TimedButtonVM.TagMode == TagMode.Predefined) {
 				Active = !Active;
-				EmitClickEvent ();
+				CreateClickEvent ();
 			} else if (!Recording) {
 				StartRecording ();
 			} else {
-				EmitClickEvent ();
+				CreateClickEvent ();
 				Clear ();
 			}
+		}
+
+		protected virtual void CreateClickEvent()
+		{
+			EmitClickEvent ();
 		}
 
 		protected void StartRecording ()

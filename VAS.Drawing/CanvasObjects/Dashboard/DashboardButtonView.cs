@@ -119,11 +119,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
-		public Time Start {
-			get;
-			set;
-		}
-
 		public override Color BackgroundColor {
 			get {
 				return Button.BackgroundColor;

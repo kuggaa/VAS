@@ -350,67 +350,11 @@ namespace VAS.Drawing.Widgets
 			widget.ReDraw ();
 		}
 
-		protected virtual void HandleTaggerClickedEvent (ICanvasObject co)
-		{
-			DashboardButtonView tagger;
-			EventButton button;
-			Time start = null, stop = null, eventTime = null;
-			List<TagVM> tags = null;
-
-			tagger = co as DashboardButtonView;
-
-			if (tagger is TagButtonView) {
-				TagButtonView tag = tagger as TagButtonView;
-				if (tag.Active) {
-					/* All tag buttons from the same group that are active */
-					foreach (TagButtonView to in Objects.OfType<TagButtonView> ().
-							 Where (t => t.ViewModel.Tag.Group == tag.ViewModel.Tag.Group &&
-							t.Active && t != tagger)) {
-						to.Active = false;
-					}
-				}
-				return;
-			}
-
-			if (NewTagEvent == null || !(tagger.Button is EventButton)) {
-				return;
-			}
-
-			button = tagger.Button as EventButton;
-
-			if (ViewModel.Mode == DashboardMode.Edit) {
-				return;
-			}
-
-			if (button.TagMode == TagMode.Predefined) {
-				stop = ViewModel.CurrentTime + button.Stop;
-				start = ViewModel.CurrentTime - button.Start;
-				eventTime = ViewModel.CurrentTime;
-			} else {
-				stop = ViewModel.CurrentTime;
-				start = tagger.Start - button.Start;
-				eventTime = tagger.Start;
-			}
-
-			tags = new List<TagVM> ();
-			if (tagger is AnalysisEventButtonView) {
-				tags.AddRange ((tagger as AnalysisEventButtonView).SelectedTags);
-			}
-			foreach (TagButtonView to in Objects.OfType<TagButtonView> ()) {
-				if (to.Active) {
-					tags.Add (to.ViewModel.Tag);
-				}
-				to.Active = false;
-			}
-			NewTagEvent (button.EventType, null, null, tags, start, stop, eventTime, button);
-		}
-
 		void AddButton (DashboardButtonVM vm)
 		{
 			IView view = App.Current.ViewLocator.Retrieve (vm.View);
 			view.SetViewModel (vm);
 			var viewButton = view as DashboardButtonView;
-			viewButton.ClickedEvent += HandleTaggerClickedEvent;
 			if (viewButton is AnalysisEventButtonView) {
 				((AnalysisEventButtonView)viewButton).EditButtonTagsEvent += (t) => {
 					if (EditButtonTagsEvent != null)
