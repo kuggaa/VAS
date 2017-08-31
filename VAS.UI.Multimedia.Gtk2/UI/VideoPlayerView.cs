@@ -339,7 +339,9 @@ namespace VAS.UI
 			}
 			blackboard.Background = image;
 			blackboard.Drawing = drawing;
-			if (drawing != null) {
+			//FIXME: this should show a warning message here?
+			if (drawing != null && App.Current.LicenseLimitationsService.CanExecute (
+				VASFeature.OpenZoom.ToString ())) {
 				blackboard.RegionOfInterest = drawing.RegionOfInterest;
 			}
 			DrawingsVisible = true;
