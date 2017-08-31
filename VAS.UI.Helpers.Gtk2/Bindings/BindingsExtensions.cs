@@ -190,5 +190,65 @@ namespace VAS.UI.Helpers.Bindings
 		{
 			return new ComboBoxBinding (comboBox, propertyExpression, converter);
 		}
+
+		/// <summary>
+		/// Bind the specified hscale, commandFunc and defaultValue.
+		/// </summary>
+		/// <returns>The bind.</returns>
+		/// <param name="hscale">Hscale.</param>
+		/// <param name="commandFunc">Command func.</param>
+		/// <param name="defaultValue">Default value.</param>
+		public static HScaleCommandBinding Bind (this HScale hscale, Func<IViewModel, Command<double>> commandFunc, double defaultValue)
+		{
+			return new HScaleCommandBinding (hscale, commandFunc, defaultValue);
+		}
+
+		/// <summary>
+		/// Bind the specified hscale, commandFunc, defaultValue, min, max, step and page.
+		/// </summary>
+		/// <returns>The bind.</returns>
+		/// <param name="hscale">Hscale.</param>
+		/// <param name="commandFunc">Command func.</param>
+		/// <param name="defaultValue">Default value.</param>
+		/// <param name="min">Minimum.</param>
+		/// <param name="max">Max.</param>
+		/// <param name="step">Step.</param>
+		/// <param name="page">Page.</param>
+		public static HScaleCommandBinding Bind (this HScale hscale, Func<IViewModel, Command<double>> commandFunc, double defaultValue,
+		                                 double min, double max, double step, double page)
+		{
+			return new HScaleCommandBinding (hscale, commandFunc, defaultValue, min, max, step, page);
+		}
+
+		/// <summary>
+		/// Bind the specified hscale, commandFunc and defaultValue. For LimitationCommand<double>
+		/// </summary>
+		/// <returns>The bind.</returns>
+		/// <param name="hscale">Hscale.</param>
+		/// <param name="commandFunc">Command func.</param>
+		/// <param name="defaultValue">Default value.</param>
+		public static HScaleCommandBinding Bind (this HScale hscale, Func<IViewModel, LimitationCommand<double>> commandFunc,
+		                                  double defaultValue)
+		{
+			return new HScaleCommandBinding (hscale, commandFunc, defaultValue);
+		}
+
+		/// <summary>
+		/// Bind the specified hscale, commandFunc, defaultValue, min, max, step and page.
+		/// For LimitationCommand<double>
+		/// </summary>
+		/// <returns>The bind.</returns>
+		/// <param name="hscale">Hscale.</param>
+		/// <param name="commandFunc">Command func.</param>
+		/// <param name="defaultValue">Default value.</param>
+		/// <param name="min">Minimum.</param>
+		/// <param name="max">Max.</param>
+		/// <param name="step">Step.</param>
+		/// <param name="page">Page.</param>
+		public static HScaleCommandBinding Bind (this HScale hscale, Func<IViewModel, LimitationCommand<double>> commandFunc,
+		                                  double defaultValue, double min, double max, double step, double page)
+		{
+			return new HScaleCommandBinding (hscale, commandFunc, defaultValue, min, max, step, page);
+		}
 	}
 }
