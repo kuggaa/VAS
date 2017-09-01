@@ -149,6 +149,7 @@
     <Compile Include="Helpers\DummyBusyDialog.cs" />
     <Compile Include="Services\TestMediaFileSetController.cs" />
     <Compile Include="Core\ViewModel\TestTagVM.cs" />
+    <Compile Include="Core\ViewModel\TestDashboardButtonVM.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
