@@ -380,6 +380,42 @@ namespace VAS.Core.ViewModel
 			get;
 			private set;
 		}
+
+		public virtual void Click ()
+		{
+			if (Mode == DashboardMode.Edit) {
+				return;
+			}
+
+			Time start, stop, eventTime;
+
+			if (TagMode == TagMode.Predefined || RecordingStart == null) {
+				start = CurrentTime - Start;
+				stop = CurrentTime + Stop;
+				eventTime = CurrentTime;
+			} else {
+				stop = CurrentTime;
+				start = RecordingStart - Start;
+				eventTime = RecordingStart;
+			}
+
+			App.Current.EventsBroker.Publish (new NewTagEvent {
+				EventType = TypedModel.EventType,
+				Start = start,
+				Stop = stop,
+				EventTime = eventTime,
+				Button = Model,
+				Tags = GetTags ()
+			});
+
+			RecordingStart = null;
+			ButtonTime = null;
+		}
+
+		protected virtual IEnumerable<Tag> GetTags()
+		{
+			return new List<Tag> ();
+		}
 	}
 
 	/// <summary>
@@ -472,38 +508,15 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
-		public void Click ()
+		public override void Click ()
 		{
-			if (Mode == DashboardMode.Edit) {
-				return;
-			}
-
-			Time start, stop, eventTime;
-
-			if (TagMode == TagMode.Predefined || RecordingStart == null) {
-				start = CurrentTime - Start;
-				stop = CurrentTime + Stop;
-				eventTime = CurrentTime;
-			} else {
-				stop = CurrentTime;
-				start = RecordingStart - Start;
-				eventTime = RecordingStart;
-			}
-
-			App.Current.EventsBroker.Publish (
-				new NewTagEvent {
-					EventType = TypedModel.EventType,
-					Start = start,
-					Stop = stop,
-					EventTime = eventTime,
-					Button = Model,
-					Tags = SelectedTags.Select (t => t.Model)
-				}
-			);
-
+			base.Click ();
 			this.SelectedTags.Clear ();
-			RecordingStart = null;
-			ButtonTime = null;
+		}
+
+		protected override IEnumerable<Tag> GetTags ()
+		{
+			return SelectedTags.Select (t => t.Model);
 		}
 	}
 
