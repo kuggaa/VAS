@@ -46,12 +46,24 @@ namespace VAS.Core.MVVMC
 
 		protected override void BindViewModel ()
 		{
+			UnbindViewModel ();
 			Command = commandFunc (ViewModel);
+			if (Command != null) {
+				UpdateView ();
+				Command.CanExecuteChanged += HandleCanExecuteChanged;
+			}
 		}
 
 		protected override void UnbindViewModel ()
 		{
+			if (Command != null) {
+				Command.CanExecuteChanged -= HandleCanExecuteChanged;
+			}
 			Command = null;
 		}
+
+		protected abstract void UpdateView ();
+
+		protected abstract void HandleCanExecuteChanged (object sender, EventArgs args);
 	}
 }

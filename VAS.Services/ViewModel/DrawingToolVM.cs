@@ -28,6 +28,19 @@ namespace VAS.Services.ViewModel
 	/// </summary>
 	public class DrawingToolVM : ViewModelBase
 	{
+		public DrawingToolVM ()
+		{
+			SetZoomCommand = new LimitationCommand<double> (VASFeature.Zoom.ToString (), SetZoom);
+			ZoomLevel = 1;
+		}
+
+		/// <summary>
+		/// Gets the zoom limited command
+		/// </summary>
+		/// <value>The set zoom.</value>
+		public LimitationCommand<double> SetZoomCommand {
+			get;
+		}
 		//FIXME: this should be migrated to MVVM ProjectVM, TimelineEventVM, etc.
 		/// <summary>
 		/// Gets or sets the project.
@@ -75,11 +88,24 @@ namespace VAS.Services.ViewModel
 		}
 
 		/// <summary>
+		/// Gets or sets the zoom level.
+		/// </summary>
+		/// <value>The zoom level.</value>
+		public double ZoomLevel {
+			get;
+			set;
+		}
+
+		/// <summary>
 		/// Throws an event when a drawing has been saved to a project.
 		/// </summary>
 		public void DrawingSaved ()
 		{
 			App.Current.EventsBroker.Publish (new DrawingSavedToProjectEvent { ProjectId = Project.ID });
+		}
+
+		void SetZoom (double zoom) {
+			ZoomLevel = zoom;
 		}
 	}
 }
