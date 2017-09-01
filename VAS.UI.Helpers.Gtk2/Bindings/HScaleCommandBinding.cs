@@ -47,7 +47,7 @@ namespace VAS.UI.Helpers.Bindings
 
 		protected override void BindView ()
 		{
-			UpdateHScale ();
+			UpdateView ();
 			hScale.ValueChanged += HandleValueChanged;
 		}
 
@@ -56,34 +56,16 @@ namespace VAS.UI.Helpers.Bindings
 			hScale.ValueChanged -= HandleValueChanged;
 		}
 
-		protected override void BindViewModel ()
-		{
-			UnbindViewModel ();
-			base.BindViewModel ();
-			if (Command != null) {
-				UpdateHScale ();
-				Command.CanExecuteChanged += HandleCanExecuteChanged;
-			}
-		}
-
-		protected override void UnbindViewModel ()
-		{
-			if (Command != null) {
-				Command.CanExecuteChanged -= HandleCanExecuteChanged;
-			}
-			base.UnbindViewModel ();
-		}
-
-		void UpdateHScale ()
+		protected override void UpdateView ()
 		{
 			hScale.SetRange (min, max);
 			hScale.SetIncrements (step, page);
 			hScale.Sensitive = Command.CanExecute ();
 		}
 
-		void HandleCanExecuteChanged (object sender, EventArgs args)
+		protected override void HandleCanExecuteChanged (object sender, EventArgs args)
 		{
-			UpdateHScale ();
+			hScale.Sensitive = Command.CanExecute ();
 		}
 
 		void HandleValueChanged (object sender, EventArgs args)
