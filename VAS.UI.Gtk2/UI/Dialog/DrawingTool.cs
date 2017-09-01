@@ -16,7 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Gtk;
 using VAS.Core;
@@ -33,6 +33,7 @@ using VAS.Services.State;
 using VAS.Services.ViewModel;
 using VAS.UI.Component;
 using VAS.UI.Helpers;
+using VAS.UI.Helpers.Bindings;
 using Color = VAS.Core.Common.Color;
 using Drawable = VAS.Core.Store.Drawables.Drawable;
 using Image = VAS.Core.Common.Image;
@@ -45,6 +46,10 @@ namespace VAS.UI.Dialog
 	{
 		const int MOVE_OFFSET = 5;
 		const int TOOL_HEIGHT = 24;
+		const double MIN_ZOOM = 1;
+		const double MAX_ZOOM = 4;
+		const double ZOOM_STEP = 0.2;
+		const double ZOOM_PAGE = 0.2;
 
 		readonly Blackboard blackboard;
 		TimelineEvent play;
@@ -57,6 +62,7 @@ namespace VAS.UI.Dialog
 		bool ignoreChanges;
 		DrawingToolVM viewModel;
 		RadioButton lastButton;
+		BindingContext ctx;
 
 		public DrawingTool ()
 		{
@@ -142,13 +148,10 @@ namespace VAS.UI.Dialog
 			linesizespinbutton.Value = 2;
 
 			zoomscale.CanFocus = false;
-			zoomscale.SetRange (1, 4);
-			zoomscale.SetIncrements (0.2, 0.2);
-			zoomscale.ValueChanged += HandleZoomValueChanged;
 			hscrollbar.ValueChanged += HandleScrollValueChanged;
 			wscrollbar.ValueChanged += HandleScrollValueChanged;
 			hscrollbar.Visible = wscrollbar.Visible = false;
-			zoomscale.Value = 1;
+
 
 			Misc.SetFocus (this, false);
 
@@ -172,6 +175,8 @@ namespace VAS.UI.Dialog
 			var clearCommand = new Command (Clear);
 			clearCommand.Icon = App.Current.ResourcesLocator.LoadIcon ("vas-delete", App.Current.Style.IconSmallWidth);
 			clearbutton.BindManually (clearCommand);
+
+			Bind ();
 		}
 
 		public DrawingTool (Window parent) : this ()
@@ -205,6 +210,8 @@ namespace VAS.UI.Dialog
 			// Dispose things here
 			blackboard.Dispose ();
 			ViewModel = null;
+			ctx?.Dispose ();
+			ctx = null;
 
 			base.OnDestroyed ();
 
@@ -217,14 +224,19 @@ namespace VAS.UI.Dialog
 				return viewModel;
 			}
 			set {
+				if (viewModel != null) {
+					viewModel.PropertyChanged -= HandleViewModelPropertyChanged;
+				}
 				viewModel = value;
 				if (viewModel != null) {
+					viewModel.PropertyChanged += HandleViewModelPropertyChanged;
 					if (viewModel.TimelineEvent != null) {
 						LoadPlay (viewModel.TimelineEvent, viewModel.Frame, viewModel.Drawing, viewModel.CameraConfig);
 					} else {
 						LoadFrame (viewModel.Frame);
 					}
 				}
+				ctx.UpdateViewModel (viewModel);
 			}
 		}
 
@@ -389,7 +401,10 @@ namespace VAS.UI.Dialog
 			blackboard.Background = frame;
 			savetoprojectbutton.Visible = true;
 			blackboard.Drawing = drawing;
-			blackboard.RegionOfInterest = drawing.RegionOfInterest;
+			//FIXME: this needs to show a warning message?
+			if (App.Current.LicenseLimitationsService.CanExecute (VASFeature.OpenZoom.ToString ())) {
+				blackboard.RegionOfInterest = drawing.RegionOfInterest;
+			}
 			UpdateLineWidth ();
 			UpdateTextSize ();
 		}
@@ -403,6 +418,13 @@ namespace VAS.UI.Dialog
 			savetoprojectbutton.Visible = false;
 			UpdateLineWidth ();
 			UpdateTextSize ();
+		}
+
+		void Bind()
+		{
+			ctx = new BindingContext ();
+			ctx.Add (zoomscale.Bind (vm => ((DrawingToolVM)vm).SetZoomCommand, MIN_ZOOM, MIN_ZOOM,
+			                         MAX_ZOOM, ZOOM_STEP, ZOOM_PAGE));
 		}
 
 		int ScalledSize (int size)
@@ -755,16 +777,6 @@ namespace VAS.UI.Dialog
 			blackboard.RegionOfInterest = blackboard.RegionOfInterest;
 		}
 
-		void HandleZoomValueChanged (object sender, EventArgs e)
-		{
-			zoomlabel.Text = string.Format ("{0,3}%", (int)(zoomscale.Value * 100));
-
-			if (ignoreChanges)
-				return;
-
-			blackboard.Zoom (zoomscale.Value);
-		}
-
 		DrawTool GetTool (RadioButton sender)
 		{
 			DrawTool tool = DrawTool.None;
@@ -798,6 +810,16 @@ namespace VAS.UI.Dialog
 				tool = DrawTool.Zoom;
 			}
 			return tool;
+		}
+
+		void HandleViewModelPropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof(ViewModel.ZoomLevel)) {
+				zoomlabel.Text = string.Format ("{0,3}%", (int)(ViewModel.ZoomLevel * 100));
+				if (!ignoreChanges) {
+					blackboard.ZoomCommand.Execute (zoomscale.Value);
+				}
+			}
 		}
 	}
 }

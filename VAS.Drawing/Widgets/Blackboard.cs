@@ -21,6 +21,7 @@ using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Handlers;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
 
@@ -45,6 +46,7 @@ namespace VAS.Drawing.Widgets
 		bool handdrawing, inObjectCreation, inZooming;
 		double currentZoom;
 		List<Selection> copiedItems;
+		Point centerZoom;
 
 		public Blackboard (IWidget widget) : base (widget)
 		{
@@ -61,6 +63,7 @@ namespace VAS.Drawing.Widgets
 			if (App.Current.SupportsZoom) {
 				MaxZoom = 4;
 			}
+			ZoomCommand = new LimitationCommand<double> (VASFeature.Zoom.ToString (), Zoom);
 		}
 
 		public Blackboard () : this (null)
@@ -74,6 +77,14 @@ namespace VAS.Drawing.Widgets
 				backbuffer.Dispose ();
 			}
 			backbuffer = null;
+		}
+
+		/// <summary>
+		/// Gets the zoom command.
+		/// </summary>
+		/// <value>The zoom command.</value>
+		public LimitationCommand<double> ZoomCommand {
+			get;
 		}
 
 		/// <summary>
@@ -299,8 +310,7 @@ namespace VAS.Drawing.Widgets
 		/// Zoom into the image and center it in the click.
 		/// </summary>
 		/// <param name="zoom">New zoom value.</param>
-		/// <param name="center">Mew image center.</param>
-		public void Zoom (double zoom, Point center = null)
+		void Zoom (double zoom)
 		{
 			Area roi;
 			double width, height;
@@ -317,12 +327,13 @@ namespace VAS.Drawing.Widgets
 			width = Background.Width / zoom;
 			height = Background.Height / zoom;
 
-			if (center == null) {
+			if (centerZoom == null) {
 				roi.Start.X = roi.Start.X + roi.Width / 2 - width / 2;
 				roi.Start.Y = roi.Start.Y + roi.Height / 2 - height / 2;
 			} else {
-				roi.Start.X = center.X - width / 2;
-				roi.Start.Y = center.Y - height / 2;
+				roi.Start.X = centerZoom.X - width / 2;
+				roi.Start.Y = centerZoom.Y - height / 2;
+				centerZoom = null;
 			}
 			roi.Width = width;
 			roi.Height = height;
@@ -450,7 +461,10 @@ namespace VAS.Drawing.Widgets
 					}
 					newZoom = Math.Max (newZoom, MinZoom);
 					newZoom = Math.Min (newZoom, MaxZoom);
-					Zoom (newZoom, MoveStart);
+					//FIXME: When Commands accepts more than one arguments it should pass MoveStart
+					// to the list of arguments and remove centerZoom
+					centerZoom = MoveStart;
+					ZoomCommand.Execute (newZoom);
 					break;
 				}
 			}

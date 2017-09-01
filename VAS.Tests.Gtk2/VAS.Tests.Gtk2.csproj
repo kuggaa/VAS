@@ -36,6 +36,7 @@
     <Compile Include="TestBinding.cs" />
     <Compile Include="TestToggleButtonBinding.cs" />
     <Compile Include="Helpers\TestCommandExtensions.cs" />
+    <Compile Include="TestHScaleCommandBinding.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="paket.references" />

@@ -63,6 +63,7 @@
     <Compile Include="Bindings\SpinnerBinding.cs" />
     <Compile Include="Bindings\ComboBoxBinding.cs" />
     <Compile Include="ImageView.cs" />
+    <Compile Include="Bindings\HScaleCommandBinding.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
