@@ -38,7 +38,7 @@ namespace VAS.UI.Helpers.Bindings
 		protected override void BindView ()
 		{
 			button.Toggled += HandleToggled;
-			UpdateButton ();
+			UpdateView ();
 		}
 
 		protected override void UnbindView ()
@@ -46,25 +46,7 @@ namespace VAS.UI.Helpers.Bindings
 			button.Toggled -= HandleToggled;
 		}
 
-		protected override void BindViewModel ()
-		{
-			UnbindViewModel ();
-			base.BindViewModel ();
-			if (Command != null) {
-				UpdateButton ();
-				Command.CanExecuteChanged += HandleCanExecuteChanged;
-			}
-		}
-
-		protected override void UnbindViewModel ()
-		{
-			if (Command != null) {
-				Command.CanExecuteChanged -= HandleCanExecuteChanged;
-			}
-			base.UnbindViewModel ();
-		}
-
-		void UpdateButton ()
+		protected override void UpdateView ()
 		{
 			Image icon;
 
@@ -78,7 +60,7 @@ namespace VAS.UI.Helpers.Bindings
 			button.Sensitive = Command.CanExecute ();
 		}
 
-		void HandleCanExecuteChanged (object sender, EventArgs args)
+		protected override void HandleCanExecuteChanged (object sender, EventArgs args)
 		{
 			button.Sensitive = Command.CanExecute ();
 		}
@@ -96,7 +78,7 @@ namespace VAS.UI.Helpers.Bindings
 					silenceToggledEvent = false;
 				}
 
-				UpdateButton ();
+				UpdateView ();
 			}
 		}
 	}

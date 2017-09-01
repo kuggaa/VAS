@@ -50,6 +50,14 @@ namespace VAS.Tests.MVVMC
 		{
 		}
 
+		protected override void HandleCanExecuteChanged (object sender, EventArgs args)
+		{
+		}
+
+		protected override void UpdateView ()
+		{
+		}
+
 		public void Trigger ()
 		{
 			Command.Execute (Parameter);

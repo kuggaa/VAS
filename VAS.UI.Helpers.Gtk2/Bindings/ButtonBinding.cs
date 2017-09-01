@@ -43,7 +43,7 @@ namespace VAS.UI.Helpers.Bindings
 		protected override void BindView ()
 		{
 			button.Clicked += HandleClicked;
-			UpdateButton ();
+			UpdateView ();
 		}
 
 		protected override void UnbindView ()
@@ -51,25 +51,7 @@ namespace VAS.UI.Helpers.Bindings
 			button.Clicked -= HandleClicked;
 		}
 
-		protected override void BindViewModel ()
-		{
-			UnbindViewModel ();
-			base.BindViewModel ();
-			if (Command != null) {
-				UpdateButton ();
-				Command.CanExecuteChanged += HandleCanExecuteChanged;
-			}
-		}
-
-		protected override void UnbindViewModel ()
-		{
-			if (Command != null) {
-				Command.CanExecuteChanged -= HandleCanExecuteChanged;
-			}
-			base.UnbindViewModel ();
-		}
-
-		void UpdateButton ()
+		protected override void UpdateView ()
 		{
 			button.Configure (image ?? Command.Icon,
 							  text ?? Command.Text,
@@ -77,7 +59,7 @@ namespace VAS.UI.Helpers.Bindings
 			button.Sensitive = Command.CanExecute ();
 		}
 
-		void HandleCanExecuteChanged (object sender, EventArgs args)
+		protected override void HandleCanExecuteChanged (object sender, EventArgs args)
 		{
 			button.Sensitive = Command.CanExecute ();
 		}
