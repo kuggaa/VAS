@@ -49,12 +49,12 @@ namespace VAS.Services.Controller
 		string confirmDeletePlaylistElements =
 			Catalog.GetString ("Do you really want to delete the selected playlist element/s");
 
-		protected VideoPlayerVM PlayerVM {
+		public PlaylistCollectionVM ViewModel {
 			get;
 			set;
 		}
- 
-		public PlaylistCollectionVM ViewModel {
+
+		public VideoPlayerVM PlayerVM {
 			get;
 			set;
 		}
