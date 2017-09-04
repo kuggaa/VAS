@@ -122,6 +122,7 @@ namespace VAS.Core.Common
 			if (mode == ScaleMode.Keep) {
 				outWidth = inWidth;
 				outHeight = inHeight;
+				return;
 			}
 
 			outWidth = reqOutWidth;
