@@ -37,14 +37,24 @@ using VAS.Services.State;
 
 namespace VAS.Services.Controller
 {
-	public class PlaylistController : ControllerBase<PlaylistCollectionVM>
+	/// <summary>
+	/// Playlist controller.
+	/// </summary>
+	//FIXME: Until Presentations is migrated to MVVM, this can't inherit ControllerBase<PlaylistCollectionVM> easily.
+	//		 Meanwhile in Presentations the ViewModel property is not set
+	public class PlaylistController : ControllerBase//<PlaylistCollectionVM>
 	{
 		string confirmDeletePlaylist =
 			Catalog.GetString ("Do you really want to delete the selected playlist/s?");
 		string confirmDeletePlaylistElements =
 			Catalog.GetString ("Do you really want to delete the selected playlist element/s");
 
-		protected VideoPlayerVM PlayerVM {
+		public PlaylistCollectionVM ViewModel {
+			get;
+			set;
+		}
+
+		public VideoPlayerVM PlayerVM {
 			get;
 			set;
 		}
@@ -64,6 +74,9 @@ namespace VAS.Services.Controller
 		public override async Task Start ()
 		{
 			await base.Start ();
+			if (ViewModel != null) {
+				ConnectEvents ();
+			}
 			App.Current.EventsBroker.SubscribeAsync<AddPlaylistElementEvent> (HandleAddPlaylistElement);
 			App.Current.EventsBroker.SubscribeAsync<CreateEvent<Playlist>> (HandleNewPlaylist);
 			App.Current.EventsBroker.SubscribeAsync<DeletePlaylistEvent> (HandleDeletePlaylist);
@@ -82,6 +95,9 @@ namespace VAS.Services.Controller
 		public override async Task Stop ()
 		{
 			await base.Stop ();
+			if (ViewModel != null) {
+				DisconnectEvents ();
+			}
 			App.Current.EventsBroker.UnsubscribeAsync<AddPlaylistElementEvent> (HandleAddPlaylistElement);
 			App.Current.EventsBroker.UnsubscribeAsync<CreateEvent<Playlist>> (HandleNewPlaylist);
 			App.Current.EventsBroker.UnsubscribeAsync<DeletePlaylistEvent> (HandleDeletePlaylist);
@@ -358,16 +374,28 @@ namespace VAS.Services.Controller
 			e.ElementsToAdd.Key.ViewModels.InsertRange (e.Index, e.ElementsToAdd.Value);
 			Save (e.ElementsToAdd.Key.Model, true);
 		}
-
-		protected override void HandleViewModelChanged (object sender, PropertyChangedEventArgs e)
+		#region FIXME
+		//FIXME: Copied from ControllerBase<T>, we should change it when migrating to MVVM
+		protected override void ConnectEvents ()
 		{
-			base.HandleViewModelChanged (sender, e);
+			ViewModel.PropertyChanged += HandleViewModelChanged;
+		}
+
+		protected override void DisconnectEvents ()
+		{
+			ViewModel.PropertyChanged -= HandleViewModelChanged;
+		}
+
+
+		protected virtual void HandleViewModelChanged (object sender, PropertyChangedEventArgs e)
+		{
 			if (e.PropertyName == "Selection") {
 				ViewModel.DeleteCommand.EmitCanExecuteChanged ();
 				ViewModel.PlaylistMenu.UpdateCanExecute ();
 				ViewModel.PlaylistElementMenu.UpdateCanExecute ();
 			}
 		}
+		#endregion
 	}
 }
 
