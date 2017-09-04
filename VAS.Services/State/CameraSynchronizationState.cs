@@ -34,8 +34,8 @@ namespace VAS.Services.State
 		{
 			ViewModel = new CameraSynchronizationVM ();
 			ViewModel.VideoPlayer = new VideoPlayerVM ();
-			ViewModel.Project = data as ProjectVM;
-			ViewModel.ResynchronizeEvents = true;
+			ViewModel.Project = data.ProjectVM as ProjectVM;
+			ViewModel.ResynchronizeEvents = data.ResynchronizeEvents;
 			ViewModel.FixedPeriods = ViewModel.Project.Model.IsFakeCapture;
 		}
 
