@@ -223,7 +223,7 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
-		public void TestSave_ResyncEvents ()
+		public void CameraSynchronizationController_SynchronizeEventsWithPeriods_EventWithOffset ()
 		{
 			Start ();
 			camSyncVM.SynchronizeEventsWithPeriods = true;
@@ -239,6 +239,25 @@ namespace VAS.Tests.Services
 			camSyncVM.Save.Execute ();
 
 			Assert.AreEqual (new Time (200), tlEvent.Start);
+		}
+
+		[Test]
+		public void CameraSynchronizationController_DoNotSynchronizeEventsWithPeriods_EventWithNoOffset ()
+		{
+			Start ();
+			camSyncVM.SynchronizeEventsWithPeriods = false;
+
+			var firstNode = camSyncVM.InitialPeriods.First ().Nodes.First ();
+			// Create a new event
+			var tlEvent = projectVM.Model.CreateEvent (projectVM.EventTypes.First ().Model, firstNode.Start,
+													   firstNode.Start, firstNode.Start + 200, null, 0);
+			projectVM.Timeline.Model.Add (tlEvent);
+			firstNode.Start += 200;
+			firstNode.Stop += 200;
+			// Offset the period by 20
+			camSyncVM.Save.Execute ();
+
+			Assert.AreEqual (new Time (000), tlEvent.Start);
 		}
 	}
 }
