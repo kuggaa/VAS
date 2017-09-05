@@ -226,7 +226,7 @@ namespace VAS.Tests.Services
 		public void TestSave_ResyncEvents ()
 		{
 			Start ();
-			camSyncVM.ResynchronizeEvents = true;
+			camSyncVM.SynchronizeEventsWithPeriods = true;
 
 			var firstNode = camSyncVM.InitialPeriods.First ().Nodes.First ();
 			// Create a new event
