@@ -34,8 +34,8 @@ namespace VAS.Services.State
 		{
 			ViewModel = new CameraSynchronizationVM ();
 			ViewModel.VideoPlayer = new VideoPlayerVM ();
-			ViewModel.Project = data as ProjectVM;
-			ViewModel.ResynchronizeEvents = true;
+			ViewModel.Project = data.ProjectVM as ProjectVM;
+			ViewModel.SynchronizeEventsWithPeriods = data.SynchronizeEventsWithPeriods;
 			ViewModel.FixedPeriods = ViewModel.Project.Model.IsFakeCapture;
 		}
 
@@ -55,11 +55,6 @@ namespace VAS.Services.State
 			get {
 				return NAME;
 			}
-		}
-		protected override void CreateViewModel (dynamic data)
-		{
-			base.CreateViewModel ((object)data);
-			ViewModel.ResynchronizeEvents = false;
 		}
 	}
 }
