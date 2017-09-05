@@ -74,8 +74,10 @@ namespace VAS.Services.Controller
 			if (VideoPlayer != null) {
 				VideoPlayer.PropertyChanged += HandlePlayerVMPropertyChanged;
 			}
-			HandleFiltersChanged ();
-			Timeline.Filters.PropertyChanged += HandlePropertyChanged;
+			if (Timeline?.Filters != null) {
+				HandleFiltersChanged ();
+				Timeline.Filters.PropertyChanged += HandlePropertyChanged;
+			}
 			if (Project?.Periods != null) {
 				Project.Periods.PropertyChanged += HandlePropertyChanged;
 			}
@@ -99,8 +101,12 @@ namespace VAS.Services.Controller
 
 			App.Current.EventsBroker.Unsubscribe<EventLoadedEvent> (HandleEventLoadedEvent);
 			App.Current.EventsBroker.Unsubscribe<PlaylistElementLoadedEvent> (HandlePlaylistElementLoaded);
-			VideoPlayer.PropertyChanged -= HandlePlayerVMPropertyChanged;
-			Timeline.Filters.PropertyChanged -= HandlePropertyChanged;
+			if (VideoPlayer != null) {
+				VideoPlayer.PropertyChanged -= HandlePlayerVMPropertyChanged;
+			}
+			if (Timeline?.Filters != null) {
+				Timeline.Filters.PropertyChanged -= HandlePropertyChanged;
+			}
 			if (Project?.Periods != null) {
 				Project.Periods.PropertyChanged -= HandlePropertyChanged;
 			}
