@@ -39,6 +39,7 @@ namespace VAS.UI.Panel
 		const string UNDECIDED_COLOR = "#EEEEEE";
 		const int HEADER_LABEL_SIZE = 20;
 		const int FEATURE_HEADER_LABEL_SIZE = 16;
+		const int CALL_TO_ACTION_BUTTON_TEXT_SIZE = 16;
 		const int FEATURE_LABEL_SIZE = 14;
 		const int APPLY_SIZE = 13;
 		const int UNDECIDED_LABEL_SIZE = 10;
@@ -63,7 +64,7 @@ namespace VAS.UI.Panel
 			upgradeButton2.Name = StyleConf.ButtonCallToActionRounded;
 			upgradeButton2.WidthRequest = 240;
 			upgradeButton2.HeightRequest = 40;
-			upgradeButton2.ModifyFont (FontDescription.FromString ($"{App.Current.Style.Font} bold {FEATURE_LABEL_SIZE}px"));
+			upgradeButton2.Settings.FontName = $"{App.Current.Style.Font} bold {CALL_TO_ACTION_BUTTON_TEXT_SIZE}px";
 			upgradeButton2.BorderWidth = 0;
 
 			undecidedlbl = new Label ();
