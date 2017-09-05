@@ -85,7 +85,7 @@ namespace VAS.Services.ViewModel
 		/// in fake live projects, where events needs to be resyncrhonize to the new periods boundaries.
 		/// </summary>
 		/// <value><c>true</c> if resynchronize events; otherwise, <c>false</c>.</value>
-		public bool ResynchronizeEvents {
+		public bool SynchronizeEventsWithPeriods {
 			get;
 			set;
 		}
