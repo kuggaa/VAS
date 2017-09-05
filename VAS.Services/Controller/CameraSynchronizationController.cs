@@ -101,7 +101,7 @@ namespace VAS.Services.Controller
 				}
 			}
 
-			if (cameraSynchronizationVM.ResynchronizeEvents) {
+			if (cameraSynchronizationVM.SynchronizeEventsWithPeriods) {
 				projectVM.Model.ResyncEvents (cameraSynchronizationVM.InitialPeriods);
 			}
 		}
