@@ -263,7 +263,7 @@ namespace VAS.Tests.Services
 			});
 
 			Assert.AreEqual (currentCount + 1, projectVM.Timeline.FullTimeline.Count ());
-			Assert.AreSame (ev, projectVM.Timeline.FullTimeline.ViewModels [currentCount].Model);
+			Assert.AreSame (ev, projectVM.Timeline.FullTimeline.Model [currentCount]);
 		}
 
 		[Test]
