@@ -48,6 +48,7 @@ namespace VAS.Tests.Core.Serialization
 		public Guid ParentID { get; set; }
 
 		public int Version { get; set; }
+		public DateTime CreationDate { get; set; }
 	}
 
 	public class TestObject1: TestObjectBase

@@ -71,16 +71,17 @@ namespace VAS.Core.ViewModel
 				Model.Clear ();
 			}
 			Filters.Dispose ();
-			Filters = null;
 			EventTypesTimeline.ViewModels.CollectionChanged -= HandleEventTypesCollectionChanged;
 			EventTypesTimeline.Dispose ();
-			EventTypesTimeline = null;
 			FullTimeline.ViewModels.CollectionChanged -= HandleTimelineCollectionChanged;
 			FullTimeline.Dispose ();
-			FullTimeline = null;
 			TeamsTimeline.Dispose ();
-			TeamsTimeline = null;
 
+			Model = null;
+			Filters = null;
+			EventTypesTimeline = null;
+			FullTimeline = null;
+			TeamsTimeline = null;
 		}
 
 		/// <summary>
@@ -89,7 +90,7 @@ namespace VAS.Core.ViewModel
 		/// <value>The edition command.</value>
 		public Command EditionCommand { get; set; }
 
-		public RangeObservableCollection<TimelineEvent> Model {
+		public new RangeObservableCollection<TimelineEvent> Model {
 			get {
 				return model;
 			}
@@ -103,7 +104,7 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets a collection ViewModel with all the events in the timeline.
 		/// </summary>
 		/// <value>The full timeline.</value>
-		public CollectionViewModel<TimelineEvent, TimelineEventVM> FullTimeline {
+		public LimitedCollectionViewModel<TimelineEvent, TimelineEventVM> FullTimeline {
 			get;
 			protected set;
 		}
@@ -252,9 +253,9 @@ namespace VAS.Core.ViewModel
 		/// <summary>
 		/// Creates the timeline view model with all the timeline events.
 		/// </summary>
-		protected virtual CollectionViewModel<TimelineEvent, TimelineEventVM> CreateFullTimeline ()
+		protected virtual LimitedCollectionViewModel<TimelineEvent, TimelineEventVM> CreateFullTimeline ()
 		{
-			return new CollectionViewModel<TimelineEvent, TimelineEventVM> ();
+			return new LimitedCollectionViewModel<TimelineEvent, TimelineEventVM> ();
 		}
 
 		/// <summary>
@@ -279,9 +280,7 @@ namespace VAS.Core.ViewModel
 					break;
 				}
 			case NotifyCollectionChangedAction.Reset: {
-					foreach (var viewModel in EventTypesTimeline.ViewModels) {
-						viewModel.ViewModels.Clear ();
-					}
+					ReplaceTimelineEvents (FullTimeline.ViewModels);
 					break;
 				}
 			}
@@ -328,11 +327,41 @@ namespace VAS.Core.ViewModel
 
 		void AddTimelineEventVM (TimelineEventVM viewModel)
 		{
-			if (!eventTypeToTimeline.ContainsKey (viewModel.Model.EventType.Name)) {
-				EventTypesTimeline.ViewModels.Add (new EventTypeTimelineVM { Model = viewModel.Model.EventType });
-			}
-			eventTypeToTimeline [viewModel.Model.EventType.Name].ViewModels.Add (viewModel);
+			AddToEventTypesTimeline (viewModel);
 			AddToPlayersTimeline (viewModel);
+		}
+
+		void ReplaceTimelineEvents (IEnumerable<TimelineEventVM> viewModels)
+		{
+			ReplaceToEventTypesTimeline (viewModels);
+			ReplaceToPlayersTimeline (viewModels);
+		}
+
+		void AddToEventTypesTimeline (TimelineEventVM timelineEventVM)
+		{
+			if (!eventTypeToTimeline.ContainsKey (timelineEventVM.Model.EventType.Name)) {
+				EventTypesTimeline.ViewModels.Add (new EventTypeTimelineVM { Model = timelineEventVM.Model.EventType });
+			}
+			eventTypeToTimeline [timelineEventVM.Model.EventType.Name].ViewModels.Add (timelineEventVM);
+		}
+
+		void ReplaceToEventTypesTimeline (IEnumerable<TimelineEventVM> viewModels)
+		{
+			var groupVMs = viewModels.GroupBy (ev => ev.Model.EventType.Name);
+			foreach (var grouping in groupVMs) {
+				if (!eventTypeToTimeline.ContainsKey (grouping.Key)) {
+					EventTypesTimeline.ViewModels.Add (new EventTypeTimelineVM { Model = grouping.ToList () [0].Model.EventType });
+				}
+				var timelineEvents = eventTypeToTimeline [grouping.Key].ViewModels;
+				timelineEvents.RemoveRange (timelineEvents.Except (grouping));
+				timelineEvents.AddRange (grouping.Except (timelineEvents));
+			}
+			//Clear the Rest of EventTypeTimelines if necessary
+			foreach (var name in eventTypeToTimeline.Keys.ToList ().Except (groupVMs.Select (g => g.Key))) {
+				if (eventTypeToTimeline [name].ViewModels.Any ()) {
+					eventTypeToTimeline [name].ViewModels.Clear ();
+				}
+			}
 		}
 
 		void AddToPlayersTimeline (TimelineEventVM timelineEventVM)
@@ -344,6 +373,33 @@ namespace VAS.Core.ViewModel
 					continue;
 				}
 				playerToTimeline [player].ViewModels.Add (timelineEventVM);
+			}
+		}
+
+		void ReplaceToPlayersTimeline (IEnumerable<TimelineEventVM> viewModels)
+		{
+			Dictionary<Player, List<TimelineEventVM>> playerToEvent = new Dictionary<Player, List<TimelineEventVM>> ();
+			foreach (var timeline in viewModels) {
+				foreach (var player in timeline.Model.Players) {
+					if (!playerToEvent.ContainsKey (player)) {
+						playerToEvent.Add (player, new List<TimelineEventVM> {timeline});
+					} else {
+						playerToEvent [player].Add (timeline);
+					}
+				}
+			}
+
+			foreach (var player in playerToEvent) {
+				var timelineEvents = playerToTimeline [player.Key].ViewModels;
+				timelineEvents.RemoveRange (timelineEvents.Except (player.Value));
+				timelineEvents.AddRange (player.Value.Except (timelineEvents));
+			}
+
+			//Clear the Rest of PlayersTimeline if necessary
+			foreach (var player in playerToTimeline.Keys.ToList ().Except (playerToEvent.Keys.ToList ())) {
+				if (playerToTimeline [player].ViewModels.Any ()) {
+					playerToTimeline [player].ViewModels.Clear ();
+				}
 			}
 		}
 

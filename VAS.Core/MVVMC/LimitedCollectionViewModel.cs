@@ -22,6 +22,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using VAS.Core.Common;
+using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.License;
 using VAS.Core.Store;
@@ -34,10 +35,10 @@ namespace VAS.Core.MVVMC
 	/// </summary>
 	public class LimitedCollectionViewModel<TModel, TViewModel> : CollectionViewModel<TModel, TViewModel>
 		where TViewModel : IViewModel<TModel>, new()
-		where TModel : StorableBase
+		where TModel : IStorable
 	{
 		CountLimitationVM limitation;
-		bool notifying;
+		protected bool notifying;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:VAS.Core.MVVMC.LimitedCollectionViewModel`3"/> class.

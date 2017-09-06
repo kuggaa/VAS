@@ -39,6 +39,7 @@ namespace VAS.Core.Store
 		[NonSerialized]
 		IStorage storage;
 		ObservableCollection<CameraConfig> camerasConfig;
+		DateTime creationDate;
 
 		#region Constructors
 
@@ -52,6 +53,7 @@ namespace VAS.Core.Store
 			CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
 			Players = new RangeObservableCollection<Player> ();
 			Teams = new RangeObservableCollection<Team> ();
+			CreationDate = DateTime.UtcNow;
 		}
 
 		protected override void DisposeManagedResources ()
@@ -371,6 +373,20 @@ namespace VAS.Core.Store
 		public int Version {
 			get;
 			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the creation date. It's stored in order to have a sorting condition.
+		/// </summary>
+		/// <value>The creation date.</value>
+		[PropertyPreload]
+		public DateTime CreationDate {
+			get {
+				return creationDate;
+			}
+			set {
+				creationDate = value.ToUniversalTime ();
+			}
 		}
 
 		public string TagsDescription ()
