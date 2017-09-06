@@ -43,6 +43,7 @@ namespace VAS.Core.ViewModel
 		RangeObservableCollection<TimelineEvent> model;
 		Dictionary<string, EventTypeTimelineVM> eventTypeToTimeline;
 		Dictionary<Player, PlayerTimelineVM> playerToTimeline;
+		CountLimitationBarChartVM limitationChart;
 
 		public TimelineVM ()
 		{
@@ -97,6 +98,20 @@ namespace VAS.Core.ViewModel
 			set {
 				model = value;
 				FullTimeline.Model = value;
+			}
+		}
+
+		/// <summary>
+		/// ViewModel for the Bar chart used to display count limitations in the Limitation Widget
+		/// </summary>
+		public CountLimitationBarChartVM LimitationChart {
+			get {
+				return limitationChart;
+			}
+
+			set {
+				limitationChart = value;
+				FullTimeline.Limitation = limitationChart?.Limitation;
 			}
 		}
 
@@ -353,8 +368,7 @@ namespace VAS.Core.ViewModel
 					EventTypesTimeline.ViewModels.Add (new EventTypeTimelineVM { Model = grouping.ToList () [0].Model.EventType });
 				}
 				var timelineEvents = eventTypeToTimeline [grouping.Key].ViewModels;
-				timelineEvents.RemoveRange (timelineEvents.Except (grouping));
-				timelineEvents.AddRange (grouping.Except (timelineEvents));
+				timelineEvents.Replace (grouping);
 			}
 			//Clear the Rest of EventTypeTimelines if necessary
 			foreach (var name in eventTypeToTimeline.Keys.ToList ().Except (groupVMs.Select (g => g.Key))) {
@@ -391,8 +405,7 @@ namespace VAS.Core.ViewModel
 
 			foreach (var player in playerToEvent) {
 				var timelineEvents = playerToTimeline [player.Key].ViewModels;
-				timelineEvents.RemoveRange (timelineEvents.Except (player.Value));
-				timelineEvents.AddRange (player.Value.Except (timelineEvents));
+				timelineEvents.Replace (player.Value);
 			}
 
 			//Clear the Rest of PlayersTimeline if necessary
