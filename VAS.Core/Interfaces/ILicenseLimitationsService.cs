@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using VAS.Core.Common;
 using VAS.Core.License;
 using VAS.Core.MVVMC;
 using VAS.Core.ViewModel;
@@ -79,6 +80,9 @@ namespace VAS.Core.Interfaces
 		/// </summary>
 		/// <returns>The bar chart vm.</returns>
 		/// <param name="limitationName">Limitation name.</param>
-		CountLimitationBarChartVM CreateBarChartVM (string limitationName);
+		/// <param name="showOnRemaining">if set, shows the LimitationWidget when Remaining is
+		/// equal or less showOnRemaining</param>
+		CountLimitationBarChartVM CreateBarChartVM (string limitationName, int showOnRemaining = -1,
+		                                           Color backgroundColor = null);
 	}
 }
