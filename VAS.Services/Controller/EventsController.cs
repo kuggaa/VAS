@@ -65,7 +65,7 @@ namespace VAS.Services.Controller
 
 			App.Current.EventsBroker.Subscribe<NewEventEvent> (HandleNewEvent);
 			App.Current.EventsBroker.Subscribe<EventsDeletedEvent> (HandleDeleteEvents);
-			App.Current.EventsBroker.Subscribe<NewDashboardEvent> (HandleNewDashboardEvent);
+			App.Current.EventsBroker.SubscribeAsync<NewDashboardEvent> (HandleNewDashboardEvent);
 			App.Current.EventsBroker.Subscribe<MoveToEventTypeEvent> (HandleMoveToEventType);
 			App.Current.EventsBroker.Subscribe<DuplicateEventsEvent> (HandleDuplicateEvents);
 
@@ -95,7 +95,7 @@ namespace VAS.Services.Controller
 
 			App.Current.EventsBroker.Unsubscribe<NewEventEvent> (HandleNewEvent);
 			App.Current.EventsBroker.Unsubscribe<EventsDeletedEvent> (HandleDeleteEvents);
-			App.Current.EventsBroker.Unsubscribe<NewDashboardEvent> (HandleNewDashboardEvent);
+			App.Current.EventsBroker.UnsubscribeAsync<NewDashboardEvent> (HandleNewDashboardEvent);
 			App.Current.EventsBroker.Unsubscribe<MoveToEventTypeEvent> (HandleMoveToEventType);
 			App.Current.EventsBroker.Unsubscribe<DuplicateEventsEvent> (HandleDuplicateEvents);
 
@@ -134,8 +134,23 @@ namespace VAS.Services.Controller
 		{
 		}
 
+		protected bool CheckTimelineEventsLimitation ()
+		{
+			bool limitation = false;
+			var eventLimitation = VASCountLimitedObjects.TimelineEvents.ToString ();
+			if (!App.Current.LicenseLimitationsService.CanExecute (eventLimitation))
+			{
+				App.Current.LicenseLimitationsService.MoveToUpgradeDialog (eventLimitation);
+				limitation = true;
+			}
+			return limitation;
+		}
+
 		void HandleNewEvent (NewEventEvent e)
 		{
+			if (CheckTimelineEventsLimitation ()) {
+				return;
+			}
 			if (Project == null) {
 				return;
 			}
@@ -161,8 +176,11 @@ namespace VAS.Services.Controller
 			AddNewPlay (play);
 		}
 
-		async void HandleNewDashboardEvent (NewDashboardEvent e)
+		async Task HandleNewDashboardEvent (NewDashboardEvent e)
 		{
+			if (CheckTimelineEventsLimitation()) {
+				return;
+			}
 			if (Project == null)
 				return;
 
@@ -214,7 +232,6 @@ namespace VAS.Services.Controller
 				// Remove all tags from the previous event type but keep global tags
 				newEvent.Tags.RemoveAll (t => (evt.EventType as AnalysisEventType).Tags.Contains (t));
 				Project.Model.AddEvent (newEvent);
-				App.Current.EventsBroker.Publish (new EventCreatedEvent { TimelineEvent = newEvent });
 			}
 			DeletePlays (newEvents.ToList (), false);
 			Save (Project);
@@ -224,6 +241,9 @@ namespace VAS.Services.Controller
 		{
 			foreach (var play in e.TimelineEvents) {
 				var copy = play.Clone ();
+				if (CheckTimelineEventsLimitation ()) {
+					return;
+				}
 				Project.Model.AddEvent (copy);
 				App.Current.EventsBroker.Publish (new EventCreatedEvent { TimelineEvent = copy });
 			}
