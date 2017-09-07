@@ -191,7 +191,7 @@ namespace VAS.UI.Common
 				}
 			}
 			foreach (var selections in selected) {
-				selections.Key.SelectionReplace (selections.Value);
+				selections.Key.Selection.Replace (selections.Value);
 			}
 
 			if (!selected.Any ()) {

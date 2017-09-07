@@ -106,9 +106,14 @@ namespace VAS.Core.Common
 		/// <param name="items">Items to replace</param>
 		public void Replace (IEnumerable<T> items)
 		{
+			var list = items?.ToList();
+			if (Items.SequenceEqualNoOrder (list)) {
+				return;
+			}
+
 			Items.Clear ();
-			if (items != null) {
-				foreach (var item in items) {
+			if (list != null) {
+				foreach (var item in list) {
 					Items.Add (item);
 				}
 			}

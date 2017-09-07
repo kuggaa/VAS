@@ -525,7 +525,7 @@ namespace VAS.UI.Common
 					selected.Add (selectedViewModel);
 				}
 			}
-			ViewModel.SelectionReplace (selected);
+			ViewModel.Selection.Replace (selected);
 		}
 
 		protected virtual void HandleViewModelPropertyChanged (object sender, PropertyChangedEventArgs e)
