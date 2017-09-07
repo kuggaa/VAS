@@ -67,10 +67,24 @@ namespace VAS.Tests.MVVMC
 			viewModel.Select (child1);
 			viewModel.PropertyChanged += (sender, e) => { count++; propName = e.PropertyName; };
 
-			viewModel.SelectionReplace (viewModel.ViewModels);
+			viewModel.Selection.Replace (viewModel.ViewModels);
 
 			Assert.AreEqual (1, count);
 			Assert.AreEqual ("Selection", propName);
+			Assert.AreSame (viewModel.Selection [0], child1);
+			Assert.AreSame (viewModel.Selection [1], child2);
+		}
+
+		[Test]
+		public void SelectionReplace_Samelist_DoNotReplace ()
+		{
+			int count = 0;
+			viewModel.Selection.Replace (viewModel.ViewModels);
+			viewModel.PropertyChanged += (sender, e) => count++;
+
+			viewModel.Selection.Replace (viewModel.ViewModels);
+
+			Assert.AreEqual (0, count);
 			Assert.AreSame (viewModel.Selection [0], child1);
 			Assert.AreSame (viewModel.Selection [1], child2);
 		}
@@ -83,7 +97,7 @@ namespace VAS.Tests.MVVMC
 			viewModel.Select (child1);
 			viewModel.PropertyChanged += (sender, e) => { count++; propName = e.PropertyName; };
 
-			viewModel.SelectionReplace (null);
+			viewModel.Selection.Replace (null);
 
 			Assert.AreEqual (1, count);
 			Assert.AreEqual ("Selection", propName);
