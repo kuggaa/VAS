@@ -497,6 +497,9 @@ namespace VAS.Core.Common
 
 			// FIXME: We should save these to an actual log file
 			Log.Warning (message ?? "Caught an exception", builder.ToString (), false);
+			App.Current?.KPIService?.TrackEvent ("LogException", new Dictionary<string, string>{
+				{"exception", builder.ToString ()}
+			});
 		}
 
 		#endregion
