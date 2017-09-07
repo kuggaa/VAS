@@ -109,7 +109,7 @@ namespace VAS.Tests.Core.ViewModel
 		public void DeleteButton_RemovedFromSelection ()
 		{
 			DashboardButtonVM button = dashboard.ViewModels [0];
-			dashboard.SelectionReplace (button.ToEnumerable ());
+			dashboard.Selection.Replace (button.ToEnumerable ());
 
 			dashboard.ViewModels.Remove (button);
 
