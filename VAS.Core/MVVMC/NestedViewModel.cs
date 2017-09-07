@@ -127,15 +127,6 @@ namespace VAS.Core.MVVMC
 		}
 
 		/// <summary>
-		/// Replace the current selection with a new one.
-		/// </summary>
-		/// <param name="selection">Selection.</param>
-		public void SelectionReplace (IEnumerable<VMChilds> selection)
-		{
-			Selection.Replace (selection);
-		}
-
-		/// <summary>
 		/// Gets the Interface INotifyCollectionChanged of the Child ViewModels
 		/// </summary>
 		/// <returns>The Collection as a INotifyCollectionChanged</returns>
