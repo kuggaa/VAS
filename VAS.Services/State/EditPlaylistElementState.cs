@@ -33,6 +33,7 @@ namespace VAS.Services.State
 
 		protected override void CreateViewModel (dynamic data)
 		{
+			ViewModelOwner = false;
 			ViewModel = data.PlaylistElement;
 		}
 	}
