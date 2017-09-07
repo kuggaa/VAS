@@ -52,8 +52,6 @@ namespace VAS.Core.Interfaces.MVVMC
 		RangeObservableCollection<VMChilds> ViewModels { get; }
 
 		RangeObservableCollection<VMChilds> Selection { get; }
-
-		void SelectionReplace (IEnumerable<VMChilds> selection);
 	}
 
 	public interface IPreferencesVM : IViewModel
