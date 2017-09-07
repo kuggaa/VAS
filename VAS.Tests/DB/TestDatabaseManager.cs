@@ -17,6 +17,7 @@
 //
 using System.Collections.Generic;
 using System.IO;
+using Couchbase.Lite;
 using NUnit.Framework;
 using VAS.Core.Interfaces;
 using VAS.DB;
@@ -27,13 +28,14 @@ namespace VAS.Tests.DB
 	public class TestDatabaseManager
 	{
 		IStorageManager storageManager;
+		string dbPath;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			string tmpPath = Path.GetTempPath ();
 			string homePath = Path.Combine (tmpPath, "LongoMatch");
-			string dbPath = Path.Combine (homePath, "db");
+			dbPath = Path.Combine (homePath, "db");
 			if (Directory.Exists (dbPath)) {
 				Directory.Delete (dbPath, true);
 			}
@@ -42,6 +44,11 @@ namespace VAS.Tests.DB
 			Directory.CreateDirectory (homePath);
 			Directory.CreateDirectory (dbPath);
 
+		}
+
+		[SetUp]
+		public void SetUp ()
+		{
 			storageManager = new DummyCouchbaseManager (dbPath);
 		}
 
@@ -84,6 +91,13 @@ namespace VAS.Tests.DB
 			string name = "?name*";
 			var storage = storageManager.Add (name);
 			Assert.AreEqual ("db_name_", storage.Info.Name);
+		}
+
+		[Test ()]
+		public void CreateStorage_FailingManager_NullReturned ()
+		{
+			storageManager = new FailingCouchbaseManager (dbPath);
+			Assert.Throws<CouchbaseLiteException> (() => storageManager.Add ("test"));
 		}
 	}
 }

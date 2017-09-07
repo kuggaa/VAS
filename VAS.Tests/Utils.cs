@@ -63,6 +63,18 @@ namespace VAS.Tests
 		}
 	}
 
+	public class FailingCouchbaseManager : CouchbaseManager
+	{
+		public FailingCouchbaseManager (string dbDir) : base (dbDir)
+		{
+		}
+
+		protected override IStorage CreateStorage (string name)
+		{
+			throw new CouchbaseLiteException ("Dummy exception");
+		}
+	}
+
 	public class DummyCouchbaseStorage : CouchbaseStorage
 	{
 		public DummyCouchbaseStorage (Database db) : base (db)
