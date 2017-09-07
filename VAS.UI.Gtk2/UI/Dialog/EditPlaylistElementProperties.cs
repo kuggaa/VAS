@@ -86,8 +86,6 @@ namespace VAS.UI.Dialog
 
 			ctx.Dispose ();
 			ctx = null;
-			ViewModel.Dispose ();
-			ViewModel = null;
 			sizegroupLeft.Dispose ();
 			sizegroupLeft = null;
 			sizegroupRight.Dispose ();
