@@ -31,10 +31,12 @@ namespace VAS.Tests.Core.Common
 		int index;
 		NotifyCollectionChangedAction actionPerformed;
 		int counter;
+		bool notified = false;
 
 		[SetUp ()]
 		public void SetUp ()
 		{
+			notified = false;
 			counter = 0;
 			if (collection != null) {
 				collection.CollectionChanged -= CollectionChanged;
@@ -88,12 +90,23 @@ namespace VAS.Tests.Core.Common
 		[Test ()]
 		public void TestReplace ()
 		{
-			RangeObservableCollection<int> collectionToReplace = new RangeObservableCollection<int> (new List<int> { 5, 6, 7 });
+			List<int> collectionToReplace = new List<int> { 5, 6, 7 };
 			collection.Replace (collectionToReplace.Select ((arg) => IncrementCounter (arg)).Where (arg => arg >= 0));
 
 			Assert.AreEqual (3, counter);
 			Assert.AreEqual (collection, collectionToReplace);
 			Assert.AreEqual (actionPerformed, NotifyCollectionChangedAction.Reset);
+		}
+
+		[Test ()]
+		public void TestReplace_SameList_DoesNotNotify ()
+		{
+			List<int> collectionToReplace = new List<int> { 0, 1, 2, 3, 4 };
+			collection.Replace (collectionToReplace.Select ((arg) => IncrementCounter (arg)).Where (arg => arg >= 0));
+
+			Assert.AreEqual (5, counter);
+			Assert.AreEqual (collection, collectionToReplace);
+			Assert.IsFalse (notified);
 		}
 
 		void CollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
@@ -102,6 +115,7 @@ namespace VAS.Tests.Core.Common
 				index = e.NewStartingIndex;
 			}
 			actionPerformed = e.Action;
+			notified = true;
 		}
 
 		/// <summary>

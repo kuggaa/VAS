@@ -69,7 +69,7 @@ namespace VAS.Tests.Services
 			templatesController.ViewModel.ViewModels.Add (teamVM);
 
 			// Action
-			templatesController.ViewModel.SelectionReplace (templatesController.ViewModel.ViewModels);
+			templatesController.ViewModel.Selection.Replace (templatesController.ViewModel.ViewModels);
 
 			// Assert
 			Assert.IsNotNull (templatesController.ViewModel.LoadedTemplate,
@@ -88,7 +88,7 @@ namespace VAS.Tests.Services
 			TeamVM teamVM = new TeamVM { Model = team };
 
 			templatesController.ViewModel.ViewModels.Add (teamVM);
-			templatesController.ViewModel.SelectionReplace (templatesController.ViewModel.ViewModels);
+			templatesController.ViewModel.Selection.Replace (templatesController.ViewModel.ViewModels);
 
 			// Action
 			templatesController.ViewModel.Selection.Clear ();

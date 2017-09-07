@@ -114,7 +114,7 @@ namespace VAS.Tests.Drawing.Widgets
 		public void SelectionChanged_EmptySelection_SelectionSynced ()
 		{
 			DashboardButtonVM button = dashboard.ViewModels [0];
-			dashboard.SelectionReplace (button.ToEnumerable ());
+			dashboard.Selection.Replace (button.ToEnumerable ());
 
 			Assert.AreEqual (1, dashboardCanvas.Objects.OfType<DashboardButtonView> ().
 							 Count (b => b.Selected == true));
@@ -124,8 +124,8 @@ namespace VAS.Tests.Drawing.Widgets
 		public void SeletionChanged_PreviousSelection_SelectionSynced ()
 		{
 			DashboardButtonVM button = dashboard.ViewModels [1];
-			dashboard.SelectionReplace (button.ToEnumerable ());
-			dashboard.SelectionReplace (dashboard.ViewModels);
+			dashboard.Selection.Replace (button.ToEnumerable ());
+			dashboard.Selection.Replace (dashboard.ViewModels);
 
 			Assert.AreEqual (dashboard.ViewModels.Count,
 							 dashboardCanvas.Objects.OfType<DashboardButtonView> ().

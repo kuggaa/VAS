@@ -318,7 +318,7 @@ namespace VAS.Tests.Services
 			newPlaylist.Elements.Add (new PlaylistPlayElement (new TimelineEvent ()));
 			playlistCollectionVM.Model.Add (newPlaylist);
 
-			playlistCollectionVM.SelectionReplace (playlistCollectionVM.ViewModels);
+			playlistCollectionVM.Selection.Replace (playlistCollectionVM.ViewModels);
 			await App.Current.EventsBroker.Publish (new DeleteEvent<Playlist> ());
 
 			Assert.AreEqual (0, playlistCollectionVM.ViewModels.Count);
@@ -333,7 +333,7 @@ namespace VAS.Tests.Services
 			newPlaylist.Elements.Add (new PlaylistPlayElement (new TimelineEvent ()));
 			projectVM.Playlists.Model.Add (newPlaylist);
 
-			playlistCollectionVM.SelectionReplace (playlistCollectionVM.ViewModels);
+			playlistCollectionVM.Selection.Replace (playlistCollectionVM.ViewModels);
 			await App.Current.EventsBroker.Publish (new DeleteEvent<Playlist> ());
 
 			storageMock.Verify (s => s.Delete<Playlist> (It.IsAny<Playlist> ()), Times.Never ());
@@ -353,7 +353,7 @@ namespace VAS.Tests.Services
 				element1, element2, element3 });
 			playlistCollectionVM.Model.Add (newPlaylist);
 
-			playlistCollectionVM.ViewModels [0].SelectionReplace (new List<PlaylistElementVM> {
+			playlistCollectionVM.ViewModels [0].Selection.Replace (new List<PlaylistElementVM> {
 				playlistCollectionVM.ViewModels [0].ViewModels[0],
 				playlistCollectionVM.ViewModels [0].ViewModels[2]
 			});
@@ -588,7 +588,7 @@ namespace VAS.Tests.Services
 
 			Assert.IsFalse (editCommand.CanExecute ());
 
-			playlistCollectionVM.SelectionReplace (playlistCollectionVM.ViewModels);
+			playlistCollectionVM.Selection.Replace (playlistCollectionVM.ViewModels);
 
 			Assert.IsFalse (editCommand.CanExecute ());
 		}
@@ -617,7 +617,7 @@ namespace VAS.Tests.Services
 
 			Assert.IsFalse (renderCommand.CanExecute ());
 
-			playlistCollectionVM.SelectionReplace (playlistCollectionVM.ViewModels);
+			playlistCollectionVM.Selection.Replace (playlistCollectionVM.ViewModels);
 
 			Assert.IsFalse (renderCommand.CanExecute ());
 		}
@@ -645,7 +645,7 @@ namespace VAS.Tests.Services
 
 			Assert.IsFalse (insertVideoCommand.CanExecute ());
 
-			playlistCollectionVM.ViewModels [0].SelectionReplace (playlistCollectionVM.ViewModels [0].ViewModels);
+			playlistCollectionVM.ViewModels [0].Selection.Replace (playlistCollectionVM.ViewModels [0].ViewModels);
 
 			Assert.IsTrue (insertVideoCommand.CanExecute ());
 		}
@@ -673,7 +673,7 @@ namespace VAS.Tests.Services
 
 			Assert.IsFalse (insertImageCommand.CanExecute ());
 
-			playlistCollectionVM.ViewModels [0].SelectionReplace (playlistCollectionVM.ViewModels [0].ViewModels);
+			playlistCollectionVM.ViewModels [0].Selection.Replace (playlistCollectionVM.ViewModels [0].ViewModels);
 
 			Assert.IsTrue (insertImageCommand.CanExecute ());
 		}

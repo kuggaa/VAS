@@ -179,5 +179,57 @@ namespace VAS.Tests.Core.ViewModel
 
 			Assert.IsEmpty (viewModel.Selection);
 		}
+
+		[Test]
+		public void TemplateVM_SelectionReplaceDifferentList_DoReplace ()
+		{
+			int count = 0;
+			string propName = "";
+			var model = new DummyTeam {
+				Name = "dash",
+			};
+			model.List.Add (new Utils.PlayerDummy ());
+			model.List.Add (new Utils.PlayerDummy ());
+			model.List.Add (new Utils.PlayerDummy ());
+
+			var viewModel = new DummyTeamVM {
+				Model = model
+			};
+			viewModel.Select (viewModel.ViewModels.First ());
+			viewModel.PropertyChanged += (sender, e) => { count++; propName = e.PropertyName; };
+
+			viewModel.Selection.Replace (viewModel.ViewModels);
+
+			Assert.AreEqual (1, count);
+			Assert.AreEqual ("Collection_Selection", propName);
+			Assert.AreSame (viewModel.Selection [0], viewModel.ViewModels[0]);
+			Assert.AreSame (viewModel.Selection [1], viewModel.ViewModels[1]);
+			Assert.AreSame (viewModel.Selection [2], viewModel.ViewModels [2]);
+		}
+
+		[Test]
+		public void TemplateVM_SelectionReplaceWithSamelist_DoNotReplace ()
+		{
+			int count = 0;
+			var model = new DummyTeam {
+				Name = "dash",
+			};
+			model.List.Add (new Utils.PlayerDummy ());
+			model.List.Add (new Utils.PlayerDummy ());
+			model.List.Add (new Utils.PlayerDummy ());
+
+			var viewModel = new DummyTeamVM {
+				Model = model
+			};
+			viewModel.Selection.Replace (viewModel.ViewModels);
+			viewModel.PropertyChanged += (sender, e) => count++;
+
+			viewModel.Selection.Replace (viewModel.ViewModels);
+
+			Assert.AreEqual (0, count);
+			Assert.AreSame (viewModel.Selection [0], viewModel.ViewModels [0]);
+			Assert.AreSame (viewModel.Selection [1], viewModel.ViewModels [1]);
+			Assert.AreSame (viewModel.Selection [2], viewModel.ViewModels [2]);
+		}
 	}
 }
