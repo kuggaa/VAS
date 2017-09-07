@@ -345,7 +345,7 @@ namespace VAS.UI
 		/// <returns><c>true</c>, if task completion result was set, <c>false</c> otherwise.</returns>
 		bool SetTaskCompletionResult ()
 		{
-			tcs.SetResult (taskResult);
+			tcs.TrySetResult (taskResult);
 			return false;
 		}
 	}
