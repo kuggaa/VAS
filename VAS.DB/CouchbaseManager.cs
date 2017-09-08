@@ -147,15 +147,10 @@ namespace VAS.DB
 			if (check && manager.AllDatabaseNames.Contains (name)) {
 				throw new Exception ("A database with the same name already exists");
 			}
-			try {
-				Log.Information ("Creating new database " + name);
-				IStorage db = CreateStorage (name);
-				Databases.Add (db);
-				return db;
-			} catch (CouchbaseLiteException ex) {
-				Log.Exception (ex);
-				return null;
-			}
+			Log.Information ("Creating new database " + name);
+			IStorage db = CreateStorage (name);
+			Databases.Add (db);
+			return db;
 		}
 
 		/// <summary>

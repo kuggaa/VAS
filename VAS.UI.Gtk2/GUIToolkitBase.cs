@@ -214,7 +214,7 @@ namespace VAS.UI
 		public void Invoke (EventHandler handler)
 		{
 			if (App.IsMainThread) {
-				Log.Warning ("Invoke called from the main thread");
+				Log.Verbose ("Invoke called from the main thread");
 			}
 			Application.Invoke (handler);
 		}
@@ -226,7 +226,7 @@ namespace VAS.UI
 		public async Task<T> Invoke<T> (Func<Task<T>> handler)
 		{
 			if (App.IsMainThread) {
-				Log.Warning ("Invoke called from the main thread");
+				Log.Verbose ("Invoke called from the main thread");
 				return await handler ();
 			}
 			TaskCompletionSource<T> tcs = new TaskCompletionSource<T> ();
