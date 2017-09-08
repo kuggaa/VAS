@@ -227,9 +227,9 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		public void UnselectAll ()
 		{
-			EventTypesTimeline.SelectionReplace (new RangeObservableCollection<EventTypeTimelineVM> ());
+			EventTypesTimeline.Selection.Replace (new RangeObservableCollection<EventTypeTimelineVM> ());
 			foreach (var eventType in EventTypesTimeline.ViewModels) {
-				eventType.SelectionReplace (new RangeObservableCollection<TimelineEventVM> ());
+				eventType.Selection.Replace (new RangeObservableCollection<TimelineEventVM> ());
 				foreach (var timelineEvent in eventType.ViewModels) {
 					timelineEvent.Selected = false;
 				}
@@ -243,7 +243,7 @@ namespace VAS.Core.ViewModel
 		public void SelectAllFrom (EventTypeTimelineVM vm)
 		{
 			EventTypesTimeline.Select (vm);
-			vm.SelectionReplace (vm.ViewModels);
+			vm.Selection.Replace (vm.ViewModels);
 			foreach (var timelineEvent in vm.Selection) {
 				timelineEvent.Selected = true;
 			}

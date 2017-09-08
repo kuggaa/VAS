@@ -158,15 +158,6 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
-		/// Replaces the Selection with the provided one
-		/// </summary>
-		/// <param name="selection">Selection.</param>
-		public void SelectionReplace (IEnumerable<TChildViewModel> selection)
-		{
-			Selection.Replace (selection);
-		}
-
-		/// <summary>
 		/// Selects the current object.
 		/// </summary>
 		/// <param name="selected">Selected element.</param>

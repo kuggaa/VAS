@@ -109,7 +109,7 @@ namespace VAS.Tests.Services
 
 			await controller.Start ();
 
-			controller.ViewModel.SelectionReplace (Enumerable.Empty<DummyProjectVM> ());
+			controller.ViewModel.Selection.Replace (Enumerable.Empty<DummyProjectVM> ());
 
 			Assert.IsNull (controller.ViewModel.LoadedProject.Model);
 			Assert.IsNotNull (controller.ViewModel.LoadedProject);
