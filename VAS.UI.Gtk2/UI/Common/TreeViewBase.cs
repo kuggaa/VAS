@@ -539,7 +539,7 @@ namespace VAS.UI.Common
 				filter?.Refilter ();
 			}
 
-			if (e.PropertyName == "Selection") {
+			if (e.PropertyName == "Collection_" + nameof (viewModel.Selection)) {
 				//Sincronization of the first external selection
 				if (ViewModel.Selection.Count == 1 && Selection.CountSelectedRows () == 0) {
 					foreach (TreeIter element in dictionaryStore [ViewModel.Selection.FirstOrDefault ()]) {
