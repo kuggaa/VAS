@@ -389,7 +389,7 @@ namespace VAS.Services.Controller
 
 		protected virtual void HandleViewModelChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == "Selection") {
+			if (e.PropertyName == "Collection_" + nameof (ViewModel.Selection)) {
 				ViewModel.DeleteCommand.EmitCanExecuteChanged ();
 				ViewModel.PlaylistMenu.UpdateCanExecute ();
 				ViewModel.PlaylistElementMenu.UpdateCanExecute ();
