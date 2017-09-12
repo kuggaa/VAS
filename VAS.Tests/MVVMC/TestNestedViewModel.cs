@@ -55,7 +55,7 @@ namespace VAS.Tests.MVVMC
 			viewModel.Select (child1);
 
 			Assert.AreEqual (1, count);
-			Assert.AreEqual ("Selection", propName);
+			Assert.AreEqual ("Collection_Selection", propName);
 			Assert.AreSame (viewModel.Selection [0], child1);
 		}
 
@@ -70,7 +70,7 @@ namespace VAS.Tests.MVVMC
 			viewModel.Selection.Replace (viewModel.ViewModels);
 
 			Assert.AreEqual (1, count);
-			Assert.AreEqual ("Selection", propName);
+			Assert.AreEqual ("Collection_Selection", propName);
 			Assert.AreSame (viewModel.Selection [0], child1);
 			Assert.AreSame (viewModel.Selection [1], child2);
 		}
@@ -100,7 +100,7 @@ namespace VAS.Tests.MVVMC
 			viewModel.Selection.Replace (null);
 
 			Assert.AreEqual (1, count);
-			Assert.AreEqual ("Selection", propName);
+			Assert.AreEqual ("Collection_Selection", propName);
 			Assert.AreEqual (0, viewModel.Selection.Count);
 		}
 
