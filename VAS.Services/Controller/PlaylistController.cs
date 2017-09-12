@@ -361,8 +361,7 @@ namespace VAS.Services.Controller
 
 		protected override void HandleViewModelChanged (object sender, PropertyChangedEventArgs e)
 		{
-			base.HandleViewModelChanged (sender, e);
-			if (e.PropertyName == "Selection") {
+			if (e.PropertyName == "Collection_" + nameof (ViewModel.Selection)) {
 				ViewModel.DeleteCommand.EmitCanExecuteChanged ();
 				ViewModel.PlaylistMenu.UpdateCanExecute ();
 				ViewModel.PlaylistElementMenu.UpdateCanExecute ();

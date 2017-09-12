@@ -410,7 +410,7 @@ namespace VAS.Services.Controller
 
 		protected virtual async void HandleSelectionChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName != "Selection") {
+			if (e.PropertyName != "Collection_" + nameof (viewModel.Selection)) {
 				return;
 			}
 
@@ -435,8 +435,12 @@ namespace VAS.Services.Controller
 					return;
 				}
 			}
+
 			// Load the model
+			viewModel.PropertyChanged -= HandleSelectionChanged;
 			ViewModel.LoadedTemplate.Model = loadedTemplate;
+			viewModel.PropertyChanged += HandleSelectionChanged;
+
 			// Update controls visiblity
 			ViewModel.DeleteCommand.EmitCanExecuteChanged ();
 			ViewModel.ExportCommand.EmitCanExecuteChanged ();

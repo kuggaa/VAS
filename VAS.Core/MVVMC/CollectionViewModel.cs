@@ -152,7 +152,7 @@ namespace VAS.Core.MVVMC
 			ViewModels.InsertRange (index, viewModels);
 		}
 
-		protected override void HandleViewModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		protected void HandleViewModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
 			if (editing) {
 				return;
