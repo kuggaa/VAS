@@ -59,17 +59,24 @@ namespace VAS.UI.Common
 				}
 			}
 
-			// Replace parent selection with our selected list, only if it had changed
-			var oldSelections = ViewModel.Selection.Except (selected.Keys);
+			// store the old selection to be cleaned
+			var oldSelections = ViewModel.Selection.ToList ();
+
+			// Fixme: This tree view has a doble Collection_Selection notification, it is important to unselect the
+			// parent before cleaning the childs to avoid a viewmodel synchronization that will end in
+			// a new parent selection in the tree view component
+			ViewModel.Selection.Replace (selected.Keys);
+
+			// clean old child selection
 			if (oldSelections.Any ()) {
 				foreach (var parent in oldSelections) {
 					if (parent.Selection.Any ()) {
 						parent.Selection.Clear ();
 					}
 				}
-				ViewModel.Selection.Replace (selected.Keys);
 			}
 
+			// set new child selection
 			foreach (var parentSon in selected) {
 				if (parentSon.Value.Any ()) {
 					parentSon.Key.Selection.Replace (parentSon.Value);
