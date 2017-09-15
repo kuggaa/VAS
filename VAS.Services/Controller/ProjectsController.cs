@@ -188,7 +188,7 @@ namespace VAS.Services.Controller
 			if (!force) {
 				string msg = Catalog.GetString ("Do you want to save the current project?");
 				if (!(await App.Current.Dialogs.QuestionMessage (msg, null, this))) {
-					ViewModel.LoadedProject.FileSet.Model.MediaFiles.Replace (originalMediaFileSet.MediaFiles);
+					ViewModel.LoadedProject.FileSet.Model.MediaFiles.Reset (originalMediaFileSet.MediaFiles);
 					return false;
 				}
 			}

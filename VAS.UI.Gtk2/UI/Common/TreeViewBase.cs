@@ -52,7 +52,7 @@ namespace VAS.UI.Common
 
 		//DragDrop variables
 		protected TargetList targets;
-		Point dragStart;
+		protected Point dragStart;
 		protected bool dragging, dragStarted, enableDragSource;
 		protected TreePath pathClicked;
 
@@ -142,6 +142,11 @@ namespace VAS.UI.Common
 		}
 
 		#endregion
+
+		protected virtual bool AllowDrag (IViewModel source)
+		{
+			return true;
+		}
 
 		/// <summary>
 		/// Gets an enumeration of the selected <see cref="IViewModel"/> in the treeview.
@@ -304,7 +309,7 @@ namespace VAS.UI.Common
 				ShowMenu ();
 			} else {
 				ret = base.OnButtonPressEvent (evnt);
-				if (paths.Length > 0 && enableDragSource) {
+				if (paths.Length > 0 && enableDragSource && AllowDrag (vm)) {
 					dragging = true;
 					dragStarted = false;
 					dragStart = new Point (evnt.X, evnt.Y);

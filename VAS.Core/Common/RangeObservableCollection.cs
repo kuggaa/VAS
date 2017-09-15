@@ -74,11 +74,15 @@ namespace VAS.Core.Common
 		{
 			var itemsList = items.ToList ();
 			if (itemsList.Any ()) {
+				bool somethingToNotify = false;
 				foreach (var item in itemsList) {
-					Items.Remove (item);
+					somethingToNotify |= Items.Remove (item);
 				}
-				NotifyCollectionChangedEventArgs e = new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Remove, itemsList);
-				OnCollectionChanged (e);
+
+				if (somethingToNotify) {
+					NotifyCollectionChangedEventArgs e = new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Remove, itemsList);
+					OnCollectionChanged (e);
+				}
 			}
 		}
 
@@ -101,13 +105,23 @@ namespace VAS.Core.Common
 		}
 
 		/// <summary>
+		/// Replace collection with new elements, first notifies removed items and after the added ones
+		/// </summary>
+		/// <param name="items">Items to replace with</param>
+		public void Replace (IEnumerable<T> items)
+		{
+			RemoveRange (Items.Except (items));
+			AddRange (items.Except (Items));
+		}
+
+		/// <summary>
 		/// Replace all collection with new elements
 		/// </summary>
 		/// <param name="items">Items to replace</param>
-		public void Replace (IEnumerable<T> items)
+		public void Reset (IEnumerable<T> items)
 		{
 			var list = items?.ToList();
-			if (Items.SequenceEqualNoOrder (list)) {
+			if (Items.SequenceEqualSafe (list)) {
 				return;
 			}
 

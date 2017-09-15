@@ -108,7 +108,7 @@ namespace VAS.Core.MVVMC
 			} else if (Selection.Count == 1) {
 				Selection [0] = viewModel;
 			} else {
-				Selection.Replace (viewModel.ToEnumerable ());
+				Selection.Reset (viewModel.ToEnumerable ());
 			}
 		}
 

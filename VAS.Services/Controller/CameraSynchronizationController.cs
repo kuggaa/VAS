@@ -133,7 +133,7 @@ namespace VAS.Services.Controller
 					cameraSynchronizationVM.InitialPeriods.Add (period);
 					start += pDuration;
 				}
-				projectVM.Periods.Model.Replace (cameraSynchronizationVM.InitialPeriods);
+				projectVM.Periods.Model.Reset (cameraSynchronizationVM.InitialPeriods);
 			} else {
 				// Create a copy of the project periods and keep the
 				// project ones to resynchronize the events in SaveChanges()

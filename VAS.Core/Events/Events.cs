@@ -485,4 +485,10 @@ namespace VAS.Core.Events
 		public MediaFileSetVM OldFileSet { get; set; }
 		public MediaFileVM OldFile { get; set; }
 	}
+
+	public class MoveElementsEvent<TViewModel> : Event
+	{
+		public TViewModel ElementToMove { get; set; }
+		public int Index { get; set; }
+	}
 }
