@@ -110,7 +110,7 @@ namespace VAS.Tests.MVVMC
 		[Test]
 		public void TestReplaceWithNull ()
 		{
-			model.Replace (null);
+			model.Reset (null);
 
 			Assert.AreEqual (0, model.Count);
 			Assert.AreEqual (0, viewModel.Count ());
@@ -119,7 +119,7 @@ namespace VAS.Tests.MVVMC
 		[Test]
 		public void TestReplace ()
 		{
-			model.Replace (new BindableBase ().ToEnumerable ());
+			model.Reset (new BindableBase ().ToEnumerable ());
 
 			Assert.AreEqual (1, model.Count);
 			Assert.AreEqual (1, viewModel.Count ());

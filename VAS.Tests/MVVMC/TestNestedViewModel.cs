@@ -90,14 +90,14 @@ namespace VAS.Tests.MVVMC
 		}
 
 		[Test]
-		public void TestReplaceSelectionWithNull ()
+		public void TestResetSelectionWithNull ()
 		{
 			int count = 0;
 			string propName = "";
 			viewModel.Select (child1);
 			viewModel.PropertyChanged += (sender, e) => { count++; propName = e.PropertyName; };
 
-			viewModel.Selection.Replace (null);
+			viewModel.Selection.Reset (null);
 
 			Assert.AreEqual (1, count);
 			Assert.AreEqual ("Collection_Selection", propName);

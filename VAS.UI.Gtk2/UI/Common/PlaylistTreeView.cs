@@ -21,7 +21,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Gtk;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.MVVMC;
 using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
 using VAS.UI.Menus;
@@ -160,6 +162,12 @@ namespace VAS.UI.Common
 
 				ViewModel.MovePlaylistElements (toRemove, toAdd, index);
 				return true;
+			} else if (elementsToAdd.Key is PlaylistCollectionVM){
+				PlaylistVM toMove = (PlaylistVM)elementsToRemove.Values.First ().First ();
+				App.Current.EventsBroker.Publish (new MoveElementsEvent<PlaylistVM> {
+					ElementToMove = toMove,
+					Index = index
+				});
 			}
 			return false;
 		}
