@@ -449,6 +449,40 @@ namespace VAS.Tests.MVVMC
 			Assert.AreEqual (NotifyCollectionChangedAction.Add, actionsNotified [0]);
 		}
 
+        [Test]
+		public void LimitedCollection_SetLimitationVM_DoNotRemoveModels ()
+		{
+			LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> collection = new LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> ();
+			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
+			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
+
+			collection.Limitation = new CountLimitationVM { Model = new CountLicenseLimitation { Maximum = 1, Enabled = true } };
+
+			// Assert
+			Assert.AreEqual (2, collection.Model.Count);
+			Assert.AreEqual (1, collection.ViewModels.Count);
+			Assert.AreEqual (2, ((CollectionViewModel<Utils.PlayerDummy, DummyPlayerVM>)collection).ViewModels.Count);
+			Assert.AreEqual (1, collection.LimitedViewModels.Count);
+		}
+
+		[Test]
+		public void LimitedCollection_MaximumChange_DoNotRemoveModels ()
+		{
+			LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> collection = new LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> ();
+			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
+			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
+			collection.ViewModels.Add (new DummyPlayerVM { Model = new Utils.PlayerDummy () });
+
+			collection.Limitation = new CountLimitationVM { Model = new CountLicenseLimitation { Maximum = 1, Enabled = true } };
+			collection.Limitation.Model.Maximum = 2;
+
+			// Assert
+			Assert.AreEqual (3, collection.Model.Count);
+			Assert.AreEqual (2, collection.ViewModels.Count);
+			Assert.AreEqual (3, ((CollectionViewModel<Utils.PlayerDummy, DummyPlayerVM>)collection).ViewModels.Count);
+			Assert.AreEqual (2, collection.LimitedViewModels.Count);
+        }
+
 		void HandleCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
 			actionsNotified.Add (e.Action);
