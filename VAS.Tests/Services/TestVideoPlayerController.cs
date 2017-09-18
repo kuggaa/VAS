@@ -1530,12 +1530,6 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
-		public void TestSetPresentationModeWithoutPlaylistSet ()
-		{
-			Assert.Throws<InvalidOperationException> (() => player.Mode = VideoPlayerOperationMode.Presentation);
-		}
-
-		[Test]
 		public void TestPresentationSeekSameElement ()
 		{
 			Playlist localPlaylist = new Playlist ();
