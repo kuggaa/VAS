@@ -413,7 +413,7 @@ namespace VAS.Services.Controller
 
 		protected virtual async void HandleSelectionChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName != "Collection_" + nameof (viewModel.Selection)) {
+			if (!ViewModel.NeedsSync (e.PropertyName, "Collection_" + nameof (viewModel.Selection), sender, ViewModel)) {
 				return;
 			}
 
