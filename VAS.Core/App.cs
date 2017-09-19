@@ -50,7 +50,7 @@ namespace VAS
 
 		public App ()
 		{
-			ZoomLevels = new List<double> { 1.0, 1.25, 1.50, 1.75, 2.0 };
+			ZoomLevels = new List<double> { 1.0, 1.25, 1.50, 1.75, 2.0, 2.25, 2.50, 2.75, 3.0, 3.25, 3.50, 3.75, 4.0 };
 		}
 
 		public KeyContextManager KeyContextManager {
