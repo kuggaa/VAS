@@ -89,6 +89,7 @@
 	        </StandardHeader>
 	      </Policies>
 	      <Deployment.LinuxDeployData generatePcFile="False" />
+              <GtkDesignInfo gettextClass="VAS.Core.Catalog" />
 	    </Properties>
 	  </MonoDevelop>
 	</ProjectExtensions>

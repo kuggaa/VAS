@@ -50,7 +50,7 @@ namespace VAS.Core
 		static extern IntPtr bind_textdomain_codeset (string domainname,
 		                                              string codeset);
 
-		public static void SetDomain (String package, String localedir)
+		public static void Init (String package, String localedir)
 		{
 			CurrentDomain = package;
 

@@ -13,7 +13,7 @@ namespace VAS.UI.Dialog
 			global::Stetic.Gui.Initialize (this);
 			// Widget VAS.UI.Dialog.HotKeySelectorDialog
 			this.Name = "VAS.UI.Dialog.HotKeySelectorDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Select a HotKey");
+			this.Title = global::VAS.Core.Catalog.GetString ("Select a HotKey");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			this.Gravity = ((global::Gdk.Gravity)(5));
 			this.SkipPagerHint = true;
@@ -25,7 +25,7 @@ namespace VAS.UI.Dialog
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Press a key combination...");
+			this.label1.LabelProp = global::VAS.Core.Catalog.GetString ("Press a key combination...");
 			w1.Add (this.label1);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(w1 [this.label1]));
 			w2.Position = 0;

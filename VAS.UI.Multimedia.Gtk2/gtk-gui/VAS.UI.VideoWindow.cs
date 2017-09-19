@@ -28,7 +28,7 @@ namespace VAS.UI
 			// Container child totalbox.Gtk.Box+BoxChild
 			this.messageLabel = new global::Gtk.Label();
 			this.messageLabel.Name = "messageLabel";
-			this.messageLabel.LabelProp = global::Mono.Unix.Catalog.GetString("Out of scope");
+			this.messageLabel.LabelProp = global::VAS.Core.Catalog.GetString("Out of scope");
 			this.totalbox.Add(this.messageLabel);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.totalbox[this.messageLabel]));
 			w2.Position = 1;

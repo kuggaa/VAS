@@ -13,7 +13,7 @@ namespace VAS.UI.Dialog
 			global::Stetic.Gui.Initialize (this);
 			// Widget VAS.UI.Dialog.CalendarDialog
 			this.Name = "VAS.UI.Dialog.CalendarDialog";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Calendar");
+			this.Title = global::VAS.Core.Catalog.GetString ("Calendar");
 			this.TypeHint = ((global::Gdk.WindowTypeHint)(1));
 			this.WindowPosition = ((global::Gtk.WindowPosition)(2));
 			this.Gravity = ((global::Gdk.Gravity)(5));
