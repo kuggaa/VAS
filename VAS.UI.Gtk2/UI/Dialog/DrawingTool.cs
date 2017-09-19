@@ -17,6 +17,7 @@
 //
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using Gtk;
 using VAS.Core;
@@ -46,8 +47,6 @@ namespace VAS.UI.Dialog
 	{
 		const int MOVE_OFFSET = 5;
 		const int TOOL_HEIGHT = 24;
-		const double MIN_ZOOM = 1;
-		const double MAX_ZOOM = 4;
 		const double ZOOM_STEP = 0.2;
 		const double ZOOM_PAGE = 0.2;
 
@@ -423,8 +422,8 @@ namespace VAS.UI.Dialog
 		void Bind()
 		{
 			ctx = new BindingContext ();
-			ctx.Add (zoomscale.Bind (vm => ((DrawingToolVM)vm).SetZoomCommand, MIN_ZOOM, MIN_ZOOM,
-			                         MAX_ZOOM, ZOOM_STEP, ZOOM_PAGE));
+			ctx.Add (zoomscale.Bind (vm => ((DrawingToolVM)vm).SetZoomCommand, App.Current.ZoomLevels.Min (),
+			                         App.Current.ZoomLevels.Min (), App.Current.ZoomLevels.Max(), ZOOM_STEP, ZOOM_PAGE));
 		}
 
 		int ScalledSize (int size)
