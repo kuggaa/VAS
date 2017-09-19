@@ -68,7 +68,7 @@ namespace VAS.UI.Panel
 			this.cancelButtonDialog.CanFocus = true;
 			this.cancelButtonDialog.Name = "cancelButtonDialog";
 			this.cancelButtonDialog.UseUnderline = true;
-			this.cancelButtonDialog.Label = global::Mono.Unix.Catalog.GetString ("cancel");
+			this.cancelButtonDialog.Label = global::VAS.Core.Catalog.GetString ("cancel");
 			this.dialogButtonBox.Add (this.cancelButtonDialog);
 			global::Gtk.ButtonBox.ButtonBoxChild w4 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.dialogButtonBox [this.cancelButtonDialog]));
 			w4.Expand = false;
@@ -78,7 +78,7 @@ namespace VAS.UI.Panel
 			this.okButtonDialog.CanFocus = true;
 			this.okButtonDialog.Name = "okButtonDialog";
 			this.okButtonDialog.UseUnderline = true;
-			this.okButtonDialog.Label = global::Mono.Unix.Catalog.GetString ("ok");
+			this.okButtonDialog.Label = global::VAS.Core.Catalog.GetString ("ok");
 			this.dialogButtonBox.Add (this.okButtonDialog);
 			global::Gtk.ButtonBox.ButtonBoxChild w5 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.dialogButtonBox [this.okButtonDialog]));
 			w5.Position = 1;

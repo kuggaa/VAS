@@ -54,7 +54,7 @@ namespace VAS.UI
 			// Container child replayhbox.Gtk.Box+BoxChild
 			this.replaylabel = new global::Gtk.Label();
 			this.replaylabel.Name = "replaylabel";
-			this.replaylabel.LabelProp = global::Mono.Unix.Catalog.GetString("Replay");
+			this.replaylabel.LabelProp = global::VAS.Core.Catalog.GetString("Replay");
 			this.replayhbox.Add(this.replaylabel);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.replayhbox[this.replaylabel]));
 			w2.Position = 1;
@@ -87,7 +87,7 @@ namespace VAS.UI
 			// Container child livebox.Gtk.Box+BoxChild
 			this.livelabel = new global::Gtk.Label();
 			this.livelabel.Name = "livelabel";
-			this.livelabel.LabelProp = global::Mono.Unix.Catalog.GetString("Live");
+			this.livelabel.LabelProp = global::VAS.Core.Catalog.GetString("Live");
 			this.livebox.Add(this.livelabel);
 			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.livebox[this.livelabel]));
 			w6.Position = 1;

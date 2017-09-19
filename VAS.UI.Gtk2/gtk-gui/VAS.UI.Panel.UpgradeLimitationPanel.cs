@@ -55,7 +55,7 @@ namespace VAS.UI.Panel
 			this.header = new global::Gtk.Label ();
 			this.header.Name = "header";
 			this.header.Xalign = 0F;
-			this.header.LabelProp = global::Mono.Unix.Catalog.GetString ("label1");
+			this.header.LabelProp = global::VAS.Core.Catalog.GetString ("label1");
 			this.headersVBox.Add (this.header);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.headersVBox [this.header]));
 			w1.Position = 0;
@@ -65,7 +65,7 @@ namespace VAS.UI.Panel
 			this.featuresHeader = new global::Gtk.Label ();
 			this.featuresHeader.Name = "featuresHeader";
 			this.featuresHeader.Xalign = 0F;
-			this.featuresHeader.LabelProp = global::Mono.Unix.Catalog.GetString ("label3");
+			this.featuresHeader.LabelProp = global::VAS.Core.Catalog.GetString ("label3");
 			this.headersVBox.Add (this.featuresHeader);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.headersVBox [this.featuresHeader]));
 			w2.Position = 1;
@@ -108,7 +108,7 @@ namespace VAS.UI.Panel
 			this.featuresCaption = new global::Gtk.Label ();
 			this.featuresCaption.Name = "featuresCaption";
 			this.featuresCaption.Xalign = 1F;
-			this.featuresCaption.LabelProp = global::Mono.Unix.Catalog.GetString ("label5");
+			this.featuresCaption.LabelProp = global::VAS.Core.Catalog.GetString ("label5");
 			this.featuresCaption.Justify = ((global::Gtk.Justification)(1));
 			this.bodyVBox.Add (this.featuresCaption);
 			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.bodyVBox [this.featuresCaption]));

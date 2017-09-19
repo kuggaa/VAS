@@ -55,7 +55,7 @@ namespace VAS.UI.Dialog
 			global::Stetic.Gui.Initialize (this);
 			// Widget VAS.UI.Dialog.VideoEditionProperties
 			this.Name = "VAS.UI.Dialog.VideoEditionProperties";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Video Properties");
+			this.Title = global::VAS.Core.Catalog.GetString ("Video Properties");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			this.Modal = true;
 			this.Resizable = false;
@@ -84,7 +84,7 @@ namespace VAS.UI.Dialog
 			this.labelTextTitle.HeightRequest = 20;
 			this.labelTextTitle.Name = "labelTextTitle";
 			this.labelTextTitle.Xalign = 0F;
-			this.labelTextTitle.LabelProp = global::Mono.Unix.Catalog.GetString ("Video Properties");
+			this.labelTextTitle.LabelProp = global::VAS.Core.Catalog.GetString ("Video Properties");
 			this.titleAlignment.Add (this.labelTextTitle);
 			this.containerRegular.Add (this.titleAlignment);
 			this.vbox2.Add (this.containerRegular);
@@ -101,7 +101,7 @@ namespace VAS.UI.Dialog
 			this.audiocheckbutton = new global::Gtk.CheckButton ();
 			this.audiocheckbutton.CanFocus = true;
 			this.audiocheckbutton.Name = "audiocheckbutton";
-			this.audiocheckbutton.Label = global::Mono.Unix.Catalog.GetString ("Enable audio");
+			this.audiocheckbutton.Label = global::VAS.Core.Catalog.GetString ("Enable audio");
 			this.audiocheckbutton.DrawIndicator = true;
 			this.audiocheckbutton.UseUnderline = true;
 			this.table1.Add (this.audiocheckbutton);
@@ -117,7 +117,7 @@ namespace VAS.UI.Dialog
 			this.descriptioncheckbutton = new global::Gtk.CheckButton ();
 			this.descriptioncheckbutton.CanFocus = true;
 			this.descriptioncheckbutton.Name = "descriptioncheckbutton";
-			this.descriptioncheckbutton.Label = global::Mono.Unix.Catalog.GetString ("Enable title overlay");
+			this.descriptioncheckbutton.Label = global::VAS.Core.Catalog.GetString ("Enable title overlay");
 			this.descriptioncheckbutton.DrawIndicator = true;
 			this.descriptioncheckbutton.UseUnderline = true;
 			this.descriptioncheckbutton.Xalign = 0F;
@@ -144,7 +144,7 @@ namespace VAS.UI.Dialog
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
 			this.label1.Xalign = 0F;
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Quality:");
+			this.label1.LabelProp = global::VAS.Core.Catalog.GetString ("Quality:");
 			this.table1.Add (this.label1);
 			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.table1 [this.label1]));
 			w8.XPadding = ((uint)(10));
@@ -154,7 +154,7 @@ namespace VAS.UI.Dialog
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
 			this.label2.Xalign = 0F;
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("Image format: ");
+			this.label2.LabelProp = global::VAS.Core.Catalog.GetString ("Image format: ");
 			this.table1.Add (this.label2);
 			global::Gtk.Table.TableChild w9 = ((global::Gtk.Table.TableChild)(this.table1 [this.label2]));
 			w9.TopAttach = ((uint)(1));
@@ -166,7 +166,7 @@ namespace VAS.UI.Dialog
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
 			this.label3.Xalign = 0F;
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("Encoding Format:");
+			this.label3.LabelProp = global::VAS.Core.Catalog.GetString ("Encoding Format:");
 			this.table1.Add (this.label3);
 			global::Gtk.Table.TableChild w10 = ((global::Gtk.Table.TableChild)(this.table1 [this.label3]));
 			w10.TopAttach = ((uint)(2));
@@ -200,7 +200,7 @@ namespace VAS.UI.Dialog
 			this.splitfilesbutton = new global::Gtk.CheckButton ();
 			this.splitfilesbutton.CanFocus = true;
 			this.splitfilesbutton.Name = "splitfilesbutton";
-			this.splitfilesbutton.Label = global::Mono.Unix.Catalog.GetString ("Export one file per element in playlist");
+			this.splitfilesbutton.Label = global::VAS.Core.Catalog.GetString ("Export one file per element in playlist");
 			this.splitfilesbutton.DrawIndicator = true;
 			this.splitfilesbutton.UseUnderline = true;
 			this.splitfilesbutton.Xalign = 0F;
@@ -217,7 +217,7 @@ namespace VAS.UI.Dialog
 			this.watermarkcheckbutton = new global::Gtk.CheckButton ();
 			this.watermarkcheckbutton.CanFocus = true;
 			this.watermarkcheckbutton.Name = "watermarkcheckbutton";
-			this.watermarkcheckbutton.Label = global::Mono.Unix.Catalog.GetString ("Add watermark");
+			this.watermarkcheckbutton.Label = global::VAS.Core.Catalog.GetString ("Add watermark");
 			this.watermarkcheckbutton.Active = true;
 			this.watermarkcheckbutton.DrawIndicator = true;
 			this.watermarkcheckbutton.UseUnderline = true;
@@ -243,7 +243,7 @@ namespace VAS.UI.Dialog
 			this.filenamelabel.Name = "filenamelabel";
 			this.filenamelabel.Xpad = 10;
 			this.filenamelabel.Xalign = 1F;
-			this.filenamelabel.LabelProp = global::Mono.Unix.Catalog.GetString ("File name: ");
+			this.filenamelabel.LabelProp = global::VAS.Core.Catalog.GetString ("File name: ");
 			this.filebox.Add (this.filenamelabel);
 			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.filebox [this.filenamelabel]));
 			w16.Position = 0;
@@ -270,7 +270,7 @@ namespace VAS.UI.Dialog
 			this.directorynamelabel1.Name = "directorynamelabel1";
 			this.directorynamelabel1.Xpad = 10;
 			this.directorynamelabel1.Xalign = 1F;
-			this.directorynamelabel1.LabelProp = global::Mono.Unix.Catalog.GetString ("Directory name: ");
+			this.directorynamelabel1.LabelProp = global::VAS.Core.Catalog.GetString ("Directory name: ");
 			this.dirbox.Add (this.directorynamelabel1);
 			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.dirbox [this.directorynamelabel1]));
 			w19.Position = 0;

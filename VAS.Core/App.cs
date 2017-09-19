@@ -206,7 +206,7 @@ namespace VAS
 				}
 			}
 			/* Init internationalization support */
-			Catalog.SetDomain (softwareName.ToLower (), localesDir);
+			Catalog.Init (softwareName.ToLower (), localesDir);
 		}
 
 		static void InitVersion ()

@@ -167,6 +167,7 @@
 	          <inheritsScope />
 	        </StandardHeader>
 	      </Policies>
+	      <GtkDesignInfo gettextClass="VAS.Core.Catalog" />
 	    </Properties>
 	  </MonoDevelop>
 	</ProjectExtensions>
