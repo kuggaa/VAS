@@ -32,10 +32,10 @@ namespace VAS.Core.Interfaces
 	public interface IStateController
 	{
 		/// <summary>
-		/// Gets the current state of the application.
+		/// Gets the current screen state of the application.
 		/// </summary>
-		/// <value>The current state.</value>
-		string Current { get; }
+		/// <value>The current screen state.</value>
+		IScreenState Current { get; }
 
 		/// <summary>
 		/// Sets the home transition. Needs to be registered first.
