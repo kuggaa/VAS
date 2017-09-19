@@ -53,6 +53,8 @@ namespace VAS.Core.ViewModel
 			SetZoomCommand = new LimitationCommand<double> (VASFeature.Zoom.ToString (), SetZoom);
 			ZoomWarningCommand = new LimitationCommand (VASFeature.OpenZoom.ToString (), () => { });
 			ZoomWarningCommand.LimitationCondition = () => CamerasConfig.Any ((cf) => !cf.RegionOfInterest.Empty);
+			Duration = new Time (0);
+			CurrentTime = new Time (0);
 		}
 
 		/// <summary>
