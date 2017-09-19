@@ -333,10 +333,6 @@ namespace VAS.Services
 			}
 			set {
 				mode = value;
-				if (Mode == VideoPlayerOperationMode.Presentation && LoadedPlaylist == null) {
-					throw new InvalidOperationException (VideoPlayerOperationMode.Presentation +
-														 " mode can only be used with a playlist loaded");
-				}
 				if (FileSet?.FirstOrDefault () != null) {
 					visibleRegion = FileSet.VisibleRegion;
 					Time currentTime = CurrentTime;
