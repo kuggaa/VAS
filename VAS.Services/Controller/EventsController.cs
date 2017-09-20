@@ -151,12 +151,12 @@ namespace VAS.Services.Controller
 				e.EventType.Name));
 			/* Add the new created play to the project and update the GUI */
 			var play = Project.Model.AddEvent (e.EventType, e.Start, e.Stop, e.EventTime, null);
-			play.Teams.Replace (e.Teams);
+			play.Teams.Reset (e.Teams);
 			if (e.Players != null) {
-				play.Players.Replace (e.Players);
+				play.Players.Reset (e.Players);
 			}
 			if (e.Tags != null) {
-				play.Tags.Replace (e.Tags);
+				play.Tags.Reset (e.Tags);
 			}
 			AddNewPlay (play);
 		}

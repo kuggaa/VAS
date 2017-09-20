@@ -151,7 +151,7 @@ namespace VAS.UI.Component
 			}
 
 			// update selection
-			ViewModel.FullTimeline.Selection.Replace (events);
+			ViewModel.FullTimeline.Selection.Reset (events);
 		}
 
 		protected override void HandleTreeviewRowActivated (object o, RowActivatedArgs args)

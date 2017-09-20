@@ -203,7 +203,7 @@ namespace VAS.Drawing.Widgets
 				return;
 			}
 			if (sel [0].Drawable is DashboardButtonView) {
-				ViewModel.Selection.Replace (sel.Select (s => (s.Drawable as DashboardButtonView).ButtonVM));
+				ViewModel.Selection.Reset (sel.Select (s => (s.Drawable as DashboardButtonView).ButtonVM));
 			} else if (sel [0].Drawable is ActionLinkView) {
 				List<ActionLinkVM> links;
 

@@ -29,21 +29,23 @@ namespace VAS.Tests.Core.Common
 	{
 		RangeObservableCollection<int> collection;
 		int index;
-		NotifyCollectionChangedAction actionPerformed;
+		List<NotifyCollectionChangedAction> actionsPerformed;
 		int counter;
 		bool notified = false;
+		int notifications;
 
 		[SetUp ()]
 		public void SetUp ()
 		{
 			notified = false;
+			notifications = 0;
 			counter = 0;
 			if (collection != null) {
 				collection.CollectionChanged -= CollectionChanged;
 			}
 			collection = new RangeObservableCollection<int> (new List<int> { 0, 1, 2, 3, 4 });
 			index = -2;
-			actionPerformed = NotifyCollectionChangedAction.Move;
+			actionsPerformed = new List<NotifyCollectionChangedAction> ();
 			collection.CollectionChanged += CollectionChanged;
 		}
 
@@ -60,7 +62,8 @@ namespace VAS.Tests.Core.Common
 			Assert.AreEqual (indexToVerify, index);
 			Assert.AreEqual (7, collection.Count);
 			Assert.AreEqual (6, collection.Last ());
-			Assert.AreEqual (actionPerformed, NotifyCollectionChangedAction.Add);
+			Assert.AreEqual (actionsPerformed[0], NotifyCollectionChangedAction.Add);
+			Assert.AreEqual (notifications, 1);
 		}
 
 		[Test ()]
@@ -72,7 +75,55 @@ namespace VAS.Tests.Core.Common
 			Assert.AreEqual (2, counter);
 			Assert.AreEqual (3, collection.Count);
 			Assert.AreEqual (2, collection [1]);
-			Assert.AreEqual (actionPerformed, NotifyCollectionChangedAction.Remove);
+			Assert.AreEqual (actionsPerformed [0], NotifyCollectionChangedAction.Remove);
+			Assert.AreEqual (notifications, 1);
+		}
+
+		[Test ()]
+		public void RemoveRange_ElementsNotContained_DoNotNotify ()
+		{
+			// Arrange
+			List<int> list = new List<int> { 100, 300 };
+
+			// Act
+			collection.RemoveRange (list);
+
+			// Assert
+			Assert.AreEqual (0, notifications);
+			Assert.AreEqual (5, collection.Count);
+			Assert.AreEqual (1, collection [1]);
+		}
+
+		[Test ()]
+		public void Replace_SameElementsInCollection_DoNotNotify ()
+		{
+			// Arrange
+			List<int> list = new List<int> { 0, 1, 2, 3, 4 };
+
+			// Act
+			collection.Replace (list);
+
+			// Assert
+			Assert.AreEqual (0, notifications);
+			Assert.AreEqual (5, collection.Count);
+			Assert.AreEqual (1, collection [1]);
+		}
+
+		[Test ()]
+		public void Replace_DifferentElementsInCollection_Notify ()
+		{
+			// Arrange
+			List<int> list = new List<int> { 0, 1, 5 };
+
+			// Act
+			collection.Replace (list);
+
+			// Assert
+			Assert.AreEqual (2, notifications);
+			Assert.AreEqual (actionsPerformed [0], NotifyCollectionChangedAction.Remove);
+			Assert.AreEqual (actionsPerformed [1], NotifyCollectionChangedAction.Add);
+			Assert.AreEqual (3, collection.Count);
+			Assert.AreEqual (5, collection [2]);
 		}
 
 		[Test ()]
@@ -84,25 +135,27 @@ namespace VAS.Tests.Core.Common
 			Assert.AreEqual (2, counter);
 			Assert.AreEqual (2, index);
 			Assert.AreEqual (5, collection [index]);
-			Assert.AreEqual (actionPerformed, NotifyCollectionChangedAction.Add);
+			Assert.AreEqual (actionsPerformed[0], NotifyCollectionChangedAction.Add);
+			Assert.AreEqual (1, notifications);
 		}
 
 		[Test ()]
-		public void TestReplace ()
+		public void TestReset ()
 		{
 			List<int> collectionToReplace = new List<int> { 5, 6, 7 };
-			collection.Replace (collectionToReplace.Select ((arg) => IncrementCounter (arg)).Where (arg => arg >= 0));
+			collection.Reset (collectionToReplace.Select ((arg) => IncrementCounter (arg)).Where (arg => arg >= 0));
 
 			Assert.AreEqual (3, counter);
 			Assert.AreEqual (collection, collectionToReplace);
-			Assert.AreEqual (actionPerformed, NotifyCollectionChangedAction.Reset);
+			Assert.AreEqual (actionsPerformed [0], NotifyCollectionChangedAction.Reset);
+			Assert.AreEqual (1, notifications);
 		}
 
 		[Test ()]
-		public void TestReplace_SameList_DoesNotNotify ()
+		public void TestReset_SameList_DoesNotNotify ()
 		{
 			List<int> collectionToReplace = new List<int> { 0, 1, 2, 3, 4 };
-			collection.Replace (collectionToReplace.Select ((arg) => IncrementCounter (arg)).Where (arg => arg >= 0));
+			collection.Reset (collectionToReplace.Select ((arg) => IncrementCounter (arg)).Where (arg => arg >= 0));
 
 			Assert.AreEqual (5, counter);
 			Assert.AreEqual (collection, collectionToReplace);
@@ -114,7 +167,8 @@ namespace VAS.Tests.Core.Common
 			if (e.Action == NotifyCollectionChangedAction.Add) {
 				index = e.NewStartingIndex;
 			}
-			actionPerformed = e.Action;
+			actionsPerformed.Add(e.Action);
+			notifications++;
 			notified = true;
 		}
 

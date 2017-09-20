@@ -65,7 +65,7 @@ namespace VAS.UI.Common
 			// Fixme: This tree view has a doble Collection_Selection notification, it is important to unselect the
 			// parent before cleaning the childs to avoid a viewmodel synchronization that will end in
 			// a new parent selection in the tree view component
-			ViewModel.Selection.Replace (selected.Keys);
+			ViewModel.Selection.Reset (selected.Keys);
 
 			// clean old child selection
 			if (oldSelections.Any ()) {
@@ -79,7 +79,7 @@ namespace VAS.UI.Common
 			// set new child selection
 			foreach (var parentSon in selected) {
 				if (parentSon.Value.Any ()) {
-					parentSon.Key.Selection.Replace (parentSon.Value);
+					parentSon.Key.Selection.Reset (parentSon.Value);
 				}
 			}
 		}

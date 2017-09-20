@@ -173,7 +173,7 @@ namespace VAS.Core.MVVMC
 				break;
 			case NotifyCollectionChangedAction.Replace:
 			case NotifyCollectionChangedAction.Reset:
-				model.Replace (ViewModels.Select (vm => vm.Model));
+				model.Reset (ViewModels.Select (vm => vm.Model));
 				foreach (TViewModel vm in ViewModels) {
 					modelToViewModel [vm.Model] = vm;
 				}

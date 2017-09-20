@@ -31,58 +31,82 @@ namespace VAS.Tests.MVVMC
 	{
 		LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> col;
 		List<Utils.PlayerDummy> players;
+		List<NotifyCollectionChangedAction> actionsNotified;
 
 		[SetUp]
 		public void SetUp ()
-		{
+		{ 
+			actionsNotified = new List<NotifyCollectionChangedAction> ();
 			col = new LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> ();
 			col.Limitation = new CountLimitationVM ();
 			players = CreateDummyPlayers ();
 		}
 
 		[Test]
-		public void TestWithoutLimitationWithoutSort ()
+		public void SetModel_WithoutLimitation_NoSortingDone ()
 		{
+			// Arrange
 			col.SortByCreationDateDesc = false;
 
+			// Act
 			col.Model.AddRange (players);
 
+			// Assert
+			CheckPlayersInLimitedCollectionBy (new int [] { 0, 1, 2 }, players, col);
+		}
+
+		[Test]
+		public void SetLimitationEnabled_ModelAlreadySetAndMaxNotExceeded_AscSortingDone ()
+		{
+			// Arrange
+			col.SortByCreationDateDesc = false;
+			col.Model.AddRange (players);
+
+			// Act
+			col.Limitation = new CountLimitationVM { Model = new CountLicenseLimitation { Enabled = true, Maximum = 5  } };
+
+			// Assert
 			CheckPlayersInLimitedCollectionBy (new int [] { 1, 2, 0 }, players, col);
 		}
 
 		[Test]
-		public void TestWithoutLimitationWithSort ()
+		public void SetLimitationEnabled_ModelAlreadySetAndMaxNotExceeded_DescSortingDone ()
 		{
+			// Arrange
+			col.SortByCreationDateDesc = true;
 			col.Model.AddRange (players);
 
+			// Act
+			col.Limitation = new CountLimitationVM { Model = new CountLicenseLimitation { Enabled = true, Maximum = 5 } };
+
+			// Assert
 			CheckPlayersInLimitedCollectionBy (new int [] { 0, 2, 1 }, players, col);
 		}
 
 		[Test]
-		public void TestWithLimitationDisabledWithoutSort ()
-		{
-			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = false, Maximum = 2 };
-			col.SortByCreationDateDesc = false;
-
-			col.Limitation.Model = ll;
-			col.Model.AddRange (players);
-
-			CheckPlayersInLimitedCollectionBy (new int [] { 1, 2, 0 }, players, col);
-		}
-
-		[Test]
-		public void TestWithLimitationDisabledWithSort ()
+		public void SetLimitationDisabled_ModelSetAfter_NoSortingDone ()
 		{
 			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = false, Maximum = 2 };
 
 			col.Limitation.Model = ll;
 			col.Model.AddRange (players);
 
-			CheckPlayersInLimitedCollectionBy (new int [] { 0, 2, 1 }, players, col);
+			// Assert
+			CheckPlayersInLimitedCollectionBy (new int [] { 0, 1, 2 }, players, col);
 		}
 
 		[Test]
-		public void TestWithLimitationEnabledWithoutSort ()
+		public void SetLimitationDisabled_ModelAlreadySet_NoSortingDone ()
+		{
+			col.Model.AddRange (players);
+			col.Limitation.Model = new CountLicenseLimitation { Enabled = false, Maximum = 2 }; ;
+
+			// Assert
+			CheckPlayersInLimitedCollectionBy (new int [] { 0, 1, 2 }, players, col);
+		}
+
+		[Test]
+		public void SetLimitationEnabled_ModelSetAfteAndMaxExceeded_SortingDoneAndColLimited ()
 		{
 			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = true, Maximum = 2 };
 			col.SortByCreationDateDesc = false;
@@ -94,12 +118,24 @@ namespace VAS.Tests.MVVMC
 		}
 
 		[Test]
-		public void TestWithLimitationEnabledWithSort ()
+		public void SetLimitationEnabled_ModelAlreadySetAndMaxExceeded_DescSortingDoneAndColLimited ()
+		{
+			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = true, Maximum = 2 };
+			col.SortByCreationDateDesc = false;
+
+			col.Model.AddRange (players);
+			col.Limitation.Model = ll;
+
+			CheckPlayersInLimitedCollectionBy (new int [] { 1, 2 }, players, col);
+		}
+
+		[Test]
+		public void SetLimitationEnabled_ModelSetAfterAndMaxExceeded_AscSortingDoneAndColLimited ()
 		{
 			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = true, Maximum = 2 };
 
-			col.Limitation.Model = ll;
 			col.Model.AddRange (players);
+			col.Limitation.Model = ll;
 
 			CheckPlayersInLimitedCollectionBy (new int [] { 0, 2 }, players, col);
 		}
@@ -108,29 +144,30 @@ namespace VAS.Tests.MVVMC
 		public void TestAddWithLimitationEnabledWithSort ()
 		{
 			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = true, Maximum = 3 };
-
 			col.Limitation.Model = ll;
+
 			col.Model.AddRange (players);
 			List<Utils.PlayerDummy> newPlayers = new List<Utils.PlayerDummy> ();
 			newPlayers.Add (new Utils.PlayerDummy { CreationDate = DateTime.Now.AddMinutes (1), Name = "P4" });
 			players.AddRange (newPlayers);
-
 			col.Model.AddRange (newPlayers);
 
 			CheckPlayersInLimitedCollectionBy (new int [] { 3, 0, 2 }, players, col);
 		}
 
 		[Test]
-		public void TestModifyMaxLimitationEnabledWithoutSort ()
+		public void TestModifyMaxLimitationEnabledWithSort ()
 		{
 			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = true, Maximum = 3 };
 			col.SortByCreationDateDesc = false;
-			col.Limitation.Model = ll;
 			col.Model.AddRange (players);
+			col.Limitation.Model = ll;
+
 			List<Utils.PlayerDummy> newPlayers = new List<Utils.PlayerDummy> ();
 			newPlayers.Add (new Utils.PlayerDummy { CreationDate = DateTime.Now.AddMinutes (1), Name = "P4" });
 			players.AddRange (newPlayers);
 			col.Model.AddRange (newPlayers);
+
 			CheckPlayersInLimitedCollectionBy (new int [] { 1, 2, 0 }, players, col);
 
 			ll.Maximum = 2;
@@ -139,35 +176,19 @@ namespace VAS.Tests.MVVMC
 		}
 
 		[Test]
-		public void TestModifyMaxLimitationEnabledWithSort ()
-		{
-			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = true, Maximum = 3 };
-
-			col.Limitation.Model = ll;
-			col.Model.AddRange (players);
-			List<Utils.PlayerDummy> newPlayers = new List<Utils.PlayerDummy> ();
-			newPlayers.Add (new Utils.PlayerDummy { CreationDate = DateTime.Now.AddMinutes (1), Name = "P4" });
-			players.AddRange (newPlayers);
-			col.Model.AddRange (newPlayers);
-			CheckPlayersInLimitedCollectionBy (new int [] { 3, 0, 2 }, players, col);
-
-			ll.Maximum = 2;
-
-			CheckPlayersInLimitedCollectionBy (new int [] { 3, 0 }, players, col);
-		}
-
-		[Test]
 		public void TestModifyEnabledLimitationEnabledWithoutSort ()
 		{
 			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = false, Maximum = 3 };
 			col.SortByCreationDateDesc = false;
 			col.Limitation.Model = ll;
+
 			col.Model.AddRange (players);
 			List<Utils.PlayerDummy> newPlayers = new List<Utils.PlayerDummy> ();
 			newPlayers.Add (new Utils.PlayerDummy { CreationDate = DateTime.Now.AddMinutes (1), Name = "P4" });
 			players.AddRange (newPlayers);
 			col.Model.AddRange (newPlayers);
-			CheckPlayersInLimitedCollectionBy (new int [] { 1, 2, 0, 3 }, players, col);
+
+			CheckPlayersInLimitedCollectionBy (new int [] { 0, 1, 2, 3 }, players, col);
 
 			ll.Enabled = true;
 
@@ -178,14 +199,15 @@ namespace VAS.Tests.MVVMC
 		public void TestModifyEnabledLimitationEnabledWithSort ()
 		{
 			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = false, Maximum = 3 };
-
 			col.Limitation.Model = ll;
+
 			col.Model.AddRange (players);
 			List<Utils.PlayerDummy> newPlayers = new List<Utils.PlayerDummy> ();
 			newPlayers.Add (new Utils.PlayerDummy { CreationDate = DateTime.Now.AddMinutes (1), Name = "P4" });
 			players.AddRange (newPlayers);
 			col.Model.AddRange (newPlayers);
-			CheckPlayersInLimitedCollectionBy (new int [] { 3, 0, 2, 1 }, players, col);
+
+			CheckPlayersInLimitedCollectionBy (new int [] { 0, 1, 2, 3 }, players, col);
 
 			ll.Enabled = true;
 
@@ -196,13 +218,15 @@ namespace VAS.Tests.MVVMC
 		public void TestModifyEnabledLimitationEnableReversedWithoutSort ()
 		{
 			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = true, Maximum = 3 };
-			col.SortByCreationDateDesc = false;
 			col.Limitation.Model = ll;
+
+			col.SortByCreationDateDesc = false;
 			col.Model.AddRange (players);
 			List<Utils.PlayerDummy> newPlayers = new List<Utils.PlayerDummy> ();
 			newPlayers.Add (new Utils.PlayerDummy { CreationDate = DateTime.Now.AddMinutes (1), Name = "P4" });
 			players.AddRange (newPlayers);
 			col.Model.AddRange (newPlayers);
+
 			CheckPlayersInLimitedCollectionBy (new int [] { 1, 2, 0 }, players, col);
 
 			ll.Enabled = false;
@@ -215,13 +239,14 @@ namespace VAS.Tests.MVVMC
 		public void TestModifyEnabledLimitationEnabledReverseWithSort ()
 		{
 			CountLicenseLimitation ll = new CountLicenseLimitation { Enabled = true, Maximum = 3 };
-
 			col.Limitation.Model = ll;
+
 			col.Model.AddRange (players);
 			List<Utils.PlayerDummy> newPlayers = new List<Utils.PlayerDummy> ();
 			newPlayers.Add (new Utils.PlayerDummy { CreationDate = DateTime.Now.AddMinutes (1), Name = "P4" });
 			players.AddRange (newPlayers);
 			col.Model.AddRange (newPlayers);
+
 			CheckPlayersInLimitedCollectionBy (new int [] { 3, 0, 2 }, players, col);
 
 			ll.Enabled = false;
@@ -335,7 +360,7 @@ namespace VAS.Tests.MVVMC
 
 			// Act
 			var model = new Utils.PlayerDummy ();
-			collection.Model.Replace (new List<Utils.PlayerDummy> { model });
+			collection.Model.Reset (new List<Utils.PlayerDummy> { model });
 
 			// Assert
 			Assert.AreEqual (1, collection.Model.Count);
@@ -356,7 +381,7 @@ namespace VAS.Tests.MVVMC
 
 			// Act
 			var vmToReplace = new DummyPlayerVM { Model = new Utils.PlayerDummy () };
-			collection.ViewModels.Replace (new List<DummyPlayerVM> { vmToReplace });
+			collection.ViewModels.Reset (new List<DummyPlayerVM> { vmToReplace });
 
 			// Assert
 			Assert.AreEqual (1, collection.Model.Count);
@@ -364,6 +389,69 @@ namespace VAS.Tests.MVVMC
 			Assert.AreEqual (1, ((CollectionViewModel<Utils.PlayerDummy, DummyPlayerVM>)collection).ViewModels.Count);
 			Assert.AreEqual (1, collection.LimitedViewModels.Count);
 			Assert.IsTrue (collection.ViewModels.Contains (vmToReplace));
+		}
+
+		[Test]
+		public void EnableLimitation_ViewModelsLimited_SendOneResetNotification()
+		{
+			// Arrange
+			var limitation = new CountLimitationVM { Model = new CountLicenseLimitation { Enabled = false, Maximum = 1 } };
+			col.Limitation = limitation;
+			col.Model.AddRange (players);
+			col.ViewModels.CollectionChanged += HandleCollectionChanged;
+
+			// Act
+			limitation.Model.Enabled = true;
+
+			col.ViewModels.CollectionChanged -= HandleCollectionChanged;
+
+			// Assert
+			Assert.AreEqual (1, actionsNotified.Count ());
+			Assert.AreEqual (NotifyCollectionChangedAction.Reset, actionsNotified [0]);
+		}
+
+		[Test]
+		public void Delete_OneElement_SendRemoveNotification ()
+		{
+			// Arrange
+			var limitation = new CountLimitationVM { Model = new CountLicenseLimitation { Enabled = false, Maximum = 1 } };
+			col.Limitation = limitation;
+			col.Model.AddRange (players);
+			col.ViewModels.CollectionChanged += HandleCollectionChanged;
+
+			// Act
+			col.ViewModels.RemoveAt (0);
+
+			col.ViewModels.CollectionChanged -= HandleCollectionChanged;
+
+			// Assert
+			Assert.AreEqual (1, actionsNotified.Count ());
+			Assert.AreEqual (NotifyCollectionChangedAction.Remove, actionsNotified [0]);
+		}
+
+		[Test]
+		public void Add_OneElement_SendAddNotification ()
+		{
+			// Arrange
+			var limitation = new CountLimitationVM { Model = new CountLicenseLimitation { Enabled = false, Maximum = 1 } };
+			col.Limitation = limitation;
+			col.Model.AddRange (players);
+			col.ViewModels.CollectionChanged += HandleCollectionChanged;
+			var vmToAdd = new DummyPlayerVM { Model = new Utils.PlayerDummy () };
+
+			// Act
+			col.ViewModels.Add (vmToAdd);
+
+			col.ViewModels.CollectionChanged -= HandleCollectionChanged;
+
+			// Assert
+			Assert.AreEqual (1, actionsNotified.Count ());
+			Assert.AreEqual (NotifyCollectionChangedAction.Add, actionsNotified [0]);
+		}
+
+		void HandleCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		{
+			actionsNotified.Add (e.Action);
 		}
 
 		List<Utils.PlayerDummy> CreateDummyPlayers ()

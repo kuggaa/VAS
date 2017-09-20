@@ -83,7 +83,7 @@ namespace VAS.Core.MVVMC
 				limitation = value;
 				if (limitation != null) {
 					limitation.PropertyChanged += LimitationPropertyChanged;
-					FillLimitedViewModels (base.ViewModels);
+					ApplyLimitation ();
 				}
 			}
 		}
@@ -137,7 +137,7 @@ namespace VAS.Core.MVVMC
 		{
 			base.SetModel (model);
 			if (model != null) {
-				FillLimitedViewModels (base.ViewModels);
+				ApplyLimitation ();
 			}
 		}
 
@@ -164,7 +164,7 @@ namespace VAS.Core.MVVMC
 				break;
 			}
 
-			FillLimitedViewModels (base.ViewModels);
+			FilterLimitedViewModels (base.ViewModels);
 			notifying = false;
 		}
 
@@ -173,27 +173,45 @@ namespace VAS.Core.MVVMC
 			if (notifying) {
 				return;
 			}
-			notifying = true;
-			FillLimitedViewModels (base.ViewModels);
-			notifying = false;
+
+			// model has been changed
+			ApplyLimitation ();
 		}
 
-		void FillLimitedViewModels (IEnumerable<TViewModel> viewmodels)
+		void FilterLimitedViewModels (IEnumerable<TViewModel> viewmodels, bool sorted = false)
 		{
-			viewmodels = viewmodels
-				.Sort ((vm) => vm.Model.CreationDate, SortByCreationDateDesc);
+			notifying = true;
 
+			bool filterApplied = false;
 			if (Limitation?.Enabled ?? false) {
+				int previousViewmodels = viewmodels.Count ();
 				viewmodels = viewmodels.Take (Limitation.Maximum);
+				filterApplied = viewmodels.Count () != previousViewmodels;
 			}
 
-			LimitedViewModels?.Replace (viewmodels);
+			if (sorted || filterApplied) {
+				LimitedViewModels?.Reset (viewmodels);
+			} else {
+				LimitedViewModels?.Replace (viewmodels);
+			}
+
+			notifying = false;
 		}
 
 		void LimitationPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == nameof (Limitation.Enabled) || e.PropertyName == nameof (Limitation.Maximum)) {
-				FillLimitedViewModels (base.ViewModels);
+				ApplyLimitation ();
+			}
+		}
+
+		void ApplyLimitation ()
+		{
+			if (Limitation?.Enabled ?? false) {
+				var viewmodels = base.ViewModels.Sort ((vm) => vm.Model.CreationDate, SortByCreationDateDesc);
+				FilterLimitedViewModels (viewmodels, true);
+			} else {
+				FilterLimitedViewModels (base.ViewModels, false);
 			}
 		}
 	}

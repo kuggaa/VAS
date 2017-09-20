@@ -165,7 +165,7 @@ namespace VAS.Core.ViewModel
 		public void Select (TChildViewModel selected, bool clearSelection = true)
 		{
 			if (clearSelection) {
-				Selection.Replace (new List<TChildViewModel> { selected });
+				Selection.Reset (new List<TChildViewModel> { selected });
 			} else {
 				Selection.Add (selected);
 			}
