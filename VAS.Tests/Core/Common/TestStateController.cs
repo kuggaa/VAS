@@ -287,7 +287,7 @@ namespace VAS.Tests.Core.Common
 			await sc.MoveBack ();
 
 			// Assert
-			Assert.AreEqual (sc.Current, "Home");
+			Assert.AreEqual (sc.Current.Name, "Home");
 		}
 
 		[Test]
@@ -305,7 +305,7 @@ namespace VAS.Tests.Core.Common
 
 			// Assert
 			Assert.IsTrue (result);
-			Assert.AreEqual (sc.Current, "Home");
+			Assert.AreEqual (sc.Current.Name, "Home");
 		}
 
 		[Test]
@@ -321,7 +321,7 @@ namespace VAS.Tests.Core.Common
 
 			// Assert
 			Assert.IsTrue (result);
-			Assert.AreEqual (sc.Current, "Wait1");
+			Assert.AreEqual (sc.Current.Name, "Wait1");
 		}
 
 		[Test]
@@ -340,7 +340,7 @@ namespace VAS.Tests.Core.Common
 
 			// Assert
 			Assert.IsTrue (result);
-			Assert.AreEqual (sc.Current, "Home");
+			Assert.AreEqual (sc.Current.Name, "Home");
 			backgroundStateMock.Verify (s => s.FreezeState (), Times.Once ());
 			backgroundStateMock.Verify (s => s.HideState (), Times.Never ());
 			backgroundStateMock.Verify (s => s.UnloadState (), Times.Never ());
@@ -369,7 +369,7 @@ namespace VAS.Tests.Core.Common
 			// Assert
 			Assert.IsTrue (fakeController.Started);
 			Assert.IsTrue (result);
-			Assert.AreEqual (sc.Current, "First");
+			Assert.AreEqual (sc.Current.Name, "First");
 		}
 
 		[Test]
@@ -388,7 +388,7 @@ namespace VAS.Tests.Core.Common
 
 			// Assert
 			Assert.IsTrue (result);
-			Assert.AreEqual (sc.Current, "New");
+			Assert.AreEqual (sc.Current.Name, "New");
 			backgroundStateMock.Verify (s => s.FreezeState (), Times.Once ());
 			backgroundStateMock.Verify (s => s.HideState (), Times.Once ());
 			backgroundStateMock.Verify (s => s.UnloadState (), Times.Once ());
@@ -412,7 +412,7 @@ namespace VAS.Tests.Core.Common
 
 			// Assert
 			Assert.IsTrue (result);
-			Assert.AreEqual (sc.Current, "New");
+			Assert.AreEqual (sc.Current.Name, "New");
 			backgroundStateMock.Verify (s => s.FreezeState (), Times.Once ());
 			backgroundStateMock.Verify (s => s.HideState (), Times.Never ());
 			backgroundStateMock.Verify (s => s.UnloadState (), Times.Never ());
@@ -472,7 +472,7 @@ namespace VAS.Tests.Core.Common
 			await sc.MoveTo ("Transition2", null);
 
 			// Assert
-			Assert.AreEqual ("Transition2", sc.Current);
+			Assert.AreEqual ("Transition2", sc.Current.Name);
 		}
 
 
@@ -492,7 +492,7 @@ namespace VAS.Tests.Core.Common
 			var currentNavState = sc.LastState ();
 
 			Assert.IsFalse (ret);
-			Assert.AreEqual ("Home", sc.Current);
+			Assert.AreEqual ("Home", sc.Current.Name);
 
 			Assert.AreEqual (NavigationStateStatus.Shown, currentNavState.CurrentStatus);
 		}
@@ -513,7 +513,7 @@ namespace VAS.Tests.Core.Common
 			var currentNavState = sc.LastState ();
 
 			Assert.IsFalse (ret);
-			Assert.AreEqual ("Transition1", sc.Current);
+			Assert.AreEqual ("Transition1", sc.Current.Name);
 			Assert.AreEqual (NavigationStateStatus.Shown, currentNavState.CurrentStatus);
 		}
 	}
