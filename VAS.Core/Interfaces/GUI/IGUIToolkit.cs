@@ -80,6 +80,12 @@ namespace VAS.Core.Interfaces.GUI
 		Task<bool> CreateNewTemplate<T> (IList<T> availableTemplates, string defaultName,
 										 string countText, string emptyText,
 										 CreateEvent<T> evt) where T : ITemplate;
+
+		/// <summary>
+		/// Runs a secondary loop until the condition is met (condition returns true)
+		/// </summary>
+		/// <param name="condition">Condition.</param>
+		void RunLoop (Func<bool> condition);
 	}
 }
 
