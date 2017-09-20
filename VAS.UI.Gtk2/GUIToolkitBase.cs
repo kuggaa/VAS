@@ -247,6 +247,15 @@ namespace VAS.UI
 														 string countText, string emptyText,
 														 CreateEvent<T> evt) where T : ITemplate;
 
+		public void RunLoop (Func<bool> condition)
+		{
+			while (!condition ()) {
+				if (Application.EventsPending ()) {
+					Application.RunIteration ();
+				}
+			}
+		}
+
 		public Widget GetParentWidget (object parent)
 		{
 			if (parent is Widget) {

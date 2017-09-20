@@ -86,13 +86,17 @@ namespace VAS.Services.AppUpdater
 
 		public override bool UpdaterShouldRelaunchApplication (SUUpdater updater)
 		{
-			// Let the user a laast change to save its work before closing
+			bool shouldRelaunch = false;
+			bool hasResult = false;
 			Task<bool> task = App.Current.GUIToolkit.Quit ();
-			task.ConfigureAwait (false);
-			// Because this is a delegate and we don't have an option to await the result of the task, Wait() it with a
-			// continuation in a different thread to avoid blocking.
-			task.Wait ();
-			return task.Result;
+			task.ContinueWith (async (arg) => {
+				shouldRelaunch = await arg;
+				hasResult = true;
+			});
+			//We need to create a secondary loop because this callback is run in the main thread and we need a secondary
+			//loop in order to not block the main loop while we are quitting the application
+			App.Current.GUIToolkit.RunLoop (() => hasResult);
+			return shouldRelaunch;
 		}
 	}
 }
