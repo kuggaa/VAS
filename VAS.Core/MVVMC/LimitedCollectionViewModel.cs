@@ -50,6 +50,7 @@ namespace VAS.Core.MVVMC
 			LimitedViewModels = new RangeObservableCollection<TViewModel> ();
 			LimitedViewModels.CollectionChanged += HandleViewModelsCollectionChanged;
 			base.ViewModels.CollectionChanged += HandleBaseViewModelModelsCollectionChanged;
+			StaticViewModels = new List<TViewModel> ();
 		}
 
 		protected override void DisposeManagedResources ()
@@ -121,6 +122,16 @@ namespace VAS.Core.MVVMC
 		}
 
 		/// <summary>
+		/// This contains the ViewModels that does not want to take into account
+		/// when Limiting the collection, for example LineupEvent, default dashboard, default home/away teams
+		/// </summary>
+		/// <value>The static view models.</value>
+		protected List<TViewModel> StaticViewModels {
+			get;
+			private set;
+		}
+
+		/// <summary>
 		/// Gets the enumerator of the LimitedViewModels. This method is automatically called in a foreach.
 		/// </summary>
 		/// <returns>The enumerator.</returns>
@@ -186,7 +197,8 @@ namespace VAS.Core.MVVMC
 			bool filterApplied = false;
 			if (Limitation?.Enabled ?? false) {
 				int previousViewmodels = viewmodels.Count ();
-				viewmodels = viewmodels.Take (Limitation.Maximum);
+				viewmodels = viewmodels.Except (StaticViewModels).Take (Limitation.Maximum);
+				viewmodels = viewmodels.Union (StaticViewModels);
 				filterApplied = viewmodels.Count () != previousViewmodels;
 			}
 
