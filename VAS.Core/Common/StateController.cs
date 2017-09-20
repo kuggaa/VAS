@@ -34,9 +34,9 @@ namespace VAS.Core
 			transitionCommands = new Dictionary<string, Command> ();
 		}
 
-		public string Current {
+		public IScreenState Current {
 			get {
-				return LastState ()?.Name;
+				return LastState ()?.ScreenState;
 			}
 		}
 
@@ -389,7 +389,7 @@ namespace VAS.Core
 			if (!await App.Current.Navigation.Pop (lastState?.ScreenState.Panel)) {
 				return false;
 			}
-			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = Current });
+			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = Current.Name });
 			if (!await navigationState.Unload ()) {
 				return false;
 			}
@@ -447,7 +447,7 @@ namespace VAS.Core
 				return false;
 			}
 			modalStateStack.RemoveAt (modalStateStack.Count - 1);
-			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = Current, IsModal = modalStateStack.Any () });
+			await App.Current.EventsBroker.Publish (new NavigationEvent { Name = Current.Name, IsModal = modalStateStack.Any () });
 			await App.Current.Navigation.PopModal (screenToPop.Panel);
 			screenToPop.Dispose ();
 			return true;
