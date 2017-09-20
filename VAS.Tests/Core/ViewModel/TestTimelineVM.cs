@@ -250,6 +250,21 @@ namespace VAS.Tests.Core.ViewModel
 			CheckPlayerEvents (timeline, player2, 1);
 		}
 
+		[Test]
+		public void Timeline_SetLimitation_SetsInFullTimeline()
+		{
+			TimelineVM viewModel = new TimelineVM ();
+			viewModel.Model = new RangeObservableCollection<TimelineEvent> ();
+			var countLimitation = new CountLimitationVM ();
+			var countLimitationChart = new CountLimitationBarChartVM {
+				Limitation = countLimitation
+			};
+
+			viewModel.LimitationChart = countLimitationChart;
+
+			Assert.AreSame (countLimitation, viewModel.FullTimeline.Limitation);
+		}
+
 		void CheckPlayerEvents (TimelineVM timeline, PlayerVM player, int count)
 		{
 			Assert.AreEqual (count, timeline.TeamsTimeline.ViewModels.SelectMany (p => p.ViewModels).
