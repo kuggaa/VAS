@@ -61,6 +61,12 @@ namespace VAS.Core.Interfaces
 		/// Document version
 		/// </value>
 		int Version { get; set; }
+
+		/// <summary>
+		/// Gets or sets the creation date.
+		/// </summary>
+		/// <value>The creation date.</value>
+		DateTime CreationDate { get; set; }
 	}
 }
 

@@ -217,7 +217,7 @@ namespace VAS.Services
 			UpdateFeatureLimitations ();
 		}
 
-		public CountLimitationBarChartVM CreateBarChartVM (string limitationName)
+		public CountLimitationBarChartVM CreateBarChartVM (string limitationName, int showOnRemaining = -1, Color backgroundColor = null)
 		{
 			var limitation = Get<CountLimitationVM> (limitationName);
 			TwoBarChartVM barChart = new TwoBarChartVM (limitation.Maximum,
@@ -229,7 +229,10 @@ namespace VAS.Services
 				Mode = ScaleMode.Fill
 			};
 
-			var result = new CountLimitationBarChartVM { Limitation = limitation, BarChart = barChart };
+			var result = new CountLimitationBarChartVM (showOnRemaining) { Limitation = limitation, BarChart = barChart };
+			if (backgroundColor != null) {
+				result.BackgroundColor = backgroundColor;
+			}
 			result.Bind ();
 			return result;
 		}
