@@ -5,18 +5,32 @@ scriptversion=2014-12-02.19; # UTC
 # Avoid meddling by environment variable of the same name.
 v=
 
+file="Version.txt"
+
+if [ "$1" == mobile ]; then
+    file="MobileVersion.txt"
+fi
+
 # Read the version from the file
-IFS='' read -r line < "Version.txt"
+IFS='' read -r line < ${file}
 v=$line
 
 # Recreate the number of commits and append it to the version from the file.
-vcommit=`git log -n 1 --pretty=format:%H -- Version.txt`
+vcommit=`git log -n 1 --pretty=format:%H -- $file`
 commit_list=`git rev-list "$vcommit"..HEAD 2>/dev/null` \
     || { commit_list=failed;
          echo "WARNING: git rev-list failed" 1>&2; }
 numcommits=`echo "$commit_list" | wc -l`
 current_commit_hash=`git describe --abbrev=4 | cut -d "-" -f3`
-v=`echo "$v"."$numcommits"-"$current_commit_hash" | tr -d '[:space:]'`
+
+shortVersion=`echo "$v"."$numcommits" | tr -d '[:space:]'`
+longVersion=`echo "$shortVersion"-"$current_commit_hash"`
+
+if [ "$1" == mobile ]; then
+    v=$shortVersion
+else 
+    v=$longVersion
+fi
 
 # Omit the trailing newline, so that m4_esyscmd can use the result directly.
 printf %s "$v"
