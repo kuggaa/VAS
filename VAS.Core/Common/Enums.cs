@@ -647,5 +647,13 @@ namespace VAS.Core.Common
 		LinkingButtons,
 		Watermark
 	}
+
+	/// <summary>
+	/// VAS count limited objects.
+	/// </summary>
+	public enum VASCountLimitedObjects
+	{
+		TimelineEvents
+	}
 }
 

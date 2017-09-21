@@ -30,10 +30,20 @@ namespace VAS.Core.ViewModel
 		BindingContext ctx;
 		CountLimitationVM limitation;
 		TwoBarChartVM barChart;
+		readonly int showOnRemaining;
+		string onlyText, noText, leftText, shownText;
 
-		public CountLimitationBarChartVM ()
+		public CountLimitationBarChartVM (int showOnRemaining = -1)
 		{
+			this.showOnRemaining = showOnRemaining;
 			ctx = new BindingContext ();
+			Visible = true;
+			// FIXME: This color is bg_dark_color from gtkrc, it should be set in the color scheme, styleconf, whatever...
+			BackgroundColor = Color.Parse ("#151a20");
+			onlyText = Catalog.GetString ("Only");
+			noText = Catalog.GetString ("No");
+			leftText = Catalog.GetString ("left in your plan!");
+			shownText = Catalog.GetString ("are being shown (out of");
 		}
 
 		protected override void DisposeManagedResources ()
@@ -60,6 +70,7 @@ namespace VAS.Core.ViewModel
 					limitation.PropertyChanged -= HandlePropertyChanged;
 				}
 				limitation = value;
+				Visible = limitation?.Enabled ?? false;
 				if (limitation != null) {
 					limitation.PropertyChanged += HandlePropertyChanged;
 					HandlePropertyChanged (null, null);
@@ -93,6 +104,16 @@ namespace VAS.Core.ViewModel
 			private set;
 		}
 
+		public bool Visible {
+			get;
+			private set;
+		}
+
+		public Color BackgroundColor {
+			get;
+			set;
+		}
+
 		/// <summary>
 		/// Bind the series in the BarChart to the limitation properties, so that the chart updates automatically.
 		/// </summary>
@@ -103,6 +124,14 @@ namespace VAS.Core.ViewModel
 			ctx.UpdateViewModel (Limitation);
 		}
 
+		void UpdateVisibility ()
+		{
+			Visible = Limitation.Enabled;
+			if (Limitation.Remaining > showOnRemaining && showOnRemaining != -1) {
+				Visible = false;
+			}
+		}
+
 		void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if(Limitation == null || BarChart == null)
@@ -110,13 +139,20 @@ namespace VAS.Core.ViewModel
 				return;
 			}
 			if (NeedsSync (e?.PropertyName, nameof (Limitation.Count))) {
-				if (Limitation.Remaining <= 0) {
-					BarChart.RightSerie.Color = Color.Red;
-					Text = $"Oops! <b>No {Limitation.DisplayName.ToLower ()}</b> left in your plan!";
+				UpdateVisibility ();
+				BarChart.RightSerie.Color = Color.Red;
+				if (Limitation.Remaining == 0) {
+					Text = $"Oops! <b>{noText} {Limitation.DisplayName.ToLower ()}</b> {leftText}";
+				} else if (Limitation.Remaining < 0) {
+					Text = $"{onlyText} <b>{Limitation.Maximum} {Limitation.DisplayName.ToLower ()}</b> {shownText} " +
+						$"{Limitation.Count})";
 				} else {
 					BarChart.RightSerie.Color = Color.Transparent;
-					Text = $"Only <b>{Limitation.Remaining} {Limitation.DisplayName.ToLower ()}</b> left in your plan!";
+					Text = $"{onlyText} <b>{Limitation.Remaining} {Limitation.DisplayName.ToLower ()}</b> {leftText}";
 				}
+			}
+			if (NeedsSync (e?.PropertyName, nameof (Limitation.Enabled))) {
+				UpdateVisibility ();
 			}
 		}
 	}

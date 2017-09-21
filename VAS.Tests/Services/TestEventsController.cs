@@ -18,6 +18,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using VAS.Core.Events;
@@ -30,6 +31,7 @@ using VAS.Core.ViewModel;
 using VAS.Services;
 using VAS.Services.Controller;
 using VAS.Services.ViewModel;
+using VASCountLimitedObjects = VAS.Core.Common.VASCountLimitedObjects;
 
 namespace VAS.Tests.Services
 {
@@ -42,9 +44,10 @@ namespace VAS.Tests.Services
 		TimelineEventVM evVM1, evVM2, evVM11;
 		ProjectVM projectVM;
 		VideoPlayerVM videoPlayer;
+		Mock<ILicenseLimitationsService> mockLimitationService;
 
 		[SetUp]
-		public void Setup ()
+		public async Task Setup ()
 		{
 			controller = new EventsController ();
 			playerController = new Mock<IVideoPlayerController> ();
@@ -69,6 +72,10 @@ namespace VAS.Tests.Services
 				}
 			);
 
+			mockLimitationService = new Mock<ILicenseLimitationsService> ();
+			mockLimitationService.Setup (ls => ls.CanExecute (It.IsAny<string> ())).Returns (true);
+			App.Current.LicenseLimitationsService = mockLimitationService.Object;
+
 			projectVM = new DummyProjectVM { Model = Utils.CreateProject (true) };
 			controller.SetViewModel (new ProjectAnalysisVM<ProjectVM> {
 				Project = projectVM,
@@ -79,7 +86,7 @@ namespace VAS.Tests.Services
 			mtkMock.Setup (m => m.GetPlayer ()).Returns (playerMock.Object);
 			App.Current.MultimediaToolkit = mtkMock.Object;
 
-			controller.Start ();
+			await controller.Start ();
 
 			var eventType1 = new EventType {
 				Name = "Test"
@@ -106,9 +113,9 @@ namespace VAS.Tests.Services
 		}
 
 		[TearDown]
-		public void TearDown ()
+		public async Task TearDown ()
 		{
-			controller.Stop ();
+			await controller.Stop ();
 		}
 
 		[Test]
@@ -245,28 +252,6 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
-		public void NewDashboardEventAddsEventToTimeline ()
-		{
-			PreparePlayer ();
-
-			int currentCount = projectVM.Timeline.FullTimeline.Count ();
-			EventType e1 = projectVM.Model.EventTypes [0];
-			TimelineEvent ev = new TimelineEvent {
-				EventType = e1,
-				Start = new Time (0),
-				Stop = new Time (1000),
-				EventTime = new Time (500)
-			};
-
-			App.Current.EventsBroker.Publish (new NewDashboardEvent {
-				TimelineEvent = ev
-			});
-
-			Assert.AreEqual (currentCount + 1, projectVM.Timeline.FullTimeline.Count ());
-			Assert.AreSame (ev, projectVM.Timeline.FullTimeline.ViewModels [currentCount].Model);
-		}
-
-		[Test]
 		public void PeriodChange_StartChanged_SeekDone ()
 		{
 			Period period = new Period {
@@ -332,6 +317,144 @@ namespace VAS.Tests.Services
 
 			playerController.Verify (p => p.Pause (false));
 			playerController.Verify (p => p.Seek (stop, true, false, true));
+		}
+
+		[Test]
+		public void NewDashboardEvent_LimitationNotEnabled_AddsEvent ()
+		{
+			PreparePlayer ();
+
+			int currentCount = projectVM.Timeline.FullTimeline.Count ();
+			EventType e1 = projectVM.Model.EventTypes [0];
+			TimelineEvent ev = new TimelineEvent {
+				EventType = e1,
+				Start = new Time (0),
+				Stop = new Time (1000),
+				EventTime = new Time (500)
+			};
+
+			App.Current.EventsBroker.Publish (new NewDashboardEvent {
+				TimelineEvent = ev
+			});
+
+			Assert.AreEqual (currentCount + 1, projectVM.Timeline.FullTimeline.Count ());
+			Assert.AreSame (ev, projectVM.Timeline.FullTimeline.Model [currentCount]);
+			mockLimitationService.Verify (ls => ls.MoveToUpgradeDialog (VASCountLimitedObjects.TimelineEvents.ToString ()),
+			                              Times.Never);
+		}
+
+		[Test]
+		public void NewDashboardEvent_LimitationEnabled_MoveToUpgradeDialog ()
+		{
+			mockLimitationService.Setup (ls => ls.CanExecute (VASCountLimitedObjects.TimelineEvents.ToString ()))
+								 .Returns (false);
+			PreparePlayer ();
+
+			int currentCount = projectVM.Timeline.FullTimeline.Count ();
+			EventType e1 = projectVM.Model.EventTypes [0];
+			TimelineEvent ev = new TimelineEvent {
+				EventType = e1,
+				Start = new Time (0),
+				Stop = new Time (1000),
+				EventTime = new Time (500)
+			};
+
+			App.Current.EventsBroker.Publish (new NewDashboardEvent {
+				TimelineEvent = ev
+			});
+
+			Assert.AreEqual (currentCount, projectVM.Timeline.FullTimeline.Count ());
+			mockLimitationService.Verify (ls => ls.MoveToUpgradeDialog (VASCountLimitedObjects.TimelineEvents.ToString ()),
+			                              Times.Once);
+		}
+
+		[Test]
+		public void NewEventEvent_LimitationNotEnabled_AddsEvent ()
+		{
+			PreparePlayer ();
+
+			int currentCount = projectVM.Timeline.FullTimeline.Count ();
+			EventType e1 = projectVM.Model.EventTypes [0];
+			TimelineEvent ev = new TimelineEvent {
+				EventType = e1,
+				Start = new Time (0),
+				Stop = new Time (1000),
+				EventTime = new Time (500)
+			};
+
+			App.Current.EventsBroker.Publish (new NewEventEvent {
+				EventTime = ev.EventTime,
+				EventType = ev.EventType,
+				Start = ev.Start,
+				Stop = ev.Stop
+			});
+
+			Assert.AreEqual (currentCount + 1, projectVM.Timeline.FullTimeline.Count ());
+			Assert.AreSame (ev.EventType, projectVM.Timeline.FullTimeline.Model [currentCount].EventType);
+			mockLimitationService.Verify (ls => ls.MoveToUpgradeDialog (VASCountLimitedObjects.TimelineEvents.ToString ()),
+			                              Times.Never);
+		}
+
+		[Test]
+		public void NewEventEvent_LimitationEnabled_MoveToUpgradeDialog ()
+		{
+			mockLimitationService.Setup (ls => ls.CanExecute (VASCountLimitedObjects.TimelineEvents.ToString ()))
+								 .Returns (false);
+			PreparePlayer ();
+
+			int currentCount = projectVM.Timeline.FullTimeline.Count ();
+			EventType e1 = projectVM.Model.EventTypes [0];
+			TimelineEvent ev = new TimelineEvent {
+				EventType = e1,
+				Start = new Time (0),
+				Stop = new Time (1000),
+				EventTime = new Time (500)
+			};
+
+			App.Current.EventsBroker.Publish (new NewEventEvent {
+				EventTime = ev.EventTime,
+				EventType = ev.EventType,
+				Start = ev.Start,
+				Stop = ev.Stop
+			});
+
+			Assert.AreEqual (currentCount, projectVM.Timeline.FullTimeline.Count ());
+			mockLimitationService.Verify (ls => ls.MoveToUpgradeDialog (VASCountLimitedObjects.TimelineEvents.ToString ()),
+			                              Times.Once);
+		}
+
+		[Test]
+		public void DuplicateEventsEvent_LimitationNotEnabled_AddsEvents ()
+		{
+			PreparePlayer ();
+
+			int currentCount = projectVM.Timeline.FullTimeline.Count ();
+
+			App.Current.EventsBroker.Publish (new DuplicateEventsEvent {
+				TimelineEvents = projectVM.Timeline.FullTimeline.Model.ToList ()
+			});
+
+			Assert.AreEqual (2 * currentCount, projectVM.Timeline.FullTimeline.Count ());
+			mockLimitationService.Verify (ls => ls.MoveToUpgradeDialog (VASCountLimitedObjects.TimelineEvents.ToString ()),
+										  Times.Never);
+		}
+
+		[Test]
+		public void DuplicateEventsEvent_LimitationEnabled_MoveToUpgradeDialog ()
+		{
+			mockLimitationService.Setup (ls => ls.CanExecute (VASCountLimitedObjects.TimelineEvents.ToString ()))
+								 .Returns (false);
+			PreparePlayer ();
+
+			int currentCount = projectVM.Timeline.FullTimeline.Count ();
+
+			App.Current.EventsBroker.Publish (new DuplicateEventsEvent {
+				TimelineEvents = projectVM.Timeline.FullTimeline.Model.ToList ()
+			});
+
+			Assert.AreEqual (currentCount, projectVM.Timeline.FullTimeline.Count ());
+			mockLimitationService.Verify (ls => ls.MoveToUpgradeDialog (VASCountLimitedObjects.TimelineEvents.ToString ()),
+										  Times.Once);
 		}
 
 		bool ComparePlaylist (Playlist playlist, List<TimelineEventVM> eventList)

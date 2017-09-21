@@ -150,6 +150,7 @@
     <Compile Include="Services\TestMediaFileSetController.cs" />
     <Compile Include="Core\ViewModel\TestTagVM.cs" />
     <Compile Include="Core\ViewModel\TestDashboardButtonVM.cs" />
+    <Compile Include="Core\ViewModel\TestCountLimitationBarChartVM.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
