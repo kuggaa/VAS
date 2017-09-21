@@ -270,7 +270,7 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		protected virtual LimitedCollectionViewModel<TimelineEvent, TimelineEventVM> CreateFullTimeline ()
 		{
-			return new LimitedCollectionViewModel<TimelineEvent, TimelineEventVM> ();
+			return new LimitedCollectionViewModel<TimelineEvent, TimelineEventVM> (false);
 		}
 
 		/// <summary>
