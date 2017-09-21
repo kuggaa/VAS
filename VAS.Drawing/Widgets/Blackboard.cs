@@ -59,9 +59,9 @@ namespace VAS.Drawing.Widgets
 			FontSize = 12;
 			tool = DrawTool.Selection;
 			currentZoom = 1;
-			MinZoom = MaxZoom = 1;
+			MinZoom = MaxZoom = App.Current.ZoomLevels.Min ();
 			if (App.Current.SupportsZoom) {
-				MaxZoom = 4;
+				MaxZoom = App.Current.ZoomLevels.Max ();
 			}
 			ZoomCommand = new LimitationCommand<double> (VASFeature.Zoom.ToString (), Zoom);
 		}
