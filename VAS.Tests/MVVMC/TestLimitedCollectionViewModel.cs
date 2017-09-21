@@ -483,6 +483,41 @@ namespace VAS.Tests.MVVMC
 			Assert.AreEqual (2, collection.LimitedViewModels.Count);
         }
 
+		[Test]
+		public void StaticViewModel_SetLimitation_MantainsVisibility ()
+		{
+			DummyLimitedCollectionVM collection = new DummyLimitedCollectionVM ();
+			collection.Model.AddRange (players);
+			var staticVM = collection.ViewModels [2];
+			collection.StaticViewModels.Add (staticVM);
+
+			collection.Limitation = new CountLimitationVM { Model = new CountLicenseLimitation { Maximum = 1, Enabled = true } };
+
+			Assert.AreEqual (2, collection.ViewModels.Count ());
+			Assert.AreEqual (staticVM, collection.ViewModels.Last ());
+		}
+
+		[Test]
+		public void StaticViewModel_AddViewModels_MantainsVisibility ()
+		{
+			DummyLimitedCollectionVM collection = new DummyLimitedCollectionVM ();
+			collection.Limitation = new CountLimitationVM { Model = new CountLicenseLimitation { Maximum = 2, Enabled = true } };
+
+			var staticVM = new DummyPlayerVM {
+				Model = new Utils.PlayerDummy {
+					CreationDate = DateTime.Now, Name = "P4"
+				}
+			};
+			collection.StaticViewModels.Add (staticVM);
+			collection.ViewModels.Add (staticVM);
+
+
+			collection.Model.AddRange (players);
+
+			Assert.AreEqual (3, collection.ViewModels.Count ());
+			Assert.AreEqual (staticVM, collection.ViewModels.Last ());
+		}
+
 		void HandleCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
 			actionsNotified.Add (e.Action);
@@ -504,6 +539,15 @@ namespace VAS.Tests.MVVMC
 			Assert.AreEqual (orderPlayers.Length, collection.Count ());
 			for (int i = 0; i < orderPlayers.Length; i++) {
 				Assert.AreEqual (players [orderPlayers [i]].Name, collection.ElementAt (i).Model.Name);
+			}
+		}
+	}
+
+	class DummyLimitedCollectionVM  : LimitedCollectionViewModel<Utils.PlayerDummy, DummyPlayerVM>
+	{
+		public new List<DummyPlayerVM> StaticViewModels {
+			get {
+				return base.StaticViewModels;
 			}
 		}
 	}
