@@ -125,7 +125,10 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
-		/// Gets or sets the event types timeline.
+		/// Gets the agrupation of timeline events by EventTypes, this is only used for viewing purposes
+		/// do not modify that collection, to Add or Remove timeline events use FullTimeline
+		/// If you want to force a Remove or Add of a EventTypeTimelineVM remove first the models related to
+		/// the EventType
 		/// </summary>
 		/// <value>The event types timeline.</value>
 		public NestedViewModel<EventTypeTimelineVM> EventTypesTimeline {
@@ -134,9 +137,12 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
-		/// Gets or sets the event types timeline.
+		/// Gets the agrupation of timeline events by Teams, this is only used for viewing purposes
+		/// do not modify that collection, to Add or Remove timeline events use FullTimeline
+		/// If you want to force a Remove or Add of a TeamTimelineVM remove first the models related to
+		/// the EventType
 		/// </summary>
-		/// <value>The event types timeline.</value>
+		/// <value>The team timeline.</value>
 		public NestedViewModel<TeamTimelineVM> TeamsTimeline {
 			get;
 			set;
@@ -169,8 +175,8 @@ namespace VAS.Core.ViewModel
 
 		public void Clear ()
 		{
+			FullTimeline.Model.Clear ();
 			EventTypesTimeline.ViewModels.Clear ();
-			FullTimeline.ViewModels.Clear ();
 		}
 
 		/// <summary>
