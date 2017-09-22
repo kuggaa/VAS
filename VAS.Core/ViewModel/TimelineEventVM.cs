@@ -118,6 +118,48 @@ namespace VAS.Core.ViewModel
 				Model.FieldPosition = value;
 			}
 		}
+
+		/// <summary>
+		/// Compare the specified timelineEventVM with the calling one.
+		/// </summary>
+		/// <returns>The compare result.</returns>
+		/// <param name="timelineEventB">Timeline event to be compared with.</param>
+		public int Compare (TimelineEventVM timelineEventB)
+		{
+			int ret;
+			switch (Model.EventType.SortMethod) {
+			case (SortMethodType.SortByName):
+				ret = string.Compare (Name, timelineEventB.Name);
+				if (ret == 0) {
+					ret = (Duration - timelineEventB.Duration).MSeconds;
+				}
+				break;
+			case (SortMethodType.SortByStartTime):
+				ret = (Start - timelineEventB.Start).MSeconds;
+				if (ret == 0) {
+					ret = string.Compare (Name, timelineEventB.Name);
+				}
+				break;
+			case (SortMethodType.SortByStopTime):
+				ret = (Stop - timelineEventB.Stop).MSeconds;
+				if (ret == 0) {
+					ret = string.Compare (Name, timelineEventB.Name);
+				}
+				break;
+			case (SortMethodType.SortByDuration):
+				ret = (Duration - timelineEventB.Duration).MSeconds;
+				if (ret == 0) {
+					ret = string.Compare (Name, timelineEventB.Name);
+				}
+				break;
+			default:
+				return 0;
+			}
+			if (ret == 0) {
+				ret = timelineEventB.GetHashCode () - GetHashCode ();
+			}
+			return ret;
+		}
 	}
 
 	/// <summary>

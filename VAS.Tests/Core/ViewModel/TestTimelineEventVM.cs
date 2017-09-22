@@ -65,5 +65,329 @@ namespace VAS.Tests.Core.ViewModel
 
 			Assert.AreEqual (4, count);
 		}
+
+		[Test]
+		public void TimelineEventVM_CompareByName_ABiggerThanB ()
+		{
+			//Arrange
+			var modelA = new TimelineEvent {
+				Name = "Attack",
+				Start = new Time (1000),
+				Stop = new Time (2000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByName }
+			};
+			var viewModelA = new TimelineEventVM {
+				Model = modelA
+			};
+			var modelB = new TimelineEvent {
+				Name = "Defense",
+				Start = new Time (1000),
+				Stop = new Time (2000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByName }
+			};
+			var viewModelB = new TimelineEventVM {
+				Model = modelB
+			};
+
+			//Assertion
+			Assert.AreEqual (-1, viewModelA.Compare (viewModelB));
+		}
+
+		[Test]
+		public void TimelineEventVM_CompareByName_BBiggerThanA ()
+		{
+			//Arrange
+			var modelA = new TimelineEvent {
+				Name = "Defense",
+				Start = new Time (1000),
+				Stop = new Time (2000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByName }
+			};
+			var viewModelA = new TimelineEventVM {
+				Model = modelA
+			};
+			var modelB = new TimelineEvent {
+				Name = "Attack",
+				Start = new Time (1000),
+				Stop = new Time (2000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByName }
+			};
+			var viewModelB = new TimelineEventVM {
+				Model = modelB
+			};
+
+			//Assertion
+			Assert.AreEqual (1, viewModelA.Compare (viewModelB));
+		}
+
+		[Test]
+		public void TimelineEventVM_CompareByName_ANeverEqualToB ()
+		{
+			//Arrange
+			var modelA = new TimelineEvent {
+				Name = "Attack",
+				Start = new Time (1000),
+				Stop = new Time (2000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByName }
+			};
+			var viewModelA = new TimelineEventVM {
+				Model = modelA
+			};
+			var modelB = new TimelineEvent {
+				Name = "Attack",
+				Start = new Time (1000),
+				Stop = new Time (2000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByName }
+			};
+			var viewModelB = new TimelineEventVM {
+				Model = modelB
+			};
+
+			//Assertion
+			Assert.AreNotEqual (0, viewModelA.Compare (viewModelB));
+		}
+
+		[Test]
+		public void TimelineEventVM_CompareByStartTime_ABiggerThanB ()
+		{
+			//Arrange
+			var modelA = new TimelineEvent {
+				Name = "Attack",
+				Start = new Time (1000),
+				Stop = new Time (2000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByStartTime }
+			};
+			var viewModelA = new TimelineEventVM {
+				Model = modelA
+			};
+			var modelB = new TimelineEvent {
+				Name = "Defense",
+				Start = new Time (2000),
+				Stop = new Time (4000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByStartTime }
+			};
+			var viewModelB = new TimelineEventVM {
+				Model = modelB
+			};
+
+			//Assertion
+			Assert.Less (viewModelA.Compare (viewModelB), 0);
+		}
+
+		[Test]
+		public void TimelineEventVM_CompareByStartTime_BBiggerThanA ()
+		{
+			//Arrange
+			var modelA = new TimelineEvent {
+				Name = "Attack",
+				Start = new Time (2000),
+				Stop = new Time (4000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByStartTime }
+			};
+			var viewModelA = new TimelineEventVM {
+				Model = modelA
+			};
+			var modelB = new TimelineEvent {
+				Name = "Defense",
+				Start = new Time (1000),
+				Stop = new Time (2000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByStartTime }
+			};
+			var viewModelB = new TimelineEventVM {
+				Model = modelB
+			};
+
+			//Assertion
+			Assert.Greater (viewModelA.Compare (viewModelB), 0);
+		}
+
+		[Test]
+		public void TimelineEventVM_CompareByStartTime_ANeverEqualToB ()
+		{
+			//Arrange
+			var modelA = new TimelineEvent {
+				Name = "Attack",
+				Start = new Time (1000),
+				Stop = new Time (2000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByStartTime }
+			};
+			var viewModelA = new TimelineEventVM {
+				Model = modelA
+			};
+			var modelB = new TimelineEvent {
+				Name = "Defense",
+				Start = new Time (1000),
+				Stop = new Time (4000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByStartTime }
+			};
+			var viewModelB = new TimelineEventVM {
+				Model = modelB
+			};
+
+			//Assertion
+			Assert.AreNotEqual (0, viewModelA.Compare (viewModelB));
+		}
+
+		[Test]
+		public void TimelineEventVM_CompareByStopTime_ABiggerThanB ()
+		{
+			//Arrange
+			var modelA = new TimelineEvent {
+				Name = "Attack",
+				Start = new Time (1000),
+				Stop = new Time (2000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByStopTime }
+			};
+			var viewModelA = new TimelineEventVM {
+				Model = modelA
+			};
+			var modelB = new TimelineEvent {
+				Name = "Defense",
+				Start = new Time (2000),
+				Stop = new Time (4000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByStopTime }
+			};
+			var viewModelB = new TimelineEventVM {
+				Model = modelB
+			};
+
+			//Assertion
+			Assert.Less (viewModelA.Compare (viewModelB), 0);
+		}
+
+		[Test]
+		public void TimelineEventVM_CompareByStopTime_BBiggerThanA ()
+		{
+			//Arrange
+			var modelA = new TimelineEvent {
+				Name = "Attack",
+				Start = new Time (2000),
+				Stop = new Time (4000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByStopTime }
+			};
+			var viewModelA = new TimelineEventVM {
+				Model = modelA
+			};
+			var modelB = new TimelineEvent {
+				Name = "Defense",
+				Start = new Time (1000),
+				Stop = new Time (2000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByStopTime }
+			};
+			var viewModelB = new TimelineEventVM {
+				Model = modelB
+			};
+
+			//Assertion
+			Assert.Greater (viewModelA.Compare (viewModelB), 0);
+		}
+
+		[Test]
+		public void TimelineEventVM_CompareByStopTime_ANeverEqualToB ()
+		{
+			//Arrange
+			var modelA = new TimelineEvent {
+				Name = "Attack",
+				Start = new Time (1000),
+				Stop = new Time (4000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByStopTime }
+			};
+			var viewModelA = new TimelineEventVM {
+				Model = modelA
+			};
+			var modelB = new TimelineEvent {
+				Name = "Defense",
+				Start = new Time (2000),
+				Stop = new Time (4000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByStopTime }
+			};
+			var viewModelB = new TimelineEventVM {
+				Model = modelB
+			};
+
+			//Assertion
+			Assert.AreNotEqual (viewModelA.Compare (viewModelB), 0);
+		}
+
+		[Test]
+		public void TimelineEventVM_CompareByDurationTime_ABiggerThanB ()
+		{
+			//Arrange
+			var modelA = new TimelineEvent {
+				Name = "Attack",
+				Start = new Time (1000),
+				Stop = new Time (2000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByDuration }
+			};
+			var viewModelA = new TimelineEventVM {
+				Model = modelA
+			};
+			var modelB = new TimelineEvent {
+				Name = "Defense",
+				Start = new Time (2000),
+				Stop = new Time (5000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByDuration }
+			};
+			var viewModelB = new TimelineEventVM {
+				Model = modelB
+			};
+
+			//Assertion
+			Assert.Less (viewModelA.Compare (viewModelB), 0);
+		}
+
+		[Test]
+		public void TimelineEventVM_CompareByDurationTime_BBiggerThanA ()
+		{
+			//Arrange
+			var modelA = new TimelineEvent {
+				Name = "Attack",
+				Start = new Time (1000),
+				Stop = new Time (4000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByDuration }
+			};
+			var viewModelA = new TimelineEventVM {
+				Model = modelA
+			};
+			var modelB = new TimelineEvent {
+				Name = "Defense",
+				Start = new Time (2000),
+				Stop = new Time (4000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByDuration }
+			};
+			var viewModelB = new TimelineEventVM {
+				Model = modelB
+			};
+
+			//Assertion
+			Assert.Greater (viewModelA.Compare (viewModelB), 0);
+		}
+
+		[Test]
+		public void TimelineEventVM_CompareByDurationTime_ANeverEqualToB ()
+		{
+			//Arrange
+			var modelA = new TimelineEvent {
+				Name = "Attack",
+				Start = new Time (1000),
+				Stop = new Time (2000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByDuration }
+			};
+			var viewModelA = new TimelineEventVM {
+				Model = modelA
+			};
+			var modelB = new TimelineEvent {
+				Name = "Defense",
+				Start = new Time (2000),
+				Stop = new Time (4000),
+				EventType = new EventType { SortMethod = SortMethodType.SortByDuration }
+			};
+			var viewModelB = new TimelineEventVM {
+				Model = modelB
+			};
+
+			//Assertion
+			Assert.AreNotEqual (viewModelA.Compare (viewModelB), 0);
+		}
 	}
 }
