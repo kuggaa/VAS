@@ -90,7 +90,7 @@ namespace VAS.Tests.Core.ViewModel
 			};
 
 			//Assertion
-			Assert.AreEqual (-1, viewModelA.Compare (viewModelB));
+			Assert.AreEqual (-1, viewModelA.CompareTo (viewModelB));
 		}
 
 		[Test]
@@ -117,7 +117,7 @@ namespace VAS.Tests.Core.ViewModel
 			};
 
 			//Assertion
-			Assert.AreEqual (1, viewModelA.Compare (viewModelB));
+			Assert.AreEqual (1, viewModelA.CompareTo (viewModelB));
 		}
 
 		[Test]
@@ -144,7 +144,7 @@ namespace VAS.Tests.Core.ViewModel
 			};
 
 			//Assertion
-			Assert.AreNotEqual (0, viewModelA.Compare (viewModelB));
+			Assert.AreNotEqual (0, viewModelA.CompareTo (viewModelB));
 		}
 
 		[Test]
@@ -171,7 +171,7 @@ namespace VAS.Tests.Core.ViewModel
 			};
 
 			//Assertion
-			Assert.Less (viewModelA.Compare (viewModelB), 0);
+			Assert.Less (viewModelA.CompareTo (viewModelB), 0);
 		}
 
 		[Test]
@@ -198,7 +198,7 @@ namespace VAS.Tests.Core.ViewModel
 			};
 
 			//Assertion
-			Assert.Greater (viewModelA.Compare (viewModelB), 0);
+			Assert.Greater (viewModelA.CompareTo (viewModelB), 0);
 		}
 
 		[Test]
@@ -225,7 +225,7 @@ namespace VAS.Tests.Core.ViewModel
 			};
 
 			//Assertion
-			Assert.AreNotEqual (0, viewModelA.Compare (viewModelB));
+			Assert.AreNotEqual (0, viewModelA.CompareTo (viewModelB));
 		}
 
 		[Test]
@@ -252,7 +252,7 @@ namespace VAS.Tests.Core.ViewModel
 			};
 
 			//Assertion
-			Assert.Less (viewModelA.Compare (viewModelB), 0);
+			Assert.Less (viewModelA.CompareTo (viewModelB), 0);
 		}
 
 		[Test]
@@ -279,7 +279,7 @@ namespace VAS.Tests.Core.ViewModel
 			};
 
 			//Assertion
-			Assert.Greater (viewModelA.Compare (viewModelB), 0);
+			Assert.Greater (viewModelA.CompareTo (viewModelB), 0);
 		}
 
 		[Test]
@@ -306,7 +306,7 @@ namespace VAS.Tests.Core.ViewModel
 			};
 
 			//Assertion
-			Assert.AreNotEqual (viewModelA.Compare (viewModelB), 0);
+			Assert.AreNotEqual (viewModelA.CompareTo (viewModelB), 0);
 		}
 
 		[Test]
@@ -333,7 +333,7 @@ namespace VAS.Tests.Core.ViewModel
 			};
 
 			//Assertion
-			Assert.Less (viewModelA.Compare (viewModelB), 0);
+			Assert.Less (viewModelA.CompareTo (viewModelB), 0);
 		}
 
 		[Test]
@@ -360,7 +360,7 @@ namespace VAS.Tests.Core.ViewModel
 			};
 
 			//Assertion
-			Assert.Greater (viewModelA.Compare (viewModelB), 0);
+			Assert.Greater (viewModelA.CompareTo (viewModelB), 0);
 		}
 
 		[Test]
@@ -387,7 +387,7 @@ namespace VAS.Tests.Core.ViewModel
 			};
 
 			//Assertion
-			Assert.AreNotEqual (viewModelA.Compare (viewModelB), 0);
+			Assert.AreNotEqual (viewModelA.CompareTo (viewModelB), 0);
 		}
 	}
 }
