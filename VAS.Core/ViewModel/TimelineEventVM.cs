@@ -15,6 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
@@ -25,7 +26,7 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// A ViewModel for <see cref="TimelineEvent"/> objects.
 	/// </summary>
-	public class TimelineEventVM : TimeNodeVM, IViewModel<TimelineEvent>
+	public class TimelineEventVM : TimeNodeVM, IComparable, IViewModel<TimelineEvent>
 	{
 		public virtual new TimelineEvent Model {
 			get {
@@ -123,10 +124,11 @@ namespace VAS.Core.ViewModel
 		/// Compare the specified timelineEventVM with the calling one.
 		/// </summary>
 		/// <returns>The compare result.</returns>
-		/// <param name="timelineEventB">Timeline event to be compared with.</param>
-		public int Compare (TimelineEventVM timelineEventB)
+		/// <param name="evt">Timeline event to be compared with.</param>
+		public int CompareTo (object evt)
 		{
 			int ret;
+			TimelineEventVM timelineEventB = evt as TimelineEventVM;
 			switch (Model.EventType.SortMethod) {
 			case (SortMethodType.SortByName):
 				ret = string.Compare (Name, timelineEventB.Name);
