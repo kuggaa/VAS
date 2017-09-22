@@ -15,6 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
@@ -25,7 +26,7 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// A ViewModel for <see cref="TimelineEvent"/> objects.
 	/// </summary>
-	public class TimelineEventVM : TimeNodeVM, IViewModel<TimelineEvent>
+	public class TimelineEventVM : TimeNodeVM, IComparable, IViewModel<TimelineEvent>
 	{
 		public virtual new TimelineEvent Model {
 			get {
@@ -117,6 +118,49 @@ namespace VAS.Core.ViewModel
 			set {
 				Model.FieldPosition = value;
 			}
+		}
+
+		/// <summary>
+		/// Compare the specified timelineEventVM with the calling one.
+		/// </summary>
+		/// <returns>The compare result.</returns>
+		/// <param name="evt">Timeline event to be compared with.</param>
+		public int CompareTo (object evt)
+		{
+			int ret;
+			TimelineEventVM timelineEventB = evt as TimelineEventVM;
+			switch (Model.EventType.SortMethod) {
+			case (SortMethodType.SortByName):
+				ret = string.Compare (Name, timelineEventB.Name);
+				if (ret == 0) {
+					ret = (Duration - timelineEventB.Duration).MSeconds;
+				}
+				break;
+			case (SortMethodType.SortByStartTime):
+				ret = (Start - timelineEventB.Start).MSeconds;
+				if (ret == 0) {
+					ret = string.Compare (Name, timelineEventB.Name);
+				}
+				break;
+			case (SortMethodType.SortByStopTime):
+				ret = (Stop - timelineEventB.Stop).MSeconds;
+				if (ret == 0) {
+					ret = string.Compare (Name, timelineEventB.Name);
+				}
+				break;
+			case (SortMethodType.SortByDuration):
+				ret = (Duration - timelineEventB.Duration).MSeconds;
+				if (ret == 0) {
+					ret = string.Compare (Name, timelineEventB.Name);
+				}
+				break;
+			default:
+				return 0;
+			}
+			if (ret == 0) {
+				ret = timelineEventB.GetHashCode () - GetHashCode ();
+			}
+			return ret;
 		}
 	}
 
