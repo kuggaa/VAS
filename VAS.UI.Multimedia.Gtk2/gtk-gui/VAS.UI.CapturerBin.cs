@@ -101,7 +101,7 @@ namespace VAS.UI
 			// Container child hourseventbox.Gtk.Container+ContainerChild
 			this.hourlabel = new global::Gtk.Label();
 			this.hourlabel.Name = "hourlabel";
-			this.hourlabel.LabelProp = global::Mono.Unix.Catalog.GetString("<b>00</b>");
+			this.hourlabel.LabelProp = global::VAS.Core.Catalog.GetString("<b>00</b>");
 			this.hourlabel.UseMarkup = true;
 			this.hourseventbox.Add(this.hourlabel);
 			this.controllerbox.Add(this.hourseventbox);
@@ -111,7 +111,7 @@ namespace VAS.UI
 			// Container child controllerbox.Gtk.Box+BoxChild
 			this.label1 = new global::Gtk.Label();
 			this.label1.Name = "label1";
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString("<b>:</b>");
+			this.label1.LabelProp = global::VAS.Core.Catalog.GetString("<b>:</b>");
 			this.label1.UseMarkup = true;
 			this.controllerbox.Add(this.label1);
 			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.controllerbox[this.label1]));
@@ -124,7 +124,7 @@ namespace VAS.UI
 			// Container child minuteseventbox.Gtk.Container+ContainerChild
 			this.minuteslabel = new global::Gtk.Label();
 			this.minuteslabel.Name = "minuteslabel";
-			this.minuteslabel.LabelProp = global::Mono.Unix.Catalog.GetString("<b>00</b>");
+			this.minuteslabel.LabelProp = global::VAS.Core.Catalog.GetString("<b>00</b>");
 			this.minuteslabel.UseMarkup = true;
 			this.minuteseventbox.Add(this.minuteslabel);
 			this.controllerbox.Add(this.minuteseventbox);
@@ -135,7 +135,7 @@ namespace VAS.UI
 			// Container child controllerbox.Gtk.Box+BoxChild
 			this.label2 = new global::Gtk.Label();
 			this.label2.Name = "label2";
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString("<b>:</b>");
+			this.label2.LabelProp = global::VAS.Core.Catalog.GetString("<b>:</b>");
 			this.label2.UseMarkup = true;
 			this.controllerbox.Add(this.label2);
 			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.controllerbox[this.label2]));
@@ -148,7 +148,7 @@ namespace VAS.UI
 			// Container child secondseventbox.Gtk.Container+ContainerChild
 			this.secondslabel = new global::Gtk.Label();
 			this.secondslabel.Name = "secondslabel";
-			this.secondslabel.LabelProp = global::Mono.Unix.Catalog.GetString("<b>00</b>");
+			this.secondslabel.LabelProp = global::VAS.Core.Catalog.GetString("<b>00</b>");
 			this.secondslabel.UseMarkup = true;
 			this.secondseventbox.Add(this.secondslabel);
 			this.controllerbox.Add(this.secondseventbox);
