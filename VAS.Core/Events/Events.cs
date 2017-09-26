@@ -315,7 +315,6 @@ namespace VAS.Core.Events
 
 	public class DrawingSavedToProjectEvent : Event
 	{
-		public Guid ProjectId { get; set; }
 	}
 
 	public class CaptureFinishedEvent : Event
@@ -417,8 +416,6 @@ namespace VAS.Core.Events
 		}
 
 		List<DashboardButton> dashboardButtons;
-
-		public Guid ProjectId { get; set; }
 	}
 
 	public class DashboardEventCreatedEvent : Event
