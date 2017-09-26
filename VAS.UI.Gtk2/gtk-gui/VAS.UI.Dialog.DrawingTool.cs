@@ -153,7 +153,7 @@ namespace VAS.UI.Dialog
 			global::Stetic.Gui.Initialize (this);
 			// Widget VAS.UI.Dialog.DrawingTool
 			this.Name = "VAS.UI.Dialog.DrawingTool";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Drawing Tool");
+			this.Title = global::VAS.Core.Catalog.GetString ("Drawing Tool");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			this.Modal = true;
 			this.DefaultWidth = 800;
@@ -181,7 +181,7 @@ namespace VAS.UI.Dialog
 			this.toolslabel = new global::Gtk.Label ();
 			this.toolslabel.Name = "toolslabel";
 			this.toolslabel.Xalign = 0F;
-			this.toolslabel.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Tools</b>");
+			this.toolslabel.LabelProp = global::VAS.Core.Catalog.GetString ("<b>Tools</b>");
 			this.toolslabel.UseMarkup = true;
 			this.leftbox.Add (this.toolslabel);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.leftbox [this.toolslabel]));
@@ -545,7 +545,7 @@ namespace VAS.UI.Dialog
 			this.colorslabel = new global::Gtk.Label ();
 			this.colorslabel.Name = "colorslabel";
 			this.colorslabel.Xalign = 0F;
-			this.colorslabel.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Color</b>");
+			this.colorslabel.LabelProp = global::VAS.Core.Catalog.GetString ("<b>Color</b>");
 			this.colorslabel.UseMarkup = true;
 			this.table1.Add (this.colorslabel);
 			global::Gtk.Table.TableChild w40 = ((global::Gtk.Table.TableChild)(this.table1 [this.colorslabel]));
@@ -555,7 +555,7 @@ namespace VAS.UI.Dialog
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
 			this.label3.Xalign = 0F;
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Size</b>");
+			this.label3.LabelProp = global::VAS.Core.Catalog.GetString ("<b>Size</b>");
 			this.label3.UseMarkup = true;
 			this.table1.Add (this.label3);
 			global::Gtk.Table.TableChild w41 = ((global::Gtk.Table.TableChild)(this.table1 [this.label3]));
@@ -567,7 +567,7 @@ namespace VAS.UI.Dialog
 			this.label4 = new global::Gtk.Label ();
 			this.label4.Name = "label4";
 			this.label4.Xalign = 0F;
-			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Style</b>");
+			this.label4.LabelProp = global::VAS.Core.Catalog.GetString ("<b>Style</b>");
 			this.label4.UseMarkup = true;
 			this.table1.Add (this.label4);
 			global::Gtk.Table.TableChild w42 = ((global::Gtk.Table.TableChild)(this.table1 [this.label4]));
@@ -579,7 +579,7 @@ namespace VAS.UI.Dialog
 			this.label5 = new global::Gtk.Label ();
 			this.label5.Name = "label5";
 			this.label5.Xalign = 0F;
-			this.label5.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Type</b>");
+			this.label5.LabelProp = global::VAS.Core.Catalog.GetString ("<b>Type</b>");
 			this.label5.UseMarkup = true;
 			this.table1.Add (this.label5);
 			global::Gtk.Table.TableChild w43 = ((global::Gtk.Table.TableChild)(this.table1 [this.label5]));
@@ -628,7 +628,7 @@ namespace VAS.UI.Dialog
 			this.linesframe.Add (this.GtkAlignment4);
 			this.GtkLabel4 = new global::Gtk.Label ();
 			this.GtkLabel4.Name = "GtkLabel4";
-			this.GtkLabel4.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Lines</b>");
+			this.GtkLabel4.LabelProp = global::VAS.Core.Catalog.GetString ("<b>Lines</b>");
 			this.GtkLabel4.UseMarkup = true;
 			this.linesframe.LabelWidget = this.GtkLabel4;
 			this.leftbox.Add (this.linesframe);
@@ -664,7 +664,7 @@ namespace VAS.UI.Dialog
 			this.backgroundcolorslabel2 = new global::Gtk.Label ();
 			this.backgroundcolorslabel2.Name = "backgroundcolorslabel2";
 			this.backgroundcolorslabel2.Xalign = 0F;
-			this.backgroundcolorslabel2.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Background</b>");
+			this.backgroundcolorslabel2.LabelProp = global::VAS.Core.Catalog.GetString ("<b>Background</b>");
 			this.backgroundcolorslabel2.UseMarkup = true;
 			this.table4.Add (this.backgroundcolorslabel2);
 			global::Gtk.Table.TableChild w51 = ((global::Gtk.Table.TableChild)(this.table4 [this.backgroundcolorslabel2]));
@@ -676,7 +676,7 @@ namespace VAS.UI.Dialog
 			this.backgroundcolorslabel3 = new global::Gtk.Label ();
 			this.backgroundcolorslabel3.Name = "backgroundcolorslabel3";
 			this.backgroundcolorslabel3.Xalign = 0F;
-			this.backgroundcolorslabel3.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Size</b>");
+			this.backgroundcolorslabel3.LabelProp = global::VAS.Core.Catalog.GetString ("<b>Size</b>");
 			this.backgroundcolorslabel3.UseMarkup = true;
 			this.table4.Add (this.backgroundcolorslabel3);
 			global::Gtk.Table.TableChild w52 = ((global::Gtk.Table.TableChild)(this.table4 [this.backgroundcolorslabel3]));
@@ -697,7 +697,7 @@ namespace VAS.UI.Dialog
 			this.textcolorslabel2 = new global::Gtk.Label ();
 			this.textcolorslabel2.Name = "textcolorslabel2";
 			this.textcolorslabel2.Xalign = 0F;
-			this.textcolorslabel2.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Color</b>");
+			this.textcolorslabel2.LabelProp = global::VAS.Core.Catalog.GetString ("<b>Color</b>");
 			this.textcolorslabel2.UseMarkup = true;
 			this.table4.Add (this.textcolorslabel2);
 			global::Gtk.Table.TableChild w54 = ((global::Gtk.Table.TableChild)(this.table4 [this.textcolorslabel2]));
@@ -721,7 +721,7 @@ namespace VAS.UI.Dialog
 			this.textframe.Add (this.GtkAlignment13);
 			this.GtkLabel5 = new global::Gtk.Label ();
 			this.GtkLabel5.Name = "GtkLabel5";
-			this.GtkLabel5.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Text</b>");
+			this.GtkLabel5.LabelProp = global::VAS.Core.Catalog.GetString ("<b>Text</b>");
 			this.GtkLabel5.UseMarkup = true;
 			this.textframe.LabelWidget = this.GtkLabel5;
 			this.leftbox.Add (this.textframe);
@@ -752,7 +752,7 @@ namespace VAS.UI.Dialog
 			this.savetoprojectbutton.CanFocus = true;
 			this.savetoprojectbutton.Name = "savetoprojectbutton";
 			this.savetoprojectbutton.UseUnderline = true;
-			this.savetoprojectbutton.Label = global::Mono.Unix.Catalog.GetString ("Save to Project");
+			this.savetoprojectbutton.Label = global::VAS.Core.Catalog.GetString ("Save to Project");
 			global::Gtk.Image w62 = new global::Gtk.Image ();
 			w62.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-save", global::Gtk.IconSize.Menu);
 			this.savetoprojectbutton.Image = w62;
@@ -767,7 +767,7 @@ namespace VAS.UI.Dialog
 			this.savebutton.CanFocus = true;
 			this.savebutton.Name = "savebutton";
 			this.savebutton.UseUnderline = true;
-			this.savebutton.Label = global::Mono.Unix.Catalog.GetString ("Save to File");
+			this.savebutton.Label = global::VAS.Core.Catalog.GetString ("Save to File");
 			global::Gtk.Image w64 = new global::Gtk.Image ();
 			w64.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-save", global::Gtk.IconSize.Menu);
 			this.savebutton.Image = w64;

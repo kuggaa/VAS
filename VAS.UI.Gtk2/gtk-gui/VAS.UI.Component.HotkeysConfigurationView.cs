@@ -53,7 +53,7 @@ namespace VAS.UI.Component
 			this.lblAction.WidthRequest = 200;
 			this.lblAction.Name = "lblAction";
 			this.lblAction.Xalign = 0F;
-			this.lblAction.LabelProp = global::Mono.Unix.Catalog.GetString ("Action");
+			this.lblAction.LabelProp = global::VAS.Core.Catalog.GetString ("Action");
 			this.hbox1.Add (this.lblAction);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.lblAction]));
 			w3.Position = 0;
@@ -64,7 +64,7 @@ namespace VAS.UI.Component
 			this.lblShortcut.WidthRequest = 120;
 			this.lblShortcut.Name = "lblShortcut";
 			this.lblShortcut.Xalign = 0F;
-			this.lblShortcut.LabelProp = global::Mono.Unix.Catalog.GetString ("Shortcut");
+			this.lblShortcut.LabelProp = global::VAS.Core.Catalog.GetString ("Shortcut");
 			this.hbox1.Add (this.lblShortcut);
 			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.lblShortcut]));
 			w4.Position = 1;
