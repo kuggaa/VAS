@@ -27,6 +27,24 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class EventTypeVM : ViewModelBase<EventType>
 	{
+		public EventTypeVM ()
+		{
+			Tags = new CollectionViewModel<Tag, TagVM> ();
+		}
+
+		public override EventType Model {
+			get {
+				return base.Model;
+			}
+			set {
+				base.Model = value;
+				var analysisEventType = base.Model as AnalysisEventType;
+				if (analysisEventType != null) {
+					Tags.Model = analysisEventType.Tags;
+				}
+			}
+		}
+
 		/// <summary>
 		/// Gets or sets the name of the EventType.
 		/// </summary>
@@ -64,6 +82,14 @@ namespace VAS.Core.ViewModel
 			set {
 				Model.AllowLocation = value;
 			}
+		}
+
+		/// <summary>
+		/// Gets the possible subcategories of the event type
+		/// </summary>
+		/// <value>The subcategories.</value>
+		public CollectionViewModel<Tag, TagVM> Tags {
+			get;
 		}
 	}
 

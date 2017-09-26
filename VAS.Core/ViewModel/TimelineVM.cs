@@ -47,7 +47,6 @@ namespace VAS.Core.ViewModel
 
 		public TimelineVM ()
 		{
-			Filters = new AndPredicate<TimelineEventVM> ();
 			eventTypeToTimeline = new Dictionary<string, EventTypeTimelineVM> ();
 			playerToTimeline = new Dictionary<Player, PlayerTimelineVM> ();
 			EventTypesTimeline = new NestedViewModel<EventTypeTimelineVM> ();
@@ -57,6 +56,26 @@ namespace VAS.Core.ViewModel
 			FullTimeline.ViewModels.CollectionChanged += HandleTimelineCollectionChanged;
 			FullTimeline.PropertyChanged += FullTimeline_PropertyChanged;
 			EditionCommand = new Command<TimelineEvent> (HandleEditPlay);
+
+			Filters = new AndPredicate<TimelineEventVM> ();
+			EventsPredicate = new AndPredicate<TimelineEventVM> {
+				Name = Catalog.GetString ("Events")
+			};
+			PeriodsPredicate = new OrPredicate<TimelineEventVM> {
+				Name = Catalog.GetString ("Periods")
+			};
+			TimersPredicate = new OrPredicate<TimelineEventVM> {
+				Name = Catalog.GetString ("Timers")
+			};
+			CommonTagsPredicate = new AndPredicate<TimelineEventVM> {
+				Name = Catalog.GetString ("Common Tags")
+			};
+			EventTypesPredicate = new OrPredicate<TimelineEventVM> {
+				Name = Catalog.GetString ("Event Types")
+			};
+			TeamsPredicate = new OrPredicate<TimelineEventVM> {
+				Name = Catalog.GetString ("Teams"),
+			};
 		}
 
 		protected override void DisposeManagedResources ()
@@ -173,6 +192,61 @@ namespace VAS.Core.ViewModel
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets the event types predicate.
+		/// </summary>
+		/// <value>The event types predicate.</value>
+		public OrPredicate<TimelineEventVM> EventTypesPredicate {
+			get;
+			private set;
+		}
+
+		/// <summary>
+		/// Gets or sets the periods predicate.
+		/// </summary>
+		/// <value>The periods predicate.</value>
+		public OrPredicate<TimelineEventVM> PeriodsPredicate {
+			get;
+			private set;
+		}
+
+		/// <summary>
+		/// Gets or sets the timers predicate.
+		/// </summary>
+		/// <value>The timers predicate.</value>
+		public OrPredicate<TimelineEventVM> TimersPredicate {
+			get;
+			private set;
+		}
+
+		/// <summary>
+		/// Gets or sets the common tags predicate.
+		/// </summary>
+		/// <value>The common tags predicate.</value>
+		public AndPredicate<TimelineEventVM> CommonTagsPredicate {
+			get;
+			private set;
+		}
+
+		/// <summary>
+		/// Gets the events predicate.
+		/// This is normally the parent for Periods, Timers, Common tags and Event types
+		/// </summary>
+		/// <value>The events predicate.</value>
+		public AndPredicate<TimelineEventVM> EventsPredicate {
+			get;
+			private set;
+		}
+
+		/// <summary>
+		/// Gets or sets the teams predicate.
+		/// </summary>
+		/// <value>The teams predicate.</value>
+		public OrPredicate<TimelineEventVM> TeamsPredicate {
+			get;
+			private set;
+		}
+
 		public void Clear ()
 		{
 			FullTimeline.Model.Clear ();
@@ -183,7 +257,7 @@ namespace VAS.Core.ViewModel
 		/// Creates the child event type timelines from the list of the project's event types.
 		/// </summary>
 		/// <param name="eventTypes">Event types.</param>
-		public void CreateEventTypeTimelines (CollectionViewModel<EventType, EventTypeVM> eventTypes)
+		public void CreateEventTypeTimelines (IEnumerable<EventTypeVM> eventTypes)
 		{
 			EventTypesTimeline.ViewModels.Clear ();
 			EventTypesTimeline.ViewModels.AddRange (eventTypes.Select (e => new EventTypeTimelineVM (e)));
@@ -444,5 +518,12 @@ namespace VAS.Core.ViewModel
 				AddToPlayersTimeline (timelineEvent);
 			}
 		}
+
+		//void HandleDashboardChanged (object sender, PropertyChangedEventArgs e)
+		//{
+		//	if (sender is CollectionViewModel<Tag, TagVM> && e.PropertyName == "Collection_ViewModels") {
+		//		CreateEventTypeTimelines (Dashboard.ViewModels.OfType<AnalysisEventButtonVM> ().Select (button => button.EventType));
+		//	}
+		//}
 	}
 }

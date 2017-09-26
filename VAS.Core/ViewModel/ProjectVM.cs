@@ -193,7 +193,7 @@ namespace VAS.Core.ViewModel
 			EventTypes.Model = Model.EventTypes;
 			Timers.Model = Model.Timers;
 			Periods.Model = Model.Periods;
-			Timeline.CreateEventTypeTimelines (EventTypes);
+			Timeline.CreateEventTypeTimelines (EventTypes.ViewModels);
 			Timeline.CreateTeamsTimelines (Teams);
 			Timeline.Model = Model.Timeline;
 			Dashboard.Model = Model.Dashboard;

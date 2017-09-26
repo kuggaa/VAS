@@ -48,8 +48,6 @@ namespace VAS.Services.Controller
 
 		protected virtual VideoPlayerVM VideoPlayer { get; set; }
 
-		protected virtual TimelineVM Timeline { get; set; }
-
 		protected virtual ProjectVM Project { get; set; }
 
 		protected virtual ICapturerBin Capturer { get; set; }
@@ -73,10 +71,6 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Subscribe<PlaylistElementLoadedEvent> (HandlePlaylistElementLoaded);
 			if (VideoPlayer != null) {
 				VideoPlayer.PropertyChanged += HandlePlayerVMPropertyChanged;
-			}
-			if (Timeline?.Filters != null) {
-				HandleFiltersChanged ();
-				Timeline.Filters.PropertyChanged += HandlePropertyChanged;
 			}
 			if (Project?.Periods != null) {
 				Project.Periods.PropertyChanged += HandlePropertyChanged;
@@ -104,9 +98,6 @@ namespace VAS.Services.Controller
 			if (VideoPlayer != null) {
 				VideoPlayer.PropertyChanged -= HandlePlayerVMPropertyChanged;
 			}
-			if (Timeline?.Filters != null) {
-				Timeline.Filters.PropertyChanged -= HandlePropertyChanged;
-			}
 			if (Project?.Periods != null) {
 				Project.Periods.PropertyChanged -= HandlePropertyChanged;
 			}
@@ -118,7 +109,6 @@ namespace VAS.Services.Controller
 		public override void SetViewModel (IViewModel viewModel)
 		{
 			VideoPlayer = ((IVideoPlayerDealer)viewModel).VideoPlayer;
-			Timeline = ((ITimelineDealer)viewModel).Timeline;
 			Project = (viewModel as IProjectDealer)?.Project;
 			Capturer = (viewModel as ICapturerBinDealer)?.Capturer;
 		}
@@ -289,17 +279,6 @@ namespace VAS.Services.Controller
 					VideoPlayer.Pause ();
 					VideoPlayer.Seek ((sender as TimeNodeVM).Stop, true, false, true);
 				}
-			}
-			if (e.PropertyName == $"Collection_{nameof (Timeline.Filters.Elements)}" ||
-				e.PropertyName == nameof (Timeline.Filters.Active)) {
-				HandleFiltersChanged ();
-			}
-		}
-
-		void HandleFiltersChanged ()
-		{
-			foreach (var eventVM in Timeline.EventTypesTimeline.SelectMany (eventTypeVM => eventTypeVM.ViewModels)) {
-				eventVM.Visible = Timeline.Filters.Filter (eventVM);
 			}
 		}
 
