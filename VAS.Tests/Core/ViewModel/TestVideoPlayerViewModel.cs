@@ -152,55 +152,5 @@ namespace VAS.Tests.Core.ViewModel
 
 			mockService.Verify (s => s.MoveToUpgradeDialog (VASFeature.Zoom.ToString ()), Times.Once);
 		}
-
-		[Test]
-		public void ZoomWarning_NoLimited_DoNotMoveToUpgradeDialog ()
-		{
-			Mock<ILicenseLimitationsService> mockService = new Mock<ILicenseLimitationsService> ();
-			App.Current.LicenseLimitationsService = mockService.Object;
-			mockService.Setup (s => s.CanExecute (VASFeature.OpenZoom.ToString ())).Returns (true);
-			var playerController = new Mock<IVideoPlayerController> ();
-			playerController.SetupAllProperties ();
-			var viewModel = new VideoPlayerVM { Player = playerController.Object };
-
-			viewModel.ZoomWarningCommand.Execute ();
-
-			mockService.Verify (s => s.MoveToUpgradeDialog (VASFeature.OpenZoom.ToString ()), Times.Never);
-		}
-
-		[Test]
-		public void ZoomWarningLimited_NoROIApplied_DoNotMoveToUpgradeDialog ()
-		{
-			Mock<ILicenseLimitationsService> mockService = new Mock<ILicenseLimitationsService> ();
-			App.Current.LicenseLimitationsService = mockService.Object;
-			mockService.Setup (s => s.CanExecute (VASFeature.OpenZoom.ToString ())).Returns (false);
-			var playerController = new Mock<IVideoPlayerController> ();
-			playerController.SetupAllProperties ();
-			var viewModel = new VideoPlayerVM { Player = playerController.Object };
-
-			viewModel.ZoomWarningCommand.Execute ();
-
-			mockService.Verify (s => s.MoveToUpgradeDialog (VASFeature.OpenZoom.ToString ()), Times.Never);
-		}
-
-		[Test]
-		public void ZoomWarningLimited_ROIApplied_MoveToUpgradeDialog ()
-		{
-			Mock<ILicenseLimitationsService> mockService = new Mock<ILicenseLimitationsService> ();
-			App.Current.LicenseLimitationsService = mockService.Object;
-			mockService.Setup (s => s.CanExecute (VASFeature.OpenZoom.ToString ())).Returns (false);
-			var playerController = new Mock<IVideoPlayerController> ();
-			playerController.SetupAllProperties ();
-			var viewModel = new VideoPlayerVM { Player = playerController.Object };
-			var camConfig = new CameraConfig (0);
-			camConfig.RegionOfInterest = new Area (10, 10, 10, 10);
-			viewModel.CamerasConfig = new ObservableCollection<CameraConfig> {
-				camConfig
-			};
-
-			viewModel.ZoomWarningCommand.Execute ();
-
-			mockService.Verify (s => s.MoveToUpgradeDialog (VASFeature.OpenZoom.ToString ()), Times.Once ());
-		}
 	}
 }

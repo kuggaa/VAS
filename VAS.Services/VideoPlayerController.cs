@@ -724,7 +724,6 @@ namespace VAS.Services
 				LoadSegment (ple.Play.FileSet, ple.Play.Start, ple.Play.Stop,
 					ple.Play.Start, ple.Rate, ple.CamerasConfig,
 					ple.CamerasLayout, playing);
-				playerVM.ZoomWarningCommand.Execute ();
 			} else if (element is PlaylistVideo) {
 				LoadVideo (element as PlaylistVideo, playing);
 			} else if (element is PlaylistImage) {
@@ -763,7 +762,6 @@ namespace VAS.Services
 				Log.Error ("Event does not have timing info: " + evt);
 			}
 			UpdateDuration ();
-			playerVM.ZoomWarningCommand.Execute ();
 			EmitElementLoaded (evt, null);
 		}
 
