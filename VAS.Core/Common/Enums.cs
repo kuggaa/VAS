@@ -460,6 +460,7 @@ namespace VAS.Core.Common
 		LiveAnalysisReview,
 		Analysis,
 		SimpleWithControls,
+		Presentation,
 	}
 
 	public enum DashboardMode
