@@ -47,7 +47,6 @@ namespace VAS.Core.ViewModel
 
 		public TimelineVM ()
 		{
-			Filters = new AndPredicate<TimelineEventVM> ();
 			eventTypeToTimeline = new Dictionary<string, EventTypeTimelineVM> ();
 			playerToTimeline = new Dictionary<Player, PlayerTimelineVM> ();
 			EventTypesTimeline = new NestedViewModel<EventTypeTimelineVM> ();
@@ -57,6 +56,14 @@ namespace VAS.Core.ViewModel
 			FullTimeline.ViewModels.CollectionChanged += HandleTimelineCollectionChanged;
 			FullTimeline.PropertyChanged += FullTimeline_PropertyChanged;
 			EditionCommand = new Command<TimelineEvent> (HandleEditPlay);
+
+			Filters = new AndPredicate<TimelineEventVM> ();
+			CategoriesPredicate = new OrPredicate<TimelineEventVM> {
+				Name = Catalog.GetString ("Categories")
+			};
+			TeamsPredicate = new OrPredicate<TimelineEventVM> {
+				Name = Catalog.GetString ("Teams"),
+			};
 		}
 
 		protected override void DisposeManagedResources ()
@@ -171,6 +178,24 @@ namespace VAS.Core.ViewModel
 		public AndPredicate<TimelineEventVM> Filters {
 			get;
 			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the categories predicate.
+		/// </summary>
+		/// <value>The categories predicate.</value>
+		public OrPredicate<TimelineEventVM> CategoriesPredicate {
+			get;
+			private set;
+		}
+
+		/// <summary>
+		/// Gets or sets the teams predicate.
+		/// </summary>
+		/// <value>The teams predicate.</value>
+		public OrPredicate<TimelineEventVM> TeamsPredicate {
+			get;
+			private set;
 		}
 
 		public void Clear ()
