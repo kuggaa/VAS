@@ -46,6 +46,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\UpgradeLimitationVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\MediaFileSetController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\DrawingsController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller\EventsFilterController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />
