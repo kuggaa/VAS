@@ -18,6 +18,7 @@
 using System.Collections.Generic;
 using Moq;
 using NUnit.Framework;
+using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
 using VAS.Core.Store;
@@ -75,12 +76,14 @@ namespace VAS.Tests.Services
 		[Test]
 		public void TestCountUsageEvents_NewDashboard ()
 		{
+			// Prepare
+			App.Current.EventsBroker.Publish (new OpenedProjectEvent {
+				Project = Project,
+				ProjectType = ProjectType.EditProject,
+			});
+
 			// Action
-			App.Current.EventsBroker.Publish (
-				new NewDashboardEvent {
-					ProjectId = Project.ID
-				}
-			);
+			App.Current.EventsBroker.Publish (new NewDashboardEvent ());
 
 			// Assert
 			service.Stop ();
@@ -95,12 +98,14 @@ namespace VAS.Tests.Services
 		[Test]
 		public void TestCountUsageEvents_DrawingSavedToProject ()
 		{
+			// Prepare
+			App.Current.EventsBroker.Publish (new OpenedProjectEvent {
+				Project = Project,
+				ProjectType = ProjectType.EditProject,
+			});
+
 			// Action
-			App.Current.EventsBroker.Publish (
-				new DrawingSavedToProjectEvent {
-					ProjectId = Project.ID
-				}
-			);
+			App.Current.EventsBroker.Publish (new DrawingSavedToProjectEvent ());
 
 			service.Stop ();
 			kpiServiceMock.Verify (m => m.TrackEvent ("Project_usage",

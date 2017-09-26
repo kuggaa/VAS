@@ -187,7 +187,6 @@ namespace VAS.Services.Controller
 					DashboardButton = e.Button,
 					Edit = !project.Dashboard.DisablePopupWindow,
 					DashboardButtons = null,
-					ProjectId = project.Model.ID
 				}
 			);
 			Reset ();

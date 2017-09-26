@@ -30,6 +30,7 @@ namespace VAS.Services
 	public abstract class UserStatisticsService : IService
 	{
 		string currentState;
+		Guid openedProjectID;
 
 		public UserStatisticsService ()
 		{
@@ -250,6 +251,7 @@ namespace VAS.Services
 		/// <param name="projectId">Project identifier.</param>
 		void LoadSessionProjectValues (Guid projectId)
 		{
+			openedProjectID = projectId;
 			if (!ProjectDictionary.ContainsKey (projectId)) {
 				ProjectDictionary.Add (projectId, new Tuple<int, int> (ManualEventsCount, DrawingsCount));
 			} else {
@@ -352,6 +354,7 @@ namespace VAS.Services
 			CreatedProjects++;
 			ManualEventsCount = 0;
 			DrawingsCount = 0;
+			openedProjectID = evt.ProjectId;
 		}
 
 		/// <summary>
@@ -370,7 +373,7 @@ namespace VAS.Services
 		void HandleDashboardEvent (NewDashboardEvent evt)
 		{
 			ManualEventsCount++;
-			ProjectDictionary [evt.ProjectId] = new Tuple<int, int> (ManualEventsCount, DrawingsCount);
+			ProjectDictionary [openedProjectID] = new Tuple<int, int> (ManualEventsCount, DrawingsCount);
 		}
 
 		/// <summary>
@@ -380,7 +383,7 @@ namespace VAS.Services
 		void HandleDrawingSavedToProject (DrawingSavedToProjectEvent evt)
 		{
 			DrawingsCount++;
-			ProjectDictionary [evt.ProjectId] = new Tuple<int, int> (ManualEventsCount, DrawingsCount);
+			ProjectDictionary [openedProjectID] = new Tuple<int, int> (ManualEventsCount, DrawingsCount);
 		}
 
 		/// <summary>
