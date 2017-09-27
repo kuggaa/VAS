@@ -331,15 +331,11 @@ namespace VAS.Tests.Services
 			int timeCount = 0;
 			bool multimediaError = false;
 			Time curTime = null, duration = null;
-			MediaFileSet fileSet = null;
 
 			player.TimeChangedEvent += (c, d, seekable) => {
 				curTime = c;
 				duration = d;
 				timeCount++;
-			};
-			player.MediaFileSetLoadedEvent += (fileset, cameras) => {
-				fileSet = fileset;
 			};
 
 			/* Open but view is not ready */
@@ -370,7 +366,6 @@ namespace VAS.Tests.Services
 			Assert.AreEqual ((float)320 / 240, viewPortMock.Object.Ratio);
 			Assert.AreEqual (streamLength, duration);
 			Assert.AreEqual (new Time (0), curTime);
-			Assert.AreEqual (fileSet, mfs);
 			Assert.AreEqual (playerVM.Zoom, 1);
 
 			App.Current.EventsBroker.Unsubscribe<MultimediaErrorEvent> (et);
