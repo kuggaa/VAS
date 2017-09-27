@@ -751,7 +751,10 @@ namespace VAS.UI
 		void HandleReady (object sender, EventArgs e)
 		{
 			playerVM.ViewPorts = new List<IViewPort> { mainviewport, subviewport1.Viewport, subviewport2.Viewport, subviewport3.Viewport };
-			playerVM.Ready (true);
+
+			if (!playerVM.ViewPorts.Take (playerVM.FileSet.Count ()).Any (p => !(p as VideoWindow).Ready)) {
+				playerVM.Ready (true);
+			}
 		}
 
 		void HandleUnReady (object sender, EventArgs e)

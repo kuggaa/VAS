@@ -194,7 +194,10 @@ namespace VAS.Services
 			}
 		}
 
-		public virtual List<IViewPort> ViewPorts {
+		public List<IViewPort> ViewPorts {
+			get {
+				return viewPorts;
+			}
 			set {
 				if (value != null) {
 					if (multiPlayer == null) {
@@ -212,9 +215,6 @@ namespace VAS.Services
 					}
 				}
 				viewPorts = value;
-			}
-			protected get {
-				return viewPorts;
 			}
 		}
 
@@ -292,6 +292,7 @@ namespace VAS.Services
 				} else {
 					visibleRegion = null;
 				}
+				playerVM.FileSet = new MediaFileSetVM { Model = mediafileSet };
 			}
 		}
 
@@ -1096,15 +1097,6 @@ namespace VAS.Services
 			}
 		}
 
-		protected virtual void EmitMediaFileSetLoaded (MediaFileSet fileSet, ObservableCollection<CameraConfig> camerasVisible)
-		{
-			playerVM.FileSet = new MediaFileSetVM { Model = fileSet };
-			playerVM.CamerasConfig = camerasVisible;
-			if (MediaFileSetLoadedEvent != null && !disposed) {
-				MediaFileSetLoadedEvent (fileSet, camerasVisible);
-			}
-		}
-
 		#endregion
 
 		#region Private Properties
@@ -1246,13 +1238,6 @@ namespace VAS.Services
 		protected virtual void InternalOpen (MediaFileSet fileSet, bool seek, bool force = false, bool play = false, bool defaultFile = false)
 		{
 			Reset ();
-
-			// This event gives a chance to the view to define camera visibility.
-			// As there might already be a configuration defined (loading an event for example), the view
-			// should adapt if needed.
-			skipApplyCamerasConfig = true;
-			EmitMediaFileSetLoaded (fileSet, camerasConfig);
-			skipApplyCamerasConfig = false;
 
 			ShowMessageInViewPorts (null, false);
 			if (fileSet == null || !fileSet.Any ()) {
