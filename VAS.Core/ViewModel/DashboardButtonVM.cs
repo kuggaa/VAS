@@ -412,7 +412,7 @@ namespace VAS.Core.ViewModel
 			ButtonTime = null;
 		}
 
-		protected virtual IEnumerable<Tag> GetTags()
+		protected virtual IEnumerable<Tag> GetTags ()
 		{
 			return new List<Tag> ();
 		}
@@ -423,11 +423,6 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class AnalysisEventButtonVM : EventButtonVM
 	{
-		public AnalysisEventButtonVM ()
-		{
-			Tags = new CollectionViewModel<Tag, TagVM> ();
-		}
-
 		/// <summary>
 		/// Gets the correctly Typed Model
 		/// </summary>
@@ -448,7 +443,6 @@ namespace VAS.Core.ViewModel
 			}
 			set {
 				base.Model = value;
-				Tags.Model = ((AnalysisEventButton)value)?.AnalysisEventType.Tags;
 			}
 		}
 
@@ -457,7 +451,7 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		/// <value>The tags.</value>
 		public CollectionViewModel<Tag, TagVM> Tags {
-			get;
+			get => EventType.Tags;
 		}
 
 		/// <summary>
@@ -703,8 +697,11 @@ namespace VAS.Core.ViewModel
 				Active = true;
 				TimerTime = new Time (0);
 				result = true;
-				App.Current.EventsBroker.Publish (new TimeNodeStartedEvent { 
-					DashboardButtons = buttons, TimerButton = this, TimeNode = currentNode });
+				App.Current.EventsBroker.Publish (new TimeNodeStartedEvent {
+					DashboardButtons = buttons,
+					TimerButton = this,
+					TimeNode = currentNode
+				});
 			}
 
 			return result;
@@ -724,8 +721,11 @@ namespace VAS.Core.ViewModel
 			Active = false;
 			currentNode = null;
 			TimerTime = null;
-			App.Current.EventsBroker.Publish (new TimeNodeStoppedEvent { 
-				DashboardButtons = buttons, TimerButton = this, TimeNode = currentNode });
+			App.Current.EventsBroker.Publish (new TimeNodeStoppedEvent {
+				DashboardButtons = buttons,
+				TimerButton = this,
+				TimeNode = currentNode
+			});
 		}
 	}
 }

@@ -16,15 +16,19 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 //
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using VAS.Core;
 using VAS.Core.Filters;
 using VAS.Core.Hotkeys;
+using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
+using VAS.Core.Store;
 using VAS.Core.ViewModel;
 using Predicate = VAS.Core.Filters.Predicate<VAS.Core.ViewModel.TimelineEventVM>;
 
@@ -44,22 +48,6 @@ namespace VAS.Services.Controller
 		}
 
 		/// <summary>
-		/// Gets or sets the view model.
-		/// </summary>
-		/// <value>The view model.</value>
-		public override TimelineVM ViewModel {
-			get {
-				return base.ViewModel;
-			}
-			set {
-				base.ViewModel = value;
-				if (base.ViewModel != null) {
-					UpdatePredicates ();
-				}
-			}
-		}
-
-		/// <summary>
 		/// Gets the default key actions.
 		/// </summary>
 		/// <returns>The default key actions.</returns>
@@ -75,6 +63,12 @@ namespace VAS.Services.Controller
 		public override void SetViewModel (IViewModel viewModel)
 		{
 			ViewModel = ((ITimelineDealer)viewModel).Timeline;
+		}
+
+		public override async Task Start ()
+		{
+			await base.Start ();
+			UpdatePredicates ();
 		}
 
 		protected override void ConnectEvents ()
@@ -108,10 +102,42 @@ namespace VAS.Services.Controller
 			ViewModel.CategoriesPredicate.Clear ();
 
 			foreach (var eventType in ViewModel.EventTypesTimeline) {
-				var predicate = new Predicate {
-					Name = eventType.EventTypeVM.Name,
-					Expression = ev => ev.Model.EventType.Name == eventType.Model.Name
-				};
+				IPredicate<TimelineEventVM> predicate;
+
+				Expression<Func<TimelineEventVM, bool>> eventTypeExpression = ev => ev.Model.EventType == eventType.Model;
+
+				var analysisEventType = eventType.Model as AnalysisEventType;
+				if (analysisEventType != null && analysisEventType.Tags.Any ()) {
+					CompositePredicate<TimelineEventVM> composedEventTypePredicate;
+					predicate = composedEventTypePredicate = new AndPredicate<TimelineEventVM> {
+						Name = eventType.EventTypeVM.Name
+					};
+
+					foreach (var tagGroup in analysisEventType.TagsByGroup) {
+						Expression<Func<TimelineEventVM, bool>> tagGroupExpression = ev => ev.Model.Tags.Any (tag => tag.Group == tagGroup.Key);
+						var tagGroupPredicate = new OrPredicate<TimelineEventVM> {
+							Name = tagGroup.Key,
+						};
+
+						tagGroupPredicate.Add (new Predicate {
+							Name = Catalog.GetString ("None"),
+							Expression = eventTypeExpression.And (ev => !ev.Model.Tags.Any (tag => tag.Group == tagGroup.Key))
+						});
+
+						foreach (var tag in tagGroup.Value) {
+							tagGroupPredicate.Add (new Predicate {
+								Name = tag.Value,
+								Expression = eventTypeExpression.And (tagGroupExpression.And (ev => ev.Model.Tags.Contains (tag)))
+							});
+						}
+						composedEventTypePredicate.Add (tagGroupPredicate);
+					}
+				} else {
+					predicate = new Predicate {
+						Name = eventType.EventTypeVM.Name,
+						Expression = eventTypeExpression
+					};
+				}
 				ViewModel.CategoriesPredicate.Add (predicate);
 			}
 			ViewModel.Filters.IgnoreEvents = false;
