@@ -39,7 +39,7 @@ namespace VAS.Tests.Core.ViewModel
 			List<Tag> tags = null;
 			App.Current.EventsBroker.Subscribe<NewTagEvent> ((e) => {
 				notified = true;
-				tags = e.Tags.ToList();
+				tags = e.Tags.ToList ();
 			});
 
 			// Act
@@ -72,6 +72,27 @@ namespace VAS.Tests.Core.ViewModel
 			Assert.IsTrue (notified);
 			Assert.AreEqual (1, tags.Count ());
 			Assert.AreEqual (0, sut.SelectedTags.Count ());
+		}
+
+		[Test]
+		public void ModifyEventType_AddTags_PropertyChangedEmitted ()
+		{
+			// Arrange
+			AnalysisEventButton button = new AnalysisEventButton { EventType = new AnalysisEventType () };
+			AnalysisEventButtonVM buttonVM = new AnalysisEventButtonVM { Model = button };
+			bool propertyChanged = false;
+			string propertyName = "";
+			buttonVM.PropertyChanged += (sender, e) => {
+				propertyChanged = true;
+				propertyName = e.PropertyName;
+			};
+
+			// Act
+			((AnalysisEventType)button.EventType).Tags.Add (new Tag ("tag", "group"));
+
+			// Assert
+			Assert.IsTrue (propertyChanged);
+			Assert.AreEqual ("Collection_Tags", propertyName);
 		}
 	}
 }

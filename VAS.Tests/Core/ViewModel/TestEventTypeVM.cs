@@ -65,5 +65,32 @@ namespace VAS.Tests.Core.ViewModel
 			Assert.AreEqual ("Test1", viewModel.Name);
 			Assert.AreEqual (Color.Red, viewModel.Color);
 		}
+
+		[Test]
+		public void TagsModification_NoTags_PropertyChangedEmitted ()
+		{
+			bool collectionChanged = false;
+			bool propertyChanged = false;
+			string propertyName = "";
+			var model = new AnalysisEventType {
+				Name = "Test1",
+				Color = Color.Red
+			};
+			var viewModel = new EventTypeVM {
+				Model = model,
+			};
+
+			model.Tags.CollectionChanged += (sender, e) => collectionChanged = true;
+			viewModel.PropertyChanged += (sender, e) => {
+				propertyChanged = true;
+				propertyName = e.PropertyName;
+			};
+
+			model.Tags.Add (new Tag ("tag", "group"));
+
+			Assert.IsTrue (collectionChanged);
+			Assert.IsTrue (propertyChanged);
+			Assert.AreEqual ("Collection_" + nameof (model.Tags), propertyName);
+		}
 	}
 }
