@@ -59,7 +59,7 @@ namespace VAS.Core.ViewModel
 
 			Filters = new AndPredicate<TimelineEventVM> ();
 			CategoriesPredicate = new OrPredicate<TimelineEventVM> {
-				Name = Catalog.GetString ("Categories")
+				Name = Catalog.GetString ("Events")
 			};
 			TeamsPredicate = new OrPredicate<TimelineEventVM> {
 				Name = Catalog.GetString ("Teams"),
