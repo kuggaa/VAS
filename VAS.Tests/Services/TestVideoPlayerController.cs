@@ -1998,32 +1998,28 @@ namespace VAS.Tests.Services
 		}
 
 		[Test ()]
-		public void LoadZoomEvent_OpenZoomNotLimited_DoNotMoveToUpgradeDialog ()
+		public void LoadZoomEvent_OpenZoomNotLimited_ApplyZoom ()
 		{
 			mockLimitationService.Setup (x => x.CanExecute (VASFeature.OpenZoom.ToString ())).
 								 Returns (true);
-			mockLimitationService.Setup (x => x.CanExecute (VASFeature.OpenZoom.ToString ())).Returns (true);
 			PreparePlayer ();
 			evt.CamerasConfig [0].RegionOfInterest = new Area (0, 0, evt.FileSet [0].VideoWidth / 2, 10);
 
 			player.LoadEvent (evt, new Time (0), true);
 
-			mockLimitationService.Verify (x => x.MoveToUpgradeDialog (VASFeature.OpenZoom.ToString ()), Times.Never);
 			Assert.AreEqual (2.0, playerVM.Zoom);
 		}
 
 		[Test ()]
-		public void LoadZoomEvent_OpenZoomLimited_MoveToUpgradeDialog ()
+		public void LoadZoomEvent_OpenZoomLimited_DoNotApplyZoom ()
 		{
 			mockLimitationService.Setup (x => x.CanExecute (VASFeature.OpenZoom.ToString ())).
 								 Returns (false);
-			mockLimitationService.Setup (x => x.CanExecute (VASFeature.OpenZoom.ToString ())).Returns (false);
 			PreparePlayer ();
 			evt.CamerasConfig [0].RegionOfInterest = new Area (0, 0, 10, 10);
 
 			player.LoadEvent (evt, new Time (0), true);
 
-			mockLimitationService.Verify (x => x.MoveToUpgradeDialog (VASFeature.OpenZoom.ToString ()), Times.Once);
 			Assert.AreEqual (1.0, playerVM.Zoom);
 		}
 

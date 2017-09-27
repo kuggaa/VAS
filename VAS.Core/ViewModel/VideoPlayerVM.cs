@@ -51,8 +51,6 @@ namespace VAS.Core.ViewModel
 			ShowZoomCommand.Icon = App.Current.ResourcesLocator.LoadIcon ("vas-zoom", 15);
 			ShowZoomCommand.ToolTipText = Catalog.GetString ("Zoom");
 			SetZoomCommand = new LimitationCommand<double> (VASFeature.Zoom.ToString (), SetZoom);
-			ZoomWarningCommand = new LimitationCommand (VASFeature.OpenZoom.ToString (), () => { });
-			ZoomWarningCommand.LimitationCondition = () => CamerasConfig.Any ((cf) => !cf.RegionOfInterest.Empty);
 			Duration = new Time (0);
 			CurrentTime = new Time (0);
 		}
@@ -71,16 +69,6 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		/// <value>The set zoom command.</value>
 		public LimitationCommand<double> SetZoomCommand {
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// Gets or sets the zoom warning Limitation command, it should contain a condition
-		/// to check CameraConfig RegionOfInterest
-		/// </summary>
-		/// <value>The zoom warning command.</value>
-		public LimitationCommand ZoomWarningCommand {
 			get;
 			set;
 		}
