@@ -58,5 +58,14 @@ namespace VAS.Core.Interfaces.License
 		IEnumerable<string> Limitations {
 			get;
 		}
+
+		/// <summary>
+		/// Gets or sets the message to display.
+		/// </summary>
+		/// <value>The message to display.</value>
+		string Message {
+			get;
+			set;
+		}
 	}
 }
