@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using VAS.Core.Events;
@@ -234,6 +235,31 @@ namespace VAS.Core.Common
 		public static IEnumerable<T> ToEnumerable<T> (this T item)
 		{
 			yield return item;
+		}
+
+		/// <summary>
+		/// Compare 2 dynamic objects.
+		/// </summary>
+		/// <returns><c>true</c> if both objects are equal</returns>
+		/// <param name="obj1">The first object to compare.</param>
+		/// <param name="obj2">The second object to compare.</param>
+		public static bool Compare (this ExpandoObject obj1, ExpandoObject obj2)
+		{
+			var obj1Coll = (ICollection<KeyValuePair<string, object>>)obj1;
+			var obj2Dict = (IDictionary<string, object>)obj2;
+
+			if (obj1Coll.Count != obj2Dict.Count)
+				return false;
+
+			foreach (var pair in obj1Coll) {
+				object o;
+				if (!obj2Dict.TryGetValue (pair.Key, out o))
+					return false;
+
+				if (!Equals (o, pair.Value))
+					return false;
+			}
+			return true;
 		}
 	}
 }

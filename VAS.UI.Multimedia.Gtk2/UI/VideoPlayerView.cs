@@ -488,6 +488,14 @@ namespace VAS.UI
 			return null;
 		}
 
+		void SetVisibility (Widget widget, bool visible)
+		{
+			if (widget == closebutton && playerVM.ViewMode == PlayerViewOperationMode.Presentation) {
+				visible = false;
+			}
+			widget.Visible = visible;
+		}
+
 		#endregion
 
 		#region UI Callbacks
@@ -858,13 +866,13 @@ namespace VAS.UI
 		{
 			if (playerVM.PlayElement is PlaylistPlayElement) {
 				DrawingsVisible = false;
-				closebutton.Visible = true;
-				eventNameLabel.Visible = true;
+				SetVisibility (closebutton, true);
+				SetVisibility (eventNameLabel, true);
 				eventNameLabel.Text = (playerVM.PlayElement as PlaylistPlayElement).Play.Name;
 			} else if (playerVM.PlayElement is TimelineEvent) {
 				DrawingsVisible = false;
-				closebutton.Visible = true;
-				eventNameLabel.Visible = true;
+				SetVisibility (closebutton, true);
+				SetVisibility (eventNameLabel, true);
 				eventNameLabel.Text = (playerVM.PlayElement as TimelineEvent).Name;
 			} else if (playerVM.PlayElement is PlaylistDrawing) {
 				PlaylistDrawing drawing = (PlaylistDrawing)playerVM.PlayElement;
@@ -874,8 +882,8 @@ namespace VAS.UI
 				LoadImage (image.Image, null);
 			} else {
 				DrawingsVisible = false;
-				closebutton.Visible = false;
-				eventNameLabel.Visible = false;
+				SetVisibility (closebutton, false);
+				SetVisibility (eventNameLabel, false);
 			}
 		}
 
@@ -886,41 +894,50 @@ namespace VAS.UI
 			controlsbox.Visible =
 				mode == PlayerViewOperationMode.Analysis ||
 				mode == PlayerViewOperationMode.LiveAnalysisReview ||
-				mode == PlayerViewOperationMode.SimpleWithControls;
+				mode == PlayerViewOperationMode.SimpleWithControls ||
+				mode == PlayerViewOperationMode.Presentation;
 
 			viewportsBox.Visible =
 				mode == PlayerViewOperationMode.Analysis ||
+				mode == PlayerViewOperationMode.Presentation ||
 				mode == PlayerViewOperationMode.SimpleWithControls;
 
 			jumpsbox.Visible =
 				mode == PlayerViewOperationMode.Analysis ||
+				mode == PlayerViewOperationMode.Presentation ||
 				mode == PlayerViewOperationMode.SimpleWithControls;
 
 			rateBox.Visible =
 				mode == PlayerViewOperationMode.Analysis ||
+				mode == PlayerViewOperationMode.Presentation ||
 				mode == PlayerViewOperationMode.SimpleWithControls;
 
 			zoomBox.Visible =
 				mode == PlayerViewOperationMode.Analysis ||
+				mode == PlayerViewOperationMode.Presentation ||
 				mode == PlayerViewOperationMode.SimpleWithControls;
 
 			drawbutton.Visible =
 				mode == PlayerViewOperationMode.Analysis ||
+				mode == PlayerViewOperationMode.Presentation ||
 				mode == PlayerViewOperationMode.LiveAnalysisReview ||
 				mode == PlayerViewOperationMode.Synchronization;
 
 			timeHBox.Visible =
 				mode == PlayerViewOperationMode.Analysis ||
+				mode == PlayerViewOperationMode.Presentation ||
 				mode == PlayerViewOperationMode.LiveAnalysisReview ||
 				mode == PlayerViewOperationMode.Synchronization;
 
 			timerulearea.Visible =
 				mode == PlayerViewOperationMode.SimpleWithControls ||
+				mode == PlayerViewOperationMode.Presentation ||
 				mode == PlayerViewOperationMode.Analysis;
 
 			timerule.AdjustSizeToDuration =
 				mode == PlayerViewOperationMode.SimpleWithControls ||
 				mode == PlayerViewOperationMode.Analysis ||
+				mode == PlayerViewOperationMode.Presentation ||
 				mode == PlayerViewOperationMode.LiveAnalysisReview;
 
 			timerule.ContinuousSeek =
@@ -930,6 +947,7 @@ namespace VAS.UI
 
 			prevbutton.Visible = nextbutton.Visible =
 				mode == PlayerViewOperationMode.Analysis ||
+				mode == PlayerViewOperationMode.Presentation ||
 				mode == PlayerViewOperationMode.SimpleWithControls;
 		}
 

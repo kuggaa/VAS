@@ -847,25 +847,14 @@ namespace VAS.Services
 			if (evt == null && loadedPlaylistElement is PlaylistPlayElement) {
 				evt = (loadedPlaylistElement as PlaylistPlayElement).Play;
 			}
-			if (evt != null) {
-				App.Current.EventsBroker.Publish<DrawFrameEvent> (
-					new DrawFrameEvent {
-						Play = evt,
-						DrawingIndex = -1,
-						CamConfig = CamerasConfig [0],
-						Current = true
-					}
-				);
-			} else {
-				App.Current.EventsBroker.Publish<DrawFrameEvent> (
-					new DrawFrameEvent {
-						Play = null,
-						DrawingIndex = -1,
-						CamConfig = null,
-						Current = true
-					}
-				);
-			}
+			App.Current.EventsBroker.Publish (
+				new DrawFrameEvent {
+					Play = evt,
+					DrawingIndex = -1,
+					CamConfig = evt == null ? null : CamerasConfig [0],
+					Frame = CurrentFrame
+				}
+			);
 		}
 
 		public void SetZoom (double zoomLevel)

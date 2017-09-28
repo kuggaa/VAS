@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Dynamic;
 using System.Linq;
 using NUnit.Framework;
 using VAS.Core.Common;
@@ -64,6 +65,46 @@ namespace VAS.Tests.Core
 			StorableBase [] arrayDesc = array.SortByCreationDate (true).ToArray ();
 
 			CollectionAssert.IsOrdered (arrayDesc, new StorableBaseComparer (true));
+		}
+
+		[Test]
+		public void CompareExpandoObject_DifferentPropertiesCount_NotEquals ()
+		{
+			dynamic obj1 = new ExpandoObject ();
+			obj1.Name = "test";
+			dynamic obj2 = new ExpandoObject ();
+			Assert.IsFalse ((obj1 as ExpandoObject).Compare ((ExpandoObject)obj2));
+		}
+
+		[Test]
+		public void CompareExpandoObject_DifferentPropertyKey_NotEquals ()
+		{
+			dynamic obj1 = new ExpandoObject ();
+			obj1.Name = "test";
+			dynamic obj2 = new ExpandoObject ();
+			obj2.FullName = "test";
+			Assert.IsFalse ((obj1 as ExpandoObject).Compare ((ExpandoObject)obj2));
+		}
+
+		[Test]
+		public void CompareExpandoObject_DifferentPropertyValue_NotEquals ()
+		{
+			dynamic obj1 = new ExpandoObject ();
+			obj1.Name = "test";
+			dynamic obj2 = new ExpandoObject ();
+			obj2.Name = "nottest";
+			Assert.IsFalse ((obj1 as ExpandoObject).Compare ((ExpandoObject)obj2));
+
+		}
+
+		[Test]
+		public void CompareExpandoObject_AllPropertiesSimilar_Equals ()
+		{
+			dynamic obj1 = new ExpandoObject ();
+			obj1.Name = "test";
+			dynamic obj2 = new ExpandoObject ();
+			obj2.Name = "test";
+			Assert.IsTrue ((obj1 as ExpandoObject).Compare ((ExpandoObject)obj2));
 		}
 
 		CustomDummyClassForTest [] InitCustomDummyClassForTest ()
