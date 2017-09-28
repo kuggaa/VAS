@@ -242,6 +242,9 @@ namespace VAS.Core.ViewModel
 		}
 
 		public List<IViewPort> ViewPorts {
+			get {
+				return Player.ViewPorts;
+			}
 			set {
 				Player.ViewPorts = value;
 			}
