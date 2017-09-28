@@ -49,7 +49,7 @@ namespace VAS.Core.Interfaces.GUI
 
 		List<EditionJob> ConfigureRenderingJob (Playlist playlist);
 
-		void ExportFrameSeries (Project openenedProject, TimelineEvent play, string snapshotDir);
+		void ExportFrameSeries (TimelineEvent play, string snapshotDir);
 
 		Project ChooseProject (List<Project> projects);
 

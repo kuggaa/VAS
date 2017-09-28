@@ -411,14 +411,7 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		public void DrawFrame ()
 		{
-			App.Current.EventsBroker.Publish<DrawFrameEvent> (
-				new DrawFrameEvent {
-					Play = null,
-					DrawingIndex = -1,
-					CamConfig = CamerasConfig [0],
-					Current = true
-				}
-			);
+			Player.DrawFrame ();
 		}
 
 		/// <summary>

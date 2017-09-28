@@ -286,18 +286,35 @@ namespace VAS.Core.Events
 
 	public class DrawFrameEvent : Event
 	{
+		/// <summary>
+		/// When set in combination with <see cref="DrawingIndex"/> it will use the drawing stored in the event
+		/// to edit it.
+		/// </summary>
+		/// <value>The timeline event.</value>
 		public TimelineEvent Play { get; set; }
 
+		/// <summary>
+		/// When set in combination with <see cref="Play"/> it defines the index of the event's drawing to use.
+		/// </summary>
+		/// <value>The index of the drawing.</value>
 		public int DrawingIndex { get; set; }
 
+		/// <summary>
+		/// Gets or sets the camera config.
+		/// </summary>
+		/// <value>The camera config.</value>
 		public CameraConfig CamConfig { get; set; }
 
-		public bool Current { get; set; }
+		/// <summary>
+		/// Gets or sets the frame to draw on. If <c>null</c> a new <see cref="IFramesCapturer"/> will be used
+		/// to retrieve the video frame.
+		/// </summary>
+		/// <value>The frame.</value>
+		public Image Frame { get; set; }
 	}
 
 	public class DrawingSavedToProjectEvent : Event
 	{
-		public Guid ProjectId { get; set; }
 	}
 
 	public class CaptureFinishedEvent : Event
@@ -399,8 +416,6 @@ namespace VAS.Core.Events
 		}
 
 		List<DashboardButton> dashboardButtons;
-
-		public Guid ProjectId { get; set; }
 	}
 
 	public class DashboardEventCreatedEvent : Event

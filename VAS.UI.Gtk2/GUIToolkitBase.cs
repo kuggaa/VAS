@@ -162,7 +162,7 @@ namespace VAS.UI
 			return jobs;
 		}
 
-		public abstract void ExportFrameSeries (Project openedProject, TimelineEvent play, string snapshotsDir);
+		public abstract void ExportFrameSeries (TimelineEvent play, string snapshotsDir);
 
 		public abstract Project ChooseProject (List<Project> projects);
 

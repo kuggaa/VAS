@@ -101,10 +101,11 @@ namespace VAS.Services.ViewModel
 		/// </summary>
 		public void DrawingSaved ()
 		{
-			App.Current.EventsBroker.Publish (new DrawingSavedToProjectEvent { ProjectId = Project.ID });
+			App.Current.EventsBroker.Publish (new DrawingSavedToProjectEvent ());
 		}
 
-		void SetZoom (double zoom) {
+		void SetZoom (double zoom)
+		{
 			ZoomLevel = zoom;
 		}
 	}
