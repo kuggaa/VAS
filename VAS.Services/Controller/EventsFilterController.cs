@@ -88,9 +88,12 @@ namespace VAS.Services.Controller
 
 		protected virtual void UpdatePredicates ()
 		{
+			ViewModel.Filters.IgnoreEvents = true;
 			UpdateTeamsPredicates ();
 			UpdatePeriodsPredicates ();
 			UpdateEventTypesPredicates ();
+			ViewModel.Filters.IgnoreEvents = false;
+			ViewModel.Filters.EmitPredicateChanged ();
 		}
 
 		protected virtual void UpdateTeamsPredicates ()
@@ -121,11 +124,14 @@ namespace VAS.Services.Controller
 				ViewModel.PeriodsPredicate.Add (predicate);
 			}
 			ViewModel.Filters.IgnoreEvents = oldIgnoreEvents;
-			ViewModel.Filters.EmitPredicateChanged ();
+			if (!ViewModel.Filters.IgnoreEvents) {
+				ViewModel.Filters.EmitPredicateChanged ();
+			}
 		}
 
 		protected virtual void UpdateEventTypesPredicates (object sender = null, NotifyCollectionChangedEventArgs e = null)
 		{
+			bool oldIgnoreEvents = ViewModel.Filters.IgnoreEvents;
 			ViewModel.Filters.IgnoreEvents = true;
 			ViewModel.CategoriesPredicate.Clear ();
 
@@ -168,8 +174,10 @@ namespace VAS.Services.Controller
 				}
 				ViewModel.CategoriesPredicate.Add (predicate);
 			}
-			ViewModel.Filters.IgnoreEvents = false;
-			ViewModel.Filters.EmitPredicateChanged ();
+			ViewModel.Filters.IgnoreEvents = oldIgnoreEvents;
+			if (!ViewModel.Filters.IgnoreEvents) {
+				ViewModel.Filters.EmitPredicateChanged ();
+			}
 		}
 	}
 }
