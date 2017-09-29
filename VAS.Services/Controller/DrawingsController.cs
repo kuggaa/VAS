@@ -74,7 +74,7 @@ namespace VAS.Services.Controller
 			videoPlayer.Pause (true);
 
 			if (drawEvent.Play == null) {
-				drawEvent.Play = videoPlayer.PlayElement as TimelineEvent;
+				drawEvent.Play = videoPlayer.LoadedElement as TimelineEvent;
 			}
 
 			fileSet = drawEvent.Play?.FileSet;

@@ -28,6 +28,7 @@ using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Handlers;
+using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
@@ -806,7 +807,7 @@ namespace VAS.UI
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.HasNext))) {
 				nextbutton.Sensitive = playerVM.HasNext;
 			}
-			if (ViewModel.NeedsSync (e, nameof (ViewModel.PlayElement))) {
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.LoadedElement))) {
 				HandlePlayElementChanged ();
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Rate))) {
@@ -861,21 +862,19 @@ namespace VAS.UI
 
 		void HandlePlayElementChanged ()
 		{
-			if (playerVM.PlayElement is PlaylistPlayElement) {
+			if (playerVM.LoadedElement is IPlaylistEventElement) {
 				DrawingsVisible = false;
 				SetVisibility (closebutton, true);
 				SetVisibility (eventNameLabel, true);
-				eventNameLabel.Text = (playerVM.PlayElement as PlaylistPlayElement).Play.Name;
-			} else if (playerVM.PlayElement is TimelineEvent) {
-				DrawingsVisible = false;
-				SetVisibility (closebutton, true);
-				SetVisibility (eventNameLabel, true);
-				eventNameLabel.Text = (playerVM.PlayElement as TimelineEvent).Name;
-			} else if (playerVM.PlayElement is PlaylistDrawing) {
-				PlaylistDrawing drawing = (PlaylistDrawing)playerVM.PlayElement;
+				// FIME: IPlaylistElement.Description shouldn't return formated string
+				// or the interface should provide a Name property.
+				eventNameLabel.Text = (playerVM.LoadedElement as TimelineEvent)?.Name ??
+					(playerVM.LoadedElement as PlaylistPlayElement)?.Play?.Name;
+			} else if (playerVM.LoadedElement is PlaylistDrawing) {
+				PlaylistDrawing drawing = (PlaylistDrawing)playerVM.LoadedElement;
 				LoadImage (null, drawing.Drawing);
-			} else if (playerVM.PlayElement is PlaylistImage) {
-				PlaylistImage image = (PlaylistImage)playerVM.PlayElement;
+			} else if (playerVM.LoadedElement is PlaylistImage) {
+				PlaylistImage image = (PlaylistImage)playerVM.LoadedElement;
 				LoadImage (image.Image, null);
 			} else {
 				DrawingsVisible = false;

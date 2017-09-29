@@ -26,7 +26,6 @@ using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Interfaces.MVVMC;
-using VAS.Core.License;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
@@ -86,6 +85,18 @@ namespace VAS.Tests.Services
 			ftk.SetupGet (o => o.DeviceScaleFactor).Returns (1.0f);
 			App.Current.GUIToolkit = ftk.Object;
 
+			App.Current.LowerRate = 1;
+			App.Current.UpperRate = 30;
+			App.Current.RatePageIncrement = 3;
+			App.Current.RateList = new List<double> { 0.04, 0.08, 0.12, 0.16, 0.20, 0.24, 0.28, 0.32, 0.36, 0.40, 0.44,
+				0.48, 0.52, 0.56, 0.60, 0.64, 0.68, 0.72, 0.76, 0.80, 0.84, 0.88, 0.92, 0.96, 1, 2, 3, 4, 5
+			};
+			App.Current.DefaultRate = 25;
+		}
+
+		[SetUp ()]
+		public void Setup ()
+		{
 			mfs = new MediaFileSet ();
 			mfs.Add (new MediaFile {
 				FilePath = "test1",
@@ -102,18 +113,6 @@ namespace VAS.Tests.Services
 				Duration = new Time { TotalSeconds = 5000 }
 			});
 
-			App.Current.LowerRate = 1;
-			App.Current.UpperRate = 30;
-			App.Current.RatePageIncrement = 3;
-			App.Current.RateList = new List<double> { 0.04, 0.08, 0.12, 0.16, 0.20, 0.24, 0.28, 0.32, 0.36, 0.40, 0.44,
-				0.48, 0.52, 0.56, 0.60, 0.64, 0.68, 0.72, 0.76, 0.80, 0.84, 0.88, 0.92, 0.96, 1, 2, 3, 4, 5
-			};
-			App.Current.DefaultRate = 25;
-		}
-
-		[SetUp ()]
-		public void Setup ()
-		{
 			mockLimitationService = new Mock<ILicenseLimitationsService> ();
 			mockLimitationService.Setup (x => x.CanExecute (It.IsAny<string> ())).
 								 Returns (true);

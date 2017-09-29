@@ -176,7 +176,7 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
-		public object PlayElement {
+		public IPlaylistElement LoadedElement {
 			get;
 			set;
 		}
