@@ -102,9 +102,10 @@ namespace VAS.Services
 
 		#region Constructors
 
-		public VideoPlayerController ()
+		public VideoPlayerController (Seeker testSeeker = null)
 		{
-			seeker = new Seeker ();
+			// Injected seeker should only be used for unit tests
+			seeker = testSeeker ?? new Seeker ();
 			seeker.SeekEvent += HandleSeekEvent;
 			loadedSegment.Start = new Time (-1);
 			loadedSegment.Stop = new Time (int.MaxValue);
@@ -1108,7 +1109,12 @@ namespace VAS.Services
 
 		IPlaylistEventElement LoadedTimelineEvent {
 			set {
+				if (loadedPlaylistEvent != null) {
+					loadedPlaylistEvent.PropertyChanged -= HandleLoadedTimelineEventPropertyChangedEventHandler;
+				}
 				loadedPlaylistEvent = value;
+				if (loadedPlaylistEvent != null) {
+					loadedPlaylistEvent.PropertyChanged += HandleLoadedTimelineEventPropertyChangedEventHandler;
 				}
 			}
 			get {
@@ -1686,6 +1692,21 @@ namespace VAS.Services
 		{
 			if (Mode == VideoPlayerOperationMode.Presentation) {
 				UpdateDuration ();
+			}
+		}
+
+		void HandleLoadedTimelineEventPropertyChangedEventHandler (object sender, PropertyChangedEventArgs e)
+		{
+			Time seekTime = null;
+			if (e.PropertyName == nameof (TimelineEvent.Start)) {
+				seekTime = LoadedTimelineEvent.Start;
+			} else if (e.PropertyName == nameof (TimelineEvent.Stop)) {
+				seekTime = LoadedTimelineEvent.Stop;
+			}
+			if (seekTime != null) {
+				loadedSegment.Start = LoadedTimelineEvent.Start;
+				loadedSegment.Stop = LoadedTimelineEvent.Stop;
+				AbsoluteSeek (seekTime, true, false, true);
 			}
 		}
 

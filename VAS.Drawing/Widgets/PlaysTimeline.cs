@@ -389,21 +389,7 @@ namespace VAS.Drawing.Widgets
 
 			co = (sel.Drawable as CanvasObject);
 
-			if (co is TimelineEventView) {
-				TimelineEventVM timelineEventVM = (co as TimelineEventView).TimelineEvent;
-
-				if (sel.Position == SelectionPosition.Right) {
-					moveTime = timelineEventVM.Duration;
-				} else {
-					moveTime = new Time (0);
-				}
-				App.Current.EventsBroker.Publish (
-					new TimeNodeChangedEvent {
-						TimeNode = timelineEventVM.Model,
-						Time = moveTime
-					}
-				);
-			} else if (co is CameraView) {
+			if (co is CameraView) {
 				TimeNodeVM to = (co as CameraView).TimeNode;
 
 				if (sel.Position == SelectionPosition.Right) {
