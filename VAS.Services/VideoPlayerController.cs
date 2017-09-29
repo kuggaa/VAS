@@ -195,7 +195,7 @@ namespace VAS.Services
 		}
 
 		public List<IViewPort> ViewPorts {
-			get {
+			protected get {
 				return viewPorts;
 			}
 			set {
