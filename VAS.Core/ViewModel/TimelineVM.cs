@@ -264,6 +264,12 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		// FIXME: Circular dependency :(
+		public ProjectVM Project {
+			get;
+			set;
+		}
+
 		public void Clear ()
 		{
 			FullTimeline.Model.Clear ();
