@@ -183,8 +183,7 @@ namespace VAS.Tests.Services
 			App.Current.EventsBroker.Publish (evt);
 
 			// Assert
-			Assert.IsTrue (evt.ReturnValue);
-			mockDialogs.Verify (m => m.QueryMessage (It.IsAny<string> (), It.IsAny<string> (), It.IsAny<string> (), It.IsAny<DummyTemplatesController> ()), Times.Once ());
+			mockDialogs.Verify (m => m.QuestionMessage (It.IsAny<string> (), null, It.IsAny<DummyTemplatesController> ()), Times.Once ());
 		}
 
 		public TeamVM PrepareExport ()
