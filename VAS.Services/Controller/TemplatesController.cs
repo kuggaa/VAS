@@ -49,6 +49,7 @@ namespace VAS.Services.Controller
 	{
 		protected LimitationAsyncCommand<CreateEvent<TModel>> newTemplateCommand;
 		protected LimitationAsyncCommand<ImportEvent<TModel>> importTemplateCommand;
+		protected LimitationAsyncCommand<TModel> saveStaticTemplateCommand;
 
 		TemplatesManagerViewModel<TModel, TViewModel, TChildModel, TChildViewModel> viewModel;
 		ITemplateProvider<TModel> provider;
@@ -389,9 +390,9 @@ namespace VAS.Services.Controller
 			}
 
 			if (template.Static) {
-				/* prompt=false when we click the save button */
-				if (force) {
-					evt.ReturnValue = await SaveStatic (template);
+				string msg = NotEditableText;
+				if (await App.Current.Dialogs.QuestionMessage (msg, null, this)) {
+					await saveStaticTemplateCommand.ExecuteAsync (template);
 				}
 			} else {
 				string msg = ConfirmSaveText;
@@ -420,7 +421,7 @@ namespace VAS.Services.Controller
 			TViewModel selectedVM = ViewModel.Selection.FirstOrDefault ();
 			TModel loadedTemplate = null;
 
-			if (ViewModel.LoadedTemplate.Edited == true) {
+			if (ViewModel.LoadedTemplate.Edited) {
 				await HandleSave (new UpdateEvent<TModel> { Force = false, Object = ViewModel.LoadedTemplate.Model });
 			}
 
@@ -498,31 +499,27 @@ namespace VAS.Services.Controller
 
 		#endregion
 
-		async Task<bool> SaveStatic (TModel template)
+		protected async Task<bool> HandleSaveStatic (TModel template)
 		{
-			string msg = NotEditableText;
 			bool saveOk = false;
-			if (await App.Current.Dialogs.QuestionMessage (msg, null, this)) {
-				string newName;
-				while (true) {
-					newName = await App.Current.Dialogs.QueryMessage (Catalog.GetString ("Name:"), null,
-						template.Name + "_copy", this);
-					if (newName == null)
-						break;
-					if (Provider.Exists (newName)) {
-						msg = AlreadyExistsText;
-						App.Current.Dialogs.ErrorMessage (msg, this);
-					} else {
-						break;
-					}
+			string newName;
+			while (true) {
+				newName = await App.Current.Dialogs.QueryMessage (Catalog.GetString ("Name:"), null,
+					template.Name + "_copy", this);
+				if (newName == null)
+					break;
+				if (Provider.Exists (newName)) {
+					App.Current.Dialogs.ErrorMessage (AlreadyExistsText, this);
+				} else {
+					break;
 				}
-				if (newName == null) {
-					return false;
-				}
-				TModel newtemplate = (TModel)template.Copy (newName);
-				newtemplate.Static = false;
-				saveOk = SaveTemplate (newtemplate);
 			}
+			if (newName == null) {
+				return false;
+			}
+			TModel newtemplate = (TModel)template.Copy (newName);
+			newtemplate.Static = false;
+			saveOk = SaveTemplate (newtemplate);
 
 			return saveOk;
 		}
