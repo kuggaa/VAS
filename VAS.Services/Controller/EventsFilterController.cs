@@ -23,6 +23,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using VAS.Core;
+using VAS.Core.Common;
 using VAS.Core.Filters;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
@@ -88,12 +89,39 @@ namespace VAS.Services.Controller
 		protected virtual void UpdatePredicates ()
 		{
 			UpdateTeamsPredicates ();
+			UpdatePeriodsPredicates ();
 			UpdateEventTypesPredicates ();
 		}
 
 		protected virtual void UpdateTeamsPredicates ()
 		{
 
+		}
+
+		protected virtual void UpdatePeriodsPredicates ()
+		{
+			bool oldIgnoreEvents = ViewModel.Filters.IgnoreEvents;
+			ViewModel.Filters.IgnoreEvents = true;
+			ViewModel.PeriodsPredicate.Clear ();
+
+			List<IPredicate<TimelineEventVM>> listPredicates = new List<IPredicate<TimelineEventVM>> ();
+			Expression<Func<TimelineEventVM, bool>> noPeriodExpression = ev => true;
+			foreach (var period in ViewModel.Project.Periods) {
+				noPeriodExpression = noPeriodExpression.And (ev => period.All (p => !ev.IsInside (p)));
+				listPredicates.Add (new Predicate {
+					Name = period.Name,
+					Expression = ev => period.Any (p => ev.IsInside (p))
+				});
+			}
+			ViewModel.PeriodsPredicate.Add (new Predicate {
+				Name = Catalog.GetString ("No period"),
+				Expression = noPeriodExpression
+			});
+			foreach (var predicate in listPredicates) {
+				ViewModel.PeriodsPredicate.Add (predicate);
+			}
+			ViewModel.Filters.IgnoreEvents = oldIgnoreEvents;
+			ViewModel.Filters.EmitPredicateChanged ();
 		}
 
 		protected virtual void UpdateEventTypesPredicates (object sender = null, NotifyCollectionChangedEventArgs e = null)
