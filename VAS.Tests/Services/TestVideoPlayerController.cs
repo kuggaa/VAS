@@ -142,7 +142,7 @@ namespace VAS.Tests.Services
 			playlist.Elements.Add (plImage);
 			currentTime = new Time (0);
 
-			player = new VideoPlayerController ();
+			player = new VideoPlayerController (new Seeker (0));
 			playerVM = new VideoPlayerVM ();
 			player.SetViewModel (playerVM);
 			playlist.SetActive (playlist.Elements [0]);
@@ -524,8 +524,6 @@ namespace VAS.Tests.Services
 			playerMock.ResetCalls ();
 			player.Seek (0.1f);
 			player.Seek (0.5f);
-			// Seeks for loaded events are throtled by a timer.
-			System.Threading.Thread.Sleep (100);
 			// Check we got called only once
 			playerMock.Verify (p => p.Seek (It.IsAny<Time> (), true, false), Times.Once ());
 			// And with the last value
@@ -1959,6 +1957,56 @@ namespace VAS.Tests.Services
 
 			Assert.AreEqual (1, calls);
 			Assert.AreSame (mfsNew, fileset.Model);
+		}
+
+		[Test]
+		public void LoadEvent_StartMoved_SeekToNewPosition ()
+		{
+			PreparePlayer ();
+			player.LoadEvent (evt, evt.Start, true);
+			playerMock.ResetCalls ();
+
+			evt.Start += 1000;
+
+			playerMock.Verify (p => p.Seek (evt.Start, true, false));
+		}
+
+		[Test]
+		public void LoadEvent_StopMoved_SeekToNewPosition ()
+		{
+			PreparePlayer ();
+			player.LoadEvent (evt, evt.Start, true);
+			playerMock.ResetCalls ();
+
+			evt.Stop += 1000;
+
+			playerMock.Verify (p => p.Seek (evt.Stop, true, false));
+		}
+
+		[Test]
+		public void LoadPlaylistEvent_IsPlaylistPlayElementAndStartMoved_SeekToNewPosition ()
+		{
+			PreparePlayer ();
+			var playlistElement = playlist.Elements [0] as PlaylistPlayElement;
+			player.LoadPlaylistEvent (playlist, playlistElement, true);
+			playerMock.ResetCalls ();
+
+			playlistElement.Start += 1000;
+
+			playerMock.Verify (p => p.Seek (playlistElement.Start, true, false));
+		}
+
+		[Test]
+		public void LoadPlaylistEvent_IsPlaylistPlayElementAndStopMoved_SeekToNewPosition ()
+		{
+			PreparePlayer ();
+			var playlistElement = playlist.Elements [0] as PlaylistPlayElement;
+			player.LoadPlaylistEvent (playlist, playlistElement, true);
+			playerMock.ResetCalls ();
+
+			playlistElement.Stop += 1000;
+
+			playerMock.Verify (p => p.Seek (playlistElement.Stop, true, false));
 		}
 
 		[Test]

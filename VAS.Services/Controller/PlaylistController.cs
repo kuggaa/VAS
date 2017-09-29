@@ -88,7 +88,6 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.SubscribeAsync<EditEvent<PlaylistElementVM>> (HandleEditPlaylistElement);
 			App.Current.EventsBroker.Subscribe<LoadPlaylistElementEvent> (HandleLoadPlaylistElement);
 			App.Current.EventsBroker.Subscribe<LoadEventEvent> (HandleLoadPlayEvent);
-			App.Current.EventsBroker.Subscribe<TimeNodeChangedEvent> (HandlePlayChanged);
 			App.Current.EventsBroker.Subscribe<MoveElementsEvent<PlaylistVM, PlaylistElementVM>> (HandleMoveElements);
 		}
 
@@ -109,7 +108,6 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.UnsubscribeAsync<EditEvent<PlaylistElementVM>> (HandleEditPlaylistElement);
 			App.Current.EventsBroker.Unsubscribe<LoadPlaylistElementEvent> (HandleLoadPlaylistElement);
 			App.Current.EventsBroker.Unsubscribe<LoadEventEvent> (HandleLoadPlayEvent);
-			App.Current.EventsBroker.Unsubscribe<TimeNodeChangedEvent> (HandlePlayChanged);
 			App.Current.EventsBroker.Unsubscribe<MoveElementsEvent<PlaylistVM, PlaylistElementVM>> (HandleMoveElements);
 		}
 
@@ -348,14 +346,6 @@ namespace VAS.Services.Controller
 				e.Object.Name = name;
 			}
 			Save (e.Object);
-		}
-
-		//FIXME: this should be in Player controller when decoupled from PalyerVM
-		void HandlePlayChanged (TimeNodeChangedEvent e)
-		{
-			if (e.TimeNode is TimelineEvent) {
-				LoadPlay (e.TimeNode as TimelineEvent, e.Time, false);
-			}
 		}
 
 		void HandleMoveElements (MoveElementsEvent<PlaylistVM, PlaylistElementVM> e)
