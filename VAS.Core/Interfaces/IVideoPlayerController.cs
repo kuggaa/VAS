@@ -78,7 +78,7 @@ namespace VAS.Core.Interfaces
 		/// <summary>
 		/// List of view ports set by the view.
 		/// </summary>
-		List<IViewPort> ViewPorts { get; set; }
+		List<IViewPort> ViewPorts { set; }
 
 		/// <summary>
 		/// Flag indicating whether the object is active
