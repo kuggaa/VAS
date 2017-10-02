@@ -68,7 +68,7 @@ namespace VAS.Core.ViewModel
 			TimersPredicate = new OrPredicate<TimelineEventVM> {
 				Name = Catalog.GetString ("Timers")
 			};
-			CommonTagsPredicate = new OrPredicate<TimelineEventVM> {
+			CommonTagsPredicate = new AndPredicate<TimelineEventVM> {
 				Name = Catalog.GetString ("Common Tags")
 			};
 			CategoriesPredicate = new OrPredicate<TimelineEventVM> {
@@ -225,7 +225,7 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the common tags predicate.
 		/// </summary>
 		/// <value>The common tags predicate.</value>
-		public OrPredicate<TimelineEventVM> CommonTagsPredicate {
+		public AndPredicate<TimelineEventVM> CommonTagsPredicate {
 			get;
 			private set;
 		}
