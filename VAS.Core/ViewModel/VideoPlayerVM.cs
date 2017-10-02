@@ -40,7 +40,7 @@ namespace VAS.Core.ViewModel
 
 		public VideoPlayerVM ()
 		{
-			CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+			CamerasConfig = new ObservableCollection<CameraConfig> ();
 			CurrentTime = new Time (0);
 			Step = new Time { TotalSeconds = 10 };
 			ShowDetachButton = true;
@@ -242,9 +242,6 @@ namespace VAS.Core.ViewModel
 		}
 
 		public List<IViewPort> ViewPorts {
-			get {
-				return Player.ViewPorts;
-			}
 			set {
 				Player.ViewPorts = value;
 			}
