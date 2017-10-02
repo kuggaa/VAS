@@ -92,6 +92,7 @@ namespace VAS.Services.Controller
 			UpdateTeamsPredicates ();
 			UpdatePeriodsPredicates ();
 			UpdateTimersPredicates ();
+			UpdateCommonTagsPredicates ();
 			UpdateEventTypesPredicates ();
 			ViewModel.Filters.IgnoreEvents = false;
 			ViewModel.Filters.EmitPredicateChanged ();
@@ -152,6 +153,48 @@ namespace VAS.Services.Controller
 			});
 			foreach (var predicate in listPredicates) {
 				ViewModel.TimersPredicate.Add (predicate);
+			}
+
+			ViewModel.Filters.IgnoreEvents = oldIgnoreEvents;
+			if (!ViewModel.Filters.IgnoreEvents) {
+				ViewModel.Filters.EmitPredicateChanged ();
+			}
+		}
+
+		protected virtual void UpdateCommonTagsPredicates ()
+		{
+			bool oldIgnoreEvents = ViewModel.Filters.IgnoreEvents;
+			ViewModel.Filters.IgnoreEvents = true;
+			ViewModel.CommonTagsPredicate.Clear ();
+
+			var tags = ViewModel.Dashboard.Model.CommonTagsByGroup;
+
+			List<IPredicate<TimelineEventVM>> listPredicates = new List<IPredicate<TimelineEventVM>> ();
+			Expression<Func<TimelineEventVM, bool>> noTagsExpression = ev => true;
+			foreach (var tagGroup in tags) {
+				noTagsExpression = noTagsExpression.And (ev => !tagGroup.Value.Intersect (ev.Model.Tags).Any ());
+
+				Expression<Func<TimelineEventVM, bool>> tagGroupExpression = ev => ev.Model.Tags.Any (tag => tag.Group == tagGroup.Key);
+				var tagGroupPredicate = new OrPredicate<TimelineEventVM> {
+					Name = string.IsNullOrEmpty (tagGroup.Key) ? Catalog.GetString ("General tags") : tagGroup.Key,
+				};
+
+				tagGroupPredicate.Add (new Predicate {
+					Name = Catalog.GetString ("None"),
+					Expression = ev => !ev.Model.Tags.Any (tag => tag.Group == tagGroup.Key)
+				});
+
+				foreach (var tag in tagGroup.Value) {
+					tagGroupPredicate.Add (new Predicate {
+						Name = tag.Value,
+						Expression = tagGroupExpression.And (ev => ev.Model.Tags.Contains (tag))
+					});
+				}
+				listPredicates.Add (tagGroupPredicate);
+			}
+
+			foreach (var predicate in listPredicates) {
+				ViewModel.CommonTagsPredicate.Add (predicate);
 			}
 
 			ViewModel.Filters.IgnoreEvents = oldIgnoreEvents;
