@@ -46,6 +46,13 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			playButton.RedrawEvent += HandleButtonRedrawEvent;
 		}
 
+		public override double RequiredWidth {
+			get {
+				var width = base.RequiredWidth;
+				return width + RectSize + TIMELINE_BUTTON_MARGIN;
+			}
+		}
+
 		public override Color Color {
 			get {
 				return ViewModel.EventTypeVM.Color;
