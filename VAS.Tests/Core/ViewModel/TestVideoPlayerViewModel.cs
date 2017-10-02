@@ -100,9 +100,9 @@ namespace VAS.Tests.Core.ViewModel
 			playerController.SetupAllProperties ();
 			var viewModel = new VideoPlayerVM { Player = playerController.Object };
 
-			viewModel.SetZoomCommand.Execute (3.0);
+			viewModel.SetZoomCommand.Execute (3.0f);
 
-			playerController.Verify (p => p.SetZoom (3.0), Times.Once);
+			playerController.Verify (p => p.SetZoom (3.0f), Times.Once);
 		}
 
 
@@ -116,7 +116,7 @@ namespace VAS.Tests.Core.ViewModel
 			playerController.SetupAllProperties ();
 			var viewModel = new VideoPlayerVM { Player = playerController.Object };
 
-			viewModel.SetZoomCommand.Execute (3.0);
+			viewModel.SetZoomCommand.Execute (3.0f);
 
 			mockService.Verify (s => s.MoveToUpgradeDialog (VASFeature.Zoom.ToString ()), Times.Once);
 		}

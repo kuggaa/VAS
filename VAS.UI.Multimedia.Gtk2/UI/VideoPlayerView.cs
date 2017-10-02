@@ -814,7 +814,7 @@ namespace VAS.UI
 				rateLabel.Text = $"{playerVM.Rate}X";
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Volume))) {
-				volumeWindow.SetValue (playerVM.Volume * 100);
+				volumeWindow.SetValue ((float)(playerVM.Volume * 100));
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Zoom))) {
 				updatingView = true;

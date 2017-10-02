@@ -64,7 +64,7 @@ namespace VAS.UI
 		/// <value>The format value.</value>
 		public Func<double, string> FormatValue { get; set; }
 
-		public void SetValue (double value)
+		public void SetValue (float value)
 		{
 			scale.Value = value;
 		}
