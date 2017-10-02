@@ -857,7 +857,7 @@ namespace VAS.Services
 			);
 		}
 
-		public void SetZoom (double zoomLevel)
+		public void SetZoom (float zoomLevel)
 		{
 			if (zoomLevel < 1 || zoomLevel > App.Current.ZoomLevels.Max ()) {
 				Log.Error ("Zoom level is not between the supported boundaries : " + zoomLevel);
@@ -1179,7 +1179,7 @@ namespace VAS.Services
 			if (cfg.RegionOfInterest.Empty) {
 				playerVM.Zoom = 1;
 			} else {
-				playerVM.Zoom = file.VideoWidth / cfg.RegionOfInterest.Width;
+				playerVM.Zoom = (float)(file.VideoWidth / cfg.RegionOfInterest.Width);
 			}
 		}
 

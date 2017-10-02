@@ -50,7 +50,7 @@ namespace VAS
 
 		public App ()
 		{
-			ZoomLevels = new List<double> { 1.0, 1.25, 1.50, 1.75, 2.0, 2.25, 2.50, 2.75, 3.0, 3.25, 3.50, 3.75, 4.0 };
+			ZoomLevels = new List<float> { 1.0f, 1.25f, 1.50f, 1.75f, 2.0f, 2.25f, 2.50f, 2.75f, 3.0f, 3.25f, 3.50f, 3.75f, 4.0f };
 		}
 
 		public KeyContextManager KeyContextManager {
@@ -485,7 +485,7 @@ namespace VAS
 		/// Gets or sets a list with the possible zoom levels for the video player.
 		/// </summary>
 		/// <value>The zoom levels.</value>
-		public List<double> ZoomLevels {
+		public List<float> ZoomLevels {
 			get;
 			set;
 		}

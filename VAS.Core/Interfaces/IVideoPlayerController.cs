@@ -213,7 +213,7 @@ namespace VAS.Core.Interfaces
 		/// Changes the zoom for the main camera.
 		/// </summary>
 		/// <param name="zoomLevel">The new zoom level, where 1 is 100%.</param>
-		void SetZoom (double zoomLevel);
+		void SetZoom (float zoomLevel);
 
 		/// <summary>
 		/// Sets the steps to perform jumps in the video player.

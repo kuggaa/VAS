@@ -50,7 +50,7 @@ namespace VAS.Core.ViewModel
 			});
 			ShowZoomCommand.Icon = App.Current.ResourcesLocator.LoadIcon ("vas-zoom", 15);
 			ShowZoomCommand.ToolTipText = Catalog.GetString ("Zoom");
-			SetZoomCommand = new LimitationCommand<double> (VASFeature.Zoom.ToString (), SetZoom);
+			SetZoomCommand = new LimitationCommand<float> (VASFeature.Zoom.ToString (), SetZoom);
 			Duration = new Time (0);
 			CurrentTime = new Time (0);
 		}
@@ -68,7 +68,7 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the set zoom Limitation command.
 		/// </summary>
 		/// <value>The set zoom command.</value>
-		public LimitationCommand<double> SetZoomCommand {
+		public LimitationCommand<float> SetZoomCommand {
 			get;
 			set;
 		}
@@ -110,7 +110,7 @@ namespace VAS.Core.ViewModel
 		/// This value is only used for display in the view. To change the zoom use <see cref="SetZoom"/>
 		/// </summary>
 		/// <value>The new zoom.</value>
-		public double Zoom {
+		public float Zoom {
 			get;
 			set;
 		}
@@ -415,7 +415,7 @@ namespace VAS.Core.ViewModel
 		/// Changes the current zoom value using a value that goes from 1 (100%) to 2(200%)
 		/// </summary>
 		/// <param name="zoomLevel">Zoom level.</param>
-		void SetZoom (double zoomLevel)
+		void SetZoom (float zoomLevel)
 		{
 			Player.SetZoom (zoomLevel);
 		}
