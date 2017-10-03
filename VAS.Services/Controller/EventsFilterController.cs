@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -74,16 +75,16 @@ namespace VAS.Services.Controller
 
 		protected override void ConnectEvents ()
 		{
-			if (ViewModel != null) {
-				ViewModel.EventTypesTimeline.ViewModels.CollectionChanged += UpdateEventTypesPredicates;
-			}
+			base.ConnectEvents ();
+			ViewModel.EventTypesTimeline.ViewModels.CollectionChanged += UpdateEventTypesPredicates;
+			ViewModel.Filters.PropertyChanged += HandleFiltersChanged;
 		}
 
 		protected override void DisconnectEvents ()
 		{
-			if (ViewModel != null) {
-				ViewModel.EventTypesTimeline.ViewModels.CollectionChanged -= UpdateEventTypesPredicates;
-			}
+			base.DisconnectEvents ();
+			ViewModel.EventTypesTimeline.ViewModels.CollectionChanged -= UpdateEventTypesPredicates;
+			ViewModel.Filters.PropertyChanged -= HandleFiltersChanged;
 		}
 
 		protected virtual void UpdatePredicates ()
@@ -248,6 +249,21 @@ namespace VAS.Services.Controller
 			ViewModel.Filters.IgnoreEvents = oldIgnoreEvents;
 			if (!ViewModel.Filters.IgnoreEvents) {
 				ViewModel.Filters.EmitPredicateChanged ();
+			}
+		}
+
+		void HandleFiltersChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == $"Collection_{nameof (ViewModel.Filters.Elements)}" ||
+				e.PropertyName == nameof (ViewModel.Filters.Active)) {
+				HandleFiltersChanged ();
+			}
+		}
+
+		void HandleFiltersChanged ()
+		{
+			foreach (var eventVM in ViewModel.FullTimeline) {
+				eventVM.Visible = ViewModel.Filters.Filter (eventVM);
 			}
 		}
 	}
