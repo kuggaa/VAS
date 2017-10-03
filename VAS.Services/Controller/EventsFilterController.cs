@@ -91,6 +91,7 @@ namespace VAS.Services.Controller
 			ViewModel.Filters.IgnoreEvents = true;
 			UpdateTeamsPredicates ();
 			UpdatePeriodsPredicates ();
+			UpdateTimersPredicates ();
 			UpdateEventTypesPredicates ();
 			ViewModel.Filters.IgnoreEvents = false;
 			ViewModel.Filters.EmitPredicateChanged ();
@@ -123,6 +124,36 @@ namespace VAS.Services.Controller
 			foreach (var predicate in listPredicates) {
 				ViewModel.PeriodsPredicate.Add (predicate);
 			}
+
+			ViewModel.Filters.IgnoreEvents = oldIgnoreEvents;
+			if (!ViewModel.Filters.IgnoreEvents) {
+				ViewModel.Filters.EmitPredicateChanged ();
+			}
+		}
+
+		protected virtual void UpdateTimersPredicates ()
+		{
+			bool oldIgnoreEvents = ViewModel.Filters.IgnoreEvents;
+			ViewModel.Filters.IgnoreEvents = true;
+			ViewModel.TimersPredicate.Clear ();
+
+			List<IPredicate<TimelineEventVM>> listPredicates = new List<IPredicate<TimelineEventVM>> ();
+			Expression<Func<TimelineEventVM, bool>> noPeriodExpression = ev => true;
+			foreach (var timer in ViewModel.Project.Timers) {
+				noPeriodExpression = noPeriodExpression.And (ev => timer.All (p => !ev.IsInside (p)));
+				listPredicates.Add (new Predicate {
+					Name = timer.Name,
+					Expression = ev => timer.Any (p => ev.IsInside (p))
+				});
+			}
+			ViewModel.TimersPredicate.Add (new Predicate {
+				Name = Catalog.GetString ("No period"),
+				Expression = noPeriodExpression
+			});
+			foreach (var predicate in listPredicates) {
+				ViewModel.TimersPredicate.Add (predicate);
+			}
+
 			ViewModel.Filters.IgnoreEvents = oldIgnoreEvents;
 			if (!ViewModel.Filters.IgnoreEvents) {
 				ViewModel.Filters.EmitPredicateChanged ();
