@@ -110,10 +110,10 @@ namespace VAS.Services.Controller
 			List<IPredicate<TimelineEventVM>> listPredicates = new List<IPredicate<TimelineEventVM>> ();
 			Expression<Func<TimelineEventVM, bool>> noPeriodExpression = ev => true;
 			foreach (var period in ViewModel.Project.Periods) {
-				noPeriodExpression = noPeriodExpression.And (ev => period.All (p => !ev.IsInside (p)));
+				noPeriodExpression = noPeriodExpression.And (ev => period.All (p => ev.Model.Intersect (p.Model) == null));
 				listPredicates.Add (new Predicate {
 					Name = period.Name,
-					Expression = ev => period.Any (p => ev.IsInside (p))
+					Expression = ev => period.Any (p => ev.Model.Intersect (p.Model) != null)
 				});
 			}
 			ViewModel.PeriodsPredicate.Add (new Predicate {
@@ -139,10 +139,10 @@ namespace VAS.Services.Controller
 			List<IPredicate<TimelineEventVM>> listPredicates = new List<IPredicate<TimelineEventVM>> ();
 			Expression<Func<TimelineEventVM, bool>> noPeriodExpression = ev => true;
 			foreach (var timer in ViewModel.Project.Timers) {
-				noPeriodExpression = noPeriodExpression.And (ev => timer.All (p => !ev.IsInside (p)));
+				noPeriodExpression = noPeriodExpression.And (ev => timer.All (p => ev.Model.Intersect (p.Model) == null));
 				listPredicates.Add (new Predicate {
 					Name = timer.Name,
-					Expression = ev => timer.Any (p => ev.IsInside (p))
+					Expression = ev => timer.Any (p => ev.Model.Intersect (p.Model) != null)
 				});
 			}
 			ViewModel.TimersPredicate.Add (new Predicate {
