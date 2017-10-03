@@ -90,9 +90,6 @@ namespace VAS.Services.Controller
 		{
 			ViewModel.Filters.IgnoreEvents = true;
 			UpdateTeamsPredicates ();
-			UpdatePeriodsPredicates ();
-			UpdateTimersPredicates ();
-			UpdateCommonTagsPredicates ();
 			UpdateEventTypesPredicates ();
 			ViewModel.Filters.IgnoreEvents = false;
 			ViewModel.Filters.EmitPredicateChanged ();
