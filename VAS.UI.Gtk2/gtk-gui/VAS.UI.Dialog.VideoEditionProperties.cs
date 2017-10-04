@@ -55,7 +55,7 @@ namespace VAS.UI.Dialog
 			global::Stetic.Gui.Initialize (this);
 			// Widget VAS.UI.Dialog.VideoEditionProperties
 			this.Name = "VAS.UI.Dialog.VideoEditionProperties";
-			this.Title = global::VAS.Core.Catalog.GetString ("Video Properties");
+			this.Title = global::VAS.Core.Catalog.GetString (" ");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			this.Modal = true;
 			this.Resizable = false;
