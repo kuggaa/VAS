@@ -34,6 +34,10 @@ namespace VAS.UI.Dialog
 
 		private global::Gtk.CheckButton watermarkcheckbutton;
 
+		private global::Gtk.Label watermarkLabel;
+
+		private global::VAS.UI.UI.Component.ImagePreviewWidget watermarkSelector;
+
 		private global::Gtk.HBox filebox;
 
 		private global::Gtk.Label filenamelabel;
@@ -93,7 +97,7 @@ namespace VAS.UI.Dialog
 			w4.Expand = false;
 			w4.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
-			this.table1 = new global::Gtk.Table (((uint)(5)), ((uint)(2)), false);
+			this.table1 = new global::Gtk.Table (((uint)(6)), ((uint)(2)), false);
 			this.table1.Name = "table1";
 			this.table1.RowSpacing = ((uint)(10));
 			this.table1.ColumnSpacing = ((uint)(35));
@@ -229,11 +233,37 @@ namespace VAS.UI.Dialog
 			w14.XPadding = ((uint)(10));
 			w14.XOptions = ((global::Gtk.AttachOptions)(4));
 			w14.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child table1.Gtk.Table+TableChild
+			this.watermarkLabel = new global::Gtk.Label ();
+			this.watermarkLabel.Name = "watermarkLabel";
+			this.watermarkLabel.Xalign = 0F;
+			this.watermarkLabel.Yalign = 0F;
+			this.watermarkLabel.LabelProp = global::VAS.Core.Catalog.GetString ("Watermark:");
+			this.table1.Add (this.watermarkLabel);
+			global::Gtk.Table.TableChild w15 = ((global::Gtk.Table.TableChild)(this.table1 [this.watermarkLabel]));
+			w15.TopAttach = ((uint)(5));
+			w15.BottomAttach = ((uint)(6));
+			w15.XPadding = ((uint)(10));
+			w15.XOptions = ((global::Gtk.AttachOptions)(4));
+			w15.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child table1.Gtk.Table+TableChild
+			this.watermarkSelector = new global::VAS.UI.UI.Component.ImagePreviewWidget ();
+			this.watermarkSelector.Events = ((global::Gdk.EventMask)(256));
+			this.watermarkSelector.Name = "watermarkSelector";
+			this.table1.Add (this.watermarkSelector);
+			global::Gtk.Table.TableChild w16 = ((global::Gtk.Table.TableChild)(this.table1 [this.watermarkSelector]));
+			w16.TopAttach = ((uint)(5));
+			w16.BottomAttach = ((uint)(6));
+			w16.LeftAttach = ((uint)(1));
+			w16.RightAttach = ((uint)(2));
+			w16.XPadding = ((uint)(10));
+			w16.XOptions = ((global::Gtk.AttachOptions)(4));
+			w16.YOptions = ((global::Gtk.AttachOptions)(4));
 			this.vbox2.Add (this.table1);
-			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.table1]));
-			w15.Position = 1;
-			w15.Expand = false;
-			w15.Fill = false;
+			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.table1]));
+			w17.Position = 1;
+			w17.Expand = false;
+			w17.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.filebox = new global::Gtk.HBox ();
 			this.filebox.Name = "filebox";
@@ -245,22 +275,22 @@ namespace VAS.UI.Dialog
 			this.filenamelabel.Xalign = 1F;
 			this.filenamelabel.LabelProp = global::VAS.Core.Catalog.GetString ("File name: ");
 			this.filebox.Add (this.filenamelabel);
-			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.filebox [this.filenamelabel]));
-			w16.Position = 0;
-			w16.Expand = false;
+			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.filebox [this.filenamelabel]));
+			w18.Position = 0;
+			w18.Expand = false;
 			// Container child filebox.Gtk.Box+BoxChild
 			this.mediafilechooser1 = new global::VAS.UI.Component.MediaFileChooser ();
 			this.mediafilechooser1.Events = ((global::Gdk.EventMask)(256));
 			this.mediafilechooser1.Name = "mediafilechooser1";
 			this.filebox.Add (this.mediafilechooser1);
-			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.filebox [this.mediafilechooser1]));
-			w17.Position = 1;
-			w17.Padding = ((uint)(5));
+			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.filebox [this.mediafilechooser1]));
+			w19.Position = 1;
+			w19.Padding = ((uint)(5));
 			this.vbox2.Add (this.filebox);
-			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.filebox]));
-			w18.Position = 2;
-			w18.Expand = false;
-			w18.Fill = false;
+			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.filebox]));
+			w20.Position = 2;
+			w20.Expand = false;
+			w20.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.dirbox = new global::Gtk.HBox ();
 			this.dirbox.Name = "dirbox";
@@ -272,33 +302,33 @@ namespace VAS.UI.Dialog
 			this.directorynamelabel1.Xalign = 1F;
 			this.directorynamelabel1.LabelProp = global::VAS.Core.Catalog.GetString ("Directory name: ");
 			this.dirbox.Add (this.directorynamelabel1);
-			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.dirbox [this.directorynamelabel1]));
-			w19.Position = 0;
-			w19.Expand = false;
+			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.dirbox [this.directorynamelabel1]));
+			w21.Position = 0;
+			w21.Expand = false;
 			// Container child dirbox.Gtk.Box+BoxChild
 			this.mediafilechooser2 = new global::VAS.UI.Component.MediaFileChooser ();
 			this.mediafilechooser2.Events = ((global::Gdk.EventMask)(256));
 			this.mediafilechooser2.Name = "mediafilechooser2";
 			this.dirbox.Add (this.mediafilechooser2);
-			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.dirbox [this.mediafilechooser2]));
-			w20.Position = 1;
-			w20.Padding = ((uint)(5));
+			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.dirbox [this.mediafilechooser2]));
+			w22.Position = 1;
+			w22.Padding = ((uint)(5));
 			this.vbox2.Add (this.dirbox);
-			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.dirbox]));
-			w21.Position = 3;
-			w21.Expand = false;
-			w21.Fill = false;
+			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.dirbox]));
+			w23.Position = 3;
+			w23.Expand = false;
+			w23.Fill = false;
 			w1.Add (this.vbox2);
-			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox2]));
-			w22.Position = 0;
-			w22.Expand = false;
-			w22.Fill = false;
+			global::Gtk.Box.BoxChild w24 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox2]));
+			w24.Position = 0;
+			w24.Expand = false;
+			w24.Fill = false;
 			// Internal child VAS.UI.Dialog.VideoEditionProperties.ActionArea
-			global::Gtk.HButtonBox w23 = this.ActionArea;
-			w23.Name = "dialog1_ActionArea";
-			w23.Spacing = 6;
-			w23.BorderWidth = ((uint)(5));
-			w23.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
+			global::Gtk.HButtonBox w25 = this.ActionArea;
+			w25.Name = "dialog1_ActionArea";
+			w25.Spacing = 6;
+			w25.BorderWidth = ((uint)(5));
+			w25.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonCancel = new global::Gtk.Button ();
 			this.buttonCancel.CanDefault = true;
@@ -308,9 +338,9 @@ namespace VAS.UI.Dialog
 			this.buttonCancel.UseUnderline = true;
 			this.buttonCancel.Label = "gtk-cancel";
 			this.AddActionWidget (this.buttonCancel, -6);
-			global::Gtk.ButtonBox.ButtonBoxChild w24 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w23 [this.buttonCancel]));
-			w24.Expand = false;
-			w24.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w26 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w25 [this.buttonCancel]));
+			w26.Expand = false;
+			w26.Fill = false;
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonOk = new global::Gtk.Button ();
 			this.buttonOk.CanDefault = true;
@@ -319,16 +349,16 @@ namespace VAS.UI.Dialog
 			this.buttonOk.UseStock = true;
 			this.buttonOk.UseUnderline = true;
 			this.buttonOk.Label = "gtk-ok";
-			w23.Add (this.buttonOk);
-			global::Gtk.ButtonBox.ButtonBoxChild w25 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w23 [this.buttonOk]));
-			w25.Position = 1;
-			w25.Expand = false;
-			w25.Fill = false;
+			w25.Add (this.buttonOk);
+			global::Gtk.ButtonBox.ButtonBoxChild w27 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w25 [this.buttonOk]));
+			w27.Position = 1;
+			w27.Expand = false;
+			w27.Fill = false;
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
 			this.DefaultWidth = 567;
-			this.DefaultHeight = 439;
+			this.DefaultHeight = 494;
 			this.dirbox.Hide ();
 			this.Show ();
 			this.splitfilesbutton.Clicked += new global::System.EventHandler (this.OnSplitfilesbuttonClicked);
