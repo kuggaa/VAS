@@ -21,8 +21,8 @@ using Gtk;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Store.Playlists;
-using VAS.Core.ViewModel;
-using VASMisc = VAS.UI.Helpers.Misc;
+using Misc = VAS.UI.Helpers.Misc;
+using Image = VAS.Core.Common.Image;
 
 namespace VAS.UI.Dialog
 {
@@ -30,6 +30,8 @@ namespace VAS.UI.Dialog
 	[System.ComponentModel.ToolboxItem (false)]
 	public partial class VideoEditionProperties : Gtk.Dialog
 	{
+		const int RESET_BUTTON_HEIGHT = 30;
+
 		EncodingSettings encSettings;
 		ListStore stdStore, encStore, qualStore;
 
@@ -39,12 +41,12 @@ namespace VAS.UI.Dialog
 		{
 			TransientFor = parent;
 			this.Build ();
-			Icon = VASMisc.LoadIcon (App.Current.SoftwareIconName, IconSize.Button, 0);
+			Icon = Misc.LoadIcon (App.Current.SoftwareIconName, IconSize.Button, 0);
 			encSettings = new EncodingSettings ();
-			stdStore = VASMisc.FillImageFormat (sizecombobox, VideoStandards.Rendering,
+			stdStore = Misc.FillImageFormat (sizecombobox, VideoStandards.Rendering,
 				App.Current.Config.RenderVideoStandard);
-			encStore = VASMisc.FillEncodingFormat (formatcombobox, App.Current.Config.RenderEncodingProfile);
-			qualStore = VASMisc.FillQuality (qualitycombobox, App.Current.Config.RenderEncodingQuality);
+			encStore = Misc.FillEncodingFormat (formatcombobox, App.Current.Config.RenderEncodingProfile);
+			qualStore = Misc.FillQuality (qualitycombobox, App.Current.Config.RenderEncodingQuality);
 			descriptioncheckbutton.Active = App.Current.Config.OverlayTitle;
 			audiocheckbutton.Active = App.Current.Config.EnableAudio;
 			mediafilechooser1.FileChooserMode = FileChooserMode.File;
@@ -57,6 +59,15 @@ namespace VAS.UI.Dialog
 				OutputDir = mediafilechooser2.CurrentPath;
 			};
 
+			watermarkSelector.ResetButtonHeight = RESET_BUTTON_HEIGHT;
+			watermarkSelector.ImageButtonPressEvent += HandleChangeWatermarkClicked;
+			watermarkSelector.ResetButton.Clicked += (sender, e) => ResetWatermark ();
+			watermarkcheckbutton.Toggled += HandleWatermarkCheckToggled;
+			if (App.Current.Config.Watermark != null) {
+				SetWatermarkPreview ();
+			} else {
+				ResetWatermark ();
+			}
 			watermarkcheckbutton.Active = App.Current.Config.AddWatermark;
 
 			if (App.Current.LicenseManager != null) {
@@ -64,10 +75,14 @@ namespace VAS.UI.Dialog
 				watermarkcheckbutton.Sensitive = canRemoveWatermark;
 				if (!canRemoveWatermark) {
 					watermarkcheckbutton.Active = true;
+					watermarkLabel.Visible = watermarkSelector.Visible = false;
+					if (App.Current.Config.Watermark != null) {
+						ResetWatermark ();
+					}
 				}
 			}
-			ModifyBg (StateType.Normal, VASMisc.ToGdkColor (App.Current.Style.BackgroundLevel3));
-			containerRegular.ModifyBg (StateType.Normal, VASMisc.ToGdkColor (App.Current.Style.BackgroundLevel1));
+			ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.BackgroundLevel3));
+			containerRegular.ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.BackgroundLevel1));
 		}
 
 		#endregion
@@ -139,7 +154,7 @@ namespace VAS.UI.Dialog
 			encSettings.EnableTitle = descriptioncheckbutton.Active;
 
 			if (watermarkcheckbutton.Active) {
-				encSettings.Watermark = Watermark.ConfigureNewWatermark (WatermarkPosition.TOP_RIGHT, encSettings.VideoStandard);
+				encSettings.Watermark = Watermark.ConfigureNewWatermark (WatermarkPosition.TOP_RIGHT, encSettings.VideoStandard, App.Current.Config.Watermark);
 			} else {
 				encSettings.Watermark = null;
 			}
@@ -158,6 +173,37 @@ namespace VAS.UI.Dialog
 			dirbox.Visible = splitfilesbutton.Active;
 			filebox.Visible = !splitfilesbutton.Active;
 			SplitFiles = splitfilesbutton.Active;
+		}
+
+		//FIXME: all the watermark behaviour is duplicated in VideoPreferencesPanel
+		void HandleChangeWatermarkClicked (object o, ButtonPressEventArgs args)
+		{
+			var imageTuple = Misc.OpenImageAndFilename (this);
+			string filename = imageTuple.Item1;
+			Image image = imageTuple.Item2;
+			if (image != null) {
+				App.Current.Config.Watermark = image;
+				App.Current.Config.WatermarkName = System.IO.Path.GetFileName (filename);
+				SetWatermarkPreview ();
+			}
+		}
+
+		void SetWatermarkPreview ()
+		{
+			watermarkSelector.ImageView.Image = App.Current.Config.Watermark;
+			watermarkSelector.Title = App.Current.Config.WatermarkName;
+		}
+
+		void ResetWatermark ()
+		{
+			App.Current.Config.Watermark = null;
+			watermarkSelector.ImageView.Image = App.Current.ResourcesLocator.LoadEmbeddedImage (Constants.WATERMARK_RESOURCE_ID);
+			watermarkSelector.Title = Catalog.GetString ("Default watermark");
+		}
+
+		void HandleWatermarkCheckToggled (object sender, EventArgs e)
+		{
+			watermarkLabel.Visible = watermarkSelector.Visible = watermarkcheckbutton.Active;
 		}
 	}
 }

@@ -17,34 +17,54 @@
 //
 using System;
 using Gtk;
+using VAS.Core.Common;
 using VAS.UI.Helpers;
 
 namespace VAS.UI.UI.Component
 {
+	/// <summary>
+	/// Image preview widget.
+	/// It shows an image that can be clicked and a reset button.
+	/// </summary>
 	[System.ComponentModel.ToolboxItem (true)]
 	public partial class ImagePreviewWidget : Gtk.Bin
 	{
-		string title;
 		public event ButtonPressEventHandler ImageButtonPressEvent;
+
+		int resetButtonHeight;
+		string title;
 
 		public ImagePreviewWidget ()
 		{
 			this.Build ();
 			this.fieldeventbox.ButtonPressEvent += HandleImageButtonPress;
+			resetbutton.ApplyStyle (StyleConf.ButtonRegular);
 		}
 
+		/// <summary>
+		/// Gets the image view.
+		/// </summary>
+		/// <value>The image view.</value>
 		public ImageView ImageView {
 			get {
 				return image;
 			}
 		}
 
+		/// <summary>
+		/// Gets the reset button.
+		/// </summary>
+		/// <value>The reset button.</value>
 		public Button ResetButton {
 			get {
 				return resetbutton;
 			}
 		}
 
+		/// <summary>
+		/// Title to show under the image.
+		/// </summary>
+		/// <value>The title.</value>
 		public string Title {
 			get {
 				return title;
@@ -52,6 +72,21 @@ namespace VAS.UI.UI.Component
 			set {
 				title = value;
 				imageTitleLabel.Text = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the height of the reset button.
+		/// Setting this applies the regular style.
+		/// </summary>
+		/// <value>The height of the reset button.</value>
+		public int ResetButtonHeight {
+			get {
+				return resetButtonHeight;
+			}
+			set {
+				resetButtonHeight = value;
+				resetbutton.ApplyStyle (StyleConf.ButtonRegular, resetButtonHeight);
 			}
 		}
 
