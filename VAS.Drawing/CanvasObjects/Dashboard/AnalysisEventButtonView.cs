@@ -778,6 +778,16 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			DrawAnchors (tk);
 			tk.End ();
 		}
+
+		protected override void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			base.HandlePropertyChanged (sender, e);
+			if (sender == ViewModel && (
+				TimedButtonVM.NeedsSync (e, nameof (ViewModel.TagsPerRow)) ||
+				TimedButtonVM.NeedsSync (e, nameof (ViewModel.ShowSubcategories)))) {
+				ReDraw ();
+			}
+		}
 	}
 }
 
