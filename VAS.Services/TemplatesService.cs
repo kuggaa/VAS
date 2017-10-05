@@ -142,6 +142,7 @@ namespace VAS.Services
 			Log.Information (String.Format ("Copying template {0} to {1}", template.Name, newName));
 
 			template = (T)template.Copy (newName);
+			template.Static = false;
 			Add (template);
 			return template;
 		}
