@@ -118,6 +118,16 @@ namespace VAS.Drawing.Widgets
 				i++;
 			}
 			UpdateLabelOffsets ();
+			UpdateLabelsWidth ();
+		}
+
+		protected void UpdateLabelsWidth ()
+		{
+			double width = Objects.OfType<LabelView> ().Max (la => la.RequiredWidth);
+			foreach (LabelView lo in Objects.OfType<LabelView> ()) {
+				lo.Width = width;
+			}
+			WidthRequest = (int)width;
 		}
 
 		protected virtual void UpdateLabelOffsets ()

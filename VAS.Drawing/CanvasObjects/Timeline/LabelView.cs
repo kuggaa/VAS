@@ -81,7 +81,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 		}
 
-		public double RequiredWidth {
+		public virtual double RequiredWidth {
 			get {
 				int width, height;
 				App.Current.DrawingToolkit.MeasureText (
