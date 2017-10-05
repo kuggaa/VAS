@@ -68,6 +68,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Subscribe<ClickedPCardEvent> (HandleClickedPCardEvent);
 			App.Current.EventsBroker.Subscribe<NewTagEvent> (HandleNewTagEvent);
 			App.Current.EventsBroker.Subscribe<CapturerTickEvent> (HandleCapturerTick);
+			App.Current.EventsBroker.Subscribe<TagClickedEvent> (HandleTagClicked);
 
 			foreach (DashboardButtonVM button in project.Dashboard.ViewModels) {
 				button.PropertyChanged += HandlePropertyChanged;
@@ -83,6 +84,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Unsubscribe<ClickedPCardEvent> (HandleClickedPCardEvent);
 			App.Current.EventsBroker.Unsubscribe<NewTagEvent> (HandleNewTagEvent);
 			App.Current.EventsBroker.Unsubscribe<CapturerTickEvent> (HandleCapturerTick);
+			App.Current.EventsBroker.Unsubscribe<TagClickedEvent> (HandleTagClicked);
 
 			foreach (DashboardButtonVM button in project.Dashboard.ViewModels) {
 				button.PropertyChanged -= HandlePropertyChanged;
@@ -178,6 +180,9 @@ namespace VAS.Services.Controller
 			var play = CreateTimelineEvent (e.EventType, e.Start, e.Stop, e.EventTime, null);
 			play.Tags.AddRange (e.Tags);
 
+			// add selected tag buttons
+			play.Tags.AddRange (project.Dashboard.ViewModels.OfType<TagButtonVM> ().Where (x => x.Active).Select (x => x.Tag.Model));
+
 			AddPlayersToEvent (play);
 			AddTeamsToEvent (play);
 
@@ -254,6 +259,17 @@ namespace VAS.Services.Controller
 		void HandleCapturerTick (CapturerTickEvent e)
 		{
 			project.Dashboard.CurrentTime = e.Time;
+		}
+
+		void HandleTagClicked (TagClickedEvent e)
+		{
+			if (e.ButtonVM.Active) {
+				// unselect tags of the same group
+				var relatedTags = project.Dashboard.ViewModels.OfType<TagButtonVM> ().Where (x => x.Tag.Group == e.ButtonVM.Tag.Group && x != e.ButtonVM).ToList ();
+				foreach (var tag in relatedTags) {
+					tag.Active = false;
+				}
+			}
 		}
 	}
 }
