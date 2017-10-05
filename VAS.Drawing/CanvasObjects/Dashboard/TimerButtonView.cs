@@ -65,10 +65,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			set;
 		}
 
-		public override void ClickPressed (Point p, ButtonModifier modif)
+		public override void ClickPressed (Point p, ButtonModifier modif, Selection selection)
 		{
 			cancelPressed = cancelRect.GetSelection (p) != null;
-			base.ClickPressed (p, modif);
+			base.ClickPressed (p, modif, selection);
 		}
 
 		public override void ClickReleased ()

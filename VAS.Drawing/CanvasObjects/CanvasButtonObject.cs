@@ -17,6 +17,7 @@
 //
 
 using VAS.Core.Common;
+using VAS.Core.Store.Drawables;
 
 namespace VAS.Drawing.CanvasObjects
 {
@@ -71,12 +72,12 @@ namespace VAS.Drawing.CanvasObjects
 		public void Click (Point p, ButtonModifier modif)
 		{
 			if (IsClickInsideButton (p)) {
-				ClickPressed (p, ButtonModifier.None);
+				ClickPressed (p, ButtonModifier.None, null);
 				ClickReleased ();
 			}
 		}
 
-		public override void ClickPressed (Point p, ButtonModifier modif)
+		public override void ClickPressed (Point p, ButtonModifier modif, Selection selection)
 		{
 			if (IsClickInsideButton (p)) {
 				Active = !Active;
