@@ -876,6 +876,9 @@ namespace VAS.UI
 			} else if (playerVM.LoadedElement is PlaylistImage) {
 				PlaylistImage image = (PlaylistImage)playerVM.LoadedElement;
 				LoadImage (image.Image, null);
+				SetVisibility (closebutton, true);
+				SetVisibility (eventNameLabel, true);
+				eventNameLabel.Text = image.Description;
 			} else {
 				DrawingsVisible = false;
 				SetVisibility (closebutton, false);
