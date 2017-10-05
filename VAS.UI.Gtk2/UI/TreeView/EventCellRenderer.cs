@@ -139,28 +139,28 @@ namespace VAS.UI.Component
 			double startX = width - offsetX - RIGTH_OFFSET - App.Current.Style.ButtonNormalWidth;
 			double margin = cellY - startY;
 			//Just to know if its inside PlayButton
-			if (cellY > startY && cellY < startY + App.Current.Style.ButtonNormalHeight) {
-				if (cellX > startX && cellX < startX + App.Current.Style.ButtonNormalWidth) {
-					drawingImagePoint = new Point (startX, TotalY - margin);
-					playButtonPrelighted = true;
+			if (cellY > startY && cellY < startY + App.Current.Style.ButtonNormalHeight &&
+			    cellX > startX && cellX < startX + App.Current.Style.ButtonNormalWidth) {
 
-				} else if (playButtonPrelighted) {
-					playButtonPrelighted = false;
-					drawingImagePoint = new Point (startX, TotalY - margin);
-				}
+				drawingImagePoint = new Point (startX, TotalY - margin);
+				playButtonPrelighted = true;
+			} else if (playButtonPrelighted) {
+				playButtonPrelighted = false;
+				drawingImagePoint = new Point (startX, TotalY - margin);
 			}
-			return drawingImagePoint == null ? null :
-				new Area (drawingImagePoint, App.Current.Style.ButtonNormalWidth, App.Current.Style.ButtonNormalHeight);
+			if (drawingImagePoint == null) {
+				return null;
+			}
+			return new Area (drawingImagePoint, App.Current.Style.ButtonNormalWidth, App.Current.Style.ButtonNormalHeight);
 		}
 
 		public static bool ClickedPlayButton (double cellX, double cellY, int width)
 		{
 			double startY = VERTICAL_OFFSET + offsetY;
 			double startX = width - offsetX - RIGTH_OFFSET - App.Current.Style.ButtonNormalWidth;
-			if (cellY > startY && cellY < startY + App.Current.Style.ButtonNormalHeight) {
-				if (cellX > startX && cellX < startX + App.Current.Style.ButtonNormalWidth) {
-					return true;
-				}
+			if (cellY > startY && cellY < startY + App.Current.Style.ButtonNormalHeight &&
+			    cellX > startX && cellX < startX + App.Current.Style.ButtonNormalWidth) {
+				return true;
 			}
 			return false;
 		}
@@ -190,7 +190,7 @@ namespace VAS.UI.Component
 				Area cell = new Area (new Point (cellArea.X, cellArea.Y),
 								cellArea.Width, cellArea.Height);
 
-				//Get thoffset to properly calulate if needs tooltip or redraw
+				//Get the offset to properly calulate if needs tooltip or redraw
 				offsetX = bkg.Right - cell.Right;
 				offsetY = cell.Top - bkg.Top;
 
