@@ -95,7 +95,7 @@ namespace VAS.Drawing.CanvasObjects
 			EmitRedrawEvent (this, DrawArea);
 		}
 
-		public virtual void ClickPressed (Point p, ButtonModifier modif)
+		public virtual void ClickPressed (Point p, ButtonModifier modif, Selection selection)
 		{
 		}
 

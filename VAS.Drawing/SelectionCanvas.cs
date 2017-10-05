@@ -351,7 +351,7 @@ namespace VAS.Drawing
 
 			clickedSel = sel;
 			if (sel != null) {
-				(sel.Drawable as ICanvasObject).ClickPressed (coords, modif);
+				(sel.Drawable as ICanvasObject).ClickPressed (coords, modif, sel);
 			}
 
 			if ((SelectionMode == MultiSelectionMode.Multiple) ||
