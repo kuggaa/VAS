@@ -150,6 +150,12 @@ namespace VAS.Drawing.Cairo
 			protected get;
 		}
 
+		public ISurface CreateSurfaceFromIcon (string iconName, bool warnOnDispose = true, bool useDeviceScaleFactor = true)
+		{
+			Image img = App.Current.ResourcesLocator.LoadIcon (iconName);
+			return CreateSurface (img.Width, img.Height, img, warnOnDispose, useDeviceScaleFactor);
+		}
+
 		public ISurface CreateSurfaceFromResource (string resourceName, bool warnOnDispose = true, bool useDeviceScaleFactor = true)
 		{
 			Image img = App.Current.ResourcesLocator.LoadImage (resourceName);
