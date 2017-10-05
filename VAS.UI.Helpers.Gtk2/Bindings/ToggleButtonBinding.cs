@@ -28,11 +28,14 @@ namespace VAS.UI.Helpers.Bindings
 		ToggleButton button;
 		object parameterInactive;
 		bool silenceToggledEvent;
+		string text;
 
-		public ToggleButtonBinding (ToggleButton button, Func<IViewModel, Command> commandFunc, object paramActive, object parameterInactive) : base (commandFunc, paramActive)
+		public ToggleButtonBinding (ToggleButton button, Func<IViewModel, Command> commandFunc, object paramActive,
+									object parameterInactive, string text = null) : base (commandFunc, paramActive)
 		{
 			this.button = button;
 			this.parameterInactive = parameterInactive;
+			this.text = text;
 		}
 
 		protected override void BindView ()
@@ -56,7 +59,7 @@ namespace VAS.UI.Helpers.Bindings
 				icon = Command.IconInactive ?? Command.Icon;
 			}
 
-			button.Configure (icon, Command.Text, Command.ToolTipText, null);
+			button.Configure (icon, text ?? Command.Text, Command.ToolTipText, null);
 			button.Sensitive = Command.CanExecute ();
 		}
 
