@@ -25,7 +25,7 @@ using VAS.Core.MVVMC;
 namespace VAS.Core.Store.Drawables
 {
 	[Serializable]
-	public abstract class Drawable: BindableBase, IBlackboardObject
+	public abstract class Drawable : BindableBase, IBlackboardObject
 	{
 		public Drawable ()
 		{
@@ -63,26 +63,36 @@ namespace VAS.Core.Store.Drawables
 			protected set;
 		}
 
+		/// <summary>
+		/// Reorders this drawable instance.
+		/// This method is intended to be overriden.
+		/// </summary>
 		public virtual void Reorder ()
 		{
 		}
-
+		/// <summary>
+		/// Gets the selection of drawable depending on point position respect the drawable bounding box
+		/// </summary>
+		/// <returns>The selection.</returns>
+		/// <param name="point">Point.</param>
+		/// <param name="pr">Pr.</param>
+		/// <param name="inMotion">If set to <c>true</c> in motion.</param>
 		public virtual Selection GetSelection (Point point, double pr, bool inMotion = false)
 		{
-			Point[] vertices;
+			Point [] vertices;
 			double d;
-			
+
 			if (Area == null) {
 				return null;
 			}
 
 			if ((point.X < Area.Start.X - pr) ||
-			    (point.X > Area.Start.X + Area.Width + pr) ||
-			    (point.Y < Area.Start.Y - pr) ||
-			    (point.Y > Area.Start.Y + Area.Height + pr)) {
+				(point.X > Area.Start.X + Area.Width + pr) ||
+				(point.Y < Area.Start.Y - pr) ||
+				(point.Y > Area.Start.Y + Area.Height + pr)) {
 				return null;
-			} 
-			
+			}
+
 			/* Check vertices */
 			vertices = Area.Vertices;
 			if (MatchPoint (vertices [0], point, pr, out d)) {
@@ -94,7 +104,7 @@ namespace VAS.Core.Store.Drawables
 			} else if (MatchPoint (vertices [3], point, pr, out d)) {
 				return new Selection (this, SelectionPosition.BottomLeft, d);
 			}
-			
+
 			vertices = Area.VerticesCenter;
 			if (MatchPoint (vertices [0], point, pr, out d)) {
 				return new Selection (this, SelectionPosition.Top, d);
@@ -105,17 +115,31 @@ namespace VAS.Core.Store.Drawables
 			} else if (MatchPoint (vertices [3], point, pr, out d)) {
 				return new Selection (this, SelectionPosition.Left, d);
 			}
-			
+
 			return new Selection (this, SelectionPosition.All, point.Distance (Area.Center));
 		}
-
+		/// <summary>
+		/// Moves drawable from start Point to dst Point given a Selection.
+		/// This method is mandatory to be overriden.
+		/// </summary>
+		/// <returns>The move.</returns>
+		/// <param name="s">S.</param>
+		/// <param name="dst">Dst.</param>
+		/// <param name="start">Start.</param>
 		public abstract void Move (Selection s, Point dst, Point start);
 
-		public  void Move (SelectionPosition s, Point dst, Point start)
+		public void Move (SelectionPosition s, Point dst, Point start)
 		{
 			Move (new Selection (null, s, 0), dst, start);
 		}
-
+		/// <summary>
+		/// Returns if Point p1 and Point p2 are equivalent by comparing their respective distances with a given precision.
+		/// </summary>
+		/// <returns><c>true</c>, if point was matched, <c>false</c> otherwise.</returns>
+		/// <param name="p1">P1.</param>
+		/// <param name="p2">P2.</param>
+		/// <param name="precision">Precision.</param>
+		/// <param name="accuracy">Accuracy.</param>
 		public static bool MatchPoint (Point p1, Point p2, double precision, out double accuracy)
 		{
 			accuracy = p1.Distance (p2);

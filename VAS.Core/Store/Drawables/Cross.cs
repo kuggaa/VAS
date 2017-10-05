@@ -25,27 +25,45 @@ namespace VAS.Core.Store.Drawables
 	[Serializable]
 	public class Cross : Drawable
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:VAS.Core.Store.Drawables.Cross"/> class.
+		/// </summary>
 		public Cross ()
 		{
 		}
-
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:VAS.Core.Store.Drawables.Cross"/> class.
+		/// </summary>
+		/// <param name="start">Start.</param>
+		/// <param name="stop">Stop.</param>
+		/// <param name="style">Style.</param>
 		public Cross (Point start, Point stop, LineStyle style)
 		{
 			Start = start;
 			Stop = stop;
 			Style = style;
 		}
-
+		/// <summary>
+		/// X,Y Point where Cross starts
+		/// </summary>
+		/// <value>The start.</value>
 		public Point Start {
 			set;
 			get;
 		}
-
+		/// <summary>
+		/// X,Y Point where Cross ends
+		/// </summary>
+		/// <value>The stop.</value>
 		public Point Stop {
 			set;
 			get;
 		}
 
+		/// <summary>
+		/// Gets the cross area.
+		/// </summary>
+		/// <value>The area.</value>
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public override Area Area {
@@ -56,7 +74,11 @@ namespace VAS.Core.Store.Drawables
 					Math.Abs (Start.Y - Stop.Y));
 			}
 		}
-
+		/// <summary>
+		/// Start Inverse Point
+		/// X is Stop.X and Y is Start.Y
+		/// </summary>
+		/// <value>The start inverse point.</value>
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Point StartI {
@@ -64,7 +86,11 @@ namespace VAS.Core.Store.Drawables
 				return new Point (Stop.X, Start.Y);
 			}
 		}
-
+		/// <summary>
+		/// Stop Inverse Point
+		/// X is Start.X and Y is Stop.Y
+		/// </summary>
+		/// <value>The stop i.</value>
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]
 		public Point StopI {
@@ -93,7 +119,7 @@ namespace VAS.Core.Store.Drawables
 
 			if (MatchPoint (Start, p, pr, out d)) {
 				return new Selection (this, SelectionPosition.TopLeft, d);
-			} else if (MatchPoint (StopI, p, pr, out d)) {
+			} else if (MatchPoint (Stop, p, pr, out d)) {
 				return new Selection (this, SelectionPosition.BottomRight, d);
 			} else if (MatchPoint (StartI, p, pr, out d)) {
 				return new Selection (this, SelectionPosition.TopRight, d);
