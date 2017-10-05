@@ -155,6 +155,10 @@ namespace VAS
 
 			App.Current.homeDirectory = Path.Combine (home, softwareName);
 			App.Current.configDirectory = App.Current.homeDirectory;
+			if (!Directory.Exists (App.Current.homeDirectory))
+			{
+				Directory.CreateDirectory (App.Current.homeDirectory);
+			}
 
 			// Migrate old config directory the home directory so that OS X users can easilly find
 			// log files and config files without having to access hidden folders

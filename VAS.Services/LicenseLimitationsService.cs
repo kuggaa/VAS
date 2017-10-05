@@ -203,7 +203,7 @@ namespace VAS.Services
 
 		protected void UpdateCountLimitations ()
 		{
-			bool enable = App.Current.LicenseManager.LicenseStatus.Limited;
+			bool enable = App.Current.LicenseManager?.LicenseStatus.Limited ?? false;
 			foreach (var limitation in GetAll<CountLimitationVM> ().Select ((arg) => arg.Model)) {
 				limitation.Enabled = enable;
 			}
@@ -220,6 +220,11 @@ namespace VAS.Services
 		public CountLimitationBarChartVM CreateBarChartVM (string limitationName, int showOnRemaining = -1, Color backgroundColor = null)
 		{
 			var limitation = Get<CountLimitationVM> (limitationName);
+			if (limitation == null)
+			{
+				return null;
+			}
+
 			TwoBarChartVM barChart = new TwoBarChartVM (limitation.Maximum,
 														new SeriesVM { Title = "Remaining", Elements = limitation.Remaining, Color = Color.Green1 },
 														new SeriesVM { Title = "Current", Elements = limitation.Count, Color = Color.Transparent });
