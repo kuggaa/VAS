@@ -530,6 +530,7 @@ namespace VAS.Core.ViewModel
 		public TagButtonVM ()
 		{
 			Tag = new TagVM ();
+			Toggle = new Command (() => App.Current.EventsBroker.Publish (new TagClickedEvent { ButtonVM = this }));
 		}
 
 		/// <summary>
@@ -541,6 +542,12 @@ namespace VAS.Core.ViewModel
 				return (TagButton)base.Model;
 			}
 		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.TagButtonVM"/> is active.
+		/// </summary>
+		/// <value><c>true</c> if active; otherwise, <c>false</c>.</value>
+		public bool Active { get; set; }
 
 		/// <summary>
 		/// Gets or sets the model.
@@ -574,6 +581,12 @@ namespace VAS.Core.ViewModel
 			get;
 			set;
 		}
+
+		/// <summary>
+		/// Gets or sets the toogle command which checks that one tag belonging to a group is selected at a time.
+		/// </summary>
+		/// <value>The toogle command.</value>
+		public Command Toggle { get; set; }
 	}
 
 	/// <summary>

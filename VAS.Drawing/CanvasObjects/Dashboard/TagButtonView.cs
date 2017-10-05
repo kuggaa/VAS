@@ -15,8 +15,10 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System.ComponentModel;
 using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Events;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
 using VAS.Core.ViewModel;
@@ -52,6 +54,16 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
+		public override bool Active {
+			get {
+				return ViewModel.Active;
+			}
+			set {
+				base.Active = value;
+				ViewModel.Active = value;
+			}
+		}
+
 		/// <summary>
 		/// Gets or sets the view model.
 		/// </summary>
@@ -73,5 +85,21 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		{
 			ViewModel = (TagButtonVM)viewModel;
 		}
+
+		public override void ClickReleased ()
+		{
+			ViewModel.Toggle.Execute ();
+			base.ClickReleased ();
+		}
+
+		protected override void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			base.HandlePropertyChanged (sender, e);
+			if (ViewModel.NeedsSync (e.PropertyName, nameof(ViewModel.Active), sender, ButtonVM))
+			{
+				ReDraw ();
+			}
+		}
+
 	}
 }
