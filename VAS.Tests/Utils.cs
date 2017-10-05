@@ -674,51 +674,52 @@ namespace VAS.Tests
 
 		public static Project CreateProject (bool withEvents = true)
 		{
-			TimelineEvent pl;
-			Project p = new ProjectDummy ();
-			p.Dashboard = DashboardDummy.Default ();
-			p.FileSet = new MediaFileSet ();
-			p.FileSet.Add (new MediaFile (Path.GetTempFileName (), 34000, 25, true, true, "mp4", "h264",
+			TimelineEvent timeLineEvent;
+			Project project = new ProjectDummy () {
+				Dashboard = DashboardDummy.Default (),
+				FileSet = new MediaFileSet ()
+			};
+			project.FileSet.Add (new MediaFile (Path.GetTempFileName (), 34000, 25, true, true, "mp4", "h264",
 				"aac", 320, 240, 1.3, null, "Test asset 1"));
-			p.FileSet.Add (new MediaFile (Path.GetTempFileName (), 34000, 25, true, true, "mp4", "h264",
+			project.FileSet.Add (new MediaFile (Path.GetTempFileName (), 34000, 25, true, true, "mp4", "h264",
 				"aac", 320, 240, 1.3, null, "Test asset 2"));
-			p.UpdateEventTypesAndTimers ();
-			p.IsLoaded = true;
+			project.UpdateEventTypesAndTimers ();
+			project.IsLoaded = true;
 
 			if (withEvents) {
-				AnalysisEventButton b = p.Dashboard.List [0] as AnalysisEventButton;
+				var analysisEventButton = project.Dashboard.List [0] as AnalysisEventButton;
 
 				/* No tags, no players */
-				pl = new TimelineEvent {
-					EventType = b.EventType,
+				timeLineEvent = new TimelineEvent {
+					EventType = analysisEventButton.EventType,
 					Start = new Time (0),
 					Stop = new Time (100),
-					FileSet = p.FileSet
+					FileSet = project.FileSet
 				};
-				p.Timeline.Add (pl);
+				project.Timeline.Add (timeLineEvent);
 				/* tags, but no players */
-				b = p.Dashboard.List [1] as AnalysisEventButton;
-				pl = new TimelineEvent {
-					EventType = b.EventType,
+				analysisEventButton = project.Dashboard.List [1] as AnalysisEventButton;
+				timeLineEvent = new TimelineEvent {
+					EventType = analysisEventButton.EventType,
 					Start = new Time (0),
 					Stop = new Time (100),
-					FileSet = p.FileSet
+					FileSet = project.FileSet
 				};
-				pl.Tags.Add (b.AnalysisEventType.Tags [0]);
-				p.Timeline.Add (pl);
+				timeLineEvent.Tags.Add (analysisEventButton.AnalysisEventType.Tags [0]);
+				project.Timeline.Add (timeLineEvent);
 				/* tags and players */
-				b = p.Dashboard.List [2] as AnalysisEventButton;
-				pl = new TimelineEvent {
-					EventType = b.EventType,
+				analysisEventButton = project.Dashboard.List [2] as AnalysisEventButton;
+				timeLineEvent = new TimelineEvent {
+					EventType = analysisEventButton.EventType,
 					Start = new Time (0),
 					Stop = new Time (100),
-					FileSet = p.FileSet
+					FileSet = project.FileSet
 				};
-				pl.Tags.Add (b.AnalysisEventType.Tags [1]);
-				p.Timeline.Add (pl);
+				timeLineEvent.Tags.Add (analysisEventButton.AnalysisEventType.Tags [1]);
+				project.Timeline.Add (timeLineEvent);
 			}
 
-			return p;
+			return project;
 		}
 
 		public static void DeleteProject (Project p)

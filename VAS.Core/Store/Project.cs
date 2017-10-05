@@ -229,6 +229,9 @@ namespace VAS.Core.Store
 			}
 		}
 
+		/// <summary>
+		/// Cleanups all nodes on Timers wich Start or Stop Time are null.
+		/// </summary>
 		public void CleanupTimers ()
 		{
 			foreach (Timer t in Timers) {
