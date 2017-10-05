@@ -28,6 +28,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Couchbase.Lite;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using VAS.Core;
 using VAS.Core.Common;
@@ -607,6 +608,22 @@ namespace VAS.Tests
 			stream.Seek (0, SeekOrigin.Begin);
 
 			return Serializer.Instance.Load<T> (stream, SerializationType.Json);
+		}
+
+		/// <summary>
+		/// Asserts the Type T instance properties are equal to original instance properties.
+		/// </summary>
+		/// <param name="original">Original instance.</param>
+		/// <param name="target">Target instance.</param>
+		/// <typeparam name="T">Type.</typeparam>
+		public static void AssertDeserializedStorablePropertyEquality<T> (T original, T target) where T : class
+		{
+			foreach (var property in (typeof (T).GetProperties ()
+									  .Where (info => info.CustomAttributes
+											  .FirstOrDefault (attrType => attrType.AttributeType == typeof (JsonIgnoreAttribute)
+															   || attrType.AttributeType == typeof (CloneIgnoreAttribute)) == null))) {
+				Assert.AreEqual (property.GetValue (target), property.GetValue (original));
+			}
 		}
 
 		public static void CheckSerialization<T> (T obj, bool ignoreIsChanged = false)
