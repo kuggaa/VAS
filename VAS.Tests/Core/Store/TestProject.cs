@@ -387,12 +387,6 @@ namespace VAS.Tests.Core.Store
 		}
 
 		[Test ()]
-		[Ignore ("Not implemented")]
-		public void TestConsolidateDescription ()
-		{
-		}
-
-		[Test ()]
 		public void Equals_NewProject_SerializedAndDeserializedProjectAreEqual ()
 		{
 			///Arrange
@@ -412,10 +406,20 @@ namespace VAS.Tests.Core.Store
 		}
 
 		[Test ()]
-		[Ignore ("Not implemented")]
-		public void TestExport ()
+		public void Export_NewProject_ProjectExportedFileExists ()
 		{
+			///Arrange
 
+			var targetProject = Utils.CreateProject ();
+			var filename = Path.GetTempFileName ();
+
+			///Act
+
+			Project.Export (targetProject, $"{filename}");
+
+			///Assert
+
+			Assert.IsTrue (File.Exists ($"{filename}"));
 		}
 
 		[Test ()]
