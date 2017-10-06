@@ -991,6 +991,14 @@ namespace VAS.Services
 					App.Current.HotkeysService.GetByName(PlaybackHotkeys.ZOOM_DECREASE),
 					DecreaseZoom
 				),
+				new KeyAction (
+					App.Current.HotkeysService.GetByName(PlaybackHotkeys.EDIT_EVENT_DURATION),
+					() => {
+						if (playerVM.EditEventDurationCommand.CanExecute ()) {
+							SetEditEventDurationMode (!playerVM.EditEventDurationModeEnabled);
+						}
+					}
+				),
 			};
 		}
 
