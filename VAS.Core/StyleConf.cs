@@ -175,9 +175,6 @@ namespace VAS.Core.Common
 		public static Color ButtonPenaltyColor = Color.Parse ("#ffc7f0");
 		public static Color ButtonEventColor = Color.Parse ("#c7e9ff");
 
-		public static int PlayerCapturerIconSize = 20;
-		public static int PlayerCapturerControlsHeight = 30;
-
 		public int BenchLineWidth = 2;
 		public int TeamTaggerBenchBorder = 10;
 
@@ -257,6 +254,16 @@ namespace VAS.Core.Common
 		public const string InfoDialog = "icons/hicolor/scalable/actions/vas-dialog-info" + IMAGE_EXT;
 		public const string WarningDialog = "icons/hicolor/scalable/actions/vas-dialog-warn" + IMAGE_EXT;
 		public const string ErrorDialog = "icons/hicolor/scalable/actions/vas-dialog-error" + IMAGE_EXT;
+
+		// Video Player
+		public static int PlayerCapturerIconSize = 20;
+		public static int PlayerCapturerControlsHeight = 30;
+		public const string PlayerControlTrimLeftActive = "vas-control-trim-left-active";
+		public const string PlayerControlTrimLeftInactive = "vas-control-trim-left-inactive";
+		public const string PlayerControlTrimRightActive = "vas-control-trim-right-active";
+		public const string PlayerControlTrimRightInactive = "vas-control-trim-right-inactive";
+		public const string PlayerControlTrim = "vas-control-trim";
+
 
 		// Misc icons
 		public const string Spinner = "images/vas-spinner.gif";

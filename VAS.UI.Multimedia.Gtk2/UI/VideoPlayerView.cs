@@ -61,6 +61,7 @@ namespace VAS.UI
 		List<CameraConfig> cameraConfigsOutOfScreen;
 		Point moveStart;
 		Timerule timerule;
+		EventEditionTimeruleView eventEditionTimerule;
 		VideoPlayerVM playerVM;
 		SliderView volumeWindow;
 		SliderView jumpsWindow;
@@ -87,6 +88,9 @@ namespace VAS.UI
 				AutoUpdate = true,
 				AdjustSizeToDuration = true,
 			};
+
+			editeventtimeruledrawingarea.HeightRequest = DConstants.TIMERULE_PLAYER_HEIGHT;
+			eventEditionTimerule = new EventEditionTimeruleView (new WidgetWrapper (editeventtimeruledrawingarea));
 
 			rateLabel.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 8px"));
 			jumpsLabel.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 8px"));
@@ -179,6 +183,8 @@ namespace VAS.UI
 			blackboard = null;
 			timerule.Dispose ();
 			timerule = null;
+			eventEditionTimerule.Dispose ();
+			eventEditionTimerule = null;
 
 			volumeWindow.Dispose ();
 			volumeWindow = null;
@@ -209,6 +215,7 @@ namespace VAS.UI
 				playerVM = value;
 				if (playerVM != null) {
 					timerule.ViewModel = playerVM;
+					eventEditionTimerule.ViewModel = playerVM;
 					playerVM.PropertyChanged += PlayerVMPropertyChanged;
 					Reset ();
 					playerVM.Sync ();
@@ -330,6 +337,7 @@ namespace VAS.UI
 		{
 			ctx = new BindingContext ();
 			ctx.Add (zoomLevelButton.Bind ((vm) => ((VideoPlayerVM)vm).ShowZoomCommand));
+			ctx.Add (editDurationButton.Bind ((vm) => ((VideoPlayerVM)vm).EditEventDurationCommand, true, false, true));
 		}
 
 		void LoadImage (Image image, FrameDrawing drawing)
@@ -857,6 +865,11 @@ namespace VAS.UI
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.ShowCenterPlayHeadButton))) {
 				center_playhead_box.Visible = ViewModel.ShowCenterPlayHeadButton;
+			}
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.EditEventDurationModeEnabled))) {
+				editeventtimeruledrawingarea.Visible = ViewModel.EditEventDurationModeEnabled;
+				timerulearea.Visible = !ViewModel.EditEventDurationModeEnabled;
+				editDurationButton.Active = ViewModel.EditEventDurationModeEnabled;
 			}
 		}
 
