@@ -64,12 +64,13 @@ namespace VAS.Core.Store.Drawables
 		}
 
 		/// <summary>
-		/// Reorders this drawable instance.
-		/// This method is intended to be overriden.
+		/// This method should be overridden by drawables that requires reordering its axis after one of them has been moved,
+		/// like for example a rectangle where after moving the bottom right it can become to top left.
 		/// </summary>
 		public virtual void Reorder ()
 		{
 		}
+
 		/// <summary>
 		/// Gets the selection of drawable depending on point position respect the drawable bounding box
 		/// </summary>
@@ -118,6 +119,7 @@ namespace VAS.Core.Store.Drawables
 
 			return new Selection (this, SelectionPosition.All, point.Distance (Area.Center));
 		}
+
 		/// <summary>
 		/// Moves drawable from start Point to dst Point given a Selection.
 		/// This method is mandatory to be overriden.
@@ -132,6 +134,7 @@ namespace VAS.Core.Store.Drawables
 		{
 			Move (new Selection (null, s, 0), dst, start);
 		}
+
 		/// <summary>
 		/// Returns if Point p1 and Point p2 are equivalent by comparing their respective distances with a given precision.
 		/// </summary>

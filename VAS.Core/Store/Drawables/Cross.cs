@@ -31,6 +31,7 @@ namespace VAS.Core.Store.Drawables
 		public Cross ()
 		{
 		}
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:VAS.Core.Store.Drawables.Cross"/> class.
 		/// </summary>
@@ -43,6 +44,7 @@ namespace VAS.Core.Store.Drawables
 			Stop = stop;
 			Style = style;
 		}
+
 		/// <summary>
 		/// X,Y Point where Cross starts
 		/// </summary>
@@ -51,6 +53,7 @@ namespace VAS.Core.Store.Drawables
 			set;
 			get;
 		}
+
 		/// <summary>
 		/// X,Y Point where Cross ends
 		/// </summary>
@@ -74,6 +77,7 @@ namespace VAS.Core.Store.Drawables
 					Math.Abs (Start.Y - Stop.Y));
 			}
 		}
+
 		/// <summary>
 		/// Start Inverse Point
 		/// X is Stop.X and Y is Start.Y
@@ -86,6 +90,7 @@ namespace VAS.Core.Store.Drawables
 				return new Point (Stop.X, Start.Y);
 			}
 		}
+
 		/// <summary>
 		/// Stop Inverse Point
 		/// X is Start.X and Y is Stop.Y
