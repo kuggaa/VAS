@@ -814,7 +814,7 @@ namespace VAS.Tests.Services
 		}
 
 		[Test ()]
-		[Ignore ("Needs migration of OpenedProjectEvent to PlaylistController")]
+
 		public void TestPrev ()
 		{
 			int playlistElementSelected = 0;

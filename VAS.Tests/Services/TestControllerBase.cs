@@ -105,7 +105,7 @@ namespace VAS.Tests.Services
 			// Arrange & Assume
 			Assert.IsFalse (controller.Started);
 			// Act & Assert
-			Assert.ThrowsAsync <InvalidOperationException> (async () => await controller.Stop());
+			Assert.ThrowsAsync<InvalidOperationException> (async () => await controller.Stop ());
 		}
 
 		[Test]
