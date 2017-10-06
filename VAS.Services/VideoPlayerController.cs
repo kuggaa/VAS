@@ -1731,11 +1731,13 @@ namespace VAS.Services
 
 		void HandleLoadedTimelineEventPropertyChangedEventHandler (object sender, PropertyChangedEventArgs e)
 		{
-			Time seekTime = null;
-			if (e.PropertyName == nameof (TimelineEvent.Start)) {
-				seekTime = LoadedTimelineEvent.Start;
-			} else if (e.PropertyName == nameof (TimelineEvent.Stop)) {
-				seekTime = LoadedTimelineEvent.Stop;
+			var seekTime = sender as Time;
+			if (seekTime == null) {
+				if (e.PropertyName == nameof (TimelineEvent.Start)) {
+					seekTime = LoadedTimelineEvent.Start;
+				} else if (e.PropertyName == nameof (TimelineEvent.Stop)) {
+					seekTime = LoadedTimelineEvent.Stop;
+				}
 			}
 			if (seekTime != null) {
 				loadedSegment.Start = LoadedTimelineEvent.Start;
