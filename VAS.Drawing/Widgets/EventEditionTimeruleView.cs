@@ -18,6 +18,7 @@
 using System;
 using System.ComponentModel;
 using VAS.Core.Common;
+using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
@@ -34,10 +35,12 @@ namespace VAS.Drawing.Widgets
 	{
 		const int BIG_LINE_HEIGHT = 8;
 		const int SMALL_LINE_HEIGHT = 3;
+		const int MSECONDS_STEP = 20;
 		int fontSize;
 		VideoPlayerVM viewModel;
 		TimeNodeEditorView nodeView;
 		TimeNodeVM loadedEventVM;
+		KeyContext moveHandlersContext;
 
 		public EventEditionTimeruleView (IWidget widget) : base (widget)
 		{
@@ -49,6 +52,21 @@ namespace VAS.Drawing.Widgets
 			};
 			nodeView.ViewModel = loadedEventVM;
 			AddObject (nodeView);
+
+			// FIXME: This should be handled in the VideoPlayerController once we start using VM's for the loaded event
+			// and it could be used in the timeline too, not just here. Right now it's not possible because
+			// the SelectedHandle property is in the VM and hence not accessible from the VideoPlayerController.
+			moveHandlersContext = new KeyContext ();
+			KeyAction actionRight = new KeyAction (new KeyConfig {
+				Name = "",
+				Key = App.Current.Keyboard.ParseName ("Right"),
+			}, () => HandleKeyPressed (true));
+			KeyAction actionLeft = new KeyAction (new KeyConfig {
+				Name = "",
+				Key = App.Current.Keyboard.ParseName ("Left"),
+			}, () => HandleKeyPressed (false));
+			moveHandlersContext.AddAction (actionRight);
+			moveHandlersContext.AddAction (actionLeft);
 		}
 
 		public VideoPlayerVM ViewModel {
@@ -172,7 +190,18 @@ namespace VAS.Drawing.Widgets
 
 		void HandlePropertyChangedEventHandler (object sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == nameof (VideoPlayerVM.LoadedElement)) {
+			if (!Moving && sender == loadedEventVM &&
+				(e.PropertyName == nameof (TimeNodeVM.Start) || e.PropertyName == nameof (TimeNodeVM.Stop))) {
+				widget?.ReDraw ();
+			} else if (e.PropertyName == nameof (VideoPlayerVM.EditEventDurationModeEnabled)) {
+				if (ViewModel.EditEventDurationModeEnabled) {
+					App.Current.KeyContextManager.AddContext (moveHandlersContext);
+					nodeView.MaxTime = ViewModel.EditEventDurationTimeNode.Stop;
+					widget?.ReDraw ();
+				} else {
+					App.Current.KeyContextManager.RemoveContext (moveHandlersContext);
+				}
+			} else if (e.PropertyName == nameof (VideoPlayerVM.LoadedElement)) {
 				if (ViewModel.LoadedElement is PlaylistPlayElement) {
 					loadedEventVM.Model = (ViewModel.LoadedElement as PlaylistPlayElement).Play;
 				} else {
@@ -182,12 +211,19 @@ namespace VAS.Drawing.Widgets
 					widget?.ReDraw ();
 				}
 			}
-			if (e.PropertyName == nameof (VideoPlayerVM.EditEventDurationModeEnabled)) {
-				if (ViewModel.EditEventDurationModeEnabled) {
-					nodeView.MaxTime = ViewModel.EditEventDurationTimeNode.Stop;
-					widget?.ReDraw ();
-				}
+		}
+
+		void HandleKeyPressed (bool isRight)
+		{
+			Time time = loadedEventVM.SelectedHandle == SelectionPosition.Left ? loadedEventVM.Start : loadedEventVM.Stop;
+			ViewModel.Pause ();
+
+			if (isRight) {
+				time.MSeconds += MSECONDS_STEP;
+			} else {
+				time.MSeconds -= MSECONDS_STEP;
 			}
+			widget?.ReDraw ();
 		}
 	}
 }
