@@ -16,13 +16,70 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using NUnit.Framework;
+using VAS.Core.Common;
+using VAS.Core.Store.Drawables;
 
 namespace VAS.Tests.Core.Store.Drawables
 {
 	[TestFixture ()]
-	[Ignore ("Not implemented")]
 	public class TestCounter
 	{
+		[Test ()]
+		public void Serialization_NewCounter_SerializedAndDeserializedCounterEqualsUnlessJsonIgnoredProperties ()
+		{
+			Point targetCenterPoint = new Point (0, 0);
+			var targetRadius = 5.0D;
+			var count = 2;
+			var targetColor = Color.White;
+			var targetStrokeColor = new Color (120, 120, 120);
+			///Arrange
+
+			var targetCounter = new Counter (targetCenterPoint, targetRadius, count) {
+				FillColor = targetColor,
+				IsChanged = true,
+				LineWidth = 1,
+				Selected = false,
+				StrokeColor = targetStrokeColor,
+				Style = LineStyle.Dashed,
+				IgnoreEvents = false
+			};
+
+			///Act
+
+			var deserializedTargetCounter = Utils.SerializeDeserialize (targetCounter);
+
+			///Assert
+
+			Utils.AssertDeserializedStorablePropertyEquality<Counter> (targetCounter, deserializedTargetCounter);
+		}
+
+		[Test ()]
+		public void Count_NewCounter_CountSetOk ()
+		{
+			Point targetCenterPoint = new Point (0, 0);
+			var targetRadius = 5.0D;
+			var count = 2;
+			var targetColor = Color.White;
+			var targetStrokeColor = new Color (120, 120, 120);
+			///Arrange
+
+			var targetCounter = new Counter (targetCenterPoint, targetRadius, count) {
+				FillColor = targetColor,
+				IsChanged = true,
+				LineWidth = 1,
+				Selected = false,
+				StrokeColor = targetStrokeColor,
+				Style = LineStyle.Dashed,
+				IgnoreEvents = false
+			};
+
+			///Act
+
+
+			///Assert
+
+			Assert.IsTrue (targetCounter.Count == 2);
+		}
 	}
 }
 
