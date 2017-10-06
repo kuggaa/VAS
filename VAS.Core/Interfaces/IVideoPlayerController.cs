@@ -232,5 +232,12 @@ namespace VAS.Core.Interfaces
 		/// Emits a DrawFrame event with the currently loaded frame.
 		/// </summary>
 		void DrawFrame ();
+
+		/// <summary>
+		/// Enable or Disable the duration edition mode that allows editing the duration of the loaded
+		/// <see cref="IPlaylistEventElement"/>.
+		/// </summary>
+		/// <param name="enabled">If set to <c>true</c> enabled.</param>
+		void SetEditEventDurationMode (bool enabled);
 	}
 }

@@ -73,6 +73,7 @@ namespace VAS.Services
 		protected readonly ManualResetEvent TimerDisposed;
 		protected bool active;
 
+		readonly Time editDurationOffset = new Time { TotalSeconds = 10 };
 		VideoPlayerVM playerVM;
 		TimeNode visibleRegion;
 		VideoPlayerOperationMode mode;
@@ -897,6 +898,22 @@ namespace VAS.Services
 			ApplyROI (cfg);
 		}
 
+		public void SetEditEventDurationMode (bool enabled)
+		{
+			if (enabled && LoadedTimelineEvent == null) {
+				return;
+			}
+			if (enabled) {
+				playerVM.EditEventDurationTimeNode.Model = new TimeNode {
+					Start = (LoadedTimelineEvent.Start - editDurationOffset).Clamp (new Time (0), FileSet.Duration),
+					Stop = (LoadedTimelineEvent.Stop + editDurationOffset).Clamp (new Time (0), FileSet.Duration)
+				};
+			} else {
+				playerVM.EditEventDurationTimeNode.Model = null;
+			}
+			playerVM.EditEventDurationModeEnabled = enabled;
+		}
+
 		#endregion
 
 		#region IController
@@ -1114,8 +1131,12 @@ namespace VAS.Services
 				}
 				loadedPlaylistEvent = value;
 				if (loadedPlaylistEvent != null) {
+					playerVM.EditEventDurationCommand.Executable = true;
 					loadedPlaylistEvent.PropertyChanged += HandleLoadedTimelineEventPropertyChangedEventHandler;
+				} else {
+					playerVM.EditEventDurationCommand.Executable = false;
 				}
+				SetEditEventDurationMode (false);
 			}
 			get {
 				return loadedPlaylistEvent;
@@ -1493,18 +1514,23 @@ namespace VAS.Services
 
 					EmitTimeChanged (currentTime, relativeTime);
 
-					if (currentTime > loadedSegment.Stop) {
-						/* Check if the segment is now finished and jump to next one */
-						Next ();
-					} else {
-						var drawings = LoadedTimelineEvent?.Drawings;
-						if (drawings != null) {
-							/* Check if the event has drawings to display */
-							FrameDrawing fd = drawings.FirstOrDefault (f => f.Render > videoTS &&
-											  f.Render <= currentTime &&
-											  f.CameraConfig.Index == CamerasConfig [0].Index);
-							if (fd != null) {
-								LoadPlayDrawing (fd);
+					// When editing the duration of a PlaylistPlayElement we can go outside the boundaries
+					// of the segment while seeking, so we need to ignore them to prevent jumping to the next
+					// playlist element.
+					if (!playerVM.EditEventDurationModeEnabled) {
+						if (currentTime > loadedSegment.Stop) {
+							/* Check if the segment is now finished and jump to next one */
+							Next ();
+						} else {
+							var drawings = LoadedTimelineEvent?.Drawings;
+							if (drawings != null) {
+								/* Check if the event has drawings to display */
+								FrameDrawing fd = drawings.FirstOrDefault (f => f.Render > videoTS &&
+												  f.Render <= currentTime &&
+												  f.CameraConfig.Index == CamerasConfig [0].Index);
+								if (fd != null) {
+									LoadPlayDrawing (fd);
+								}
 							}
 						}
 					}
@@ -1706,6 +1732,7 @@ namespace VAS.Services
 			if (seekTime != null) {
 				loadedSegment.Start = LoadedTimelineEvent.Start;
 				loadedSegment.Stop = LoadedTimelineEvent.Stop;
+				UpdateDuration ();
 				AbsoluteSeek (seekTime, true, false, true);
 			}
 		}
