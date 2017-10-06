@@ -339,6 +339,75 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (time, project.Dashboard.CurrentTime);
 		}
 
+		[Test]
+		public void TagClicked_TwoTagsInSameGroupSelected_OnlyLastTagSelected ()
+		{
+			// Arrange
+			TagButtonVM t1 = new TagButtonVM { Model = new TagButton { Tag = new Tag ("x", "a") }, Active = true };
+			TagButtonVM t2 = new TagButtonVM { Model = new TagButton { Tag = new Tag ("y", "a") }, Active = true };
+
+			project.Dashboard.ViewModels.Add (t1);
+			project.Dashboard.ViewModels.Add (t2);
+
+			// Act
+			t2.Toggle.Execute ();
+
+			project.Dashboard.ViewModels.Remove (t1);
+			project.Dashboard.ViewModels.Remove (t2);
+
+			// Assert
+			Assert.IsFalse (t1.Active);
+			Assert.IsTrue (t2.Active);
+		}
+
+		[Test]
+		public void TagClicked_TwoTagsInDifferenbtGroupSelected_BothTagsSelected ()
+		{
+			// Arrange
+			TagButtonVM t1 = new TagButtonVM { Model = new TagButton { Tag = new Tag ("x", "a") }, Active = true };
+			TagButtonVM t2 = new TagButtonVM { Model = new TagButton { Tag = new Tag ("y", "b") }, Active = true };
+
+			project.Dashboard.ViewModels.Add (t1);
+			project.Dashboard.ViewModels.Add (t2);
+
+			// Act
+			t2.Toggle.Execute ();
+
+			project.Dashboard.ViewModels.Remove (t1);
+			project.Dashboard.ViewModels.Remove (t2);
+
+			// Assert
+			Assert.IsTrue (t1.Active);
+			Assert.IsTrue (t2.Active);
+		}
+
+		[Test]
+		public void NewTag_OneExternalTagButtonSelected_ExternalTagAdded ()
+		{
+			// Arrange
+
+			TagButtonVM t1 = new TagButtonVM { Model = new TagButton { Tag = new Tag ("x", "a") }, Active = true };
+			project.Dashboard.ViewModels.Add (t1);
+
+			var newTagEvent = new NewTagEvent {
+				EventType = project.Model.EventTypes [0],
+				Start = new Time (0),
+				Stop = new Time (10),
+				Tags = new List<Tag> (),
+				EventTime = new Time (9),
+				Button = null
+			};
+
+			// Act
+			App.Current.EventsBroker.Publish (newTagEvent);
+
+			project.Dashboard.ViewModels.Remove (t1);
+
+			// Assert
+			Assert.AreEqual ("a", sendedTimelineEvent.Tags[0].Group);
+			Assert.AreEqual (1, sendedTimelineEvent.Tags.Count ());
+		}
+
 		void HandleNewDashboardEvent (NewDashboardEvent e)
 		{
 			sendedTimelineEvent = e.TimelineEvent;
