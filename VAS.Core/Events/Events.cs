@@ -506,4 +506,9 @@ namespace VAS.Core.Events
 		public TViewModel ElementToMove { get; set; }
 		public int Index { get; set; }
 	}
+
+	public class TagClickedEvent : Event
+	{
+		public TagButtonVM ButtonVM { get; set; }
+	}
 }
