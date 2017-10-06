@@ -15,11 +15,9 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System.Linq;
 using NUnit.Framework;
 using VAS.Core.Common;
 using VAS.Core.Store.Drawables;
-using Newtonsoft.Json;
 
 namespace VAS.Tests.Core.Store.Drawables
 {
@@ -32,11 +30,18 @@ namespace VAS.Tests.Core.Store.Drawables
 			///Arrange
 
 			var targetColor = new Color (250, 250, 250);
+			var targetStrokeColor = new Color (120, 120, 120);
 			var targetStartPoint = new Point (0.0, 0.0);
 			var targetEndPoint = new Point (10.0, 10.0);
 
 			var targetCross = new Cross (targetStartPoint, targetEndPoint, LineStyle.Dashed) {
 				FillColor = targetColor,
+				IsChanged = true,
+				LineWidth = 1,
+				Selected = false,
+				StrokeColor = targetStrokeColor,
+				Style = LineStyle.Dashed,
+				IgnoreEvents = false
 			};
 
 			///Act
