@@ -15,10 +15,10 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Interfaces.GUI;
+using VAS.Core.Common;
 
 namespace VAS.Core.ViewModel
 {
@@ -96,6 +96,15 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		/// <value><c>true</c> if visible; otherwise, <c>false</c>.</value>
 		public virtual bool Visible {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the selected handle, which can be Left, Right or All.
+		/// </summary>
+		/// <value>The select handle.</value>
+		public SelectionPosition SelectedHandle {
 			get;
 			set;
 		}

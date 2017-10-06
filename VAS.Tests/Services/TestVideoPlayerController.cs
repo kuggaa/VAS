@@ -2065,6 +2065,174 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (1.0, playerVM.Zoom);
 		}
 
+		[Test]
+		public void SetEditEventDuration_NoEventLoaded_EditEventDurationEnabledAndEditEventDurationTimeNodeUpdated ()
+		{
+			PreparePlayer ();
+			var start = new Time { TotalSeconds = 60 };
+			var stop = new Time { TotalSeconds = 100 };
+			var evt = new TimelineEvent { Start = start, Stop = stop };
+			player.LoadEvent (evt, start, true);
+
+			player.SetEditEventDurationMode (true);
+
+			Assert.IsTrue (playerVM.EditEventDurationCommand.CanExecute ());
+			Assert.IsTrue (playerVM.EditEventDurationModeEnabled);
+			Assert.AreEqual (start - new Time { TotalSeconds = 10 }, playerVM.EditEventDurationTimeNode.Start);
+			Assert.AreEqual (stop + new Time { TotalSeconds = 10 }, playerVM.EditEventDurationTimeNode.Stop);
+		}
+
+		[Test]
+		public void SetEditEventDuration_StartIsLessThan10Seconds_EditEventDurationTimeNodeStartIsClipped ()
+		{
+			PreparePlayer ();
+			var start = new Time { TotalSeconds = 8 };
+			var stop = new Time { TotalSeconds = 10 };
+			var evt = new TimelineEvent { Start = start, Stop = stop };
+			player.LoadEvent (evt, start, true);
+
+			player.SetEditEventDurationMode (true);
+
+			Assert.IsTrue (playerVM.EditEventDurationCommand.CanExecute ());
+			Assert.IsTrue (playerVM.EditEventDurationModeEnabled);
+			Assert.AreEqual (new Time (0), playerVM.EditEventDurationTimeNode.Start);
+			Assert.AreEqual (stop + new Time { TotalSeconds = 10 }, playerVM.EditEventDurationTimeNode.Stop);
+		}
+
+		[Test]
+		public void SetEditEventDuration_StopIs5SecondsAwayFromEOF_EditEventDurationTimeNodeStopIsClipped ()
+		{
+			PreparePlayer ();
+			var start = new Time { TotalSeconds = 20 };
+			var stop = playerVM.FileSet.Duration - 5;
+			var evt = new TimelineEvent { Start = start, Stop = stop };
+			player.LoadEvent (evt, start, true);
+
+			player.SetEditEventDurationMode (true);
+
+			Assert.IsTrue (playerVM.EditEventDurationCommand.CanExecute ());
+			Assert.IsTrue (playerVM.EditEventDurationModeEnabled);
+			Assert.AreEqual (start - new Time { TotalSeconds = 10 }, playerVM.EditEventDurationTimeNode.Start);
+			Assert.AreEqual (playerVM.FileSet.Duration, playerVM.EditEventDurationTimeNode.Stop);
+		}
+
+		[Test]
+		public void SetEditEventDuration_EventAlreadyLoaded_EditEventDurationModeDisabled ()
+		{
+			PreparePlayer ();
+			var start1 = new Time { TotalSeconds = 60 };
+			var stop1 = new Time { TotalSeconds = 100 };
+			var start2 = new Time { TotalSeconds = 200 };
+			var stop2 = new Time { TotalSeconds = 230 };
+			var evt1 = new TimelineEvent { Start = start1, Stop = stop1 };
+			var evt2 = new TimelineEvent { Start = start2, Stop = stop2 };
+			player.LoadEvent (evt, start1, true);
+
+			player.SetEditEventDurationMode (true);
+			player.LoadEvent (evt2, start2, true);
+
+			Assert.IsTrue (playerVM.EditEventDurationCommand.CanExecute ());
+			Assert.IsFalse (playerVM.EditEventDurationModeEnabled);
+		}
+
+		[Test]
+		public void SetEditEventDurationMode_EventLoadedNewEventIsNull_EditEventDurationCommandNotExecutable ()
+		{
+			PreparePlayer ();
+			player.LoadEvent (evt, evt.Start, true);
+			player.UnloadCurrentEvent ();
+
+			player.SetEditEventDurationMode (true);
+
+			Assert.IsFalse (playerVM.EditEventDurationCommand.CanExecute ());
+			Assert.IsFalse (playerVM.EditEventDurationModeEnabled);
+			Assert.IsNull (playerVM.EditEventDurationTimeNode.Model);
+		}
+
+		[Test]
+		public void SetEditEventDurationMode_DisableModeWithEventLoaded_ModeDisabledNodeUpdated ()
+		{
+			PreparePlayer ();
+			player.LoadEvent (evt, evt.Start, true);
+			player.SetEditEventDurationMode (true);
+
+			player.SetEditEventDurationMode (false);
+
+			Assert.IsTrue (playerVM.EditEventDurationCommand.CanExecute ());
+			Assert.IsFalse (playerVM.EditEventDurationModeEnabled);
+			Assert.IsNull (playerVM.EditEventDurationTimeNode.Model);
+		}
+
+		[Test]
+		public void SetEditEventDurationMode_EventLoadedAndDurationChanged_EditEventDurationTimeNodeRecalculated ()
+		{
+			PreparePlayer ();
+			var start = new Time { TotalSeconds = 60 };
+			var stop = new Time { TotalSeconds = 100 };
+			var evt = new TimelineEvent { Start = start, Stop = stop };
+			player.LoadEvent (evt, start, true);
+			player.SetEditEventDurationMode (true);
+
+			evt.Stop = new Time { TotalSeconds = 120 };
+			player.SetEditEventDurationMode (true);
+
+			Assert.IsTrue (playerVM.EditEventDurationCommand.CanExecute ());
+			Assert.IsTrue (playerVM.EditEventDurationModeEnabled);
+			Assert.AreEqual (start - new Time { TotalSeconds = 10 }, playerVM.EditEventDurationTimeNode.Start);
+			Assert.AreEqual (evt.Stop + new Time { TotalSeconds = 10 }, playerVM.EditEventDurationTimeNode.Stop);
+		}
+
+		[Test]
+		public void SetEditEventDurationMode_PlaylistTimelineElementLoaded_EditDurationModeExecutableAndTimeNodeUpdate ()
+		{
+			PreparePlayer ();
+			var start = new Time { TotalSeconds = 60 };
+			var stop = new Time { TotalSeconds = 100 };
+			var evt = new TimelineEvent { Start = start, Stop = stop };
+			var plEvt = new PlaylistPlayElement (evt);
+			var playlist = new Playlist ();
+			playlist.Elements.Add ((plEvt));
+			player.LoadPlaylistEvent (playlist, plEvt, true);
+
+			player.SetEditEventDurationMode (true);
+
+			Assert.IsTrue (playerVM.EditEventDurationCommand.CanExecute ());
+			Assert.IsTrue (playerVM.EditEventDurationModeEnabled);
+			Assert.AreEqual (start - new Time { TotalSeconds = 10 }, playerVM.EditEventDurationTimeNode.Start);
+			Assert.AreEqual (stop + new Time { TotalSeconds = 10 }, playerVM.EditEventDurationTimeNode.Stop);
+		}
+
+		[Test]
+		public void SetEditEventDurationMode_PlaylistImageLoaded_EditDurationModeNotExecutable ()
+		{
+			PreparePlayer ();
+			var playlist = new Playlist ();
+			playlist.Elements.Add (new PlaylistImage (Utils.LoadImageFromFile (), new Time (5000)));
+			player.LoadPlaylistEvent (playlist, playlist.Elements [0], true);
+
+			player.SetEditEventDurationMode (true);
+
+			Assert.IsFalse (playerVM.EditEventDurationCommand.CanExecute ());
+			Assert.IsFalse (playerVM.EditEventDurationModeEnabled);
+		}
+
+		[Test]
+		public void SetEditEventDurationMode_PlaylistPlayElementLoaded_SeekOutsideBoundariesDoesNotCallsNext ()
+		{
+			PreparePlayer ();
+			player.LoadPlaylistEvent (playlist, playlist.Elements [0], true);
+
+			player.SetEditEventDurationMode (true);
+			var playlistElement = playlist.Elements [0] as PlaylistPlayElement;
+
+			currentTime = playlistElement.Stop + new Time { TotalSeconds = 20 };
+			// This will trigger an AbsoluteSeek which will trigger a Tick where we want to check that
+			// it does not jump to the next element
+			playlistElement.Stop += new Time { TotalSeconds = 1 };
+
+			Assert.AreEqual (0, playlist.CurrentIndex);
+		}
+
 		void HandleElementLoadedEvent (object element, bool hasNext)
 		{
 			elementLoaded++;
