@@ -218,7 +218,12 @@ namespace VAS.Core.Common
 				// FIXME: If there is no ticketId pass the serialId until the web supports retrieving the ticket id
 				// in case is not in the configuration
 				string ticketIdValue = App.Current.Config.LicenseCode ?? App.Current.LicenseManager.ContainerId;
-				url += $"?ticketID={ticketIdValue}";
+				if (url.Contains ("?")) {
+					url += "&";
+				} else {
+					url += "?";
+				}
+				url += $"ticketID={ticketIdValue}";
 #if !DEBUG
 				if (!string.IsNullOrEmpty (sourcePoint)) {
 					url += $"&utm_source={App.Current.SoftwareName}&utm_medium={sourcePoint}&sessionid={App.Current.KPIService.SessionID}&userid={App.Current.Device.ID}";
