@@ -64,7 +64,6 @@ namespace VAS.UI.Panel
 			upgradeButton2.Name = StyleConf.ButtonCallToActionRounded;
 			upgradeButton2.WidthRequest = 240;
 			upgradeButton2.HeightRequest = 40;
-			upgradeButton2.Settings.FontName = $"{App.Current.Style.Font} bold {CALL_TO_ACTION_BUTTON_TEXT_SIZE}px";
 			upgradeButton2.BorderWidth = 0;
 
 			undecidedlbl = new Label ();
