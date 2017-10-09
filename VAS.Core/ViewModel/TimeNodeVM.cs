@@ -101,10 +101,10 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
-		/// Gets or sets the selected handle, which can be Left, Right or All.
+		/// Gets or sets the selected grabber, which can be Left, Right or All.
 		/// </summary>
-		/// <value>The select handle.</value>
-		public SelectionPosition SelectedHandle {
+		/// <value>The selected grabber.</value>
+		public SelectionPosition SelectedGrabber {
 			get;
 			set;
 		}

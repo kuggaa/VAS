@@ -402,7 +402,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		void HandleTimeNodePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == nameof (TimeNodeVM.Visible) ||
-				e.PropertyName == nameof (TimeNodeVM.SelectedHandle)) {
+				e.PropertyName == nameof (TimeNodeVM.SelectedGrabber)) {
 				ReDraw ();
 			}
 		}
