@@ -59,7 +59,7 @@ namespace VAS.Core.ViewModel
 			EditionCommand = new Command<TimelineEvent> (HandleEditPlay);
 
 			Filters = new AndPredicate<TimelineEventVM> ();
-			ParentEventsPredicate = new AndPredicate<TimelineEventVM> {
+			EventsPredicate = new AndPredicate<TimelineEventVM> {
 				Name = Catalog.GetString ("Events")
 			};
 			PeriodsPredicate = new OrPredicate<TimelineEventVM> {
@@ -71,7 +71,7 @@ namespace VAS.Core.ViewModel
 			CommonTagsPredicate = new AndPredicate<TimelineEventVM> {
 				Name = Catalog.GetString ("Common Tags")
 			};
-			CategoriesPredicate = new OrPredicate<TimelineEventVM> {
+			EventTypesPredicate = new OrPredicate<TimelineEventVM> {
 				Name = Catalog.GetString ("Event Types")
 			};
 			TeamsPredicate = new OrPredicate<TimelineEventVM> {
@@ -194,11 +194,10 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
-		/// Gets or sets the categories predicate.
+		/// Gets or sets the event types predicate.
 		/// </summary>
-		/// <value>The categories predicate.</value>
-		//TODO: Rename this to event types
-		public OrPredicate<TimelineEventVM> CategoriesPredicate {
+		/// <value>The event types predicate.</value>
+		public OrPredicate<TimelineEventVM> EventTypesPredicate {
 			get;
 			private set;
 		}
@@ -230,8 +229,12 @@ namespace VAS.Core.ViewModel
 			private set;
 		}
 
-		// TODO: Rename this
-		public AndPredicate<TimelineEventVM> ParentEventsPredicate {
+		/// <summary>
+		/// Gets the events predicate.
+		/// This is normally the parent for Periods, Timers, Common tags and Event types
+		/// </summary>
+		/// <value>The events predicate.</value>
+		public AndPredicate<TimelineEventVM> EventsPredicate {
 			get;
 			private set;
 		}
