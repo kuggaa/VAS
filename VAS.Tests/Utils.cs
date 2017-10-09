@@ -120,6 +120,13 @@ namespace VAS.Tests
 		public override void RetrieveUserData ()
 		{
 		}
+
+		public new Dictionary<string, string> UserProperties
+		{
+			get {
+				return base.UserProperties;
+			}
+		}
 	}
 
 	public class DummyAnalysisVM : IAnalysisViewModel

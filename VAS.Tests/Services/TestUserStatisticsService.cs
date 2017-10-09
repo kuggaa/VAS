@@ -21,6 +21,7 @@ using NUnit.Framework;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
+using VAS.Core.Interfaces.License;
 using VAS.Core.Store;
 
 namespace VAS.Tests.Services
@@ -32,11 +33,18 @@ namespace VAS.Tests.Services
 		Mock<IStorageManager> storageManagerMock;
 		Mock<IStorage> storageMock;
 		Mock<IKpiService> kpiServiceMock;
+		Mock<ILicenseStatus> mockLicenseStatus;
 		Project Project;
 
 		[SetUp]
 		public void Setup ()
 		{
+            var mockLicenseManager = new Mock<ILicenseManager> ();
+            mockLicenseStatus = new Mock<ILicenseStatus> ();
+            mockLicenseManager.SetupGet (obj => obj.LicenseStatus).Returns (mockLicenseStatus.Object);
+            mockLicenseStatus.SetupGet (obj => obj.PlanName).Returns ("PRO");
+            App.Current.LicenseManager = mockLicenseManager.Object;
+
 			service = new DummyUserStatisticsService ();
 			service.Start ();
 			Project = Utils.CreateProject (true);
@@ -45,6 +53,7 @@ namespace VAS.Tests.Services
 			storageMock = new Mock<IStorage> ();
 			storageManagerMock.Object.ActiveDB = storageMock.Object;
 			App.Current.DatabaseManager = storageManagerMock.Object;
+
 			kpiServiceMock = new Mock<IKpiService> ();
 			App.Current.KPIService = kpiServiceMock.Object;
 		}
@@ -57,8 +66,8 @@ namespace VAS.Tests.Services
 
 			// Assert
 			service.Stop ();
-			kpiServiceMock.Verify (m => m.TrackEvent ("Sessions", null, It.Is<Dictionary<string, double>> (
-				d => d ["Playlists"] == 1)), Times.Once ());
+			kpiServiceMock.Verify (m => m.TrackEvent ("Sessions", It.Is<Dictionary<string, string>> (d => d ["Plan"] == "PRO"),
+				It.Is<Dictionary<string, double>> (d => d ["Playlists"] == 1)), Times.Once ());
 		}
 
 		[Test]
@@ -69,8 +78,8 @@ namespace VAS.Tests.Services
 
 			// Assert
 			service.Stop ();
-			kpiServiceMock.Verify (m => m.TrackEvent ("Sessions", null, It.Is<Dictionary<string, double>> (
-				d => d ["Renders"] == 1)), Times.Once ());
+			kpiServiceMock.Verify (m => m.TrackEvent ("Sessions", It.Is<Dictionary<string, string>> (d => d ["Plan"] == "PRO"),
+			It.Is<Dictionary<string, double>> (d => d ["Renders"] == 1)), Times.Once ());
 		}
 
 		[Test]
@@ -124,8 +133,27 @@ namespace VAS.Tests.Services
 
 			// Assert
 			service.Stop ();
-			kpiServiceMock.Verify (m => m.TrackEvent ("Sessions", null, It.Is<Dictionary<string, double>> (
-				d => d ["Projects"] == 1)), Times.Once ());
+			kpiServiceMock.Verify (m => m.TrackEvent ("Sessions", It.Is<Dictionary<string, string>> (d => d["Plan"] == "PRO"),
+				It.Is<Dictionary<string, double>> (d => d ["Projects"] == 1)), Times.Once ());
 		}
+
+		[Test]
+		public void StartService_GetPlan ()
+		{
+			Assert.AreEqual ("PRO", service.UserProperties ["Plan"]);
+		}
+
+        [Test]
+        public void LicenseChange_UserPlanUpdated ()
+        {
+            Assert.AreEqual ("PRO", service.UserProperties ["Plan"]);
+
+			mockLicenseStatus.SetupGet (obj => obj.PlanName).Returns ("BASIC");
+
+			App.Current.EventsBroker.Publish (new LicenseChangeEvent ());
+
+			Assert.AreEqual ("BASIC", service.UserProperties ["Plan"]);
+
+        }
 	}
 }
