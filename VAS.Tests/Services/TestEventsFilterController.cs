@@ -17,6 +17,7 @@ using VAS.Core.Store.Templates;
 using VAS.Core.ViewModel;
 using VAS.Services.Controller;
 using Predicate = VAS.Core.Filters.Predicate<VAS.Core.ViewModel.TimelineEventVM>;
+using Timer = VAS.Core.Store.Timer;
 
 namespace VAS.Tests.Services
 {
@@ -41,12 +42,14 @@ namespace VAS.Tests.Services
 		{
 			timelineVM = new TimelineVM ();
 
-			var projectvm = new DummyProjectVM { Model = Utils.CreateProject () };
+			var dealer = new DummyProjectDealer ();
+			var projectvm = new DummyProjectVM { Model = EventsFilterUtils.CreateProject () };
 			timelineVM.CreateEventTypeTimelines (projectvm.EventTypes);
-			timelineVM.Dashboard = projectvm.Dashboard;
 
-			timelineVM.Project = projectvm;
-			eventsFilterController.ViewModel = timelineVM;
+			dealer.Project = projectvm;
+			dealer.Timeline = timelineVM;
+
+			eventsFilterController.SetViewModel (dealer);
 
 			CreateEvents ();
 
@@ -592,12 +595,12 @@ namespace VAS.Tests.Services
 
 		void CreateEvents ()
 		{
-			AnalysisEventType firstEventType = ((AnalysisEventType)timelineVM.Dashboard.ViewModels.OfType<EventButtonVM> ().First ().EventType.Model);
-			AnalysisEventType secondEventType = ((AnalysisEventType)timelineVM.Dashboard.ViewModels.OfType<EventButtonVM> ().ElementAt (1).EventType.Model);
-			AnalysisEventType thirdEventType = ((AnalysisEventType)timelineVM.Dashboard.ViewModels.OfType<EventButtonVM> ().ElementAt (2).EventType.Model);
-			AnalysisEventType fourthEventType = ((AnalysisEventType)timelineVM.Dashboard.ViewModels.OfType<EventButtonVM> ().ElementAt (3).EventType.Model);
+			AnalysisEventType firstEventType = ((AnalysisEventType)eventsFilterController.Project.Dashboard.ViewModels.OfType<EventButtonVM> ().First ().EventType.Model);
+			AnalysisEventType secondEventType = ((AnalysisEventType)eventsFilterController.Project.Dashboard.ViewModels.OfType<EventButtonVM> ().ElementAt (1).EventType.Model);
+			AnalysisEventType thirdEventType = ((AnalysisEventType)eventsFilterController.Project.Dashboard.ViewModels.OfType<EventButtonVM> ().ElementAt (2).EventType.Model);
+			AnalysisEventType fourthEventType = ((AnalysisEventType)eventsFilterController.Project.Dashboard.ViewModels.OfType<EventButtonVM> ().ElementAt (3).EventType.Model);
 
-			Dictionary<string, List<Tag>> commonTagsByGroup = timelineVM.Dashboard.Model.CommonTagsByGroup;
+			Dictionary<string, List<Tag>> commonTagsByGroup = eventsFilterController.Project.Dashboard.Model.CommonTagsByGroup;
 
 			Tag goodTag = firstEventType.TagsByGroup ["Outcome"].ElementAt (0);
 			Tag badTag = firstEventType.TagsByGroup ["Outcome"].ElementAt (1);
@@ -609,25 +612,25 @@ namespace VAS.Tests.Services
 			firstEventType.Tags.Add (rightTag);
 
 			Tag otherTag = new Tag ("tag value", "Other group");
-			timelineVM.Dashboard.SubViewModel.Model.Add (new TagButton {
+			eventsFilterController.Project.Dashboard.SubViewModel.Model.Add (new TagButton {
 				Name = "Other tag",
 				Tag = otherTag,
 			});
 
-			timelineVM.Project.Timers.First ().Model.Nodes.Add (new TimeNode {
+			eventsFilterController.Project.Timers.First ().Model.Nodes.Add (new TimeNode {
 				Start = new Time (0),
 				Stop = new Time (10),
 			});
-			timelineVM.Project.Timers.First ().Model.Nodes.Add (new TimeNode {
+			eventsFilterController.Project.Timers.First ().Model.Nodes.Add (new TimeNode {
 				Start = new Time (31),
 				Stop = new Time (60),
 			});
-			timelineVM.Project.Timers.First ().Model.Nodes.Add (new TimeNode {
+			eventsFilterController.Project.Timers.First ().Model.Nodes.Add (new TimeNode {
 				Start = new Time (80),
 				Stop = new Time (100),
 			});
 
-			timelineVM.Project.Timers.Model.Add (new VAS.Core.Store.Timer {
+			eventsFilterController.Project.Timers.Model.Add (new VAS.Core.Store.Timer {
 				Name = "timer 2",
 				Nodes = new RangeObservableCollection<TimeNode> {
 					new TimeNode {
@@ -693,6 +696,142 @@ namespace VAS.Tests.Services
 			timelineVM.FullTimeline.ElementAt (4).Model.Tags.Add (goodTag);
 			timelineVM.FullTimeline.ElementAt (4).Model.Tags.Add (otherTag);
 			timelineVM.FullTimeline.ElementAt (5).Model.Tags.Add (badTag);
+		}
+	}
+
+	public class DummyProjectDealer : IViewModel, IProjectDealer, ITimelineDealer
+	{
+		public ProjectVM Project {
+			get;
+			set;
+		}
+
+		public TimelineVM Timeline {
+			get;
+			set;
+		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		public void Dispose ()
+		{
+		}
+	}
+
+	public static class EventsFilterUtils
+	{
+		public static Project CreateProject (bool withEvents = true)
+		{
+			TimelineEvent pl;
+			Project p = new Utils.ProjectDummy ();
+			p.Dashboard = DashboardDummy.Default ();
+			p.FileSet = new MediaFileSet ();
+			p.FileSet.Add (new MediaFile (Path.GetTempFileName (), 34000, 25, true, true, "mp4", "h264",
+				"aac", 320, 240, 1.3, null, "Test asset 1"));
+			p.FileSet.Add (new MediaFile (Path.GetTempFileName (), 34000, 25, true, true, "mp4", "h264",
+				"aac", 320, 240, 1.3, null, "Test asset 2"));
+			p.Periods.Replace (new RangeObservableCollection<Period> {
+				new Period {
+					Name = "First Period",
+					Nodes = new RangeObservableCollection<TimeNode>{
+						new TimeNode {
+							Start = new Time (10),
+							Stop = new Time (50)
+						}
+					}
+				},
+				new Period {
+					Name = "Second Period",
+					Nodes = new RangeObservableCollection<TimeNode>{
+						new TimeNode {
+							Start = new Time (50),
+							Stop = new Time (90)
+						}
+					}
+				},
+			});
+			p.UpdateEventTypesAndTimers ();
+			p.IsLoaded = true;
+			if (withEvents) {
+				AnalysisEventButton b = p.Dashboard.List [0] as AnalysisEventButton;
+
+				/* No tags, no players */
+				pl = new TimelineEvent {
+					EventType = b.EventType,
+					Start = new Time (0),
+					Stop = new Time (50),
+					FileSet = p.FileSet
+				};
+				p.Timeline.Add (pl);
+				/* tags, but no players */
+				b = p.Dashboard.List [1] as AnalysisEventButton;
+				pl = new TimelineEvent {
+					EventType = b.EventType,
+					Start = new Time (20),
+					Stop = new Time (60),
+					FileSet = p.FileSet
+				};
+				pl.Tags.Add (b.AnalysisEventType.Tags [0]);
+				p.Timeline.Add (pl);
+				/* tags and players */
+				b = p.Dashboard.List [2] as AnalysisEventButton;
+				pl = new TimelineEvent {
+					EventType = b.EventType,
+					Start = new Time (70),
+					Stop = new Time (100),
+					FileSet = p.FileSet
+				};
+				pl.Tags.Add (b.AnalysisEventType.Tags [1]);
+				p.Timeline.Add (pl);
+			}
+
+			return p;
+		}
+
+		public class DashboardDummy : Dashboard
+		{
+			//dummy class for abstract validation. Copied from LongoMatch and adapted to VAS.
+			public static DashboardDummy Default ()
+			{
+				var dashboard = new DashboardDummy ();
+				TagButton tagbutton;
+				TimerButton timerButton;
+
+				// Create 10 buttons
+				dashboard.FillDefaultTemplate (10);
+				// And create an extra one without tags
+				dashboard.FillDefaultTemplate (1);
+				((AnalysisEventButton)dashboard.List.Last ()).AnalysisEventType.Tags.Clear ();
+				dashboard.GamePeriods = new RangeObservableCollection<string> { "1", "2" };
+
+				tagbutton = new TagButton {
+					Tag = new Tag (Catalog.GetString ("Attack"), ""),
+					Position = new Point (10, 10)
+				};
+				dashboard.List.Add (tagbutton);
+
+				tagbutton = new TagButton {
+					Tag = new Tag (Catalog.GetString ("Defense"), ""),
+					Position = new Point (10 + (10 + CAT_WIDTH) * 1, 10)
+				};
+				dashboard.List.Add (tagbutton);
+
+				timerButton = new TimerButton {
+					Timer = new Timer { Name = Catalog.GetString ("Ball playing") },
+					Position = new Point (10 + (10 + CAT_WIDTH) * 6, 10)
+				};
+				dashboard.List.Add (timerButton);
+				return dashboard;
+			}
+
+			public void InsertTimer ()
+			{
+				var timerButton = new TimerButton {
+					Timer = new Timer { Name = "Ball playing" },
+					Position = new Point (10 + (10 + CAT_WIDTH) * 6, 10)
+				};
+				List.Add (timerButton);
+			}
 		}
 	}
 }

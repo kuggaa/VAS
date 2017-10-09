@@ -197,8 +197,6 @@ namespace VAS.Core.ViewModel
 			Timeline.CreateTeamsTimelines (Teams);
 			Timeline.Model = Model.Timeline;
 			Dashboard.Model = Model.Dashboard;
-			Timeline.Dashboard = Dashboard;
-			Timeline.Project = this;
 		}
 
 		protected override void SyncPreloadedModel ()
