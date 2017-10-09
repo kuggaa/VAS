@@ -205,7 +205,7 @@ namespace VAS.Services.Controller
 		{
 			bool oldIgnoreEvents = ViewModel.Filters.IgnoreEvents;
 			ViewModel.Filters.IgnoreEvents = true;
-			ViewModel.CategoriesPredicate.Clear ();
+			ViewModel.EventTypesPredicate.Clear ();
 
 			foreach (var eventType in ViewModel.EventTypesTimeline) {
 				IPredicate<TimelineEventVM> predicate;
@@ -244,7 +244,7 @@ namespace VAS.Services.Controller
 						Expression = eventTypeExpression
 					};
 				}
-				ViewModel.CategoriesPredicate.Add (predicate);
+				ViewModel.EventTypesPredicate.Add (predicate);
 			}
 			ViewModel.Filters.IgnoreEvents = oldIgnoreEvents;
 			if (!ViewModel.Filters.IgnoreEvents) {
