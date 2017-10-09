@@ -33,6 +33,12 @@ namespace VAS.Core.Interfaces
 		long ElapsedTicks { get; }
 
 		/// <summary>
+		/// Gets the elapsed ticks in seconds.
+		/// </summary>
+		/// <value>The elapsed ticks in seconds.</value>
+		double ElapsedSeconds { get; }
+
+		/// <summary>
 		/// Check if the Stopwatch is running.
 		/// </summary>
 		bool IsRunning { get; }
