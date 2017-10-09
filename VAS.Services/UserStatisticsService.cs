@@ -34,11 +34,12 @@ namespace VAS.Services
 
 		public UserStatisticsService ()
 		{
+			UserProperties = new Dictionary<string, string> ();
 			ProjectDictionary = new Dictionary<Guid, Tuple<int, int>> ();
 			DataDictionary = new Dictionary<string, double> ();
 			StateTimer = App.Current.DependencyRegistry.Retrieve<IStopwatch> (InstanceType.Default);
 			GeneralTimer = App.Current.DependencyRegistry.Retrieve<IStopwatch> (InstanceType.New);
-			TimerList = new List<Tuple<string, long>> ();
+			TimerList = new List<Tuple<string, double>> ();
 		}
 
 		/// <summary>
@@ -57,15 +58,6 @@ namespace VAS.Services
 		public IStopwatch GeneralTimer {
 			get;
 			private set;
-		}
-
-		/// <summary>
-		/// Gets or sets the states to track.
-		/// </summary>
-		/// <value>The states to track.</value>
-		protected List<string> StatesToTrack {
-			get;
-			set;
 		}
 
 		/// <summary>
@@ -171,10 +163,19 @@ namespace VAS.Services
 		/// Gets the timer list.
 		/// </summary>
 		/// <value>The timer list.</value>
-		public List<Tuple<string, long>> TimerList {
+		public List<Tuple<string, double>> TimerList {
 			get;
 			private set;
 		}
+
+		/// <summary>
+		/// Gets or sets the user properties.
+		/// </summary>
+		/// <value>The user properties.</value>
+        protected Dictionary<string, string> UserProperties {
+			get;
+			set;
+        }
 
 		#region IService implementation
 
@@ -210,8 +211,9 @@ namespace VAS.Services
 			App.Current.EventsBroker.Subscribe<ProjectCreatedEvent> (HandleNewProject);
 			App.Current.EventsBroker.Subscribe<OpenedProjectEvent> (HandleOpenProject);
 			App.Current.EventsBroker.Subscribe<NavigationEvent> (HandleNavigationEvent);
+			App.Current.EventsBroker.Subscribe<LicenseChangeEvent> (HandleLicenseChangeEvent);
 			GeneralTimer.Start ();
-
+			UserProperties ["Plan"] = App.Current.LicenseManager.LicenseStatus.PlanName;
 			return true;
 		}
 
@@ -228,6 +230,7 @@ namespace VAS.Services
 			App.Current.EventsBroker.Unsubscribe<ProjectCreatedEvent> (HandleNewProject);
 			App.Current.EventsBroker.Unsubscribe<OpenedProjectEvent> (HandleOpenProject);
 			App.Current.EventsBroker.Unsubscribe<NavigationEvent> (HandleNavigationEvent);
+			App.Current.EventsBroker.Unsubscribe<LicenseChangeEvent> (HandleLicenseChangeEvent);
 			GeneralTimer.Stop ();
 			RetrieveUserData ();
 			SendData ();
@@ -240,9 +243,30 @@ namespace VAS.Services
 		/// <summary>
 		/// Retrieves the total user statistics data.
 		/// </summary>
-		public virtual void RetrieveUserData ()
+		public abstract void RetrieveUserData ();
+
+        /// <summary>
+        /// Tracks the service collected data to HockeyApp.
+        /// </summary>
+        public void SendData ()
+        {
+            TrackProjects ();
+            TrackTimers ();
+			FillDataDictionary ();
+			App.Current.KPIService.TrackEvent ("Sessions", UserProperties, DataDictionary);
+            App.Current.KPIService.Flush ();
+        }
+
+		/// <summary>
+		/// Fills the data dictionary.
+		/// </summary>
+		protected virtual void FillDataDictionary ()
 		{
-			TotalUserPlaylists = App.Current.DatabaseManager.ActiveDB.Count<Playlist> ();
+            DataDictionary.Add ("Teams", TeamsCount);
+            DataDictionary.Add ("Renders", RendersCount);
+            DataDictionary.Add ("Playlists", PlaylistsCount);
+            DataDictionary.Add ("Projects", CreatedProjects);
+			DataDictionary.Add ("Time", GeneralTimer.ElapsedSeconds);
 		}
 
 		/// <summary>
@@ -267,7 +291,7 @@ namespace VAS.Services
 		{
 			StateTimer.Stop ();
 			if (StateTimer.ElapsedMilliseconds >= 1000) {
-				TimerList.Add (new Tuple<string, long> (currentState, StateTimer.ElapsedTicks));
+				TimerList.Add (new Tuple<string, double> (currentState, StateTimer.ElapsedSeconds));
 			}
 			StateTimer.Reset ();
 		}
@@ -304,26 +328,9 @@ namespace VAS.Services
 		void TrackTimers ()
 		{
 			foreach (var item in TimerList) {
-				App.Current.KPIService.TrackEvent ("PageView_" + item.Item1, null,
+				App.Current.KPIService.TrackEvent ("PageView_" + item.Item1, UserProperties,
 												   new Dictionary<string, double> () { { "Time", item.Item2 } });
 			}
-		}
-
-		/// <summary>
-		/// Tracks the service collected data to HockeyApp.
-		/// </summary>
-		public virtual void SendData ()
-		{
-			TrackProjects ();
-			TrackTimers ();
-			DataDictionary.Add ("Teams", TeamsCount);
-			DataDictionary.Add ("Renders", RendersCount);
-			DataDictionary.Add ("Playlists", PlaylistsCount);
-			DataDictionary.Add ("Projects", CreatedProjects);
-			DataDictionary.Add ("Total_playlists", TotalUserPlaylists);
-			DataDictionary.Add ("Time", ((int)GeneralTimer.ElapsedTicks));
-			App.Current.KPIService.TrackEvent ("Sessions", null, DataDictionary);
-			App.Current.KPIService.Flush ();
 		}
 
 		#region Handlers
@@ -339,9 +346,7 @@ namespace VAS.Services
 			if (!string.IsNullOrEmpty (currentState) && (NextEvent != currentState)) {
 				SaveTimer ();
 			}
-			if (StatesToTrack.Contains (NextEvent)) {
-				StateTimer.Start ();
-			}
+			StateTimer.Start ();
 			currentState = NextEvent;
 		}
 
@@ -402,6 +407,11 @@ namespace VAS.Services
 		void HandleCreateJob (JobRenderedEvent evt)
 		{
 			RendersCount++;
+		}
+
+		void HandleLicenseChangeEvent (LicenseChangeEvent e)
+		{
+			UserProperties ["Plan"] = App.Current.LicenseManager.LicenseStatus.PlanName;
 		}
 
 		#endregion

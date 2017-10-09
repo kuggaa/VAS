@@ -117,6 +117,9 @@ namespace VAS.Tests
 
 	public class DummyUserStatisticsService : UserStatisticsService
 	{
+		public override void RetrieveUserData ()
+		{
+		}
 	}
 
 	public class DummyAnalysisVM : IAnalysisViewModel
