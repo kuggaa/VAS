@@ -448,11 +448,33 @@ namespace VAS.Tests
 			public static DashboardDummy Default ()
 			{
 				var dashboard = new DashboardDummy ();
-				for (int i = 0; i < 5; i++) {
-					var evtType = dashboard.AddDefaultItem (i);
-					dashboard.AddDefaultTags (evtType.AnalysisEventType);
-				}
-				dashboard.InsertTimer ();
+				TagButton tagbutton;
+				TimerButton timerButton;
+
+				// Create 10 buttons
+				dashboard.FillDefaultTemplate (10);
+				// And create an extra one without tags
+				dashboard.FillDefaultTemplate (1);
+				((AnalysisEventButton)dashboard.List.Last ()).AnalysisEventType.Tags.Clear ();
+				dashboard.GamePeriods = new ObservableCollection<string> { "1", "2" };
+
+				tagbutton = new TagButton {
+					Tag = new Tag (Catalog.GetString ("Attack"), ""),
+					Position = new Point (10, 10)
+				};
+				dashboard.List.Add (tagbutton);
+
+				tagbutton = new TagButton {
+					Tag = new Tag (Catalog.GetString ("Defense"), ""),
+					Position = new Point (10 + (10 + CAT_WIDTH) * 1, 10)
+				};
+				dashboard.List.Add (tagbutton);
+
+				timerButton = new TimerButton {
+					Timer = new Timer { Name = Catalog.GetString ("Ball playing") },
+					Position = new Point (10 + (10 + CAT_WIDTH) * 6, 10)
+				};
+				dashboard.List.Add (timerButton);
 				return dashboard;
 			}
 
@@ -519,6 +541,33 @@ namespace VAS.Tests
 			}
 		}
 
+		public class DummyEventsFilterController : EventsFilterController
+		{
+			protected override void InitializePredicates ()
+			{
+				ViewModel.Filters.Clear ();
+				ViewModel.EventsPredicate.Clear ();
+				UpdateTeamsPredicates ();
+				UpdatePeriodsPredicates ();
+				UpdateTimersPredicates ();
+				UpdateCommonTagsPredicates ();
+				UpdateEventTypesPredicates ();
+
+				ViewModel.EventsPredicate.Add (ViewModel.PeriodsPredicate);
+				ViewModel.EventsPredicate.Add (ViewModel.TimersPredicate);
+				ViewModel.EventsPredicate.Add (ViewModel.CommonTagsPredicate);
+				ViewModel.EventsPredicate.Add (ViewModel.EventTypesPredicate);
+				ViewModel.Filters.Add (ViewModel.EventsPredicate);
+				ViewModel.Filters.Add (ViewModel.TeamsPredicate);
+			}
+
+			protected override void UpdateTeamsPredicates ()
+			{
+				// do nothing
+			}
+		}
+
+
 		//dummy class for abstract validation. Copied from LongoMatch and adapted to VAS.
 		public class ProjectDummy : Project
 		{
@@ -527,7 +576,6 @@ namespace VAS.Tests
 			{
 				Dashboard = DashboardDummy.Default ();
 				FileSet = new MediaFileSet ();
-				UpdateEventTypesAndTimers ();
 			}
 
 			public override TimelineEvent CreateEvent (EventType type, Time start, Time stop, Time eventTime,
@@ -655,9 +703,28 @@ namespace VAS.Tests
 				"aac", 320, 240, 1.3, null, "Test asset 1"));
 			p.FileSet.Add (new MediaFile (Path.GetTempFileName (), 34000, 25, true, true, "mp4", "h264",
 				"aac", 320, 240, 1.3, null, "Test asset 2"));
+			p.Periods.Replace (new RangeObservableCollection<Period> {
+				new Period {
+					Name = "First Period",
+					Nodes = new RangeObservableCollection<TimeNode>{
+						new TimeNode {
+							Start = new Time (10),
+							Stop = new Time (50)
+						}
+					}
+				},
+				new Period {
+					Name = "Second Period",
+					Nodes = new RangeObservableCollection<TimeNode>{
+						new TimeNode {
+							Start = new Time (50),
+							Stop = new Time (90)
+						}
+					}
+				},
+			});
 			p.UpdateEventTypesAndTimers ();
 			p.IsLoaded = true;
-
 			if (withEvents) {
 				AnalysisEventButton b = p.Dashboard.List [0] as AnalysisEventButton;
 
@@ -665,7 +732,7 @@ namespace VAS.Tests
 				pl = new TimelineEvent {
 					EventType = b.EventType,
 					Start = new Time (0),
-					Stop = new Time (100),
+					Stop = new Time (50),
 					FileSet = p.FileSet
 				};
 				p.Timeline.Add (pl);
@@ -673,8 +740,8 @@ namespace VAS.Tests
 				b = p.Dashboard.List [1] as AnalysisEventButton;
 				pl = new TimelineEvent {
 					EventType = b.EventType,
-					Start = new Time (0),
-					Stop = new Time (100),
+					Start = new Time (20),
+					Stop = new Time (60),
 					FileSet = p.FileSet
 				};
 				pl.Tags.Add (b.AnalysisEventType.Tags [0]);
@@ -683,7 +750,7 @@ namespace VAS.Tests
 				b = p.Dashboard.List [2] as AnalysisEventButton;
 				pl = new TimelineEvent {
 					EventType = b.EventType,
-					Start = new Time (0),
+					Start = new Time (70),
 					Stop = new Time (100),
 					FileSet = p.FileSet
 				};
