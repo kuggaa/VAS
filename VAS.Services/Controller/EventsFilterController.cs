@@ -31,6 +31,7 @@ using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
+using VAS.Core.Store.Templates;
 using VAS.Core.ViewModel;
 using Predicate = VAS.Core.Filters.Predicate<VAS.Core.ViewModel.TimelineEventVM>;
 
@@ -49,6 +50,11 @@ namespace VAS.Services.Controller
 			ViewModel = null;
 		}
 
+		public ProjectVM Project {
+			get;
+			set;
+		}
+
 		/// <summary>
 		/// Gets the default key actions.
 		/// </summary>
@@ -65,6 +71,7 @@ namespace VAS.Services.Controller
 		public override void SetViewModel (IViewModel viewModel)
 		{
 			ViewModel = ((ITimelineDealer)viewModel).Timeline;
+			Project = (viewModel as IProjectDealer)?.Project;
 		}
 
 		public override async Task Start ()
@@ -98,13 +105,17 @@ namespace VAS.Services.Controller
 
 		protected virtual void UpdatePeriodsPredicates ()
 		{
+			if (Project == null) {
+				return;
+			}
+
 			bool oldIgnoreEvents = ViewModel.Filters.IgnoreEvents;
 			ViewModel.Filters.IgnoreEvents = true;
 			ViewModel.PeriodsPredicate.Clear ();
 
 			List<IPredicate<TimelineEventVM>> listPredicates = new List<IPredicate<TimelineEventVM>> ();
 			Expression<Func<TimelineEventVM, bool>> noPeriodExpression = ev => true;
-			foreach (var period in ViewModel.Project.Periods) {
+			foreach (var period in Project.Periods) {
 				noPeriodExpression = noPeriodExpression.And (ev => period.All (p => ev.Model.Intersect (p.Model) == null));
 				listPredicates.Add (new Predicate {
 					Name = period.Name,
@@ -127,13 +138,16 @@ namespace VAS.Services.Controller
 
 		protected virtual void UpdateTimersPredicates ()
 		{
+			if (Project == null) {
+				return;
+			}
 			bool oldIgnoreEvents = ViewModel.Filters.IgnoreEvents;
 			ViewModel.Filters.IgnoreEvents = true;
 			ViewModel.TimersPredicate.Clear ();
 
 			List<IPredicate<TimelineEventVM>> listPredicates = new List<IPredicate<TimelineEventVM>> ();
 			Expression<Func<TimelineEventVM, bool>> noPeriodExpression = ev => true;
-			foreach (var timer in ViewModel.Project.Timers) {
+			foreach (var timer in Project.Timers) {
 				noPeriodExpression = noPeriodExpression.And (ev => timer.All (p => ev.Model.Intersect (p.Model) == null));
 				listPredicates.Add (new Predicate {
 					Name = timer.Name,
@@ -156,11 +170,14 @@ namespace VAS.Services.Controller
 
 		protected virtual void UpdateCommonTagsPredicates ()
 		{
+			if (Project == null) {
+				return;
+			}
 			bool oldIgnoreEvents = ViewModel.Filters.IgnoreEvents;
 			ViewModel.Filters.IgnoreEvents = true;
 			ViewModel.CommonTagsPredicate.Clear ();
 
-			var tags = ViewModel.Dashboard.Model.CommonTagsByGroup;
+			var tags = Project.Dashboard.Model.CommonTagsByGroup;
 
 			List<IPredicate<TimelineEventVM>> listPredicates = new List<IPredicate<TimelineEventVM>> ();
 			Expression<Func<TimelineEventVM, bool>> noTagsExpression = ev => true;

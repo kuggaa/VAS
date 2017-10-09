@@ -44,7 +44,6 @@ namespace VAS.Core.ViewModel
 		Dictionary<string, EventTypeTimelineVM> eventTypeToTimeline;
 		Dictionary<Player, PlayerTimelineVM> playerToTimeline;
 		CountLimitationBarChartVM limitationChart;
-		DashboardVM dashboard;
 
 		public TimelineVM ()
 		{
@@ -246,31 +245,6 @@ namespace VAS.Core.ViewModel
 		public OrPredicate<TimelineEventVM> TeamsPredicate {
 			get;
 			private set;
-		}
-
-		/// <summary>
-		/// Gets or sets the dashboard.
-		/// </summary>
-		/// <value>The dashboard.</value>
-		public DashboardVM Dashboard {
-			get {
-				return dashboard;
-			}
-			set {
-				if (dashboard != null) {
-					dashboard.PropertyChanged -= HandleDashboardChanged;
-				}
-				dashboard = value;
-				if (dashboard != null) {
-					dashboard.PropertyChanged += HandleDashboardChanged;
-				}
-			}
-		}
-
-		// FIXME: Circular dependency :(
-		public ProjectVM Project {
-			get;
-			set;
 		}
 
 		public void Clear ()
@@ -545,11 +519,11 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
-		void HandleDashboardChanged (object sender, PropertyChangedEventArgs e)
-		{
-			if (sender is CollectionViewModel<Tag, TagVM> && e.PropertyName == "Collection_ViewModels") {
-				CreateEventTypeTimelines (Dashboard.ViewModels.OfType<AnalysisEventButtonVM> ().Select (button => button.EventType));
-			}
-		}
+		//void HandleDashboardChanged (object sender, PropertyChangedEventArgs e)
+		//{
+		//	if (sender is CollectionViewModel<Tag, TagVM> && e.PropertyName == "Collection_ViewModels") {
+		//		CreateEventTypeTimelines (Dashboard.ViewModels.OfType<AnalysisEventButtonVM> ().Select (button => button.EventType));
+		//	}
+		//}
 	}
 }
