@@ -70,7 +70,7 @@ namespace VAS.Services.Controller
 		public override async Task Start ()
 		{
 			await base.Start ();
-			UpdatePredicates ();
+			InitializePredicates ();
 		}
 
 		protected override void ConnectEvents ()
@@ -87,14 +87,12 @@ namespace VAS.Services.Controller
 			ViewModel.Filters.PropertyChanged -= HandleFiltersChanged;
 		}
 
-		protected virtual void UpdatePredicates ()
-		{
-			ViewModel.Filters.IgnoreEvents = true;
-			UpdateTeamsPredicates ();
-			UpdateEventTypesPredicates ();
-			ViewModel.Filters.IgnoreEvents = false;
-			ViewModel.Filters.EmitPredicateChanged ();
-		}
+		/// <summary>
+		/// Initializes the predicates.
+		/// This method is responsible for filling the predicates and adding the needed ones to 
+		/// the Filters list in the ViewModel.
+		/// </summary>
+		protected abstract void InitializePredicates ();
 
 		protected abstract void UpdateTeamsPredicates ();
 
