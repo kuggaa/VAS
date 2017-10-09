@@ -227,28 +227,23 @@ namespace VAS.Services.Controller
 				var analysisEventType = eventType.Model as AnalysisEventType;
 				if (analysisEventType != null && analysisEventType.Tags.Any ()) {
 					CompositePredicate<TimelineEventVM> composedEventTypePredicate;
-					predicate = composedEventTypePredicate = new AndPredicate<TimelineEventVM> {
+					predicate = composedEventTypePredicate = new OrPredicate<TimelineEventVM> {
 						Name = eventType.EventTypeVM.Name
 					};
+					composedEventTypePredicate.Add (new Predicate {
+						Name = Catalog.GetString ("No subcategories"),
+						Expression = eventTypeExpression.And (ev => !ev.Model.Tags.Any ())
+					});
 
+					// We want subcategories to be flat, regardless of the group.
 					foreach (var tagGroup in analysisEventType.TagsByGroup) {
 						Expression<Func<TimelineEventVM, bool>> tagGroupExpression = ev => ev.Model.Tags.Any (tag => tag.Group == tagGroup.Key);
-						var tagGroupPredicate = new OrPredicate<TimelineEventVM> {
-							Name = tagGroup.Key,
-						};
-
-						tagGroupPredicate.Add (new Predicate {
-							Name = Catalog.GetString ("None"),
-							Expression = eventTypeExpression.And (ev => !ev.Model.Tags.Any (tag => tag.Group == tagGroup.Key))
-						});
-
 						foreach (var tag in tagGroup.Value) {
-							tagGroupPredicate.Add (new Predicate {
+							composedEventTypePredicate.Add (new Predicate {
 								Name = tag.Value,
 								Expression = eventTypeExpression.And (tagGroupExpression.And (ev => ev.Model.Tags.Contains (tag)))
 							});
 						}
-						composedEventTypePredicate.Add (tagGroupPredicate);
 					}
 				} else {
 					predicate = new Predicate {
