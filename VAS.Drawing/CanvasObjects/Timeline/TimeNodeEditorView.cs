@@ -30,15 +30,15 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 	[View ("TimeNodeEditorView")]
 	public class TimeNodeEditorView : TimeNodeView, ICanvasObjectView<TimeNodeVM>
 	{
-		ISurface trimHandleLeftActive, trimHandleLeftInactive;
-		ISurface trimHandleRightActive, trimHandleRightInactive;
+		ISurface trimGrabberLeftActive, trimGrabberLeftInactive;
+		ISurface trimGrabberRightActive, trimGrabberRightInactive;
 
 		public TimeNodeEditorView ()
 		{
-			trimHandleLeftActive = App.Current.DrawingToolkit.CreateSurfaceFromIcon (StyleConf.PlayerControlTrimLeftActive);
-			trimHandleLeftInactive = App.Current.DrawingToolkit.CreateSurfaceFromIcon (StyleConf.PlayerControlTrimLeftInactive);
-			trimHandleRightActive = App.Current.DrawingToolkit.CreateSurfaceFromIcon (StyleConf.PlayerControlTrimRightActive);
-			trimHandleRightInactive = App.Current.DrawingToolkit.CreateSurfaceFromIcon (StyleConf.PlayerControlTrimRightInactive);
+			trimGrabberLeftActive = App.Current.DrawingToolkit.CreateSurfaceFromIcon (StyleConf.PlayerControlTrimLeftActive);
+			trimGrabberLeftInactive = App.Current.DrawingToolkit.CreateSurfaceFromIcon (StyleConf.PlayerControlTrimLeftInactive);
+			trimGrabberRightActive = App.Current.DrawingToolkit.CreateSurfaceFromIcon (StyleConf.PlayerControlTrimRightActive);
+			trimGrabberRightInactive = App.Current.DrawingToolkit.CreateSurfaceFromIcon (StyleConf.PlayerControlTrimRightInactive);
 		}
 
 		public TimeNodeVM ViewModel {
@@ -50,7 +50,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 		}
 
-		double HandleSize {
+		double GrabberSize {
 			get {
 				return Height;
 			}
@@ -63,8 +63,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 		public override void Draw (IDrawingToolkit tk, Area area)
 		{
-			ISurface leftHandle = trimHandleLeftInactive;
-			ISurface rightHandle = trimHandleRightInactive;
+			ISurface leftGrabber = trimGrabberLeftInactive;
+			ISurface rightGrabber = trimGrabberRightInactive;
 
 			if (!UpdateDrawArea (tk, area, Area)) {
 				return;
@@ -72,15 +72,15 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 			tk.Begin ();
 
-			if (ViewModel.SelectedHandle == SelectionPosition.Left) {
-				leftHandle = trimHandleLeftActive;
-			} else if (ViewModel.SelectedHandle == SelectionPosition.Right) {
-				rightHandle = trimHandleRightActive;
+			if (ViewModel.SelectedGrabber == SelectionPosition.Left) {
+				leftGrabber = trimGrabberLeftActive;
+			} else if (ViewModel.SelectedGrabber == SelectionPosition.Right) {
+				rightGrabber = trimGrabberRightActive;
 			}
 
-			// We need to add 2 pixels so that the handles match perfectly
-			tk.DrawSurface (new Point (StartX - 2, 0), HandleSize, HandleSize, leftHandle, ScaleMode.AspectFit);
-			tk.DrawSurface (new Point (StopX - Height + 2, 0), HandleSize, HandleSize, rightHandle, ScaleMode.AspectFit);
+			// We need to add 2 pixels so that the Grabbers match perfectly
+			tk.DrawSurface (new Point (StartX - 2, 0), GrabberSize, GrabberSize, leftGrabber, ScaleMode.AspectFit);
+			tk.DrawSurface (new Point (StopX - Height + 2, 0), GrabberSize, GrabberSize, rightGrabber, ScaleMode.AspectFit);
 
 			tk.End ();
 		}
@@ -89,7 +89,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		{
 			base.ClickPressed (p, modif, selection);
 			if (selection.Position == SelectionPosition.Left || selection.Position == SelectionPosition.Right) {
-				ViewModel.SelectedHandle = selection.Position;
+				ViewModel.SelectedGrabber = selection.Position;
 			}
 		}
 	}

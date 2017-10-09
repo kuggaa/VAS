@@ -215,7 +215,7 @@ namespace VAS.Drawing.Widgets
 
 		void HandleKeyPressed (bool isRight)
 		{
-			Time time = loadedEventVM.SelectedHandle == SelectionPosition.Left ? loadedEventVM.Start : loadedEventVM.Stop;
+			Time time = loadedEventVM.SelectedGrabber == SelectionPosition.Left ? loadedEventVM.Start : loadedEventVM.Stop;
 			ViewModel.Pause ();
 
 			if (isRight) {
