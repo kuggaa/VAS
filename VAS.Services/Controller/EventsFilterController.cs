@@ -40,7 +40,7 @@ namespace VAS.Services.Controller
 	/// Events filter controller.
 	/// This controller manages events filters and filtering for views where projects are used.
 	/// </summary>
-	public class EventsFilterController : ControllerBase<TimelineVM>
+	public abstract class EventsFilterController : ControllerBase<TimelineVM>
 	{
 		protected override void DisposeManagedResources ()
 		{
@@ -96,10 +96,7 @@ namespace VAS.Services.Controller
 			ViewModel.Filters.EmitPredicateChanged ();
 		}
 
-		protected virtual void UpdateTeamsPredicates ()
-		{
-
-		}
+		protected abstract void UpdateTeamsPredicates ();
 
 		protected virtual void UpdatePeriodsPredicates ()
 		{
