@@ -315,7 +315,6 @@ namespace VAS.Core.Store.Templates
 				SortMethod = SortMethodType.SortByStartTime,
 				Color = c
 			};
-			AddDefaultTags (evtype);
 
 			button = new AnalysisEventButton {
 				EventType = evtype,

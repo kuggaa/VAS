@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
@@ -109,7 +110,7 @@ namespace VAS.Tests.Services
 			Assert.IsTrue (((OrPredicate<TimelineEventVM>)timelineVM.CommonTagsPredicate.First ()).All (p => p is Predicate));
 			Assert.AreEqual (2, ((OrPredicate<TimelineEventVM>)timelineVM.CommonTagsPredicate.ElementAt (1)).Elements.Count);
 
-			Assert.AreEqual (10, timelineVM.EventTypesPredicate.Elements.OfType<AndPredicate<TimelineEventVM>> ().Count ());
+			Assert.AreEqual (10, timelineVM.EventTypesPredicate.Elements.OfType<OrPredicate<TimelineEventVM>> ().Count ());
 			Assert.AreEqual (1, timelineVM.EventTypesPredicate.Elements.OfType<Predicate> ().Count ());
 		}
 
@@ -203,10 +204,10 @@ namespace VAS.Tests.Services
 			// Arrange
 			timelineVM.Filters.Active = false;
 
+			CompositePredicate<TimelineEventVM> firstEventTypePredicate = ((CompositePredicate<TimelineEventVM>)timelineVM.EventTypesPredicate.Elements [0]);
+
 			// Act
-			foreach (CompositePredicate<TimelineEventVM> tagGroup in timelineVM.EventTypesPredicate.Elements [0] as CompositePredicate<TimelineEventVM>) {
-				tagGroup.Elements [0].Active = true;
-			}
+			firstEventTypePredicate.Elements [0].Active = true;
 
 			// Assert
 			Assert.AreEqual (1, timelineVM.FullTimeline.Count (e => e.Visible));
@@ -220,10 +221,9 @@ namespace VAS.Tests.Services
 			timelineVM.Filters.Active = false;
 
 			CompositePredicate<TimelineEventVM> firstEventTypePredicate = ((CompositePredicate<TimelineEventVM>)timelineVM.EventTypesPredicate.Elements [0]);
-			CompositePredicate<TimelineEventVM> outcomePredicate = ((CompositePredicate<TimelineEventVM>)firstEventTypePredicate.Elements [0]);
 
 			// Act
-			outcomePredicate.Elements [2].Active = true;
+			firstEventTypePredicate.Elements [2].Active = true;
 
 			// Assert
 			Assert.AreEqual (2, timelineVM.FullTimeline.Count (e => e.Visible));
@@ -238,11 +238,10 @@ namespace VAS.Tests.Services
 			timelineVM.Filters.Active = false;
 
 			CompositePredicate<TimelineEventVM> firstEventTypePredicate = ((CompositePredicate<TimelineEventVM>)timelineVM.EventTypesPredicate.Elements [0]);
-			CompositePredicate<TimelineEventVM> outcomePredicate = ((CompositePredicate<TimelineEventVM>)firstEventTypePredicate.Elements [0]);
 
 			// Act
-			outcomePredicate.Elements [1].Active = true;
-			outcomePredicate.Elements [2].Active = true;
+			firstEventTypePredicate.Elements [1].Active = true;
+			firstEventTypePredicate.Elements [2].Active = true;
 
 			// Assert
 			Assert.AreEqual (3, timelineVM.FullTimeline.Count (e => e.Visible));
@@ -258,32 +257,31 @@ namespace VAS.Tests.Services
 			timelineVM.Filters.Active = false;
 
 			CompositePredicate<TimelineEventVM> secondEventTypePredicate = ((CompositePredicate<TimelineEventVM>)timelineVM.EventTypesPredicate.Elements [1]);
-			CompositePredicate<TimelineEventVM> outcomePredicate = ((CompositePredicate<TimelineEventVM>)secondEventTypePredicate.Elements [0]);
 
 			// Act
-			outcomePredicate.Elements [2].Active = true;
+			secondEventTypePredicate.Elements [2].Active = true;
 
 			// Assert
 			Assert.IsTrue (timelineVM.FullTimeline.All (e => !e.Visible));
 		}
 
 		[Test]
-		public void ApplyFilter_EventTypeOneGoodBadLeft_OneVisible ()
+		public void ApplyFilter_EventTypeOneGoodBadLeft_ThreeVisible ()
 		{
 			// Arrange
 			timelineVM.Filters.Active = false;
 
 			CompositePredicate<TimelineEventVM> firstEventTypePredicate = ((CompositePredicate<TimelineEventVM>)timelineVM.EventTypesPredicate.Elements [0]);
-			CompositePredicate<TimelineEventVM> outcomePredicate = ((CompositePredicate<TimelineEventVM>)firstEventTypePredicate.Elements [0]);
-			CompositePredicate<TimelineEventVM> positionPredicate = ((CompositePredicate<TimelineEventVM>)firstEventTypePredicate.Elements [1]);
 
 			// Act
-			outcomePredicate.Elements [1].Active = true;
-			outcomePredicate.Elements [2].Active = true;
-			positionPredicate.Elements [1].Active = true;
+			firstEventTypePredicate.Elements [1].Active = true;
+			firstEventTypePredicate.Elements [2].Active = true;
+			firstEventTypePredicate.Elements [3].Active = true;
 
 			// Assert
-			Assert.AreEqual (1, timelineVM.FullTimeline.Count (e => e.Visible));
+			Assert.AreEqual (3, timelineVM.FullTimeline.Count (e => e.Visible));
+			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (1).Visible);
+			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (2).Visible);
 			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (3).Visible);
 		}
 
@@ -723,7 +721,7 @@ namespace VAS.Tests.Services
 		public static Project CreateProject (bool withEvents = true)
 		{
 			TimelineEvent pl;
-			Project p = new Utils.ProjectDummy ();
+			Project p = new ProjectDummy ();
 			p.Dashboard = DashboardDummy.Default ();
 			p.FileSet = new MediaFileSet ();
 			p.FileSet.Add (new MediaFile (Path.GetTempFileName (), 34000, 25, true, true, "mp4", "h264",
@@ -788,6 +786,50 @@ namespace VAS.Tests.Services
 			return p;
 		}
 
+		public class ProjectDummy : Project
+		{
+			#region implemented abstract members of Project
+			public ProjectDummy ()
+			{
+				FileSet = new MediaFileSet ();
+			}
+
+			public override TimelineEvent CreateEvent (EventType type, Time start, Time stop, Time eventTime,
+													   Image miniature, int index)
+			{
+				TimelineEvent evt;
+				string count;
+				string name;
+
+				count = String.Format ("{0:000}", EventsByType (type).Count + 1);
+				name = String.Format ("{0} {1}", type.Name, count);
+				evt = new TimelineEvent ();
+
+				evt.Name = name;
+				evt.Start = start;
+				evt.Stop = stop;
+				evt.EventTime = eventTime;
+				evt.EventType = type;
+				evt.Notes = "";
+				evt.Miniature = miniature;
+				evt.CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) };
+				evt.FileSet = FileSet;
+				evt.Project = this;
+
+				return evt;
+			}
+
+			public override void AddEvent (TimelineEvent play)
+			{
+				play.FileSet = FileSet;
+				play.Project = this;
+				Timeline.Add (play);
+
+			}
+
+			#endregion
+		}
+
 		public class DashboardDummy : Dashboard
 		{
 			//dummy class for abstract validation. Copied from LongoMatch and adapted to VAS.
@@ -831,6 +873,36 @@ namespace VAS.Tests.Services
 					Position = new Point (10 + (10 + CAT_WIDTH) * 6, 10)
 				};
 				List.Add (timerButton);
+			}
+
+
+			public override AnalysisEventButton CreateDefaultItem (int index)
+			{
+				AnalysisEventButton button;
+				AnalysisEventType evtype;
+				Color c = StyleConf.ButtonEventColor;
+				HotKey h = new HotKey ();
+
+				evtype = new AnalysisEventType {
+					Name = "Event Type " + index,
+					SortMethod = SortMethodType.SortByStartTime,
+					Color = c
+				};
+				AddDefaultTags (evtype);
+
+				button = new AnalysisEventButton {
+					EventType = evtype,
+					Start = new Time { TotalSeconds = 10 },
+					Stop = new Time { TotalSeconds = 10 },
+					HotKey = h,
+					/* Leave the first row for the timers and score */
+					Position = new Point (10 + (index % 7) * (CAT_WIDTH + 10),
+						10 + (index / 7 + 1) * (CAT_HEIGHT + 10)),
+					Width = CAT_WIDTH,
+					Height = CAT_HEIGHT,
+					ShowIcon = true,
+				};
+				return button;
 			}
 		}
 	}
