@@ -85,13 +85,6 @@ namespace VAS.Core.Events
 		public TimelineEvent TimelineEvent { get; set; }
 	}
 
-	public class TimeNodeChangedEvent : Event
-	{
-		public TimeNode TimeNode { get; set; }
-
-		public Time Time { get; set; }
-	}
-
 	public class SnapshotSeriesEvent : Event
 	{
 		public TimelineEvent TimelineEvent { get; set; }

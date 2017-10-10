@@ -26,7 +26,6 @@ using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Interfaces.MVVMC;
-using VAS.Core.License;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
@@ -86,6 +85,18 @@ namespace VAS.Tests.Services
 			ftk.SetupGet (o => o.DeviceScaleFactor).Returns (1.0f);
 			App.Current.GUIToolkit = ftk.Object;
 
+			App.Current.LowerRate = 1;
+			App.Current.UpperRate = 30;
+			App.Current.RatePageIncrement = 3;
+			App.Current.RateList = new List<double> { 0.04, 0.08, 0.12, 0.16, 0.20, 0.24, 0.28, 0.32, 0.36, 0.40, 0.44,
+				0.48, 0.52, 0.56, 0.60, 0.64, 0.68, 0.72, 0.76, 0.80, 0.84, 0.88, 0.92, 0.96, 1, 2, 3, 4, 5
+			};
+			App.Current.DefaultRate = 25;
+		}
+
+		[SetUp ()]
+		public void Setup ()
+		{
 			mfs = new MediaFileSet ();
 			mfs.Add (new MediaFile {
 				FilePath = "test1",
@@ -102,18 +113,6 @@ namespace VAS.Tests.Services
 				Duration = new Time { TotalSeconds = 5000 }
 			});
 
-			App.Current.LowerRate = 1;
-			App.Current.UpperRate = 30;
-			App.Current.RatePageIncrement = 3;
-			App.Current.RateList = new List<double> { 0.04, 0.08, 0.12, 0.16, 0.20, 0.24, 0.28, 0.32, 0.36, 0.40, 0.44,
-				0.48, 0.52, 0.56, 0.60, 0.64, 0.68, 0.72, 0.76, 0.80, 0.84, 0.88, 0.92, 0.96, 1, 2, 3, 4, 5
-			};
-			App.Current.DefaultRate = 25;
-		}
-
-		[SetUp ()]
-		public void Setup ()
-		{
 			mockLimitationService = new Mock<ILicenseLimitationsService> ();
 			mockLimitationService.Setup (x => x.CanExecute (It.IsAny<string> ())).
 								 Returns (true);
@@ -143,7 +142,7 @@ namespace VAS.Tests.Services
 			playlist.Elements.Add (plImage);
 			currentTime = new Time (0);
 
-			player = new VideoPlayerController ();
+			player = new VideoPlayerController (new Seeker (0));
 			playerVM = new VideoPlayerVM ();
 			player.SetViewModel (playerVM);
 			playlist.SetActive (playlist.Elements [0]);
@@ -525,8 +524,6 @@ namespace VAS.Tests.Services
 			playerMock.ResetCalls ();
 			player.Seek (0.1f);
 			player.Seek (0.5f);
-			// Seeks for loaded events are throtled by a timer.
-			System.Threading.Thread.Sleep (100);
 			// Check we got called only once
 			playerMock.Verify (p => p.Seek (It.IsAny<Time> (), true, false), Times.Once ());
 			// And with the last value
@@ -1963,6 +1960,56 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
+		public void LoadEvent_StartMoved_SeekToNewPosition ()
+		{
+			PreparePlayer ();
+			player.LoadEvent (evt, evt.Start, true);
+			playerMock.ResetCalls ();
+
+			evt.Start += 1000;
+
+			playerMock.Verify (p => p.Seek (evt.Start, true, false));
+		}
+
+		[Test]
+		public void LoadEvent_StopMoved_SeekToNewPosition ()
+		{
+			PreparePlayer ();
+			player.LoadEvent (evt, evt.Start, true);
+			playerMock.ResetCalls ();
+
+			evt.Stop += 1000;
+
+			playerMock.Verify (p => p.Seek (evt.Stop, true, false));
+		}
+
+		[Test]
+		public void LoadPlaylistEvent_IsPlaylistPlayElementAndStartMoved_SeekToNewPosition ()
+		{
+			PreparePlayer ();
+			var playlistElement = playlist.Elements [0] as PlaylistPlayElement;
+			player.LoadPlaylistEvent (playlist, playlistElement, true);
+			playerMock.ResetCalls ();
+
+			playlistElement.Start += 1000;
+
+			playerMock.Verify (p => p.Seek (playlistElement.Start, true, false));
+		}
+
+		[Test]
+		public void LoadPlaylistEvent_IsPlaylistPlayElementAndStopMoved_SeekToNewPosition ()
+		{
+			PreparePlayer ();
+			var playlistElement = playlist.Elements [0] as PlaylistPlayElement;
+			player.LoadPlaylistEvent (playlist, playlistElement, true);
+			playerMock.ResetCalls ();
+
+			playlistElement.Stop += 1000;
+
+			playerMock.Verify (p => p.Seek (playlistElement.Stop, true, false));
+		}
+
+		[Test]
 		public void LoadPlaylistVideo_PlayerVMFileSetUpdated ()
 		{
 			MediaFileSetVM fileset = null;
@@ -2016,6 +2063,174 @@ namespace VAS.Tests.Services
 			player.LoadEvent (evt, new Time (0), true);
 
 			Assert.AreEqual (1.0, playerVM.Zoom);
+		}
+
+		[Test]
+		public void SetEditEventDuration_NoEventLoaded_EditEventDurationEnabledAndEditEventDurationTimeNodeUpdated ()
+		{
+			PreparePlayer ();
+			var start = new Time { TotalSeconds = 60 };
+			var stop = new Time { TotalSeconds = 100 };
+			var evt = new TimelineEvent { Start = start, Stop = stop };
+			player.LoadEvent (evt, start, true);
+
+			player.SetEditEventDurationMode (true);
+
+			Assert.IsTrue (playerVM.EditEventDurationCommand.CanExecute ());
+			Assert.IsTrue (playerVM.EditEventDurationModeEnabled);
+			Assert.AreEqual (start - new Time { TotalSeconds = 10 }, playerVM.EditEventDurationTimeNode.Start);
+			Assert.AreEqual (stop + new Time { TotalSeconds = 10 }, playerVM.EditEventDurationTimeNode.Stop);
+		}
+
+		[Test]
+		public void SetEditEventDuration_StartIsLessThan10Seconds_EditEventDurationTimeNodeStartIsClipped ()
+		{
+			PreparePlayer ();
+			var start = new Time { TotalSeconds = 8 };
+			var stop = new Time { TotalSeconds = 10 };
+			var evt = new TimelineEvent { Start = start, Stop = stop };
+			player.LoadEvent (evt, start, true);
+
+			player.SetEditEventDurationMode (true);
+
+			Assert.IsTrue (playerVM.EditEventDurationCommand.CanExecute ());
+			Assert.IsTrue (playerVM.EditEventDurationModeEnabled);
+			Assert.AreEqual (new Time (0), playerVM.EditEventDurationTimeNode.Start);
+			Assert.AreEqual (stop + new Time { TotalSeconds = 10 }, playerVM.EditEventDurationTimeNode.Stop);
+		}
+
+		[Test]
+		public void SetEditEventDuration_StopIs5SecondsAwayFromEOF_EditEventDurationTimeNodeStopIsClipped ()
+		{
+			PreparePlayer ();
+			var start = new Time { TotalSeconds = 20 };
+			var stop = playerVM.FileSet.Duration - 5;
+			var evt = new TimelineEvent { Start = start, Stop = stop };
+			player.LoadEvent (evt, start, true);
+
+			player.SetEditEventDurationMode (true);
+
+			Assert.IsTrue (playerVM.EditEventDurationCommand.CanExecute ());
+			Assert.IsTrue (playerVM.EditEventDurationModeEnabled);
+			Assert.AreEqual (start - new Time { TotalSeconds = 10 }, playerVM.EditEventDurationTimeNode.Start);
+			Assert.AreEqual (playerVM.FileSet.Duration, playerVM.EditEventDurationTimeNode.Stop);
+		}
+
+		[Test]
+		public void SetEditEventDuration_EventAlreadyLoaded_EditEventDurationModeDisabled ()
+		{
+			PreparePlayer ();
+			var start1 = new Time { TotalSeconds = 60 };
+			var stop1 = new Time { TotalSeconds = 100 };
+			var start2 = new Time { TotalSeconds = 200 };
+			var stop2 = new Time { TotalSeconds = 230 };
+			var evt1 = new TimelineEvent { Start = start1, Stop = stop1 };
+			var evt2 = new TimelineEvent { Start = start2, Stop = stop2 };
+			player.LoadEvent (evt, start1, true);
+
+			player.SetEditEventDurationMode (true);
+			player.LoadEvent (evt2, start2, true);
+
+			Assert.IsTrue (playerVM.EditEventDurationCommand.CanExecute ());
+			Assert.IsFalse (playerVM.EditEventDurationModeEnabled);
+		}
+
+		[Test]
+		public void SetEditEventDurationMode_EventLoadedNewEventIsNull_EditEventDurationCommandNotExecutable ()
+		{
+			PreparePlayer ();
+			player.LoadEvent (evt, evt.Start, true);
+			player.UnloadCurrentEvent ();
+
+			player.SetEditEventDurationMode (true);
+
+			Assert.IsFalse (playerVM.EditEventDurationCommand.CanExecute ());
+			Assert.IsFalse (playerVM.EditEventDurationModeEnabled);
+			Assert.IsNull (playerVM.EditEventDurationTimeNode.Model);
+		}
+
+		[Test]
+		public void SetEditEventDurationMode_DisableModeWithEventLoaded_ModeDisabledNodeUpdated ()
+		{
+			PreparePlayer ();
+			player.LoadEvent (evt, evt.Start, true);
+			player.SetEditEventDurationMode (true);
+
+			player.SetEditEventDurationMode (false);
+
+			Assert.IsTrue (playerVM.EditEventDurationCommand.CanExecute ());
+			Assert.IsFalse (playerVM.EditEventDurationModeEnabled);
+			Assert.IsNull (playerVM.EditEventDurationTimeNode.Model);
+		}
+
+		[Test]
+		public void SetEditEventDurationMode_EventLoadedAndDurationChanged_EditEventDurationTimeNodeRecalculated ()
+		{
+			PreparePlayer ();
+			var start = new Time { TotalSeconds = 60 };
+			var stop = new Time { TotalSeconds = 100 };
+			var evt = new TimelineEvent { Start = start, Stop = stop };
+			player.LoadEvent (evt, start, true);
+			player.SetEditEventDurationMode (true);
+
+			evt.Stop = new Time { TotalSeconds = 120 };
+			player.SetEditEventDurationMode (true);
+
+			Assert.IsTrue (playerVM.EditEventDurationCommand.CanExecute ());
+			Assert.IsTrue (playerVM.EditEventDurationModeEnabled);
+			Assert.AreEqual (start - new Time { TotalSeconds = 10 }, playerVM.EditEventDurationTimeNode.Start);
+			Assert.AreEqual (evt.Stop + new Time { TotalSeconds = 10 }, playerVM.EditEventDurationTimeNode.Stop);
+		}
+
+		[Test]
+		public void SetEditEventDurationMode_PlaylistTimelineElementLoaded_EditDurationModeExecutableAndTimeNodeUpdate ()
+		{
+			PreparePlayer ();
+			var start = new Time { TotalSeconds = 60 };
+			var stop = new Time { TotalSeconds = 100 };
+			var evt = new TimelineEvent { Start = start, Stop = stop };
+			var plEvt = new PlaylistPlayElement (evt);
+			var playlist = new Playlist ();
+			playlist.Elements.Add ((plEvt));
+			player.LoadPlaylistEvent (playlist, plEvt, true);
+
+			player.SetEditEventDurationMode (true);
+
+			Assert.IsTrue (playerVM.EditEventDurationCommand.CanExecute ());
+			Assert.IsTrue (playerVM.EditEventDurationModeEnabled);
+			Assert.AreEqual (start - new Time { TotalSeconds = 10 }, playerVM.EditEventDurationTimeNode.Start);
+			Assert.AreEqual (stop + new Time { TotalSeconds = 10 }, playerVM.EditEventDurationTimeNode.Stop);
+		}
+
+		[Test]
+		public void SetEditEventDurationMode_PlaylistImageLoaded_EditDurationModeNotExecutable ()
+		{
+			PreparePlayer ();
+			var playlist = new Playlist ();
+			playlist.Elements.Add (new PlaylistImage (Utils.LoadImageFromFile (), new Time (5000)));
+			player.LoadPlaylistEvent (playlist, playlist.Elements [0], true);
+
+			player.SetEditEventDurationMode (true);
+
+			Assert.IsFalse (playerVM.EditEventDurationCommand.CanExecute ());
+			Assert.IsFalse (playerVM.EditEventDurationModeEnabled);
+		}
+
+		[Test]
+		public void SetEditEventDurationMode_PlaylistPlayElementLoaded_SeekOutsideBoundariesDoesNotCallsNext ()
+		{
+			PreparePlayer ();
+			player.LoadPlaylistEvent (playlist, playlist.Elements [0], true);
+
+			player.SetEditEventDurationMode (true);
+			var playlistElement = playlist.Elements [0] as PlaylistPlayElement;
+
+			currentTime = playlistElement.Stop + new Time { TotalSeconds = 20 };
+			// This will trigger an AbsoluteSeek which will trigger a Tick where we want to check that
+			// it does not jump to the next element
+			playlistElement.Stop += new Time { TotalSeconds = 1 };
+
+			Assert.AreEqual (0, playlist.CurrentIndex);
 		}
 
 		void HandleElementLoadedEvent (object element, bool hasNext)

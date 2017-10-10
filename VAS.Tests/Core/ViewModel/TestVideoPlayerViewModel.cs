@@ -152,5 +152,19 @@ namespace VAS.Tests.Core.ViewModel
 
 			mockService.Verify (s => s.MoveToUpgradeDialog (VASFeature.Zoom.ToString ()), Times.Once);
 		}
+
+		[Test]
+		public void EditEventDurationCommand_Initialized_CommandCallsController ()
+		{
+			var playerController = new Mock<IVideoPlayerController> ();
+			playerController.SetupAllProperties ();
+			var viewModel = new VideoPlayerVM { Player = playerController.Object };
+			viewModel.EditEventDurationCommand.Executable = true;
+
+			viewModel.EditEventDurationCommand.Execute (true);
+
+			playerController.Verify (p => p.SetEditEventDurationMode (true));
+		}
+
 	}
 }

@@ -71,5 +71,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Statistics\TwoBarChartView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\CanvasBorderView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Blackboard\ImageCanvasObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Widgets\EventEditionTimeruleView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimeNodeEditorView.cs" />
   </ItemGroup>
 </Project>

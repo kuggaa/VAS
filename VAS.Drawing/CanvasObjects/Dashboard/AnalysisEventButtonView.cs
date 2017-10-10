@@ -354,7 +354,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
-		public override void ClickPressed (Point p, ButtonModifier modif)
+		public override void ClickPressed (Point p, ButtonModifier modif, Selection selection)
 		{
 			if (ButtonVM.Mode == DashboardMode.Edit || Button.ShowSettingIcon) {
 				editClicked = CheckRect (p, editRect, editbutton);

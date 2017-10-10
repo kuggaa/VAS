@@ -105,10 +105,11 @@ namespace VAS.UI.Helpers.Bindings
 		/// <param name="commandFunc">Command function.</param>
 		/// <param name="parameterActive">Parameter when active.</param>
 		/// <param name="parameterInactive">Parameter when inactive.</param>
+		/// <param name="iconOnly">Ignore the Name property and only shows the icon in the button.</param>
 		public static ToggleButtonBinding Bind (this ToggleButton button, Func<IViewModel, Command> commandFunc,
-												object parameterActive, object parameterInactive)
+												object parameterActive, object parameterInactive, bool iconOnly = false)
 		{
-			return new ToggleButtonBinding (button, commandFunc, parameterActive, parameterInactive);
+			return new ToggleButtonBinding (button, commandFunc, parameterActive, parameterInactive, iconOnly ? "" : null);
 		}
 
 		/// <summary>
@@ -215,7 +216,7 @@ namespace VAS.UI.Helpers.Bindings
 		/// <param name="step">Step.</param>
 		/// <param name="page">Page.</param>
 		public static HScaleCommandBinding Bind (this HScale hscale, Func<IViewModel, Command<double>> commandFunc, double defaultValue,
-		                                 double min, double max, double step, double page)
+										 double min, double max, double step, double page)
 		{
 			return new HScaleCommandBinding (hscale, commandFunc, defaultValue, min, max, step, page);
 		}
@@ -228,7 +229,7 @@ namespace VAS.UI.Helpers.Bindings
 		/// <param name="commandFunc">Command func.</param>
 		/// <param name="defaultValue">Default value.</param>
 		public static HScaleCommandBinding Bind (this HScale hscale, Func<IViewModel, LimitationCommand<double>> commandFunc,
-		                                  double defaultValue)
+										  double defaultValue)
 		{
 			return new HScaleCommandBinding (hscale, commandFunc, defaultValue);
 		}
@@ -246,7 +247,7 @@ namespace VAS.UI.Helpers.Bindings
 		/// <param name="step">Step.</param>
 		/// <param name="page">Page.</param>
 		public static HScaleCommandBinding Bind (this HScale hscale, Func<IViewModel, LimitationCommand<double>> commandFunc,
-		                                  double defaultValue, double min, double max, double step, double page)
+										  double defaultValue, double min, double max, double step, double page)
 		{
 			return new HScaleCommandBinding (hscale, commandFunc, defaultValue, min, max, step, page);
 		}

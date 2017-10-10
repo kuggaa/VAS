@@ -66,6 +66,15 @@ namespace VAS.Core.Interfaces.Drawing
 
 		bool UseAntialias { set; }
 
+		/// <summary>
+		/// Creates the surface from an icon name.
+		/// </summary>
+		/// <returns>The newly created surface.</returns>
+		/// <param name="iconName">Icon name.</param>
+		/// <param name="warnOnDispose">If set to <c>true</c> warn on dispose.</param>
+		/// <param name="useDeviceScaleFactor">If set to <c>true</c> use device scale factor.</param>
+		ISurface CreateSurfaceFromIcon (string iconName, bool warnOnDispose = true, bool useDeviceScaleFactor = true);
+
 		ISurface CreateSurfaceFromResource (string resourceName, bool warnOnDispose = true, bool useDeviceScaleFactor = true);
 
 		ISurface CreateSurface (string absolutePath, bool warnOnDispose = true, bool useDeviceScaleFactor = true);

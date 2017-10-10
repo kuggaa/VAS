@@ -145,7 +145,7 @@ namespace VAS.UI
 		void HandlePlayerVMPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == "PlayElement") {
-				if (playerVM.PlayElement == null) {
+				if (playerVM.LoadedElement == null) {
 					if (playerVM.ViewMode == PlayerViewOperationMode.Analysis) {
 						return;
 					}
@@ -153,7 +153,7 @@ namespace VAS.UI
 					playerVM.Pause ();
 					ShowCapturer ();
 				} else {
-					if (playerVM.PlayElement is TimelineEvent && playerVM.ViewMode == PlayerViewOperationMode.LiveAnalysisReview) {
+					if (playerVM.LoadedElement is TimelineEvent && playerVM.ViewMode == PlayerViewOperationMode.LiveAnalysisReview) {
 						ShowPlayer ();
 						livebox.Visible = replayhbox.Visible = true;
 					}

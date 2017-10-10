@@ -20,6 +20,7 @@ using VAS.Core.Common;
 using VAS.Core.Handlers.Drawing;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.Store.Drawables;
 
 namespace VAS.Core.Interfaces.Drawing
 {
@@ -39,7 +40,7 @@ namespace VAS.Core.Interfaces.Drawing
 
 		string Description { set; get; }
 
-		void ClickPressed (Point p, ButtonModifier modif);
+		void ClickPressed (Point p, ButtonModifier modif, Selection selection);
 
 		void ClickReleased ();
 	}

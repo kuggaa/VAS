@@ -45,14 +45,34 @@ namespace VAS.Core.ViewModel
 			Step = new Time { TotalSeconds = 10 };
 			ShowDetachButton = true;
 			ShowCenterPlayHeadButton = true;
-			ShowZoomCommand = new LimitationCommand (VASFeature.Zoom.ToString (), () => {
-				ShowZoom = true;
-			});
-			ShowZoomCommand.Icon = App.Current.ResourcesLocator.LoadIcon ("vas-zoom", 15);
-			ShowZoomCommand.ToolTipText = Catalog.GetString ("Zoom");
+
+			ShowZoomCommand = new LimitationCommand (VASFeature.Zoom.ToString (),
+													 () => {
+														 ShowZoom = true;
+													 }) {
+				Icon = App.Current.ResourcesLocator.LoadIcon ("vas-zoom", 15),
+				ToolTipText = Catalog.GetString ("Zoom"),
+			};
+
 			SetZoomCommand = new LimitationCommand<float> (VASFeature.Zoom.ToString (), SetZoom);
+
+			EditEventDurationCommand = new Command<bool> (b => Player.SetEditEventDurationMode (b)) {
+				Icon = App.Current.ResourcesLocator.LoadIcon (StyleConf.PlayerControlTrim, StyleConf.PlayerCapturerIconSize),
+				Text = Catalog.GetString ("Edit event duration"),
+				ToolTipText = Catalog.GetString ("Edit event duration"),
+				Executable = false,
+			};
+
 			Duration = new Time (0);
 			CurrentTime = new Time (0);
+			EditEventDurationTimeNode = new TimeNodeVM ();
+		}
+
+		protected override void DisposeManagedResources ()
+		{
+			base.DisposeManagedResources ();
+			Player.Dispose ();
+			Player = null;
 		}
 
 		/// <summary>
@@ -73,12 +93,13 @@ namespace VAS.Core.ViewModel
 			set;
 		}
 
-		protected override void DisposeManagedResources ()
-		{
-			base.DisposeManagedResources ();
-			Player.Dispose ();
-			Player = null;
-		}
+		/// <summary>
+		/// Gets or sets the edit event duration command.
+		/// This command enables or disables the duration edition mode that allows to edit the duration of the loaded
+		/// <see cref="IPlaylistEventElement"/>.
+		/// </summary>
+		/// <value>The edit event duration command.</value>
+		public Command EditEventDurationCommand { get; set; }
 
 		public bool ControlsSensitive {
 			get;
@@ -176,7 +197,7 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
-		public object PlayElement {
+		public IPlaylistElement LoadedElement {
 			get;
 			set;
 		}
@@ -285,6 +306,27 @@ namespace VAS.Core.ViewModel
 			protected set;
 		} = false;
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.VideoPlayerVM"/> is
+		/// in editing the loaded event duration.
+		/// </summary>
+		/// <value><c>true</c> if editing the event duration mode; otherwise, <c>false</c>.</value>
+		[PropertyChanged.DoNotCheckEquality]
+		public bool EditEventDurationModeEnabled {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the time node that defines the lower and upper boundaries used to edit the duration of
+		/// the <see cref="IPlaylistEventElement"/> loaded.
+		/// </summary>
+		/// <value>The time node to edit event duration.</value>
+		public TimeNodeVM EditEventDurationTimeNode {
+			get;
+			set;
+		}
+
 		#region methods
 
 		public void Expose ()
@@ -381,7 +423,6 @@ namespace VAS.Core.ViewModel
 
 		public void LoadEvent (TimelineEvent e, Time seekTime, bool playing)
 		{
-			e.Playing = true;
 			Player.LoadEvent (e, seekTime, playing);
 		}
 
