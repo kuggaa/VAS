@@ -100,6 +100,7 @@ namespace VAS
 			mainThreadId = Thread.CurrentThread.ManagedThreadId;
 
 			Current = appInit;
+			Current.SoftwareName = softwareName;
 
 			string home = null;
 

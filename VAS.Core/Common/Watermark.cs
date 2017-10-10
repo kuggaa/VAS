@@ -59,17 +59,22 @@ namespace VAS.Core.Common
 		/// <returns>The new configured watermark.</returns>
 		/// <param name="position">Position.</param>
 		/// <param name="videoStandard">Video standard.</param>
-		public static Watermark ConfigureNewWatermark (WatermarkPosition position, VideoStandard videoStandard)
+		public static Watermark ConfigureNewWatermark (WatermarkPosition position, VideoStandard videoStandard, Image image = null)
 		{
 			double videoWidth = videoStandard.Width;
 			double videoHeight = videoStandard.Height;
-			var originalImage = App.Current.ResourcesLocator.LoadEmbeddedImage (Constants.WATERMARK_RESOURCE_ID);
+			Image originalImage = image ?? App.Current.ResourcesLocator.LoadEmbeddedImage (Constants.WATERMARK_RESOURCE_ID);
+
 			double sizeChanged = (videoHeight * StyleConf.WatermarkHeightNormalization) / originalImage.Height;
 			int newWidth = (int)(originalImage.Width * sizeChanged);
 			int newHeight = (int)(originalImage.Height * sizeChanged);
 
-			var newImage = App.Current.ResourcesLocator.LoadEmbeddedImage (Constants.WATERMARK_RESOURCE_ID, newWidth, newHeight);
-
+			Image newImage;
+			if (image == null) {
+				newImage = App.Current.ResourcesLocator.LoadEmbeddedImage (Constants.WATERMARK_RESOURCE_ID, newWidth, newHeight);
+			} else {
+				newImage = image.Scale (newWidth, newHeight);
+			}
 			double offsetX = 0;
 			double offsetY = 0;
 

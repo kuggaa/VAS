@@ -49,7 +49,7 @@ namespace VAS.UI.Helpers
 			return filter;
 		}
 
-		public static Image OpenImage (Widget widget)
+		public static Tuple<string, Image> OpenImageAndFilename (Widget widget)
 		{
 			Image image = null;
 			string filename;
@@ -67,7 +67,13 @@ namespace VAS.UI.Helpers
 					App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Image file format not supported"), widget);
 				}
 			}
-			return image;
+			return new Tuple<string, Image> (filename, image);
+		}
+
+		public static Image OpenImage (Widget widget)
+		{
+			var imageTuple = OpenImageAndFilename (widget);
+			return imageTuple.Item2;
 		}
 
 		static public double ShortToDouble (ushort val)

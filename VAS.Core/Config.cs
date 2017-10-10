@@ -153,6 +153,24 @@ namespace VAS
 			set;
 		} = true;
 
+		/// <summary>
+		/// Gets or sets the watermark.
+		/// </summary>
+		/// <value>The watermark.</value>
+		public Image Watermark {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the name of the watermark. It's typically the filename.
+		/// </summary>
+		/// <value>The name of the watermark.</value>
+		public string WatermarkName {
+			get;
+			set;
+		} = "Watermark";
+
 		public uint FPS_N {
 			get;
 			set;

@@ -205,7 +205,7 @@ namespace VAS.UI.Helpers
 		/// <param name="button">Button.</param>
 		/// <param name="buttonStyle">Button style.</param>
 		/// <param name="buttonSize">Button size.</param>
-		public static void ApplyStyle (this Button button, string buttonStyle, int buttonSize)
+		public static void ApplyStyle (this Button button, string buttonStyle, int buttonSize = 0)
 		{
 			ApplyStyle (button, buttonStyle, buttonSize, buttonSize);
 		}
@@ -225,7 +225,9 @@ namespace VAS.UI.Helpers
 			var imageView = button.Image as ImageView ?? button.Child as ImageView;
 			if (imageView != null) {
 				button.ImagePosition = PositionType.Left;
-				imageView.SetSize (buttonWidth - 5, buttonHeight - 5);
+				if (buttonWidth != 0 && buttonHeight != 0) {
+					imageView.SetSize (buttonWidth - 5, buttonHeight - 5);
+				}
 			}
 			button.CanFocus = false;
 			button.FocusOnClick = false;
