@@ -34,7 +34,7 @@ namespace VAS.Core.Store
 	/// Represents a tagged event in the game at a specific position in the timeline.
 	/// </summary>
 	[Serializable]
-	public class TimelineEvent : PixbufTimeNode, IStorable, IDisposable
+	public class TimelineEvent : PixbufTimeNode, IStorable, IDisposable, IPlaylistEventElement
 	{
 		[NonSerialized]
 		IStorage storage;

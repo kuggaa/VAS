@@ -55,8 +55,6 @@ namespace VAS.Services
 		protected const int TIMEOUT_MS = 20;
 		protected IVideoPlayer player;
 		protected IMultiVideoPlayer multiPlayer;
-		protected TimelineEvent loadedEvent;
-		protected IPlaylistElement loadedPlaylistElement;
 		protected List<IViewPort> viewPorts;
 		protected ObservableCollection<CameraConfig> camerasConfig;
 		protected ObservableCollection<CameraConfig> defaultCamerasConfig;
@@ -75,10 +73,14 @@ namespace VAS.Services
 		protected readonly ManualResetEvent TimerDisposed;
 		protected bool active;
 
+		readonly Time editDurationOffset = new Time { TotalSeconds = 10 };
 		VideoPlayerVM playerVM;
 		TimeNode visibleRegion;
 		VideoPlayerOperationMode mode;
 		Playlist loadedPlaylist;
+		TimelineEvent loadedEvent;
+		IPlaylistEventElement loadedPlaylistEvent;
+		IPlaylistElement loadedPlaylistElement;
 		object camerasLayout;
 		bool supportsMultipleCameras;
 
@@ -101,9 +103,10 @@ namespace VAS.Services
 
 		#region Constructors
 
-		public VideoPlayerController ()
+		public VideoPlayerController (Seeker testSeeker = null)
 		{
-			seeker = new Seeker ();
+			// Injected seeker should only be used for unit tests
+			seeker = testSeeker ?? new Seeker ();
 			seeker.SeekEvent += HandleSeekEvent;
 			loadedSegment.Start = new Time (-1);
 			loadedSegment.Stop = new Time (int.MaxValue);
@@ -154,11 +157,8 @@ namespace VAS.Services
 				if (defaultCamerasConfig == null) {
 					defaultCamerasConfig = value;
 				}
-				if (loadedEvent != null && !(loadedEvent.CamerasConfig.SequenceEqualSafe (value))) {
-					loadedEvent.CamerasConfig = new ObservableCollection<CameraConfig> (value);
-				} else if (loadedPlaylistElement is PlaylistPlayElement) {
-					(loadedPlaylistElement as PlaylistPlayElement).CamerasConfig =
-						new ObservableCollection<CameraConfig> (value);
+				if (LoadedTimelineEvent != null && !(LoadedTimelineEvent.CamerasConfig.SequenceEqualSafe (value))) {
+					LoadedTimelineEvent.CamerasConfig = new ObservableCollection<CameraConfig> (value);
 				}
 				if (multiPlayer != null) {
 					multiPlayer.CamerasConfig = CamerasConfig;
@@ -682,24 +682,14 @@ namespace VAS.Services
 			player.Expose ();
 		}
 
-		public void UpdatePlayingState (bool playing)
-		{
-			if (loadedPlaylistElement != null) {
-				loadedPlaylistElement.Playing = playing;
-			}
-
-			if (loadedEvent != null) {
-				loadedEvent.Playing = playing;
-			}
-		}
-
-		public virtual void Switch (TimelineEvent play, Playlist playlist, IPlaylistElement element)
+		public void Switch (TimelineEvent play, Playlist playlist, IPlaylistElement element)
 		{
 			UpdatePlayingState (false);
 
 			loadedEvent = play;
-			LoadedPlaylist = playlist;
 			loadedPlaylistElement = element;
+			LoadedPlaylist = playlist;
+			LoadedTimelineEvent = play ?? element as IPlaylistEventElement;
 
 			UpdatePlayingState (true);
 		}
@@ -754,8 +744,8 @@ namespace VAS.Services
 			if (evt.Start != null && evt.Stop != null) {
 				LoadSegment (fileSet, evt.Start, evt.Stop, evt.Start + seekTime, evt.Rate,
 					evt.CamerasConfig, evt.CamerasLayout, playing);
-				if (loadedEvent == null) { // LoadSegment sometimes removes the loadedEvent
-					loadedEvent = evt;
+				if (LoadedTimelineEvent == null) { // LoadSegment sometimes removes the loadedEvent
+					LoadedTimelineEvent = evt;
 				}
 			} else if (evt.EventTime != null) {
 				AbsoluteSeek (evt.EventTime, true);
@@ -775,6 +765,8 @@ namespace VAS.Services
 				return;
 			}
 			Reset ();
+			loadedEvent = null;
+			LoadedTimelineEvent = null;
 			if (defaultFileSet != null && !defaultFileSet.Equals (FileSet)) {
 				UpdateCamerasConfig (defaultCamerasConfig, defaultCamerasLayout);
 				EmitEventUnloaded ();
@@ -843,10 +835,8 @@ namespace VAS.Services
 
 		public virtual void DrawFrame ()
 		{
-			TimelineEvent evt = loadedEvent;
-			if (evt == null && loadedPlaylistElement is PlaylistPlayElement) {
-				evt = (loadedPlaylistElement as PlaylistPlayElement).Play;
-			}
+			// FIXME: Drawing tool could use IPlaylistEventElement
+			TimelineEvent evt = loadedEvent ?? (loadedPlaylistElement as PlaylistPlayElement)?.Play;
 			App.Current.EventsBroker.Publish (
 				new DrawFrameEvent {
 					Play = evt,
@@ -906,6 +896,22 @@ namespace VAS.Services
 											 cfg.RegionOfInterest.Height);
 			ClipRoi (cfg.RegionOfInterest, FileSet [cfg.Index]);
 			ApplyROI (cfg);
+		}
+
+		public void SetEditEventDurationMode (bool enabled)
+		{
+			if (enabled && LoadedTimelineEvent == null) {
+				return;
+			}
+			if (enabled) {
+				playerVM.EditEventDurationTimeNode.Model = new TimeNode {
+					Start = (LoadedTimelineEvent.Start - editDurationOffset).Clamp (new Time (0), FileSet.Duration),
+					Stop = (LoadedTimelineEvent.Stop + editDurationOffset).Clamp (new Time (0), FileSet.Duration)
+				};
+			} else {
+				playerVM.EditEventDurationTimeNode.Model = null;
+			}
+			playerVM.EditEventDurationModeEnabled = enabled;
 		}
 
 		#endregion
@@ -985,6 +991,14 @@ namespace VAS.Services
 					App.Current.HotkeysService.GetByName(PlaybackHotkeys.ZOOM_DECREASE),
 					DecreaseZoom
 				),
+				new KeyAction (
+					App.Current.HotkeysService.GetByName(PlaybackHotkeys.EDIT_EVENT_DURATION),
+					() => {
+						if (playerVM.EditEventDurationCommand.CanExecute ()) {
+							SetEditEventDurationMode (!playerVM.EditEventDurationModeEnabled);
+						}
+					}
+				),
 			};
 		}
 
@@ -1008,21 +1022,22 @@ namespace VAS.Services
 			}
 		}
 
-		protected virtual void EmitElementLoaded (object element, Playlist playlist)
+		protected virtual void EmitElementLoaded (IPlaylistElement element, Playlist playlist)
 		{
 			playerVM.HasNext = playlist != null ? playlist.HasNext () : false;
-			playerVM.PlayElement = element;
-			if (element is IPlaylistElement) {
+			playerVM.LoadedElement = element;
+
+			if (element == null || element is TimelineEvent) {
 				App.Current.EventsBroker.Publish (
-					new PlaylistElementLoadedEvent {
-						Playlist = playlist,
-						Element = element as IPlaylistElement,
+					new EventLoadedEvent {
+						TimelineEvent = element as TimelineEvent,
 					}
 				);
 			} else {
 				App.Current.EventsBroker.Publish (
-					new EventLoadedEvent {
-						TimelineEvent = element as TimelineEvent,
+					new PlaylistElementLoadedEvent {
+						Playlist = playlist,
+						Element = element as IPlaylistElement,
 					}
 				);
 			}
@@ -1117,20 +1132,24 @@ namespace VAS.Services
 			}
 		}
 
-		/// <summary>
-		/// Gets the list of drawing for the loaded event.
-		/// </summary>
-		protected virtual ObservableCollection<FrameDrawing> EventDrawings {
-			get {
-				if (loadedEvent != null) {
-					return loadedEvent.Drawings;
-				} else if (loadedPlaylistElement is PlaylistPlayElement) {
-					return (loadedPlaylistElement as PlaylistPlayElement).Play.Drawings;
+		IPlaylistEventElement LoadedTimelineEvent {
+			set {
+				if (loadedPlaylistEvent != null) {
+					loadedPlaylistEvent.PropertyChanged -= HandleLoadedTimelineEventPropertyChangedEventHandler;
 				}
-				return null;
+				loadedPlaylistEvent = value;
+				if (loadedPlaylistEvent != null) {
+					playerVM.EditEventDurationCommand.Executable = true;
+					loadedPlaylistEvent.PropertyChanged += HandleLoadedTimelineEventPropertyChangedEventHandler;
+				} else {
+					playerVM.EditEventDurationCommand.Executable = false;
+				}
+				SetEditEventDurationMode (false);
+			}
+			get {
+				return loadedPlaylistEvent;
 			}
 		}
-
 
 		#endregion
 
@@ -1288,7 +1307,6 @@ namespace VAS.Services
 			StillImageLoaded = false;
 			loadedSegment.Start = new Time (-1);
 			loadedSegment.Stop = new Time (int.MaxValue);
-			loadedEvent = null;
 		}
 
 		/// <summary>
@@ -1310,10 +1328,9 @@ namespace VAS.Services
 		/// <param name="rate">Rate.</param>
 		protected virtual void SetEventRate (float rate)
 		{
-			if (loadedPlaylistElement is PlaylistPlayElement) {
-				(loadedPlaylistElement as PlaylistPlayElement).Rate = rate;
-			} else if (loadedEvent != null) {
-				loadedEvent.Rate = rate;
+			var evt = LoadedTimelineEvent;
+			if (evt != null) {
+				evt.Rate = rate;
 			}
 		}
 
@@ -1372,7 +1389,6 @@ namespace VAS.Services
 
 		protected virtual void LoadStillImage (PlaylistImage image, bool playing)
 		{
-			Reset ();
 			loadedPlaylistElement = image;
 			StillImageLoaded = true;
 			if (playing) {
@@ -1506,18 +1522,23 @@ namespace VAS.Services
 
 					EmitTimeChanged (currentTime, relativeTime);
 
-					if (currentTime > loadedSegment.Stop) {
-						/* Check if the segment is now finished and jump to next one */
-						Next ();
-					} else {
-						var drawings = EventDrawings;
-						if (drawings != null) {
-							/* Check if the event has drawings to display */
-							FrameDrawing fd = drawings.FirstOrDefault (f => f.Render > videoTS &&
-											  f.Render <= currentTime &&
-											  f.CameraConfig.Index == CamerasConfig [0].Index);
-							if (fd != null) {
-								LoadPlayDrawing (fd);
+					// When editing the duration of a PlaylistPlayElement we can go outside the boundaries
+					// of the segment while seeking, so we need to ignore them to prevent jumping to the next
+					// playlist element.
+					if (!playerVM.EditEventDurationModeEnabled) {
+						if (currentTime > loadedSegment.Stop) {
+							/* Check if the segment is now finished and jump to next one */
+							Next ();
+						} else {
+							var drawings = LoadedTimelineEvent?.Drawings;
+							if (drawings != null) {
+								/* Check if the event has drawings to display */
+								FrameDrawing fd = drawings.FirstOrDefault (f => f.Render > videoTS &&
+												  f.Render <= currentTime &&
+												  f.CameraConfig.Index == CamerasConfig [0].Index);
+								if (fd != null) {
+									LoadPlayDrawing (fd);
+								}
 							}
 						}
 					}
@@ -1708,6 +1729,24 @@ namespace VAS.Services
 			}
 		}
 
+		void HandleLoadedTimelineEventPropertyChangedEventHandler (object sender, PropertyChangedEventArgs e)
+		{
+			var seekTime = sender as Time;
+			if (seekTime == null) {
+				if (e.PropertyName == nameof (TimelineEvent.Start)) {
+					seekTime = LoadedTimelineEvent.Start;
+				} else if (e.PropertyName == nameof (TimelineEvent.Stop)) {
+					seekTime = LoadedTimelineEvent.Stop;
+				}
+			}
+			if (seekTime != null) {
+				loadedSegment.Start = LoadedTimelineEvent.Start;
+				loadedSegment.Stop = LoadedTimelineEvent.Stop;
+				UpdateDuration ();
+				AbsoluteSeek (seekTime, true, false, true);
+			}
+		}
+
 		#endregion
 
 		void ShowMessageInViewPorts (string message, bool show)
@@ -1717,6 +1756,13 @@ namespace VAS.Services
 					viewPort.Message = message;
 					viewPort.MessageVisible = show;
 				}
+			}
+		}
+
+		void UpdatePlayingState (bool playing)
+		{
+			if (LoadedTimelineEvent != null) {
+				LoadedTimelineEvent.Playing = playing;
 			}
 		}
 	}

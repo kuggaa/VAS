@@ -153,10 +153,10 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			base.ResetDrawArea ();
 		}
 
-		public override void ClickPressed (Point p, ButtonModifier modif)
+		public override void ClickPressed (Point p, ButtonModifier modif, Selection selection)
 		{
 			if (!insensitive) {
-				base.ClickPressed (p, modif);
+				base.ClickPressed (p, modif, selection);
 				ReDraw ();
 			}
 		}

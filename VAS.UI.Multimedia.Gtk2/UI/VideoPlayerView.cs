@@ -28,6 +28,7 @@ using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Handlers;
+using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
@@ -60,6 +61,7 @@ namespace VAS.UI
 		List<CameraConfig> cameraConfigsOutOfScreen;
 		Point moveStart;
 		Timerule timerule;
+		EventEditionTimeruleView eventEditionTimerule;
 		VideoPlayerVM playerVM;
 		SliderView volumeWindow;
 		SliderView jumpsWindow;
@@ -86,6 +88,9 @@ namespace VAS.UI
 				AutoUpdate = true,
 				AdjustSizeToDuration = true,
 			};
+
+			editeventtimeruledrawingarea.HeightRequest = DConstants.TIMERULE_PLAYER_HEIGHT;
+			eventEditionTimerule = new EventEditionTimeruleView (new WidgetWrapper (editeventtimeruledrawingarea));
 
 			rateLabel.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 8px"));
 			jumpsLabel.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 8px"));
@@ -178,6 +183,8 @@ namespace VAS.UI
 			blackboard = null;
 			timerule.Dispose ();
 			timerule = null;
+			eventEditionTimerule.Dispose ();
+			eventEditionTimerule = null;
 
 			volumeWindow.Dispose ();
 			volumeWindow = null;
@@ -208,6 +215,7 @@ namespace VAS.UI
 				playerVM = value;
 				if (playerVM != null) {
 					timerule.ViewModel = playerVM;
+					eventEditionTimerule.ViewModel = playerVM;
 					playerVM.PropertyChanged += PlayerVMPropertyChanged;
 					Reset ();
 					playerVM.Sync ();
@@ -329,6 +337,7 @@ namespace VAS.UI
 		{
 			ctx = new BindingContext ();
 			ctx.Add (zoomLevelButton.Bind ((vm) => ((VideoPlayerVM)vm).ShowZoomCommand));
+			ctx.Add (editDurationButton.Bind ((vm) => ((VideoPlayerVM)vm).EditEventDurationCommand, true, false, true));
 		}
 
 		void LoadImage (Image image, FrameDrawing drawing)
@@ -806,7 +815,7 @@ namespace VAS.UI
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.HasNext))) {
 				nextbutton.Sensitive = playerVM.HasNext;
 			}
-			if (ViewModel.NeedsSync (e, nameof (ViewModel.PlayElement))) {
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.LoadedElement))) {
 				HandlePlayElementChanged ();
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Rate))) {
@@ -857,26 +866,32 @@ namespace VAS.UI
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.ShowCenterPlayHeadButton))) {
 				center_playhead_box.Visible = ViewModel.ShowCenterPlayHeadButton;
 			}
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.EditEventDurationModeEnabled))) {
+				editeventtimeruledrawingarea.Visible = ViewModel.EditEventDurationModeEnabled;
+				timerulearea.Visible = !ViewModel.EditEventDurationModeEnabled;
+				editDurationButton.Active = ViewModel.EditEventDurationModeEnabled;
+			}
 		}
 
 		void HandlePlayElementChanged ()
 		{
-			if (playerVM.PlayElement is PlaylistPlayElement) {
+			if (playerVM.LoadedElement is IPlaylistEventElement) {
 				DrawingsVisible = false;
 				SetVisibility (closebutton, true);
 				SetVisibility (eventNameLabel, true);
-				eventNameLabel.Text = (playerVM.PlayElement as PlaylistPlayElement).Play.Name;
-			} else if (playerVM.PlayElement is TimelineEvent) {
-				DrawingsVisible = false;
-				SetVisibility (closebutton, true);
-				SetVisibility (eventNameLabel, true);
-				eventNameLabel.Text = (playerVM.PlayElement as TimelineEvent).Name;
-			} else if (playerVM.PlayElement is PlaylistDrawing) {
-				PlaylistDrawing drawing = (PlaylistDrawing)playerVM.PlayElement;
+				// FIME: IPlaylistElement.Description shouldn't return formated string
+				// or the interface should provide a Name property.
+				eventNameLabel.Text = (playerVM.LoadedElement as TimelineEvent)?.Name ??
+					(playerVM.LoadedElement as PlaylistPlayElement)?.Play?.Name;
+			} else if (playerVM.LoadedElement is PlaylistDrawing) {
+				PlaylistDrawing drawing = (PlaylistDrawing)playerVM.LoadedElement;
 				LoadImage (null, drawing.Drawing);
-			} else if (playerVM.PlayElement is PlaylistImage) {
-				PlaylistImage image = (PlaylistImage)playerVM.PlayElement;
+			} else if (playerVM.LoadedElement is PlaylistImage) {
+				PlaylistImage image = (PlaylistImage)playerVM.LoadedElement;
 				LoadImage (image.Image, null);
+				SetVisibility (closebutton, true);
+				SetVisibility (eventNameLabel, true);
+				eventNameLabel.Text = image.Description;
 			} else {
 				DrawingsVisible = false;
 				SetVisibility (closebutton, false);

@@ -30,6 +30,7 @@ namespace VAS.Core.Hotkeys
 		public const string ZOOM_RESTORE = "ZOOM_RESTORE";
 		public const string ZOOM_DECREASE = "ZOOM_DECREASE";
 		public const string ZOOM_INCREASE = "ZOOM_INCREASE";
+		public const string EDIT_EVENT_DURATION = "EDIT_EVENT_DURATION";
 
 		static PlaybackHotkeys ()
 		{
@@ -123,6 +124,12 @@ namespace VAS.Core.Hotkeys
 					Key = App.Current.Keyboard.ParseName ("<Primary>+plus"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Increase zoom")
+				},
+				new KeyConfig {
+					Name = EDIT_EVENT_DURATION,
+					Key = App.Current.Keyboard.ParseName ("<Primary>+j"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Edit event duration")
 				}
 			};
 		}

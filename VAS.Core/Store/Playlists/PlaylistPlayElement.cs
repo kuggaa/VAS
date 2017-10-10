@@ -26,7 +26,7 @@ using VAS.Core.MVVMC;
 namespace VAS.Core.Store.Playlists
 {
 	[Serializable]
-	public class PlaylistPlayElement : BindableBase, IPlaylistElement
+	public class PlaylistPlayElement : BindableBase, IPlaylistEventElement
 	{
 		public PlaylistPlayElement (TimelineEvent play)
 		{
@@ -60,6 +60,24 @@ namespace VAS.Core.Store.Playlists
 			}
 			set {
 				Play.Playing = value;
+			}
+		}
+
+		public Time Start {
+			get {
+				return Play.Start;
+			}
+			set {
+				Play.Start = value;
+			}
+		}
+
+		public Time Stop {
+			get {
+				return Play.Stop;
+			}
+			set {
+				Play.Stop = value;
 			}
 		}
 
@@ -114,6 +132,12 @@ namespace VAS.Core.Store.Playlists
 		public ObservableCollection<CameraConfig> CamerasConfig {
 			get;
 			set;
+		}
+
+		public RangeObservableCollection<FrameDrawing> Drawings {
+			get {
+				return Play.Drawings;
+			}
 		}
 
 		[JsonIgnore]

@@ -42,6 +42,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			LineColor = App.Current.Style.PaletteBackgroundLight;
 			Height = StyleConf.TimelineCategoryHeight;
 			ClippingMode = NodeClippingMode.Strict;
+			ScrollX = 0;
 		}
 
 		protected override void DisposeManagedResources ()
@@ -164,7 +165,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		/// <value>The start x.</value>
 		public double StartX {
 			get {
-				return Utils.TimeToPos (TimeNode.Start, SecondsPerPixel);
+				return Utils.TimeToPos (TimeNode.Start, SecondsPerPixel) - ScrollX;
 			}
 		}
 
@@ -174,7 +175,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		/// <value>The stop x.</value>
 		public double StopX {
 			get {
-				return Utils.TimeToPos (TimeNode.Stop, SecondsPerPixel);
+				return Utils.TimeToPos (TimeNode.Stop, SecondsPerPixel) - ScrollX;
 			}
 		}
 
@@ -194,6 +195,15 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		/// </summary>
 		/// <value>The clipping mode.</value>
 		public NodeClippingMode ClippingMode {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the scroll applied to the view in the X coordinates.
+		/// </summary>
+		/// <value>The scroll x.</value>
+		public double ScrollX {
 			get;
 			set;
 		}
@@ -245,7 +255,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		/// <param name="start">Start point.</param>
 		public virtual void Move (Selection sel, Point p, Point start)
 		{
-			double diffX;
+			Time newTime;
+			double diffX, posX;
 
 			// Apply dragging restrictions
 			if (DraggingMode == NodeDraggingMode.None)
@@ -262,19 +273,22 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				break;
 			}
 
-			Time newTime = Utils.PosToTime (p, SecondsPerPixel);
+			newTime = Utils.PosToTime (p, SecondsPerPixel);
 			diffX = p.X - start.X;
+			p = p.Copy ();
 
 			if (p.X < 0) {
 				p.X = 0;
 			} else if (newTime > MaxTime) {
 				p.X = Utils.TimeToPos (MaxTime, SecondsPerPixel);
 			}
+			p.X += ScrollX;
 			newTime = Utils.PosToTime (p, SecondsPerPixel);
 
 			switch (sel.Position) {
 			case SelectionPosition.Left:
-				if (ClippingMode == NodeClippingMode.EventTime && !(newTime <= TimeNode.EventTime && TimeNode.EventTime <= TimeNode.Stop)) {
+				if (ClippingMode == NodeClippingMode.EventTime && !(newTime <= TimeNode.EventTime &&
+																	TimeNode.EventTime <= TimeNode.Stop)) {
 					break;
 				}
 				if (newTime.MSeconds + MAX_TIME_SPAN > TimeNode.Stop.MSeconds) {
@@ -284,7 +298,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				}
 				break;
 			case SelectionPosition.Right:
-				if (ClippingMode == NodeClippingMode.EventTime && !(TimeNode.Start <= TimeNode.EventTime && TimeNode.EventTime <= newTime)) {
+				if (ClippingMode == NodeClippingMode.EventTime && !(TimeNode.Start <= TimeNode.EventTime &&
+																	TimeNode.EventTime <= newTime)) {
 					break;
 				}
 				if (newTime.MSeconds - MAX_TIME_SPAN < TimeNode.Start.MSeconds) {
@@ -363,14 +378,16 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 			if (StopX - StartX <= needle.Width / 2) {
 				double c = movingPos == SelectionPosition.Left ? StopX : StartX;
-				tk.DrawSurface (new Point (c - needle.Width / 2, linepos - 9), StyleConf.TimelineNeedleUpWidth, StyleConf.TimelineNeedleUpHeight, needle, ScaleMode.AspectFit);
+				tk.DrawSurface (new Point (c - needle.Width / 2, linepos - 9), StyleConf.TimelineNeedleUpWidth,
+								StyleConf.TimelineNeedleUpHeight, needle, ScaleMode.AspectFit);
 			} else {
 				tk.DrawLine (new Point (StartX, linepos),
 					new Point (StopX, linepos));
-				tk.DrawSurface (new Point (StartX - needle.Width / 2, linepos - 9), StyleConf.TimelineNeedleUpWidth, StyleConf.TimelineNeedleUpHeight, needle, ScaleMode.AspectFit);
-				tk.DrawSurface (new Point (StopX - needle.Width / 2, linepos - 9), StyleConf.TimelineNeedleUpWidth, StyleConf.TimelineNeedleUpHeight, needle, ScaleMode.AspectFit);
+				tk.DrawSurface (new Point (StartX - needle.Width / 2, linepos - 9), StyleConf.TimelineNeedleUpWidth,
+								StyleConf.TimelineNeedleUpHeight, needle, ScaleMode.AspectFit);
+				tk.DrawSurface (new Point (StopX - needle.Width / 2, linepos - 9), StyleConf.TimelineNeedleUpWidth,
+								StyleConf.TimelineNeedleUpHeight, needle, ScaleMode.AspectFit);
 			}
-
 
 			if (ShowName) {
 				tk.FontSize = StyleConf.TimelineFontSize;
@@ -382,31 +399,12 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			tk.End ();
 		}
 
-		/// <summary>
-		/// Gets the maximum time expressed in position.
-		/// </summary>
-		/// <returns>The maximum time expressed in position.</returns>
-		public double GetMaxTimePosition ()
-		{
-			return Utils.TimeToPos (MaxTime, SecondsPerPixel);
-		}
-
-		/// <summary>
-		/// Gets the width position.
-		/// </summary>
-		/// <returns>The width position.</returns>
-		public double GetWidthPosition ()
-		{
-			return StopX - StartX;
-		}
-
 		void HandleTimeNodePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == "Visible") {
+			if (e.PropertyName == nameof (TimeNodeVM.Visible) ||
+				e.PropertyName == nameof (TimeNodeVM.SelectedGrabber)) {
 				ReDraw ();
 			}
 		}
 	}
-
-
 }

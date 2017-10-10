@@ -9,7 +9,7 @@
     <widget-library name="../../../bin/VAS.Drawing.Cairo.dll" />
     <widget-library name="../../../bin/VAS.UI.Multimedia.Gtk2.dll" internal="true" />
   </import>
-  <widget class="Gtk.Bin" id="VAS.UI.VideoPlayerView" design-size="1130 433">
+  <widget class="Gtk.Bin" id="VAS.UI.VideoPlayerView" design-size="924 433">
     <property name="MemberName" />
     <child>
       <widget class="Gtk.EventBox" id="maineventbox">
@@ -24,7 +24,7 @@
                   <widget class="Gtk.HPaned" id="videohpaned">
                     <property name="MemberName" />
                     <property name="CanFocus">True</property>
-                    <property name="Position">883</property>
+                    <property name="Position">719</property>
                     <child>
                       <widget class="Gtk.HBox" id="videobox">
                         <property name="MemberName" />
@@ -123,13 +123,21 @@
                         <property name="MemberName" />
                         <property name="Spacing">6</property>
                         <child>
-                          <widget class="Gtk.DrawingArea" id="timerulearea">
+                          <widget class="Gtk.DrawingArea" id="editeventtimeruledrawingarea">
                             <property name="MemberName" />
                           </widget>
                           <packing>
                             <property name="Position">0</property>
-                            <property name="AutoSize">False</property>
-                            <property name="Expand">False</property>
+                            <property name="AutoSize">True</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="Gtk.DrawingArea" id="timerulearea">
+                            <property name="MemberName" />
+                          </widget>
+                          <packing>
+                            <property name="Position">1</property>
+                            <property name="AutoSize">True</property>
                           </packing>
                         </child>
                         <child>
@@ -676,6 +684,44 @@
                                       </packing>
                                     </child>
                                     <child>
+                                      <widget class="Gtk.HBox" id="editDurationBox">
+                                        <property name="MemberName" />
+                                        <property name="Spacing">6</property>
+                                        <child>
+                                          <widget class="Gtk.ToggleButton" id="editDurationButton">
+                                            <property name="MemberName" />
+                                            <property name="Sensitive">False</property>
+                                            <property name="CanFocus">True</property>
+                                            <property name="Type">Custom</property>
+                                            <property name="Relief">None</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="Position">0</property>
+                                            <property name="AutoSize">True</property>
+                                            <property name="Expand">False</property>
+                                            <property name="Fill">False</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="Gtk.VSeparator" id="viewportsSeparator1">
+                                            <property name="MemberName" />
+                                          </widget>
+                                          <packing>
+                                            <property name="Position">1</property>
+                                            <property name="AutoSize">True</property>
+                                            <property name="Expand">False</property>
+                                            <property name="Fill">False</property>
+                                          </packing>
+                                        </child>
+                                      </widget>
+                                      <packing>
+                                        <property name="Position">4</property>
+                                        <property name="AutoSize">True</property>
+                                        <property name="Expand">False</property>
+                                        <property name="Fill">False</property>
+                                      </packing>
+                                    </child>
+                                    <child>
                                       <widget class="Gtk.HBox" id="viewportsBox">
                                         <property name="MemberName" />
                                         <property name="Spacing">6</property>
@@ -710,7 +756,7 @@
                                         </child>
                                       </widget>
                                       <packing>
-                                        <property name="Position">4</property>
+                                        <property name="Position">5</property>
                                         <property name="AutoSize">True</property>
                                         <property name="Expand">False</property>
                                         <property name="Fill">False</property>
@@ -752,7 +798,7 @@
                                         </child>
                                       </widget>
                                       <packing>
-                                        <property name="Position">5</property>
+                                        <property name="Position">6</property>
                                         <property name="AutoSize">True</property>
                                         <property name="Expand">False</property>
                                         <property name="Fill">False</property>
@@ -772,7 +818,7 @@
                                       </widget>
                                       <packing>
                                         <property name="PackType">End</property>
-                                        <property name="Position">6</property>
+                                        <property name="Position">7</property>
                                         <property name="AutoSize">True</property>
                                         <property name="Expand">False</property>
                                         <property name="Fill">False</property>
@@ -792,7 +838,7 @@
                                       </widget>
                                       <packing>
                                         <property name="PackType">End</property>
-                                        <property name="Position">7</property>
+                                        <property name="Position">8</property>
                                         <property name="AutoSize">True</property>
                                         <property name="Expand">False</property>
                                         <property name="Fill">False</property>
@@ -811,7 +857,7 @@
                             </child>
                           </widget>
                           <packing>
-                            <property name="Position">1</property>
+                            <property name="Position">2</property>
                             <property name="AutoSize">False</property>
                             <property name="Expand">False</property>
                             <property name="Fill">False</property>
