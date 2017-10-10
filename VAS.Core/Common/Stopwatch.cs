@@ -26,6 +26,11 @@ namespace VAS.Core.Common
 	/// </summary>
 	public class Stopwatch : IStopwatch
 	{
+        /// <summary>
+        /// The frequency of the timer as the number of ticks per second
+        /// </summary>
+        public static readonly long Frequency = SystemStopwatch.Frequency;
+
 		SystemStopwatch stopwatch;
 
 		public Stopwatch ()
@@ -50,6 +55,16 @@ namespace VAS.Core.Common
 		public long ElapsedTicks {
 			get {
 				return stopwatch.ElapsedTicks;
+			}
+		}
+
+		/// <summary>
+		/// Gets the elapsed seconds.
+		/// </summary>
+		/// <value>The elapsed seconds.</value>
+		public double ElapsedSeconds {
+			get {
+				return (double)stopwatch.ElapsedTicks / Frequency;
 			}
 		}
 

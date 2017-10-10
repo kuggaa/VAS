@@ -117,6 +117,16 @@ namespace VAS.Tests
 
 	public class DummyUserStatisticsService : UserStatisticsService
 	{
+		public override void RetrieveUserData ()
+		{
+		}
+
+		public new Dictionary<string, string> UserProperties
+		{
+			get {
+				return base.UserProperties;
+			}
+		}
 	}
 
 	public class DummyAnalysisVM : IAnalysisViewModel
@@ -357,6 +367,73 @@ namespace VAS.Tests
 			}
 		}
 	}
+
+    /// <summary>
+    /// Dummy stopwatch.
+    /// </summary>
+    public class DummyStopwatch : IStopwatch
+    {
+        /// <summary>
+        /// Gets or sets the elapsed milliseconds.
+        /// </summary>
+        /// <value>The elapsed milliseconds.</value>
+        public long ElapsedMilliseconds {
+            get {
+                return ElapsedTicks / 10000;
+            }
+            set {
+                ElapsedTicks = value * 10000;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the elapsed ticks.
+        /// </summary>
+        /// <value>The elapsed ticks.</value>
+        public long ElapsedTicks {
+            get;
+            set;
+        }
+
+        public double ElapsedSeconds {
+            get {
+                return (double)ElapsedTicks / Stopwatch.Frequency;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="T:Tests.DummyStopwatch"/> is running.
+        /// </summary>
+        /// <value><c>true</c> if is running; otherwise, <c>false</c>.</value>
+        public bool IsRunning {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Reset this instance.
+        /// </summary>
+        public void Reset ()
+        {
+            ElapsedTicks = 0;
+        }
+
+        /// <summary>
+        /// Start this instance.
+        /// </summary>
+        public void Start ()
+        {
+            IsRunning = true;
+        }
+
+        /// <summary>
+        /// Stop this instance.
+        /// </summary>
+        public void Stop ()
+        {
+            IsRunning = false;
+        }
+    }
 
 	public static class Utils
 	{
