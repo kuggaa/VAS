@@ -73,19 +73,19 @@ namespace VAS.Core.ViewModel
 			};
 
 			ToggleActionLinks = new LimitationCommand<bool> (VASFeature.LinkingButtons.ToString (), (p) => ShowLinks = p) {
-				Icon = App.Current.ResourcesLocator.LoadIcon ("vas-link-active", App.Current.Style.ButtonNormalWidth),
-				IconInactive = App.Current.ResourcesLocator.LoadIcon ("vas-link-disabled", App.Current.Style.ButtonNormalWidth),
+				Icon = App.Current.ResourcesLocator.LoadIcon ("vas-link-active", App.Current.Style.IconSmallWidth),
+				IconInactive = App.Current.ResourcesLocator.LoadIcon ("vas-link-disabled", App.Current.Style.IconSmallWidth),
 				ToolTipText = Catalog.GetString ("Edit action links"),
 			};
 
 			ChangeDashboardMode = new Command<DashboardMode> ((p) => Mode = p) {
-				Icon = App.Current.ResourcesLocator.LoadIcon ("vas-dash-edit-active", App.Current.Style.ButtonNormalWidth),
-				IconInactive = App.Current.ResourcesLocator.LoadIcon ("vas-dash-edit", App.Current.Style.ButtonNormalWidth),
+				Icon = App.Current.ResourcesLocator.LoadIcon ("vas-dash-edit-active", App.Current.Style.IconSmallWidth),
+				IconInactive = App.Current.ResourcesLocator.LoadIcon ("vas-dash-edit", App.Current.Style.IconSmallWidth),
 				ToolTipText = Catalog.GetString ("Edit dashboard"),
 			};
 
 			TogglePopupWindow = new Command<bool> ((p) => DisablePopupWindow = !p) {
-				Icon = App.Current.ResourcesLocator.LoadIcon ("vas-popup", App.Current.Style.ButtonNormalWidth),
+				Icon = App.Current.ResourcesLocator.LoadIcon ("vas-popup", App.Current.Style.IconSmallWidth),
 				ToolTipText = Catalog.GetString ("Disable popup window"),
 			};
 
