@@ -91,6 +91,25 @@ namespace VAS.Core.Filters
 			private set;
 		}
 
+		/// <summary>
+		/// Flattens the element tree for this CompositePredicate, and returns them as a single list.
+		/// It returns elements in preorder.
+		/// </summary>
+		/// <value>The flattened elements.</value>
+		public IEnumerable<IPredicate<T>> FlatElements {
+			get {
+				foreach (var element in Elements) {
+					yield return element;
+					var composite = element as CompositePredicate<T>;
+					if (composite != null) {
+						foreach (var subelement in composite.FlatElements) {
+							yield return subelement;
+						}
+					}
+				}
+			}
+		}
+
 		#region IPredicate implementation
 
 		public Expression<Func<T, bool>> Expression {

@@ -115,5 +115,25 @@ namespace VAS.Tests.Core.ViewModel
 
 			Assert.IsEmpty (dashboard.Selection);
 		}
+
+		[Test]
+		public void AddTagToEventType_PropertyChangedEmitted ()
+		{
+			// Arrange
+			bool propertyChanged = false;
+			string propertyName = "";
+			dashboard.PropertyChanged += (sender, e) => {
+				propertyChanged = true;
+				propertyName = e.PropertyName;
+			};
+			EventType eventType = dashboard.ViewModels.OfType<AnalysisEventButtonVM> ().First ().EventType.Model;
+
+			// Act
+			((AnalysisEventType)eventType).Tags.Add (new Tag ("tag", "group"));
+
+			// Assert
+			Assert.IsTrue (propertyChanged);
+			Assert.AreEqual ("Collection_Tags", propertyName);
+		}
 	}
 }
