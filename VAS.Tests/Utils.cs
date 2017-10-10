@@ -519,6 +519,33 @@ namespace VAS.Tests
 			}
 		}
 
+		public class DummyEventsFilterController : EventsFilterController
+		{
+			protected override void InitializePredicates ()
+			{
+				ViewModel.Filters.Clear ();
+				ViewModel.EventsPredicate.Clear ();
+				UpdateTeamsPredicates ();
+				UpdatePeriodsPredicates ();
+				UpdateTimersPredicates ();
+				UpdateCommonTagsPredicates ();
+				UpdateEventTypesPredicates ();
+
+				ViewModel.EventsPredicate.Add (ViewModel.PeriodsPredicate);
+				ViewModel.EventsPredicate.Add (ViewModel.TimersPredicate);
+				ViewModel.EventsPredicate.Add (ViewModel.CommonTagsPredicate);
+				ViewModel.EventsPredicate.Add (ViewModel.EventTypesPredicate);
+				ViewModel.Filters.Add (ViewModel.EventsPredicate);
+				ViewModel.Filters.Add (ViewModel.TeamsPredicate);
+			}
+
+			protected override void UpdateTeamsPredicates ()
+			{
+				// do nothing
+			}
+		}
+
+
 		//dummy class for abstract validation. Copied from LongoMatch and adapted to VAS.
 		public class ProjectDummy : Project
 		{
