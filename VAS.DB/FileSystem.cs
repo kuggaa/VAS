@@ -24,7 +24,7 @@ using System.IO;
 
 namespace VAS.DB
 {
-	class FileSystem : IVirtualFileSystem
+	public class FileSystem : IVirtualFileSystem
 	{
 		class ElementInfo : IVfsElement
 		{
