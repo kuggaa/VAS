@@ -121,6 +121,8 @@
 		<Compile Include="gtk-gui\VAS.UI.Panel.UpgradeLimitationPanel.cs" />
 		<Compile Include="UI\Bindings\DatePickerBinding.cs" />
 		<Compile Include="UI\Bindings\BindingsExtensions.cs" />
+		<Compile Include="UI\Component\ImagePreviewWidget.cs" />
+		<Compile Include="gtk-gui\VAS.UI.UI.Component.ImagePreviewWidget.cs" />
 	</ItemGroup>
 	<Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 	<ItemGroup>
