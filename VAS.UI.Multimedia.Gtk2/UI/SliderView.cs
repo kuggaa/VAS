@@ -19,13 +19,14 @@ using System;
 using Gtk;
 using Pango;
 using VAS.Core.Common;
+using VAS.Core.Interfaces.GUI;
 using VAS.UI.Helpers;
 using Handlers = VAS.Core.Handlers;
 using Misc = VAS.UI.Helpers.Misc;
 
 namespace VAS.UI
 {
-	public partial class SliderView : Window
+	public partial class SliderView : Window, ISliderView
 	{
 		public event Handlers.ValueChangedHandler ValueChanged;
 		double buttonIncrement;

@@ -263,6 +263,10 @@ namespace VAS.Core.Common
 		public const string PlayerControlTrimRightActive = "vas-control-trim-right-active";
 		public const string PlayerControlTrimRightInactive = "vas-control-trim-right-inactive";
 		public const string PlayerControlTrim = "vas-control-trim";
+		public static int PlayerCloseIconSize = 15;
+		public static int PlayerRateIconSize = 15;
+		public static int PlayerJumpsIconSize = 15;
+		public static int ViewPortsSwitchIconSize = 22;
 
 
 		// Misc icons
