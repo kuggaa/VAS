@@ -18,6 +18,7 @@
 using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
+using System.Reflection;
 using Gtk;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.MVVMC;
@@ -251,5 +252,16 @@ namespace VAS.UI.Helpers.Bindings
 		{
 			return new HScaleCommandBinding (hscale, commandFunc, defaultValue, min, max, step, page);
 		}
+
+		//public static PropertyBinding<TSource> BindProperty<TSource> (this TSource source,
+		//															  Expression<Func<TSource, object>> getterProperty,
+		//															  Expression<Func<IViewModel, object>> setterProperty)
+		//{
+		//	return new ObjectPropertyBinding<TSource> (source, getterProperty, setterProperty);
+		//}
 	}
+
+
+
+
 }

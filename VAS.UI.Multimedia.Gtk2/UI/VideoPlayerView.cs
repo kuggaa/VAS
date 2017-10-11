@@ -26,7 +26,6 @@ using Gtk;
 using Pango;
 using VAS.Core;
 using VAS.Core.Common;
-using VAS.Core.Events;
 using VAS.Core.Handlers;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
@@ -99,45 +98,17 @@ namespace VAS.UI
 			totalTimeLabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.Text_DarkColor));
 			eventNameLabel.Ellipsize = EllipsizeMode.End;
 
-			closebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-cancel-rec",
-				StyleConf.PlayerCapturerIconSize);
-			drawbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-draw",
-				StyleConf.PlayerCapturerIconSize);
-			playbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-play",
-				StyleConf.PlayerCapturerIconSize);
-			pausebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-pause",
-				StyleConf.PlayerCapturerIconSize);
-			prevbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-rw",
-				StyleConf.PlayerCapturerIconSize);
-			nextbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-ff",
-				StyleConf.PlayerCapturerIconSize);
-			volumebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-volume-hi",
-				StyleConf.PlayerCapturerIconSize);
-			detachbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-detach",
-				StyleConf.PlayerCapturerIconSize);
-			viewportsSwitchImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-multicam",
-				22);
+
+
 			centerplayheadbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-dash-center-view",
 				StyleConf.PlayerCapturerIconSize);
-			DurationButtonImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-duration",
-													   15);
-			jumpsButtonImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-jumps",
-			15);
-			rateLevelButtonImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-speed",
-			15);
+			DurationButtonImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-duration", 15);
+
+
 
 			// Force tooltips to be translatable as there seems to be a bug in stetic 
 			// code generation for translatable tooltips.
-			rateLevelButton.TooltipMarkup = Catalog.GetString ("Playback speed");
-			closebutton.TooltipMarkup = Catalog.GetString ("Close loaded event");
-			drawbutton.TooltipMarkup = Catalog.GetString ("Draw frame");
-			playbutton.TooltipMarkup = Catalog.GetString ("Play");
-			pausebutton.TooltipMarkup = Catalog.GetString ("Pause");
-			prevbutton.TooltipMarkup = Catalog.GetString ("Previous");
-			nextbutton.TooltipMarkup = Catalog.GetString ("Next");
-			jumpsButton.TooltipMarkup = Catalog.GetString ("Jump in seconds. Hold the Shift key with the direction keys to activate it.");
-			volumebutton.TooltipMarkup = Catalog.GetString ("Volume");
-			detachbutton.TooltipMarkup = Catalog.GetString ("Detach window");
+
 			centerplayheadbutton.TooltipMarkup = Catalog.GetString ("Center Playhead");
 
 			volumeWindow = new SliderView (0, 101, 1, 1);
@@ -293,20 +264,11 @@ namespace VAS.UI
 			jumpsWindow.ValueChanged += HandleStepsChanged;
 			zoomWindow.ValueChanged += HandleZoomChanged;
 			rateWindow.ValueChanged += HandleRateChanged;
-			closebutton.Clicked += HandleClosebuttonClicked;
-			prevbutton.Clicked += HandlePrevbuttonClicked;
-			nextbutton.Clicked += HandleNextbuttonClicked;
-			playbutton.Clicked += HandlePlaybuttonClicked;
-			pausebutton.Clicked += HandlePausebuttonClicked;
-			drawbutton.Clicked += HandleDrawButtonClicked;
-			volumebutton.Clicked += HandleVolumebuttonClicked;
-			rateLevelButton.Clicked += HandleRateButtonClicked;
-			jumpsButton.Clicked += HandleJumpsButtonClicked;
-			viewportsSwitchButton.Toggled += HandleViewPortsToggled;
+
+
 			centerplayheadbutton.Clicked += HandleCenterPlayheadClicked;
 			timerule.CenterPlayheadClicked += HandleCenterPlayheadClicked;
-			detachbutton.Clicked += (sender, e) =>
-				App.Current.EventsBroker.Publish (new DetachEvent ());
+
 			mainviewport.VideoDragStarted += OnMainViewportVideoDragStartedEvent;
 			mainviewport.VideoDragStopped += OnMainViewportVideoDragStoppedEvent;
 		}
@@ -317,18 +279,10 @@ namespace VAS.UI
 			jumpsWindow.ValueChanged -= HandleStepsChanged;
 			zoomWindow.ValueChanged -= HandleZoomChanged;
 			rateWindow.ValueChanged -= HandleRateChanged;
-			closebutton.Clicked -= HandleClosebuttonClicked;
-			prevbutton.Clicked -= HandlePrevbuttonClicked;
-			nextbutton.Clicked -= HandleNextbuttonClicked;
-			playbutton.Clicked -= HandlePlaybuttonClicked;
-			pausebutton.Clicked -= HandlePausebuttonClicked;
-			drawbutton.Clicked -= HandleDrawButtonClicked;
-			volumebutton.Clicked -= HandleVolumebuttonClicked;
-			rateLevelButton.Clicked -= HandleRateButtonClicked;
-			jumpsButton.Clicked -= HandleJumpsButtonClicked;
-			viewportsSwitchButton.Toggled -= HandleViewPortsToggled;
+
 			centerplayheadbutton.Clicked -= HandleCenterPlayheadClicked;
 			timerule.CenterPlayheadClicked -= HandleCenterPlayheadClicked;
+
 			mainviewport.VideoDragStarted -= OnMainViewportVideoDragStartedEvent;
 			mainviewport.VideoDragStopped -= OnMainViewportVideoDragStoppedEvent;
 		}
@@ -337,7 +291,22 @@ namespace VAS.UI
 		{
 			ctx = new BindingContext ();
 			ctx.Add (zoomLevelButton.Bind ((vm) => ((VideoPlayerVM)vm).ShowZoomCommand));
+<<<<<<< HEAD
 			ctx.Add (editDurationButton.Bind ((vm) => ((VideoPlayerVM)vm).EditEventDurationCommand, true, false, true));
+=======
+
+			ctx.Add (closebutton.Bind ((vm) => ((VideoPlayerVM)vm).CloseCommand));
+			ctx.Add (prevbutton.Bind ((vm) => ((VideoPlayerVM)vm).PreviousCommand));
+			ctx.Add (nextbutton.Bind ((vm) => ((VideoPlayerVM)vm).NextCommand));
+			ctx.Add (playbutton.Bind ((vm) => ((VideoPlayerVM)vm).PlayCommand));
+			ctx.Add (pausebutton.Bind ((vm) => ((VideoPlayerVM)vm).PauseCommand));
+			ctx.Add (drawbutton.Bind ((vm) => ((VideoPlayerVM)vm).DrawCommand));
+			ctx.Add (volumebutton.Bind ((vm) => ((VideoPlayerVM)vm).VolumeCommand, volumeWindow));
+			ctx.Add (rateLevelButton.Bind ((vm) => ((VideoPlayerVM)vm).RateCommand, rateWindow));
+			ctx.Add (jumpsButton.Bind ((vm) => ((VideoPlayerVM)vm).JumpsCommand, jumpsWindow));
+			ctx.Add (detachbutton.Bind ((vm) => ((VideoPlayerVM)vm).DetachCommand));
+			ctx.Add (viewportsSwitchButton.Bind ((vm) => ((VideoPlayerVM)vm).ViewPortsSwitchToggleCommand));
+>>>>>>> Refactor to achieve MVVM Pattern on VideoPlayer, Click Events to Commands
 		}
 
 		void LoadImage (Image image, FrameDrawing drawing)
@@ -526,15 +495,6 @@ namespace VAS.UI
 			lightbackgroundeventbox.QueueDraw ();
 		}
 
-		void HandlePlaybuttonClicked (object sender, System.EventArgs e)
-		{
-			playerVM.Play ();
-		}
-
-		void HandleVolumebuttonClicked (object sender, System.EventArgs e)
-		{
-			volumeWindow.Show ();
-		}
 
 		void HandleVolumeChanged (double level)
 		{
@@ -561,31 +521,6 @@ namespace VAS.UI
 		void HandleStepsChanged (double val)
 		{
 			playerVM.SetStep (new Time { TotalSeconds = App.Current.StepList [(int)val] });
-		}
-
-		void HandlePausebuttonClicked (object sender, EventArgs e)
-		{
-			playerVM.Pause ();
-		}
-
-		void HandleClosebuttonClicked (object sender, EventArgs e)
-		{
-			playerVM.LoadEvent (null, playerVM.Playing);
-		}
-
-		void HandlePrevbuttonClicked (object sender, EventArgs e)
-		{
-			playerVM.Previous ();
-		}
-
-		void HandleNextbuttonClicked (object sender, EventArgs e)
-		{
-			playerVM.Next ();
-		}
-
-		void HandleRateButtonClicked (object sender, System.EventArgs e)
-		{
-			rateWindow.Show ();
 		}
 
 		void HandleRateChanged (double val)
@@ -755,16 +690,6 @@ namespace VAS.UI
 			}
 		}
 
-		void HandleDrawButtonClicked (object sender, EventArgs e)
-		{
-			playerVM.DrawFrame ();
-		}
-
-		void HandleJumpsButtonClicked (object sender, System.EventArgs e)
-		{
-			jumpsWindow.Show ();
-		}
-
 		void HandleReady (object sender, EventArgs e)
 		{
 			playerVM.ViewPorts = new List<IViewPort> { mainviewport, subviewport1.Viewport, subviewport2.Viewport, subviewport3.Viewport };
@@ -780,11 +705,6 @@ namespace VAS.UI
 		void HandleViewPortsToggled (object sender, EventArgs e)
 		{
 			subviewportsbox.Visible = viewportsSwitchButton.Active;
-		}
-
-		void HandleZoomClicked (object sender, EventArgs e)
-		{
-			zoomWindow.Show ();
 		}
 
 		void HandleZoomChanged (double level)
@@ -867,10 +787,16 @@ namespace VAS.UI
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.ShowCenterPlayHeadButton))) {
 				center_playhead_box.Visible = ViewModel.ShowCenterPlayHeadButton;
 			}
+<<<<<<< HEAD
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.EditEventDurationModeEnabled))) {
 				editeventtimeruledrawingarea.Visible = ViewModel.EditEventDurationModeEnabled;
 				timerulearea.Visible = !ViewModel.EditEventDurationModeEnabled;
 				editDurationButton.Active = ViewModel.EditEventDurationModeEnabled;
+=======
+			//FIXME  We need Property binding like -> ctx.Add (control.Bind (c => c.Prop, vm => vm.Prop));
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.ViewPortsSwitchActive))) {
+				subviewportsbox.Visible = ViewModel.ViewPortsSwitchActive;
+>>>>>>> Refactor to achieve MVVM Pattern on VideoPlayer, Click Events to Commands
 			}
 		}
 

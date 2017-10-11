@@ -63,6 +63,7 @@ namespace VAS.Core.ViewModel
 				Executable = false,
 			};
 
+			InitializeCommands ();
 			Duration = new Time (0);
 			CurrentTime = new Time (0);
 			EditEventDurationTimeNode = new TimeNodeVM ();
@@ -74,6 +75,18 @@ namespace VAS.Core.ViewModel
 			Player.Dispose ();
 			Player = null;
 		}
+
+		public Command CloseCommand { get; set; }
+		public Command PreviousCommand { get; set; }
+		public Command NextCommand { get; set; }
+		public Command PlayCommand { get; set; }
+		public Command PauseCommand { get; set; }
+		public Command DrawCommand { get; set; }
+		public Command VolumeCommand { get; set; }
+		public Command RateCommand { get; set; }
+		public Command JumpsCommand { get; set; }
+		public Command DetachCommand { get; set; }
+		public Command ViewPortsSwitchToggleCommand { get; set; }
 
 		/// <summary>
 		/// Gets or sets the show zoom Limitation command.
@@ -100,6 +113,11 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		/// <value>The edit event duration command.</value>
 		public Command EditEventDurationCommand { get; set; }
+
+		public bool ViewPortsSwitchActive {
+			get;
+			set;
+		} = true;
 
 		public bool ControlsSensitive {
 			get;
@@ -306,6 +324,7 @@ namespace VAS.Core.ViewModel
 			set;
 		} = false;
 
+
 		/// <summary>
 		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.VideoPlayerVM"/> is
 		/// in editing the loaded event duration.
@@ -328,6 +347,8 @@ namespace VAS.Core.ViewModel
 		}
 
 		#region methods
+
+		#region Public Methods
 
 		public void Expose ()
 		{
@@ -506,7 +527,159 @@ namespace VAS.Core.ViewModel
 		{
 			Player.SetStep (step);
 		}
+
 		#endregion
+
+		#region private Methods
+
+		private void InitializeCommands ()
+		{
+			ShowZoomCommand = new LimitationCommand (VASFeature.Zoom.ToString (), () => { ShowZoom = true; });
+			ShowZoomCommand.Icon = VideoPlayerResourceManager.LoadIcon (VideoPlayerResourceManager.Constants.Icons.ZOOM);
+			ShowZoomCommand.ToolTipText = VideoPlayerResourceManager.LoadToolTip (VideoPlayerResourceManager.Constants.Tooltips.ZOOM);
+
+			SetZoomCommand = new LimitationCommand<float> (VASFeature.Zoom.ToString (), SetZoom);
+
+			//TODO: ChangeVolumeCommand 
+
+			CloseCommand = new Command (() => {
+				LoadEvent (null, Playing);
+			});
+			CloseCommand.Icon = VideoPlayerResourceManager.LoadIcon (VideoPlayerResourceManager.Constants.Icons.CLOSE);
+			CloseCommand.ToolTipText = VideoPlayerResourceManager.LoadToolTip (VideoPlayerResourceManager.Constants.Tooltips.CLOSE);
+
+			PreviousCommand = new Command (() => {
+				Previous ();
+			});
+			PreviousCommand.Icon = VideoPlayerResourceManager.LoadIcon (VideoPlayerResourceManager.Constants.Icons.PREVIOUS);
+			PreviousCommand.ToolTipText = VideoPlayerResourceManager.LoadToolTip (VideoPlayerResourceManager.Constants.Tooltips.PREVIOUS);
+
+			NextCommand = new Command (() => {
+				Next ();
+			});
+			NextCommand.Icon = VideoPlayerResourceManager.LoadIcon (VideoPlayerResourceManager.Constants.Icons.NEXT);
+			NextCommand.ToolTipText = VideoPlayerResourceManager.LoadToolTip (VideoPlayerResourceManager.Constants.Tooltips.NEXT);
+
+			PlayCommand = new Command (() => {
+				Play ();
+			});
+
+			PlayCommand.Icon = VideoPlayerResourceManager.LoadIcon (VideoPlayerResourceManager.Constants.Icons.PLAY);
+			PlayCommand.ToolTipText = VideoPlayerResourceManager.LoadToolTip (VideoPlayerResourceManager.Constants.Tooltips.PLAY);
+
+			PauseCommand = new Command (() => {
+				Pause ();
+			});
+			PauseCommand.Icon = VideoPlayerResourceManager.LoadIcon (VideoPlayerResourceManager.Constants.Icons.PAUSE);
+			PauseCommand.ToolTipText = VideoPlayerResourceManager.LoadToolTip (VideoPlayerResourceManager.Constants.Tooltips.PAUSE);
+
+			DrawCommand = new Command (() => {
+				DrawFrame ();
+			});
+			DrawCommand.Icon = VideoPlayerResourceManager.LoadIcon (VideoPlayerResourceManager.Constants.Icons.DRAW);
+			DrawCommand.ToolTipText = VideoPlayerResourceManager.LoadToolTip (VideoPlayerResourceManager.Constants.Tooltips.DRAW);
+
+			VolumeCommand = new Command<ISliderView> (Show);
+			VolumeCommand.Icon = VideoPlayerResourceManager.LoadIcon (VideoPlayerResourceManager.Constants.Icons.VOLUME);
+			VolumeCommand.ToolTipText = VideoPlayerResourceManager.LoadToolTip (VideoPlayerResourceManager.Constants.Tooltips.VOLUME);
+
+			RateCommand = new Command<ISliderView> (Show);
+			RateCommand.Icon = VideoPlayerResourceManager.LoadIcon (VideoPlayerResourceManager.Constants.Icons.RATE);
+			RateCommand.ToolTipText = VideoPlayerResourceManager.LoadToolTip (VideoPlayerResourceManager.Constants.Tooltips.RATE);
+
+			JumpsCommand = new Command<ISliderView> (Show);
+			JumpsCommand.Icon = VideoPlayerResourceManager.LoadIcon (VideoPlayerResourceManager.Constants.Icons.JUMPS);
+			JumpsCommand.ToolTipText = VideoPlayerResourceManager.LoadToolTip (VideoPlayerResourceManager.Constants.Tooltips.JUMPS);
+
+			DetachCommand = new Command (() => {
+				App.Current.EventsBroker.Publish (new DetachEvent ());
+			});
+			DetachCommand.Icon = VideoPlayerResourceManager.LoadIcon (VideoPlayerResourceManager.Constants.Icons.DETACH);
+			DetachCommand.ToolTipText = VideoPlayerResourceManager.LoadToolTip (VideoPlayerResourceManager.Constants.Tooltips.DETACH);
+
+			ViewPortsSwitchToggleCommand = new Command (() => {
+				ViewPortsSwitchActive = !ViewPortsSwitchActive;
+			});
+			ViewPortsSwitchToggleCommand.Icon = VideoPlayerResourceManager.LoadIcon (VideoPlayerResourceManager.Constants.Icons.VIEWPORTSSWITCH);
+
+			//centerplayheadbutton.Clicked += HandleCenterPlayheadClicked;
+			//timerule.CenterPlayheadClicked += HandleCenterPlayheadClicked;
+		}
+
+		private void Show (ISliderView sliderview)
+		{
+			sliderview.Show ();
+		}
+
+		#endregion
+
+		#endregion
+	}
+
+	public static class VideoPlayerResourceManager
+	{
+		static Dictionary<string, Image> _iconDictionary = new Dictionary<string, Image> () {
+			{Constants.Icons.ZOOM, App.Current.ResourcesLocator.LoadIcon (Constants.Icons.ZOOM, StyleConf.PlayerCloseIconSize)},
+			{Constants.Icons.CLOSE, App.Current.ResourcesLocator.LoadIcon (Constants.Icons.CLOSE, StyleConf.PlayerCapturerIconSize)},
+			{Constants.Icons.PREVIOUS, App.Current.ResourcesLocator.LoadIcon (Constants.Icons.PREVIOUS, StyleConf.PlayerCapturerIconSize)},
+			{Constants.Icons.NEXT, App.Current.ResourcesLocator.LoadIcon (Constants.Icons.NEXT, StyleConf.PlayerCapturerIconSize)},
+			{Constants.Icons.PLAY, App.Current.ResourcesLocator.LoadIcon (Constants.Icons.PLAY, StyleConf.PlayerCapturerIconSize)},
+			{Constants.Icons.PAUSE, App.Current.ResourcesLocator.LoadIcon (Constants.Icons.PAUSE, StyleConf.PlayerCapturerIconSize)},
+			{Constants.Icons.DRAW, App.Current.ResourcesLocator.LoadIcon (Constants.Icons.DRAW, StyleConf.PlayerCapturerIconSize)},
+			{Constants.Icons.VOLUME, App.Current.ResourcesLocator.LoadIcon (Constants.Icons.VOLUME, StyleConf.PlayerCapturerIconSize)},
+			{Constants.Icons.RATE, App.Current.ResourcesLocator.LoadIcon (Constants.Icons.RATE, StyleConf.PlayerRateIconSize)},
+			{Constants.Icons.JUMPS, App.Current.ResourcesLocator.LoadIcon (Constants.Icons.JUMPS, StyleConf.PlayerJumpsIconSize)},
+			{Constants.Icons.DETACH, App.Current.ResourcesLocator.LoadIcon (Constants.Icons.DETACH, StyleConf.PlayerCapturerIconSize)},
+			{Constants.Icons.VIEWPORTSSWITCH, App.Current.ResourcesLocator.LoadIcon (Constants.Icons.VIEWPORTSSWITCH, StyleConf.ViewPortsSwitchIconSize)},
+
+		};
+
+		public static Image LoadIcon (string iconConstant)
+		{
+			return (_iconDictionary.ContainsKey (iconConstant)) ?
+				_iconDictionary [iconConstant]
+					: null;
+		}
+
+		public static string LoadToolTip (string tooltipConstant)
+		{
+			return Catalog.GetString (tooltipConstant);
+		}
+
+		public struct Constants
+		{
+			public struct Icons
+			{
+				public const string ZOOM = "vas-zoom";
+				public const string CLOSE = "vas-cancel-rec";
+				public const string PREVIOUS = "vas-control-rw";
+				public const string NEXT = "vas-control-ff";
+				public const string PLAY = "vas-control-play";
+				public const string PAUSE = "vas-control-pause";
+				public const string DRAW = "vas-control-draw";
+				public const string VOLUME = "vas-control-volume-hi";
+				public const string RATE = "vas-speed";
+				public const string JUMPS = "vas-jumps";
+				public const string DETACH = "vas-control-detach";
+				public const string VIEWPORTSSWITCH = "vas-multicam";
+
+			}
+
+			public struct Tooltips
+			{
+				public const string ZOOM = "Zoom";
+				public const string CLOSE = "Close loaded event";
+				public const string PREVIOUS = "Previous";
+				public const string NEXT = "Next";
+				public const string PLAY = "Play";
+				public const string PAUSE = "Pause";
+				public const string DRAW = "Draw Frame";
+				public const string VOLUME = "Volume";
+				public const string RATE = "Playback speed";
+				public const string JUMPS = "Jump in seconds. Hold the Shift key with the direction keys to activate it.";
+				public const string DETACH = "Detach window";
+			}
+		}
 	}
 }
 
