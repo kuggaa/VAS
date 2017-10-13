@@ -118,7 +118,7 @@ namespace VAS.UI
 
 		protected virtual void OnBacktolivebuttonClicked (object sender, System.EventArgs e)
 		{
-			playerVM.Pause ();
+			playerVM.PauseCommand.Execute (false);
 			ShowCapturer ();
 		}
 
@@ -150,7 +150,7 @@ namespace VAS.UI
 						return;
 					}
 					livebox.Visible = replayhbox.Visible = false;
-					playerVM.Pause ();
+					playerVM.PauseCommand.Execute (false);
 					ShowCapturer ();
 				} else {
 					if (playerVM.LoadedElement is TimelineEvent && playerVM.ViewMode == PlayerViewOperationMode.LiveAnalysisReview) {
