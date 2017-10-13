@@ -128,8 +128,7 @@ namespace VAS.Services.Controller
 		{
 			bool limitation = false;
 			var eventLimitation = VASCountLimitedObjects.TimelineEvents.ToString ();
-			if (!App.Current.LicenseLimitationsService.CanExecute (eventLimitation))
-			{
+			if (!App.Current.LicenseLimitationsService.CanExecute (eventLimitation)) {
 				App.Current.LicenseLimitationsService.MoveToUpgradeDialog (eventLimitation);
 				limitation = true;
 			}
@@ -168,7 +167,7 @@ namespace VAS.Services.Controller
 
 		async Task HandleNewDashboardEvent (NewDashboardEvent e)
 		{
-			if (CheckTimelineEventsLimitation()) {
+			if (CheckTimelineEventsLimitation ()) {
 				return;
 			}
 			if (Project == null)
@@ -185,15 +184,18 @@ namespace VAS.Services.Controller
 				e.TimelineEvent.AddDefaultPositions ();
 
 				PlayEventEditionSettings settings = new PlayEventEditionSettings () {
-					EditTags = true, EditNotes = true, EditPlayers = true, EditPositions = true
+					EditTags = true,
+					EditNotes = true,
+					EditPlayers = true,
+					EditPositions = true
 				};
 
 				if (Project.ProjectType == ProjectType.FileProject) {
 					bool playing = VideoPlayer.Playing;
-					VideoPlayer.Pause ();
+					VideoPlayer.PauseCommand.Execute (false);
 					await App.Current.EventsBroker.Publish (new EditEventEvent { TimelineEvent = e.TimelineEvent });
 					if (playing) {
-						VideoPlayer.Play ();
+						VideoPlayer.PlayCommand.Execute ();
 					}
 				} else {
 					await App.Current.EventsBroker.Publish (new EditEventEvent { TimelineEvent = e.TimelineEvent });
@@ -206,7 +208,9 @@ namespace VAS.Services.Controller
 			Project.Model.AddEvent (e.TimelineEvent);
 			AddNewPlay (e.TimelineEvent);
 			await App.Current.EventsBroker.Publish (new DashboardEventCreatedEvent {
-				TimelineEvent = e.TimelineEvent, DashboardButton = e.DashboardButton, DashboardButtons = e.DashboardButtons
+				TimelineEvent = e.TimelineEvent,
+				DashboardButton = e.DashboardButton,
+				DashboardButtons = e.DashboardButtons
 			});
 		}
 
@@ -264,8 +268,8 @@ namespace VAS.Services.Controller
 		void HandleLoadEventType (LoadTimelineEventEvent<EventTypeTimelineVM> e)
 		{
 			var timelineEvents = e.Object.ViewModels.Where ((arg) => arg.Visible == true)
-			                      .Select ((arg) => arg.Model)
-			                      .OrderBy (evt => evt.Start);
+								  .Select ((arg) => arg.Model)
+								  .OrderBy (evt => evt.Start);
 			VideoPlayer.LoadEvents (timelineEvents, e.Playing);
 		}
 
@@ -273,11 +277,11 @@ namespace VAS.Services.Controller
 		{
 			if (sender is TimeNodeVM) {
 				if (e.PropertyName == nameof (TimeNodeVM.Start)) {
-					VideoPlayer.Pause ();
-					VideoPlayer.Seek ((sender as TimeNodeVM).Start, true, false, true);
+					VideoPlayer.PauseCommand.Execute (false);
+					VideoPlayer.SeekCommand.Execute (new VideoPlayerSeekOptions ((sender as TimeNodeVM).Start, true, false, true));
 				} else if (e.PropertyName == nameof (TimeNodeVM.Stop)) {
-					VideoPlayer.Pause ();
-					VideoPlayer.Seek ((sender as TimeNodeVM).Stop, true, false, true);
+					VideoPlayer.PauseCommand.Execute (false);
+					VideoPlayer.SeekCommand.Execute (new VideoPlayerSeekOptions ((sender as TimeNodeVM).Stop, true, false, true));
 				}
 			}
 		}
@@ -298,7 +302,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Publish (new EventCreatedEvent { TimelineEvent = play });
 
 			if (Project.ProjectType == ProjectType.FileProject) {
-				VideoPlayer.Play ();
+				VideoPlayer.PlayCommand.Execute ();
 			}
 			Save (Project);
 

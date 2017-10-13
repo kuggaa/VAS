@@ -24,6 +24,7 @@ using System.Linq;
 using Gdk;
 using Gtk;
 using Pango;
+using VAS.Bindings;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Handlers;
@@ -52,9 +53,8 @@ namespace VAS.UI
 		public event ClickedHandler CenterPlayheadClicked;
 
 		const int SCALE_FPS = 25;
-		bool muted, drawingsVisible, updatingView;
+		bool drawingsVisible, updatingView;
 		bool roiMoved, wasPlaying;
-		double previousVLevel = 1;
 		uint dragTimerID;
 		Blackboard blackboard;
 		List<CameraConfig> cameraConfigsOutOfScreen;
@@ -66,7 +66,6 @@ namespace VAS.UI
 		SliderView jumpsWindow;
 		SliderView zoomWindow;
 		SliderView rateWindow;
-		double rateLevel;
 		int zoomLevel;
 		BindingContext ctx;
 
@@ -250,7 +249,6 @@ namespace VAS.UI
 			DrawingsVisible = false;
 			totalTimeLabel.Text = "";
 			timeLabel.Text = "";
-			muted = false;
 			viewportsSwitchButton.Active = true;
 			SubViewPortsVisible = true;
 			zoomLevel = 0;
@@ -260,29 +258,18 @@ namespace VAS.UI
 
 		void ConnectSignals ()
 		{
-			volumeWindow.ValueChanged += HandleVolumeChanged;
-			jumpsWindow.ValueChanged += HandleStepsChanged;
 			zoomWindow.ValueChanged += HandleZoomChanged;
-			rateWindow.ValueChanged += HandleRateChanged;
-
-
 			centerplayheadbutton.Clicked += HandleCenterPlayheadClicked;
 			timerule.CenterPlayheadClicked += HandleCenterPlayheadClicked;
-
 			mainviewport.VideoDragStarted += OnMainViewportVideoDragStartedEvent;
 			mainviewport.VideoDragStopped += OnMainViewportVideoDragStoppedEvent;
 		}
 
 		void DisconnectSignals ()
 		{
-			volumeWindow.ValueChanged -= HandleVolumeChanged;
-			jumpsWindow.ValueChanged -= HandleStepsChanged;
 			zoomWindow.ValueChanged -= HandleZoomChanged;
-			rateWindow.ValueChanged -= HandleRateChanged;
-
 			centerplayheadbutton.Clicked -= HandleCenterPlayheadClicked;
 			timerule.CenterPlayheadClicked -= HandleCenterPlayheadClicked;
-
 			mainviewport.VideoDragStarted -= OnMainViewportVideoDragStartedEvent;
 			mainviewport.VideoDragStopped -= OnMainViewportVideoDragStoppedEvent;
 		}
@@ -291,22 +278,18 @@ namespace VAS.UI
 		{
 			ctx = new BindingContext ();
 			ctx.Add (zoomLevelButton.Bind ((vm) => ((VideoPlayerVM)vm).ShowZoomCommand));
-<<<<<<< HEAD
 			ctx.Add (editDurationButton.Bind ((vm) => ((VideoPlayerVM)vm).EditEventDurationCommand, true, false, true));
-=======
-
+			ctx.Add (volumeWindow.Bind (volumebutton, vm => ((VideoPlayerVM)vm).ChangeVolumeCommand, vm => ((VideoPlayerVM)vm).Volume, HandleVolumeChanged));
+			ctx.Add (jumpsWindow.Bind (jumpsButton, vm => ((VideoPlayerVM)vm).ChangeStepCommand));
+			ctx.Add (rateWindow.Bind (rateLevelButton, vm => ((VideoPlayerVM)vm).ChangeRateCommand));
 			ctx.Add (closebutton.Bind ((vm) => ((VideoPlayerVM)vm).CloseCommand));
 			ctx.Add (prevbutton.Bind ((vm) => ((VideoPlayerVM)vm).PreviousCommand));
 			ctx.Add (nextbutton.Bind ((vm) => ((VideoPlayerVM)vm).NextCommand));
 			ctx.Add (playbutton.Bind ((vm) => ((VideoPlayerVM)vm).PlayCommand));
-			ctx.Add (pausebutton.Bind ((vm) => ((VideoPlayerVM)vm).PauseCommand));
+			ctx.Add (pausebutton.Bind ((vm) => ((VideoPlayerVM)vm).PauseCommand, false));
 			ctx.Add (drawbutton.Bind ((vm) => ((VideoPlayerVM)vm).DrawCommand));
-			ctx.Add (volumebutton.Bind ((vm) => ((VideoPlayerVM)vm).VolumeCommand, volumeWindow));
-			ctx.Add (rateLevelButton.Bind ((vm) => ((VideoPlayerVM)vm).RateCommand, rateWindow));
-			ctx.Add (jumpsButton.Bind ((vm) => ((VideoPlayerVM)vm).JumpsCommand, jumpsWindow));
 			ctx.Add (detachbutton.Bind ((vm) => ((VideoPlayerVM)vm).DetachCommand));
 			ctx.Add (viewportsSwitchButton.Bind ((vm) => ((VideoPlayerVM)vm).ViewPortsSwitchToggleCommand));
->>>>>>> Refactor to achieve MVVM Pattern on VideoPlayer, Click Events to Commands
 		}
 
 		void LoadImage (Image image, FrameDrawing drawing)
@@ -488,7 +471,7 @@ namespace VAS.UI
 
 		void HandleExposeEvent (object sender, ExposeEventArgs args)
 		{
-			playerVM.Expose ();
+			playerVM.ExposeCommand.Execute ();
 			/* The player draws over the eventbox when it's resized
 			 * so make sure that we queue a draw in the event box after
 			 * the expose */
@@ -498,44 +481,15 @@ namespace VAS.UI
 
 		void HandleVolumeChanged (double level)
 		{
-			double prevLevel;
-			prevLevel = playerVM.Volume * 100;
-
-			if (level == 0) {
-				SetVolumeIcon ("vas-control-volume-off");
-			} else if ((prevLevel >= 50 || prevLevel == 0) && level < 50) {
-				SetVolumeIcon ("vas-control-volume-low");
-			} else if ((prevLevel < 50 || prevLevel == 100) && level >= 50 && level < 100) {
-				SetVolumeIcon ("vas-control-volume-med");
-			} else if (level == 100) {
-				SetVolumeIcon ("vas-control-volume-hi");
+			if (level <= 0) {
+				SetVolumeIcon (StyleConf.PlayerControlVolumeOff);
+			} else if (level > 0 && level < 0.5) {
+				SetVolumeIcon (StyleConf.PlayerControlVolumeLow);
+			} else if (level >= 0.5 && level < 1) {
+				SetVolumeIcon (StyleConf.PlayerControlVolumeMedium);
+			} else if (level >= 1) {
+				SetVolumeIcon (StyleConf.PlayerControlVolumeHigh);
 			}
-
-			playerVM.SetVolume (level / 100);
-			if (level == 0)
-				muted = true;
-			else
-				muted = false;
-		}
-
-		void HandleStepsChanged (double val)
-		{
-			playerVM.SetStep (new Time { TotalSeconds = App.Current.StepList [(int)val] });
-		}
-
-		void HandleRateChanged (double val)
-		{
-			double rateLevel = App.Current.RateList [(int)val];
-			// Mute for rate != 1
-			if (rateLevel != 1 && playerVM.Volume != 0) {
-				previousVLevel = playerVM.Volume;
-				playerVM.SetVolume (0);
-			} else if (rateLevel != 1 && muted)
-				previousVLevel = 0;
-			else if (rateLevel == 1)
-				playerVM.SetVolume (previousVLevel);
-
-			playerVM.SetRate (rateLevel);
 		}
 
 		void OnMainViewportVideoDragStartedEvent (object o, ButtonPressEventArgs args)
@@ -575,7 +529,7 @@ namespace VAS.UI
 				args.RetVal = true;
 			}
 			if (wasPlaying == true) {
-				playerVM.Play ();
+				playerVM.PlayCommand.Execute ();
 			}
 		}
 
@@ -584,7 +538,7 @@ namespace VAS.UI
 			if (roiMoved == false) {
 				ChangeCursor ("hand_closed");
 				wasPlaying = playerVM.Playing;
-				playerVM.Pause ();
+				playerVM.PauseCommand.Execute (false);
 			}
 			Point newStart = new Point (args.Event.X, args.Event.Y);
 			Point diff = newStart - moveStart;
@@ -599,7 +553,7 @@ namespace VAS.UI
 			 * Make sure to ungrab it in order to avoid clicks outisde the window
 			 * triggering this callback. This should be fixed properly.*/
 			Gdk.Pointer.Ungrab (Gtk.Global.CurrentEventTime);
-			playerVM.TogglePlay ();
+			playerVM.TogglePlayCommand.Execute ();
 		}
 
 		void OnSubViewportChangedEvent (object o, EventArgs args)
@@ -676,16 +630,16 @@ namespace VAS.UI
 		{
 			switch (args.Event.Direction) {
 			case ScrollDirection.Down:
-				playerVM.SeekToPreviousFrame ();
+				playerVM.SeekToPreviousFrameCommand.Execute ();
 				break;
 			case ScrollDirection.Up:
-				playerVM.SeekToNextFrame ();
+				playerVM.SeekToNextFrameCommand.Execute ();
 				break;
 			case ScrollDirection.Left:
-				playerVM.StepBackward ();
+				playerVM.StepBackwardCommand.Execute ();
 				break;
 			case ScrollDirection.Right:
-				playerVM.StepForward ();
+				playerVM.StepForwardCommand.Execute ();
 				break;
 			}
 		}
@@ -693,12 +647,12 @@ namespace VAS.UI
 		void HandleReady (object sender, EventArgs e)
 		{
 			playerVM.ViewPorts = new List<IViewPort> { mainviewport, subviewport1.Viewport, subviewport2.Viewport, subviewport3.Viewport };
-			playerVM.Ready (true);
+			playerVM.ReadyCommand.Execute (true);
 		}
 
 		void HandleUnReady (object sender, EventArgs e)
 		{
-			playerVM.Ready (false);
+			playerVM.ReadyCommand.Execute (false);
 			playerVM.ViewPorts = null;
 		}
 
@@ -732,9 +686,6 @@ namespace VAS.UI
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Playing))) {
 				HandlePlayingChanged ();
 			}
-			if (ViewModel.NeedsSync (e, nameof (ViewModel.HasNext))) {
-				nextbutton.Sensitive = playerVM.HasNext;
-			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.LoadedElement))) {
 				HandlePlayElementChanged ();
 			}
@@ -760,9 +711,6 @@ namespace VAS.UI
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Step))) {
 				jumpsWindow.SetValue (App.Current.StepList.IndexOf (playerVM.Step.TotalSeconds));
 				jumpsLabel.Text = $"{playerVM.Step.TotalSeconds}s";
-			}
-			if (ViewModel.NeedsSync (e, nameof (ViewModel.Seekable))) {
-				timerule.ObjectsCanMove = playerVM.Seekable;
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Duration)) ||
 				ViewModel.NeedsSync (e, nameof (ViewModel.CurrentTime)) ||
@@ -792,11 +740,21 @@ namespace VAS.UI
 				editeventtimeruledrawingarea.Visible = ViewModel.EditEventDurationModeEnabled;
 				timerulearea.Visible = !ViewModel.EditEventDurationModeEnabled;
 				editDurationButton.Active = ViewModel.EditEventDurationModeEnabled;
+<<<<<<< HEAD
 =======
 			//FIXME  We need Property binding like -> ctx.Add (control.Bind (c => c.Prop, vm => vm.Prop));
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.ViewPortsSwitchActive))) {
 				subviewportsbox.Visible = ViewModel.ViewPortsSwitchActive;
 >>>>>>> Refactor to achieve MVVM Pattern on VideoPlayer, Click Events to Commands
+=======
+
+
+			}
+			//FIXME  We need Property binding like -> ctx.Add (control.Bind (c => c.Prop, vm => vm.Prop));
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.ViewPortsSwitchActive))) {
+				subviewportsbox.Visible = ViewModel.ViewPortsSwitchActive;
+
+>>>>>>> 5609d68d... fixup! fixup! fixup! VideoPlayerView refactor to MVVM pattern
 			}
 		}
 

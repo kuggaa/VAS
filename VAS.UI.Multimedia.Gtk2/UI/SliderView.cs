@@ -26,7 +26,7 @@ using Misc = VAS.UI.Helpers.Misc;
 
 namespace VAS.UI
 {
-	public partial class SliderView : Window, ISliderView
+	public partial class SliderView : Window
 	{
 		public event Handlers.ValueChangedHandler ValueChanged;
 		double buttonIncrement;
@@ -82,7 +82,7 @@ namespace VAS.UI
 
 		protected void OnScaleValueChanged (object sender, EventArgs e)
 		{
-			ValueChanged (scale.Value);
+			ValueChanged?.Invoke (scale.Value);
 		}
 
 		protected void OnFocusOutEvent (object o, FocusOutEventArgs args)

@@ -153,9 +153,9 @@ namespace VAS.Services.Controller
 				}
 			} else {
 				if (isForward) {
-					videoPlayerVM.SeekToNextFrame ();
+					videoPlayerVM.SeekToNextFrameCommand.Execute ();
 				} else {
-					videoPlayerVM.SeekToPreviousFrame ();
+					videoPlayerVM.SeekToPreviousFrameCommand.Execute ();
 				}
 			}
 		}
@@ -172,14 +172,14 @@ namespace VAS.Services.Controller
 					seekTime = timenode.Stop;
 				}
 				if (seekTime != null) {
-					videoPlayerVM.Pause ();
-					videoPlayerVM.Seek (seekTime);
+					videoPlayerVM.PauseCommand.Execute (false);
+					videoPlayerVM.SeekCommand.Execute (new VideoPlayerSeekOptions (seekTime));
 				}
 			}
 			if (sender is MediaFileVM) {
 				if (e.PropertyName == nameof (MediaFile.Offset)) {
-					videoPlayerVM.Pause ();
-					videoPlayerVM.Seek (videoPlayerVM.CurrentTime, true);
+					videoPlayerVM.PauseCommand.Execute (false);
+					videoPlayerVM.SeekCommand.Execute (new VideoPlayerSeekOptions (videoPlayerVM.CurrentTime, true));
 				}
 			}
 		}
