@@ -42,6 +42,7 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the model (DashboardButton).
 		/// </summary>
 		/// <value>The model.</value>
+		[PropertyChanged.DoNotCheckEquality]
 		public override DashboardButton Model {
 			get {
 				return base.Model;
@@ -259,6 +260,7 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the model.
 		/// </summary>
 		/// <value>The model.</value>
+		[PropertyChanged.DoNotCheckEquality]
 		public override DashboardButton Model {
 			get {
 				return TypedModel;
@@ -362,6 +364,7 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the model.
 		/// </summary>
 		/// <value>The model.</value>
+		[PropertyChanged.DoNotCheckEquality]
 		public override DashboardButton Model {
 			get {
 				return TypedModel;
@@ -437,6 +440,7 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the model.
 		/// </summary>
 		/// <value>The model.</value>
+		[PropertyChanged.DoNotCheckEquality]
 		public override DashboardButton Model {
 			get {
 				return TypedModel;
@@ -547,6 +551,7 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the model.
 		/// </summary>
 		/// <value>The model.</value>
+		[PropertyChanged.DoNotCheckEquality]
 		public override DashboardButton Model {
 			get {
 				return TypedModel;
@@ -606,6 +611,7 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		[PropertyChanged.DoNotCheckEquality]
 		public override DashboardButton Model {
 			get {
 				return TypedModel;

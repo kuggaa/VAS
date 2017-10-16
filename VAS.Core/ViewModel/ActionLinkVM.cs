@@ -36,6 +36,7 @@ namespace VAS.Core.ViewModel
 			DestinationTags = new CollectionViewModel<Tag, TagVM> ();
 		}
 
+		[PropertyChanged.DoNotCheckEquality]
 		public override ActionLink Model {
 			get {
 				return base.Model;

@@ -32,6 +32,7 @@ namespace VAS.Core.ViewModel
 			Tags = new CollectionViewModel<Tag, TagVM> ();
 		}
 
+		[PropertyChanged.DoNotCheckEquality]
 		public override EventType Model {
 			get {
 				return base.Model;

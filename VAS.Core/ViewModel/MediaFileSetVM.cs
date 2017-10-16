@@ -43,6 +43,7 @@ namespace VAS.Core.ViewModel
 			VisibleRegion = null;
 		}
 
+		[PropertyChanged.DoNotCheckEquality]
 		public override MediaFileSet Model {
 			set {
 				base.Model = value;
