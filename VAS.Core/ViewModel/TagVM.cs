@@ -32,6 +32,7 @@ namespace VAS.Core.ViewModel
 			HotKey = new HotKeyVM ();	
 		}
 
+		[PropertyChanged.DoNotCheckEquality]
 		public override Tag Model {
 			get {
 				return base.Model;
