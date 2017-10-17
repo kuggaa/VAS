@@ -121,10 +121,10 @@ namespace VAS.Tests
 		{
 		}
 
-		public new Dictionary<string, string> UserProperties
+		public new Dictionary<string, string> GeneralProperties
 		{
 			get {
-				return base.UserProperties;
+				return base.GeneralProperties;
 			}
 		}
 	}

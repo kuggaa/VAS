@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
-using VAS.Core.Store.Playlists;
 
 namespace VAS.Services
 {
@@ -34,7 +33,7 @@ namespace VAS.Services
 
 		public UserStatisticsService ()
 		{
-			UserProperties = new Dictionary<string, string> ();
+			GeneralProperties = new Dictionary<string, string> ();
 			ProjectDictionary = new Dictionary<Guid, Tuple<int, int>> ();
 			DataDictionary = new Dictionary<string, double> ();
 			StateTimer = App.Current.DependencyRegistry.Retrieve<IStopwatch> (InstanceType.Default);
@@ -169,10 +168,11 @@ namespace VAS.Services
 		}
 
 		/// <summary>
-		/// Gets or sets the user properties.
+		/// Gets or sets the General properties, this properties are sent on every trackEvent apart from
+		/// the custom properties for those events
 		/// </summary>
 		/// <value>The user properties.</value>
-        protected Dictionary<string, string> UserProperties {
+        protected Dictionary<string, string> GeneralProperties {
 			get;
 			set;
         }
@@ -212,8 +212,10 @@ namespace VAS.Services
 			App.Current.EventsBroker.Subscribe<OpenedProjectEvent> (HandleOpenProject);
 			App.Current.EventsBroker.Subscribe<NavigationEvent> (HandleNavigationEvent);
 			App.Current.EventsBroker.Subscribe<LicenseChangeEvent> (HandleLicenseChangeEvent);
+			App.Current.EventsBroker.Subscribe<LimitationDialogShownEvent>(HandleLimitationDialogShown);
+			App.Current.EventsBroker.Subscribe<UpgradeLinkClickedEvent> (HandleUpgradeLinkClicked);
 			GeneralTimer.Start ();
-			UserProperties ["Plan"] = App.Current.LicenseManager.LicenseStatus.PlanName;
+			GeneralProperties ["Plan"] = App.Current.LicenseManager.LicenseStatus.PlanName;
 			return true;
 		}
 
@@ -231,6 +233,8 @@ namespace VAS.Services
 			App.Current.EventsBroker.Unsubscribe<OpenedProjectEvent> (HandleOpenProject);
 			App.Current.EventsBroker.Unsubscribe<NavigationEvent> (HandleNavigationEvent);
 			App.Current.EventsBroker.Unsubscribe<LicenseChangeEvent> (HandleLicenseChangeEvent);
+			App.Current.EventsBroker.Unsubscribe<LimitationDialogShownEvent> (HandleLimitationDialogShown);
+			App.Current.EventsBroker.Unsubscribe<UpgradeLinkClickedEvent> (HandleUpgradeLinkClicked);
 			GeneralTimer.Stop ();
 			RetrieveUserData ();
 			SendData ();
@@ -253,7 +257,7 @@ namespace VAS.Services
             TrackProjects ();
             TrackTimers ();
 			FillDataDictionary ();
-			App.Current.KPIService.TrackEvent ("Sessions", UserProperties, DataDictionary);
+			App.Current.KPIService.TrackEvent ("Sessions", GeneralProperties, DataDictionary);
             App.Current.KPIService.Flush ();
         }
 
@@ -314,9 +318,10 @@ namespace VAS.Services
 		/// <param name="drawings">Drawings.</param>
 		void TrackProject (string ProjectId, int events, int drawings)
 		{
-			App.Current.KPIService.TrackEvent ("Project_usage",
-											   new Dictionary<string, string> () {
-				{ "Project_id", ProjectId } },
+			var props = MergeProperties (new Dictionary<string, string> () {
+				{ "Project_id", ProjectId }});
+
+			App.Current.KPIService.TrackEvent ("Project_usage", props,
 											   new Dictionary<string, double> () {
 				{ "Events", events },
 				{ "Drawings" , drawings } });
@@ -328,9 +333,21 @@ namespace VAS.Services
 		void TrackTimers ()
 		{
 			foreach (var item in TimerList) {
-				App.Current.KPIService.TrackEvent ("PageView_" + item.Item1, UserProperties,
+				App.Current.KPIService.TrackEvent ("PageView_" + item.Item1, GeneralProperties,
 												   new Dictionary<string, double> () { { "Time", item.Item2 } });
 			}
+		}
+
+		Dictionary<string, string> MergeProperties (Dictionary<string, string> propsToMerge)
+		{
+			var properties = GeneralProperties.Clone (SerializationType.Json);
+
+			foreach (var prop in propsToMerge)
+			{
+				properties [prop.Key] = prop.Value;
+			}
+
+			return properties;
 		}
 
 		#region Handlers
@@ -411,7 +428,25 @@ namespace VAS.Services
 
 		void HandleLicenseChangeEvent (LicenseChangeEvent e)
 		{
-			UserProperties ["Plan"] = App.Current.LicenseManager.LicenseStatus.PlanName;
+			GeneralProperties ["Plan"] = App.Current.LicenseManager.LicenseStatus.PlanName;
+		}
+
+		void HandleLimitationDialogShown (LimitationDialogShownEvent e)
+		{
+			var properties = MergeProperties (new Dictionary<string, string> {
+				{ "Name" , e.LimitationName },
+				{ "Source" , e.Source }
+			});
+			App.Current.KPIService.TrackEvent ("Limitation popup shown", properties, null);
+		}
+
+		void HandleUpgradeLinkClicked (UpgradeLinkClickedEvent e)
+		{
+			var properties = MergeProperties (new Dictionary<string, string> {
+				{ "Name" , e.LimitationName },
+				{ "Source" , e.Source }
+			});
+			App.Current.KPIService.TrackEvent ("Upgrade link clicked", properties, null);
 		}
 
 		#endregion
