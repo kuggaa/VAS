@@ -190,12 +190,12 @@ namespace VAS.Services
 			if (limitationVM.Enabled) {
 				dynamic properties = new ExpandoObject ();
 				properties.limitationVM = limitationVM;
-				//Task.Run (async () => 
-				//await 
-				return App.Current.StateController.MoveToModal (UpgradeLimitationState.NAME, properties);
-				         //).GetAwaiter ().GetResult ();
 
-				//return AsyncHelpers.Return (true);
+				App.Current.EventsBroker.Publish (new LimitationDialogShownEvent {
+					LimitationName = limitationVM.RegisterName,
+					Source = App.Current.StateController.Current.Name
+				});
+				return App.Current.StateController.MoveToModal (UpgradeLimitationState.NAME, properties);
 			} else {
 				return AsyncHelpers.Return (false);
 			}
@@ -207,6 +207,15 @@ namespace VAS.Services
 			foreach (var limitation in GetAll<CountLimitationVM> ().Select ((arg) => arg.Model)) {
 				limitation.Enabled = enable;
 			}
+		}
+
+		protected void OpenUpgradeLink (string url, string sourcePoint, string limitationName)
+		{
+			Utils.OpenURL (url, sourcePoint);
+			App.Current.EventsBroker.Publish (new UpgradeLinkClickedEvent{
+				LimitationName = limitationName,
+				Source = "LimitationWidget"
+			});
 		}
 
 		protected abstract void UpdateFeatureLimitations ();
