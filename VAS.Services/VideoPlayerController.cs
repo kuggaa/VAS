@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
@@ -1136,11 +1137,13 @@ namespace VAS.Services
 			set {
 				if (loadedPlaylistEvent != null) {
 					loadedPlaylistEvent.PropertyChanged -= HandleLoadedTimelineEventPropertyChangedEventHandler;
+					loadedPlaylistEvent.Drawings.CollectionChanged -= HandlePlaylistEventDrawingsCollectionChanged;
 				}
 				loadedPlaylistEvent = value;
 				if (loadedPlaylistEvent != null) {
 					playerVM.EditEventDurationCommand.Executable = true;
 					loadedPlaylistEvent.PropertyChanged += HandleLoadedTimelineEventPropertyChangedEventHandler;
+					loadedPlaylistEvent.Drawings.CollectionChanged += HandlePlaylistEventDrawingsCollectionChanged;
 				} else {
 					playerVM.EditEventDurationCommand.Executable = false;
 				}
@@ -1533,9 +1536,7 @@ namespace VAS.Services
 							var drawings = LoadedTimelineEvent?.Drawings;
 							if (drawings != null) {
 								/* Check if the event has drawings to display */
-								FrameDrawing fd = drawings.FirstOrDefault (f => f.Render > videoTS &&
-												  f.Render <= currentTime &&
-												  f.CameraConfig.Index == CamerasConfig [0].Index);
+								FrameDrawing fd = drawings.FirstOrDefault (f => IsDrawingVisibleForCurrentTime (f, currentTime));
 								if (fd != null) {
 									LoadPlayDrawing (fd);
 								}
@@ -1548,6 +1549,13 @@ namespace VAS.Services
 				videoTS = currentTime;
 				return true;
 			}
+		}
+
+		bool IsDrawingVisibleForCurrentTime (FrameDrawing f, Time currentTime)
+		{
+			return (f.CameraConfig.Index == CamerasConfig [0].Index && (
+				(currentTime == videoTS && f.Render == currentTime) ||
+				f.Render > videoTS && f.Render <= currentTime));
 		}
 
 		void UpdateDuration ()
@@ -1744,6 +1752,20 @@ namespace VAS.Services
 				loadedSegment.Stop = LoadedTimelineEvent.Stop;
 				UpdateDuration ();
 				AbsoluteSeek (seekTime, true, false, true);
+			}
+		}
+
+		/// <summary>
+		/// Handles the playlist event drawings collection changed, drawing on the player the changed drawing frame
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">CollectionChangedEventArgs.</param>
+		void HandlePlaylistEventDrawingsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		{
+			if ((e.Action == NotifyCollectionChangedAction.Add
+				|| e.Action == NotifyCollectionChangedAction.Replace)
+				&& e.NewItems.Count == 1) {
+				Tick ();
 			}
 		}
 
