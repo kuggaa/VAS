@@ -511,7 +511,9 @@ namespace VAS.Core.Events
 		public string Source { get; set; }
 	}
 
-	public class UpgradeLinkClickedEvent : LimitationDialogShownEvent
+	public class UpgradeLinkClickedEvent
 	{
+		public string LimitationName { get; set; }
+		public string Source { get; set; }
 	}
 }
