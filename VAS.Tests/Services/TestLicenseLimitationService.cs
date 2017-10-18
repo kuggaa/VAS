@@ -25,6 +25,7 @@ using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
+using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.License;
 using VAS.Core.License;
 using VAS.Core.ViewModel;
@@ -47,11 +48,13 @@ namespace VAS.Tests.Services
 		Mock<ILicenseStatus> mockLicenseStatus;
 		IStateController currentStateController;
 		Mock<IStateController> mockStateController;
+		Mock<IScreenState> mockScreenState;
 
 		[OneTimeSetUp]
 		public void Init ()
 		{
 			currentStateController = App.Current.StateController;
+			SetupClass.SetUp();
 			limitationPlayers = new CountLicenseLimitation { Enabled = true, Maximum = 10, RegisterName = "RAPlayers" };
 			limitationPlayers2 = new CountLicenseLimitation { Enabled = true, Maximum = 20, RegisterName = "RAPlayers" };
 			limitationTeams = new CountLicenseLimitation { Enabled = true, Maximum = 5, RegisterName = "Teams" };
@@ -65,6 +68,8 @@ namespace VAS.Tests.Services
 			mockLicenseManager.SetupGet (obj => obj.LicenseStatus).Returns (mockLicenseStatus.Object);
 
 			mockStateController = new Mock<IStateController> ();
+			mockScreenState = new Mock<IScreenState> ();
+			mockStateController.SetupGet (sc => sc.Current).Returns (mockScreenState.Object);
 			App.Current.StateController = mockStateController.Object;
 		}
 
@@ -267,14 +272,25 @@ namespace VAS.Tests.Services
 		[Test]
 		public void LimitationService_LimitationEnabled_MoveToUpgradeDialogSuccess ()
 		{
+			string sourceState = null;
+			string limitationName = null;
 			service.Add (limitationFeature);
+			mockScreenState.SetupGet (st => st.Name).Returns ("Home");
 			mockStateController.Setup (sc => sc.MoveToModal (UpgradeLimitationState.NAME, It.IsAny<object> (), false)).Returns (AsyncHelpers.Return (true));
+			var token = App.Current.EventsBroker.Subscribe<LimitationDialogShownEvent> ((e) => {
+				sourceState = e.Source;
+				limitationName = e.LimitationName;
+			});
 
 			var limitVM = service.Get<FeatureLimitationVM> (limitationFeature.RegisterName);
 			service.MoveToUpgradeDialog (limitationFeature.RegisterName);
 
 			mockStateController.Verify (sc => sc.MoveToModal (UpgradeLimitationState.NAME, It.Is<object> (
 				obj => IslimitationVMEqual (obj, limitVM)), false), Times.Once);
+			Assert.AreEqual ("Home", sourceState);
+			Assert.AreEqual (limitationFeature.RegisterName, limitationName);
+
+			App.Current.EventsBroker.Unsubscribe<LimitationDialogShownEvent> (token);
 		}
 
 		[Test]
