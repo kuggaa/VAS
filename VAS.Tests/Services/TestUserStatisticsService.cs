@@ -143,6 +143,7 @@ namespace VAS.Tests.Services
 		public void StartService_GetPlan ()
 		{
 			Assert.AreEqual ("PRO", service.GeneralProperties ["Plan"]);
+			service.Stop ();
 		}
 
         [Test]
