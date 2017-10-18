@@ -504,4 +504,16 @@ namespace VAS.Core.Events
 	{
 		public TagButtonVM ButtonVM { get; set; }
 	}
+
+	public class LimitationDialogShownEvent
+	{
+		public string LimitationName { get; set; }
+		public string Source { get; set; }
+	}
+
+	public class UpgradeLinkClickedEvent
+	{
+		public string LimitationName { get; set; }
+		public string Source { get; set; }
+	}
 }
