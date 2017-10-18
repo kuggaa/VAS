@@ -21,7 +21,7 @@ commit_list=`git rev-list "$vcommit"..HEAD 2>/dev/null` \
     || { commit_list=failed;
          echo "WARNING: git rev-list failed" 1>&2; }
 numcommits=`echo "$commit_list" | wc -l`
-current_commit_hash=`git describe --abbrev=4 | cut -d "-" -f3`
+current_commit_hash=`git describe | cut -d "-" -f3`
 
 shortVersion=`echo "$v"."$numcommits" | tr -d '[:space:]'`
 longVersion=`echo "$shortVersion"-"$current_commit_hash"`
