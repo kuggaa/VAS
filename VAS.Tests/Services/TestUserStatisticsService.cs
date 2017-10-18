@@ -98,7 +98,8 @@ namespace VAS.Tests.Services
 			service.Stop ();
 			kpiServiceMock.Verify (m => m.TrackEvent ("Project_usage",
 													  It.Is<Dictionary<string, string>> (
-														  d => d ["Project_id"] == Project.ID.ToString ()),
+														  d => d ["Project_id"] == Project.ID.ToString () &&
+				                                         d["Plan"] == "PRO"),
 													  It.Is<Dictionary<string, double>> (
 														  d => (d ["Events"] == 1) && (d ["Drawings"] == 0))),
 								  Times.Once);
@@ -119,7 +120,8 @@ namespace VAS.Tests.Services
 			service.Stop ();
 			kpiServiceMock.Verify (m => m.TrackEvent ("Project_usage",
 													  It.Is<Dictionary<string, string>> (
-														  d => d ["Project_id"] == Project.ID.ToString ()),
+														  d => d ["Project_id"] == Project.ID.ToString () &&
+				                                          d ["Plan"] == "PRO"),
 													  It.Is<Dictionary<string, double>> (
 														  d => (d ["Events"] == 0) && (d ["Drawings"] == 1))),
 								  Times.Once);
@@ -140,20 +142,50 @@ namespace VAS.Tests.Services
 		[Test]
 		public void StartService_GetPlan ()
 		{
-			Assert.AreEqual ("PRO", service.UserProperties ["Plan"]);
+			Assert.AreEqual ("PRO", service.GeneralProperties ["Plan"]);
 		}
 
         [Test]
         public void LicenseChange_UserPlanUpdated ()
         {
-            Assert.AreEqual ("PRO", service.UserProperties ["Plan"]);
+			Assert.AreEqual ("PRO", service.GeneralProperties ["Plan"]);
 
 			mockLicenseStatus.SetupGet (obj => obj.PlanName).Returns ("BASIC");
 
 			App.Current.EventsBroker.Publish (new LicenseChangeEvent ());
 
-			Assert.AreEqual ("BASIC", service.UserProperties ["Plan"]);
-
+			Assert.AreEqual ("BASIC", service.GeneralProperties ["Plan"]);
+			service.Stop ();
         }
+
+		[Test]
+		public void UpgradeDialogShown_SendTrackEvent ()
+		{
+			App.Current.EventsBroker.Publish (new LimitationDialogShownEvent {
+				LimitationName = "Projects",
+				Source = "ProjectsManager"
+			});
+
+			kpiServiceMock.Verify (m => m.TrackEvent ("Limitation popup shown", It.Is<Dictionary<string, string>> (
+				d => d ["Plan"] == "PRO" && d ["Source"] == "ProjectsManager" && d ["Name"] == "Projects"),
+			                                          null),Times.Once);
+
+			service.Stop ();
+		}
+
+		[Test]
+		public void UpgradeLinkClicked_SendTrackEvent ()
+		{
+			App.Current.EventsBroker.Publish (new UpgradeLinkClickedEvent {
+				LimitationName = "Projects",
+				Source = "LimitationWidget"
+			});
+
+			kpiServiceMock.Verify (m => m.TrackEvent ("Upgrade link clicked", It.Is<Dictionary<string, string>> (
+				d => d ["Plan"] == "PRO" && d ["Source"] == "LimitationWidget" && d ["Name"] == "Projects"),
+			                                          null), Times.Once);
+
+			service.Stop ();
+		}
 	}
 }
