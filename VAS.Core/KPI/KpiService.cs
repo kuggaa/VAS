@@ -26,6 +26,8 @@ namespace VAS.KPI
 {
 	public class KpiService : IKpiService
 	{
+		bool initialized = false;
+
 		/// <summary>
 		/// Gets the user identifier.
 		/// </summary>
@@ -53,12 +55,14 @@ namespace VAS.KPI
 						.SetContactInfo (user, email);
 			await HockeyClient.Current.SendCrashesAsync ();
 			TrackEvent ("Session_Start", null, null);
+			initialized = true;
 #endif
 		}
 
 		public void TrackEvent (string eventName, IDictionary<string, string> properties = null, IDictionary<string, double> metrics = null)
 		{
 #if !DEBUG
+			if (!initialized) return;
 			HockeyClient.Current.TrackEvent (eventName, properties, metrics);
 #endif
 		}
@@ -66,6 +70,7 @@ namespace VAS.KPI
 		public void TrackException (Exception ex, IDictionary<string, string> properties)
 		{
 #if !DEBUG
+			if (!initialized) return;
 			HockeyClient.Current.HandleException (ex);
 #endif
 		}
@@ -73,6 +78,7 @@ namespace VAS.KPI
 		public void Flush ()
 		{
 #if !DEBUG
+			if (!initialized) return;
 			HockeyClient.Current.Flush ();
 			HockeyClient.Current.SendCrashesAsync ().ConfigureAwait (false);
 #endif
