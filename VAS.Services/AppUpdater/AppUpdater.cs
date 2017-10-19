@@ -65,6 +65,7 @@ namespace VAS.Services.AppUpdater
 			try {
 				updater?.Start (companyName, App.Current.SoftwareName, App.Current.Version.ToString (),
 								feedURL, App.Current.baseDirectory);
+				App.Current.DependencyRegistry.Register<IAppUpdater> (updater);
 			} catch (Exception ex) {
 				Log.Exception (ex);
 				return false;
