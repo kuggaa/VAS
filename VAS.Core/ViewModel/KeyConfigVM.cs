@@ -41,6 +41,7 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the model.
 		/// </summary>
 		/// <value>The model.</value>
+		[PropertyChanged.DoNotCheckEquality]
 		public override KeyConfig Model {
 			get {
 				return base.Model;
