@@ -35,6 +35,7 @@ using VAS.Services.Controller;
 namespace VAS.Tests.Services
 {
 	[TestFixture ()]
+	[NonParallelizable]
 	public class TestVideoPlayerController
 	{
 		Mock<IVideoPlayer> playerMock;
