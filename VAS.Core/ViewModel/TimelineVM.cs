@@ -57,23 +57,23 @@ namespace VAS.Core.ViewModel
 			FullTimeline.PropertyChanged += FullTimeline_PropertyChanged;
 			EditionCommand = new Command<TimelineEvent> (HandleEditPlay);
 
-			Filters = new AndPredicate<TimelineEventVM> ();
-			EventsPredicate = new AndPredicate<TimelineEventVM> {
+			Filters = new AndOrPredicate<TimelineEventVM> (QueryOperator.And);
+			EventsPredicate = new AndOrPredicate<TimelineEventVM> (QueryOperator.And) {
 				Name = Catalog.GetString ("Events")
 			};
-			PeriodsPredicate = new OrPredicate<TimelineEventVM> {
+			PeriodsPredicate = new AndOrPredicate<TimelineEventVM> (QueryOperator.Or) {
 				Name = Catalog.GetString ("Periods")
 			};
-			TimersPredicate = new OrPredicate<TimelineEventVM> {
+			TimersPredicate = new AndOrPredicate<TimelineEventVM> (QueryOperator.Or) {
 				Name = Catalog.GetString ("Timers")
 			};
-			CommonTagsPredicate = new AndPredicate<TimelineEventVM> {
+			CommonTagsPredicate = new AndOrPredicate<TimelineEventVM> (QueryOperator.And) {
 				Name = Catalog.GetString ("Common Tags")
 			};
-			EventTypesPredicate = new OrPredicate<TimelineEventVM> {
+			EventTypesPredicate = new AndOrPredicate<TimelineEventVM> (QueryOperator.Or) {
 				Name = Catalog.GetString ("Event Types")
 			};
-			TeamsPredicate = new OrPredicate<TimelineEventVM> {
+			TeamsPredicate = new AndOrPredicate<TimelineEventVM> (QueryOperator.Or) {
 				Name = Catalog.GetString ("Teams"),
 			};
 		}
@@ -187,7 +187,7 @@ namespace VAS.Core.ViewModel
 		/// which in turn contain the actual filters.
 		/// </summary>
 		/// <value>The filters.</value>
-		public AndPredicate<TimelineEventVM> Filters {
+		public AndOrPredicate<TimelineEventVM> Filters {
 			get;
 			set;
 		}
@@ -196,7 +196,7 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the event types predicate.
 		/// </summary>
 		/// <value>The event types predicate.</value>
-		public OrPredicate<TimelineEventVM> EventTypesPredicate {
+		public AndOrPredicate<TimelineEventVM> EventTypesPredicate {
 			get;
 			private set;
 		}
@@ -205,7 +205,7 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the periods predicate.
 		/// </summary>
 		/// <value>The periods predicate.</value>
-		public OrPredicate<TimelineEventVM> PeriodsPredicate {
+		public AndOrPredicate<TimelineEventVM> PeriodsPredicate {
 			get;
 			private set;
 		}
@@ -214,7 +214,7 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the timers predicate.
 		/// </summary>
 		/// <value>The timers predicate.</value>
-		public OrPredicate<TimelineEventVM> TimersPredicate {
+		public AndOrPredicate<TimelineEventVM> TimersPredicate {
 			get;
 			private set;
 		}
@@ -223,7 +223,7 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the common tags predicate.
 		/// </summary>
 		/// <value>The common tags predicate.</value>
-		public AndPredicate<TimelineEventVM> CommonTagsPredicate {
+		public AndOrPredicate<TimelineEventVM> CommonTagsPredicate {
 			get;
 			private set;
 		}
@@ -233,7 +233,7 @@ namespace VAS.Core.ViewModel
 		/// This is normally the parent for Periods, Timers, Common tags and Event types
 		/// </summary>
 		/// <value>The events predicate.</value>
-		public AndPredicate<TimelineEventVM> EventsPredicate {
+		public AndOrPredicate<TimelineEventVM> EventsPredicate {
 			get;
 			private set;
 		}
@@ -242,7 +242,7 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the teams predicate.
 		/// </summary>
 		/// <value>The teams predicate.</value>
-		public OrPredicate<TimelineEventVM> TeamsPredicate {
+		public AndOrPredicate<TimelineEventVM> TeamsPredicate {
 			get;
 			private set;
 		}
@@ -476,7 +476,7 @@ namespace VAS.Core.ViewModel
 			foreach (var timeline in viewModels) {
 				foreach (var player in timeline.Model.Players) {
 					if (!playerToEvent.ContainsKey (player)) {
-						playerToEvent.Add (player, new List<TimelineEventVM> {timeline});
+						playerToEvent.Add (player, new List<TimelineEventVM> { timeline });
 					} else {
 						playerToEvent [player].Add (timeline);
 					}

@@ -19,7 +19,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
@@ -252,20 +251,43 @@ namespace VAS.Core.Filters
 	/// This is a composite predicate.
 	/// This predicate applies the OR operation to all the predicates it contains.
 	/// </summary>
-	public class OrPredicate<T> : CompositePredicate<T>
+	public class AndOrPredicate<T> : CompositePredicate<T>
 	{
+		QueryOperator queryOperator;
 
-		public OrPredicate ()
+		public AndOrPredicate (QueryOperator qOperator = QueryOperator.Or)
 		{
-			expression = PredicateBuilder.False<T> ();
+			Operator = qOperator;
+		}
+
+		public QueryOperator Operator {
+			get {
+				return queryOperator;
+			}
+			set {
+				queryOperator = value;
+				UpdatePredicate ();
+			}
+		}
+
+		public void ChangeOperatorRecursively (QueryOperator qOperator)
+		{
+			foreach (var child in this.OfType<AndOrPredicate<T>> ()) {
+				child.ChangeOperatorRecursively (qOperator);
+			}
+			Operator = qOperator;
 		}
 
 		public override void UpdatePredicate ()
 		{
-			// We initialize this with a false, as it's the neutral element for the Or
-			expression = PredicateBuilder.False<T> ();
+			expression = Operator == QueryOperator.And ? PredicateBuilder.True<T> () : PredicateBuilder.False<T> ();
+
 			foreach (var el in Elements.Where (e => e.Active)) {
-				expression = expression.Or (el.Expression);
+				if (Operator == QueryOperator.And) {
+					expression = expression.And (el.Expression);
+				} else {
+					expression = expression.Or (el.Expression);
+				}
 			}
 			base.UpdatePredicate ();
 		}
@@ -274,40 +296,7 @@ namespace VAS.Core.Filters
 		{
 			// If !Active we return a false, as it's the neutral element for the Or
 			if (!Active) {
-				return false;
-			} else {
-				return base.Filter (obj);
-			}
-		}
-	}
-
-	/// <summary>
-	/// This is a composite predicate.
-	/// This predicate applies the AND operation to all the predicates it contains.
-	/// </summary>
-	public class AndPredicate<T> : CompositePredicate<T>
-	{
-
-		public AndPredicate ()
-		{
-			expression = PredicateBuilder.True<T> ();
-		}
-
-		public override void UpdatePredicate ()
-		{
-			// We initialize this with a true, as it's the neutral element for the And
-			expression = PredicateBuilder.True<T> ();
-			foreach (var el in Elements.Where (e => e.Active)) {
-				expression = expression.And (el.Expression);
-			}
-			base.UpdatePredicate ();
-		}
-
-		public override bool Filter (T obj)
-		{
-			// If !Active we return a true, as it's the neutral element for the And
-			if (!Active) {
-				return true;
+				return Operator == QueryOperator.And ? true : false;
 			} else {
 				return base.Filter (obj);
 			}

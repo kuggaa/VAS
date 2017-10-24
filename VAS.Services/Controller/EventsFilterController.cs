@@ -185,7 +185,7 @@ namespace VAS.Services.Controller
 				noTagsExpression = noTagsExpression.And (ev => !tagGroup.Value.Intersect (ev.Model.Tags).Any ());
 
 				Expression<Func<TimelineEventVM, bool>> tagGroupExpression = ev => ev.Model.Tags.Any (tag => tag.Group == tagGroup.Key);
-				var tagGroupPredicate = new OrPredicate<TimelineEventVM> {
+				var tagGroupPredicate = new AndOrPredicate<TimelineEventVM> (QueryOperator.Or) {
 					Name = string.IsNullOrEmpty (tagGroup.Key) ? Catalog.GetString ("General tags") : tagGroup.Key,
 				};
 
@@ -227,7 +227,7 @@ namespace VAS.Services.Controller
 				var analysisEventType = eventType.Model as AnalysisEventType;
 				if (analysisEventType != null && analysisEventType.Tags.Any ()) {
 					CompositePredicate<TimelineEventVM> composedEventTypePredicate;
-					predicate = composedEventTypePredicate = new OrPredicate<TimelineEventVM> {
+					predicate = composedEventTypePredicate = new AndOrPredicate<TimelineEventVM> (QueryOperator.Or) {
 						Name = eventType.EventTypeVM.Name
 					};
 					composedEventTypePredicate.Add (new Predicate {
