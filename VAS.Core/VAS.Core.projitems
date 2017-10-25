@@ -274,6 +274,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IPlaylistEventElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\VideoPlayerSeekOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\OneWayPropertyBinding.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IApplicationMenu.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
