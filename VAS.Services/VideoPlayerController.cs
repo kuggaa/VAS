@@ -53,26 +53,27 @@ namespace VAS.Services
 		public event MediaFileSetLoadedHandler MediaFileSetLoadedEvent;
 		public event PrepareViewHandler PrepareViewEvent;
 
-		protected const int TIMEOUT_MS = 20;
-		protected IVideoPlayer player;
-		protected IMultiVideoPlayer multiPlayer;
-		protected List<IViewPort> viewPorts;
-		protected ObservableCollection<CameraConfig> camerasConfig;
-		protected ObservableCollection<CameraConfig> defaultCamerasConfig;
-		protected object defaultCamerasLayout;
-		protected MediaFileSet defaultFileSet;
-		protected MediaFileSet mediafileSet;
-		protected MediaFileSet mediaFileSetCopy;
-		protected Time duration, videoTS, imageLoadedTS;
-		protected bool readyToSeek, stillimageLoaded, ready;
-		protected bool disposed, skipApplyCamerasConfig;
-		protected Action delayedOpen;
-		protected Seeker seeker;
-		protected Segment loadedSegment;
-		protected PendingSeek pendingSeek;
-		protected readonly Timer timer;
-		protected readonly ManualResetEvent TimerDisposed;
-		protected bool active;
+		const int TIMEOUT_MS = 20;
+
+		IVideoPlayer player;
+		IMultiVideoPlayer multiPlayer;
+		List<IViewPort> viewPorts;
+		ObservableCollection<CameraConfig> camerasConfig;
+		ObservableCollection<CameraConfig> defaultCamerasConfig;
+		object defaultCamerasLayout;
+		MediaFileSet defaultFileSet;
+		MediaFileSet mediafileSet;
+		MediaFileSet mediaFileSetCopy;
+		Time duration, videoTS, imageLoadedTS;
+		bool readyToSeek, stillimageLoaded, ready;
+		bool disposed, skipApplyCamerasConfig;
+		Action delayedOpen;
+		Seeker seeker;
+		Segment loadedSegment;
+		PendingSeek pendingSeek;
+		readonly Timer timer;
+		readonly ManualResetEvent TimerDisposed;
+		bool active;
 
 		readonly Time editDurationOffset = new Time { TotalSeconds = 10 };
 		VideoPlayerVM playerVM;
@@ -471,45 +472,6 @@ namespace VAS.Services
 			}
 		}
 
-		/// <summary>
-		/// Seeks absolutely. This seek is the one that will go to the real player, made over the video file.
-		/// </summary>
-		/// <returns><c>true</c>, if seek was made correctly, <c>false</c> otherwise.</returns>
-		/// <param name="time">Time in the video to seek.</param>
-		/// <param name="accurate">If set to <c>true</c>, accurate seek.</param>
-		/// <param name="synchronous">If set to <c>true</c>, synchronous seek.</param>
-		/// <param name="throttled">If set to <c>true</c>, throttled seek.</param>
-		protected virtual bool AbsoluteSeek (Time time, bool accurate, bool synchronous = false, bool throttled = false)
-		{
-			if (StillImageLoaded) {
-				imageLoadedTS = time;
-				Tick ();
-			} else {
-				EmitLoadDrawings (null);
-				if (readyToSeek) {
-					if (throttled) {
-						Log.Debug ("Throttled seek");
-						seeker.Seek (accurate ? SeekType.Accurate : SeekType.Keyframe, time, (float)Rate);
-					} else {
-						Log.Debug (string.Format ("Seeking to {0} accurate:{1} synchronous:{2} throttled:{3}",
-							time, accurate, synchronous, throttled));
-						player.Seek (time, accurate, synchronous);
-						Tick (time);
-					}
-				} else {
-					Log.Debug ("Delaying seek until player is ready");
-					pendingSeek = new PendingSeek {
-						time = time,
-						rate = 1.0f,
-						accurate = accurate,
-						syncrhonous = synchronous,
-						throttled = throttled
-					};
-				}
-			}
-			return true;
-		}
-
 		public virtual bool Seek (Time time, bool accurate, bool synchronous)
 		{
 			return Seek (time, accurate, synchronous, false);
@@ -533,39 +495,6 @@ namespace VAS.Services
 				throthled = false;
 			}
 			Seek (seekPos, accurate, false, throthled);
-		}
-
-		protected virtual bool PlaylistSeek (Time time, bool accurate = false, bool synchronous = false, bool throttled = false)
-		{
-			if (loadedPlaylistElement == null) {
-				return AbsoluteSeek (time, accurate, synchronous, throttled);
-			}
-
-			// if time is outside the currently loaded event
-			var elementTuple = LoadedPlaylist.GetElementAtTime (time);
-			var elementAtTime = elementTuple.Item1;
-			var elementStart = elementTuple.Item2;
-			if (elementAtTime != loadedPlaylistElement || (elementStart > time || elementStart + elementAtTime.Duration < time)) {
-				if (elementAtTime == null) {
-					Log.Debug (String.Format ("There is no playlist element at {0}.", time));
-					return false;
-				}
-				LoadPlaylistEvent (LoadedPlaylist, elementAtTime, false);
-			}
-
-			time -= elementStart;
-
-			var play = loadedPlaylistElement as PlaylistPlayElement;
-			if (play != null) {
-				time += play.Play.Start;
-				if (time > play.Play.FileSet.Duration) {
-					Log.Warning (String.Format ("Attempted seek to {0}, which is longer than the fileSet", time));
-					return false;
-				}
-			}
-			Log.Debug (string.Format ("New time: {0}", time));
-
-			return AbsoluteSeek (time, accurate, synchronous, throttled);
 		}
 
 		public virtual bool SeekToNextFrame ()
@@ -1007,7 +936,7 @@ namespace VAS.Services
 
 		#region Signals
 
-		protected virtual void EmitLoadDrawings (FrameDrawing drawing = null)
+		void EmitLoadDrawings (FrameDrawing drawing = null)
 		{
 			playerVM.FrameDrawing = drawing;
 			if (LoadDrawingsEvent != null && !disposed) {
@@ -1015,7 +944,7 @@ namespace VAS.Services
 			}
 		}
 
-		protected virtual void EmitPrepareViewEvent ()
+		void EmitPrepareViewEvent ()
 		{
 			playerVM.PrepareView = true;
 			if (PrepareViewEvent != null && !disposed) {
@@ -1023,7 +952,7 @@ namespace VAS.Services
 			}
 		}
 
-		protected virtual void EmitElementLoaded (IPlaylistElement element, Playlist playlist)
+		void EmitElementLoaded (IPlaylistElement element, Playlist playlist)
 		{
 			playerVM.NextCommand.Executable = playlist != null ? playlist.HasNext () : false;
 			playerVM.LoadedElement = element;
@@ -1047,12 +976,12 @@ namespace VAS.Services
 			}
 		}
 
-		protected virtual void EmitEventUnloaded ()
+		void EmitEventUnloaded ()
 		{
 			EmitElementLoaded (null, null);
 		}
 
-		protected virtual void EmitRateChanged (float rate)
+		void EmitRateChanged (float rate)
 		{
 			playerVM.Rate = rate;
 			if (PlaybackRateChangedEvent != null && !disposed) {
@@ -1060,7 +989,7 @@ namespace VAS.Services
 			}
 		}
 
-		protected virtual void EmitVolumeChanged (double volume)
+		void EmitVolumeChanged (double volume)
 		{
 			playerVM.Volume = volume;
 			if (VolumeChangedEvent != null && !disposed) {
@@ -1068,7 +997,7 @@ namespace VAS.Services
 			}
 		}
 
-		protected virtual void EmitTimeChanged (Time currentTime, Time relativeTime)
+		void EmitTimeChanged (Time currentTime, Time relativeTime)
 		{
 			if (Mode == VideoPlayerOperationMode.Stretched) {
 				currentTime = currentTime - visibleRegion.Start;
@@ -1089,7 +1018,7 @@ namespace VAS.Services
 			);
 		}
 
-		protected virtual void EmitPlaybackStateChanged (object sender, bool playing)
+		void EmitPlaybackStateChanged (object sender, bool playing)
 		{
 			playerVM.Playing = playing;
 			if (PlaybackStateChangedEvent != null && !disposed) {
@@ -1109,7 +1038,7 @@ namespace VAS.Services
 		/// <summary>
 		/// Indicates if a still image is loaded instead of a video segment.
 		/// </summary>
-		protected virtual bool StillImageLoaded {
+		bool StillImageLoaded {
 			set {
 				stillimageLoaded = value;
 				if (stillimageLoaded) {
@@ -1127,7 +1056,7 @@ namespace VAS.Services
 		/// <summary>
 		/// Inidicates if a video segment is loaded.
 		/// </summary>
-		protected virtual bool SegmentLoaded {
+		bool SegmentLoaded {
 			get {
 				return loadedSegment.Start.MSeconds != -1;
 			}
@@ -1159,12 +1088,84 @@ namespace VAS.Services
 		#region Private methods
 
 		/// <summary>
+		/// Seeks absolutely. This seek is the one that will go to the real player, made over the video file.
+		/// </summary>
+		/// <returns><c>true</c>, if seek was made correctly, <c>false</c> otherwise.</returns>
+		/// <param name="time">Time in the video to seek.</param>
+		/// <param name="accurate">If set to <c>true</c>, accurate seek.</param>
+		/// <param name="synchronous">If set to <c>true</c>, synchronous seek.</param>
+		/// <param name="throttled">If set to <c>true</c>, throttled seek.</param>
+		bool AbsoluteSeek (Time time, bool accurate, bool synchronous = false, bool throttled = false)
+		{
+			if (StillImageLoaded) {
+				imageLoadedTS = time;
+				Tick ();
+			} else {
+				EmitLoadDrawings (null);
+				if (readyToSeek) {
+					if (throttled) {
+						Log.Debug ("Throttled seek");
+						seeker.Seek (accurate ? SeekType.Accurate : SeekType.Keyframe, time, (float)Rate);
+					} else {
+						Log.Debug (string.Format ("Seeking to {0} accurate:{1} synchronous:{2} throttled:{3}",
+							time, accurate, synchronous, throttled));
+						player.Seek (time, accurate, synchronous);
+						Tick (time);
+					}
+				} else {
+					Log.Debug ("Delaying seek until player is ready");
+					pendingSeek = new PendingSeek {
+						time = time,
+						rate = 1.0f,
+						accurate = accurate,
+						syncrhonous = synchronous,
+						throttled = throttled
+					};
+				}
+			}
+			return true;
+		}
+
+		bool PlaylistSeek (Time time, bool accurate = false, bool synchronous = false, bool throttled = false)
+		{
+			if (loadedPlaylistElement == null) {
+				return AbsoluteSeek (time, accurate, synchronous, throttled);
+			}
+
+			// if time is outside the currently loaded event
+			var elementTuple = LoadedPlaylist.GetElementAtTime (time);
+			var elementAtTime = elementTuple.Item1;
+			var elementStart = elementTuple.Item2;
+			if (elementAtTime != loadedPlaylistElement || (elementStart > time || elementStart + elementAtTime.Duration < time)) {
+				if (elementAtTime == null) {
+					Log.Debug (String.Format ("There is no playlist element at {0}.", time));
+					return false;
+				}
+				LoadPlaylistEvent (LoadedPlaylist, elementAtTime, false);
+			}
+
+			time -= elementStart;
+
+			var play = loadedPlaylistElement as PlaylistPlayElement;
+			if (play != null) {
+				time += play.Play.Start;
+				if (time > play.Play.FileSet.Duration) {
+					Log.Warning (String.Format ("Attempted seek to {0}, which is longer than the fileSet", time));
+					return false;
+				}
+			}
+			Log.Debug (string.Format ("New time: {0}", time));
+
+			return AbsoluteSeek (time, accurate, synchronous, throttled);
+		}
+
+		/// <summary>
 		/// Updates the cameras configuration internally without applying the new
 		/// configuration in the <see cref="IMultiVideoPlayer"/>.
 		/// </summary>
 		/// <param name="camerasConfig">The cameras configuration.</param>
 		/// <param name="layout">The cameras layout.</param>
-		protected virtual void UpdateCamerasConfig (ObservableCollection<CameraConfig> camerasConfig, object layout)
+		void UpdateCamerasConfig (ObservableCollection<CameraConfig> camerasConfig, object layout)
 		{
 			skipApplyCamerasConfig = true;
 			CamerasConfig = camerasConfig;
@@ -1175,7 +1176,7 @@ namespace VAS.Services
 		/// <summary>
 		/// Applies the current cameras configuration.
 		/// </summary>
-		protected virtual void ApplyCamerasConfig ()
+		void ApplyCamerasConfig ()
 		{
 			ValidateVisibleCameras ();
 			UpdateZoom ();
@@ -1188,7 +1189,7 @@ namespace VAS.Services
 		/// <summary>
 		/// Updates the current zoom value.
 		/// </summary>
-		protected virtual void UpdateZoom ()
+		void UpdateZoom ()
 		{
 			if (CamerasConfig.Count == 0) {
 				playerVM.Zoom = 1;
@@ -1208,7 +1209,7 @@ namespace VAS.Services
 		/// <summary>
 		/// Validates that the list of visible cameras indexes are consistent with fileset
 		/// </summary>
-		protected virtual void ValidateVisibleCameras ()
+		void ValidateVisibleCameras ()
 		{
 			if (FileSet != null && camerasConfig != null && camerasConfig.Select (c => c.Index).DefaultIfEmpty ().Max () >= FileSet.Count) {
 				Log.Error ("Invalid cameras configuration, fixing list of cameras");
@@ -1221,7 +1222,7 @@ namespace VAS.Services
 		/// <summary>
 		/// Updates the pixel aspect ration in all the view ports.
 		/// </summary>
-		protected virtual void UpdatePar ()
+		void UpdatePar ()
 		{
 			if (ViewPorts == null) {
 				return;
@@ -1246,7 +1247,7 @@ namespace VAS.Services
 		/// <param name="force">If set to <c>true</c>, opens the fileset even if it was already set.</param>
 		/// <param name="play">If set to <c>true</c>, sets the player to play.</param>
 		/// <param name="defaultFile">If set to <c>true</c>, store this as the default file set to use.</param>
-		protected virtual void InternalOpen (MediaFileSet fileSet, bool seek, bool force = false, bool play = false, bool defaultFile = false)
+		void InternalOpen (MediaFileSet fileSet, bool seek, bool force = false, bool play = false, bool defaultFile = false)
 		{
 			Reset ();
 
@@ -1303,7 +1304,7 @@ namespace VAS.Services
 		/// <summary>
 		/// Reset the player segment information.
 		/// </summary>
-		protected virtual void Reset ()
+		void Reset ()
 		{
 			UpdatePlayingState (false);
 			SetRate (1);
@@ -1315,7 +1316,7 @@ namespace VAS.Services
 		/// <summary>
 		/// Sets the rate and notifies the change.
 		/// </summary>
-		protected virtual void SetRate (float rate)
+		void SetRate (float rate)
 		{
 			if (rate < 0)
 				rate = 1;
@@ -1329,7 +1330,7 @@ namespace VAS.Services
 		/// Sets the event rate.
 		/// </summary>
 		/// <param name="rate">Rate.</param>
-		protected virtual void SetEventRate (float rate)
+		void SetEventRate (float rate)
 		{
 			var evt = LoadedTimelineEvent;
 			if (evt != null) {
@@ -1348,7 +1349,7 @@ namespace VAS.Services
 		/// <param name="camerasConfig">Cameras configuration.</param>
 		/// <param name="camerasLayout">Cameras layout.</param>
 		/// <param name="playing">If set to <c>true</c> starts playing.</param>
-		protected virtual void LoadSegment (MediaFileSet fileSet, Time start, Time stop, Time seekTime,
+		void LoadSegment (MediaFileSet fileSet, Time start, Time stop, Time seekTime,
 											float rate, ObservableCollection<CameraConfig> camerasConfig, object camerasLayout,
 											bool playing)
 		{
@@ -1390,7 +1391,7 @@ namespace VAS.Services
 			}
 		}
 
-		protected virtual void LoadStillImage (PlaylistImage image, bool playing)
+		void LoadStillImage (PlaylistImage image, bool playing)
 		{
 			loadedPlaylistElement = image;
 			StillImageLoaded = true;
@@ -1399,7 +1400,7 @@ namespace VAS.Services
 			}
 		}
 
-		protected virtual void LoadFrameDrawing (PlaylistDrawing drawing, bool playing)
+		void LoadFrameDrawing (PlaylistDrawing drawing, bool playing)
 		{
 			loadedPlaylistElement = drawing;
 			StillImageLoaded = true;
@@ -1408,7 +1409,7 @@ namespace VAS.Services
 			}
 		}
 
-		protected virtual void LoadVideo (PlaylistVideo video, bool playing)
+		void LoadVideo (PlaylistVideo video, bool playing)
 		{
 			loadedPlaylistElement = video;
 			MediaFileSet fileSet = new MediaFileSet ();
@@ -1418,7 +1419,7 @@ namespace VAS.Services
 			InternalOpen (fileSet, true, true, playing);
 		}
 
-		protected virtual void LoadPlayDrawing (FrameDrawing drawing)
+		void LoadPlayDrawing (FrameDrawing drawing)
 		{
 			Pause ();
 			IgnoreTicks = true;
@@ -1430,7 +1431,7 @@ namespace VAS.Services
 		/// <summary>
 		/// Performs a step using the configured <see cref="Step"/> time.
 		/// </summary>
-		protected virtual void PerformStep (Time step)
+		void PerformStep (Time step)
 		{
 			Time pos = CurrentTime + step;
 			if (SegmentLoaded) {
@@ -1454,7 +1455,7 @@ namespace VAS.Services
 		/// <summary>
 		/// Creates the backend video player.
 		/// </summary>
-		protected virtual void CreatePlayer ()
+		void CreatePlayer ()
 		{
 			try {
 				player = multiPlayer = App.Current.MultimediaToolkit.GetMultiPlayer ();
@@ -1477,7 +1478,7 @@ namespace VAS.Services
 		/// If set to <code>0</code>, the timer is topped
 		/// </summary>
 		/// <param name="mseconds">Mseconds.</param>
-		protected virtual void ReconfigureTimeout (uint mseconds)
+		void ReconfigureTimeout (uint mseconds)
 		{
 			if (mseconds == 0) {
 				timer.Change (Timeout.Infinite, Timeout.Infinite);
@@ -1490,7 +1491,7 @@ namespace VAS.Services
 		/// Called periodically to update the current time and check if and has reached
 		/// its stop time, or drawings must been shonw.
 		/// </summary>
-		protected virtual bool Tick (Time currentTime = null)
+		bool Tick (Time currentTime = null)
 		{
 			if (currentTime == null) {
 				currentTime = CurrentTime;
@@ -1615,7 +1616,7 @@ namespace VAS.Services
 
 		/* These callbacks are triggered by the multimedia backend and need to
 		 * be deferred to the UI main thread */
-		protected virtual void HandleStateChange (PlaybackStateChangedEvent e)
+		void HandleStateChange (PlaybackStateChangedEvent e)
 		{
 			App.Current.GUIToolkit.Invoke (delegate {
 				if (e.Playing) {
@@ -1631,7 +1632,7 @@ namespace VAS.Services
 			});
 		}
 
-		protected virtual void HandleReadyToSeek (object sender)
+		void HandleReadyToSeek (object sender)
 		{
 			App.Current.GUIToolkit.Invoke (delegate {
 				readyToSeek = true;
@@ -1649,7 +1650,7 @@ namespace VAS.Services
 			});
 		}
 
-		protected virtual void HandleEndOfStream (object sender)
+		void HandleEndOfStream (object sender)
 		{
 			App.Current.GUIToolkit.Invoke (delegate {
 				if (loadedPlaylistElement is PlaylistVideo) {
@@ -1669,7 +1670,7 @@ namespace VAS.Services
 			});
 		}
 
-		protected virtual void HandleError (object sender, string message)
+		void HandleError (object sender, string message)
 		{
 			App.Current.GUIToolkit.Invoke (delegate {
 				App.Current.EventsBroker.Publish<MultimediaErrorEvent> (
@@ -1681,7 +1682,7 @@ namespace VAS.Services
 			});
 		}
 
-		protected virtual void HandleScopeChangedEvent (int index, bool visible)
+		void HandleScopeChangedEvent (int index, bool visible)
 		{
 			if (!visible) {
 				ViewPorts [index].Message = Catalog.GetString ("Out of scope");
@@ -1693,7 +1694,7 @@ namespace VAS.Services
 
 		#region Callbacks
 
-		protected virtual void HandleTimeout (Object state)
+		void HandleTimeout (Object state)
 		{
 			App.Current.GUIToolkit.Invoke (delegate {
 				if (!IgnoreTicks) {
@@ -1702,7 +1703,7 @@ namespace VAS.Services
 			});
 		}
 
-		protected virtual void HandleSeekEvent (SeekType type, Time start, float rate)
+		void HandleSeekEvent (SeekType type, Time start, float rate)
 		{
 			App.Current.GUIToolkit.Invoke (delegate {
 				EmitLoadDrawings (null);
@@ -1723,7 +1724,7 @@ namespace VAS.Services
 			});
 		}
 
-		protected void HandleMediaFileSetPropertyChanged (object sender, PropertyChangedEventArgs e)
+		void HandleMediaFileSetPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == "IsStretched" || e.PropertyName.StartsWith ("Collection")) {
 				UpdateDuration ();
