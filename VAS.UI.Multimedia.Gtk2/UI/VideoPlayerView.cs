@@ -834,6 +834,7 @@ namespace VAS.UI
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.ShowZoom))) {
 				if (ViewModel.ShowZoom) {
 					zoomWindow.Show ();
+					ViewModel.ShowZoom = false;
 				}
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Step))) {
