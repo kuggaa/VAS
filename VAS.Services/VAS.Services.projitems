@@ -47,6 +47,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controller\MediaFileSetController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\DrawingsController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\EventsFilterController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)State\AboutState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\AboutVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />
