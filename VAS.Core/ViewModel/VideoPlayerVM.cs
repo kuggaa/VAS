@@ -303,7 +303,7 @@ namespace VAS.Core.ViewModel
 		[PropertyChanged.DoNotCheckEquality]
 		public bool ShowZoom {
 			get;
-			protected set;
+			set;
 		} = false;
 
 		/// <summary>
