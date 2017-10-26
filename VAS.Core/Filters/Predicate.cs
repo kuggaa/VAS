@@ -136,6 +136,11 @@ namespace VAS.Core.Filters
 			}
 		}
 
+		public void EmitActiveChanged ()
+		{
+			RaisePropertyChanged (new PropertyChangedEventArgs ($"{nameof (Active)}"));
+		}
+
 		public void EmitPredicateChanged ()
 		{
 			RaisePropertyChanged (new PropertyChangedEventArgs ($"Collection_{nameof (Elements)}"));
