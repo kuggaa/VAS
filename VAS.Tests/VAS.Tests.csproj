@@ -144,7 +144,6 @@
     <Compile Include="Core\ViewModel\TestPlaylistCollectionVM.cs" />
     <Compile Include="MVVMC\TestLimitationCommand.cs" />
     <Compile Include="Multimedia\TestMultimediaToolkit.cs" />
-    <Compile Include="MVVMC\TestPropertyToPropertyBinding.cs" />
     <Compile Include="Services\TestProjectsController.cs" />
     <Compile Include="Helpers\DummyBusyDialog.cs" />
     <Compile Include="Services\TestMediaFileSetController.cs" />
