@@ -178,7 +178,7 @@ namespace VAS.Drawing.Widgets
 		protected override void StartMove (Selection sel)
 		{
 			base.StartMove (sel);
-			ViewModel.Pause ();
+			ViewModel.PauseCommand.Execute (false);
 		}
 
 		protected override void StopMove (bool moved)
@@ -216,7 +216,7 @@ namespace VAS.Drawing.Widgets
 		void HandleKeyPressed (bool isRight)
 		{
 			Time time = loadedEventVM.SelectedGrabber == SelectionPosition.Left ? loadedEventVM.Start : loadedEventVM.Stop;
-			ViewModel.Pause ();
+			ViewModel.PauseCommand.Execute (false);
 
 			if (isRight) {
 				time.MSeconds += MSECONDS_STEP;

@@ -256,6 +256,7 @@ namespace VAS.Core.Common
 		public const string ErrorDialog = "icons/hicolor/scalable/actions/vas-dialog-error" + IMAGE_EXT;
 
 		// Video Player
+		public static int PlayerCapturerSmallIconSize = 15;
 		public static int PlayerCapturerIconSize = 20;
 		public static int PlayerCapturerControlsHeight = 30;
 		public const string PlayerControlTrimLeftActive = "vas-control-trim-left-active";
@@ -263,7 +264,36 @@ namespace VAS.Core.Common
 		public const string PlayerControlTrimRightActive = "vas-control-trim-right-active";
 		public const string PlayerControlTrimRightInactive = "vas-control-trim-right-inactive";
 		public const string PlayerControlTrim = "vas-control-trim";
+		public const string PlayerControlZoom = "vas-zoom";
+		public const string PlayerControlCancelRec = "vas-cancel-rec";
+		public const string PlayerControlRewind = "vas-control-rw";
+		public const string PlayerControlFastForward = "vas-control-ff";
+		public const string PlayerControlPlay = "vas-control-play";
+		public const string PlayerControlPause = "vas-control-pause";
+		public const string PlayerControlDraw = "vas-control-draw";
+		public const string PlayerControlVolumeHigh = "vas-control-volume-hi";
+		public const string PlayerControlSpeedRate = "vas-speed";
+		public const string PlayerControlJumps = "vas-jumps";
+		public const string PlayerControlDetach = "vas-control-detach";
+		public const string PlayerControlMulticam = "vas-multicam";
 
+		public const string PlayerControlVolumeOff = "vas-control-volume-off";
+		public const string PlayerControlVolumeLow = "vas-control-volume-low";
+		public const string PlayerControlVolumeMedium = "vas-control-volume-med";
+		public const string PlayerControlHigh = "vas-control-volume-hi";
+
+		//Video Player Tooltips
+		public static string PlayerTooltipZoom = Catalog.GetString ("Zoom");
+		public static string PlayerTooltipClose = Catalog.GetString ("Close loaded event");
+		public static string PlayerTooltipPrevious = Catalog.GetString ("Previous");
+		public static string PlayerTooltipNext = Catalog.GetString ("Next");
+		public static string PlayerTooltipPlay = Catalog.GetString ("Play");
+		public static string PlayerTooltipPause = Catalog.GetString ("Pause");
+		public static string PlayerTooltipDraw = Catalog.GetString ("Draw Frame");
+		public static string PlayerTooltipVolume = Catalog.GetString ("Volume");
+		public static string PlayerTooltipRate = Catalog.GetString ("Playback speed");
+		public static string PlayerTooltipJumps = Catalog.GetString ("Jump in seconds. Hold the Shift key with the direction keys to activate it.");
+		public static string PlayerTooltipDetach = Catalog.GetString ("Detach window");
 
 		// Misc icons
 		public const string Spinner = "images/vas-spinner.gif";

@@ -28,7 +28,6 @@ namespace VAS.UI.Helpers.Bindings
 {
 	public static class BindingsExtensions
 	{
-
 		/// <summary>
 		/// Gets the binding context for a given widget and creates it if doesn't exist.
 		/// </summary>

@@ -977,7 +977,7 @@ namespace VAS.Services
 				),
 				new KeyAction (
 					App.Current.HotkeysService.GetByName("OPEN_DRAWING_TOOL"),
-					playerVM.DrawFrame
+					() => playerVM.DrawCommand.Execute ()
 				),
 				new KeyAction (
 					App.Current.HotkeysService.GetByName(PlaybackHotkeys.ZOOM_RESTORE),
@@ -1024,7 +1024,7 @@ namespace VAS.Services
 
 		protected virtual void EmitElementLoaded (IPlaylistElement element, Playlist playlist)
 		{
-			playerVM.HasNext = playlist != null ? playlist.HasNext () : false;
+			playerVM.NextCommand.Executable = playlist != null ? playlist.HasNext () : false;
 			playerVM.LoadedElement = element;
 
 			if (element == null || element is TimelineEvent) {
@@ -1042,7 +1042,7 @@ namespace VAS.Services
 				);
 			}
 			if (ElementLoadedEvent != null && !disposed) {
-				ElementLoadedEvent (element, playerVM.HasNext);
+				ElementLoadedEvent (element, playerVM.NextCommand.CanExecute ());
 			}
 		}
 
@@ -1074,7 +1074,7 @@ namespace VAS.Services
 			}
 
 			playerVM.CurrentTime = relativeTime;
-			playerVM.Seekable = !StillImageLoaded;
+			playerVM.SeekCommand.Executable = !StillImageLoaded;
 
 
 			if (TimeChangedEvent != null && !disposed) {

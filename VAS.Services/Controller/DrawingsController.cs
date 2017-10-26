@@ -71,7 +71,7 @@ namespace VAS.Services.Controller
 			Time pos;
 			MediaFileSet fileSet;
 
-			videoPlayer.Pause (true);
+			videoPlayer.PauseCommand.Execute (true);
 
 			if (drawEvent.Play == null) {
 				drawEvent.Play = videoPlayer.LoadedElement as TimelineEvent;
@@ -125,7 +125,7 @@ namespace VAS.Services.Controller
 
 		protected virtual void HandleCreateSnaphotSeries (SnapshotSeriesEvent e)
 		{
-			videoPlayer.Pause ();
+			videoPlayer.PauseCommand.Execute (false);
 			App.Current.GUIToolkit.ExportFrameSeries (e.TimelineEvent, App.Current.SnapshotsDir);
 		}
 	}

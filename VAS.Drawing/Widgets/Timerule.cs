@@ -317,18 +317,18 @@ namespace VAS.Drawing.Widgets
 				// so we have to unload it
 				ViewModel.LoadEvent (null, false);
 			} else {
-				ViewModel.Pause ();
+				ViewModel.PauseCommand.Execute (false);
 			}
 		}
 
 		protected override void StopMove (bool moved)
 		{
 			if (moved && !ContinuousSeek) {
-				ViewModel.Seek (
-					Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel), true);
+				ViewModel.SeekCommand.Execute (new VideoPlayerSeekOptions (Utils.PosToTime (new Point (needle.X + Scroll, 0),
+																							SecondsPerPixel), true));
 			}
 			if (WasPlaying) {
-				ViewModel.Play ();
+				ViewModel.PlayCommand.Execute ();
 			}
 		}
 
@@ -340,8 +340,8 @@ namespace VAS.Drawing.Widgets
 					needle.X = Utils.TimeToPos (Duration, SecondsPerPixel);
 					return;
 				}
-				ViewModel.Seek (Utils.PosToTime (new Point (needle.X + Scroll, 0), SecondsPerPixel),
-						   false, throttled: true);
+				viewModel.SeekCommand.Execute (new VideoPlayerSeekOptions (Utils.PosToTime (new Point (needle.X + Scroll, 0),
+																							SecondsPerPixel), false, false, true));
 			}
 		}
 
@@ -353,7 +353,7 @@ namespace VAS.Drawing.Widgets
 				return;
 			}
 			needle.X = coords.X;
-			ViewModel.Seek (clickTime, true);
+			viewModel.SeekCommand.Execute (new VideoPlayerSeekOptions (clickTime, true));
 			needle.ReDraw ();
 		}
 
