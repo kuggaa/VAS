@@ -19,6 +19,7 @@ using System;
 using Gtk;
 using Pango;
 using VAS.Core.Common;
+using VAS.Core.Interfaces.GUI;
 using VAS.UI.Helpers;
 using Handlers = VAS.Core.Handlers;
 using Misc = VAS.UI.Helpers.Misc;
@@ -81,7 +82,7 @@ namespace VAS.UI
 
 		protected void OnScaleValueChanged (object sender, EventArgs e)
 		{
-			ValueChanged (scale.Value);
+			ValueChanged?.Invoke (scale.Value);
 		}
 
 		protected void OnFocusOutEvent (object o, FocusOutEventArgs args)

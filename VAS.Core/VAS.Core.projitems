@@ -273,6 +273,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\IStateful.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TagVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IPlaylistEventElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\VideoPlayerSeekOptions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

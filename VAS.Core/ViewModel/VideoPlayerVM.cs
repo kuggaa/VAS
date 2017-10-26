@@ -15,7 +15,6 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -37,9 +36,11 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class VideoPlayerVM : ViewModelBase, IViewModel
 	{
+		double previousVolumeLevel = 100.0;
 
 		public VideoPlayerVM ()
 		{
+			ViewPortsSwitchActive = true;
 			CamerasConfig = new ObservableCollection<CameraConfig> ();
 			CurrentTime = new Time (0);
 			Step = new Time { TotalSeconds = 10 };
@@ -54,7 +55,7 @@ namespace VAS.Core.ViewModel
 				ToolTipText = Catalog.GetString ("Zoom"),
 			};
 
-			SetZoomCommand = new LimitationCommand<float> (VASFeature.Zoom.ToString (), SetZoom);
+			SetZoomCommand = new LimitationCommand<float> (VASFeature.Zoom.ToString (), zoomLevel => Player.SetZoom (zoomLevel));
 
 			EditEventDurationCommand = new Command<bool> (b => Player.SetEditEventDurationMode (b)) {
 				Icon = App.Current.ResourcesLocator.LoadIcon (StyleConf.PlayerControlTrim, StyleConf.PlayerCapturerIconSize),
@@ -63,6 +64,7 @@ namespace VAS.Core.ViewModel
 				Executable = false,
 			};
 
+			InitializeCommands ();
 			Duration = new Time (0);
 			CurrentTime = new Time (0);
 			EditEventDurationTimeNode = new TimeNodeVM ();
@@ -74,6 +76,69 @@ namespace VAS.Core.ViewModel
 			Player.Dispose ();
 			Player = null;
 		}
+		#region Commands
+		/// <summary>
+		/// Changes the volume of <see cref="VideoPlayerController"/>
+		/// </summary>
+		public Command<double> ChangeVolumeCommand { get; set; }
+
+		/// <summary>
+		/// Changes step value of <see cref="VideoPlayerController"/>
+		/// </summary>
+		public Command<double> ChangeStepCommand { get; set; }
+
+		/// <summary>
+		/// Sets rate value of <see cref="VideoPlayerController"/>, if it is different than 1, <see cref="VideoPlayerController"/> will be muted
+		/// </summary>
+		public Command<double> ChangeRateCommand { get; set; }
+
+		/// <summary>
+		/// Closes <see cref="VideoPlayerController"/>
+		/// </summary>
+		public Command CloseCommand { get; set; }
+
+		/// <summary>
+		/// Jump to the previous element / to the begining if a <see cref="IPlaylistElement"/> is loaded,
+		/// to the beginning of the event if a <see cref="TimelineEvent"/> is loaded or
+		/// to the beginning of the stream of no element is loaded.
+		/// </summary>
+		public Command PreviousCommand { get; set; }
+
+		/// <summary>
+		/// Invokes <see cref="Next"/> Method
+		/// </summary>
+		/// <value>The previous command.</value>
+		public Command NextCommand { get; set; }
+
+		/// <summary>
+		/// Invokes <see cref="Play"/> Method
+		/// </summary>
+		/// <value>The play command.</value>
+		public Command PlayCommand { get; set; }
+
+		/// <summary>
+		/// Invokes <see cref="Pause"/> Method
+		/// </summary>
+		/// <value>The pause command.</value>
+		public Command<bool> PauseCommand { get; set; }
+
+		/// <summary>
+		/// Invokes <see cref="DrawFrame"/> Method
+		/// </summary>
+		/// <value>The draw command.</value>
+		public Command DrawCommand { get; set; }
+
+		/// <summary>
+		/// Publishes DetachEvent
+		/// </summary>
+		/// <value>The detach command.</value>
+		public Command DetachCommand { get; set; }
+
+		/// <summary>
+		/// Toggles ViewPortsSwitchActive boolean.
+		/// </summary>
+		/// <value>The view ports switch toggle command.</value>
+		public Command ViewPortsSwitchToggleCommand { get; set; }
 
 		/// <summary>
 		/// Gets or sets the show zoom Limitation command.
@@ -92,6 +157,37 @@ namespace VAS.Core.ViewModel
 			get;
 			set;
 		}
+		/// <summary>
+		/// Seek the specified position. This position should be relative to whatever is loaded.
+		/// There are 3 options:
+		/// - Playing a video, no events loaded -> A seek needs to be relative
+		/// 	to the video file, no adjustments needed.
+		/// - Playing a loaded event (a presentation event or a single event)
+		///  -> A seek needs to be relative to the current event.
+		/// 	Event start is Time(0)
+		/// - Playing a playlist (with presentationMode on) -> A seek needs to
+		/// 	be relative to the full playlist duration.
+		/// </summary>
+		/// <value>The seek command.</value>
+		public Command<VideoPlayerSeekOptions> SeekCommand { get; set; }
+
+		/// <summary>
+		/// Force a redraw of the last frame.
+		/// </summary>
+		/// <value>The expose command.</value>
+		public Command ExposeCommand { get; set; }
+
+		/// <summary>
+		/// Change the Ready state of a player indicating that the View has configured correctly the ViewPorts and the player can start playback now.
+		/// </summary>
+		/// <value>The ready command.</value>
+		public Command<bool> ReadyCommand { get; set; }
+
+		/// <summary>
+		///  Stops the <see cref="VideoPlayer"/>
+		/// </summary>
+		/// <value>The stop command.</value>
+		public Command StopCommand { get; set; }
 
 		/// <summary>
 		/// Gets or sets the edit event duration command.
@@ -101,6 +197,49 @@ namespace VAS.Core.ViewModel
 		/// <value>The edit event duration command.</value>
 		public Command EditEventDurationCommand { get; set; }
 
+		/// <summary>
+		/// Changes the playback state pause/playing.
+		/// </summary>
+		/// <value>The toggle play command.</value>
+		public Command TogglePlayCommand { get; set; }
+
+		/// <summary>
+		/// Performs a seek to the previous frame.
+		/// </summary>
+		/// <value>The seek to previous frame command.</value>
+		public Command SeekToPreviousFrameCommand { get; set; }
+
+		/// <summary>
+		/// Performs a seek to the next frame.
+		/// </summary>
+		/// <value>The seek to next frame command.</value>
+		public Command SeekToNextFrameCommand { get; set; }
+
+		/// <summary>
+		/// Step the amount in <see cref="Step"/> backward.
+		/// </summary>
+		/// <value>The step backward command.</value>
+		public Command StepBackwardCommand { get; set; }
+
+		/// <summary>
+		/// Step the amount in <see cref="Step"/> forward.
+		/// </summary>
+		/// <value>The step forward command.</value>
+		public Command StepForwardCommand { get; set; }
+		#endregion
+		/// <summary>
+		/// Indicates that viewports are shown or not
+		/// </summary>
+		/// <value><c>true</c> if view ports switch active; otherwise, <c>false</c>.</value>
+		public bool ViewPortsSwitchActive {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.VideoPlayerVM"/> controls are sensitive.
+		/// </summary>
+		/// <value><c>true</c> if controls sensitive; otherwise, <c>false</c>.</value>
 		public bool ControlsSensitive {
 			get;
 			set;
@@ -136,16 +275,19 @@ namespace VAS.Core.ViewModel
 			set;
 		}
 
+		/// <summary>
+		/// Indicates if VideoPlayer is playing.
+		/// </summary>
+		/// <value><c>true</c> if playing; otherwise, <c>false</c>.</value>
 		public bool Playing {
 			get;
 			set;
 		}
 
-		public bool HasNext {
-			get;
-			set;
-		}
-
+		/// <summary>
+		/// Gets or sets the current time.
+		/// </summary>
+		/// <value>The current time.</value>
 		public Time CurrentTime {
 			get;
 			set;
@@ -175,38 +317,56 @@ namespace VAS.Core.ViewModel
 			set;
 		}
 
-		public bool Seekable {
-			get;
-			set;
-		}
-
+		/// <summary>
+		/// Current Media File Set ViewModel
+		/// </summary>
+		/// <value>The file set.</value>
 		public MediaFileSetVM FileSet {
 			get;
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets the frame drawing.
+		/// </summary>
+		/// <value>The frame drawing.</value>
 		public FrameDrawing FrameDrawing {
 			get;
 			set;
 		}
 
+		/// <summary>
+		/// Gets the current frame shown in the video player.
+		/// </summary>
+		/// <value>The current frame.</value>
 		[PropertyChanged.DoNotNotify]
 		public Image CurrentFrame {
 			get {
 				return Player.CurrentFrame;
 			}
 		}
-
+		/// <summary>
+		/// Gets or sets the <see cref="IPlaylistElement"/> Loaded
+		/// </summary>
+		/// <value>The loaded element.</value>
 		public IPlaylistElement LoadedElement {
 			get;
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets the view mode.
+		/// </summary>
+		/// <value>The view mode.</value>
 		public PlayerViewOperationMode ViewMode {
 			set;
 			get;
 		}
 
+		/// <summary>
+		/// Gets or sets the videoplayer mode.
+		/// </summary>
+		/// <value>The player mode.</value>
 		public VideoPlayerOperationMode PlayerMode {
 			set {
 				Player.Mode = value;
@@ -216,11 +376,19 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.VideoPlayerVM"/> supports multiple cameras.
+		/// </summary>
+		/// <value><c>true</c> if supports multiple cameras; otherwise, <c>false</c>.</value>
 		public bool SupportsMultipleCameras {
 			get;
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.VideoPlayerVM"/> show detach button.
+		/// </summary>
+		/// <value><c>true</c> if show detach button; otherwise, <c>false</c>.</value>
 		public bool ShowDetachButton {
 			set;
 			get;
@@ -236,16 +404,28 @@ namespace VAS.Core.ViewModel
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets the video player controller.
+		/// </summary>
+		/// <value>The player.</value>
 		public IVideoPlayerController Player {
 			get;
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.VideoPlayerVM"/> player attached.
+		/// </summary>
+		/// <value><c>true</c> if player attached; otherwise, <c>false</c>.</value>
 		public bool PlayerAttached {
 			set;
 			get;
 		}
 
+		/// <summary>
+		/// Sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.VideoPlayerVM"/> ignore ticks.
+		/// </summary>
+		/// <value><c>true</c> if ignore ticks; otherwise, <c>false</c>.</value>
 		public bool IgnoreTicks {
 			set {
 				Player.IgnoreTicks = value;
@@ -262,12 +442,19 @@ namespace VAS.Core.ViewModel
 			set;
 		}
 
+		/// <summary>
+		/// Sets the list of view ports in video player controller.
+		/// </summary>
+		/// <value>The view ports.</value>
 		public List<IViewPort> ViewPorts {
 			set {
 				Player.ViewPorts = value;
 			}
 		}
-
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.VideoPlayerVM"/> prepare view.
+		/// </summary>
+		/// <value><c>true</c> if prepare view; otherwise, <c>false</c>.</value>
 		public bool PrepareView {
 			get;
 			set;
@@ -292,7 +479,10 @@ namespace VAS.Core.ViewModel
 			set;
 		}
 
-
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="T:VAS.Core.ViewModel.VideoPlayerVM"/> is opened.
+		/// </summary>
+		/// <value><c>true</c> if opened; otherwise, <c>false</c>.</value>
 		[PropertyChanged.DoNotNotify]
 		public bool Opened {
 			get {
@@ -300,11 +490,16 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.VideoPlayerVM"/> show zoom.
+		/// </summary>
+		/// <value><c>true</c> if show zoom; otherwise, <c>false</c>.</value>
 		[PropertyChanged.DoNotCheckEquality]
 		public bool ShowZoom {
 			get;
 			set;
 		} = false;
+
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.VideoPlayerVM"/> is
@@ -329,81 +524,21 @@ namespace VAS.Core.ViewModel
 
 		#region methods
 
-		public void Expose ()
-		{
-			Player.Expose ();
-		}
-
-		public void Ready (bool ready)
-		{
-			Player.Ready (ready);
-		}
-
-		public void Play ()
-		{
-			Player.Play ();
-		}
-
-		public void Pause (bool synchronous = false)
-		{
-			Player.Pause (synchronous);
-		}
-
-		public void Stop ()
-		{
-			Player.Stop (false);
-		}
-
-		public void Seek (double pos)
-		{
-			Player.Seek (pos);
-		}
-
-		public void Seek (Time time, bool accurate = false, bool synchronous = false, bool throttled = false)
-		{
-			Player.Seek (time, accurate, synchronous, throttled);
-		}
-
-		public void Previous ()
-		{
-			Player.Previous ();
-		}
-
-		public void Next ()
-		{
-			Player.Next ();
-		}
-
-		public void TogglePlay ()
-		{
-			Player.TogglePlay ();
-		}
-
-		public void SeekToPreviousFrame ()
-		{
-			Player.SeekToPreviousFrame ();
-		}
-
-		public void SeekToNextFrame ()
-		{
-			Player.SeekToNextFrame ();
-		}
-
-		public void StepBackward ()
-		{
-			Player.StepBackward ();
-		}
-
-		public void StepForward ()
-		{
-			Player.StepForward ();
-		}
-
+		#region Public Methods
+		/// <summary>
+		/// Open the specified fileSet.
+		/// </summary>
 		public void OpenFileSet (MediaFileSetVM fileset, bool play = false)
 		{
 			Player.Open (fileset?.Model, play);
 		}
 
+		/// <summary>
+		/// Loads a timeline event.
+		/// The file set for this event comes from <see cref="e.Fileset"/>
+		/// </summary>
+		/// <param name="evt">The timeline event.</param>
+		/// <param name="playing">If set to <c>true</c> playing.</param>
 		public void LoadEvent (TimelineEvent e, bool playing)
 		{
 			if (e?.Duration.MSeconds == 0) {
@@ -420,12 +555,23 @@ namespace VAS.Core.ViewModel
 				}
 			}
 		}
-
+		/// <summary>
+		/// Loads a timeline event.
+		/// The file set for this event comes from <see cref="e.Fileset"/>
+		/// </summary>
+		/// <param name="evt">The timeline event.</param>
+		/// <param name="seekTime">Seek time.</param>
+		/// <param name="playing">If set to <c>true</c> playing.</param>
 		public void LoadEvent (TimelineEvent e, Time seekTime, bool playing)
 		{
 			Player.LoadEvent (e, seekTime, playing);
 		}
 
+		/// <summary>
+		/// Loads all <see cref="IPlayListElement" events/>
+		/// </summary>
+		/// <param name="events">Events.</param>
+		/// <param name="playing">If set to <c>true</c> playing.</param>
 		public void LoadEvents (IEnumerable<TimelineEvent> events, bool playing)
 		{
 			Playlist playlist = new Playlist ();
@@ -439,26 +585,15 @@ namespace VAS.Core.ViewModel
 			Player.LoadPlaylistEvent (playlist, list.FirstOrDefault (), playing);
 		}
 
+		/// <summary>
+		/// Loads the specified playlist event.
+		/// </summary>
+		/// <param name="playlist">Playlist.</param>
+		/// <param name="element">Element.</param>
+		/// <param name="playing">If set to <c>true</c> playing.</param>
 		public void LoadPlaylistEvent (Playlist playlist, IPlaylistElement element, bool playing)
 		{
 			Player?.LoadPlaylistEvent (playlist, element, playing);
-		}
-
-		/// <summary>
-		/// Sends Event to draw in the Current Frame
-		/// </summary>
-		public void DrawFrame ()
-		{
-			Player.DrawFrame ();
-		}
-
-		/// <summary>
-		/// Changes the current zoom value using a value that goes from 1 (100%) to 2(200%)
-		/// </summary>
-		/// <param name="zoomLevel">Zoom level.</param>
-		void SetZoom (float zoomLevel)
-		{
-			Player.SetZoom (zoomLevel);
 		}
 
 		/// <summary>
@@ -480,32 +615,103 @@ namespace VAS.Core.ViewModel
 			Player.CamerasConfig = cameras;
 		}
 
-		/// <summary>
-		/// Change the playback rate of the player.
-		/// </summary>
-		/// <param name="rate">Rate.</param>
-		public void SetRate (double rate)
+		#endregion
+
+		#region private Methods
+
+		void InitializeCommands ()
 		{
-			Player.Rate = rate;
+			ShowZoomCommand = new LimitationCommand (VASFeature.Zoom.ToString (), () => { ShowZoom = true; });
+			ConfigureCommand (ShowZoomCommand, StyleConf.PlayerControlZoom, StyleConf.PlayerCapturerSmallIconSize, StyleConf.PlayerTooltipZoom);
+
+			SetZoomCommand = new LimitationCommand<float> (VASFeature.Zoom.ToString (), zoomLevel => Player.SetZoom (zoomLevel));
+
+			ChangeVolumeCommand = new Command<double> (level => {
+				Player.Volume = level / 100;
+			});
+			ConfigureCommand (ChangeVolumeCommand, StyleConf.PlayerControlHigh, StyleConf.PlayerCapturerIconSize, StyleConf.PlayerTooltipVolume);
+
+			ChangeStepCommand = new Command<double> (val => {
+				Player.SetStep (new Time { TotalSeconds = App.Current.StepList [(int)val] });
+			});
+			ConfigureCommand (ChangeStepCommand, StyleConf.PlayerControlJumps, StyleConf.PlayerCapturerSmallIconSize, StyleConf.PlayerTooltipJumps);
+
+			ChangeRateCommand = new Command<double> (val => {
+				double rateLevel = App.Current.RateList [(int)val];
+				// Mute for rate != 1
+				if (rateLevel != 1 && Volume != 0) {
+					previousVolumeLevel = Volume;
+					Player.Volume = 0;
+				} else if (rateLevel == 1)
+					Player.Volume = previousVolumeLevel;
+
+				Player.Rate = rateLevel;
+			});
+			ConfigureCommand (ChangeRateCommand, StyleConf.PlayerControlSpeedRate, StyleConf.PlayerCapturerSmallIconSize, StyleConf.PlayerTooltipRate);
+
+			CloseCommand = new Command (() => { LoadEvent (null, Playing); });
+			ConfigureCommand (CloseCommand, StyleConf.PlayerControlCancelRec, StyleConf.PlayerCapturerIconSize, StyleConf.PlayerTooltipClose);
+
+			PreviousCommand = new Command (() => { Player.Previous (); });
+			ConfigureCommand (PreviousCommand, StyleConf.PlayerControlRewind, StyleConf.PlayerCapturerIconSize, StyleConf.PlayerTooltipPrevious);
+
+			NextCommand = new Command (() => { Player.Next (); });
+			ConfigureCommand (NextCommand, StyleConf.PlayerControlFastForward, StyleConf.PlayerCapturerIconSize, StyleConf.PlayerTooltipNext);
+
+			PlayCommand = new Command (() => { Player.Play (); });
+			ConfigureCommand (PlayCommand, StyleConf.PlayerControlPlay, StyleConf.PlayerCapturerIconSize, StyleConf.PlayerTooltipPlay);
+
+			PauseCommand = new Command<bool> (sync => Player.Pause (sync));
+			ConfigureCommand (PauseCommand, StyleConf.PlayerControlPause, StyleConf.PlayerCapturerIconSize, StyleConf.PlayerTooltipPause);
+
+			DrawCommand = new Command (() => Player.DrawFrame ());
+			ConfigureCommand (DrawCommand, StyleConf.PlayerControlDraw, StyleConf.PlayerCapturerIconSize, StyleConf.PlayerTooltipDraw);
+
+			DetachCommand = new Command (() => { App.Current.EventsBroker.Publish (new DetachEvent ()); });
+			ConfigureCommand (DetachCommand, StyleConf.PlayerControlDetach, StyleConf.PlayerCapturerIconSize, StyleConf.PlayerTooltipDetach);
+
+			ViewPortsSwitchToggleCommand = new Command (() => {
+				ViewPortsSwitchActive = !ViewPortsSwitchActive;
+			});
+			ConfigureCommand (ViewPortsSwitchToggleCommand, StyleConf.PlayerControlMulticam, StyleConf.PlayerCapturerIconSize);
+
+			SeekCommand = new Command<VideoPlayerSeekOptions> (seekOptions => {
+				Player.Seek (seekOptions.Time, seekOptions.Accurate, seekOptions.Synchronous, seekOptions.Throttled);
+			});
+
+			ExposeCommand = new Command (() => Player.Expose ());
+
+			ReadyCommand = new Command<bool> (ready => Player.Ready (ready));
+
+			StopCommand = new Command (() => Player.Stop ());
+
+			TogglePlayCommand = new Command (() => Player.TogglePlay ());
+
+			SeekToPreviousFrameCommand = new Command (() => Player.SeekToPreviousFrame ());
+
+			SeekToNextFrameCommand = new Command (() => Player.SeekToNextFrame ());
+
+			StepBackwardCommand = new Command (() => Player.StepBackward ());
+
+			StepForwardCommand = new Command (() => Player.StepForward ());
 		}
 
 		/// <summary>
-		/// Change the volume of the player.
+		/// Sets the Icon found on ResourceLocator named <paramref name="icon"/> with size <paramref name="iconSize"/>
+		/// Sets the tooltip text with string <paramref name="tooltip"/>
 		/// </summary>
-		/// <param name="volume">Volume.</param>
-		public void SetVolume (double volume)
+		/// <param name="icon">Icon.</param>
+		/// <param name="iconSize">Icon size.</param>
+		/// <param name="tooltip">Tooltip.</param>
+		void ConfigureCommand (Command command, string icon, int iconSize = 0, string tooltip = "")
 		{
-			Player.Volume = volume;
+			if (command == null) return;
+			command.Icon = App.Current.ResourcesLocator.LoadIcon (icon, iconSize);
+			command.ToolTipText = tooltip;
 		}
 
-		/// <summary>
-		/// Changes the current player step value.
-		/// </summary>
-		/// <param name="steps">Steps.</param>
-		public void SetStep (Time step)
-		{
-			Player.SetStep (step);
-		}
+		#endregion
+
 		#endregion
 	}
 }
