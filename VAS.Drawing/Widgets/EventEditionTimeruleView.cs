@@ -141,14 +141,14 @@ namespace VAS.Drawing.Widgets
 			Begin (context);
 
 			tk.LineWidth = 0;
-			BackgroundColor = App.Current.Style.Text_DarkColor;
+			BackgroundColor = App.Current.Style.TextBaseSecondary;
 			DrawBackground ();
 
-			tk.FillColor = App.Current.Style.PaletteBackground;
+			tk.FillColor = App.Current.Style.ScreenBase;
 			tk.DrawRectangle (new Point (nodeStartX - editorStartX, 0), nodeStopX - nodeStartX, height);
 
-			tk.StrokeColor = App.Current.Style.PaletteWidgets;
-			tk.FillColor = App.Current.Style.PaletteWidgets;
+			tk.StrokeColor = App.Current.Style.TextBase;
+			tk.FillColor = App.Current.Style.TextBase;
 			tk.LineWidth = Constants.TIMELINE_LINE_WIDTH;
 			tk.FontSlant = FontSlant.Normal;
 			tk.FontSize = FontSize;

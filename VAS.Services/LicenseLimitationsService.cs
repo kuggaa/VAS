@@ -235,7 +235,7 @@ namespace VAS.Services
 			}
 
 			TwoBarChartVM barChart = new TwoBarChartVM (limitation.Maximum,
-														new SeriesVM { Title = "Remaining", Elements = limitation.Remaining, Color = Color.Green1 },
+														new SeriesVM { Title = "Remaining", Elements = limitation.Remaining, Color = App.Current.Style.ColorAccentSuccess },
 														new SeriesVM { Title = "Current", Elements = limitation.Count, Color = Color.Transparent });
 			barChart.Height = 10;
 			barChart.Background = new ImageCanvasObject {

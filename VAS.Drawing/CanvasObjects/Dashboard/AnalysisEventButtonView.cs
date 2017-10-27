@@ -520,7 +520,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				return;
 			}
 
-			c = App.Current.Style.PaletteBackgroundDark;
+			c = App.Current.Style.ThemeBase;
 			width = StyleConf.ButtonRecWidth;
 			height = HeaderHeight;
 			pos = new Point (Position.X + Width - StyleConf.ButtonRecWidth,
@@ -529,8 +529,8 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			tk.FillColor = new Color (c.R, c.G, c.B, 200);
 			tk.StrokeColor = BackgroundColor;
 			tk.DrawRectangle (pos, width, height);
-			tk.StrokeColor = Color.Green1;
-			tk.FillColor = Color.Green1;
+			tk.StrokeColor = App.Current.Style.ColorAccentSuccess;
+			tk.FillColor = App.Current.Style.ColorAccentSuccess;
 			tk.FontSize = StyleConf.ButtonButtonsFontSize;
 			editRect.Update (pos, width, height);
 			buttonsRects [editRect] = editbutton;
@@ -593,11 +593,11 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				Position.Y);
 			width = StyleConf.ButtonRecWidth;
 			height = HeaderHeight;
-			tk.FillColor = App.Current.Style.PaletteBackgroundDark;
+			tk.FillColor = App.Current.Style.ThemeBase;
 			tk.LineWidth = 0;
 			tk.DrawRectangle (pos, width, height);
-			tk.StrokeColor = Color.Green1;
-			tk.FillColor = Color.Green1;
+			tk.StrokeColor = App.Current.Style.ColorAccentSuccess;
+			tk.FillColor = App.Current.Style.ColorAccentSuccess;
 			tk.FontSize = 12;
 			applyRect.Update (pos, width, height);
 			buttonsRects [applyRect] = applyButton;
@@ -622,12 +622,12 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			height = HeaderHeight;
 			tk.FontSize = StyleConf.ButtonButtonsFontSize;
 			if (!Recording) {
-				tk.FillColor = App.Current.Style.PaletteBackgroundDark;
+				tk.FillColor = App.Current.Style.ThemeBase;
 				tk.StrokeColor = BackgroundColor;
 				tk.LineWidth = StyleConf.ButtonLineWidth;
 				tk.DrawRectangle (pos, width, height);
-				tk.StrokeColor = Color.Red1;
-				tk.FillColor = Color.Red1;
+				tk.StrokeColor = App.Current.Style.ColorAccentError;
+				tk.FillColor = App.Current.Style.ColorAccentError;
 				tk.DrawImage (bpos, width, height - 10, recImage, ScaleMode.AspectFit, true);
 			} else {
 				tk.FillColor = tk.StrokeColor = BackgroundColor;

@@ -39,8 +39,8 @@ namespace VAS.UI
 			replayhbox.HeightRequest = livebox.HeightRequest = StyleConf.PlayerCapturerControlsHeight;
 			replayimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-replay", StyleConf.PlayerCapturerIconSize);
 			liveimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-live", StyleConf.PlayerCapturerIconSize);
-			livelabel.ModifyFg (Gtk.StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteActive));
-			replaylabel.ModifyFg (Gtk.StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteActive));
+			livelabel.ModifyFg (Gtk.StateType.Normal, Misc.ToGdkColor (App.Current.Style.TextBaseDisabled));
+			replaylabel.ModifyFg (Gtk.StateType.Normal, Misc.ToGdkColor (App.Current.Style.TextBaseDisabled));
 			livebox.Visible = replayhbox.Visible = true;
 			playerview = App.Current.GUIToolkit.GetPlayerView ();
 			playerbox.PackEnd (playerview as Gtk.Widget);

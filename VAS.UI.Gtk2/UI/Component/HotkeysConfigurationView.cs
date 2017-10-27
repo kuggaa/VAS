@@ -106,7 +106,7 @@ namespace VAS.UI.Component
 				keyLabel = new Label ();
 				keyLabel.ModifyFont (Pango.FontDescription.FromString (App.Current.Style.ContentFont));
 				if (!config.Key.Defined) {
-					keyLabel.ModifyFg (StateType.Normal, Helpers.Misc.ToGdkColor (Color.Red));
+					keyLabel.ModifyFg (StateType.Normal, Helpers.Misc.ToGdkColor (App.Current.Style.ColorAccentError));
 				} else {
 					keyLabel.ModifyFg (StateType.Normal, Helpers.Misc.ToGdkColor (App.Current.Style.TextColor));
 				}
@@ -127,7 +127,7 @@ namespace VAS.UI.Component
 				config.PropertyChanged += (sender, e) => {
 					if (e.PropertyName == "Key") {
 						if (!config.Key.Defined) {
-							keyLabel.ModifyFg (StateType.Normal, Helpers.Misc.ToGdkColor (Color.Red));
+							keyLabel.ModifyFg (StateType.Normal, Helpers.Misc.ToGdkColor (App.Current.Style.ColorAccentError));
 						} else {
 							keyLabel.ModifyFg (StateType.Normal, Helpers.Misc.ToGdkColor (App.Current.Style.TextColor));
 						}
