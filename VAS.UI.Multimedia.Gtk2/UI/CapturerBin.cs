@@ -290,24 +290,24 @@ namespace VAS.UI
 			Pango.FontDescription desc = Pango.FontDescription.FromString (font);
 
 			controllerbox.HeightRequest = height;
-			hourseventbox.ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteBackgroundDark));
-			hourlabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteText));
+			hourseventbox.ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.ThemeBase));
+			hourlabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.TextBase));
 			hourlabel.ModifyFont (desc);
 			hourseventbox.WidthRequest = timeWidth;
-			minuteseventbox.ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteBackgroundDark));
-			minuteslabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteText));
+			minuteseventbox.ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.ThemeBase));
+			minuteslabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.TextBase));
 			minuteslabel.ModifyFont (desc);
 			minuteseventbox.WidthRequest = timeWidth;
-			secondseventbox.ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteBackgroundDark));
-			secondslabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteText));
+			secondseventbox.ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.ThemeBase));
+			secondslabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.TextBase));
 			secondslabel.ModifyFont (desc);
 			secondseventbox.WidthRequest = timeWidth;
 			label1.ModifyFont (desc);
-			label1.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteText));
+			label1.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.TextBase));
 			label2.ModifyFont (desc);
-			label2.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteText));
+			label2.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.TextBase));
 			periodlabel.ModifyFont (desc);
-			periodlabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteText));
+			periodlabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.TextBase));
 
 		}
 

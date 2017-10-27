@@ -39,7 +39,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		{
 			SelectionMode = NodeSelectionMode.All;
 			DraggingMode = NodeDraggingMode.All;
-			LineColor = App.Current.Style.PaletteBackgroundLight;
+			LineColor = App.Current.Style.ThemeContrastDisabled;
 			Height = StyleConf.TimelineCategoryHeight;
 			ClippingMode = NodeClippingMode.Strict;
 			ScrollX = 0;
@@ -366,8 +366,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 
 			if (Selected) {
-				tk.FillColor = App.Current.Style.PaletteActive;
-				tk.StrokeColor = App.Current.Style.PaletteActive;
+				tk.FillColor = App.Current.Style.ThemeContrastDisabled;
+				tk.StrokeColor = App.Current.Style.ThemeContrastDisabled;
 			} else {
 				tk.FillColor = LineColor;
 				tk.StrokeColor = LineColor;
@@ -392,8 +392,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			if (ShowName) {
 				tk.FontSize = StyleConf.TimelineFontSize;
 				tk.FontWeight = FontWeight.Bold;
-				tk.FillColor = App.Current.Style.PaletteActive;
-				tk.StrokeColor = App.Current.Style.PaletteActive;
+				tk.FillColor = App.Current.Style.TextBaseDisabled;
+				tk.StrokeColor = App.Current.Style.TextBaseDisabled;
 				tk.DrawText (new Point (StartX, OffsetY), StopX - StartX, Height / 2, TimeNode.Name);
 			}
 			tk.End ();

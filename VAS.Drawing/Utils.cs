@@ -33,9 +33,9 @@ namespace VAS.Drawing
 			Color c;
 
 			if (row % 2 == 0) {
-				c = App.Current.Style.PaletteBackground;
+				c = App.Current.Style.ScreenBase;
 			} else {
-				c = App.Current.Style.PaletteBackgroundLight;
+				c = App.Current.Style.ThemeContrastDisabled;
 			}
 			return c;
 		}

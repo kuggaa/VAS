@@ -108,9 +108,9 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			tk.FontSlant = FontSlant.Normal;
 			tk.FontWeight = DEFAULT_FONT_WEIGHT;
 			tk.FontSize = DEFAULT_FONT_SIZE;
-			tk.FillColor = App.Current.Style.PaletteWidgets;
+			tk.FillColor = App.Current.Style.TextBase;
 			tk.FontAlignment = FontAlignment.Left;
-			tk.StrokeColor = App.Current.Style.PaletteWidgets;
+			tk.StrokeColor = App.Current.Style.TextBase;
 			tk.DrawText (new Point (TextOffset, scrolledY), Width - TextOffset, Height, Name);
 			//Draw playButton
 			playButton.Draw (tk, area);

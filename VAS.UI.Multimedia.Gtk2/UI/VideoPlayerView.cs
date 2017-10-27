@@ -94,7 +94,7 @@ namespace VAS.UI
             jumpsLabel.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 8px"));
             zoomLabel.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 8px"));
             totalTimeLabel.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 10px"));
-            totalTimeLabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.Text_DarkColor));
+            totalTimeLabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.TextBaseSecondary));
             eventNameLabel.Ellipsize = EllipsizeMode.End;
 
 
@@ -129,7 +129,7 @@ namespace VAS.UI
             Misc.SetFocus (totalbox, false);
             mainviewport.CanFocus = true;
 
-            maineventbox.ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteBackground));
+            maineventbox.ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.ScreenBase));
 
             controlsbox.HeightRequest = StyleConf.PlayerCapturerControlsHeight;
 

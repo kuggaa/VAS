@@ -111,9 +111,9 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 			tk.Begin ();
 
-			tk.StrokeColor = App.Current.Style.PaletteBackgroundDark;
+			tk.StrokeColor = App.Current.Style.ThemeBase;
 			if (Selected) {
-				tk.FillColor = App.Current.Style.PaletteActive;
+				tk.FillColor = App.Current.Style.ThemeContrastDisabled;
 			} else {
 				tk.FillColor = LineColor;
 			}
@@ -124,8 +124,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			if (ShowName) {
 				tk.FontSize = 16;
 				tk.FontWeight = FontWeight.Bold;
-				tk.FillColor = App.Current.Style.PaletteActive;
-				tk.StrokeColor = App.Current.Style.PaletteActive;
+				tk.FillColor = App.Current.Style.TextBaseDisabled;
+				tk.StrokeColor = App.Current.Style.TextBaseDisabled;
 				tk.DrawText (new Point (StartX, OffsetY), StopX - StartX,
 					Height - StyleConf.TimelineLineSize,
 					TimeNode.Name);

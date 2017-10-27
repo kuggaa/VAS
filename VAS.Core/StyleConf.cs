@@ -169,6 +169,7 @@ namespace VAS.Core.Common
 		public const string ButtonTagIcon = "images/dashboard/vas-tag" + IMAGE_EXT;
 		public const string ButtonScoreIcon = "images/dashboard/vas-score" + IMAGE_EXT;
 		public const string ButtonEventIcon = "images/dashboard/vas-event" + IMAGE_EXT;
+
 		public static Color ButtonTagColor = Color.Parse ("#d8ffc7");
 		public static Color ButtonTimerColor = Color.Parse ("#bebbff");
 		public static Color ButtonScoreColor = Color.Parse ("#d8ffc7");
@@ -178,9 +179,6 @@ namespace VAS.Core.Common
 		public int BenchLineWidth = 2;
 		public int TeamTaggerBenchBorder = 10;
 
-		public static Color ActionLinkNormal = Color.Parse ("#808080");
-		public static Color ActionLinkPrelight = Color.Parse ("#B3B3B3");
-		public static Color ActionLinkSelected = Color.Parse ("#ABD05C");
 		public const string LinkIn = "icons/hicolor/scalable/actions/vas-link-in" + IMAGE_EXT;
 		public const int LinkInHeight = 14;
 		public const int LinkInWidth = 14;
@@ -310,44 +308,58 @@ namespace VAS.Core.Common
 		{
 			HomeTeamColor = Color.Red;
 			AwayTeamColor = Color.Blue;
-			PaletteBackground = Color.Black;
-			PaletteBackgroundLight = Color.Black;
+			ScreenBase = Color.Black;
+			ThemeContrastDisabled = Color.Black;
 			PaletteBackgroundSemiLight = Color.Black;
-			PaletteBackgroundDark = Color.Black;
-			PaletteBackgroundDarkBright = Color.Black;
-			PaletteSelected = Color.Black;
-			PaletteActive = Color.Black;
+			ThemeBase = Color.Black;
+			ThemeContrastSecondary = Color.Black;
+			TextBase = Color.Black;
 			PaletteTool = Color.Black;
-			PaletteText = Color.Black;
+			TextBase = Color.Black;
 		}
 
 		#region Properties
 
 		//Colors
+		// New colors pallete --------------------------------------------------
+
+		public Color ThemeBase { get; set; }
+		public Color ThemeSecondary { get; set; }
+		public Color ThemeDisabled { get; set; }
+		public Color ThemeContrastBase { get; set; }
+		public Color ThemeContrastSecondary { get; set; }
+		public Color ThemeContrastDisabled { get; set; }
+
+		public Color TextBase { get; set; }
+		public Color TextBaseDisabled { get; set; }
+		public Color TextBaseSecondary { get; set; }
+		public Color TextContrastBase { get; set; }
+		public Color TextContrastSecondary { get; set; }
+		public Color TextContrastDisabled { get; set; }
+
+		public Color ColorBrand { get; set; }
+		public Color ColorPrimary { get; set; }
+		public Color ColorSecondary { get; set; }
+		public Color ColorAccentSuccess { get; set; }
+		public Color ColorAccentWarning { get; set; }
+		public Color ColorAccentError { get; set; }
+
+		// -------------------------------------------------------------------------
+
+		public Color TBD_Black { get; set; } = Color.Black;
+		public Color TBD_Orange { get; set; } = Color.Orange;
+
+		// -------------------------------------------------------------------------
 
 		public Color HomeTeamColor { get; set; }
 
 		public Color AwayTeamColor { get; set; }
 
-		public Color PaletteBackground { get; set; }
+		public Color ScreenBase { get; set; }
 
-		public Color PaletteBackgroundSemiLight { get; set; }
-
-		public Color PaletteBackgroundLight { get; set; }
-
-		public Color PaletteBackgroundDark { get; set; }
-
-		public Color PaletteBackgroundDarkBright { get; set; }
-
-		public Color PaletteWidgets { get; set; }
-
-		public Color PaletteSelected { get; set; }
-
-		public Color PaletteActive { get; set; }
+		public Color PaletteBackgroundSemiLight { get; set; } // to be changed in presentations view because is used incorrectly
 
 		public Color PaletteTool { get; set; }
-
-		public Color PaletteText { get; set; }
 
 		public Color BackgroundLevel0 { get; set; }
 
@@ -362,8 +374,6 @@ namespace VAS.Core.Common
 		public Color BackgroundLevel4b { get; set; }
 
 		public Color TextColor { get; set; }
-
-		public Color Text_DarkColor { get; set; }
 
 		public Color Foreground_Team_B { get; set; }
 

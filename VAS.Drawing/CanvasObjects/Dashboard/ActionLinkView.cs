@@ -163,11 +163,11 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 
 			if (Selected) {
-				lineColor = StyleConf.ActionLinkSelected;
+				lineColor = App.Current.Style.ColorPrimary;
 			} else if (Highlighted) {
-				lineColor = StyleConf.ActionLinkPrelight;
+				lineColor = App.Current.Style.ThemeDisabled;
 			} else {
-				lineColor = StyleConf.ActionLinkNormal;
+				lineColor = App.Current.Style.ThemeSecondary;
 			}
 
 			tk.Begin ();
@@ -176,7 +176,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			tk.LineWidth = lineWidth;
 			tk.LineStyle = LineStyle.Normal;
 			tk.DrawLine (line.Start, line.Stop);
-			tk.FillColor = tk.StrokeColor = App.Current.Style.PaletteActive;
+			tk.FillColor = tk.StrokeColor = App.Current.Style.ThemeContrastDisabled;
 			tk.DrawCircle (line.Stop, 2);
 			tk.End ();
 		}

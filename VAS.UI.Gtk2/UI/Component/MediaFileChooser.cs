@@ -139,9 +139,9 @@ namespace VAS.UI.Component
 				fileentry.Text = System.IO.Path.GetFileName (mediaFile.FilePath);
 				fileentry.TooltipText = mediaFile.FilePath;
 				if (mediaFile.Exists ()) {
-					fileentry.ModifyText (Gtk.StateType.Normal, Helpers.Misc.ToGdkColor (App.Current.Style.PaletteText));
+					fileentry.ModifyText (Gtk.StateType.Normal, Helpers.Misc.ToGdkColor (App.Current.Style.TextBase));
 				} else {
-					fileentry.ModifyText (Gtk.StateType.Normal, Helpers.Misc.ToGdkColor (Color.Red1));
+					fileentry.ModifyText (Gtk.StateType.Normal, Helpers.Misc.ToGdkColor (App.Current.Style.ColorAccentError));
 				}
 				clear_visible = true;
 			} else if (path != null) {

@@ -58,7 +58,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			// Draw background
 			tk.Begin ();
 			tk.FillColor = BackgroundColor;
-			tk.StrokeColor = App.Current.Style.PaletteWidgets;
+			tk.StrokeColor = App.Current.Style.TextBase;
 			tk.LineWidth = 1;
 			tk.DrawRectangle (new Point (0, scrolledY), Width, Height);
 
@@ -66,9 +66,9 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			tk.FontSlant = FontSlant.Normal;
 			tk.FontWeight = FontWeight.Bold;
 			tk.FontSize = StyleConf.TimelineCameraFontSize;
-			tk.FillColor = App.Current.Style.PaletteWidgets;
+			tk.FillColor = App.Current.Style.TextBase;
 			tk.FontAlignment = FontAlignment.Right;
-			tk.StrokeColor = App.Current.Style.PaletteWidgets;
+			tk.StrokeColor = App.Current.Style.TextBase;
 			tk.DrawText (new Point (0, scrolledY), Width - StyleConf.TimelineLabelHSpacing, Height, Name);
 			tk.End ();
 		}

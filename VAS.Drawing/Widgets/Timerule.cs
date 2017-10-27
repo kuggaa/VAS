@@ -54,7 +54,7 @@ namespace VAS.Drawing.Widgets
 			currentTime = new Time (0);
 			AdjustSizeToDuration = false;
 			ContinuousSeek = true;
-			BackgroundColor = App.Current.Style.PaletteBackgroundDark;
+			BackgroundColor = App.Current.Style.ThemeBase;
 			Accuracy = 5.0f;
 			PlayerMode = false;
 			UseAbsoluteDuration = false;
@@ -261,15 +261,15 @@ namespace VAS.Drawing.Widgets
 
 			Begin (context);
 			tk.LineWidth = 0;
-			BackgroundColor = App.Current.Style.PaletteBackground;
+			BackgroundColor = App.Current.Style.ScreenBase;
 			DrawBackground ();
 
-			tk.FillColor = App.Current.Style.PaletteBackgroundDark;
+			tk.FillColor = App.Current.Style.ThemeBase;
 			tk.DrawRectangle (new Point (area.Start.X, area.Start.Y + area.Height - RuleHeight), area.Width, RuleHeight);
 
 
-			tk.StrokeColor = App.Current.Style.PaletteWidgets;
-			tk.FillColor = App.Current.Style.PaletteWidgets;
+			tk.StrokeColor = App.Current.Style.TextBase;
+			tk.FillColor = App.Current.Style.TextBase;
 			tk.LineWidth = Constants.TIMELINE_LINE_WIDTH;
 			tk.FontSlant = FontSlant.Normal;
 			tk.FontSize = FontSize;
