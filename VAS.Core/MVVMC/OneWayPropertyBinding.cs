@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.ComponentModel;
 using System.Linq.Expressions;
 using VAS.Core.Interfaces.MVVMC;
 
@@ -27,11 +28,18 @@ namespace VAS.Core.MVVMC
 	/// </summary>
 	public class OneWayPropertyBinding<T> : PropertyBinding<T>
 	{
-		Action<T> _writeAction;
+		Action<T> writeAction;
 
 		public OneWayPropertyBinding (Expression<Func<IViewModel, T>> propertyExpression, Action<T> writeAction) : base (propertyExpression)
 		{
-			_writeAction = writeAction;
+			this.writeAction = writeAction;
+		}
+
+		public OneWayPropertyBinding (object dest, Expression<Func<IViewModel, T>> sourceExpression, Expression<Func<object, T>> targetExpression) : base (sourceExpression)
+		{
+			var setter = CreateSetter<object> (targetExpression, out string memberName);
+			Action<T> setterAction = (T t) => setter.Invoke (dest, t);
+			this.writeAction = setterAction;
 		}
 
 		protected override void BindView ()
@@ -44,7 +52,7 @@ namespace VAS.Core.MVVMC
 
 		protected override void WriteViewValue (T val)
 		{
-			_writeAction (val);
+			this.writeAction (val);
 		}
 	}
 }

@@ -24,12 +24,15 @@ namespace VAS.Core.MVVMC
 	public static class BindingsExtensions
 	{
 		/// <summary>
-		/// Bind the specified viewModel's property to a property by name.
+		/// Binds the specified object dest's property expressed on targetExpression to a ViewModel's property expressed on sourceExpression
 		/// </summary>
-		/// <param name="viewModel">ViewModel.</param>
-		public static PropertyToPropertyBinding<TProperty> Bind<TProperty> (this IViewModel viewModel, Expression<Func<IViewModel, TProperty>> setterExpression, Expression<Func<IViewModel, TProperty>> propertyExpression)
+		/// <returns>The bind.</returns>
+		/// <param name="dest">Destination.</param>
+		/// <param name="sourceExpression">Source expression.</param>
+		/// <param name="targetExpression">Target expression.</param>
+		public static OneWayPropertyBinding<T> Bind<T> (this object dest, Expression<Func<IViewModel, T>> sourceExpression, Expression<Func<object, T>> targetExpression)
 		{
-			return new PropertyToPropertyBinding<TProperty> (viewModel, setterExpression, propertyExpression);
+			return new OneWayPropertyBinding<T> (dest, sourceExpression, targetExpression);
 		}
 	}
 }
