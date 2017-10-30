@@ -488,16 +488,17 @@ namespace VAS.Drawing.Cairo
 			StrokeAndFill (false);
 		}
 
-		public void DrawSurface (ISurface surface, Point p = null)
+		public void DrawSurface (ISurface surface, Point p = null, bool masked = false)
 		{
 			if (p == null) {
 				p = new Point (0, 0);
 			}
-			DrawSurface (p, surface.Width, surface.Height, surface, ScaleMode.AspectFit);
+			DrawSurface (p, surface.Width, surface.Height, surface, ScaleMode.AspectFit, masked);
 		}
 
-		public void DrawSurface (Point start, double width, double height, ISurface surface, ScaleMode mode)
+		public void DrawSurface (Point start, double width, double height, ISurface surface, ScaleMode mode, bool masked = false)
 		{
+			//FIXME: This still needs support for masked surfaces
 			double scaleX, scaleY;
 			Point offset;
 
