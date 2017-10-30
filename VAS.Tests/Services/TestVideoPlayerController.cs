@@ -499,6 +499,9 @@ namespace VAS.Tests.Services
 			int timeChanged = 0;
 			Time curTime = new Time (0);
 			Time strLenght = new Time (0);
+			// Create a VideoPlayerController with a Seeker with the normal TimeOut for this test
+			player = new VideoPlayerController ();
+			player.SetViewModel (playerVM);
 
 			player.TimeChangedEvent += (c, d, s) => {
 				timeChanged++;
@@ -524,6 +527,10 @@ namespace VAS.Tests.Services
 			playerMock.ResetCalls ();
 			player.Seek (0.1f);
 			player.Seek (0.5f);
+			//FIXME: this needs a Sleep to work and a videoplayercontroller with a normal seeker timeout
+			//if the videoplayercontroller has a seeker without a timeout and we do not sleep it had a race condition
+			//and sometime the test was success and others fails.
+			System.Threading.Thread.Sleep (100);
 			// Check we got called only once
 			playerMock.Verify (p => p.Seek (It.IsAny<Time> (), true, false), Times.Once ());
 			// And with the last value
