@@ -44,22 +44,24 @@ namespace VAS.Core.MVVMC
 		{
 			// The expression has the following form
 			// vm => Convert(vm).PropertyFoo;
-			var member = (MemberExpression)propertyExpression.Body;
-			propertyName = member.Member.Name;
-			propertySet = CreateSetter (propertyExpression, member);
+
+			propertySet = CreateSetter<IViewModel> (propertyExpression, out string propertyMemberName);
+			propertyName = propertyMemberName;
 
 			// Create getter
 			propertyGet = propertyExpression.Compile ();
 		}
 
-		protected Action<IViewModel, T> CreateSetter (Expression<Func<IViewModel, T>> propertyExpression, MemberExpression member)
+		protected Action<TSource, T> CreateSetter<TSource> (Expression<Func<TSource, T>> propertyExpression, out string propertyMemberName)
 		{
-			Action<IViewModel, T> setter;
+			var member = (MemberExpression)propertyExpression.Body;
+			propertyMemberName = member.Member.Name;
+			Action<TSource, T> setter;
 			if (((PropertyInfo)member.Member).CanWrite) {
 				// Create the setter
 				var param = Expression.Parameter (typeof (T), "value");
 				// vm => vm.Property  ---> ((IViewModel) vm, (T)t) => vm.Property = t; 
-				var set = Expression.Lambda<Action<IViewModel, T>> (
+				var set = Expression.Lambda<Action<TSource, T>> (
 					Expression.Assign (member, param), propertyExpression.Parameters [0], param);
 				setter = set.Compile ();
 			} else {

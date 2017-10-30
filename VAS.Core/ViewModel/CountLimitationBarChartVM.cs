@@ -118,8 +118,8 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		public void Bind ()
 		{
-			ctx.Add (BarChart.LeftSerie.Bind ((vm) => ((SeriesVM)vm).Elements, (vm) => ((CountLimitationVM)vm).Remaining));
-			ctx.Add (BarChart.RightSerie.Bind ((vm) => ((SeriesVM)vm).Elements, (vm) => ((CountLimitationVM)vm).Count));
+			ctx.Add (BarChart.LeftSerie.Bind (vm => ((CountLimitationVM)vm).Remaining, vm => ((SeriesVM)vm).Elements));
+			ctx.Add (BarChart.RightSerie.Bind (vm => ((CountLimitationVM)vm).Count, vm => ((SeriesVM)vm).Elements));
 			ctx.UpdateViewModel (Limitation);
 		}
 

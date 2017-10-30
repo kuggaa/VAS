@@ -152,6 +152,7 @@
     <Compile Include="Core\ViewModel\TestCountLimitationBarChartVM.cs" />
     <Compile Include="Services\TestDrawingsController.cs" />
     <Compile Include="Services\TestEventsFilterController.cs" />
+    <Compile Include="MVVMC\TestOneWayPropertyBinding.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
