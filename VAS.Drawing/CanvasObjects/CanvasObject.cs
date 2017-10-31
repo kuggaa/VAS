@@ -278,7 +278,7 @@ namespace VAS.Drawing.CanvasObjects
 				return;
 			}
 			tk.StrokeColor = Constants.SELECTION_INDICATOR_COLOR;
-			tk.StrokeColor = App.Current.Style.PaletteActive;
+			tk.StrokeColor = App.Current.Style.ThemeContrastDisabled;
 			tk.FillColor = null;
 			tk.LineStyle = LineStyle.Dashed;
 			tk.LineWidth = 2;

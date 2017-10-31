@@ -597,7 +597,7 @@ namespace VAS.Drawing.Widgets
 		{
 			tk.Context = context;
 			tk.Begin ();
-			tk.Clear (App.Current.Style.PaletteBackground);
+			tk.Clear (App.Current.Style.ScreenBase);
 			tk.End ();
 
 			base.Draw (context, area);

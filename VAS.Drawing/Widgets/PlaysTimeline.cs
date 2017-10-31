@@ -253,7 +253,7 @@ namespace VAS.Drawing.Widgets
 					Duration = duration,
 					OffsetY = line * StyleConf.TimelineCategoryHeight,
 					Height = StyleConf.TimelineCategoryHeight,
-					LineColor = App.Current.Style.PaletteBackgroundDark,
+					LineColor = App.Current.Style.ThemeBase,
 					BackgroundColor = Utils.ColorForRow (line),
 				};
 				timelineView.ViewModel = timerVM;

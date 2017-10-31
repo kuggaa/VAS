@@ -41,9 +41,9 @@ namespace VAS.Core.Store
 			Height = Constants.BUTTON_HEIGHT;
 			BackgroundColor = Color.Red.Copy (true);
 			if (Utils.OS == OperatingSystemID.Android || Utils.OS == OperatingSystemID.iOS) {
-				TextColor = App.Current.Style.PaletteBackground.Copy (true);
+				TextColor = App.Current.Style.ScreenBase.Copy (true);
 			} else {
-				TextColor = App.Current.Style.PaletteBackgroundLight.Copy (true);
+				TextColor = App.Current.Style.ThemeContrastDisabled.Copy (true);
 			}
 			HotKey = new HotKey { IsChanged = false };
 			ActionLinks = new RangeObservableCollection<ActionLink> ();

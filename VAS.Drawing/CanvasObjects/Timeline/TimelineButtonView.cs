@@ -33,7 +33,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 		public TimelineButtonView ()
 		{
-			BackgroundColor = App.Current.Style.PaletteBackgroundLight;
+			BackgroundColor = App.Current.Style.ThemeContrastDisabled;
 			BackgroundImage = App.Current.ResourcesLocator.LoadImage (StyleConf.TimelineButtonNormalTheme);
 			BackgroundImageActive = App.Current.ResourcesLocator.LoadImage (StyleConf.TimelineButtonActiveTheme);
 			BackgroundImageInsensitive = App.Current.ResourcesLocator.LoadImage (StyleConf.TimelineButtonInsensititveTheme);
