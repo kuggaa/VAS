@@ -66,7 +66,7 @@ namespace VAS.UI.Component
 			AppendColumn (filterColumn);
 			AppendColumn (onlyColumn);
 
-			ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteBackgroundLight));
+			ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.ThemeContrastDisabled));
 		}
 
 		public override void Dispose ()

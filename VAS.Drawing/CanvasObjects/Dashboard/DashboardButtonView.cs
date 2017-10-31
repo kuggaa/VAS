@@ -201,8 +201,8 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			pos = new Point (Position.X + 5, Position.Y + 5);
 			tk.FontFamily = App.Current.Style.NamesFontFamily;
 			tk.FontSize = App.Current.Style.NamesFontSize;
-			tk.StrokeColor = App.Current.Style.Text_DarkColor;
-			tk.StrokeColor = App.Current.Style.Text_DarkColor;
+			tk.StrokeColor = App.Current.Style.TextBaseSecondary;
+			tk.StrokeColor = App.Current.Style.TextBaseSecondary;
 			tk.FontWeight = FontWeight.Bold;
 			tk.FontAlignment = FontAlignment.Left;
 			tk.DrawText (pos, HOTKEY_WIDTH, App.Current.Style.TitlesFontSize, Button.HotKey.ToString (), false, false);

@@ -41,7 +41,7 @@ namespace VAS.Drawing
 			ScaleX = 1;
 			ScaleY = 1;
 			Translation = new Point (0, 0);
-			BackgroundColor = App.Current.Style.PaletteBackground;
+			BackgroundColor = App.Current.Style.ScreenBase;
 			SetWidget (widget);
 		}
 

@@ -52,7 +52,7 @@ namespace VAS.Drawing.Widgets
 		public DashboardCanvas (IWidget widget) : base (widget)
 		{
 			Accuracy = 5;
-			BackgroundColor = App.Current.Style.PaletteBackground;
+			BackgroundColor = App.Current.Style.ScreenBase;
 			buttonsDict = new Dictionary<DashboardButtonVM, DashboardButtonView> ();
 			linksDict = new Dictionary<ActionLinkVM, ActionLinkView> ();
 		}

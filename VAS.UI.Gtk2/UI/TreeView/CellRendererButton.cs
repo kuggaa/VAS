@@ -76,9 +76,9 @@ namespace VAS.UI.Component
 				tk.FontSize = 12;
 				tk.FillColor = null;
 				tk.LineWidth = 1;
-				tk.StrokeColor = App.Current.Style.PaletteBackgroundDark;
+				tk.StrokeColor = App.Current.Style.ThemeBase;
 				tk.DrawRoundedRectangle (pos, width, height, 3);
-				tk.StrokeColor = App.Current.Style.PaletteText;
+				tk.StrokeColor = App.Current.Style.TextBase;
 				tk.FontAlignment = FontAlignment.Center;
 				tk.DrawText (pos, width, height, Text);
 				tk.End ();

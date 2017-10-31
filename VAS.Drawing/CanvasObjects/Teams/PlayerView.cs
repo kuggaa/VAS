@@ -116,7 +116,7 @@ namespace VAS.Drawing.CanvasObjects.Teams
 			}
 
 			/* Background */
-			tk.FillColor = App.Current.Style.PaletteBackgroundDark;
+			tk.FillColor = App.Current.Style.ThemeBase;
 			tk.LineWidth = 0;
 			tk.DrawRectangle (zero, StyleConf.PlayerSize, StyleConf.PlayerSize);
 

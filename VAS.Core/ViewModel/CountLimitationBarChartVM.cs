@@ -38,8 +38,7 @@ namespace VAS.Core.ViewModel
 			this.showOnRemaining = showOnRemaining;
 			ctx = new BindingContext ();
 			Visible = true;
-			// FIXME: This color is bg_dark_color from gtkrc, it should be set in the color scheme, styleconf, whatever...
-			BackgroundColor = Color.Parse ("#151a20");
+			BackgroundColor = App.Current.Style.ThemeBase;
 			onlyText = Catalog.GetString ("Only");
 			noText = Catalog.GetString ("No");
 			leftText = Catalog.GetString ("left in your plan!");
@@ -140,7 +139,7 @@ namespace VAS.Core.ViewModel
 			}
 			if (NeedsSync (e?.PropertyName, nameof (Limitation.Count))) {
 				UpdateVisibility ();
-				BarChart.RightSerie.Color = Color.Red;
+				BarChart.RightSerie.Color = App.Current.Style.ColorAccentError;
 				if (Limitation.Remaining == 0) {
 					Text = $"Oops! <b>{noText} {Limitation.DisplayName.ToLower ()}</b> {leftText}";
 				} else if (Limitation.Remaining < 0) {
