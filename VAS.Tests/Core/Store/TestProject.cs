@@ -83,59 +83,76 @@ namespace VAS.Tests.Core.Store
 			Assert.AreEqual (newp, newp.Timeline [0].Project);
 		}
 
+
 		[Test ()]
-		[Ignore ("From LongoMatch - DefaultTemplate not available for VAS")]
-		public void TestEventsGroupedByEventType ()
+		public void EventsGroupedByEventType_ProjectWithEventTypes_GroupedEventsCountOk ()
 		{
-			Utils.ProjectDummy p = CreateProject ();
-			var g = p.EventsGroupedByEventType;
-			Assert.AreEqual (g.Count (), 4);
-			var gr = g.ElementAt (0);
-			Assert.AreEqual (p.EventTypes [0], gr.Key);
-			Assert.AreEqual (2, gr.Count ());
+			///Arrange
 
-			gr = g.ElementAt (1);
-			Assert.AreEqual (p.EventTypes [1], gr.Key);
-			Assert.AreEqual (1, gr.Count ());
+			var targetProject = Utils.CreateProject ();
 
-			gr = g.ElementAt (2);
-			Assert.AreEqual (p.EventTypes [2], gr.Key);
-			Assert.AreEqual (3, gr.Count ());
+			///Act
 
-			gr = g.ElementAt (3);
-			Assert.AreEqual (p.EventTypes [6], gr.Key);
-			Assert.AreEqual (1, gr.Count ());
+			var eventsGrouped = targetProject.EventsGroupedByEventType;
+
+			///Assert
+
+			Assert.AreEqual (3, eventsGrouped.Count ());
+			Assert.AreEqual (targetProject.EventTypes [0], eventsGrouped.ElementAt (0).Key);
+			Assert.AreEqual (targetProject.EventTypes [1], eventsGrouped.ElementAt (1).Key);
+			Assert.AreEqual (targetProject.EventTypes [2], eventsGrouped.ElementAt (2).Key);
 		}
 
 		[Test ()]
-		[Ignore ("Not implemented")]
-		public void Clear ()
+		public void Dispose_FullProject_ProjectElementsCleared ()
 		{
+			//Arrange
+			var projectTarget = Utils.CreateProject () as Utils.ProjectDummy;
+			projectTarget.Periods.Add (new Period () {
+				Name = "Test"
+			});
+			projectTarget.Playlists.Add (new Playlist () {
+				Name = "Test"
+			});
+
+
+			//Act
+			projectTarget.Dispose ();
+
+			//Assert
+			Assert.NotNull (projectTarget);
+			//FIXME: This collection doesnt clear its children --> Assert.IsTrue (!projectTarget.FileSet.Any ());
+			//FIXME: This collection doesnt clear its children --> Assert.IsTrue (!projectTarget.Timeline.Any ());
+			Assert.IsTrue (!projectTarget.Timers.Any ());
+			Assert.IsTrue (!projectTarget.Periods.Any ());
+			Assert.IsTrue (!projectTarget.Playlists.Any ());
+			Assert.IsTrue (!projectTarget.EventTypes.Any ());
+
 		}
 
 		[Test ()]
-		[Ignore ("From LongoMatch - DefaultTemplate not available for VAS")]
-		public void TestAddEvent ()
+
+		public void AddEvent_NewProjectWithoutEvent_ProjectWithEvent ()
 		{
-			Utils.ProjectDummy p = CreateProject (false);
-			TimelineEvent evt = p.CreateEvent (p.EventTypes [0], new Time (1000), new Time (2000),
-									null, null, 0);
-			Assert.AreEqual (p, evt.Project);
+			//Arrange
 
-			Assert.AreEqual (p.Timeline.Count, 0);
-			p.AddEvent (p.EventTypes [0], new Time (1000), new Time (2000), null, null);
-			Assert.AreEqual (p.Timeline.Count, 1);
-			p.AddEvent (p.EventTypes [0], new Time (1000), new Time (2000), null, null);
-			Assert.AreEqual (p.Timeline.Count, 2);
+			var targetProject = Utils.CreateProject (withEvents: false) as Utils.ProjectDummy;
+			TimelineEvent timeLineEvent = targetProject.CreateEvent (targetProject.EventTypes.FirstOrDefault (), new Time (1000), new Time (2000),
+																	 null, null, 0);
 
-			evt = new TimelineEvent ();
-			p.AddEvent (evt);
-			Assert.AreEqual (p, evt.Project);
-			Assert.AreEqual (p.Timeline.Count, 3);
-			p.AddEvent (new TimelineEvent ());
-			Assert.AreEqual (p.Timeline.Count, 4);
+			//Act
+
+			targetProject.AddEvent (timeLineEvent);
+
+			//Assert
+
+			Assert.AreEqual (targetProject, timeLineEvent.Project);
+			Assert.AreEqual (targetProject.Timeline.Count, 1);
+
 			/*FIXME: add test for score event updating pd score */
 		}
+
+
 
 		[Test ()]
 		public void TestRemoveEvents ()
@@ -158,80 +175,251 @@ namespace VAS.Tests.Core.Store
 		}
 
 		[Test ()]
-		[Ignore ("Not implemented")]
-		public void TestCleanupTimers ()
+		public void CleanupTimers_ProjectWithValidAndInvalidTimers_ProjectWithoutInvalidTimers ()
 		{
+			///Arrange
+
+			var target = Utils.CreateProject ();
+			target.Timers.Clear ();
+
+			#region Valid Instances
+
+			var validTimeNode = new TimeNode () {
+				Start = new Time (1000),
+				Stop = new Time (2000)
+			};
+
+			var validTimeNode2 = new TimeNode () {
+				Start = new Time (),
+				Stop = new Time (1000)
+			};
+
+			var validTimeNode3 = new TimeNode () {
+				Start = new Time (1000),
+				Stop = new Time ()
+			};
+
+			var validTimer = new Timer () {
+				Nodes = new RangeObservableCollection<TimeNode> ()
+				{
+					validTimeNode,
+					validTimeNode2,
+					validTimeNode3
+				}
+			};
+			#endregion
+
+			#region Invalid Instances
+			var invalidTimeNode = new TimeNode () {
+				Start = null,
+				Stop = new Time (2000)
+			};
+
+			var invalidTimeNode2 = new TimeNode () {
+				Start = new Time (1000),
+				Stop = null
+			};
+
+			var invalidTimeNode3 = new TimeNode () {
+				Start = null,
+				Stop = null
+			};
+
+			var invalidTimer = new Timer () {
+				Nodes = new RangeObservableCollection<TimeNode> ()
+				{
+					invalidTimeNode
+				}
+			};
+
+			var invalidTimer2 = new Timer () {
+				Nodes = new RangeObservableCollection<TimeNode> ()
+				{
+					validTimeNode,
+					invalidTimeNode2,
+					validTimeNode3
+				}
+			};
+
+			var invalidTimer3 = new Timer () {
+				Nodes = new RangeObservableCollection<TimeNode> ()
+				{
+					invalidTimeNode,
+					invalidTimeNode2,
+					invalidTimeNode3
+				}
+			};
+
+			#endregion
+
+
+			target.Timers.Add (validTimer);
+			target.Timers.Add (invalidTimer);
+			target.Timers.Add (invalidTimer2);
+			target.Timers.Add (invalidTimer3);
+
+			///Act
+
+			target.CleanupTimers ();
+
+			///Assert
+
+			Assert.IsNotNull (target);
+			Assert.AreEqual (4, target.Timers.Count ());
+			Assert.AreEqual (3, target.Timers [0].Nodes.Count ());
+			Assert.AreEqual (0, target.Timers [1].Nodes.Count ());
+			Assert.AreEqual (2, target.Timers [2].Nodes.Count ());
+			Assert.AreEqual (0, target.Timers [3].Nodes.Count ());
 		}
 
 		[Test ()]
-		[Ignore ("From LongoMatch - DefaultTemplate not available for VAS")]
-		public void TestUpdateEventTypesAndTimers ()
+		public void UpdateEventTypesAndTimers_ProjectWithEventTypesAndTimersUpdated_ProjectWithoutCategoryButtonUpdated ()
 		{
-			Utils.ProjectDummy p = new Utils.ProjectDummy ();
-			Assert.AreEqual (0, p.Timers.Count);
-			Assert.AreEqual (0, p.EventTypes.Count);
-			p.UpdateEventTypesAndTimers ();
-			Assert.AreEqual (1, p.Timers.Count);
-			Assert.AreEqual (10, p.EventTypes.Count);
+			///Arrange
 
-			// Delete a category button with no events
-			p.Dashboard.List.Remove (p.Dashboard.List.OfType<AnalysisEventButton> ().First ());
-			p.UpdateEventTypesAndTimers ();
-			Assert.AreEqual (1, p.Timers.Count);
-			Assert.AreEqual (9, p.EventTypes.Count);
+			var targetProject = new Utils.ProjectDummy ();
+			targetProject.UpdateEventTypesAndTimers ();
 
-			// Delete a category button with events in the timeline
-			AnalysisEventButton button = p.Dashboard.List.OfType<AnalysisEventButton> ().First ();
-			p.Timeline.Add (new TimelineEvent { EventType = button.EventType });
-			p.UpdateEventTypesAndTimers ();
-			Assert.AreEqual (1, p.Timers.Count);
-			Assert.AreEqual (9, p.EventTypes.Count);
-			p.Dashboard.List.Remove (button);
-			p.UpdateEventTypesAndTimers ();
-			Assert.AreEqual (1, p.Timers.Count);
-			Assert.AreEqual (9, p.EventTypes.Count);
+			///Act
 
-			// Remove the event from the timeline, the event type is no longuer in the dashboard or the timeline
-			p.Timeline.Clear ();
-			p.UpdateEventTypesAndTimers ();
-			Assert.AreEqual (1, p.Timers.Count);
-			Assert.AreEqual (8, p.EventTypes.Count);
+			targetProject.Dashboard.List.Remove (targetProject.Dashboard.List.OfType<AnalysisEventButton> ().First ());
+			targetProject.UpdateEventTypesAndTimers ();
+
+			///Assert
+
+			Assert.IsNotNull (targetProject);
+			Assert.AreEqual (1, targetProject.Timers.Count);
+			Assert.AreEqual (4, targetProject.EventTypes.Count);
 		}
 
 		[Test ()]
-		[Ignore ("From LongoMatch - DefaultTemplate not available for VAS")]
-		public void TestEventsByType ()
+		public void UpdateEventTypesAndTimers_ProjectWithEventTypesAndTimersUpdated_ProjectWithoutCategoryButtonWithEventsInTimeLine ()
 		{
-			Utils.ProjectDummy p = CreateProject ();
-			Assert.AreEqual (2, p.EventsByType (p.EventTypes [0]).Count);
-			Assert.AreEqual (1, p.EventsByType (p.EventTypes [1]).Count);
-			Assert.AreEqual (3, p.EventsByType (p.EventTypes [2]).Count);
-			Assert.AreEqual (0, p.EventsByType (p.EventTypes [3]).Count);
-			Assert.AreEqual (1, p.EventsByType (p.EventTypes [6]).Count);
+			///Arrange
+
+			var targetProject = new Utils.ProjectDummy ();
+			targetProject.Timers.Clear ();
+			targetProject.EventTypes.Clear ();
+			targetProject.UpdateEventTypesAndTimers ();
+
+			///Act
+
+			AnalysisEventButton button = targetProject.Dashboard.List.OfType<AnalysisEventButton> ().First ();
+			targetProject.Timeline.Add (new TimelineEvent { EventType = button.EventType });
+			targetProject.Dashboard.List.Remove (button);
+			targetProject.UpdateEventTypesAndTimers ();
+
+			///Assert
+
+			Assert.IsNotNull (targetProject);
+			Assert.AreEqual (1, targetProject.Timers.Count);
+			Assert.AreEqual (5, targetProject.EventTypes.Count);
+
 		}
 
 		[Test ()]
-		[Ignore ("Not implemented")]
-		public void TestConsolidateDescription ()
+		public void UpdateEventTypesAndTimers_NewProjectWithEventTypesAndTimers_ProjectWithoutEventInDashboardAndTimeline ()
 		{
+			///Arrange
+
+			var targetProject = new Utils.ProjectDummy ();
+			targetProject.Timers.Clear ();
+			targetProject.EventTypes.Clear ();
+			AnalysisEventButton button = targetProject.Dashboard.List.OfType<AnalysisEventButton> ().First ();
+			targetProject.Timeline.Add (new TimelineEvent { EventType = button.EventType });
+			targetProject.UpdateEventTypesAndTimers ();
+
+			///Act
+
+			targetProject.Dashboard.List.Remove (button);
+			targetProject.Timeline.Clear ();
+			targetProject.UpdateEventTypesAndTimers ();
+
+			///Assert
+
+			Assert.IsNotNull (targetProject);
+			Assert.AreEqual (1, targetProject.Timers.Count);
+			Assert.AreEqual (4, targetProject.EventTypes.Count);
 		}
 
 		[Test ()]
-		[Ignore ("Not implemented")]
-		public void TestEquals ()
+		public void UpdateEventTypesAndTimers_NewProjectWithoutEvenTypesAndTimers_ProjectWithEventTypesAndTimersUpdated ()
 		{
-			Utils.ProjectDummy p1 = CreateProject ();
-			Utils.ProjectDummy p2 = Utils.SerializeDeserialize (p1);
-			Utils.ProjectDummy p3 = new Utils.ProjectDummy ();
+			///Arrange
 
-			Assert.IsTrue (p1.Equals (p2));
-			Assert.IsFalse (p1.Equals (p3));
+			var targetProject = new Utils.ProjectDummy ();
+			targetProject.Timers.Clear ();
+			targetProject.EventTypes.Clear ();
+
+			///Act
+
+			targetProject.UpdateEventTypesAndTimers ();
+
+			///Assert
+
+			Assert.AreEqual (1, targetProject.Timers.Count);
+			Assert.AreEqual (5, targetProject.EventTypes.Count);
+		}
+
+
+		[Test ()]
+		public void EventsByType_NewProjectWithTypedEvents_EventTypesCountOk ()
+		{
+			///Arrange
+
+			var targetProject = Utils.CreateProject ();
+
+			///Act
+
+			var eventsByTypeFirst = targetProject.EventsByType (targetProject.EventTypes [0]);
+			var eventsByTypeSecond = targetProject.EventsByType (targetProject.EventTypes [1]);
+			var eventsByTypeThird = targetProject.EventsByType (targetProject.EventTypes [2]);
+			var eventsByTypeFourth = targetProject.EventsByType (targetProject.EventTypes [3]);
+			var eventsByTypeFifth = targetProject.EventsByType (targetProject.EventTypes [4]);
+
+			///Assert
+
+			Assert.AreEqual (1, eventsByTypeFirst.Count ());
+			Assert.AreEqual (1, eventsByTypeSecond.Count ());
+			Assert.AreEqual (1, eventsByTypeThird.Count ());
+			Assert.AreEqual (0, eventsByTypeFourth.Count ());
+			Assert.AreEqual (0, eventsByTypeFifth.Count ());
 		}
 
 		[Test ()]
-		[Ignore ("Not implemented")]
-		public void TestExport ()
+		public void Equals_NewProject_SerializedAndDeserializedProjectAreEqual ()
 		{
+			///Arrange
+			/// 
+			var targetProject = Utils.CreateProject () as Utils.ProjectDummy; ;
+			var anotherProject = new Utils.ProjectDummy ();
+
+			///Act
+
+			var serializedAndDeserializedProject = Utils.SerializeDeserialize (targetProject);
+
+			///Assert
+
+			Assert.IsTrue (targetProject.Equals (serializedAndDeserializedProject));
+			Assert.IsFalse (targetProject.Equals (anotherProject));
+			Assert.IsFalse (serializedAndDeserializedProject.Equals (anotherProject));
+		}
+
+		[Test ()]
+		public void Export_NewProject_ProjectExportedFileExists ()
+		{
+			///Arrange
+
+			var targetProject = Utils.CreateProject ();
+			var filename = Path.GetTempFileName ();
+
+			///Act
+
+			Project.Export (targetProject, $"{filename}");
+
+			///Assert
+
+			Assert.IsTrue (File.Exists ($"{filename}"));
 		}
 
 		[Test ()]

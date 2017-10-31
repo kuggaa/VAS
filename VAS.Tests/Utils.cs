@@ -28,6 +28,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Couchbase.Lite;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using VAS.Core;
 using VAS.Core.Common;
@@ -609,6 +610,22 @@ namespace VAS.Tests
 			return Serializer.Instance.Load<T> (stream, SerializationType.Json);
 		}
 
+		/// <summary>
+		/// Asserts the Type T instance properties are equal to original instance properties.
+		/// </summary>
+		/// <param name="original">Original instance.</param>
+		/// <param name="target">Target instance.</param>
+		/// <typeparam name="T">Type.</typeparam>
+		public static void AssertDeserializedStorablePropertyEquality<T> (T original, T target) where T : class
+		{
+			foreach (var property in (typeof (T).GetProperties ()
+									  .Where (info => info.CustomAttributes
+											  .FirstOrDefault (attrType => attrType.AttributeType == typeof (JsonIgnoreAttribute)
+															   || attrType.AttributeType == typeof (CloneIgnoreAttribute)) == null))) {
+				Assert.AreEqual (property.GetValue (target), property.GetValue (original));
+			}
+		}
+
 		public static void CheckSerialization<T> (T obj, bool ignoreIsChanged = false)
 		{
 			List<IStorable> children, changed;
@@ -674,51 +691,52 @@ namespace VAS.Tests
 
 		public static Project CreateProject (bool withEvents = true)
 		{
-			TimelineEvent pl;
-			Project p = new ProjectDummy ();
-			p.Dashboard = DashboardDummy.Default ();
-			p.FileSet = new MediaFileSet ();
-			p.FileSet.Add (new MediaFile (Path.GetTempFileName (), 34000, 25, true, true, "mp4", "h264",
+			TimelineEvent timeLineEvent;
+			Project project = new ProjectDummy () {
+				Dashboard = DashboardDummy.Default (),
+				FileSet = new MediaFileSet ()
+			};
+			project.FileSet.Add (new MediaFile (Path.GetTempFileName (), 34000, 25, true, true, "mp4", "h264",
 				"aac", 320, 240, 1.3, null, "Test asset 1"));
-			p.FileSet.Add (new MediaFile (Path.GetTempFileName (), 34000, 25, true, true, "mp4", "h264",
+			project.FileSet.Add (new MediaFile (Path.GetTempFileName (), 34000, 25, true, true, "mp4", "h264",
 				"aac", 320, 240, 1.3, null, "Test asset 2"));
-			p.UpdateEventTypesAndTimers ();
-			p.IsLoaded = true;
+			project.UpdateEventTypesAndTimers ();
+			project.IsLoaded = true;
 
 			if (withEvents) {
-				AnalysisEventButton b = p.Dashboard.List [0] as AnalysisEventButton;
+				var analysisEventButton = project.Dashboard.List [0] as AnalysisEventButton;
 
 				/* No tags, no players */
-				pl = new TimelineEvent {
-					EventType = b.EventType,
+				timeLineEvent = new TimelineEvent {
+					EventType = analysisEventButton.EventType,
 					Start = new Time (0),
 					Stop = new Time (100),
-					FileSet = p.FileSet
+					FileSet = project.FileSet
 				};
-				p.Timeline.Add (pl);
+				project.Timeline.Add (timeLineEvent);
 				/* tags, but no players */
-				b = p.Dashboard.List [1] as AnalysisEventButton;
-				pl = new TimelineEvent {
-					EventType = b.EventType,
+				analysisEventButton = project.Dashboard.List [1] as AnalysisEventButton;
+				timeLineEvent = new TimelineEvent {
+					EventType = analysisEventButton.EventType,
 					Start = new Time (0),
 					Stop = new Time (100),
-					FileSet = p.FileSet
+					FileSet = project.FileSet
 				};
-				pl.Tags.Add (b.AnalysisEventType.Tags [0]);
-				p.Timeline.Add (pl);
+				timeLineEvent.Tags.Add (analysisEventButton.AnalysisEventType.Tags [0]);
+				project.Timeline.Add (timeLineEvent);
 				/* tags and players */
-				b = p.Dashboard.List [2] as AnalysisEventButton;
-				pl = new TimelineEvent {
-					EventType = b.EventType,
+				analysisEventButton = project.Dashboard.List [2] as AnalysisEventButton;
+				timeLineEvent = new TimelineEvent {
+					EventType = analysisEventButton.EventType,
 					Start = new Time (0),
 					Stop = new Time (100),
-					FileSet = p.FileSet
+					FileSet = project.FileSet
 				};
-				pl.Tags.Add (b.AnalysisEventType.Tags [1]);
-				p.Timeline.Add (pl);
+				timeLineEvent.Tags.Add (analysisEventButton.AnalysisEventType.Tags [1]);
+				project.Timeline.Add (timeLineEvent);
 			}
 
-			return p;
+			return project;
 		}
 
 		public static void DeleteProject (Project p)
