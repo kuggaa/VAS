@@ -353,6 +353,16 @@ namespace VAS
 
 		#region Properties
 
+		public string Website {
+			get;
+			set;
+		}
+
+		public string Translators {
+			get;
+			set;
+		}
+
 		public string Copyright {
 			get;
 			set;

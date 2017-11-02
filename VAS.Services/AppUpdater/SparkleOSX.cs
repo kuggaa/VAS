@@ -62,7 +62,7 @@ namespace VAS.Services.AppUpdater
 
 		public void CheckForUpdates ()
 		{
-			updater?.CheckForUpdatesInBackground ();
+			updater?.CheckForUpdates (updater);
 		}
 
 		string GetBundlePath ()

@@ -24,11 +24,76 @@ using VAS.Core.ViewModel.Statistics;
 
 namespace VAS.Tests.MVVMC
 {
-	[TestFixture]
-	public class TestPropertyToPropertyBinding
+	class DummyOneWayPropertyViewModel : ViewModelBase
 	{
+		string viewModelProperty;
+
+		public string ViewModelProperty {
+			get {
+				return viewModelProperty;
+			}
+
+			set {
+				viewModelProperty = value;
+				RaisePropertyChanged (nameof (ViewModelProperty));
+			}
+		}
+	}
+
+	class DummyOneWayPropertyView
+	{
+		public BindingContext BindingContext;
+		string viewProperty;
+
+		public string ViewProperty {
+			get {
+				return viewProperty;
+			}
+			set {
+				viewProperty = value;
+			}
+		}
+		DummyOneWayPropertyViewModel viewModel;
+
+		public DummyOneWayPropertyViewModel ViewModel {
+			get {
+				return viewModel;
+			}
+
+			set {
+				viewModel = value;
+				if (viewModel != null)
+					BindingContext.UpdateViewModel (viewModel);
+			}
+		}
+	}
+
+	[TestFixture]
+	public class TestOneWayPropertyBinding
+	{
+		[Test ()]
+		public void Bind_NewMVVM_PropertyBindedFromVMtoView ()
+		{
+			///Arrange
+
+			var view = new DummyOneWayPropertyView ();
+			var viewModel = new DummyOneWayPropertyViewModel ();
+			view.BindingContext = new BindingContext ();
+			view.BindingContext.Add (view.Bind (vm => ((DummyOneWayPropertyViewModel)vm).ViewModelProperty,
+															 v => ((DummyOneWayPropertyView)v).ViewProperty));
+			view.ViewModel = viewModel;
+
+			///Act
+
+			viewModel.ViewModelProperty = "Changed!";
+
+			///Assert
+
+			Assert.AreEqual ("Changed!", view.ViewProperty);
+		}
+
 		[Test]
-		public void PropertyToPropertyBinding_WriteSource_DestinationUpdated ()
+		public void OneWayPropertyBinding_WriteSource_DestinationUpdated ()
 		{
 			// Arrange
 			CountLimitationVM source = new CountLimitationVM {
@@ -50,7 +115,7 @@ namespace VAS.Tests.MVVMC
 				}
 			};
 
-			var binding = new PropertyToPropertyBinding<int> (destination,
+			var binding = new OneWayPropertyBinding<int> (destination,
 												(vm) => ((CountLimitationVM)vm).Count,
 												(vm) => ((CountLimitationVM)vm).Count);
 
@@ -66,7 +131,7 @@ namespace VAS.Tests.MVVMC
 		}
 
 		[Test]
-		public void PropertyToPropertyBinding_WriteDestination_SourceNotUpdated ()
+		public void OneWayPropertyBinding_WriteDestination_SourceNotUpdated ()
 		{
 			// Arrange
 			CountLimitationVM source = new CountLimitationVM {
@@ -88,7 +153,7 @@ namespace VAS.Tests.MVVMC
 				}
 			};
 
-			var binding = new PropertyToPropertyBinding<int> (destination,
+			var binding = new OneWayPropertyBinding<int> (destination,
 												(vm) => ((CountLimitationVM)vm).Count,
 												(vm) => ((CountLimitationVM)vm).Count);
 
@@ -104,7 +169,7 @@ namespace VAS.Tests.MVVMC
 		}
 
 		[Test]
-		public void PropertyToPropertyBinding_DifferentPropertySameType_BindedCorrectly ()
+		public void OneWayPropertyBinding_DifferentPropertySameType_BindedCorrectly ()
 		{
 			// Arrange
 			ChartVM source = new ChartVM {
@@ -120,9 +185,9 @@ namespace VAS.Tests.MVVMC
 				TopPadding = 10,
 			};
 
-			var binding = new PropertyToPropertyBinding<int> (destination,
-															  (vm) => ((ChartVM)vm).BottomPadding,
-															  (vm) => ((ChartVM)vm).RightPadding);
+			var binding = new OneWayPropertyBinding<int> (destination,
+														  (vm) => ((ChartVM)vm).RightPadding,
+														  (vm) => ((ChartVM)vm).BottomPadding);
 
 			binding.ViewModel = source;
 
@@ -135,7 +200,7 @@ namespace VAS.Tests.MVVMC
 		}
 
 		[Test]
-		public void PropertyToPropertyBinding_DestinationNotWritable_CannotBind ()
+		public void OneWayPropertyBinding_SetSource_DestinationUpdated ()
 		{
 			// Arrange
 			CountLimitationVM source = new CountLimitationVM {
@@ -157,40 +222,7 @@ namespace VAS.Tests.MVVMC
 				}
 			};
 
-			// Act & Assert
-			// Maximum only has a getter
-			Assert.Throws<InvalidOperationException> (() =>
-													  new PropertyToPropertyBinding<int> (
-														  destination,
-														  (vm) => ((CountLimitationVM)vm).Maximum,
-														  (vm) => ((CountLimitationVM)vm).Count)
-													 );
-		}
-
-		[Test]
-		public void PropertyToPropertyBinding_SetSource_DestinationUpdated ()
-		{
-			// Arrange
-			CountLimitationVM source = new CountLimitationVM {
-				Model = new CountLicenseLimitation {
-					DisplayName = "source",
-					RegisterName = "source",
-					Count = 1,
-					Maximum = 5,
-					Enabled = true
-				}
-			};
-			CountLimitationVM destination = new CountLimitationVM {
-				Model = new CountLicenseLimitation {
-					DisplayName = "destination",
-					RegisterName = "destination",
-					Count = 0,
-					Maximum = 0,
-					Enabled = false
-				}
-			};
-
-			var binding = new PropertyToPropertyBinding<int> (destination,
+			var binding = new OneWayPropertyBinding<int> (destination,
 												(vm) => ((CountLimitationVM)vm).Count,
 												(vm) => ((CountLimitationVM)vm).Count);
 
@@ -206,7 +238,7 @@ namespace VAS.Tests.MVVMC
 		}
 
 		[Test]
-		public void PropertyToPropertyBinding_ChangedSource_BindedWithLast ()
+		public void OneWayPropertyBinding_ChangedSource_BindedWithLast ()
 		{
 			// Arrange
 			CountLimitationVM source = new CountLimitationVM {
@@ -237,7 +269,7 @@ namespace VAS.Tests.MVVMC
 				}
 			};
 
-			var binding = new PropertyToPropertyBinding<int> (destination,
+			var binding = new OneWayPropertyBinding<int> (destination,
 												(vm) => ((CountLimitationVM)vm).Count,
 												(vm) => ((CountLimitationVM)vm).Count);
 
@@ -257,7 +289,7 @@ namespace VAS.Tests.MVVMC
 		}
 
 		[Test]
-		public void PropertyToPropertyBinding_RemovedSource_Unbinded ()
+		public void OneWayPropertyBinding_RemovedSource_Unbinded ()
 		{
 			// Arrange
 			CountLimitationVM source = new CountLimitationVM {
@@ -279,7 +311,7 @@ namespace VAS.Tests.MVVMC
 				}
 			};
 
-			var binding = new PropertyToPropertyBinding<int> (destination,
+			var binding = new OneWayPropertyBinding<int> (destination,
 												(vm) => ((CountLimitationVM)vm).Count,
 												(vm) => ((CountLimitationVM)vm).Count);
 
@@ -297,7 +329,7 @@ namespace VAS.Tests.MVVMC
 		}
 
 		[Test]
-		public void PropertyToPropertyBinding_RemovedSourceAfterTrigger_Unbinded ()
+		public void OneWayPropertyBinding_RemovedSourceAfterTrigger_Unbinded ()
 		{
 			// Arrange
 			CountLimitationVM source = new CountLimitationVM {
@@ -319,7 +351,7 @@ namespace VAS.Tests.MVVMC
 				}
 			};
 
-			var binding = new PropertyToPropertyBinding<int> (destination,
+			var binding = new OneWayPropertyBinding<int> (destination,
 												(vm) => ((CountLimitationVM)vm).Count,
 												(vm) => ((CountLimitationVM)vm).Count);
 
@@ -337,4 +369,6 @@ namespace VAS.Tests.MVVMC
 			Assert.AreEqual (999, destination.Count);
 		}
 	}
+
+
 }

@@ -15,24 +15,20 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
-using System.Linq.Expressions;
-using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.MVVMC;
+using VAS.Services.ViewModel;
 
-namespace VAS.Core.MVVMC
+namespace VAS.Services.State
 {
-	public static class BindingsExtensions
+	public class AboutState : ScreenState<AboutVM>
 	{
-		/// <summary>
-		/// Binds the specified object dest's property expressed on targetExpression to a ViewModel's property expressed on sourceExpression
-		/// </summary>
-		/// <returns>The bind.</returns>
-		/// <param name="dest">Destination.</param>
-		/// <param name="sourceExpression">Source expression.</param>
-		/// <param name="targetExpression">Target expression.</param>
-		public static OneWayPropertyBinding<T> Bind<T> (this object dest, Expression<Func<IViewModel, T>> sourceExpression, Expression<Func<object, T>> targetExpression)
+		public const string NAME = "About";
+
+		public override string Name => NAME;
+
+		protected override void CreateViewModel (dynamic data)
 		{
-			return new OneWayPropertyBinding<T> (dest, sourceExpression, targetExpression);
+			ViewModel = new AboutVM ();
 		}
 	}
 }
