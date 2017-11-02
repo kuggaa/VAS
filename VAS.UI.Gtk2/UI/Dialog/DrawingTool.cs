@@ -419,11 +419,11 @@ namespace VAS.UI.Dialog
 			UpdateTextSize ();
 		}
 
-		void Bind()
+		void Bind ()
 		{
 			ctx = new BindingContext ();
 			ctx.Add (zoomscale.Bind (vm => ((DrawingToolVM)vm).SetZoomCommand, App.Current.ZoomLevels.Min (),
-			                         App.Current.ZoomLevels.Min (), App.Current.ZoomLevels.Max(), ZOOM_STEP, ZOOM_PAGE));
+									 App.Current.ZoomLevels.Min (), App.Current.ZoomLevels.Max (), ZOOM_STEP, ZOOM_PAGE));
 		}
 
 		int ScalledSize (int size)
@@ -813,7 +813,7 @@ namespace VAS.UI.Dialog
 
 		void HandleViewModelPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == nameof(ViewModel.ZoomLevel)) {
+			if (e.PropertyName == nameof (ViewModel.ZoomLevel)) {
 				zoomlabel.Text = string.Format ("{0,3}%", (int)(ViewModel.ZoomLevel * 100));
 				if (!ignoreChanges) {
 					blackboard.ZoomCommand.Execute (zoomscale.Value);

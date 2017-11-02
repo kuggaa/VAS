@@ -122,17 +122,20 @@ namespace VAS.Tests.Services
 			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
 
 			evt = new TimelineEvent {
-				Start = new Time (100), Stop = new Time (200),
+				Start = new Time (100),
+				Stop = new Time (200),
 				CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) },
 				FileSet = mfs
 			};
 			evt2 = new TimelineEvent {
-				Start = new Time (1000), Stop = new Time (20000),
+				Start = new Time (1000),
+				Stop = new Time (20000),
 				CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) },
 				FileSet = mfs
 			};
 			evt3 = new TimelineEvent {
-				Start = new Time (100), Stop = new Time (200),
+				Start = new Time (100),
+				Stop = new Time (200),
 				CamerasConfig = new ObservableCollection<CameraConfig> (),
 				FileSet = mfs
 			};
@@ -971,8 +974,10 @@ namespace VAS.Tests.Services
 			playerMock.ResetCalls ();
 
 			TimelineEvent evtLocal = new TimelineEvent {
-				Start = new Time (100), Stop = new Time (20000),
-				CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) }, FileSet = mfs
+				Start = new Time (100),
+				Stop = new Time (20000),
+				CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) },
+				FileSet = mfs
 			};
 			player.LoadEvent (evtLocal, new Time (0), true);
 			playerMock.ResetCalls ();
@@ -1062,13 +1067,15 @@ namespace VAS.Tests.Services
 		{
 			// Create an event referencing unknown MediaFiles in the set.
 			TimelineEvent evt2 = new TimelineEvent {
-				Start = new Time (150), Stop = new Time (200),
+				Start = new Time (150),
+				Stop = new Time (200),
 				CamerasConfig = new ObservableCollection<CameraConfig> {
 						new CameraConfig (0),
 						new CameraConfig (1),
 						new CameraConfig (4),
 						new CameraConfig (6)
-					}, FileSet = mfs
+					},
+				FileSet = mfs
 			};
 
 			player.CamerasConfig = new ObservableCollection<CameraConfig> {
@@ -1175,12 +1182,14 @@ namespace VAS.Tests.Services
 			/* Open another event with the same MediaFileSet and already ready to seek
 			 * and check the cameras layout and visibility is respected */
 			TimelineEvent evt2 = new TimelineEvent {
-				Start = new Time (400), Stop = new Time (50000),
+				Start = new Time (400),
+				Stop = new Time (50000),
 				CamerasConfig = new ObservableCollection<CameraConfig> {
 						new CameraConfig (1),
 						new CameraConfig (0)
 					},
-				CamerasLayout = "test", FileSet = nfs
+				CamerasLayout = "test",
+				FileSet = nfs
 			};
 			player.LoadEvent (evt2, new Time (0), true);
 			Assert.AreEqual (1, elementLoaded);
@@ -1386,7 +1395,9 @@ namespace VAS.Tests.Services
 
 			/* Now load an event */
 			evt1 = new TimelineEvent {
-				Start = new Time (100), Stop = new Time (200), FileSet = mfs,
+				Start = new Time (100),
+				Stop = new Time (200),
+				FileSet = mfs,
 				CamerasConfig = new ObservableCollection<CameraConfig> {
 						new CameraConfig (1),
 						new CameraConfig (1)
@@ -1467,7 +1478,9 @@ namespace VAS.Tests.Services
 
 			/* Now create an event with current camera config */
 			evt1 = new TimelineEvent {
-				Start = new Time (100), Stop = new Time (200), FileSet = mfs,
+				Start = new Time (100),
+				Stop = new Time (200),
+				FileSet = mfs,
 				CamerasConfig = player.CamerasConfig
 			};
 			/* Check that ROI was copied in event */
@@ -2238,6 +2251,34 @@ namespace VAS.Tests.Services
 			playlistElement.Stop += new Time { TotalSeconds = 1 };
 
 			Assert.AreEqual (0, playlist.CurrentIndex);
+		}
+
+		[Test]
+		public void HandlePlaylistEventDrawingsCollectionChanged_VideoPlayerControllerDrawingsCollectionLoaded_SeekInvokedFrameDrawingSetted ()
+		{
+			//Arrange
+			var start = new Time { TotalSeconds = 60 };
+			var renderOffsetTime = new Time (80);
+			var renderTime = start + renderOffsetTime;
+			currentTime = renderTime;
+			PreparePlayer ();
+
+			var stop = new Time { TotalSeconds = 100 };
+			var evt = new TimelineEvent { Start = start, Stop = stop };
+			var frameDrawing = new FrameDrawing () {
+				Render = renderTime
+			};
+			player.LoadEvent (evt, renderOffsetTime, true);
+			playerMock.ResetCalls ();
+
+			//Act
+			evt.Drawings.Add (frameDrawing);
+
+			//Assert
+			playerMock.Verify (v => v.Pause (false), Times.AtLeastOnce ());
+			Assert.AreEqual (frameDrawing, playerVM.FrameDrawing);
+			playerMock.Verify (v => v.Seek (frameDrawing.Render, true, true), Times.Once ());
+
 		}
 
 		void HandleElementLoadedEvent (object element, bool hasNext)
