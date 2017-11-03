@@ -118,8 +118,8 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		public void Bind ()
 		{
-			ctx.Add (BarChart.LeftSerie.Bind (vm => ((CountLimitationVM)vm).Remaining, vm => ((SeriesVM)vm).Elements));
-			ctx.Add (BarChart.RightSerie.Bind (vm => ((CountLimitationVM)vm).Count, vm => ((SeriesVM)vm).Elements));
+			ctx.Add (BarChart.LeftSerie.Bind (s => s.Elements, vm => ((CountLimitationVM)vm).Remaining));
+			ctx.Add (BarChart.RightSerie.Bind (s => s.Elements, vm => ((CountLimitationVM)vm).Count));
 			ctx.UpdateViewModel (Limitation);
 		}
 
@@ -133,8 +133,7 @@ namespace VAS.Core.ViewModel
 
 		void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if(Limitation == null || BarChart == null)
-			{
+			if (Limitation == null || BarChart == null) {
 				return;
 			}
 			if (NeedsSync (e?.PropertyName, nameof (Limitation.Count))) {
