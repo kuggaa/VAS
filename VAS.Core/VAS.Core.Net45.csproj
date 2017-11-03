@@ -74,7 +74,6 @@
     <Compile Include="KPI\Services\UnhandledExceptionTelemetryModule.cs" />
     <Compile Include="KPI\KpiService.cs" />
     <Compile Include="GdkGlue.cs" />
-    <Compile Include="MVVMC\OneWayPropertyBinding.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="paket.references" />
