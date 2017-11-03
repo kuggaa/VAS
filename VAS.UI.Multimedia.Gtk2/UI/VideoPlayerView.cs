@@ -97,13 +97,9 @@ namespace VAS.UI
 			totalTimeLabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.TextBaseSecondary));
 			eventNameLabel.Ellipsize = EllipsizeMode.End;
 
-
-
 			centerplayheadbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-dash-center-view",
 				StyleConf.PlayerCapturerIconSize);
 			DurationButtonImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-duration", 15);
-
-
 
 			// Force tooltips to be translatable as there seems to be a bug in stetic 
 			// code generation for translatable tooltips.
@@ -646,8 +642,19 @@ namespace VAS.UI
 
 		void HandleReady (object sender, EventArgs e)
 		{
-			playerVM.ViewPorts = new List<IViewPort> { mainviewport, subviewport1.Viewport, subviewport2.Viewport, subviewport3.Viewport };
-			playerVM.ReadyCommand.Execute (true);
+			IEnumerable<IViewPort> viewPorts = new List<IViewPort> { mainviewport, subviewport1.Viewport,
+				subviewport2.Viewport, subviewport3.Viewport };
+			playerVM.ViewPorts = (List<IViewPort>)viewPorts;
+			int activeCameras = playerVM.CamerasConfig.Count ();
+			// Check that all viewports are ready if cameras config are not set yet
+			// or check that we have at least the same number of viewports ready as the ones we
+			// need for the current cameras cofiguration.
+			if (activeCameras != 0) {
+				viewPorts = viewPorts.Take (activeCameras);
+			}
+			if (viewPorts.All (vp => (vp as VideoWindow).Ready)) {
+				playerVM.ReadyCommand.Execute (true);
+			}
 		}
 
 		void HandleUnReady (object sender, EventArgs e)
