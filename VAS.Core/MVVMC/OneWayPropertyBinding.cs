@@ -35,8 +35,8 @@ namespace VAS.Core.MVVMC
 			this.writeAction = writeAction;
 		}
 
-		public OneWayPropertyBinding (object dest, Expression<Func<IViewModel, TSourceProperty>> sourceExpression,
-									  Expression<Func<object, TSourceProperty>> targetExpression) : base (sourceExpression)
+		public OneWayPropertyBinding (object dest, Expression<Func<object, TSourceProperty>> targetExpression,
+									  Expression<Func<IViewModel, TSourceProperty>> sourceExpression) : base (sourceExpression)
 		{
 			var setter = CreateSetter (targetExpression, out string memberName);
 			Action<TSourceProperty> setterAction = (TSourceProperty t) => setter.Invoke (dest, t);
@@ -59,8 +59,8 @@ namespace VAS.Core.MVVMC
 
 	public class OneWayPropertyBinding<TSourceProperty, TTarget> : OneWayPropertyBinding<TSourceProperty>
 	{
-		public OneWayPropertyBinding (TTarget dest, Expression<Func<IViewModel, TSourceProperty>> sourceExpression,
-									  Expression<Func<TTarget, TSourceProperty>> targetExpression) : base (sourceExpression, null)
+		public OneWayPropertyBinding (TTarget dest, Expression<Func<TTarget, TSourceProperty>> targetExpression,
+									  Expression<Func<IViewModel, TSourceProperty>> sourceExpression) : base (sourceExpression, null)
 		{
 			var setter = CreateSetter (targetExpression, out string memberName);
 			Action<TSourceProperty> setterAction = (TSourceProperty t) => setter.Invoke (dest, t);

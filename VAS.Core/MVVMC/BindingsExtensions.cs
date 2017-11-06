@@ -34,7 +34,7 @@ namespace VAS.Core.MVVMC
 																				 Expression<Func<TTarget, TProperty>> targetExpression,
 																				 Expression<Func<IViewModel, TProperty>> sourceExpression)
 		{
-			return new OneWayPropertyBinding<TProperty, TTarget> (dest, sourceExpression, targetExpression);
+			return new OneWayPropertyBinding<TProperty, TTarget> (dest, targetExpression, sourceExpression);
 		}
 	}
 }
