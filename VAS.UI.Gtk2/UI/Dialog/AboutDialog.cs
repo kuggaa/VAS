@@ -95,13 +95,13 @@ namespace VAS.UI.Dialog
 		{
 			bindingContext = this.GetBindingContext ();
 
-			bindingContext.Add (this.Bind (vm => ((AboutVM)vm).ProgramName, v => ((AboutDialog)v).ProgramName));
-			bindingContext.Add (this.Bind (vm => ((AboutVM)vm).Version, v => ((AboutDialog)v).Version));
-			bindingContext.Add (this.Bind (vm => ((AboutVM)vm).Copyright, v => ((AboutDialog)v).Copyright));
-			bindingContext.Add (this.Bind (vm => ((AboutVM)vm).Website, v => ((AboutDialog)v).Website));
-			bindingContext.Add (this.Bind (vm => ((AboutVM)vm).License, v => ((AboutDialog)v).License));
-			bindingContext.Add (this.Bind (vm => ((AboutVM)vm).Authors, v => ((AboutDialog)v).Authors));
-			bindingContext.Add (this.Bind (vm => ((AboutVM)vm).TranslatorCredits, v => ((AboutDialog)v).TranslatorCredits));
+			bindingContext.Add (this.Bind (v => v.ProgramName, vm => ((AboutVM)vm).ProgramName));
+			bindingContext.Add (this.Bind (v => v.Version, vm => ((AboutVM)vm).Version));
+			bindingContext.Add (this.Bind (v => v.Copyright, vm => ((AboutVM)vm).Copyright));
+			bindingContext.Add (this.Bind (v => v.Website, vm => ((AboutVM)vm).Website));
+			bindingContext.Add (this.Bind (v => v.License, vm => ((AboutVM)vm).License));
+			bindingContext.Add (this.Bind (v => v.Authors, vm => ((AboutVM)vm).Authors));
+			bindingContext.Add (this.Bind (v => v.TranslatorCredits, vm => ((AboutVM)vm).TranslatorCredits));
 		}
 
 		void HandleResponse (object o, ResponseArgs args)

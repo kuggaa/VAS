@@ -79,8 +79,8 @@ namespace VAS.Tests.MVVMC
 			var view = new DummyOneWayPropertyView ();
 			var viewModel = new DummyOneWayPropertyViewModel ();
 			view.BindingContext = new BindingContext ();
-			view.BindingContext.Add (view.Bind (vm => ((DummyOneWayPropertyViewModel)vm).ViewModelProperty,
-															 v => ((DummyOneWayPropertyView)v).ViewProperty));
+			view.BindingContext.Add (view.Bind (v => v.ViewProperty,
+												vm => ((DummyOneWayPropertyViewModel)vm).ViewModelProperty));
 			view.ViewModel = viewModel;
 
 			///Act
@@ -186,8 +186,8 @@ namespace VAS.Tests.MVVMC
 			};
 
 			var binding = new OneWayPropertyBinding<int> (destination,
-														  (vm) => ((ChartVM)vm).RightPadding,
-														  (vm) => ((ChartVM)vm).BottomPadding);
+														  (vm) => ((ChartVM)vm).BottomPadding,
+														  (vm) => ((ChartVM)vm).RightPadding);
 
 			binding.ViewModel = source;
 
