@@ -30,9 +30,11 @@ namespace VAS.Core.MVVMC
 		/// <param name="dest">Destination.</param>
 		/// <param name="sourceExpression">Source expression.</param>
 		/// <param name="targetExpression">Target expression.</param>
-		public static OneWayPropertyBinding<T> Bind<T> (this object dest, Expression<Func<IViewModel, T>> sourceExpression, Expression<Func<object, T>> targetExpression)
+		public static OneWayPropertyBinding<TProperty> Bind<TTarget, TProperty> (this TTarget dest,
+																				 Expression<Func<TTarget, TProperty>> targetExpression,
+																				 Expression<Func<IViewModel, TProperty>> sourceExpression)
 		{
-			return new OneWayPropertyBinding<T> (dest, sourceExpression, targetExpression);
+			return new OneWayPropertyBinding<TProperty, TTarget> (dest, sourceExpression, targetExpression);
 		}
 	}
 }

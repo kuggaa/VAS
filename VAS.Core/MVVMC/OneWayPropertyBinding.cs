@@ -26,19 +26,20 @@ namespace VAS.Core.MVVMC
 	/// This class provides one way property binding.
 	/// <see cref="IViewModel" /> property is passed to write action callback performed on the class that setted the binding.
 	/// </summary>
-	public class OneWayPropertyBinding<T> : PropertyBinding<T>
+	public class OneWayPropertyBinding<TSourceProperty> : PropertyBinding<TSourceProperty>
 	{
-		Action<T> writeAction;
+		protected Action<TSourceProperty> writeAction;
 
-		public OneWayPropertyBinding (Expression<Func<IViewModel, T>> propertyExpression, Action<T> writeAction) : base (propertyExpression)
+		public OneWayPropertyBinding (Expression<Func<IViewModel, TSourceProperty>> propertyExpression, Action<TSourceProperty> writeAction) : base (propertyExpression)
 		{
 			this.writeAction = writeAction;
 		}
 
-		public OneWayPropertyBinding (object dest, Expression<Func<IViewModel, T>> sourceExpression, Expression<Func<object, T>> targetExpression) : base (sourceExpression)
+		public OneWayPropertyBinding (object dest, Expression<Func<IViewModel, TSourceProperty>> sourceExpression,
+									  Expression<Func<object, TSourceProperty>> targetExpression) : base (sourceExpression)
 		{
-			var setter = CreateSetter<object> (targetExpression, out string memberName);
-			Action<T> setterAction = (T t) => setter.Invoke (dest, t);
+			var setter = CreateSetter (targetExpression, out string memberName);
+			Action<TSourceProperty> setterAction = (TSourceProperty t) => setter.Invoke (dest, t);
 			this.writeAction = setterAction;
 		}
 
@@ -50,9 +51,20 @@ namespace VAS.Core.MVVMC
 		{
 		}
 
-		protected override void WriteViewValue (T val)
+		protected override void WriteViewValue (TSourceProperty val)
 		{
 			this.writeAction (val);
+		}
+	}
+
+	public class OneWayPropertyBinding<TSourceProperty, TTarget> : OneWayPropertyBinding<TSourceProperty>
+	{
+		public OneWayPropertyBinding (TTarget dest, Expression<Func<IViewModel, TSourceProperty>> sourceExpression,
+									  Expression<Func<TTarget, TSourceProperty>> targetExpression) : base (sourceExpression, null)
+		{
+			var setter = CreateSetter (targetExpression, out string memberName);
+			Action<TSourceProperty> setterAction = (TSourceProperty t) => setter.Invoke (dest, t);
+			this.writeAction = setterAction;
 		}
 	}
 }
