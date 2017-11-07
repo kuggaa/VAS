@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.ComponentModel;
 using NUnit.Framework;
 using VAS.Core.License;
 using VAS.Core.MVVMC;
@@ -24,6 +25,30 @@ using VAS.Core.ViewModel.Statistics;
 
 namespace VAS.Tests.MVVMC
 {
+
+	class IntegerParserConverter : TypeConverter
+	{
+		public override object ConvertFrom (ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
+		{
+			return value?.ToString ();
+		}
+
+		public override object ConvertTo (ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
+		{
+			return (value != null) ? int.Parse ((string)value) : 0;
+		}
+
+		public override bool CanConvertFrom (ITypeDescriptorContext context, Type sourceType)
+		{
+			return true;
+		}
+
+		public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
+		{
+			return true;
+		}
+	}
+
 	class DummyOneWayPropertyViewModel : ViewModelBase
 	{
 		string viewModelProperty;
@@ -53,6 +78,10 @@ namespace VAS.Tests.MVVMC
 				viewProperty = value;
 			}
 		}
+
+		public int ViewPropertyInt { get; set; }
+
+
 		DummyOneWayPropertyViewModel viewModel;
 
 		public DummyOneWayPropertyViewModel ViewModel {
@@ -115,7 +144,7 @@ namespace VAS.Tests.MVVMC
 				}
 			};
 
-			var binding = new OneWayPropertyBinding<int> (destination,
+			var binding = new OneWayPropertyBinding<int, int> (destination,
 												(vm) => ((CountLimitationVM)vm).Count,
 												(vm) => ((CountLimitationVM)vm).Count);
 
@@ -153,7 +182,7 @@ namespace VAS.Tests.MVVMC
 				}
 			};
 
-			var binding = new OneWayPropertyBinding<int> (destination,
+			var binding = new OneWayPropertyBinding<int, int> (destination,
 												(vm) => ((CountLimitationVM)vm).Count,
 												(vm) => ((CountLimitationVM)vm).Count);
 
@@ -185,9 +214,9 @@ namespace VAS.Tests.MVVMC
 				TopPadding = 10,
 			};
 
-			var binding = new OneWayPropertyBinding<int> (destination,
-														  (vm) => ((ChartVM)vm).BottomPadding,
-														  (vm) => ((ChartVM)vm).RightPadding);
+			var binding = new OneWayPropertyBinding<int, int> (destination,
+															   (vm) => ((ChartVM)vm).RightPadding,
+															   (vm) => ((ChartVM)vm).BottomPadding);
 
 			binding.ViewModel = source;
 
@@ -222,7 +251,7 @@ namespace VAS.Tests.MVVMC
 				}
 			};
 
-			var binding = new OneWayPropertyBinding<int> (destination,
+			var binding = new OneWayPropertyBinding<int, int> (destination,
 												(vm) => ((CountLimitationVM)vm).Count,
 												(vm) => ((CountLimitationVM)vm).Count);
 
@@ -235,6 +264,28 @@ namespace VAS.Tests.MVVMC
 			Assert.AreEqual (source, binding.ViewModel);
 			Assert.AreEqual (source.Count, destination.Count);
 			Assert.AreEqual (1, destination.Count);
+		}
+
+		[Test]
+		public void OneWayPropertyBindingWithConverter_SetSource_DestinationUpdated ()
+		{
+			///Arrange
+
+			var view = new DummyOneWayPropertyView ();
+			var viewModel = new DummyOneWayPropertyViewModel ();
+			view.BindingContext = new BindingContext ();
+			view.BindingContext.Add (view.Bind (v => v.ViewPropertyInt,
+												vm => ((DummyOneWayPropertyViewModel)vm).ViewModelProperty,
+												new IntegerParserConverter ()));
+			view.ViewModel = viewModel;
+
+			///Act
+
+			viewModel.ViewModelProperty = "12";
+
+			///Assert
+
+			Assert.AreEqual (12, view.ViewPropertyInt);
 		}
 
 		[Test]
@@ -269,7 +320,7 @@ namespace VAS.Tests.MVVMC
 				}
 			};
 
-			var binding = new OneWayPropertyBinding<int> (destination,
+			var binding = new OneWayPropertyBinding<int, int> (destination,
 												(vm) => ((CountLimitationVM)vm).Count,
 												(vm) => ((CountLimitationVM)vm).Count);
 
@@ -311,7 +362,7 @@ namespace VAS.Tests.MVVMC
 				}
 			};
 
-			var binding = new OneWayPropertyBinding<int> (destination,
+			var binding = new OneWayPropertyBinding<int, int> (destination,
 												(vm) => ((CountLimitationVM)vm).Count,
 												(vm) => ((CountLimitationVM)vm).Count);
 
@@ -351,7 +402,7 @@ namespace VAS.Tests.MVVMC
 				}
 			};
 
-			var binding = new OneWayPropertyBinding<int> (destination,
+			var binding = new OneWayPropertyBinding<int, int> (destination,
 												(vm) => ((CountLimitationVM)vm).Count,
 												(vm) => ((CountLimitationVM)vm).Count);
 
@@ -369,6 +420,4 @@ namespace VAS.Tests.MVVMC
 			Assert.AreEqual (999, destination.Count);
 		}
 	}
-
-
 }
