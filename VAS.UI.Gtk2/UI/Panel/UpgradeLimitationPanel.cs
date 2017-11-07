@@ -179,6 +179,9 @@ namespace VAS.UI.Panel
 				seeOtherPlanslbl.UseMarkup = true;
 				seeOtherPlanslbl.UseUnderline = false;
 				seeOtherPlanslbl.SetLinkHandler (HandleLinkClicked);
+			} else {
+				seeOtherPlanslbl.Visible = false;
+				undecidedlbl.Visible = false;
 			}
 		}
 
