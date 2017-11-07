@@ -31,14 +31,15 @@ namespace VAS.Tests.Core
 		[OneTimeSetUp]
 		public void Setup ()
 		{
-			App.Current.DataDir.Add (Path.Combine(TestContext.CurrentContext.TestDirectory, "data"));
+			App.Current.DataDir.Add (Path.Combine (TestContext.CurrentContext.TestDirectory, "data"));
+
 			resources = new ResourcesLocator ();
 		}
 
 		[Test ()]
 		public void TestLoadIconResource ()
 		{
-			Image img = resources.LoadImage ("vas-dark-bg.svg");
+			Image img = resources.LoadIcon ("vas-dark-bg");
 			Assert.IsNotNull (img);
 		}
 

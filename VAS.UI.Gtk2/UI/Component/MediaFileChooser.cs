@@ -19,6 +19,7 @@ using System;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.MVVMC;
+using VAS.Core.Resources.Styles;
 using VAS.Core.Store;
 using VAS.UI.Helpers;
 
@@ -46,8 +47,8 @@ namespace VAS.UI.Component
 			nameentry.Visible = !String.IsNullOrEmpty (name);
 			nameentry.Text = name ?? "";
 
-			addbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-browse", StyleConf.ButtonDialogIconSize);
-			clearbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-delete", StyleConf.ButtonDialogIconSize);
+			addbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-browse", Sizes.ButtonDialogIconSize);
+			clearbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-delete", Sizes.ButtonDialogIconSize);
 
 			FilterName = "MP4";
 			FilterExtensions = new string [] { "*.mp4" };

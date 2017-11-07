@@ -25,6 +25,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
+using VAS.Core.Resources.Styles;
 using VAS.Core.Serialization;
 using Image = VAS.Core.Common.Image;
 
@@ -307,7 +308,7 @@ namespace VAS.Core.Store.Templates
 		{
 			AnalysisEventButton button;
 			AnalysisEventType evtype;
-			Color c = StyleConf.ButtonEventColor;
+			Color c = Colors.ButtonEventColor;
 			HotKey h = new HotKey ();
 
 			evtype = new AnalysisEventType {

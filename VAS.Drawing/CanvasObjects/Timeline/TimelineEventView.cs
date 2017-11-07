@@ -18,6 +18,7 @@
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.Resources.Styles;
 using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
@@ -97,7 +98,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		public override void Draw (IDrawingToolkit tk, Area area)
 		{
 			double start, stop;
-			int lineWidth = StyleConf.TimelineLineSize;
+			int lineWidth = Sizes.TimelineLineSize;
 
 			if (!UpdateDrawArea (tk, area, Area)) {
 				return;
@@ -116,8 +117,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				DrawBorders (tk, start, stop, lineWidth);
 			}
 			if (Selected) {
-				tk.DrawSurface (new Point (start - SelectionLeft.Width / 2, OffsetY), StyleConf.TimelineSelectionLeftWidth, StyleConf.TimelineSelectionLeftHeight, SelectionLeft, ScaleMode.AspectFit);
-				tk.DrawSurface (new Point (stop - SelectionRight.Width / 2, OffsetY), StyleConf.TimelineSelectionRightWidth, StyleConf.TimelineSelectionRightHeight, SelectionRight, ScaleMode.AspectFit);
+				tk.DrawSurface (new Point (start - SelectionLeft.Width / 2, OffsetY), Sizes.TimelineSelectionLeftWidth, Sizes.TimelineSelectionLeftHeight, SelectionLeft, ScaleMode.AspectFit);
+				tk.DrawSurface (new Point (stop - SelectionRight.Width / 2, OffsetY), Sizes.TimelineSelectionRightWidth, Sizes.TimelineSelectionRightHeight, SelectionRight, ScaleMode.AspectFit);
 			}
 			tk.End ();
 		}

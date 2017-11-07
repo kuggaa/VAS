@@ -23,6 +23,7 @@ using VAS.Core.Common;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.MVVMC;
+using VAS.Core.Resources;
 using VAS.Services.State;
 using VAS.Services.ViewModel;
 using VAS.UI.Helpers;
@@ -81,10 +82,10 @@ namespace VAS.UI.Panel
 			seeOtherPlanslbl.ModifyFont (FontDescription.FromString ($"{App.Current.Style.Font} normal {FEATURE_LABEL_SIZE}px"));
 			seeOtherPlanslbl.ModifyText (StateType.Normal, Helpers.Misc.ToGdkColor (CommonColor.Parse (UPGRADE_BUTTON_COLOR)));
 
-			captionBackgroundHeader = new ImageView (App.Current.ResourcesLocator.LoadImage (StyleConf.UpgradeDialogBackgroundTop));
+			captionBackgroundHeader = new ImageView (App.Current.ResourcesLocator.LoadImage (Images.UpgradeDialogBackgroundTop));
 			captionFixedHeader.Put (captionBackgroundHeader, 0, 0);
 
-			captionBackgroundBottom = new ImageView (App.Current.ResourcesLocator.LoadImage (StyleConf.UpgradeDialogBackgroundBottom));
+			captionBackgroundBottom = new ImageView (App.Current.ResourcesLocator.LoadImage (Images.UpgradeDialogBackgroundBottom));
 			captionFixedBottom.Put (captionBackgroundBottom, 0, 0);
 			captionFixedBottom.Put (upgradeButton2, (captionBackgroundBottom.Image.Width / 2) - (upgradeButton2.WidthRequest / 2), 0);
 			captionFixedBottom.Put (undecidedlbl, (captionBackgroundBottom.Image.Width / 2) - (undecidedlbl.WidthRequest / 2),

@@ -23,6 +23,8 @@ using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
 using VAS.Core.Store.Drawables;
 using VAS.Core.ViewModel;
+using VAS.Core.Resources;
+using VAS.Core.Resources.Styles;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
@@ -41,7 +43,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		public EventTypeLabelView ()
 		{
 			playButton = new TimelineButtonView ();
-			playButton.Icon = App.Current.ResourcesLocator.LoadImage (StyleConf.PlayButton);
+			playButton.Icon = App.Current.ResourcesLocator.LoadIcon (Icons.PlayButton);
 			playButton.ClickedEvent += PlayButtonClickedEvent;
 			playButton.RedrawEvent += HandleButtonRedrawEvent;
 		}
@@ -90,8 +92,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		{
 			double hs, vs;
 
-			hs = StyleConf.TimelineLabelHSpacing;
-			vs = StyleConf.TimelineLabelVSpacing;
+			hs = Sizes.TimelineLabelHSpacing;
+			vs = Sizes.TimelineLabelVSpacing;
 
 			tk.Begin ();
 			tk.FillColor = BackgroundColor;

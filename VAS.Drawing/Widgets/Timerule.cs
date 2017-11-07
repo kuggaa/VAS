@@ -21,6 +21,7 @@ using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
+using VAS.Core.Resources.Styles;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
 using VAS.Core.ViewModel;
@@ -170,12 +171,12 @@ namespace VAS.Drawing.Widgets
 			set {
 				if (value) {
 					RuleHeight = Constants.TIMERULE_RULE_PLAYER_HEIGHT;
-					FontSize = StyleConf.TimelineRulePlayerFontSize;
+					FontSize = Sizes.TimelineRulePlayerFontSize;
 					bigLineHeight = 8;
 					smallLineHeight = 3;
 				} else {
 					RuleHeight = Constants.TIMERULE_HEIGHT;
-					FontSize = StyleConf.TimelineRuleFontSize;
+					FontSize = Sizes.TimelineRuleFontSize;
 					bigLineHeight = 15;
 					smallLineHeight = 5;
 				}

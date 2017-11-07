@@ -13,6 +13,7 @@ using VAS.Core.Common;
 using VAS.Core.Filters;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.Resources.Styles;
 using VAS.Core.Store;
 using VAS.Core.Store.Templates;
 using VAS.Core.ViewModel;
@@ -926,7 +927,7 @@ namespace VAS.Tests.Services
 			{
 				AnalysisEventButton button;
 				AnalysisEventType evtype;
-				Color c = StyleConf.ButtonEventColor;
+				Color c = Colors.ButtonEventColor;
 				HotKey h = new HotKey ();
 
 				evtype = new AnalysisEventType {

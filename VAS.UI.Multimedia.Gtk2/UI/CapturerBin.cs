@@ -25,6 +25,7 @@ using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
+using VAS.Core.Resources.Styles;
 using VAS.Core.Store;
 using VAS.UI.Helpers;
 using Image = VAS.Core.Common.Image;
@@ -80,21 +81,21 @@ namespace VAS.UI
 			playlastbutton.TooltipMarkup = Catalog.GetString ("Replay event");
 
 			recimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-record",
-				StyleConf.PlayerCapturerIconSize);
+																	Sizes.PlayerCapturerIconSize);
 			stopimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-stop",
-				StyleConf.PlayerCapturerIconSize);
+																	 Sizes.PlayerCapturerIconSize);
 			pauseimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-pause-clock",
-				StyleConf.PlayerCapturerIconSize);
+																	  Sizes.PlayerCapturerIconSize);
 			resumeimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-resume-clock",
-				StyleConf.PlayerCapturerIconSize);
+																	   Sizes.PlayerCapturerIconSize);
 			saveimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-save",
-				StyleConf.PlayerCapturerIconSize);
+																	 Sizes.PlayerCapturerIconSize);
 			cancelimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-cancel-rec",
-				StyleConf.PlayerCapturerIconSize);
+																	   Sizes.PlayerCapturerIconSize);
 			deletelastimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-delete",
-				StyleConf.PlayerCapturerIconSize);
+																		   Sizes.PlayerCapturerIconSize);
 			playlastimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-play",
-				StyleConf.PlayerCapturerIconSize);
+																		 Sizes.PlayerCapturerIconSize);
 			lasteventbox.Visible = false;
 			deletelastbutton.Clicked += HandleDeleteLast;
 			playlastbutton.Clicked += HandlePlayLast;
@@ -120,13 +121,13 @@ namespace VAS.UI
 				type = value;
 				videowindow.Visible = value == CapturerType.Live;
 				if (type == CapturerType.Fake) {
-					SetStyle (StyleConf.PlayerCapturerControlsHeight * 2, 24 * 2, 40 * 2);
+					SetStyle (Sizes.PlayerCapturerControlsHeight * 2, 24 * 2, 40 * 2);
 					playlastbutton.Visible = false;
 					controllerbox.SetChildPacking (vseparator1, false, false, 20, PackType.Start);
 					controllerbox.SetChildPacking (vseparator2, false, false, 20, PackType.Start);
 				} else {
 					playlastbutton.Visible = true;
-					SetStyle (StyleConf.PlayerCapturerControlsHeight, 24, 40);
+					SetStyle (Sizes.PlayerCapturerControlsHeight, 24, 40);
 					controllerbox.SetChildPacking (vseparator1, true, true, 0, PackType.Start);
 					controllerbox.SetChildPacking (vseparator2, true, true, 0, PackType.Start);
 				}

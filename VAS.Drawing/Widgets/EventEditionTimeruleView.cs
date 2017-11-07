@@ -21,6 +21,7 @@ using VAS.Core.Common;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
+using VAS.Core.Resources.Styles;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
 using VAS.Core.Store.Playlists;
@@ -45,7 +46,7 @@ namespace VAS.Drawing.Widgets
 		public EventEditionTimeruleView (IWidget widget) : base (widget)
 		{
 			Accuracy = 20;
-			FontSize = StyleConf.TimelineRulePlayerFontSize;
+			FontSize = Sizes.TimelineRulePlayerFontSize;
 			loadedEventVM = new TimeNodeVM ();
 			nodeView = new TimeNodeEditorView {
 				SelectionMode = NodeSelectionMode.Borders,
