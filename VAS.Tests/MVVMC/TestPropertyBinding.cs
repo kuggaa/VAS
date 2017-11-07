@@ -31,7 +31,7 @@ namespace VAS.Tests.MVVMC
 		public void TestUpdateProperty_WithoutConverter ()
 		{
 			var viewModel = new DummyPropertyViewModel ();
-			var binding = new DummyPropertyBinding (vm => ((DummyPropertyViewModel)vm).Prop1);
+			var binding = new DummyPropertyBinding<string> (vm => ((DummyPropertyViewModel)vm).Prop1);
 			binding.ViewModel = viewModel;
 			viewModel.Prop1 = "foo";
 
@@ -42,7 +42,7 @@ namespace VAS.Tests.MVVMC
 		public void TestUpdateProperty_WithConverter ()
 		{
 			var viewModel = new DummyPropertyViewModel ();
-			var binding = new DummyPropertyBinding (vm => ((DummyPropertyViewModel)vm).Prop2, new Int32Converter ());
+			var binding = new DummyPropertyBinding<int> (vm => ((DummyPropertyViewModel)vm).Prop2, new Int32Converter ());
 			binding.ViewModel = viewModel;
 			viewModel.Prop2 = 32;
 
@@ -53,7 +53,7 @@ namespace VAS.Tests.MVVMC
 		public void TestUpdateView_WithoutConverter ()
 		{
 			var viewModel = new DummyPropertyViewModel ();
-			var binding = new DummyPropertyBinding (vm => ((DummyPropertyViewModel)vm).Prop1);
+			var binding = new DummyPropertyBinding<string> (vm => ((DummyPropertyViewModel)vm).Prop1);
 			binding.ViewModel = viewModel;
 			binding.ViewChanged ("Foo");
 			Assert.AreEqual ("Foo", viewModel.Prop1);
@@ -63,7 +63,7 @@ namespace VAS.Tests.MVVMC
 		public void TestUpdateView_WithConverter ()
 		{
 			var viewModel = new DummyPropertyViewModel ();
-			var binding = new DummyPropertyBinding (vm => ((DummyPropertyViewModel)vm).Prop2, new Int32Converter ());
+			var binding = new DummyPropertyBinding<int> (vm => ((DummyPropertyViewModel)vm).Prop2, new Int32Converter ());
 			binding.ViewModel = viewModel;
 			binding.ViewChanged ("32");
 			Assert.AreEqual (32, viewModel.Prop2);
@@ -72,17 +72,17 @@ namespace VAS.Tests.MVVMC
 		[Test]
 		public void TestBind_WithInvalidConverter ()
 		{
-			Assert.Throws<InvalidCastException> (() => new DummyPropertyBinding (vm => ((DummyPropertyViewModel)vm).Prop2,
+			Assert.Throws<InvalidCastException> (() => new DummyPropertyBinding<int> (vm => ((DummyPropertyViewModel)vm).Prop2,
 																				 new DateTimeConverter ()));
 		}
 
 		[Test]
 		public void TestBind_WithPrivateSetter_WithoutConverter ()
 		{
-			DummyPropertyBinding binding = null;
+			DummyPropertyBinding<string> binding = null;
 			var viewModel = new DummyPropertyViewModel ();
 
-			Assert.DoesNotThrow (() => { binding = new DummyPropertyBinding (vm => ((DummyPropertyViewModel)vm).Prop3); });
+			Assert.DoesNotThrow (() => { binding = new DummyPropertyBinding<string> (vm => ((DummyPropertyViewModel)vm).Prop3); });
 
 			binding.ViewModel = viewModel;
 			binding.ViewChanged ("Foo");
@@ -92,12 +92,12 @@ namespace VAS.Tests.MVVMC
 		[Test]
 		public void TestBind_WithPrivateSetter_WithConverter ()
 		{
-			DummyPropertyBinding binding = null;
+			DummyPropertyBinding<int> binding = null;
 			var viewModel = new DummyPropertyViewModel ();
 
 			Assert.DoesNotThrow (() => {
 				binding =
-					new DummyPropertyBinding (vm => ((DummyPropertyViewModel)vm).Prop4, new Int32Converter ());
+					new DummyPropertyBinding<int> (vm => ((DummyPropertyViewModel)vm).Prop4, new Int32Converter ());
 			});
 
 			binding.ViewModel = viewModel;
@@ -110,7 +110,7 @@ namespace VAS.Tests.MVVMC
 		{
 			var viewModel1 = new DummyPropertyViewModel ();
 			var viewModel2 = new DummyPropertyViewModel ();
-			var binding = new DummyPropertyBinding (vm => ((DummyPropertyViewModel)vm).Prop1);
+			var binding = new DummyPropertyBinding<string> (vm => ((DummyPropertyViewModel)vm).Prop1);
 			binding.ViewModel = viewModel1;
 			binding.ViewModel = viewModel2;
 
@@ -125,7 +125,7 @@ namespace VAS.Tests.MVVMC
 		{
 			var viewModel1 = new DummyPropertyViewModel ();
 			var viewModel2 = new DummyPropertyViewModel ();
-			var binding = new DummyPropertyBinding (vm => ((DummyPropertyViewModel)vm).Prop2, new Int32Converter ());
+			var binding = new DummyPropertyBinding<int> (vm => ((DummyPropertyViewModel)vm).Prop2, new Int32Converter ());
 			binding.ViewModel = viewModel1;
 			binding.ViewModel = viewModel2;
 
@@ -142,7 +142,7 @@ namespace VAS.Tests.MVVMC
 			var child = new DummyPropertyViewModel ();
 			parent.Prop5 = child;
 
-			var binding = new DummyPropertyBinding (vm => ((DummyPropertyViewModel)vm).Prop5.Prop1);
+			var binding = new DummyPropertyBinding<string> (vm => ((DummyPropertyViewModel)vm).Prop5.Prop1);
 			binding.ViewModel = parent;
 			child.Prop1 = "foo";
 			Assert.AreEqual ("foo", binding.val);
@@ -155,23 +155,24 @@ namespace VAS.Tests.MVVMC
 			var child = new DummyPropertyViewModel ();
 			parent.Prop5 = child;
 
-			var binding = new DummyPropertyBinding (vm => ((DummyPropertyViewModel)vm).Prop5.Prop2, new Int32Converter ());
+			var binding = new DummyPropertyBinding<int> (vm => ((DummyPropertyViewModel)vm).Prop5.Prop2, new Int32Converter ());
 			binding.ViewModel = parent;
 			child.Prop2 = 32;
 			Assert.AreEqual ("32", binding.val);
 		}
 
 		[Test]
-		public void Dispose_NullViewModel_NoException(){
-			DummyPropertyBinding binding = null;
+		public void Dispose_NullViewModel_NoException ()
+		{
+			DummyPropertyBinding<int> binding = null;
 			var viewModel = new DummyPropertyViewModel ();
 
-			binding = new DummyPropertyBinding (vm => ((DummyPropertyViewModel)vm).Prop4, new Int32Converter ());
+			binding = new DummyPropertyBinding<int> (vm => ((DummyPropertyViewModel)vm).Prop4, new Int32Converter ());
 
 			binding.ViewModel = viewModel;
 
 			binding.ViewModel = null;
-			Assert.DoesNotThrow(binding.Dispose);
+			Assert.DoesNotThrow (binding.Dispose);
 		}
 	}
 
@@ -218,15 +219,12 @@ namespace VAS.Tests.MVVMC
 		}
 	}
 
-	class DummyPropertyBinding : PropertyBinding<string>
+
+	class DummyPropertyBinding<TSource> : PropertyBinding<TSource, string>
 	{
 		public string val;
 
-		public DummyPropertyBinding (Expression<Func<IViewModel, string>> propertyExpression) : base (propertyExpression)
-		{
-		}
-
-		public DummyPropertyBinding (Expression<Func<IViewModel, object>> propertyExpression, TypeConverter converter) : base (propertyExpression, converter)
+		public DummyPropertyBinding (Expression<Func<IViewModel, TSource>> propertyExpression, TypeConverter converter = null) : base (propertyExpression, converter)
 		{
 		}
 
