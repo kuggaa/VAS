@@ -302,7 +302,8 @@ namespace VAS.Core.Common
 
 		public const string RetryIcon = "vas-retry";
 
-		public const string UpgradeDialogBackground = "images/vas-upgrade-dialog-bg" + IMAGE_EXT;
+		public const string UpgradeDialogBackgroundBottom = "images/vas-upgrade-dialog-bottom-bg" + IMAGE_EXT;
+		public const string UpgradeDialogBackgroundTop = "images/vas-upgrade-dialog-top-bg" + IMAGE_EXT;
 
 		//Card Icons
 		public const string CalendarIcon = "vas-calendar";
