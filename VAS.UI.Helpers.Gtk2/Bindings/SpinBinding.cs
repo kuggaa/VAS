@@ -27,12 +27,12 @@ namespace VAS.UI.Helpers.Bindings
 	/// <summary>
 	/// Property binding for the spin value changes
 	/// </summary>
-	public class SpinBinding : PropertyBinding<double>
+	public class SpinBinding<TSourceProperty> : PropertyBinding<TSourceProperty, double>
 	{
 		SpinButton spinButton;
 
-		public SpinBinding (SpinButton spinButton, Expression<Func<IViewModel, object>> propertyExpression,
-							TypeConverter converter) : base (propertyExpression, converter)
+		public SpinBinding (SpinButton spinButton, Expression<Func<IViewModel, TSourceProperty>> propertyExpression,
+							TypeConverter converter = null) : base (propertyExpression, converter)
 		{
 			this.spinButton = spinButton;
 		}

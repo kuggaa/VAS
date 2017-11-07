@@ -53,5 +53,28 @@ namespace VAS.Core.Common
 			}
 			return base.ConvertFrom (context, culture, value);
 		}
+
+		/// <summary>
+		/// Returns true if the convertion can be done
+		/// </summary>
+		/// <returns><c>true</c>, if convertion can be done, <c>false</c> otherwise.</returns>
+		/// <param name="context">Context.</param>
+		/// <param name="t">Source type.</param>
+		public override bool CanConvertTo (ITypeDescriptorContext context, Type t)
+		{
+			if (t == typeof (string)) {
+				return true;
+			}
+			return base.CanConvertTo (context, t);
+		}
+
+		public override object ConvertTo (ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
+		{
+			if (destinationType == typeof (string)) {
+				return value?.ToString ();
+			}
+			if ((value == null) && destinationType == typeof (int)) return 0;
+			return base.ConvertTo (context, culture, value, destinationType);
+		}
 	}
 }
