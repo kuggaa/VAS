@@ -65,6 +65,7 @@
     <Compile Include="ImageView.cs" />
     <Compile Include="Bindings\HScaleCommandBinding.cs" />
     <Compile Include="DetachHelper.cs" />
+    <Compile Include="TypeConverters\ImageConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -94,6 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Bindings\" />
+    <Folder Include="TypeConverters\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

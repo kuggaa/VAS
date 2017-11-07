@@ -18,23 +18,16 @@
 using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
-using Gtk;
 using VAS.Core.Interfaces.MVVMC;
-using VAS.Core.MVVMC;
 using VAS.UI.UI.Component;
 
 namespace VAS.UI.UI.Bindings
 {
 	public static class BindingsExtensions
 	{
-		public static DatePickerBinding Bind (this DatePicker widget, Expression<Func<IViewModel, DateTime>> propertyExpression)
+		public static DatePickerBinding<TSourceProperty> Bind<TSourceProperty> (this DatePicker widget, Expression<Func<IViewModel, TSourceProperty>> sourcePropertyExpression, TypeConverter converter = null)
 		{
-			return new DatePickerBinding (widget, propertyExpression);
-		}
-		
-		public static DatePickerBinding Bind (this DatePicker widget, Expression<Func<IViewModel, object>> propertyExpression, TypeConverter converter)
-		{
-			return new DatePickerBinding (widget, propertyExpression, converter);
+			return new DatePickerBinding<TSourceProperty> (widget, sourcePropertyExpression, converter);
 		}
 	}
 }

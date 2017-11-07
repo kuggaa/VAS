@@ -15,40 +15,15 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
-using System.ComponentModel;
 using NUnit.Framework;
 using VAS.Core.License;
 using VAS.Core.MVVMC;
 using VAS.Core.ViewModel;
 using VAS.Core.ViewModel.Statistics;
+using VASInt32Converter = VAS.Core.Common.VASInt32Converter;
 
 namespace VAS.Tests.MVVMC
 {
-
-	class IntegerParserConverter : TypeConverter
-	{
-		public override object ConvertFrom (ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
-		{
-			return value?.ToString ();
-		}
-
-		public override object ConvertTo (ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
-		{
-			return (value != null) ? int.Parse ((string)value) : 0;
-		}
-
-		public override bool CanConvertFrom (ITypeDescriptorContext context, Type sourceType)
-		{
-			return true;
-		}
-
-		public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
-		{
-			return true;
-		}
-	}
-
 	class DummyOneWayPropertyViewModel : ViewModelBase
 	{
 		string viewModelProperty;
@@ -61,6 +36,18 @@ namespace VAS.Tests.MVVMC
 			set {
 				viewModelProperty = value;
 				RaisePropertyChanged (nameof (ViewModelProperty));
+			}
+		}
+		int viewModelPropertyInt;
+
+		public int ViewModelPropertyInt {
+			get {
+				return viewModelPropertyInt;
+			}
+
+			set {
+				viewModelPropertyInt = value;
+				RaisePropertyChanged (nameof (ViewModelPropertyInt));
 			}
 		}
 	}
@@ -276,7 +263,7 @@ namespace VAS.Tests.MVVMC
 			view.BindingContext = new BindingContext ();
 			view.BindingContext.Add (view.Bind (v => v.ViewPropertyInt,
 												vm => ((DummyOneWayPropertyViewModel)vm).ViewModelProperty,
-												new IntegerParserConverter ()));
+												new VASInt32Converter ()));
 			view.ViewModel = viewModel;
 
 			///Act
@@ -286,6 +273,28 @@ namespace VAS.Tests.MVVMC
 			///Assert
 
 			Assert.AreEqual (12, view.ViewPropertyInt);
+		}
+
+		[Test]
+		public void OneWayPropertyBindingWithConverterFrom_SetSource_DestinationUpdated ()
+		{
+			///Arrange
+
+			var view = new DummyOneWayPropertyView ();
+			var viewModel = new DummyOneWayPropertyViewModel ();
+			view.BindingContext = new BindingContext ();
+			view.BindingContext.Add (view.Bind (v => v.ViewProperty,
+												vm => ((DummyOneWayPropertyViewModel)vm).ViewModelPropertyInt,
+												new VASInt32Converter ()));
+			view.ViewModel = viewModel;
+
+			///Act
+
+			viewModel.ViewModelPropertyInt = 12;
+
+			///Assert
+
+			Assert.AreEqual ("12", view.ViewProperty);
 		}
 
 		[Test]

@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.ComponentModel;
 using System.Linq.Expressions;
 using VAS.Core.Interfaces.MVVMC;
 
@@ -30,11 +31,12 @@ namespace VAS.Core.MVVMC
 		/// <param name="dest">Destination.</param>
 		/// <param name="sourceExpression">Source expression.</param>
 		/// <param name="targetExpression">Target expression.</param>
-		public static OneWayPropertyBinding<TProperty> Bind<TTarget, TProperty> (this TTarget dest,
-																				 Expression<Func<TTarget, TProperty>> targetExpression,
-																				 Expression<Func<IViewModel, TProperty>> sourceExpression)
+		public static OneWayPropertyBinding<TSourceProperty, TTargetProperty> Bind<TTarget, TSourceProperty, TTargetProperty> (this TTarget dest,
+																				 Expression<Func<TTarget, TTargetProperty>> targetExpression,
+																				 Expression<Func<IViewModel, TSourceProperty>> sourceExpression,
+																				 TypeConverter typeConverter = null)
 		{
-			return new OneWayPropertyBinding<TProperty, TTarget> (dest, targetExpression, sourceExpression);
+			return new OneWayPropertyBinding<TSourceProperty, TTarget, TTargetProperty> (dest, sourceExpression, targetExpression, typeConverter);
 		}
 	}
 }

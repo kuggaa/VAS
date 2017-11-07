@@ -27,16 +27,12 @@ namespace VAS.UI.Helpers.Bindings
 	/// <summary>
 	/// Property binding for text entries.
 	/// </summary>
-	public class ComboBoxBinding : PropertyBinding<string>
+	public class ComboBoxBinding<TSourceProperty> : PropertyBinding<TSourceProperty, string>
 	{
 		ComboBox comboBox;
 
-		public ComboBoxBinding (ComboBox comboBox, Expression<Func<IViewModel, string>> propertyExpression) : base (propertyExpression)
-		{
-			this.comboBox = comboBox;
-		}
-
-		public ComboBoxBinding (ComboBox comboBox, Expression<Func<IViewModel, object>> propertyExpression, TypeConverter converter) : base (propertyExpression, converter)
+		public ComboBoxBinding (ComboBox comboBox, Expression<Func<IViewModel, TSourceProperty>> propertyExpression,
+								TypeConverter converter = null) : base (propertyExpression, converter)
 		{
 			this.comboBox = comboBox;
 		}
