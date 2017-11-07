@@ -18,6 +18,8 @@
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store.Drawables;
+using VAS.Core.Resources;
+using VAS.Core.Resources.Styles;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
@@ -27,7 +29,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 		static NeedleView ()
 		{
-			needle = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.TimelineNeedleResource, false);
+			needle = App.Current.DrawingToolkit.CreateSurfaceFromIcon (Icons.TimelineNeedleResource, false);
 		}
 
 		public NeedleView ()
@@ -82,7 +84,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 
 			tk.Begin ();
-			tk.DrawSurface (TopLeft, StyleConf.TimelineNeedleBigWidth, StyleConf.TimelineNeedleBigHeight, needle,
+			tk.DrawSurface (TopLeft, Sizes.TimelineNeedleBigWidth, Sizes.TimelineNeedleBigHeight, needle,
 							ScaleMode.AspectFit);
 			tk.End ();
 		}

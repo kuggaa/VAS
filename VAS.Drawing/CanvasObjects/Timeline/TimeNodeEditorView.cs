@@ -18,6 +18,7 @@
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
+using VAS.Core.Resources;
 using VAS.Core.Store.Drawables;
 using VAS.Core.ViewModel;
 
@@ -35,10 +36,10 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 		public TimeNodeEditorView ()
 		{
-			trimGrabberLeftActive = App.Current.DrawingToolkit.CreateSurfaceFromIcon (StyleConf.PlayerControlTrimLeftActive);
-			trimGrabberLeftInactive = App.Current.DrawingToolkit.CreateSurfaceFromIcon (StyleConf.PlayerControlTrimLeftInactive);
-			trimGrabberRightActive = App.Current.DrawingToolkit.CreateSurfaceFromIcon (StyleConf.PlayerControlTrimRightActive);
-			trimGrabberRightInactive = App.Current.DrawingToolkit.CreateSurfaceFromIcon (StyleConf.PlayerControlTrimRightInactive);
+			trimGrabberLeftActive = App.Current.DrawingToolkit.CreateSurfaceFromIcon (Icons.PlayerControlTrimLeftActive);
+			trimGrabberLeftInactive = App.Current.DrawingToolkit.CreateSurfaceFromIcon (Icons.PlayerControlTrimLeftInactive);
+			trimGrabberRightActive = App.Current.DrawingToolkit.CreateSurfaceFromIcon (Icons.PlayerControlTrimRightActive);
+			trimGrabberRightInactive = App.Current.DrawingToolkit.CreateSurfaceFromIcon (Icons.PlayerControlTrimRightInactive);
 		}
 
 		public TimeNodeVM ViewModel {

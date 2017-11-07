@@ -22,6 +22,8 @@ using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
 using VAS.Core.ViewModel;
+using VAS.Core.Resources;
+using VAS.Core.Resources.Styles;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
@@ -40,7 +42,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			SelectionMode = NodeSelectionMode.All;
 			DraggingMode = NodeDraggingMode.All;
 			LineColor = App.Current.Style.ThemeContrastDisabled;
-			Height = StyleConf.TimelineCategoryHeight;
+			Height = Sizes.TimelineCategoryHeight;
 			ClippingMode = NodeClippingMode.Strict;
 			ScrollX = 0;
 		}
@@ -210,7 +212,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 		public virtual Area Area {
 			get {
-				double ls = StyleConf.TimelineLineSize;
+				double ls = Sizes.TimelineLineSize;
 				return new Area (new Point (StartX - ls, OffsetY),
 					(StopX - StartX) + 2 * ls, Height);
 			}
@@ -362,7 +364,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 			tk.Begin ();
 			if (needle == null) {
-				needle = tk.CreateSurfaceFromResource (StyleConf.TimelineNeedleUP);
+				needle = tk.CreateSurfaceFromIcon (Icons.TimelineNeedleUP);
 			}
 
 			if (Selected) {
@@ -372,25 +374,25 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				tk.FillColor = LineColor;
 				tk.StrokeColor = LineColor;
 			}
-			tk.LineWidth = StyleConf.TimelineLineSize;
+			tk.LineWidth = Sizes.TimelineLineSize;
 
-			linepos = OffsetY + Height / 2 + StyleConf.TimelineLineSize / 2;
+			linepos = OffsetY + Height / 2 + Sizes.TimelineLineSize / 2;
 
 			if (StopX - StartX <= needle.Width / 2) {
 				double c = movingPos == SelectionPosition.Left ? StopX : StartX;
-				tk.DrawSurface (new Point (c - needle.Width / 2, linepos - 9), StyleConf.TimelineNeedleUpWidth,
-								StyleConf.TimelineNeedleUpHeight, needle, ScaleMode.AspectFit);
+				tk.DrawSurface (new Point (c - needle.Width / 2, linepos - 9), Sizes.TimelineNeedleUpWidth,
+								Sizes.TimelineNeedleUpHeight, needle, ScaleMode.AspectFit);
 			} else {
 				tk.DrawLine (new Point (StartX, linepos),
 					new Point (StopX, linepos));
-				tk.DrawSurface (new Point (StartX - needle.Width / 2, linepos - 9), StyleConf.TimelineNeedleUpWidth,
-								StyleConf.TimelineNeedleUpHeight, needle, ScaleMode.AspectFit);
-				tk.DrawSurface (new Point (StopX - needle.Width / 2, linepos - 9), StyleConf.TimelineNeedleUpWidth,
-								StyleConf.TimelineNeedleUpHeight, needle, ScaleMode.AspectFit);
+				tk.DrawSurface (new Point (StartX - needle.Width / 2, linepos - 9), Sizes.TimelineNeedleUpWidth,
+								Sizes.TimelineNeedleUpHeight, needle, ScaleMode.AspectFit);
+				tk.DrawSurface (new Point (StopX - needle.Width / 2, linepos - 9), Sizes.TimelineNeedleUpWidth,
+								Sizes.TimelineNeedleUpHeight, needle, ScaleMode.AspectFit);
 			}
 
 			if (ShowName) {
-				tk.FontSize = StyleConf.TimelineFontSize;
+				tk.FontSize = Sizes.TimelineFontSize;
 				tk.FontWeight = FontWeight.Bold;
 				tk.FillColor = App.Current.Style.TextBaseDisabled;
 				tk.StrokeColor = App.Current.Style.TextBaseDisabled;

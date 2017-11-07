@@ -27,6 +27,8 @@ using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
 using VAS.Core.ViewModel;
+using VAS.Core.Resources;
+using VAS.Core.Resources.Styles;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
@@ -65,19 +67,19 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			editRect = new Rectangle (new Point (0, 0), 0, 0);
 			applyRect = new Rectangle (new Point (0, 0), 0, 0);
 			if (iconImage == null) {
-				iconImage = App.Current.ResourcesLocator.LoadImage (StyleConf.ButtonEventIcon);
+				iconImage = App.Current.ResourcesLocator.LoadImage (Images.ButtonEvent);
 			}
 			if (recImage == null) {
-				recImage = App.Current.ResourcesLocator.LoadImage (StyleConf.RecordButton);
+				recImage = App.Current.ResourcesLocator.LoadIcon (Icons.RecordButton);
 			}
 			if (editImage == null) {
-				editImage = App.Current.ResourcesLocator.LoadImage (StyleConf.EditButton);
+				editImage = App.Current.ResourcesLocator.LoadIcon (Icons.EditButton);
 			}
 			if (cancelImage == null) {
-				cancelImage = App.Current.ResourcesLocator.LoadImage (StyleConf.CancelButton);
+				cancelImage = App.Current.ResourcesLocator.LoadIcon (Icons.CancelButton);
 			}
 			if (applyImage == null) {
-				applyImage = App.Current.ResourcesLocator.LoadImage (StyleConf.ApplyButton);
+				applyImage = App.Current.ResourcesLocator.LoadIcon (Icons.ApplyButton);
 			}
 			MinWidth = 100;
 			MinHeight = HeaderHeight * 2;
@@ -153,20 +155,20 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		int HeaderHeight {
 			get {
-				return StyleConf.ButtonHeaderHeight + 5;
+				return Sizes.ButtonHeaderHeight + 5;
 			}
 		}
 
 		int HeaderTextOffset {
 			get {
-				return StyleConf.ButtonHeaderWidth + 5;
+				return Sizes.ButtonHeaderWidth + 5;
 			}
 		}
 
 		double HeaderTextWidth {
 			get {
 				if (ViewModel.TagMode == TagMode.Free) {
-					return Width - HeaderTextOffset - StyleConf.ButtonRecWidth;
+					return Width - HeaderTextOffset - Sizes.ButtonRecWidth;
 				} else {
 					return Width - HeaderTextOffset;
 				}
@@ -480,7 +482,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			width = HeaderTextWidth;
 			height = HeaderHeight;
 			pos = new Point (Position.X + HeaderTextOffset, Position.Y);
-			fontSize = StyleConf.ButtonHeaderFontSize;
+			fontSize = Sizes.ButtonHeaderFontSize;
 
 			if (ShowTags) {
 				rects.Add (new Rectangle (Position, Width, HeaderHeight), Button);
@@ -493,13 +495,13 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 					width = Width;
 					height = Height - HeaderHeight;
 					pos = new Point (Position.X, Position.Y + HeaderHeight);
-					fontSize = StyleConf.ButtonNameFontSize;
+					fontSize = Sizes.ButtonNameFontSize;
 					ellipsize = false;
 				} else {
 					width = HeaderTextWidth;
 					height = HeaderHeight;
 					pos = new Point (Position.X + 5, Position.Y + 5);
-					fontSize = StyleConf.ButtonHeaderFontSize;
+					fontSize = Sizes.ButtonHeaderFontSize;
 				}
 				rects.Add (new Rectangle (Position, Width, Height), Button);
 			}
@@ -521,9 +523,9 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 
 			c = App.Current.Style.ThemeBase;
-			width = StyleConf.ButtonRecWidth;
+			width = Sizes.ButtonRecWidth;
 			height = HeaderHeight;
-			pos = new Point (Position.X + Width - StyleConf.ButtonRecWidth,
+			pos = new Point (Position.X + Width - Sizes.ButtonRecWidth,
 				Position.Y + Height - height);
 			tk.LineWidth = 0;
 			tk.FillColor = new Color (c.R, c.G, c.B, 200);
@@ -531,7 +533,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			tk.DrawRectangle (pos, width, height);
 			tk.StrokeColor = App.Current.Style.ColorAccentSuccess;
 			tk.FillColor = App.Current.Style.ColorAccentSuccess;
-			tk.FontSize = StyleConf.ButtonButtonsFontSize;
+			tk.FontSize = Sizes.ButtonButtonsFontSize;
 			editRect.Update (pos, width, height);
 			buttonsRects [editRect] = editbutton;
 			pos = new Point (pos.X, pos.Y + 5);
@@ -589,9 +591,9 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				return;
 			}
 
-			pos = new Point (Position.X + Width - StyleConf.ButtonRecWidth,
+			pos = new Point (Position.X + Width - Sizes.ButtonRecWidth,
 				Position.Y);
-			width = StyleConf.ButtonRecWidth;
+			width = Sizes.ButtonRecWidth;
 			height = HeaderHeight;
 			tk.FillColor = App.Current.Style.ThemeBase;
 			tk.LineWidth = 0;
@@ -614,17 +616,17 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				return;
 			}
 
-			pos = new Point (Position.X + Width - StyleConf.ButtonRecWidth,
+			pos = new Point (Position.X + Width - Sizes.ButtonRecWidth,
 				Position.Y);
 			bpos = new Point (pos.X, pos.Y + 5);
 
-			width = StyleConf.ButtonRecWidth;
+			width = Sizes.ButtonRecWidth;
 			height = HeaderHeight;
-			tk.FontSize = StyleConf.ButtonButtonsFontSize;
+			tk.FontSize = Sizes.ButtonButtonsFontSize;
 			if (!Recording) {
 				tk.FillColor = App.Current.Style.ThemeBase;
 				tk.StrokeColor = BackgroundColor;
-				tk.LineWidth = StyleConf.ButtonLineWidth;
+				tk.LineWidth = Sizes.ButtonLineWidth;
 				tk.DrawRectangle (pos, width, height);
 				tk.StrokeColor = App.Current.Style.ColorAccentError;
 				tk.FillColor = App.Current.Style.ColorAccentError;
@@ -676,7 +678,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 						tk.FillColor = TextColor;
 					}
 					tk.DrawImage (new Point (Position.X + 5, Position.Y + 5),
-						StyleConf.ButtonHeaderWidth, StyleConf.ButtonHeaderHeight, Icon, ScaleMode.AspectFit, true);
+								  Sizes.ButtonHeaderWidth, Sizes.ButtonHeaderHeight, Icon, ScaleMode.AspectFit, true);
 				}
 			}
 		}

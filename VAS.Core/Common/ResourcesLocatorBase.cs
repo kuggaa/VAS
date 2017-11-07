@@ -92,9 +92,9 @@ namespace VAS.Core
 		public Image LoadIcon (string name, int size = 0)
 		{
 			try {
-				return LoadImage ("icons/hicolor/scalable/actions/" + name + StyleConf.IMAGE_EXT, size, size);
+				return LoadImage ("icons/hicolor/scalable/actions/" + name + Constants.IMAGE_EXT, size, size);
 			} catch (FileNotFoundException) {
-				return LoadImage ("icons/hicolor/scalable/apps/" + name + StyleConf.IMAGE_EXT, size, size);
+				return LoadImage ("icons/hicolor/scalable/apps/" + name + Constants.IMAGE_EXT, size, size);
 			}
 		}
 

@@ -25,6 +25,7 @@ using VAS.Core.Handlers;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.Resources.Styles;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
 using VAS.Core.ViewModel;
@@ -242,7 +243,7 @@ namespace VAS.Drawing.Widgets
 
 			UpdateRowsOffsets ();
 			Update ();
-			HeightRequest = Objects.Count * StyleConf.TimelineCategoryHeight;
+			HeightRequest = Objects.Count * Sizes.TimelineCategoryHeight;
 		}
 
 		protected virtual void FillCanvasForTimers (ref int line)
@@ -252,8 +253,8 @@ namespace VAS.Drawing.Widgets
 					ShowName = false,
 					DraggingMode = NodeDraggingMode.All,
 					Duration = duration,
-					OffsetY = line * StyleConf.TimelineCategoryHeight,
-					Height = StyleConf.TimelineCategoryHeight,
+					OffsetY = line * Sizes.TimelineCategoryHeight,
+					Height = Sizes.TimelineCategoryHeight,
 					LineColor = App.Current.Style.ThemeBase,
 					BackgroundColor = Utils.ColorForRow (line),
 				};
@@ -268,7 +269,7 @@ namespace VAS.Drawing.Widgets
 			firstEventTypeTimelineIndex = line;
 			foreach (EventTypeTimelineVM timelineVM in ViewModel.Project.Timeline.EventTypesTimeline) {
 				EventTypeTimelineView timelineView = AddEventTypeTimeline (timelineVM);
-				timelineView.OffsetY = line * StyleConf.TimelineCategoryHeight;
+				timelineView.OffsetY = line * Sizes.TimelineCategoryHeight;
 				timelineView.BackgroundColor = Utils.ColorForRow (line);
 				timelineView.ViewModel = timelineVM;
 				line++;
@@ -279,7 +280,7 @@ namespace VAS.Drawing.Widgets
 		{
 			var timelineView = new EventTypeTimelineView {
 				Duration = duration,
-				Height = StyleConf.TimelineCategoryHeight,
+				Height = Sizes.TimelineCategoryHeight,
 			};
 			timelineView.ViewModel = timelineVM;
 			AddTimeline (timelineView, timelineVM);
@@ -481,7 +482,7 @@ namespace VAS.Drawing.Widgets
 				int i = 0;
 				FillCanvas (ref i);
 				if (widget != null) {
-					widget.Height = Objects.Count * StyleConf.TimelineCategoryHeight;
+					widget.Height = Objects.Count * Sizes.TimelineCategoryHeight;
 				}
 			}
 		}
