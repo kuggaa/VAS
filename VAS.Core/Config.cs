@@ -20,12 +20,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
-using VAS.Core.Events;
 using VAS.Core.Hotkeys;
-using VAS.Core.Interfaces;
-using VAS.Core.Interfaces.Drawing;
-using VAS.Core.Interfaces.GUI;
-using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.MVVMC;
 using VAS.Core.Serialization;
 
@@ -111,7 +106,6 @@ namespace VAS
 			get;
 			set;
 		} = null;
-
 
 		public ProjectSortMethod ProjectSortMethod {
 			get;
@@ -203,7 +197,7 @@ namespace VAS
 		public List<KeyConfig> KeyConfigs {
 			get;
 			set;
-		}
+		} = new List<KeyConfig> ();
 
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]

@@ -275,6 +275,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\VideoPlayerSeekOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\OneWayPropertyBinding.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IApplicationMenu.cs" />
+<<<<<<< HEAD
     <Compile Include="$(MSBuildThisFileDirectory)Resources\Icons.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resources\Images.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resources\Styles\Colors.cs" />
@@ -305,6 +306,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Multimedia\ISeeker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\TypeConverters\NegativeInt32ToDashConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\StateResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IFileStorage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

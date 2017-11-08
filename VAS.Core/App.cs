@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using VAS.Core;
 using VAS.Core.Common;
@@ -14,13 +15,23 @@ using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.License;
 using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.MVVMC;
+using VAS.Core.Serialization;
 using VAS.KPI;
+using Timer = VAS.Core.Common.Timer;
 
 namespace VAS
 {
 	public abstract class App
 	{
-		static int mainThreadId;
+		[DllImport ("libglib-2.0-0.dll") /* willfully unmapped */ ]
+		static extern bool g_setenv (String env, String val, bool overwrite);
+
+		bool? debugging = null;
+		bool? verboseDebugging = null;
+		List<string> dataDir;
+		List<IService> services = new List<IService> ();
+
+		protected StyleConf style;
 
 		/* State */
 		public IGUIToolkit GUIToolkit;
@@ -51,7 +62,37 @@ namespace VAS
 
 		public App ()
 		{
+			LowerRate = 1;
+			UpperRate = 30;
+			DefaultRate = 25;
+			RatePageIncrement = 3;
+			RateList = new List<double> { 0.1, 0.25, 0.50, 0.75, 1, 2, 3, 4, 5 };
+			StepList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60 };
 			ZoomLevels = new List<float> { 1.0f, 1.25f, 1.50f, 1.75f, 2.0f, 2.25f, 2.50f, 2.75f, 3.0f, 3.25f, 3.50f, 3.75f, 4.0f };
+		}
+
+		public static App Current {
+			get;
+			set;
+		}
+
+		public static void Init (App appInit, string evUninstalled, string softwareName, string softwareIconName,
+								 string portableFile, string evHome)
+		{
+			Current = appInit;
+			Current.SoftwareName = softwareName;
+			Current.SoftwareIconName = softwareIconName;
+			App.Current.Uninstalled = Environment.GetEnvironmentVariable (evUninstalled) != null;
+			App.Current.MainThreadId = Thread.CurrentThread.ManagedThreadId;
+
+			App.Current.InitDirectories (portableFile, evHome);
+			App.Current.MigrateOldConfig ();
+			App.Current.InitVersion ();
+			App.Current.InitDependencies ();
+			App.Current.InitConfig ();
+			App.Current.InitTranslations ();
+
+			App.Current.EventsBroker.Subscribe<QuitApplicationEvent> ((obj) => { App.Current.GUIToolkit.Quit (); });
 		}
 
 		public KeyContextManager KeyContextManager {
@@ -72,187 +113,14 @@ namespace VAS
 			}
 		}
 
-		protected StyleConf style;
+		public int MainThreadId { get; protected set; }
 
-		public static App Current {
-			get;
-			set;
-		}
+		public Config Config { get; protected set; }
 
-		public static bool IsMainThread {
+		public bool IsMainThread {
 			get {
-				return Thread.CurrentThread.ManagedThreadId == mainThreadId;
+				return Thread.CurrentThread.ManagedThreadId == MainThreadId;
 			}
-		}
-
-		List<string> dataDir;
-
-		public static void Init (App appInit, string evUninstalled, string softwareName, string portableFile, string evHome)
-		{
-			/* NOTE
-			*  All derived Configs should set the following:
-			*  
-			*  Config.baseDirectory
-			*  Config.configDirectory
-			*  Config.dataDir
-			*  Config.homeDirectory
-			*/
-
-			mainThreadId = Thread.CurrentThread.ManagedThreadId;
-
-			Current = appInit;
-			Current.SoftwareName = softwareName;
-
-			string home = null;
-
-			App.Current.Uninstalled = Environment.GetEnvironmentVariable (evUninstalled) != null;
-
-			if (App.Current.Uninstalled) {
-				App.Current.baseDirectory = GetPrefixPath ();
-				App.Current.DataDir.Add (Path.Combine (Path.GetFullPath ("."), "../VAS/data"));
-				App.Current.DataDir.Add (Path.Combine (Path.GetFullPath ("."), "../data"));
-				ConfigureEnvVariables ();
-			} else {
-				if (Utils.OS == OperatingSystemID.Android) {
-					App.Current.baseDirectory = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
-				} else if (Utils.OS == OperatingSystemID.iOS) {
-					App.Current.baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-				} else {
-					App.Current.baseDirectory = Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "../");
-					if (!Directory.Exists (Path.Combine (App.Current.baseDirectory, "share", softwareName))) {
-						App.Current.baseDirectory = Path.Combine (App.Current.baseDirectory, "../");
-					}
-				}
-				if (!Directory.Exists (Path.Combine (App.Current.baseDirectory, "share", softwareName)))
-					Log.Warning ("Prefix directory not found");
-				App.Current.DataDir.Add (App.Current.RelativeToPrefix (Path.Combine ("share", softwareName.ToLower ())));
-			}
-			Log.Debug ($"DataDir = [{string.Join (", ", App.Current.DataDir)}]");
-
-			if (Utils.OS == OperatingSystemID.Android) {
-				home = App.Current.baseDirectory;
-			} else if (Utils.OS == OperatingSystemID.iOS) {
-				home = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.MyDocuments), "..", "Library");
-			} else {
-				/* Check for the magic file PORTABLE to check if it's a portable version
-					* and the config goes in the same folder as the binaries */
-				if (File.Exists (Path.Combine (App.Current.baseDirectory, portableFile))) {
-					home = App.Current.baseDirectory;
-				} else {
-					home = Environment.GetEnvironmentVariable (evHome);
-					if (home != null && !Directory.Exists (home)) {
-						try {
-							Directory.CreateDirectory (home);
-						} catch (Exception ex) {
-							Log.Exception (ex);
-							Log.Warning (String.Format (evHome + " {0} not found", home));
-							home = null;
-						}
-					}
-					if (home == null) {
-						home = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
-					}
-				}
-			}
-
-			App.Current.homeDirectory = Path.Combine (home, softwareName);
-			App.Current.configDirectory = App.Current.homeDirectory;
-			if (!Directory.Exists (App.Current.homeDirectory)) {
-				Directory.CreateDirectory (App.Current.homeDirectory);
-			}
-
-			// Migrate old config directory the home directory so that OS X users can easilly find
-			// log files and config files without having to access hidden folders
-			if (Environment.OSVersion.Platform != PlatformID.Win32NT) {
-				string oldHome = Path.Combine (home, "." + softwareName.ToLower ());
-				string configFilename = softwareName.ToLower () + "-1.0.config";
-				string configFilepath = Path.Combine (oldHome, configFilename);
-				if (File.Exists (configFilepath) && !File.Exists (App.Current.ConfigFile)) {
-					try {
-						File.Move (configFilepath, App.Current.ConfigFile);
-					} catch (Exception ex) {
-						Log.Exception (ex);
-					}
-				}
-			}
-
-			InitTranslations (softwareName);
-			InitDependencies ();
-			InitVersion ();
-		}
-
-		internal static void InitDependencies ()
-		{
-			App.Current.Keyboard = new Keyboard ();
-			App.Current.ViewLocator = new ViewLocator ();
-			App.Current.ControllerLocator = new ControllerLocator ();
-			App.Current.StateController = new StateController ();
-			App.Current.DependencyRegistry = new Registry ("App Registry");
-			App.Current.EventsBroker = new EventsBroker ();
-			App.Current.Device = new Core.Device ();
-			App.Current.KPIService = new KpiService ();
-			App.Current.DragContext = new DragContext ();
-			App.Current.ResourcesLocator = new ResourcesLocator ();
-			App.Current.FileSystemManager = new FileSystemManager ();
-		}
-
-		// copied from OneplayLongomMatch::CoreServices
-		static void InitTranslations (string softwareName)
-		{
-			string localesDir = App.Current.RelativeToPrefix ("share/locale");
-
-			if (!Directory.Exists (localesDir)) {
-				var cerbero_prefix = Environment.GetEnvironmentVariable ("CERBERO_PREFIX");
-				if (cerbero_prefix != null) {
-					localesDir = Path.Combine (cerbero_prefix, "share", "locale");
-				} else {
-					Log.ErrorFormat ("'{0}' does not exist. This looks like an uninstalled execution." +
-					"Define CERBERO_PREFIX.", localesDir);
-				}
-			}
-			/* Init internationalization support */
-			Catalog.Init (softwareName.ToLower (), localesDir);
-		}
-
-		static void InitVersion ()
-		{
-			Current.Version = Current.Device.Version;
-			Current.BuildVersion = Current.Device.BuildVersion;
-		}
-
-		static void ConfigureEnvVariables ()
-		{
-			Environment.SetEnvironmentVariable ("GDK_PIXBUF_MODULEDIR",
-				App.Current.RelativeToPrefix ("lib/gdk-pixbuf-2.0/2.10.0/loaders"));
-			Environment.SetEnvironmentVariable ("GDK_PIXBUF_MODULE_FILE",
-				App.Current.RelativeToPrefix ("lib/gdk-pixbuf-2.0/2.10.0/loaders.cache"));
-			Environment.SetEnvironmentVariable ("FONTCONFIG_PATH",
-				App.Current.RelativeToPrefix ("etc/fonts"));
-		}
-
-		static string GetPrefixPath ()
-		{
-			// The runtime prefix is always defined in the PATH environment variable,
-			// either because we choosed a custom .NET Runtime in Xamarin Studio, we are running
-			// in cerbero's shell or we are executing the app as an application bundle with
-			// the PATH configured to have our prefix. Here we iterate over all PATH entries
-			// until we find it, which is normally
-			// libdir and we use it to infer the prefix path, unless we are in a cerbero shell. We iterate
-			// over all the directories to find the prefix.
-			foreach (var pathEntry in ((string)Environment.GetEnvironmentVariables () ["PATH"]).Split (':')) {
-				var prefix = Path.Combine (pathEntry, "../");
-				if (Directory.Exists (Path.Combine (prefix, "lib", "gdk-pixbuf-2.0"))) {
-					return prefix;
-				}
-			}
-			throw new Exception ($"No potential prefix was found in $PATH." +
-								 "Make sure your Run Configuration is using the correct .Net Runtime," +
-								 "or the environment is configured correctly.");
-		}
-
-		public Config Config {
-			get;
-			set;
 		}
 
 		public StyleConf Style {
@@ -278,10 +146,7 @@ namespace VAS
 		/// Gets a value indicating whether this <see cref="T:VAS.App"/> is running uninstalled.
 		/// </summary>
 		/// <value><c>true</c> if uninstalled; otherwise, <c>false</c>.</value>
-		public bool Uninstalled {
-			get;
-			private set;
-		}
+		public bool Uninstalled { get; private set; }
 
 		public string HomeDir {
 			get {
@@ -340,62 +205,71 @@ namespace VAS
 			}
 		}
 
-		public string RelativeToPrefix (string relativePath)
-		{
-			return Path.Combine (baseDirectory, relativePath);
+		public string LogFile {
+			get {
+				string filename = SoftwareName.ToLower () + ".log";
+				return Path.Combine (ConfigDir, filename);
+			}
 		}
+
+		public ILicenseLimitationsService LicenseLimitationsService { get; set; }
+
 
 		#region Properties
 
-		public string Website {
-			get;
-			set;
-		}
+		public string BuildVersion { get; protected set; }
 
-		public string Translators {
-			get;
-			set;
-		}
+		public string Copyright { get; set; }
 
-		public string Copyright {
-			get;
-			set;
-		}
+		public string DefaultDBName { get; set; }
 
-		public string License {
-			get;
-			set;
-		}
+		public double DefaultRate { get; set; }
 
-		public string SoftwareName {
-			get;
-			set;
-		}
+		public string LatestVersionURL { get; set; }
 
-		public string SoftwareIconName {
-			get;
-			set;
-		}
+		public string License { get; set; }
 
-		public string LatestVersionURL {
-			get;
-			set;
-		}
+		public double LowerRate { get; set; }
 
-		public bool UseGameUnits {
-			get;
-			set;
-		}
+		public string ProjectExtension { get; set; }
 
-		public Version Version {
-			get;
-			set;
-		}
+		public double RatePageIncrement { get; set; }
 
-		public string BuildVersion {
-			get;
-			set;
-		}
+		public List<double> RateList { get; set; }
+
+		public string SoftwareName { get; set; }
+
+		public string SoftwareIconName { get; set; }
+
+		/// <summary>
+		/// Gets or sets the step value list for the videoplayer.
+		/// </summary>
+		/// <value>The step list.</value>
+		public List<int> StepList { get; set; }
+
+		public bool SupportsActionLinks { get; set; }
+
+		public bool SupportsMultiCamera { get; set; }
+
+		public bool SupportsFullHD { get; set; }
+
+		public bool SupportsZoom { get; set; }
+
+		public string Translators { get; set; }
+
+		public double UpperRate { get; set; }
+
+		public Version Version { get; protected set; }
+
+		public Image WatermarkImage { get; set; }
+
+		public string Website { get; set; }
+
+		/// <summary>
+		/// Gets or sets a list with the possible zoom levels for the video player.
+		/// </summary>
+		/// <value>The zoom levels.</value>
+		public List<float> ZoomLevels { get; protected set; }
 
 		public Image FieldBackground {
 			get {
@@ -421,71 +295,281 @@ namespace VAS
 			}
 		}
 
-		public Image WatermarkImage {
-			get;
-			set;
-		}
-
-		public string ProjectExtension {
-			get;
-			set;
-		}
-
-		public string DefaultDBName {
-			get;
-			set;
-		}
-
-		public double UpperRate {
-			get;
-			set;
-		}
-
-		public double LowerRate {
-			get;
-			set;
-		}
-
-		public double RatePageIncrement {
-			get;
-			set;
-		}
-
-		public List<double> RateList {
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// Gets or sets the step value list for the videoplayer.
-		/// </summary>
-		/// <value>The step list.</value>
-		public List<int> StepList {
-			get;
-			set;
-		}
-
-		public double DefaultRate {
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// Gets or sets a list with the possible zoom levels for the video player.
-		/// </summary>
-		/// <value>The zoom levels.</value>
-		public List<float> ZoomLevels {
-			get;
-			set;
-		}
-
-		public ILicenseLimitationsService LicenseLimitationsService {
-			get;
-			set;
-		}
-
 		#endregion
 
+		bool Debugging {
+			get {
+#if DEBUG
+				return true;
+#else
+				if (debugging == null) {
+					debugging = EnvironmentIsSet ("LGM_DEBUG");
+				}
+				return debugging.Value;
+#endif
+			}
+			set {
+				debugging = value;
+				Log.Debugging = Debugging;
+			}
+		}
+
+		bool VerboseDebugging {
+			get {
+#if DEBUG
+				if (verboseDebugging == null) {
+					verboseDebugging = EnvironmentIsSet ("LGM_DEBUG_VERBOSE");
+				}
+				return verboseDebugging.Value;
+#else
+				return false;
+#endif
+			}
+			set {
+				verboseDebugging = value;
+				Log.VerboseDebugging = VerboseDebugging;
+			}
+		}
+
+		public string RelativeToPrefix (string relativePath)
+		{
+			return Path.Combine (baseDirectory, relativePath);
+		}
+
+		public void RegisterService (IService service)
+		{
+			Log.InformationFormat ("Registering service {0}", service.Name);
+			services.Add (service);
+		}
+
+		public void StartServices ()
+		{
+			foreach (IService service in services.OrderBy (s => s.Level)) {
+				if (service.Start ()) {
+					Log.InformationFormat ("Started service {0} successfully", service.Name);
+				} else {
+					Log.InformationFormat ("Failed starting service {0}", service.Name);
+				}
+			}
+		}
+
+		public void StopServices ()
+		{
+			foreach (IService service in services.OrderByDescending (s => s.Level)) {
+				if (service.Stop ()) {
+					Log.InformationFormat ("Stopped service {0} successfully", service.Name);
+				} else {
+					Log.InformationFormat ("Failed stopping service {0}", service.Name);
+				}
+			}
+		}
+
+		abstract protected Config CreateConfig ();
+
+		protected void InitConfig ()
+		{
+			if (File.Exists (Current.ConfigFile)) {
+				Log.Information ("Loading config from " + Current.ConfigFile);
+				try {
+					Current.Config = Serializer.Instance.LoadSafe<Config> (Current.ConfigFile);
+				} catch (Exception ex) {
+					Log.Error ("Error loading config");
+					Log.Exception (ex);
+				}
+			}
+
+			if (Current.Config == null) {
+				Log.Information ("Creating new config at " + Current.ConfigFile);
+				Current.Config = CreateConfig ();
+				Current.Config.Save ();
+			}
+		}
+
+		void InitDebugging ()
+		{
+			Log.Debugging = Debugging;
+			Log.VerboseDebugging = VerboseDebugging;
+		}
+
+		void InitDirectories (string portableFile, string evHome)
+		{
+			string home = null;
+
+			if (App.Current.Uninstalled) {
+				App.Current.baseDirectory = App.Current.GetPrefixPath ();
+				App.Current.DataDir.Add (Path.Combine (Path.GetFullPath ("."), "../VAS/data"));
+				App.Current.DataDir.Add (Path.Combine (Path.GetFullPath ("."), "../data"));
+				App.Current.ConfigureEnvVariables ();
+			} else {
+				if (Utils.OS == OperatingSystemID.Android) {
+					App.Current.baseDirectory = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
+				} else if (Utils.OS == OperatingSystemID.iOS) {
+					App.Current.baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+				} else {
+					App.Current.baseDirectory = Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "../");
+					if (!Directory.Exists (Path.Combine (App.Current.baseDirectory, "share", App.Current.SoftwareName))) {
+						App.Current.baseDirectory = Path.Combine (App.Current.baseDirectory, "../");
+					}
+				}
+				if (!Directory.Exists (Path.Combine (App.Current.baseDirectory, "share", App.Current.SoftwareName)))
+					Log.Warning ("Prefix directory not found");
+				App.Current.DataDir.Add (App.Current.RelativeToPrefix (Path.Combine ("share", App.Current.SoftwareName.ToLower ())));
+			}
+			Log.Debug ($"DataDir = [{string.Join (", ", App.Current.DataDir)}]");
+
+			if (Utils.OS == OperatingSystemID.Android) {
+				home = App.Current.baseDirectory;
+			} else if (Utils.OS == OperatingSystemID.iOS) {
+				home = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.MyDocuments), "..", "Library");
+			} else {
+				/* Check for the magic file PORTABLE to check if it's a portable version
+					* and the config goes in the same folder as the binaries */
+				if (File.Exists (Path.Combine (App.Current.baseDirectory, portableFile))) {
+					home = App.Current.baseDirectory;
+				} else {
+					home = Environment.GetEnvironmentVariable (evHome);
+					if (home != null && !Directory.Exists (home)) {
+						try {
+							Directory.CreateDirectory (home);
+						} catch (Exception ex) {
+							Log.Exception (ex);
+							Log.Warning (String.Format (evHome + " {0} not found", home));
+							home = null;
+						}
+					}
+					if (home == null) {
+						home = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
+					}
+				}
+			}
+
+			App.Current.homeDirectory = Path.Combine (home, App.Current.SoftwareName);
+			App.Current.configDirectory = App.Current.homeDirectory;
+			if (!Directory.Exists (App.Current.homeDirectory)) {
+				Directory.CreateDirectory (App.Current.homeDirectory);
+			}
+
+			CheckDirs ();
+
+		}
+
+		internal void InitDependencies ()
+		{
+			App.Current.Keyboard = new Keyboard ();
+			App.Current.ViewLocator = new ViewLocator ();
+			App.Current.ControllerLocator = new ControllerLocator ();
+			App.Current.StateController = new StateController ();
+			App.Current.DependencyRegistry = new Registry ("App Registry");
+			App.Current.EventsBroker = new EventsBroker ();
+			App.Current.Device = new Core.Device ();
+			App.Current.KPIService = new KpiService ();
+			App.Current.DragContext = new DragContext ();
+			App.Current.ResourcesLocator = new ResourcesLocator ();
+			App.Current.FileSystemManager = new FileSystemManager ();
+
+			App.Current.DependencyRegistry.Register<IStopwatch, Stopwatch> (0);
+			App.Current.DependencyRegistry.Register<ITimer, Timer> (1);
+		}
+
+		void InitTranslations ()
+		{
+			string localesDir = App.Current.RelativeToPrefix ("share/locale");
+
+			if (App.Current.Config.Lang != null) {
+				Environment.SetEnvironmentVariable ("LANGUAGE", App.Current.Config.Lang.Replace ("-", "_"));
+				if (Utils.OS == OperatingSystemID.Windows) {
+					g_setenv ("LANGUAGE", App.Current.Config.Lang.Replace ("-", "_"), true);
+
+				}
+			}
+
+			if (!Directory.Exists (localesDir)) {
+				var cerbero_prefix = Environment.GetEnvironmentVariable ("CERBERO_PREFIX");
+				if (cerbero_prefix != null) {
+					localesDir = Path.Combine (cerbero_prefix, "share", "locale");
+				} else {
+					Log.ErrorFormat ("'{0}' does not exist. This looks like an uninstalled execution." +
+					"Define CERBERO_PREFIX.", localesDir);
+				}
+			}
+			/* Init internationalization support */
+			Catalog.Init (App.Current.SoftwareName.ToLower (), localesDir);
+		}
+
+		void InitVersion ()
+		{
+			Current.Version = Current.Device.Version;
+			Current.BuildVersion = Current.Device.BuildVersion;
+		}
+
+		void ConfigureEnvVariables ()
+		{
+			Environment.SetEnvironmentVariable ("GDK_PIXBUF_MODULEDIR",
+				App.Current.RelativeToPrefix ("lib/gdk-pixbuf-2.0/2.10.0/loaders"));
+			Environment.SetEnvironmentVariable ("GDK_PIXBUF_MODULE_FILE",
+				App.Current.RelativeToPrefix ("lib/gdk-pixbuf-2.0/2.10.0/loaders.cache"));
+			Environment.SetEnvironmentVariable ("FONTCONFIG_PATH", App.Current.RelativeToPrefix ("etc/fonts"));
+		}
+
+		string GetPrefixPath ()
+		{
+			// The runtime prefix is always defined in the PATH environment variable,
+			// either because we choosed a custom .NET Runtime in Xamarin Studio, we are running
+			// in cerbero's shell or we are executing the app as an application bundle with
+			// the PATH configured to have our prefix. Here we iterate over all PATH entries
+			// until we find it, which is normally
+			// libdir and we use it to infer the prefix path, unless we are in a cerbero shell. We iterate
+			// over all the directories to find the prefix.
+			foreach (var pathEntry in ((string)Environment.GetEnvironmentVariables () ["PATH"]).Split (':')) {
+				var prefix = Path.Combine (pathEntry, "../");
+				if (Directory.Exists (Path.Combine (prefix, "lib", "gdk-pixbuf-2.0"))) {
+					return prefix;
+				}
+			}
+			throw new Exception ($"No potential prefix was found in $PATH." +
+								 "Make sure your Run Configuration is using the correct .Net Runtime," +
+								 "or the environment is configured correctly.");
+		}
+
+		void CheckDirs ()
+		{
+			if (!Directory.Exists (App.Current.HomeDir))
+				Directory.CreateDirectory (App.Current.HomeDir);
+			if (!Directory.Exists (App.Current.SnapshotsDir))
+				Directory.CreateDirectory (App.Current.SnapshotsDir);
+			if (!Directory.Exists (App.Current.PlayListDir))
+				Directory.CreateDirectory (App.Current.PlayListDir);
+			if (!Directory.Exists (App.Current.DBDir))
+				Directory.CreateDirectory (App.Current.DBDir);
+			if (!Directory.Exists (App.Current.VideosDir))
+				Directory.CreateDirectory (App.Current.VideosDir);
+			if (!Directory.Exists (App.Current.TempVideosDir))
+				Directory.CreateDirectory (App.Current.TempVideosDir);
+		}
+
+
+		void MigrateOldConfig ()
+		{
+			// Migrate old config directory the home directory so that OS X users can easilly find
+			// log files and config files without having to access hidden folders
+			if (Environment.OSVersion.Platform != PlatformID.Win32NT) {
+				string oldHome = Path.Combine (App.Current.HomeDir, "." + App.Current.SoftwareName.ToLower ());
+				string configFilename = App.Current.SoftwareName.ToLower () + "-1.0.config";
+				string configFilepath = Path.Combine (oldHome, configFilename);
+				if (File.Exists (configFilepath) && !File.Exists (App.Current.ConfigFile)) {
+					try {
+						File.Move (configFilepath, App.Current.ConfigFile);
+					} catch (Exception ex) {
+						Log.Exception (ex);
+					}
+				}
+			}
+		}
+
+		bool EnvironmentIsSet (string env)
+		{
+			return !String.IsNullOrEmpty (Environment.GetEnvironmentVariable (env));
+		}
 	}
 }
 

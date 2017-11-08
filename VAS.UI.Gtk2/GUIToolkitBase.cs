@@ -205,7 +205,7 @@ namespace VAS.UI
 		/// <param name="handler">Handler.</param>
 		public void Invoke (EventHandler handler)
 		{
-			if (App.IsMainThread) {
+			if (App.Current.IsMainThread) {
 				Log.Verbose ("Invoke called from the main thread");
 			}
 			Application.Invoke (handler);
@@ -217,7 +217,7 @@ namespace VAS.UI
 		/// <param name="handler">Handler.</param>
 		public async Task<T> Invoke<T> (Func<Task<T>> handler)
 		{
-			if (App.IsMainThread) {
+			if (App.Current.IsMainThread) {
 				Log.Verbose ("Invoke called from the main thread");
 				return await handler ();
 			}

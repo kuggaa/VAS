@@ -45,7 +45,6 @@ namespace VAS.Tests
 
 			App.Current = new AppDummy ();
 			App.InitDependencies ();
-			App.Current.Config = new ConfigDummy ();
 			SynchronizationContext.SetSynchronizationContext (new MockSynchronizationContext ());
 			App.Current.DependencyRegistry.Register<IStorageManager, CouchbaseManager> (1);
 			App.Current.DependencyRegistry.Register<IStopwatch, Stopwatch> (1);
@@ -75,6 +74,10 @@ namespace VAS.Tests
 	public class AppDummy : App
 	{
 		//Dummy class for VAS.App
+		protected override Config CreateConfig ()
+		{
+			return new ConfigDummy ();
+		}
 	}
 
 	public class ConfigDummy : Config
