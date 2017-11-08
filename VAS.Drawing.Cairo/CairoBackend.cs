@@ -215,6 +215,34 @@ namespace VAS.Drawing.Cairo
 			}
 		}
 
+		public void ClipCircle (Point center, double radius)
+		{
+			CContext.Arc (center.X, center.Y, radius, 0, 2 * Math.PI);
+			CContext.Clip ();
+		}
+
+		public void ClipRoundRectangle (Point start, double width, double height, double radius)
+		{
+			double x, y;
+
+			x = start.X;
+			y = start.Y;
+
+			if ((radius > height / 2) || (radius > width / 2))
+				radius = Math.Min (height / 2, width / 2);
+
+			CContext.MoveTo (x, y + radius);
+			CContext.Arc (x + radius, y + radius, radius, Math.PI, -Math.PI / 2);
+			CContext.LineTo (x + width - radius, y);
+			CContext.Arc (x + width - radius, y + radius, radius, -Math.PI / 2, 0);
+			CContext.LineTo (x + width, y + height - radius);
+			CContext.Arc (x + width - radius, y + height - radius, radius, 0, Math.PI / 2);
+			CContext.LineTo (x + radius, y + height);
+			CContext.Arc (x + radius, y + height - radius, radius, Math.PI / 2, Math.PI);
+			CContext.ClosePath ();
+			CContext.Clip ();
+		}
+
 		public Area UserToDevice (Area a)
 		{
 			double x, y, x2, y2, x3, y3;

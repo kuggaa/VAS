@@ -93,7 +93,11 @@ namespace VAS.Core.Interfaces.Drawing
 
 		void TranslateAndScale (Point translation, Point scale);
 
-		void Clip (Area are);
+		void Clip (Area area);
+
+		void ClipCircle (Point center, double radius);
+
+		void ClipRoundRectangle (Point start, double width, double height, double radius);
 
 		void DrawLine (Point start, Point stop);
 
