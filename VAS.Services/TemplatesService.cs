@@ -9,7 +9,6 @@ using System.Reflection;
 using VAS.Core.Common;
 using VAS.Core.Filters;
 using VAS.Core.Interfaces;
-using VAS.DB;
 
 namespace VAS.Services
 {
