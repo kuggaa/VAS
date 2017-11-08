@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using Gtk;
 using VAS.Core;
@@ -34,7 +33,7 @@ using VAS.Drawing;
 using VAS.Drawing.CanvasObjects.Blackboard;
 using VAS.UI.Dialog;
 using VAS.UI.Helpers;
-using Image = VAS.Core.Common.Image;
+using VAS.UI.Multimedia;
 
 namespace VAS.UI
 {
@@ -48,10 +47,18 @@ namespace VAS.UI
 		TaskCompletionSource<bool> tcs;
 		bool taskResult;
 
-		protected GUIToolkitBase ()
+		protected GUIToolkitBase (Gtk.Window mainWindow = null)
 		{
+			if (mainWindow == null) {
+				mainWindow = new MainWindow ();
+			}
+			mainWindow.Hide ();
+			MainWindow = mainWindow;
+
 			registry = new Registry ("GUI backend");
 			Scanner.ScanViews (App.Current.ViewLocator);
+			DrawingInit.ScanViews ();
+			VASUIMultimediaInit.ScanViews ();
 			RegistryCanvasFromDrawables ();
 		}
 
@@ -59,13 +66,16 @@ namespace VAS.UI
 			get {
 				return mainWindow;
 			}
-			set {
+			private set {
 				mainWindow = value;
 			}
 		}
 
-		//FIXME: for compatibility with LongoMatch
-		public virtual IMainController MainController { get; }
+		public virtual IMainController MainController {
+			get {
+				return (IMainController)MainWindow;
+			}
+		}
 
 		public bool FullScreen {
 			set {
@@ -166,13 +176,6 @@ namespace VAS.UI
 
 		public abstract Project ChooseProject (List<Project> projects);
 
-		/// <summary>
-		/// Pushes the specified panel to show it. This task does not finish until the panel is shown.
-		/// </summary>
-		/// <returns>The view.</returns>
-		/// <param name="panel">Panel.</param>
-		public abstract bool LoadPanel (IPanel panel);
-
 		public abstract void ShowProjectStats (Project project);
 
 		public abstract string RemuxFile (string inputFile, string outputFile, VideoMuxerType muxer);
@@ -189,6 +192,16 @@ namespace VAS.UI
 			Log.Information ("Quit application");
 			Application.Quit ();
 			return true;
+		}
+
+		/// <summary>
+		/// Pushes the specified panel to show it. This task does not finish until the panel is shown.
+		/// </summary>
+		/// <returns>The view.</returns>
+		/// <param name="panel">Panel.</param>
+		public virtual bool LoadPanel (IPanel panel)
+		{
+			return MainController.SetPanel (panel);
 		}
 
 		public HotKey SelectHotkey (HotKey hotkey, object parent = null)

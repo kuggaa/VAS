@@ -64,6 +64,8 @@
     <Compile Include="Bindings\ComboBoxBinding.cs" />
     <Compile Include="ImageView.cs" />
     <Compile Include="Bindings\HScaleCommandBinding.cs" />
+    <Compile Include="GtkSynchronizationContext.cs" />
+    <Compile Include="GtkOSXApplication.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -124,6 +124,8 @@
 		<Compile Include="UI\Component\ImagePreviewWidget.cs" />
 		<Compile Include="gtk-gui\VAS.UI.UI.Component.ImagePreviewWidget.cs" />
 		<Compile Include="UI\Dialog\AboutDialog.cs" />
+		<Compile Include="UI\MainWindow.cs" />
+		<Compile Include="gtk-gui\VAS.UI.MainWindow.cs" />
 	</ItemGroup>
 	<Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 	<ItemGroup>
