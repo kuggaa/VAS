@@ -2,7 +2,6 @@
 obj
 ChangeLog
 LongoMatch/bin
-LongoMatch.userprefs
 LongoMatch.usertasks
 Makefile
 Makefile.include~
@@ -82,3 +81,5 @@ obj/
 packages/
 *.csproj.user
 .deps
+paket-files
+*.userprefs

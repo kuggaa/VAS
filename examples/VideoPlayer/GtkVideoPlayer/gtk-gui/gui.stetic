@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<stetic-interface>
+  <configuration>
+    <images-root-path>..</images-root-path>
+  </configuration>
+  <import>
+    <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <widget-library name="../../../../../bin/VAS.Drawing.Cairo.dll" />
+    <widget-library name="../../../../../bin/VAS.UI.Helpers.Gtk2.dll" />
+    <widget-library name="../../../../../bin/VAS.UI.Multimedia.Gtk2.dll" />
+    <widget-library name="../../../../../bin/VAS.UI.dll" />
+    <widget-library name="../../bin/VideoPlayer.exe" internal="true" />
+  </import>
+  <widget class="Gtk.Bin" id="VideoPlayer.FileSelectionView" design-size="571 343">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Gtk.VBox" id="vbox1">
+        <property name="MemberName" />
+        <property name="Spacing">6</property>
+        <child>
+          <widget class="Gtk.Label" id="messageLabel">
+            <property name="MemberName" />
+            <property name="LabelProp">message</property>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Button" id="savebutton">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Type">TextOnly</property>
+            <property name="Label">open</property>
+            <property name="UseUnderline">True</property>
+            <property name="BorderWidth">27</property>
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="VideoPlayer.VideoPlayerView" design-size="626 300">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="VAS.UI.VideoPlayerView" id="videoplayerview1">
+        <property name="MemberName" />
+        <property name="Events">ButtonPressMask</property>
+      </widget>
+    </child>
+  </widget>
+</stetic-interface>

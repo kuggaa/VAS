@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg:svg xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="100.0px" version="1.1" viewBox="0 0 50 50" width="100.0px">
+    
+    <svg:title>icons/vas-plus</svg:title>
+    <svg:desc>Created with Sketch.</svg:desc>
+    <svg:defs>
+        <svg:path d="M28.5,21.5 L40.5,21.5 C42.4329966,21.5 44,23.0670034 44,25 C44,26.9329966 42.4329966,28.5 40.5,28.5 L28.5,28.5 L28.5,40.5 C28.5,42.4329966 26.9329966,44 25,44 C23.0670034,44 21.5,42.4329966 21.5,40.5 L21.5,28.5 L9.5,28.5 C7.56700338,28.5 6,26.9329966 6,25 C6,23.0670034 7.56700338,21.5 9.5,21.5 L21.5,21.5 L21.5,9.5 C21.5,7.56700338 23.0670034,6 25,6 C26.9329966,6 28.5,7.56700338 28.5,9.5 L28.5,21.5 Z" id="path-1" />
+    </svg:defs>
+    <svg:g fill="none" fill-rule="evenodd" id="Symbols" stroke="none" stroke-width="1">
+        <svg:g id="icons/vas-plus">
+            <svg:mask fill="white" id="mask-2">
+                <svg:use xlink:href="#path-1" />
+            </svg:mask>
+            <svg:g id="Combined-Shape" />
+            <svg:g fill="#DDDDDD" id="icons/colours/light" mask="url(#mask-2)">
+                <svg:rect height="50" id="Rectangle-11" width="50" x="0" y="0" />
+            </svg:g>
+        </svg:g>
+    </svg:g>
+</svg:svg>

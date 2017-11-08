@@ -1,0 +1,136 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GtkVideoPlayer", "GtkVideoPlayer\GtkVideoPlayer.csproj", "{C12EB59A-2AEE-49B6-AF02-704BDEDD7FD7}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "VideoPlayer", "VideoPlayer\VideoPlayer.shproj", "{A2E6CDD6-1223-449C-A285-23539886E892}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "VAS.Core", "..\..\VAS.Core\VAS.Core.shproj", "{F10023AD-3909-45AF-85EC-7A3C2FAACA75}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VAS.Core.Net45", "..\..\VAS.Core\VAS.Core.Net45.csproj", "{08AE7734-B995-4E0D-AD8F-38F597E0D4DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VAS.UI.Multimedia.Gtk2", "..\..\VAS.UI.Multimedia.Gtk2\VAS.UI.Multimedia.Gtk2.csproj", "{473E7B85-AF42-40E8-BE21-46FF6CCC34D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VAS.UI.Helpers.Gtk2", "..\..\VAS.UI.Helpers.Gtk2\VAS.UI.Helpers.Gtk2.csproj", "{E75E30DC-C1CF-4683-9A36-65B91EF10095}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VAS.Multimedia", "..\..\VAS.Multimedia\VAS.Multimedia.csproj", "{269608A7-5DBC-4A2C-B7AF-D094B6FA88AC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VAS.Drawing.Cairo", "..\..\VAS.Drawing.Cairo\VAS.Drawing.Cairo.csproj", "{AE98609B-353C-4CE4-A5B7-606BB4EE3576}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "VAS.Drawing", "..\..\VAS.Drawing\VAS.Drawing.shproj", "{4041429C-9260-473E-93DB-E6B5389B7115}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VAS.Drawing.Net45", "..\..\VAS.Drawing\VAS.Drawing.Net45.csproj", "{F99F378C-8C75-4888-A173-C7B4EC2D37E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weavers", "..\..\Weavers\Weavers.csproj", "{A7BA3B58-76E6-461C-B842-3D4DC4995B42}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "VAS.Services", "..\..\VAS.Services\VAS.Services.shproj", "{4A1B1F86-316F-4A07-AC62-E284BC9AB77D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VAS.Services.Net45", "..\..\VAS.Services\VAS.Services.Net45.csproj", "{153BFD3F-6E06-451B-AD79-6C207762BBBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VAS.UI.Gtk2", "..\..\VAS.UI.Gtk2\VAS.UI.Gtk2.csproj", "{4F1F28AB-3D1F-4F3F-95A4-2E08B448317C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HockeySDK.Net45", "..\..\HockeySDK-Windows\Src\HockeySDK.Net45\HockeySDK.Net45.csproj", "{7CB80B49-38A2-408E-970A-877399C1B3D3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C12EB59A-2AEE-49B6-AF02-704BDEDD7FD7}.Debug|x86.ActiveCfg = Debug|x86
+		{C12EB59A-2AEE-49B6-AF02-704BDEDD7FD7}.Debug|x86.Build.0 = Debug|x86
+		{C12EB59A-2AEE-49B6-AF02-704BDEDD7FD7}.Release|x86.ActiveCfg = Release|x86
+		{C12EB59A-2AEE-49B6-AF02-704BDEDD7FD7}.Release|x86.Build.0 = Release|x86
+		{08AE7734-B995-4E0D-AD8F-38F597E0D4DF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{08AE7734-B995-4E0D-AD8F-38F597E0D4DF}.Debug|x86.Build.0 = Debug|Any CPU
+		{08AE7734-B995-4E0D-AD8F-38F597E0D4DF}.Release|x86.ActiveCfg = Release|Any CPU
+		{08AE7734-B995-4E0D-AD8F-38F597E0D4DF}.Release|x86.Build.0 = Release|Any CPU
+		{473E7B85-AF42-40E8-BE21-46FF6CCC34D0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{473E7B85-AF42-40E8-BE21-46FF6CCC34D0}.Debug|x86.Build.0 = Debug|Any CPU
+		{473E7B85-AF42-40E8-BE21-46FF6CCC34D0}.Release|x86.ActiveCfg = Release|Any CPU
+		{473E7B85-AF42-40E8-BE21-46FF6CCC34D0}.Release|x86.Build.0 = Release|Any CPU
+		{E75E30DC-C1CF-4683-9A36-65B91EF10095}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E75E30DC-C1CF-4683-9A36-65B91EF10095}.Debug|x86.Build.0 = Debug|Any CPU
+		{E75E30DC-C1CF-4683-9A36-65B91EF10095}.Release|x86.ActiveCfg = Release|Any CPU
+		{E75E30DC-C1CF-4683-9A36-65B91EF10095}.Release|x86.Build.0 = Release|Any CPU
+		{269608A7-5DBC-4A2C-B7AF-D094B6FA88AC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{269608A7-5DBC-4A2C-B7AF-D094B6FA88AC}.Debug|x86.Build.0 = Debug|Any CPU
+		{269608A7-5DBC-4A2C-B7AF-D094B6FA88AC}.Release|x86.ActiveCfg = Release|Any CPU
+		{269608A7-5DBC-4A2C-B7AF-D094B6FA88AC}.Release|x86.Build.0 = Release|Any CPU
+		{AE98609B-353C-4CE4-A5B7-606BB4EE3576}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AE98609B-353C-4CE4-A5B7-606BB4EE3576}.Debug|x86.Build.0 = Debug|Any CPU
+		{AE98609B-353C-4CE4-A5B7-606BB4EE3576}.Release|x86.ActiveCfg = Release|Any CPU
+		{AE98609B-353C-4CE4-A5B7-606BB4EE3576}.Release|x86.Build.0 = Release|Any CPU
+		{F99F378C-8C75-4888-A173-C7B4EC2D37E0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F99F378C-8C75-4888-A173-C7B4EC2D37E0}.Debug|x86.Build.0 = Debug|Any CPU
+		{F99F378C-8C75-4888-A173-C7B4EC2D37E0}.Release|x86.ActiveCfg = Release|Any CPU
+		{F99F378C-8C75-4888-A173-C7B4EC2D37E0}.Release|x86.Build.0 = Release|Any CPU
+		{A7BA3B58-76E6-461C-B842-3D4DC4995B42}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A7BA3B58-76E6-461C-B842-3D4DC4995B42}.Debug|x86.Build.0 = Debug|Any CPU
+		{A7BA3B58-76E6-461C-B842-3D4DC4995B42}.Release|x86.ActiveCfg = Release|Any CPU
+		{A7BA3B58-76E6-461C-B842-3D4DC4995B42}.Release|x86.Build.0 = Release|Any CPU
+		{153BFD3F-6E06-451B-AD79-6C207762BBBB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{153BFD3F-6E06-451B-AD79-6C207762BBBB}.Debug|x86.Build.0 = Debug|Any CPU
+		{153BFD3F-6E06-451B-AD79-6C207762BBBB}.Release|x86.ActiveCfg = Release|Any CPU
+		{153BFD3F-6E06-451B-AD79-6C207762BBBB}.Release|x86.Build.0 = Release|Any CPU
+		{4F1F28AB-3D1F-4F3F-95A4-2E08B448317C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4F1F28AB-3D1F-4F3F-95A4-2E08B448317C}.Debug|x86.Build.0 = Debug|Any CPU
+		{4F1F28AB-3D1F-4F3F-95A4-2E08B448317C}.Release|x86.ActiveCfg = Release|Any CPU
+		{4F1F28AB-3D1F-4F3F-95A4-2E08B448317C}.Release|x86.Build.0 = Release|Any CPU
+		{7CB80B49-38A2-408E-970A-877399C1B3D3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7CB80B49-38A2-408E-970A-877399C1B3D3}.Debug|x86.Build.0 = Debug|Any CPU
+		{7CB80B49-38A2-408E-970A-877399C1B3D3}.Release|x86.ActiveCfg = Release|Any CPU
+		{7CB80B49-38A2-408E-970A-877399C1B3D3}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$1.DirectoryNamespaceAssociation = PrefixedHierarchical
+		$0.StandardHeader = $2
+		$2.Text = @\n Copyright (C) ${Year} ${CopyrightHolder}
+		$0.VersionControlPolicy = $3
+		$0.ChangeLogPolicy = $4
+		$4.UpdateMode = None
+		$4.inheritsSet = Mono
+		$4.MessageStyle = $5
+		$5.LineAlign = 0
+		$0.TextStylePolicy = $6
+		$6.inheritsSet = null
+		$6.inheritsScope = text/plain
+		$6.scope = text/x-chdr
+		$6.TabWidth = 2
+		$0.TextStylePolicy = $7
+		$7.EolMarker = Unix
+		$7.scope = text/plain
+		$0.TextStylePolicy = $8
+		$8.inheritsSet = null
+		$8.scope = application/octet-stream
+		$0.TextStylePolicy = $9
+		$9.TabWidth = 2
+		$9.EolMarker = Unix
+		$9.scope = text/x-c++hdr
+		$9.FileWidth = 80
+		$9.TabsToSpaces = True
+		$0.TextStylePolicy = $10
+		$10.inheritsSet = null
+		$10.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $11
+		$11.scope = text/x-csharp
+		$0.TextStylePolicy = $12
+		$12.inheritsSet = null
+		$12.scope = application/xml
+		$0.TextStylePolicy = $13
+		$13.TabWidth = 2
+		$13.scope = text/x-csrc
+		$13.FileWidth = 80
+		$13.TabsToSpaces = True
+		$0.TextStylePolicy = $14
+		$14.inheritsSet = null
+		$14.scope = application/x-desktop
+		$0.TextStylePolicy = $15
+		$15.inheritsSet = null
+		$15.scope = application/paket-references
+		$0.XmlFormattingPolicy = $16
+		$16.scope = application/xml
+	EndGlobalSection
+EndGlobal

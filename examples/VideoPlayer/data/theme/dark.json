@@ -1,0 +1,60 @@
+{
+	"IconLargeHeight": 35,
+	"IconLargeWidth": 35,
+	"IconMediumHeight": 26,
+	"IconMediumWidth": 26,
+	"IconSmallHeight": 22,
+	"IconSmallWidth": 22,
+	"IconXSmallHeight": 15,
+	"IconXSmallWidth": 15,
+	"IconTinyHeight": 12,
+	"IconTinyWidth": 12,
+	"ButtonTimelineHeight": 22,
+	"ButtonTimelineWidth": 22,
+	"ButtonNormalHeight": 35,
+	"ButtonNormalWidth": 35,
+	"ButtonTabHeight": 36,
+	"ButtonTabWidth": 55,
+	"ButtonFocusHeight": 36,
+	"ButtonFocusWidth": 55,
+	"ButtonDialogHeight": 36,
+	"ButtonLimitHeight": 24,
+	"ButtonLimitWidth": 24,
+	"ButtonRemoveWidth": 0,
+	"ButtonRemoveHeight": 24,
+	"ButtonHeaderBoxHeight": 30,
+	"ButtonHeaderBoxWidth": 30,
+
+	//Screen Base Color (Dark)
+	"ScreenBase": "#252627",
+	
+	"ThemeBase": "#151A20",
+	"ThemeSecondary": "#8D8F92",
+	"ThemeDisabled": "#B6B7B8",
+	"ThemeContrastBase": "#DFDFDF",
+	"ThemeContrastSecondary": "#5C5D5E",
+	"ThemeContrastDisabled": "#373839",
+
+	
+	"TextBase": "#DFDFDF",
+	"TextBaseSecondary": "#A2A3A5",
+	"TextBaseDisabled": "#65686C",
+	"TextContrastBase": "#151A20",
+	"TextContrastSecondary": "#66696C",
+	"TextContrastDisabled": "#8D8F92",
+
+
+	"ColorBrand": "#6E921C",
+	"ColorPrimary": "#ABD05C",
+	"ColorSecondary": "#FFFF00",
+	"ColorAccentSuccess": "#50B44D",
+	"ColorAccentWarning": "#EAD012",
+	"ColorAccentError": "#DD1212",
+
+	"TextBrand": "#6E921C",
+	"TextPrimary": "#ABD05C",
+	"TextSecondary": "#FFFF00",
+	"TextAccentSuccess": "#50B44D",
+	"TextAccentWarning": "#EAD012",
+	"TextAccentError": "#DD1212"
+}

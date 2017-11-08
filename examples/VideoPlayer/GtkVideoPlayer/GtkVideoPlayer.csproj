@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{C12EB59A-2AEE-49B6-AF02-704BDEDD7FD7}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>VideoPlayer</RootNamespace>
+    <AssemblyName>VideoPlayer</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+    <Reference Include="gtk-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="gdk-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="glib-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="glade-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="pango-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="atk-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Mono.Posix" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="gtk-gui\gui.stetic">
+      <LogicalName>gui.stetic</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="GUIToolkit.cs" />
+    <Compile Include="FileSelectionView.cs" />
+    <Compile Include="gtk-gui\VideoPlayer.FileSelectionView.cs" />
+    <Compile Include="VideoPlayerView.cs" />
+    <Compile Include="gtk-gui\VideoPlayer.VideoPlayerView.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\VAS.Core\VAS.Core.Net45.csproj">
+      <Project>{08AE7734-B995-4E0D-AD8F-38F597E0D4DF}</Project>
+      <Name>VAS.Core.Net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\VAS.Drawing.Cairo\VAS.Drawing.Cairo.csproj">
+      <Project>{AE98609B-353C-4CE4-A5B7-606BB4EE3576}</Project>
+      <Name>VAS.Drawing.Cairo</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\VAS.Drawing\VAS.Drawing.Net45.csproj">
+      <Project>{F99F378C-8C75-4888-A173-C7B4EC2D37E0}</Project>
+      <Name>VAS.Drawing.Net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\VAS.Multimedia\VAS.Multimedia.csproj">
+      <Project>{269608A7-5DBC-4A2C-B7AF-D094B6FA88AC}</Project>
+      <Name>VAS.Multimedia</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\VAS.UI.Helpers.Gtk2\VAS.UI.Helpers.Gtk2.csproj">
+      <Project>{E75E30DC-C1CF-4683-9A36-65B91EF10095}</Project>
+      <Name>VAS.UI.Helpers.Gtk2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\VAS.UI.Multimedia.Gtk2\VAS.UI.Multimedia.Gtk2.csproj">
+      <Project>{473E7B85-AF42-40E8-BE21-46FF6CCC34D0}</Project>
+      <Name>VAS.UI.Multimedia.Gtk2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\VAS.Services\VAS.Services.Net45.csproj">
+      <Project>{153BFD3F-6E06-451B-AD79-6C207762BBBB}</Project>
+      <Name>VAS.Services.Net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\VAS.UI.Gtk2\VAS.UI.Gtk2.csproj">
+      <Project>{4F1F28AB-3D1F-4F3F-95A4-2E08B448317C}</Project>
+      <Name>VAS.UI.Gtk2</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="..\VideoPlayer\VideoPlayer.projitems" Label="Shared" Condition="Exists('..\VideoPlayer\VideoPlayer.projitems')" />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

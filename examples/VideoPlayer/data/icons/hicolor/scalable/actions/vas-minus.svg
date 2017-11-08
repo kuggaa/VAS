@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="50px" height="50px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>icons/vas-minus</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M40.5,22 L9.5,22 C7.56700338,22 6,23.5670034 6,25.5 C6,27.4329966 7.56700338,29 9.5,29 L40.5,29 C42.4329966,29 44,27.4329966 44,25.5 C44,23.5670034 42.4329966,22 40.5,22 Z" id="path-1"></path>
+    </defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icons/vas-minus">
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <g id="Combined-Shape"></g>
+            <g id="icons/colours/light" mask="url(#mask-2)" fill="#DDDDDD">
+                <rect id="Rectangle-11" x="0" y="0" width="50" height="50"></rect>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg:svg xmlns:svg="http://www.w3.org/2000/svg" enable-background="new 0 0 36 36" height="72.0px" id="Calque_1" version="1.1" viewBox="0 0 36 36" width="72.0px" x="0px" y="0px" xml:space="preserve">
+<svg:g id="Layer_1">
+</svg:g>
+<svg:g>
+	<svg:path d="M21.58,12.104v11.104H3.065V12.104H21.58 M21.58,10.104H3.065c-1.1,0-2,0.9-2,2v11.104c0,1.1,0.9,2,2,2   H21.58c1.1,0,2-0.9,2-2V12.104C23.58,11.003,22.68,10.104,21.58,10.104L21.58,10.104z" fill="#6B6B6A" />
+</svg:g>
+<svg:g>
+	<svg:g>
+		<svg:path d="M34.236,9.876c0,1.1-0.9,2-2,2h-5.219c-1.1,0-2-0.9-2-2V7.382c0-1.1,0.9-2,2-2h5.219c1.1,0,2,0.9,2,2    V9.876z" fill="#6B6B6A" />
+		<svg:path d="M34.236,9.876c0,1.1-0.9,2-2,2h-5.219c-1.1,0-2-0.9-2-2V7.382    c0-1.1,0.9-2,2-2h5.219c1.1,0,2,0.9,2,2V9.876z" fill="none" stroke="#66A33A" stroke-miterlimit="10" />
+	</svg:g>
+	<svg:g>
+		<svg:path d="M34.236,18.901c0,1.1-0.9,2-2,2h-5.219c-1.1,0-2-0.9-2-2v-2.493c0-1.1,0.9-2,2-2h5.219c1.1,0,2,0.9,2,2    V18.901z" fill="#6B6B6A" />
+		<svg:path d="M34.236,18.901c0,1.1-0.9,2-2,2h-5.219c-1.1,0-2-0.9-2-2v-2.493    c0-1.1,0.9-2,2-2h5.219c1.1,0,2,0.9,2,2V18.901z" fill="none" stroke="#66A33A" stroke-miterlimit="10" />
+	</svg:g>
+	<svg:g>
+		<svg:path d="M34.236,27.928c0,1.1-0.9,2-2,2h-5.219c-1.1,0-2-0.9-2-2v-2.494c0-1.1,0.9-2,2-2h5.219c1.1,0,2,0.9,2,2    V27.928z" fill="#6B6B6A" />
+		<svg:path d="M34.236,27.928c0,1.1-0.9,2-2,2h-5.219c-1.1,0-2-0.9-2-2v-2.494    c0-1.1,0.9-2,2-2h5.219c1.1,0,2,0.9,2,2V27.928z" fill="none" stroke="#66A33A" stroke-miterlimit="10" />
+	</svg:g>
+</svg:g>
+</svg:svg>

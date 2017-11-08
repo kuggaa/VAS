@@ -1,0 +1,17 @@
+STRATEGY: MIN
+CONTENT: ONCE
+RESTRICTION: || (== monoandroid7.0) (== net45) (== xamarinios)
+NUGET
+  remote: https://www.nuget.org/api/v2
+    Castle.Core (4.1.1) - restriction: || (&& (== monoandroid7.0) (>= net45)) (== net45) (&& (== xamarinios) (>= net45))
+    Fody (2.1.2)
+    FodyCecil (2.1) - restriction: || (&& (== monoandroid7.0) (>= net45)) (== net45) (&& (== xamarinios) (>= net45))
+    ModuleInit.Fody (1.6)
+      Fody (>= 2.0)
+    Mono.Addins (1.3) - restriction: || (&& (== monoandroid7.0) (>= net45)) (== net45) (&& (== xamarinios) (>= net45))
+    Newtonsoft.Json (7.0.1)
+    OxyPlot.Core (1.0) - restriction: || (&& (== monoandroid7.0) (>= net45)) (== net45) (&& (== xamarinios) (>= net45))
+    OxyPlot.GtkSharp (1.0) - restriction: || (&& (== monoandroid7.0) (>= net45)) (== net45) (&& (== xamarinios) (>= net45))
+      OxyPlot.Core (1.0)
+    PropertyChanged.Fody (2.1.3)
+      Fody (>= 2.0 < 3.0)

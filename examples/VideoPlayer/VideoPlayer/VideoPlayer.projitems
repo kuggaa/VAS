@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>{A2E6CDD6-1223-449C-A285-23539886E892}</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>VideoPlayer</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Config.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)State\FileSelectionState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\FileSelectionVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Events.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller\FileSelectionController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)State\VideoPlayerState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\VideoPlayerVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)VideoPlayerLicenseLimitationsService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Controller\" />
+    <Folder Include="$(MSBuildThisFileDirectory)State\" />
+    <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />
+  </ItemGroup>
+</Project>
