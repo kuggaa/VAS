@@ -27,7 +27,6 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\PlaylistView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FileStorage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)IFileStorage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TeamsView.cs" />
   </ItemGroup>
 </Project>

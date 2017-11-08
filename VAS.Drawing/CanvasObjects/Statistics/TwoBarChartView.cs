@@ -63,7 +63,7 @@ namespace VAS.Drawing.CanvasObjects.Statistics
 			set {
 				base.ViewModel = value;
 				viewModel = value;
-				if (App.IsMainThread) {
+				if (App.Current.IsMainThread) {
 					ReDraw ();
 				} else {
 					App.Current.GUIToolkit.Invoke ((sender, e) => ReDraw ());

@@ -80,7 +80,7 @@ namespace VAS.Drawing.CanvasObjects.Statistics
 
 		void CallRedraw ()
 		{
-			if (App.IsMainThread) {
+			if (App.Current.IsMainThread) {
 				ReDraw ();
 			} else {
 				App.Current.GUIToolkit.Invoke ((sender, e) => ReDraw ());

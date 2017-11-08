@@ -112,7 +112,6 @@ namespace VAS
 			set;
 		} = null;
 
-
 		public ProjectSortMethod ProjectSortMethod {
 			get;
 			set;
@@ -203,7 +202,7 @@ namespace VAS
 		public List<KeyConfig> KeyConfigs {
 			get;
 			set;
-		}
+		} = new List<KeyConfig> ();
 
 		[JsonIgnore]
 		[PropertyChanged.DoNotNotify]

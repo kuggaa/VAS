@@ -19,7 +19,7 @@ using System;
 using System.IO;
 using VAS.Core.Interfaces;
 
-namespace VAS.DB
+namespace VAS.Core.Interfaces
 {
 	public interface IFileStorage
 	{
