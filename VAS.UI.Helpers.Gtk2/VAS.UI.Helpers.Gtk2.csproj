@@ -66,6 +66,8 @@
     <Compile Include="Bindings\HScaleCommandBinding.cs" />
     <Compile Include="DetachHelper.cs" />
     <Compile Include="TypeConverters\ImageConverter.cs" />
+    <Compile Include="GtkSynchronizationContext.cs" />
+    <Compile Include="GtkOSXApplication.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

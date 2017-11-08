@@ -128,6 +128,8 @@
 		<Compile Include="UI\Menu\MenuExtensionEntry.cs" />
 		<Compile Include="UI\Component\DynamicButtonToolbarView.cs" />
 		<Compile Include="gtk-gui\VAS.UI.Component.DynamicButtonToolbarView.cs" />
+		<Compile Include="UI\MainWindow.cs" />
+		<Compile Include="gtk-gui\VAS.UI.MainWindow.cs" />
 	</ItemGroup>
 	<Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 	<ItemGroup>

@@ -20,7 +20,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Gdk;
+using System.Runtime.InteropServices;
 using Gtk;
 using VAS.Core;
 using VAS.Core.Common;
@@ -28,15 +28,37 @@ using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Store;
 using Color = Gdk.Color;
-using LColor = VAS.Core.Common.Color;
 using Image = VAS.Core.Common.Image;
+using LColor = VAS.Core.Common.Color;
 
 namespace VAS.UI.Helpers
 {
 	public class Misc
 	{
+		[DllImport ("libX11", CallingConvention = CallingConvention.Cdecl)]
+		static extern int XInitThreads ();
+
 		public static string lastFilename;
 		public static Hashtable missingIcons = new Hashtable ();
+
+		public static void Init (string baseDirectory)
+		{
+			Environment.SetEnvironmentVariable ("GTK_EXE_PREFIX", baseDirectory);
+
+			Rc.DefaultFiles = new string [] { Utils.GetDataFilePath (Path.Combine ("theme", "gtk-2.0", "gtkrc")) };
+
+			/* We are having some race condition with XCB resulting on an invalid
+			 * message and thus an abort of the program, we better activate the
+			 * thread sae X11
+			 */
+			if (Utils.OS == OperatingSystemID.Linux)
+				XInitThreads ();
+
+			Application.Init ();
+
+			IconTheme.Default.PrependSearchPath (Utils.GetDataDirPath ("icons"));
+
+		}
 
 		public static FileFilter GetFileFilter ()
 		{
@@ -332,7 +354,7 @@ namespace VAS.UI.Helpers
 			if (evnt.Type != Gdk.EventType.ButtonPress)
 				return false;
 #if OSTYPE_OS_X
-			return evnt.Button == 3 || (evnt.Button == 1 && evnt.State == ModifierType.ControlMask);
+			return evnt.Button == 3 || (evnt.Button == 1 && evnt.State == Gdk.ModifierType.ControlMask);
 #else
 			return evnt.Button == 3;
 #endif

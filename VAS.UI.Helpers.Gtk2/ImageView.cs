@@ -28,7 +28,7 @@ namespace VAS.UI.Helpers
 {
 	/// <summary>
 	/// A widget to draw <see cref="Image"/> that replaces <see cref="Gtk.Image"/>. This widget allows the user to
-	/// define the /// desired size of the <see cref="Widget"/> regardless of the size of the <see cref="Image"/>.
+	/// define the desired size of the <see cref="Widget"/> regardless of the size of the <see cref="Image"/>.
 	/// The <see cref="Image"/> is scalled acordingly to respect DAR or centered the without scalling of its
 	/// smaller than the allocated space.
 	/// </summary>
