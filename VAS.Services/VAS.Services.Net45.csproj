@@ -96,7 +96,7 @@
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.5'">
       <ItemGroup>
         <Reference Include="Newtonsoft.Json">
-          <HintPath>..\..\packages\Newtonsoft.Json\lib\net45\Newtonsoft.Json.dll</HintPath>
+          <HintPath>$(SolutionDir)\packages\Newtonsoft.Json\lib\net45\Newtonsoft.Json.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -105,7 +105,7 @@
     <When Condition="($(TargetFrameworkIdentifier) == 'MonoAndroid' And $(TargetFrameworkVersion) == 'v7.0') Or ($(TargetFrameworkIdentifier) == 'Xamarin.iOS')">
       <ItemGroup>
         <Reference Include="Newtonsoft.Json">
-          <HintPath>..\..\packages\Newtonsoft.Json\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+          <HintPath>$(SolutionDir)\packages\Newtonsoft.Json\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -116,7 +116,7 @@
     <When Condition="($(TargetFrameworkIdentifier) == 'MonoAndroid' And $(TargetFrameworkVersion) == 'v7.0') Or ($(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.5') Or ($(TargetFrameworkIdentifier) == 'Xamarin.iOS')">
       <ItemGroup>
         <Reference Include="PropertyChanged">
-          <HintPath>..\..\packages\PropertyChanged.Fody\lib\netstandard1.0\PropertyChanged.dll</HintPath>
+          <HintPath>$(SolutionDir)\packages\PropertyChanged.Fody\lib\netstandard1.0\PropertyChanged.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -127,12 +127,12 @@
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.5'">
       <ItemGroup>
         <Reference Include="Sparkle">
-          <HintPath>..\..\packages\Sparkle\lib\net45\Sparkle.dll</HintPath>
+          <HintPath>$(SolutionDir)\packages\Sparkle\lib\net45\Sparkle.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
     </When>
   </Choose>
-  <Import Project="..\..\packages\Fody\build\$(__paket__Fody_targets).targets" Condition="Exists('..\..\packages\Fody\build\$(__paket__Fody_targets).targets')" Label="Paket" />
+  <Import Project="$(SolutionDir)\packages\Fody\build\$(__paket__Fody_targets).targets" Condition="Exists('$(SolutionDir)\packages\Fody\build\$(__paket__Fody_targets).targets')" Label="Paket" />
 </Project>
