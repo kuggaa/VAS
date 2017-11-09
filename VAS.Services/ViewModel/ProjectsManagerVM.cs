@@ -41,6 +41,7 @@ namespace VAS.Services.ViewModel
 			DeleteCommand = new AsyncCommand<TViewModel> (Delete, (arg) => Selection.Any () || arg != null) { IconName = "vas-delete"};
 			SaveCommand = new AsyncCommand (Save, () => LoadedProject?.Model != null && LoadedProject.IsChanged);
 			ExportCommand = new AsyncCommand (Export, () => Selection.Count == 1);
+			SearchProjectsCommand = new Command (textFilter => App.Current.EventsBroker.Publish (new SearchEvent<TModel> { TextFilter = (string)textFilter }));
 		}
 
 		protected override void DisposeManagedResources ()
@@ -104,6 +105,12 @@ namespace VAS.Services.ViewModel
 
 		[PropertyChanged.DoNotNotify]
 		public Command ExportCommand {
+			get;
+			protected set;
+		}
+
+		[PropertyChanged.DoNotNotify]
+		public Command SearchProjectsCommand {
 			get;
 			protected set;
 		}
