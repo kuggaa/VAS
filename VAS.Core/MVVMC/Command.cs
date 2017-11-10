@@ -33,6 +33,8 @@ namespace VAS.Core.MVVMC
 		protected Func<object, Task> execute;
 		bool executable;
 		bool isExecuting;
+		string iconName;
+		string iconInactiveName;
 
 		protected Command ()
 		{
@@ -91,12 +93,42 @@ namespace VAS.Core.MVVMC
 		}
 
 		/// <summary>
+		/// Gets or sets the icon name related to that command
+		/// </summary>
+		/// <value>The icon name.</value>
+		public string IconName {
+			get {
+				return iconName;
+			}
+			set {
+				iconName = value;
+				//FIXME: Use only iconName, so that we can load the same icon with different sizes in different places
+				Icon = App.Current.ResourcesLocator.LoadIcon (iconName);
+			}
+		}
+
+		/// <summary>
 		/// Gets or sets the icon related to that command when the command can't be executed
 		/// </summary>
 		/// <value>The icon.</value>
 		public Image IconInactive {
 			get;
 			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the icon name related to that command when the command can't be executed
+		/// </summary>
+		/// <value>The inactive icon name.</value>
+		public string IconInactiveName {
+			get {
+				return iconInactiveName;
+			}
+			set {
+				iconInactiveName = value;
+				//FIXME: Use only IconInactiveName, so that we can load the same icon with different sizes in different places
+				IconInactive = App.Current.ResourcesLocator.LoadIcon (iconInactiveName);
+			}
 		}
 
 		/// <summary>

@@ -43,6 +43,7 @@ namespace VAS
 		public IHotkeysService HotkeysService;
 		public IResourcesLocator ResourcesLocator;
 		public IFileSystemManager FileSystemManager;
+		public IApplicationMenu ApplicationMenu;
 
 		public string homeDirectory = ".";
 		public string baseDirectory = ".";

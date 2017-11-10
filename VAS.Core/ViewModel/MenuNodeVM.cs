@@ -96,6 +96,16 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
+		/// Gets or sets the name.
+		/// </summary>
+		/// <value>The name.</value>
+		public string IconName {
+			get {
+				return Command?.IconName;
+			}
+		}
+
+		/// <summary>
 		/// Updates the Command can execute.
 		/// </summary>
 		public void UpdateCanExecute ()

@@ -316,6 +316,7 @@ namespace VAS.Core.Common
 			TextBase = Color.Black;
 			PaletteTool = Color.Black;
 			TextBase = Color.Black;
+			SoftDim = 0.9;
 		}
 
 		#region Properties
@@ -343,6 +344,8 @@ namespace VAS.Core.Common
 		public Color ColorAccentSuccess { get; set; }
 		public Color ColorAccentWarning { get; set; }
 		public Color ColorAccentError { get; set; }
+
+		public double SoftDim { get; set; }
 
 		// -------------------------------------------------------------------------
 
