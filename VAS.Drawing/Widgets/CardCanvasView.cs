@@ -59,8 +59,8 @@ namespace VAS.Drawing.Widgets
 		TViewModel viewModel;
 
 		static CardCanvasView() {
-			calendarIcon = App.Current.DrawingToolkit.CreateSurfaceFromIcon ("vas-calendar");
-			defaultBackground = App.Current.DrawingToolkit.CreateSurfaceFromResource ("images/vas-asset-bg-default.png");
+			calendarIcon = App.Current.DrawingToolkit.CreateSurfaceFromIcon (StyleConf.CalendarIcon);
+			defaultBackground = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.DefaultCardBackground);
 		}
 
 		public CardCanvasView ()

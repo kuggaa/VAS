@@ -304,6 +304,11 @@ namespace VAS.Core.Common
 
 		public const string UpgradeDialogBackground = "images/vas-upgrade-dialog-bg" + IMAGE_EXT;
 
+		//Card Icons
+		public const string CalendarIcon = "vas-calendar";
+		public const string StopwatchIcon = "vas-stopwatch";
+		public const string DefaultCardBackground = "images/vas-asset-bg-default" + IMAGE_EXT;
+
 		public StyleConf ()
 		{
 			HomeTeamColor = Color.Red;
