@@ -81,9 +81,9 @@ namespace VAS.Core.Interfaces.Drawing
 
 		ISurface CreateSurface (int width, int height, Image image = null, bool warnOnDispose = true, bool useDeviceScaleFactor = true);
 
-		void DrawSurface (ISurface surface, Point p = null);
+		void DrawSurface (ISurface surface, Point p = null, bool masked = false);
 
-		void DrawSurface (Point start, double width, double height, ISurface surface, ScaleMode mode);
+		void DrawSurface (Point start, double width, double height, ISurface surface, ScaleMode mode, bool masked = false);
 
 		void Begin ();
 
@@ -93,7 +93,11 @@ namespace VAS.Core.Interfaces.Drawing
 
 		void TranslateAndScale (Point translation, Point scale);
 
-		void Clip (Area are);
+		void Clip (Area area);
+
+		void ClipCircle (Point center, double radius);
+
+		void ClipRoundRectangle (Point start, double width, double height, double radius);
 
 		void DrawLine (Point start, Point stop);
 
