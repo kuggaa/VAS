@@ -260,11 +260,21 @@ namespace VAS.UI.Common
 		{
 			RemoveSubViewModelListener (subViewModel);
 
-			if (subViewModel is INestedViewModel) {
-				RemoveAllNestedSubViewModels (subViewModel);
+			var nestedSubViewModel = subViewModel as INestedViewModel;
+			if (nestedSubViewModel != null) {
+				nestedSubViewModel.GetNotifyCollection ().CollectionChanged -= ViewModelCollectionChanged;
+				dictionaryNestedParent.Remove (nestedSubViewModel.GetNotifyCollection ());
+				foreach (var vm in (nestedSubViewModel as IEnumerable).OfType<IViewModel> ()) {
+					RemoveSubViewModel (vm);
+				}
 			} else {
-				dictionaryStore [subViewModel].ForEach (x => store.Remove (ref x));
-				dictionaryStore.Remove (subViewModel);
+				TreeIter iter = dictionaryStore [subViewModel].First ();
+				dictionaryStore [subViewModel].RemoveAt (0);
+				store.Remove (ref iter);
+
+				if (!dictionaryStore [subViewModel].Any ()) {
+					dictionaryStore.Remove (subViewModel);
+				}
 			}
 		}
 
@@ -676,24 +686,6 @@ namespace VAS.UI.Common
 				}
 				(subViewModel as INestedViewModel).GetNotifyCollection ().CollectionChanged -= ViewModelCollectionChanged;
 			}
-		}
-
-		void RemoveAllNestedSubViewModels (IViewModel subViewModel)
-		{
-			if (subViewModel is IEnumerable) {
-				foreach (var v in (subViewModel as IEnumerable)) {
-					RemoveAllNestedSubViewModels (v as IViewModel);
-				}
-				(subViewModel as INestedViewModel).GetNotifyCollection ().CollectionChanged -= ViewModelCollectionChanged;
-				dictionaryNestedParent.Remove ((subViewModel as INestedViewModel).GetNotifyCollection ());
-			}
-			subViewModel.PropertyChanged -= PropertyChangedItem;
-			foreach (TreeIter element in dictionaryStore [subViewModel]) {
-				TreeIter iter = element;
-				store.Remove (ref iter);
-			}
-
-			dictionaryStore.Remove (subViewModel);
 		}
 
 		void RemoveSubViewModelListener (IViewModel vm)
