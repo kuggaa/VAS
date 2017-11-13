@@ -135,8 +135,8 @@ namespace VAS.UI.Dialog
 			crossbutton.TooltipMarkup = Catalog.GetString ("Cross tool");
 			rectanglebutton.TooltipMarkup = Catalog.GetString ("Rectangle tool");
 			ellipsebutton.TooltipMarkup = Catalog.GetString ("Ellipse tool");
-			rectanglefilledbutton.TooltipMarkup = Catalog.GetString ("Filled rectangle tool");
-			ellipsefilledbutton.TooltipMarkup = Catalog.GetString ("Filled ellipse tool");
+			rectanglefilledbutton.TooltipMarkup = Catalog.GetString ("Rectangle area tool");
+			ellipsefilledbutton.TooltipMarkup = Catalog.GetString ("Ellipsis area tool");
 			playerbutton.TooltipMarkup = Catalog.GetString ("Player tool");
 			numberbutton.TooltipMarkup = Catalog.GetString ("Index tool");
 			anglebutton.TooltipMarkup = Catalog.GetString ("Angle tool");
@@ -150,7 +150,10 @@ namespace VAS.UI.Dialog
 
 			colorbutton.ColorSet += HandleColorSet;
 			colorbutton.Color = Misc.ToGdkColor (Color.Red1);
+			colorbutton.UseAlpha = true;
+			colorbutton.Alpha = Color.FloatToUShort (0.8f);
 			blackboard.Color = Color.Red1;
+			blackboard.Color.SetAlpha (0.8f);
 			textcolorbutton.ColorSet += HandleTextColorSet;
 			textcolorbutton.Color = Misc.ToGdkColor (Color.White);
 			blackboard.TextColor = Color.White;
@@ -612,17 +615,15 @@ namespace VAS.UI.Dialog
 		{
 			if (ignoreChanges)
 				return;
-
 			if (selectedDrawable != null) {
-				selectedDrawable.StrokeColor = Misc.ToLgmColor (colorbutton.Color);
+				selectedDrawable.StrokeColor = Misc.ToLgmColor (colorbutton.Color, colorbutton.Alpha);
 				if (selectedDrawable.FillColor != null) {
-					Color c = Misc.ToLgmColor (colorbutton.Color);
-					c.A = selectedDrawable.FillColor.A;
+					Color c = Misc.ToLgmColor (colorbutton.Color, colorbutton.Alpha);
 					selectedDrawable.FillColor = c;
 				}
 				QueueDraw ();
 			} else {
-				blackboard.Color = Misc.ToLgmColor (colorbutton.Color);
+				blackboard.Color = Misc.ToLgmColor (colorbutton.Color, colorbutton.Alpha);
 			}
 		}
 
@@ -708,6 +709,7 @@ namespace VAS.UI.Dialog
 			ignoreChanges = true;
 			if (selectedDrawable == null) {
 				colorbutton.Color = Misc.ToGdkColor (blackboard.Color);
+				colorbutton.Alpha = Color.ByteToUShort (blackboard.Color.A);
 				textcolorbutton.Color = Misc.ToGdkColor (blackboard.TextColor);
 				backgroundcolorbutton.Color = Misc.ToGdkColor (blackboard.TextBackgroundColor);
 				backgroundcolorbutton.Alpha = Color.ByteToUShort (blackboard.TextBackgroundColor.A);
@@ -726,6 +728,8 @@ namespace VAS.UI.Dialog
 					textspinbutton.Value = OriginalSize ((selectedDrawable as Text).TextSize);
 				} else {
 					colorbutton.Color = Misc.ToGdkColor (selectedDrawable.StrokeColor);
+					colorbutton.UseAlpha = true;
+					colorbutton.Alpha = Color.ByteToUShort (selectedDrawable.StrokeColor.A);
 				}
 				if (drawable is Line) {
 					typecombobox.Active = (int)(drawable as Line).Type;
