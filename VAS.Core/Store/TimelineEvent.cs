@@ -54,6 +54,7 @@ namespace VAS.Core.Store
 			Players = new RangeObservableCollection<Player> ();
 			Teams = new RangeObservableCollection<Team> ();
 			CreationDate = DateTime.UtcNow;
+			Deletable = true;
 		}
 
 		protected override void DisposeManagedResources ()
@@ -336,6 +337,12 @@ namespace VAS.Core.Store
 			get {
 				return EventType?.Color;
 			}
+		}
+
+		[JsonIgnore]
+		public bool Deletable {
+			get;
+			protected set;
 		}
 
 		#endregion
