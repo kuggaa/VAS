@@ -30,11 +30,15 @@ namespace VAS.Tests.Core.Common
 	public class TestImage
 	{
 		Image img;
-
+		Mock<IGUIToolkit> mockGuiToolkit;
 
 		[SetUp ()]
 		public void LoadImageFromFile ()
 		{
+			mockGuiToolkit = new Mock<IGUIToolkit> ();
+			mockGuiToolkit.SetupGet (o => o.DeviceScaleFactor).Returns (1.0f);
+			App.Current.GUIToolkit = mockGuiToolkit.Object;
+
 			img = Utils.LoadImageFromFile (false);
 		}
 
@@ -183,10 +187,7 @@ namespace VAS.Tests.Core.Common
 		[Test]
 		public void CreateImage_FromFileNameWithSizeDeviceScale2x_LoadsScalledImaged ()
 		{
-			var mock = new Mock<IGUIToolkit> ();
-			mock.SetupGet (o => o.DeviceScaleFactor).Returns (1.0f);
-			App.Current.GUIToolkit = mock.Object;
-			mock.SetupGet (g => g.DeviceScaleFactor).Returns (2);
+			mockGuiToolkit.SetupGet (g => g.DeviceScaleFactor).Returns (2);
 			img = Utils.LoadImageFromFile (true);
 			Assert.AreEqual (2, img.DeviceScaleFactor);
 			Assert.AreEqual (20, img.Width);
