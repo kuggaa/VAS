@@ -18,9 +18,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using VAS.Core;
 using VAS.Core.Events;
-using VAS.Core.License;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;

@@ -69,8 +69,6 @@ namespace VAS.Core.MVVMC
 			}
 		}
 
-		public RangeObservableCollection<VMChilds> FilteredViewModels { get; set; }
-
 		/// <summary>
 		/// Gets the current selection in the collection.
 		/// </summary>
