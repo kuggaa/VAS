@@ -26,6 +26,7 @@ using VAS.UI.Helpers;
 
 namespace VAS.Tests.Helpers
 {
+	[TestFixture]
 	public class TestCommandExtensions
 	{
 		[Test]
