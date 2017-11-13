@@ -221,7 +221,7 @@ namespace VAS.Services.Controller
 
 			foreach (var eventType in ViewModel.EventTypesTimeline) {
 				IPredicate<TimelineEventVM> predicate;
-
+				List<Tag> tagList = new List<Tag> ();
 				Expression<Func<TimelineEventVM, bool>> eventTypeExpression = ev => ev.Model.EventType == eventType.Model;
 
 				var analysisEventType = eventType.Model as AnalysisEventType;
@@ -230,10 +230,6 @@ namespace VAS.Services.Controller
 					predicate = composedEventTypePredicate = new OrPredicate<TimelineEventVM> {
 						Name = eventType.EventTypeVM.Name
 					};
-					composedEventTypePredicate.Add (new Predicate {
-						Name = Catalog.GetString ("No subcategories"),
-						Expression = eventTypeExpression.And (ev => !ev.Model.Tags.Any ())
-					});
 
 					// We want subcategories to be flat, regardless of the group.
 					foreach (var tagGroup in analysisEventType.TagsByGroup) {
@@ -243,8 +239,14 @@ namespace VAS.Services.Controller
 								Name = tag.Value,
 								Expression = eventTypeExpression.And (tagGroupExpression.And (ev => ev.Model.Tags.Contains (tag)))
 							});
+							tagList.Add (tag);
 						}
 					}
+
+					composedEventTypePredicate.Add (new Predicate {
+						Name = Catalog.GetString ("No subcategories"),
+						Expression = eventTypeExpression.And (ev => !ev.Model.Tags.Intersect (tagList).Any ())
+					});
 				} else {
 					predicate = new Predicate {
 						Name = eventType.EventTypeVM.Name,
