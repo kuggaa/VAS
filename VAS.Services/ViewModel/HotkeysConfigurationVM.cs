@@ -79,6 +79,14 @@ namespace VAS.Services.ViewModel
 			set;
 		}
 
+		public string Icon {
+			get {
+				//FIXME: this icon should be renamed to vas-shortcut to be able to use it in VAS (longo/rift)
+				//now will work because rift don't use icons in preferences panel because it uses a different view at the moment
+				return "lm-shortcut";
+			}
+		}
+
 		/// <summary>
 		/// Cancel operation, only takes effect when AutoSave = false
 		/// </summary>

@@ -38,14 +38,9 @@ namespace VAS.UI.Component
 		public HotkeysConfigurationView ()
 		{
 			this.Build ();
-			lblShortcut.ModifyFont (Pango.FontDescription.FromString (App.Current.Style.LabelFont));
-			lblAction.ModifyFont (Pango.FontDescription.FromString (App.Current.Style.LabelFont));
+			lblShortcut.ModifyFont (Pango.FontDescription.FromString (App.Current.Style.Font));
+			lblAction.ModifyFont (Pango.FontDescription.FromString (App.Current.Style.Font));
 			categoriesCombo.Changed += HandleCategoriesComboChanged;
-			//Sorry for that :D this is to align the title with the keyconfigs
-			var lblInv = new Label ("        ");
-			hbox1.PackStart (lblInv, false, false, 0);
-			Box.BoxChild bc = ((Box.BoxChild)(this.hbox1 [lblInv]));
-			bc.Position = 0;
 		}
 
 		/// <summary>
@@ -98,17 +93,18 @@ namespace VAS.UI.Component
 				box.Homogeneous = false;
 				box.Spacing = 5;
 				descLabel = new Label ();
-				descLabel.ModifyFont (Pango.FontDescription.FromString (App.Current.Style.ContentFont));
+				descLabel.ModifyFg (StateType.Normal, Helpers.Misc.ToGdkColor (App.Current.Style.PaletteText));
+				descLabel.ModifyFont (Pango.FontDescription.FromString (App.Current.Style.Font));
 				descLabel.LabelProp = config.Description;
 				descLabel.Justify = Justification.Left;
 				descLabel.SetAlignment (0f, 0.5f);
-				descLabel.WidthRequest = 200;
+				descLabel.WidthRequest = 300;
 				keyLabel = new Label ();
-				keyLabel.ModifyFont (Pango.FontDescription.FromString (App.Current.Style.ContentFont));
+				keyLabel.ModifyFont (Pango.FontDescription.FromString (App.Current.Style.Font));
 				if (!config.Key.Defined) {
 					keyLabel.ModifyFg (StateType.Normal, Helpers.Misc.ToGdkColor (Color.Red));
 				} else {
-					keyLabel.ModifyFg (StateType.Normal, Helpers.Misc.ToGdkColor (App.Current.Style.TextColor));
+					keyLabel.ModifyFg (StateType.Normal, Helpers.Misc.ToGdkColor (App.Current.Style.PaletteText));
 				}
 				keyLabel.LabelProp = config.Key.ToString ();
 				keyLabel.Justify = Justification.Left;
@@ -129,7 +125,7 @@ namespace VAS.UI.Component
 						if (!config.Key.Defined) {
 							keyLabel.ModifyFg (StateType.Normal, Helpers.Misc.ToGdkColor (Color.Red));
 						} else {
-							keyLabel.ModifyFg (StateType.Normal, Helpers.Misc.ToGdkColor (App.Current.Style.TextColor));
+							keyLabel.ModifyFg (StateType.Normal, Helpers.Misc.ToGdkColor (App.Current.Style.PaletteText));
 						}
 						keyLabel.LabelProp = config.Key.ToString ();
 					}

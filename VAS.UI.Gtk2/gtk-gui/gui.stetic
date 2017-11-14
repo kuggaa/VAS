@@ -2497,14 +2497,28 @@
             <property name="MemberName" />
             <property name="Spacing">6</property>
             <child>
+              <widget class="Gtk.Alignment" id="titleAlignment">
+                <property name="MemberName" />
+                <property name="WidthRequest">34</property>
+                <child>
+                  <placeholder />
+                </child>
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">False</property>
+                <property name="Expand">False</property>
+              </packing>
+            </child>
+            <child>
               <widget class="Gtk.Label" id="lblAction">
                 <property name="MemberName" />
-                <property name="WidthRequest">200</property>
+                <property name="WidthRequest">300</property>
                 <property name="Xalign">0</property>
                 <property name="LabelProp" translatable="yes">Action</property>
               </widget>
               <packing>
-                <property name="Position">0</property>
+                <property name="Position">1</property>
                 <property name="AutoSize">False</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
@@ -2518,7 +2532,7 @@
                 <property name="LabelProp" translatable="yes">Shortcut</property>
               </widget>
               <packing>
-                <property name="Position">1</property>
+                <property name="Position">2</property>
                 <property name="AutoSize">False</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
