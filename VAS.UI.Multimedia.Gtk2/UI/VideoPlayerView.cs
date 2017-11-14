@@ -966,6 +966,11 @@ namespace VAS.UI
 				mode == PlayerViewOperationMode.Analysis ||
 				mode == PlayerViewOperationMode.Presentation ||
 				mode == PlayerViewOperationMode.SimpleWithControls;
+
+			editDurationBox.Visible =
+				mode == PlayerViewOperationMode.Analysis ||
+				mode == PlayerViewOperationMode.Presentation ||
+				mode == PlayerViewOperationMode.SimpleWithControls;
 		}
 
 		void HandlePlayerAttachedChanged ()

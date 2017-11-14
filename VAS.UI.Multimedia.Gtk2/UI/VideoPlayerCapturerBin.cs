@@ -144,7 +144,7 @@ namespace VAS.UI
 
 		void HandlePlayerVMPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == "PlayElement") {
+			if (ViewModel.NeedsSync (e.PropertyName, nameof(ViewModel.LoadedElement))) {
 				if (playerVM.LoadedElement == null) {
 					if (playerVM.ViewMode == PlayerViewOperationMode.Analysis) {
 						return;
@@ -158,14 +158,16 @@ namespace VAS.UI
 						livebox.Visible = replayhbox.Visible = true;
 					}
 				}
-			} else if (e.PropertyName == "Mode") {
+			}
+			if (ViewModel.NeedsSync (e.PropertyName, nameof(ViewModel.ViewMode))) {
 				if (playerVM.ViewMode == PlayerViewOperationMode.Analysis) {
 					ShowPlayer ();
 				} else {
 					ShowCapturer ();
 				}
 				Log.Debug ("CapturerPlayer setting mode " + playerVM.ViewMode);
-			} else if (e.PropertyName == "PrepareView") {
+			}
+			if (ViewModel.NeedsSync(e.PropertyName, nameof (ViewModel.PrepareView))) {
 				ShowPlayer ();
 			}
 		}
