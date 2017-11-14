@@ -77,7 +77,7 @@ namespace VAS.Core.Events
 
 	public class EventsDeletedEvent : Event
 	{
-		public List<TimelineEvent> TimelineEvents { get; set; }
+		public IEnumerable<TimelineEvent> TimelineEvents { get; set; }
 	}
 
 	public class EventLoadedEvent : Event

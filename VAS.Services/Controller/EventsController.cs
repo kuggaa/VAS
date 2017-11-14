@@ -314,9 +314,10 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		void DeletePlays (List<TimelineEvent> plays, bool update = true)
+		void DeletePlays (IEnumerable<TimelineEvent> plays, bool update = true)
 		{
-			Log.Debug (plays.Count + " plays deleted");
+			plays = plays.Where (p => p.Deletable);
+			Log.Debug (plays.Count () + " plays deleted");
 			Project.Timeline.Model.RemoveRange (plays);
 			if (Project.ProjectType == ProjectType.FileProject) {
 				Save (Project);

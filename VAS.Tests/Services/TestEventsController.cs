@@ -457,6 +457,46 @@ namespace VAS.Tests.Services
 										  Times.Once);
 		}
 
+		[Test]
+		public void EventsDeletedEvent_NonDeletableEvents_NotDeleted ()
+		{
+			EventType e1 = projectVM.Model.EventTypes [0];
+			var evNotDeletable = new StaticTimelineEvent ();
+			evNotDeletable.EventType = e1;
+			evNotDeletable.Start = new Time (6000);
+			evNotDeletable.Stop = new Time (8000);
+			projectVM.Timeline.Model.Add (evNotDeletable);
+
+			int countBeforeDelete = projectVM.Timeline.Model.Count;
+
+			App.Current.EventsBroker.Publish (new EventsDeletedEvent {
+				TimelineEvents = new List<TimelineEvent> { evNotDeletable }
+			});
+
+			int countAfterDelete = projectVM.Timeline.Model.Count;
+
+			Assert.AreEqual (countAfterDelete, countBeforeDelete);
+			Assert.Contains (evNotDeletable, projectVM.Timeline.Model);
+		}
+
+		[Test]
+		public void EventsDeletedEvent_DeleteAllEvents ()
+		{
+			EventType e1 = projectVM.Model.EventTypes [0];
+			var evNotDeletable = new StaticTimelineEvent ();
+			evNotDeletable.EventType = e1;
+			evNotDeletable.Start = new Time (6000);
+			evNotDeletable.Stop = new Time (8000);
+			projectVM.Timeline.Model.Add (evNotDeletable);
+
+			App.Current.EventsBroker.Publish (new EventsDeletedEvent {
+				TimelineEvents = projectVM.Timeline.Model
+			});
+
+			Assert.AreEqual (1, projectVM.Timeline.Model.Count);
+			Assert.AreSame (evNotDeletable, projectVM.Timeline.Model.FirstOrDefault ());
+		}
+
 		bool ComparePlaylist (Playlist playlist, List<TimelineEventVM> eventList)
 		{
 			if (playlist.Elements.Count () != eventList.Count ())
@@ -506,6 +546,17 @@ namespace VAS.Tests.Services
 			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
 			player.Ready (true);
 			player.Open (mfs);
+		}
+	}
+
+	/// <summary>
+	/// Static timeline event, this event can not deleted (Deletable=false) just for test purposes.
+	/// </summary>
+	class StaticTimelineEvent : TimelineEvent
+	{
+		public StaticTimelineEvent ()
+		{
+			Deletable = false;
 		}
 	}
 }
