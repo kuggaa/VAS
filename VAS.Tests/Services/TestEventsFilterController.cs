@@ -207,7 +207,7 @@ namespace VAS.Tests.Services
 			CompositePredicate<TimelineEventVM> firstEventTypePredicate = ((CompositePredicate<TimelineEventVM>)timelineVM.EventTypesPredicate.Elements [0]);
 
 			// Act
-			firstEventTypePredicate.Elements [0].Active = true;
+			firstEventTypePredicate.Elements [5].Active = true;
 
 			// Assert
 			Assert.AreEqual (1, timelineVM.FullTimeline.Count (e => e.Visible));
@@ -223,7 +223,7 @@ namespace VAS.Tests.Services
 			CompositePredicate<TimelineEventVM> firstEventTypePredicate = ((CompositePredicate<TimelineEventVM>)timelineVM.EventTypesPredicate.Elements [0]);
 
 			// Act
-			firstEventTypePredicate.Elements [2].Active = true;
+			firstEventTypePredicate.Elements [1].Active = true;
 
 			// Assert
 			Assert.AreEqual (2, timelineVM.FullTimeline.Count (e => e.Visible));
@@ -240,8 +240,8 @@ namespace VAS.Tests.Services
 			CompositePredicate<TimelineEventVM> firstEventTypePredicate = ((CompositePredicate<TimelineEventVM>)timelineVM.EventTypesPredicate.Elements [0]);
 
 			// Act
+			firstEventTypePredicate.Elements [0].Active = true;
 			firstEventTypePredicate.Elements [1].Active = true;
-			firstEventTypePredicate.Elements [2].Active = true;
 
 			// Assert
 			Assert.AreEqual (3, timelineVM.FullTimeline.Count (e => e.Visible));
@@ -274,9 +274,9 @@ namespace VAS.Tests.Services
 			CompositePredicate<TimelineEventVM> firstEventTypePredicate = ((CompositePredicate<TimelineEventVM>)timelineVM.EventTypesPredicate.Elements [0]);
 
 			// Act
+			firstEventTypePredicate.Elements [0].Active = true;
 			firstEventTypePredicate.Elements [1].Active = true;
 			firstEventTypePredicate.Elements [2].Active = true;
-			firstEventTypePredicate.Elements [3].Active = true;
 
 			// Assert
 			Assert.AreEqual (3, timelineVM.FullTimeline.Count (e => e.Visible));
@@ -299,6 +299,21 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (2, timelineVM.FullTimeline.Count (e => e.Visible));
 			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (4).Visible);
 			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (5).Visible);
+		}
+
+		[Test]
+		public void ApplyFilter_EventTypeThreeOtherTag_OneVisible ()
+		{
+			// Arrange
+			timelineVM.Filters.Active = false;
+			CompositePredicate<TimelineEventVM> fifttEventTypePredicate = ((CompositePredicate<TimelineEventVM>)timelineVM.EventTypesPredicate.Elements [4]);
+
+			// Act
+			fifttEventTypePredicate.Elements [2].Active = true;
+
+			// Assert
+			Assert.AreEqual (1, timelineVM.FullTimeline.Count (e => e.Visible));
+			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (7).Visible);
 		}
 
 		[Test]
@@ -325,7 +340,7 @@ namespace VAS.Tests.Services
 			timelineVM.PeriodsPredicate.Elements [1].Active = true;
 
 			// Assert
-			Assert.AreEqual (4, timelineVM.FullTimeline.Count (e => e.Visible));
+			Assert.AreEqual (5, timelineVM.FullTimeline.Count (e => e.Visible));
 			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (0).Visible);
 			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (1).Visible);
 			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (2).Visible);
@@ -360,7 +375,7 @@ namespace VAS.Tests.Services
 			timelineVM.PeriodsPredicate.Elements [2].Active = true;
 
 			// Assert
-			Assert.AreEqual (6, timelineVM.FullTimeline.Count (e => e.Visible));
+			Assert.AreEqual (7, timelineVM.FullTimeline.Count (e => e.Visible));
 			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (0).Visible);
 			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (1).Visible);
 			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (2).Visible);
@@ -419,7 +434,7 @@ namespace VAS.Tests.Services
 			timelineVM.TimersPredicate.Elements [1].Active = true;
 
 			// Assert
-			Assert.AreEqual (4, timelineVM.FullTimeline.Count (e => e.Visible));
+			Assert.AreEqual (5, timelineVM.FullTimeline.Count (e => e.Visible));
 			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (0).Visible);
 			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (2).Visible);
 			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (4).Visible);
@@ -436,7 +451,7 @@ namespace VAS.Tests.Services
 			timelineVM.TimersPredicate.Elements [2].Active = true;
 
 			// Assert
-			Assert.AreEqual (4, timelineVM.FullTimeline.Count (e => e.Visible));
+			Assert.AreEqual (5, timelineVM.FullTimeline.Count (e => e.Visible));
 			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (0).Visible);
 			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (1).Visible);
 			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (2).Visible);
@@ -454,7 +469,7 @@ namespace VAS.Tests.Services
 			timelineVM.TimersPredicate.Elements [2].Active = true;
 
 			// Assert
-			Assert.AreEqual (5, timelineVM.FullTimeline.Count (e => e.Visible));
+			Assert.AreEqual (6, timelineVM.FullTimeline.Count (e => e.Visible));
 			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (0).Visible);
 			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (1).Visible);
 			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (2).Visible);
@@ -523,7 +538,7 @@ namespace VAS.Tests.Services
 			((CompositePredicate<TimelineEventVM>)timelineVM.CommonTagsPredicate.Elements [0]).Elements [0].Active = true;
 
 			// Assert
-			Assert.AreEqual (4, timelineVM.FullTimeline.Count (e => e.Visible));
+			Assert.AreEqual (5, timelineVM.FullTimeline.Count (e => e.Visible));
 			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (0).Visible);
 			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (4).Visible);
 			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (5).Visible);
@@ -587,7 +602,7 @@ namespace VAS.Tests.Services
 			((CompositePredicate<TimelineEventVM>)timelineVM.CommonTagsPredicate.Elements [1]).Elements [1].Active = true;
 
 			// Assert
-			Assert.AreEqual (1, timelineVM.FullTimeline.Count (e => e.Visible));
+			Assert.AreEqual (2, timelineVM.FullTimeline.Count (e => e.Visible));
 			Assert.IsTrue (timelineVM.FullTimeline.ElementAt (4).Visible);
 		}
 
@@ -597,6 +612,7 @@ namespace VAS.Tests.Services
 			AnalysisEventType secondEventType = ((AnalysisEventType)eventsFilterController.Project.Dashboard.ViewModels.OfType<EventButtonVM> ().ElementAt (1).EventType.Model);
 			AnalysisEventType thirdEventType = ((AnalysisEventType)eventsFilterController.Project.Dashboard.ViewModels.OfType<EventButtonVM> ().ElementAt (2).EventType.Model);
 			AnalysisEventType fourthEventType = ((AnalysisEventType)eventsFilterController.Project.Dashboard.ViewModels.OfType<EventButtonVM> ().ElementAt (3).EventType.Model);
+			AnalysisEventType fiftEventType = ((AnalysisEventType)eventsFilterController.Project.Dashboard.ViewModels.OfType<EventButtonVM> ().ElementAt (4).EventType.Model);
 
 			Dictionary<string, List<Tag>> commonTagsByGroup = eventsFilterController.Project.Dashboard.Model.CommonTagsByGroup;
 
@@ -681,6 +697,12 @@ namespace VAS.Tests.Services
 					Start = new Time (0), // It starts outside all periods
 					Stop = new Time (100), // It ends outside all periods, touching them all
 				},
+				new TimelineEvent {
+					Name = "event 8, type 3 + Other Tag, without player tags, first period left",
+					EventType = fiftEventType,
+					Start = new Time (0), // it starts outside the period
+					Stop = new Time (20), // it ends inside the period
+				}
 			});
 			// Subcats & Tags
 			timelineVM.FullTimeline.ElementAt (1).Model.Tags.Add (badTag);
@@ -694,6 +716,7 @@ namespace VAS.Tests.Services
 			timelineVM.FullTimeline.ElementAt (4).Model.Tags.Add (goodTag);
 			timelineVM.FullTimeline.ElementAt (4).Model.Tags.Add (otherTag);
 			timelineVM.FullTimeline.ElementAt (5).Model.Tags.Add (badTag);
+			timelineVM.FullTimeline.ElementAt (7).Model.Tags.Add (otherTag);
 		}
 	}
 
