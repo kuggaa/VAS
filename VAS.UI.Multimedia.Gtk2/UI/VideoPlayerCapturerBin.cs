@@ -111,7 +111,7 @@ namespace VAS.UI
 			capturerbox.Visible = true;
 		}
 
-		public virtual void AttachPlayer (bool attached)
+		public virtual void Detach (bool attached)
 		{
 			playerVM.PlayerAttached = attached;
 		}
