@@ -746,37 +746,6 @@ namespace VAS.UI
 				editeventtimeruledrawingarea.Visible = ViewModel.EditEventDurationModeEnabled;
 				timerulearea.Visible = !ViewModel.EditEventDurationModeEnabled;
 				editDurationButton.Active = ViewModel.EditEventDurationModeEnabled;
-
-				//FIXME  We need Property binding like -> ctx.Add (control.Bind (c => c.Prop, vm => vm.Prop));
-				if (ViewModel.NeedsSync (e, nameof (ViewModel.ViewPortsSwitchActive))) {
-					subviewportsbox.Visible = ViewModel.ViewPortsSwitchActive;
-				}
-			}
-
-			void HandlePlayElementChanged ()
-			{
-				if (playerVM.LoadedElement is IPlaylistEventElement) {
-					DrawingsVisible = false;
-					SetVisibility (closebutton, true);
-					SetVisibility (eventNameLabel, true);
-					// FIME: IPlaylistElement.Description shouldn't return formated string
-					// or the interface should provide a Name property.
-					eventNameLabel.Text = (playerVM.LoadedElement as TimelineEvent)?.Name ??
-						(playerVM.LoadedElement as PlaylistPlayElement)?.Play?.Name;
-				} else if (playerVM.LoadedElement is PlaylistDrawing) {
-					PlaylistDrawing drawing = (PlaylistDrawing)playerVM.LoadedElement;
-					LoadImage (null, drawing.Drawing);
-				} else if (playerVM.LoadedElement is PlaylistImage) {
-					PlaylistImage image = (PlaylistImage)playerVM.LoadedElement;
-					LoadImage (image.Image, null);
-					SetVisibility (closebutton, true);
-					SetVisibility (eventNameLabel, true);
-					eventNameLabel.Text = image.Description;
-				} else {
-					DrawingsVisible = false;
-					SetVisibility (closebutton, false);
-					SetVisibility (eventNameLabel, false);
-				}
 			}
 			//FIXME  We need Property binding like -> ctx.Add (control.Bind (c => c.Prop, vm => vm.Prop));
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.ViewPortsSwitchActive))) {
@@ -870,6 +839,11 @@ namespace VAS.UI
 				mode == PlayerViewOperationMode.Synchronization;
 
 			prevbutton.Visible = nextbutton.Visible =
+				mode == PlayerViewOperationMode.Analysis ||
+				mode == PlayerViewOperationMode.Presentation ||
+				mode == PlayerViewOperationMode.SimpleWithControls;
+
+			editDurationBox.Visible =
 				mode == PlayerViewOperationMode.Analysis ||
 				mode == PlayerViewOperationMode.Presentation ||
 				mode == PlayerViewOperationMode.SimpleWithControls;
