@@ -15,67 +15,61 @@ namespace VideoPlayer
 	{
 		Config config;
 
-		new public static App Current
-		{
-			get
-			{
+		new public static App Current {
+			get {
 				return (App)VAS.App.Current;
 			}
-			set
-			{
+			set {
 				VAS.App.Current = value;
 			}
 		}
 
-		public static void Init()
+		public static void Init ()
 		{
-			App app = new App();
+			App app = new App ();
 
-			Init(app, "LGM_UNINSTALLED", VideoPlayerConstants.SOFTWARE_NAME, VideoPlayerConstants.SOFTWARE_ICON_NAME, "", "VIDEO_PLAYER_HOME");
-			App.Current.DataDir.Add(Path.Combine(Path.GetFullPath("."), "../data"));
-			App.Current.InitConstants();
-			Current.ResourcesLocator.Register(Assembly.GetExecutingAssembly());
+			Init (app, "LGM_UNINSTALLED", VideoPlayerConstants.SOFTWARE_NAME, VideoPlayerConstants.SOFTWARE_ICON_NAME, "", "VIDEO_PLAYER_HOME");
+			App.Current.DataDir.Add (Path.Combine (Path.GetFullPath ("."), "../data"));
+			App.Current.InitConstants ();
+			Current.ResourcesLocator.Register (Assembly.GetExecutingAssembly ());
 
 			/* Redirects logs to a file */
-			Log.SetLogFile(App.Current.LogFile);
-			Log.Information("Starting " + VideoPlayerConstants.SOFTWARE_NAME);
-			Log.Information(Utils.SysInfo);
+			Log.SetLogFile (App.Current.LogFile);
+			Log.Information ("Starting " + VideoPlayerConstants.SOFTWARE_NAME);
+			Log.Information (Utils.SysInfo);
 
 			// Scan controllers
 			Scanner.ScanAll();
 			VASServicesInit.Init();
 
 			// Initialize Hotkeys
-			App.Current.HotkeysService = new HotkeysService();
-			App.Current.RegisterService(App.Current.HotkeysService);
-			GeneralUIHotkeys.RegisterDefaultHotkeys();
-			PlaybackHotkeys.RegisterDefaultHotkeys();
-			DrawingToolHotkeys.RegisterDefaultHotkeys();
+			App.Current.HotkeysService = new HotkeysService ();
+			App.Current.RegisterService (App.Current.HotkeysService);
+			GeneralUIHotkeys.RegisterDefaultHotkeys ();
+			PlaybackHotkeys.RegisterDefaultHotkeys ();
+			DrawingToolHotkeys.RegisterDefaultHotkeys ();
 
-			App.Current.RegisterStates();
+			App.Current.RegisterStates ();
 
-			App.Current.LicenseLimitationsService = new VideoPlayerLicenseLimitationsService();
+			App.Current.LicenseLimitationsService = new VideoPlayerLicenseLimitationsService ();
 		}
 
-		public new Config Config
-		{
-			get
-			{
+		public new Config Config {
+			get {
 				return config;
 			}
-			set
-			{
+			set {
 				config = value;
 				base.Config = config;
 			}
 		}
 
-		protected override VAS.Config CreateConfig()
+		protected override VAS.Config CreateConfig ()
 		{
-			return new Config();
+			return new Config ();
 		}
 
-		void InitConstants()
+		void InitConstants ()
 		{
 			Current.Copyright = VideoPlayerConstants.COPYRIGHT;
 			Current.License = VideoPlayerConstants.LICENSE;
@@ -94,10 +88,10 @@ namespace VideoPlayer
 			*/
 		}
 
-		void RegisterStates()
+		void RegisterStates ()
 		{
-			App.Current.StateController.Register(FileSelectionState.NAME, () => new FileSelectionState());
-			App.Current.StateController.Register(VideoPlayerState.NAME, () => new VideoPlayerState());
+			App.Current.StateController.Register (FileSelectionState.NAME, () => new FileSelectionState ());
+			App.Current.StateController.Register (VideoPlayerState.NAME, () => new VideoPlayerState ());
 		}
 	}
 }

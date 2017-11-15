@@ -17,9 +17,16 @@ namespace VideoPlayer.State
 
 		protected override void CreateViewModel (dynamic data)
 		{
+			MediaFileVM file = data as MediaFileVM;
+			if (file == null) {
+				var mediaFile = App.Current.MultimediaToolkit.DiscoverFile ("/Users/fluendo/Downloads/League_of_Legends_-_Xerath_vs_Yasuo_Season_6_Gameplay_LoL_Ranked_Match(descargaryoutube.com)2.mp4");
+				file = new MediaFileVM {
+					Model = mediaFile
+				};
+			}
 			ViewModel = new VideoPlayer.ViewModel.VideoPlayerVM ();
 			ViewModel.File = new MediaFileSetVM { Model = new MediaFileSet () };
-			ViewModel.File.ViewModels.Add (data as MediaFileVM);
+			ViewModel.File.ViewModels.Add (file);
 			ViewModel.VideoPlayer = new VAS.Core.ViewModel.VideoPlayerVM ();
 			ViewModel.VideoPlayer.ViewMode = PlayerViewOperationMode.Analysis;
 			ViewModel.VideoPlayer.ShowDetachButton = false;

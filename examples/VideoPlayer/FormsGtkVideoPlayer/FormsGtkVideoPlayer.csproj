@@ -47,6 +47,11 @@
     <Compile Include="View\FileSelectionView.xaml.cs">
       <DependentUpon>FileSelectionView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\VideoPlayerEmbedded.xaml.cs">
+      <DependentUpon>VideoPlayerEmbedded.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Renderers\VideoPlayerViewRenderer.cs" />
+    <Compile Include="Components\FormsVideoPlayerView.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\VAS.Core\VAS.Core.Net45.csproj">
@@ -95,9 +100,15 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="View\" />
+    <Folder Include="Renderers\" />
+    <Folder Include="Components\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="View\FileSelectionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\VideoPlayerEmbedded.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>

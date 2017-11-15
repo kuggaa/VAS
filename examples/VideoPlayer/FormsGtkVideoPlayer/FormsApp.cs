@@ -7,7 +7,7 @@ namespace FormsGtkVideoPlayer
 {
 	public class FormsApp : Application
 	{
-		public FormsApp()
+		public FormsApp ()
 		{
 		}
 	}

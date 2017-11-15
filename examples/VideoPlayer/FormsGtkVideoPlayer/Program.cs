@@ -92,7 +92,7 @@ namespace FormsGtkVideoPlayer
 				ConfigureOSXApp();
 				Scanner.ScanViews(App.Current.ViewLocator);
 				InitFormsApp();
-				await App.Current.StateController.SetHomeTransition(FileSelectionState.NAME, null);
+				await App.Current.StateController.SetHomeTransition(VideoPlayerState.NAME, null);
 			}
 			catch (Exception ex)
 			{
