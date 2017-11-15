@@ -3,7 +3,7 @@
 using System;
 namespace VideoPlayer
 {
-	public static class Constants
+	public static class VideoPlayerConstants
 	{
 		public const string COPYRIGHT = "MIT";
 		public const string LICENSE = "GPLv2";

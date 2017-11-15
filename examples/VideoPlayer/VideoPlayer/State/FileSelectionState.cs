@@ -1,6 +1,7 @@
 ﻿//
 //  Copyright (C) 2017 Fluendo S.A.
 using System;
+using System.Dynamic;
 using VAS.Services.State;
 using VideoPlayer.ViewModel;
 

@@ -54,7 +54,7 @@ namespace VideoPlayer
 			App.Init ();
 			InitGtk ();
 			InitDependencies ();
-			var splashScreen = new SplashScreen (App.Current.ResourcesLocator.LoadImage (Constants.SPLASH));
+			var splashScreen = new SplashScreen (App.Current.ResourcesLocator.LoadImage (VideoPlayerConstants.SPLASH));
 			splashScreen.Show ();
 			Application.Invoke (async (s, e) => await Init (splashScreen));
 			Application.Run ();

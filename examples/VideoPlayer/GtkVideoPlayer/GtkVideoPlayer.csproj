@@ -97,6 +97,9 @@
       <Name>VAS.UI.Gtk2</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
   <Import Project="..\VideoPlayer\VideoPlayer.projitems" Label="Shared" Condition="Exists('..\VideoPlayer\VideoPlayer.projitems')" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

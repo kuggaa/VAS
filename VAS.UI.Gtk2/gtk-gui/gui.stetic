@@ -1934,6 +1934,7 @@
                   <widget class="VAS.UI.UI.Component.ImagePreviewWidget" id="watermarkSelector">
                     <property name="MemberName" />
                     <property name="Events">ButtonPressMask</property>
+                    <property name="ResetButtonHeight">0</property>
                   </widget>
                   <packing>
                     <property name="TopAttach">5</property>

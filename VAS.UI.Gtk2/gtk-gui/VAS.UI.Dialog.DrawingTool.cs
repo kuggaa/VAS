@@ -491,10 +491,10 @@ namespace VAS.UI.Dialog
 			// Container child zoomscalebox.Gtk.Box+BoxChild
 			this.zoomscale = new global::Gtk.HScale (null);
 			this.zoomscale.Name = "zoomscale";
-			this.zoomscale.Adjustment.Upper = 100;
-			this.zoomscale.Adjustment.PageIncrement = 10;
-			this.zoomscale.Adjustment.StepIncrement = 1;
-			this.zoomscale.Adjustment.Value = 12;
+			this.zoomscale.Adjustment.Upper = 100D;
+			this.zoomscale.Adjustment.PageIncrement = 10D;
+			this.zoomscale.Adjustment.StepIncrement = 1D;
+			this.zoomscale.Adjustment.Value = 12D;
 			this.zoomscale.DrawValue = false;
 			this.zoomscale.Digits = 0;
 			this.zoomscale.ValuePos = ((global::Gtk.PositionType)(2));
@@ -588,12 +588,12 @@ namespace VAS.UI.Dialog
 			w43.XOptions = ((global::Gtk.AttachOptions)(4));
 			w43.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
-			this.linesizespinbutton = new global::Gtk.SpinButton (2, 20, 1);
+			this.linesizespinbutton = new global::Gtk.SpinButton (2D, 20D, 1D);
 			this.linesizespinbutton.Name = "linesizespinbutton";
-			this.linesizespinbutton.Adjustment.PageIncrement = 10;
-			this.linesizespinbutton.ClimbRate = 1;
+			this.linesizespinbutton.Adjustment.PageIncrement = 10D;
+			this.linesizespinbutton.ClimbRate = 1D;
 			this.linesizespinbutton.Numeric = true;
-			this.linesizespinbutton.Value = 4;
+			this.linesizespinbutton.Value = 4D;
 			this.table1.Add (this.linesizespinbutton);
 			global::Gtk.Table.TableChild w44 = ((global::Gtk.Table.TableChild)(this.table1 [this.linesizespinbutton]));
 			w44.TopAttach = ((uint)(1));
@@ -704,12 +704,12 @@ namespace VAS.UI.Dialog
 			w54.XOptions = ((global::Gtk.AttachOptions)(4));
 			w54.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table4.Gtk.Table+TableChild
-			this.textspinbutton = new global::Gtk.SpinButton (6, 100, 1);
+			this.textspinbutton = new global::Gtk.SpinButton (6D, 100D, 1D);
 			this.textspinbutton.Name = "textspinbutton";
-			this.textspinbutton.Adjustment.PageIncrement = 10;
-			this.textspinbutton.ClimbRate = 1;
+			this.textspinbutton.Adjustment.PageIncrement = 10D;
+			this.textspinbutton.ClimbRate = 1D;
 			this.textspinbutton.Numeric = true;
-			this.textspinbutton.Value = 12;
+			this.textspinbutton.Value = 12D;
 			this.table4.Add (this.textspinbutton);
 			global::Gtk.Table.TableChild w55 = ((global::Gtk.Table.TableChild)(this.table4 [this.textspinbutton]));
 			w55.TopAttach = ((uint)(2));
@@ -799,10 +799,10 @@ namespace VAS.UI.Dialog
 			// Container child vbox4.Gtk.Box+BoxChild
 			this.wscrollbar = new global::Gtk.HScrollbar (null);
 			this.wscrollbar.Name = "wscrollbar";
-			this.wscrollbar.Adjustment.Upper = 100;
-			this.wscrollbar.Adjustment.PageIncrement = 10;
-			this.wscrollbar.Adjustment.PageSize = 10;
-			this.wscrollbar.Adjustment.StepIncrement = 1;
+			this.wscrollbar.Adjustment.Upper = 100D;
+			this.wscrollbar.Adjustment.PageIncrement = 10D;
+			this.wscrollbar.Adjustment.PageSize = 10D;
+			this.wscrollbar.Adjustment.StepIncrement = 1D;
 			this.vbox4.Add (this.wscrollbar);
 			global::Gtk.Box.BoxChild w68 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.wscrollbar]));
 			w68.Position = 1;
@@ -818,10 +818,10 @@ namespace VAS.UI.Dialog
 			// Container child vbox5.Gtk.Box+BoxChild
 			this.hscrollbar = new global::Gtk.VScrollbar (null);
 			this.hscrollbar.Name = "hscrollbar";
-			this.hscrollbar.Adjustment.Upper = 100;
-			this.hscrollbar.Adjustment.PageIncrement = 10;
-			this.hscrollbar.Adjustment.PageSize = 10;
-			this.hscrollbar.Adjustment.StepIncrement = 1;
+			this.hscrollbar.Adjustment.Upper = 100D;
+			this.hscrollbar.Adjustment.PageIncrement = 10D;
+			this.hscrollbar.Adjustment.PageSize = 10D;
+			this.hscrollbar.Adjustment.StepIncrement = 1D;
 			this.vbox5.Add (this.hscrollbar);
 			global::Gtk.Box.BoxChild w70 = ((global::Gtk.Box.BoxChild)(this.vbox5 [this.hscrollbar]));
 			w70.Position = 0;

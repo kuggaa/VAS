@@ -31,6 +31,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VAS.UI.Gtk2", "..\..\VAS.UI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HockeySDK.Net45", "..\..\HockeySDK-Windows\Src\HockeySDK.Net45\HockeySDK.Net45.csproj", "{7CB80B49-38A2-408E-970A-877399C1B3D3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormsGtkVideoPlayer", "FormsGtkVideoPlayer\FormsGtkVideoPlayer.csproj", "{A645C49E-E030-4A47-A561-F6A84D165A8D}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "VAS.UI.Forms", "..\..\VAS.UI.Forms\VAS.UI.Forms.shproj", "{B3C5D7FA-4A75-4CF9-B0C5-EB6264488D0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VAS.UI.Forms.Gtk", "..\..\VAS.UI.Forms\Gtk\VAS.UI.Forms.Gtk.csproj", "{B2B9AE00-C340-4106-93AF-EED352A959DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -81,6 +87,14 @@ Global
 		{7CB80B49-38A2-408E-970A-877399C1B3D3}.Debug|x86.Build.0 = Debug|Any CPU
 		{7CB80B49-38A2-408E-970A-877399C1B3D3}.Release|x86.ActiveCfg = Release|Any CPU
 		{7CB80B49-38A2-408E-970A-877399C1B3D3}.Release|x86.Build.0 = Release|Any CPU
+		{A645C49E-E030-4A47-A561-F6A84D165A8D}.Debug|x86.ActiveCfg = Debug|x86
+		{A645C49E-E030-4A47-A561-F6A84D165A8D}.Debug|x86.Build.0 = Debug|x86
+		{A645C49E-E030-4A47-A561-F6A84D165A8D}.Release|x86.ActiveCfg = Release|x86
+		{A645C49E-E030-4A47-A561-F6A84D165A8D}.Release|x86.Build.0 = Release|x86
+		{B2B9AE00-C340-4106-93AF-EED352A959DB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B2B9AE00-C340-4106-93AF-EED352A959DB}.Debug|x86.Build.0 = Debug|Any CPU
+		{B2B9AE00-C340-4106-93AF-EED352A959DB}.Release|x86.ActiveCfg = Release|Any CPU
+		{B2B9AE00-C340-4106-93AF-EED352A959DB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0

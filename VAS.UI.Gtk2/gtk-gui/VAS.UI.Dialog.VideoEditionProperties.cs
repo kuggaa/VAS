@@ -250,6 +250,7 @@ namespace VAS.UI.Dialog
 			this.watermarkSelector = new global::VAS.UI.UI.Component.ImagePreviewWidget ();
 			this.watermarkSelector.Events = ((global::Gdk.EventMask)(256));
 			this.watermarkSelector.Name = "watermarkSelector";
+			this.watermarkSelector.ResetButtonHeight = 0;
 			this.table1.Add (this.watermarkSelector);
 			global::Gtk.Table.TableChild w16 = ((global::Gtk.Table.TableChild)(this.table1 [this.watermarkSelector]));
 			w16.TopAttach = ((uint)(5));
