@@ -4,6 +4,7 @@
         <StackLayout Orientation="Horizontal">
             <Label Text="{Binding CurrentTime}"/>
             <Label Text="{Binding Duration}"/>
+            <Button Text="Set Ready!" Clicked="Handle_Clicked"/>
             <Button x:Name="PreviousButton" Text="Previous" Command="{Binding PreviousCommand}"/>
             <Button x:Name="PlayButton" Text="Play" Command="{Binding PlayCommand}"/>
             <Button x:Name="NextButton" Text="Next" Command="{Binding NextCommand}"/>
