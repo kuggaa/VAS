@@ -1,11 +1,10 @@
 ﻿//
 //  Copyright (C) 2017 Fluendo S.A.
 using System;
-using System.Collections.Generic;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.GUI;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
-using VAS.UI;
 using VideoPlayer.State;
 using VideoPlayer.ViewModel;
 using Xamarin.Forms;
@@ -18,11 +17,29 @@ namespace FormsGtkVideoPlayer.View
 		public VideoPlayerEmbedded ()
 		{
 			InitializeComponent ();
+			player.PropertyChanged += (sender, e) => 
+			{
+				if (e.PropertyName == nameof(player.NativeWidget)) {
+					if (viewModel != null) {
+						(player.NativeWidget as IView)?.SetViewModel (viewModel.VideoPlayer);
+					}
+				}
+			};
 		}
+		VideoPlayerVM viewModel;
 
 		public VideoPlayerVM ViewModel {
-			get;
-			set;
+			get {
+				return viewModel;
+			}
+
+			set {
+				viewModel = value;
+				BindingContext = viewModel;
+				if (viewModel != null) {
+					(player.NativeWidget as IView)?.SetViewModel (viewModel.VideoPlayer);
+				}
+			}
 		}
 
 		public void Dispose ()
@@ -47,7 +64,6 @@ namespace FormsGtkVideoPlayer.View
 		public void SetViewModel (object viewModel)
 		{
 			ViewModel = (VideoPlayerVM)viewModel;
-			BindingContext = ViewModel;
 		}
 	}
 }

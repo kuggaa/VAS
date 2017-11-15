@@ -2,8 +2,6 @@
 //  Copyright (C) 2017 Fluendo S.A.
 using System;
 using Gtk;
-using VAS.Core.Interfaces.GUI;
-using VAS.Core.Interfaces.MVVMC;
 using VAS.UI.Forms.Components;
 using VAS.UI.Forms.Renderers;
 using Xamarin.Forms;
@@ -19,9 +17,7 @@ namespace VAS.UI.Forms.Renderers
 			if (e.NewElement != null) {
 				if (Control == null) {
 					var widget = (Widget)Activator.CreateInstance (e.NewElement.WidgetType);
-					if (widget is IView) {
-						((IView)widget).SetViewModel (e.NewElement.BindingContext);
-					}
+					e.NewElement.NativeWidget = widget;
 					SetNativeControl (widget);
 				}
 			}

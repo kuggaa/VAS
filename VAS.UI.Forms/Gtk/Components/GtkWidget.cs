@@ -1,6 +1,7 @@
 ﻿//
 //  Copyright (C) 2017 Fluendo S.A.
 using System;
+using Gtk;
 using Xamarin.Forms;
 using FormsView = Xamarin.Forms.View;
 
@@ -14,6 +15,18 @@ namespace VAS.UI.Forms.Components
 
 		public Type WidgetType {
 			get { return Type.GetType((string)GetValue (WidgetTypeProperty)); }
+		}
+		Widget nativeWidget;
+
+		public Widget NativeWidget {
+			get {
+				return nativeWidget;
+			}
+
+			set {
+				nativeWidget = value;
+				this.OnPropertyChanged (nameof (NativeWidget));
+			}
 		}
 	}
 }
