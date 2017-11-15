@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="FormsGtkVideoPlayer.View.VideoControlBar">
 	<ContentView.Content>
-        <StackLayout>
-            <Button x:Name="Previous" Text="Previous" />
-            <Button x:Name="Play" Text="Play" />
-            <Button x:Name="Next" Text="Next" />
+        <StackLayout Orientation="Horizontal">
+            <Label Text="{Binding CurrentTime}"/>
+            <Label Text="{Binding Duration}"/>
+            <Button x:Name="PreviousButton" Text="Previous" Command="{Binding PreviousCommand}"/>
+            <Button x:Name="PlayButton" Text="Play" Command="{Binding PlayCommand}"/>
+            <Button x:Name="NextButton" Text="Next" Command="{Binding NextCommand}"/>
         </StackLayout>
 	</ContentView.Content>
 </ContentView>

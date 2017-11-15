@@ -17,13 +17,25 @@ namespace FormsGtkVideoPlayer.View
 		public VideoPlayerView()
 		{
 			InitializeComponent();
-			BindingContext = new VideoPlayerVM();
 		}
+		VideoPlayerVM viewModel;
 
 		public VideoPlayerVM ViewModel
 		{
-			get;
-			set;
+			get
+			{
+				return viewModel;
+			}
+
+			set
+			{
+				viewModel = value;
+				if (value != null)
+				{
+					BindingContext = value;
+					VideoControlBar.BindingContext = value.VideoPlayer;
+				}
+			}
 		}
 
 		public void Dispose()
