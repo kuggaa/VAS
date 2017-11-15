@@ -17,6 +17,7 @@
 //
 using System;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 using SystemStopwatch = System.Diagnostics.Stopwatch;
 
 namespace VAS.Core.Common
@@ -24,12 +25,13 @@ namespace VAS.Core.Common
 	/// <summary>
 	/// Wrapper for System.Diagnostics.Stopwatch
 	/// </summary>
+	[DependencyService (typeof (IStopwatch), 0)]
 	public class Stopwatch : IStopwatch
 	{
-        /// <summary>
-        /// The frequency of the timer as the number of ticks per second
-        /// </summary>
-        public static readonly long Frequency = SystemStopwatch.Frequency;
+		/// <summary>
+		/// The frequency of the timer as the number of ticks per second
+		/// </summary>
+		public static readonly long Frequency = SystemStopwatch.Frequency;
 
 		SystemStopwatch stopwatch;
 

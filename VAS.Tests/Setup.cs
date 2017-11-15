@@ -43,7 +43,7 @@ namespace VAS.Tests
 			VFS.SetCurrent (new FileSystem ());
 
 			App.Current = new AppDummy ();
-			App.InitDependencies ();
+			App.Current.InitDependencies ();
 			SynchronizationContext.SetSynchronizationContext (new MockSynchronizationContext ());
 			App.Current.DependencyRegistry.Register<IStorageManager, CouchbaseManager> (1);
 			App.Current.DependencyRegistry.Register<IStopwatch, Stopwatch> (1);

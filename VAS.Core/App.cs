@@ -467,9 +467,7 @@ namespace VAS
 			App.Current.DragContext = new DragContext ();
 			App.Current.ResourcesLocator = new ResourcesLocator ();
 			App.Current.FileSystemManager = new FileSystemManager ();
-
-			App.Current.DependencyRegistry.Register<IStopwatch, Stopwatch> (0);
-			App.Current.DependencyRegistry.Register<ITimer, Timer> (1);
+			Scanner.ScanAll ();
 		}
 
 		void InitTranslations ()

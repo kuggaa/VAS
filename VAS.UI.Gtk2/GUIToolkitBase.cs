@@ -56,9 +56,9 @@ namespace VAS.UI
 			MainWindow = mainWindow;
 
 			registry = new Registry ("GUI backend");
-			Scanner.ScanViews (App.Current.ViewLocator);
-			DrawingInit.ScanViews ();
-			VASUIMultimediaInit.ScanViews ();
+			Scanner.ScanAll ();
+			DrawingInit.Init ();
+			VASUIMultimediaInit.Init ();
 			RegistryCanvasFromDrawables ();
 		}
 

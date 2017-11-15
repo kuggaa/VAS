@@ -22,9 +22,9 @@ namespace VAS.Drawing
 {
 	public static class DrawingInit
 	{
-		public static void ScanViews ()
+		public static void Init ()
 		{
-			Scanner.ScanViews (App.Current.ViewLocator);
+			Scanner.ScanAll ();
 		}
 	}
 }

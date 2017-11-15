@@ -73,7 +73,7 @@ namespace VAS.Tests.Core.ViewModel
 			AnalysisEventButtonView analysisButtonView;
 			TimerButtonView timerButtonView;
 
-			DrawingInit.ScanViews ();
+			DrawingInit.Init ();
 			App.Current.DrawingToolkit = new CairoBackend ();
 
 			Assert.DoesNotThrow (() => analysisButtonView = (AnalysisEventButtonView)App.Current.ViewLocator.Retrieve (dashboard.ViewModels [0].View));
