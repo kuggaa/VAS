@@ -13,7 +13,7 @@ nuget Newtonsoft.Json 7.0.1
 nuget OxyPlot.GtkSharp 1.0.0 restriction: >= net45
 nuget PropertyChanged.Fody 2.1.3
 nuget Xamarin.Forms 3.0.0.201-gtk
-nuget Sparkle
+nuget Sparkle 1.16.0 restriction: >= net45
 
 content: once
 nuget ModuleInit.Fody 1.6.0
