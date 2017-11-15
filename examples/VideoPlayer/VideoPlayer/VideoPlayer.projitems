@@ -19,6 +19,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)State\VideoPlayerState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\VideoPlayerVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)VideoPlayerLicenseLimitationsService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\VideoPlayerControlsVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Controller\" />
