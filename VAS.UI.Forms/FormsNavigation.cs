@@ -23,7 +23,7 @@ namespace VAS.UI.Forms
 		{
 			if (Navigation == null)
 			{
-				Application.Current.MainPage = panel as Page;
+				Application.Current.MainPage = new NavigationPage(panel as Page);
 			}
 			else
 			{

@@ -2,6 +2,7 @@
 //  Copyright (C) 2017 Fluendo S.A.
 using System;
 using VAS.Core.Store;
+using VAS.UI.Dialog;
 using VAS.UI.Helpers;
 
 namespace VAS.UI.Forms
@@ -20,7 +21,11 @@ namespace VAS.UI.Forms
 
 		public override Core.Interfaces.GUI.IBusyDialog BusyDialog(string message, object parent = null)
 		{
-			return base.BusyDialog(message, parent);
+			return new BusyDialog(parent as Gtk.Window)
+			{
+				Message = message
+			};
+
 		}
 	}
 }

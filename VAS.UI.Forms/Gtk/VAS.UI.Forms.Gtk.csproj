@@ -51,6 +51,10 @@
       <Project>{E75E30DC-C1CF-4683-9A36-65B91EF10095}</Project>
       <Name>VAS.UI.Helpers.Gtk2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\VAS.UI.Gtk2\VAS.UI.Gtk2.csproj">
+      <Project>{4F1F28AB-3D1F-4F3F-95A4-2E08B448317C}</Project>
+      <Name>VAS.UI.Gtk2</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\VAS.UI.Forms.projitems" Label="Shared" Condition="Exists('..\VAS.UI.Forms.projitems')" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
