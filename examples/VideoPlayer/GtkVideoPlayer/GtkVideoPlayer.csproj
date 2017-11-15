@@ -29,7 +29,7 @@
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
     <StartAction>Project</StartAction>
     <EnvironmentVariables>
-      <Variable name="LGM_UNINSTALLED" value="" />
+      <Variable name="LGM_UNINSTALLED" value="1" />
     </EnvironmentVariables>
     <TargetRuntimeId>Mono 5.2.0.215 (da80840)</TargetRuntimeId>
   </PropertyGroup>
