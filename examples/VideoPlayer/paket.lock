@@ -35,6 +35,7 @@ NUGET
       Xamarin.Android.Support.v4 (23.3)
     Xamarin.Android.Support.Vector.Drawable (23.3) - restriction: || (== monoandroid7.0) (&& (== net45) (>= monoandroid7.0)) (&& (== xamarinios) (>= monoandroid7.0))
       Xamarin.Android.Support.v4 (23.3)
+    Xamarin.Plugin.FilePicker (1.2.1)
   remote: /opt/vas-nightly_darwin_darwin_x86_64/dist/darwin_x86_64/share/nuget
     Sparkle (1.16.0)
   remote: https://www.myget.org/F/xamarinforms-dev/api/v3/index.json
