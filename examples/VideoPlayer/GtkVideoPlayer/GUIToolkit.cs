@@ -38,7 +38,7 @@ namespace VideoPlayer
 
 		GUIToolkit ()
 		{
-			Scanner.ScanViews (App.Current.ViewLocator);
+			Scanner.ScanAll ();
 		}
 
 		// Old stuff that will be soon removed from the interface

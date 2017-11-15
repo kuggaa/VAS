@@ -42,8 +42,8 @@ namespace VideoPlayer
 			Log.Information(Utils.SysInfo);
 
 			// Scan controllers
-			Scanner.ScanControllers(App.Current.ControllerLocator);
-			VASServicesInit.ScanController();
+			Scanner.ScanAll();
+			VASServicesInit.Init();
 
 			// Initialize Hotkeys
 			App.Current.HotkeysService = new HotkeysService();
