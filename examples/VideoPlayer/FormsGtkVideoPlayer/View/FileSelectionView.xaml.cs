@@ -28,6 +28,7 @@ namespace FormsGtkVideoPlayer.View
 		public void SetViewModel(object viewModel)
 		{
 			ViewModel = (FileSelectionVM)viewModel;
+			BindingContext = ViewModel;
 		}
 
 		public void OnLoad()
