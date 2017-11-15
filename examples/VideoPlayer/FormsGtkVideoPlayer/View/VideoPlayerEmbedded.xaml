@@ -2,11 +2,12 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
     x:Class="FormsGtkVideoPlayer.View.VideoPlayerEmbedded"
-    xmlns:Components="clr-namespace:VAS.UI.Forms.Components;assembly=VAS.UI.Forms" >
+    xmlns:Components="clr-namespace:VAS.UI.Forms.Components;assembly=VAS.UI.Forms">
 	<ContentPage.Content>
-      
+
     <StackLayout Orientation="Vertical">
-       <Components:GtkWidget x:Name="player" BindingContext="{Binding VideoPlayer}" VerticalOptions="FillAndExpand"/>
+       <Components:GtkWidget x:Name="player" BindingContext="{Binding VideoPlayer}"
+            VerticalOptions="FillAndExpand" WidgetType="VAS.UI.VideoPlayerView, VAS.UI.Multimedia.Gtk2"/>
     </StackLayout>
       
 	</ContentPage.Content>

@@ -18,7 +18,7 @@ namespace VAS.UI.Forms.Renderers
 		{
 			if (e.NewElement != null) {
 				if (Control == null) {
-					var widget = (Widget)Activator.CreateInstance (e.NewElement.ViewType);
+					var widget = (Widget)Activator.CreateInstance (e.NewElement.WidgetType);
 					if (widget is IView) {
 						((IView)widget).SetViewModel (e.NewElement.BindingContext);
 					}

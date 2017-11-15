@@ -18,7 +18,6 @@ namespace FormsGtkVideoPlayer.View
 		public VideoPlayerEmbedded ()
 		{
 			InitializeComponent ();
-			player.ViewType = typeof (VideoPlayerView);
 		}
 
 		public VideoPlayerVM ViewModel {
