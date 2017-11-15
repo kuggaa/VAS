@@ -88,7 +88,7 @@ namespace VAS.UI.Forms
 			//return await query.Run();
 		}
 
-		public IBusyDialog BusyDialog(string message, object parent = null)
+		public virtual IBusyDialog BusyDialog(string message, object parent = null)
 		{
 			throw new NotImplementedException();
 			//Page currentPage = CurrentPage(parent);
