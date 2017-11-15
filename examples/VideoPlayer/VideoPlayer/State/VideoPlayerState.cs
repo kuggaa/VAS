@@ -19,7 +19,7 @@ namespace VideoPlayer.State
 		{
 			MediaFileVM file = data as MediaFileVM;
 			if (file == null) {
-				var mediaFile = App.Current.MultimediaToolkit.DiscoverFile ("/Users/fluendo/Downloads/League_of_Legends_-_Xerath_vs_Yasuo_Season_6_Gameplay_LoL_Ranked_Match(descargaryoutube.com)2.mp4");
+				var mediaFile = App.Current.MultimediaToolkit.DiscoverFile ("/Users/vmartos/Documents/Sample_Videos/Madrid_2_Barcelona_6.mp4");
 				file = new MediaFileVM {
 					Model = mediaFile
 				};

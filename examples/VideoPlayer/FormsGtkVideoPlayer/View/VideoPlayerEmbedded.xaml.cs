@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.MVVMC;
+using VAS.UI;
 using VideoPlayer.State;
 using VideoPlayer.ViewModel;
 using Xamarin.Forms;
@@ -17,6 +18,7 @@ namespace FormsGtkVideoPlayer.View
 		public VideoPlayerEmbedded ()
 		{
 			InitializeComponent ();
+			player.ViewType = typeof (VideoPlayerView);
 		}
 
 		public VideoPlayerVM ViewModel {

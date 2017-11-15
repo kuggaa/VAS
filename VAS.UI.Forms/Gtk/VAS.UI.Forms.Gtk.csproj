@@ -41,12 +41,18 @@
     <Compile Include="FormsGtkUIToolkit.cs" />
     <Compile Include="FormsGtkDialogs.cs" />
     <Compile Include="GtkFormsWindow.cs" />
+    <Compile Include="Renderers\GtkWidgetRenderer.cs" />
+    <Compile Include="Components\GtkWidget.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\VAS.Core\VAS.Core.Net45.csproj">
       <Project>{08AE7734-B995-4E0D-AD8F-38F597E0D4DF}</Project>
       <Name>VAS.Core.Net45</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Renderers\" />
+    <Folder Include="Components\" />
   </ItemGroup>
   <Import Project="..\VAS.UI.Forms.projitems" Label="Shared" Condition="Exists('..\VAS.UI.Forms.projitems')" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
