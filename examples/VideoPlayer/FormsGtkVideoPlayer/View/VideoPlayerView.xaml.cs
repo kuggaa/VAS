@@ -12,7 +12,7 @@ using Xamarin.Forms;
 namespace FormsGtkVideoPlayer.View
 {
 	[View(VideoPlayerState.NAME)]
-	public partial class VideoPlayerView : ContentPage, IPanel
+	public partial class VideoPlayerView : ContentPage, IPanel<VideoPlayerVM>
 	{
 		public VideoPlayerView()
 		{

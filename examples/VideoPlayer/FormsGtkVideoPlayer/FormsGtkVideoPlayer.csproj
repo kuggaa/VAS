@@ -53,6 +53,8 @@
     <Compile Include="View\VideoControlBar.xaml.cs">
       <DependentUpon>VideoControlBar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Renderers\WindowVideoRenderer.cs" />
+    <Compile Include="Component\FormsVideoPlayerView.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\VAS.Core\VAS.Core.Net45.csproj">
@@ -101,6 +103,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="View\" />
+    <Folder Include="Renderers\" />
+    <Folder Include="Component\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="View\FileSelectionView.xaml">
