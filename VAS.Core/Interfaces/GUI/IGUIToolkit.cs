@@ -36,11 +36,6 @@ namespace VAS.Core.Interfaces.GUI
 			get;
 		}
 
-		/* Plugable views */
-		void Register<I, C> (int priority);
-
-		IVideoPlayerView GetPlayerView ();
-
 		IMainController MainController { get; }
 
 		bool FullScreen { set; }

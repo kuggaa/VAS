@@ -99,16 +99,6 @@ namespace VAS.UI
 			}
 		}
 
-		public virtual void Register<I, C> (int priority)
-		{
-			registry.Register<I, C> (priority);
-		}
-
-		public virtual IVideoPlayerView GetPlayerView ()
-		{
-			return registry.Retrieve<IVideoPlayerView> ();
-		}
-
 		public virtual List<EditionJob> ConfigureRenderingJob (Playlist playlist)
 		{
 			VideoEditionProperties vep;

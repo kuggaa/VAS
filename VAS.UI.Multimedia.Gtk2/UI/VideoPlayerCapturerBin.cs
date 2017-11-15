@@ -43,7 +43,7 @@ namespace VAS.UI
 			livelabel.ModifyFg (Gtk.StateType.Normal, Misc.ToGdkColor (App.Current.Style.TextBaseDisabled));
 			replaylabel.ModifyFg (Gtk.StateType.Normal, Misc.ToGdkColor (App.Current.Style.TextBaseDisabled));
 			livebox.Visible = replayhbox.Visible = true;
-			playerview = App.Current.GUIToolkit.GetPlayerView ();
+			playerview = App.Current.ViewLocator.Retrieve (nameof (VideoPlayerView)) as IVideoPlayerView;
 			playerbox.PackEnd (playerview as Gtk.Widget);
 			(playerview as Gtk.Widget).ShowAll ();
 		}
