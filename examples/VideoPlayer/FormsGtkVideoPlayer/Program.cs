@@ -90,7 +90,6 @@ namespace FormsGtkVideoPlayer
 
 				splashScreen.Destroy();
 				ConfigureOSXApp();
-				Scanner.ScanViews(App.Current.ViewLocator);
 				InitFormsApp();
 				await App.Current.StateController.SetHomeTransition(VideoPlayerState.NAME, null);
 			}
