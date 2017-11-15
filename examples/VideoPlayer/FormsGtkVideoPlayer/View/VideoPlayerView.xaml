@@ -2,11 +2,11 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:FormsGtkVideoPlayer.View;assembly=FormsGtkVideoPlayer"
-    xmlns:Components="clr-namespace:FormsGtkVideoPlayer.Component;assembly=FormsGtkVideoPlayer"
+    xmlns:components="clr-namespace:FormsGtkVideoPlayer.Component;assembly=FormsGtkVideoPlayer"
     x:Class="FormsGtkVideoPlayer.View.VideoPlayerView">
 	<ContentPage.Content>
         <StackLayout>
-            <Components:FormsVideoPlayerView VerticalOptions="FillAndExpand"/>
+            <components:ViewPortView x:Name="viewPortView" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
             <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
                 <local:VideoControlBar x:Name="VideoControlBar"/>
             </StackLayout>

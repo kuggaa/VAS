@@ -54,7 +54,7 @@
       <DependentUpon>VideoControlBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Renderers\WindowVideoRenderer.cs" />
-    <Compile Include="Component\FormsVideoPlayerView.cs" />
+    <Compile Include="Component\ViewPortView.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\VAS.Core\VAS.Core.Net45.csproj">

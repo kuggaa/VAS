@@ -7,20 +7,22 @@ using VAS.UI;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.GTK;
 
-[assembly: ExportRenderer(typeof(FormsVideoPlayerView), typeof(WindowVideoRenderer))]
+[assembly: ExportRenderer(typeof(ViewPortView), typeof(WindowVideoRenderer))]
 namespace FormsGtkVideoPlayer.Renderers
 {
-	public class WindowVideoRenderer : ViewRenderer<FormsVideoPlayerView, VideoWindow>
+	public class WindowVideoRenderer : ViewRenderer<ViewPortView, VideoWindow>
 	{
-		protected override void OnElementChanged(ElementChangedEventArgs<FormsVideoPlayerView> e)
+		protected override void OnElementChanged(ElementChangedEventArgs<ViewPortView> e)
 		{
+			base.OnElementChanged(e);
+
 			if (e.NewElement != null)
 			{
 				if (Control == null)
 				{
-					var view = new VideoWindow();
-					// view.ViewModel = ((VideoPlayerVM)e.NewElement.BindingContext).VideoPlayer;
-					SetNativeControl(view);
+					Control = new VideoWindow();
+					e.NewElement.ViewPort = Control;
+					SetNativeControl(Control);
 				}
 			}
 

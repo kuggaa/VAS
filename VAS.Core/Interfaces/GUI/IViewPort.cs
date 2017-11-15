@@ -16,6 +16,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 
+using System;
+
 namespace VAS.Core.Interfaces.GUI
 {
 	public interface IViewPort
@@ -29,6 +31,8 @@ namespace VAS.Core.Interfaces.GUI
 		bool MessageVisible { set; }
 
 		bool Visible { get; set; }
+
+		event EventHandler ReadyEvent;
 	}
 }
 
