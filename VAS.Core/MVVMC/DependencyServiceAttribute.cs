@@ -23,9 +23,9 @@ namespace VAS.Core.MVVMC
 	/// Attribute used to register Services components.
 	/// </summary>
 	[AttributeUsage (AttributeTargets.Class, AllowMultiple = false)]
-	public class RegistryAttribute : Attribute
+	public class DependencyServiceAttribute : Attribute
 	{
-		public RegistryAttribute (Type interfaceType, int priority)
+		public DependencyServiceAttribute (Type interfaceType, int priority)
 		{
 			InterfaceType = interfaceType;
 			Priority = priority;

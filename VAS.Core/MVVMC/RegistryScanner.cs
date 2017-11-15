@@ -26,8 +26,8 @@ namespace VAS.Core.MVVMC
 		{
 			Assembly assembly = Assembly.GetCallingAssembly ();
 			foreach (Type type in assembly.GetTypes ()) {
-				foreach (var attribute in type.GetCustomAttributes (typeof (RegistryAttribute), true)) {
-					var regAttribute = (attribute as RegistryAttribute);
+				foreach (var attribute in type.GetCustomAttributes (typeof (DependencyServiceAttribute), true)) {
+					var regAttribute = (attribute as DependencyServiceAttribute);
 					App.Current.DependencyRegistry.Register (regAttribute.InterfaceType, type, regAttribute.Priority);
 				}
 			}

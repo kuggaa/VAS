@@ -22,9 +22,9 @@ namespace VAS.UI.Multimedia
 {
 	public static class VASUIMultimediaInit
 	{
-		public static void ScanViews ()
+		public static void Init ()
 		{
-			Scanner.ScanViews (App.Current.ViewLocator);
+			Scanner.ScanAll ();
 		}
 	}
 }

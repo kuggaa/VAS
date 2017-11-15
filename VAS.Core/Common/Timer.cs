@@ -18,6 +18,7 @@
 using System;
 using System.Timers;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 using SystemTimer = System.Timers.Timer;
 
 namespace VAS.Core.Common
@@ -25,6 +26,7 @@ namespace VAS.Core.Common
 	/// <summary>
 	/// Timer wrapper to add an interface
 	/// </summary>
+	[DependencyService (typeof (ITimer), 0)]
 	public class Timer : ITimer
 	{
 		/// <summary>

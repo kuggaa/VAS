@@ -22,19 +22,35 @@ namespace VAS.Core.MVVMC
 {
 	public static class Scanner
 	{
+		public static void ScanAll ()
+		{
+			Assembly assembly = Assembly.GetCallingAssembly ();
+			foreach (Type type in assembly.GetTypes ()) {
+				ScanDependencyServices (type);
+				ScanViews (type);
+				ScanControllers (type);
+			}
+		}
+
+		/// <summary>
+		/// Scans all the depdency services with the <see cref="DependencyServiceAttribute"/> attribute set.
+		/// </summary>
+		static void ScanDependencyServices (Type type)
+		{
+			foreach (var attribute in type.GetCustomAttributes (typeof (DependencyServiceAttribute), true)) {
+				var regAttribute = (attribute as DependencyServiceAttribute);
+				App.Current.DependencyRegistry.Register (regAttribute.InterfaceType, type, regAttribute.Priority);
+			}
+		}
 
 		/// <summary>
 		/// Scans and register Views from the calling assembly. This should be called from all of
 		/// the assemblies containing Views in the initialization.
 		/// </summary>
-		/// <param name="viewLocator">View locator.</param>
-		public static void ScanViews (ViewLocator viewLocator)
+		static void ScanViews (Type type)
 		{
-			Assembly assembly = Assembly.GetCallingAssembly ();
-			foreach (Type type in assembly.GetTypes ()) {
-				foreach (var attribute in type.GetCustomAttributes (typeof (ViewAttribute), true)) {
-					viewLocator.Register ((attribute as ViewAttribute).ViewName, type);
-				}
+			foreach (var attribute in type.GetCustomAttributes (typeof (ViewAttribute), true)) {
+				App.Current.ViewLocator.Register ((attribute as ViewAttribute).ViewName, type);
 			}
 		}
 
@@ -43,10 +59,11 @@ namespace VAS.Core.MVVMC
 		/// the assemblies containing Controllers in the initialization.
 		/// </summary>
 		/// <param name="controllerLocator">Controller locator.</param>
-		public static void ScanControllers (ControllerLocator controllerLocator)
+		static void ScanControllers (Type type)
 		{
-			Assembly assembly = Assembly.GetCallingAssembly ();
-			RegisterControllers (assembly, controllerLocator);
+			foreach (var attribute in type.GetCustomAttributes (typeof (ControllerAttribute), true)) {
+				App.Current.ControllerLocator.Register ((attribute as ControllerAttribute).ViewName, type);
+			}
 		}
 
 		/// <summary>
@@ -54,20 +71,13 @@ namespace VAS.Core.MVVMC
 		/// referenced assembly This should be called from all tests that are testing states in the initialization.
 		/// </summary>
 		/// <param name="controllerLocator">Controller locator.</param>
-		public static void ScanReferencedControllers (ControllerLocator controllerLocator)
+		internal static void ScanReferencedControllers (ControllerLocator controllerLocator)
 		{
 			Assembly callingAssembly = Assembly.GetCallingAssembly ();
 			foreach (AssemblyName assemblyName in callingAssembly.GetReferencedAssemblies ()) {
 				var assembly = Assembly.Load (assemblyName);
-				RegisterControllers (assembly, controllerLocator);
-			}
-		}
-
-		static void RegisterControllers (Assembly assembly, ControllerLocator controllerLocator)
-		{
-			foreach (Type type in assembly.GetTypes ()) {
-				foreach (var attribute in type.GetCustomAttributes (typeof (ControllerAttribute), true)) {
-					controllerLocator.Register ((attribute as ControllerAttribute).ViewName, type);
+				foreach (Type type in assembly.GetTypes ()) {
+					ScanControllers (type);
 				}
 			}
 		}

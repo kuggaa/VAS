@@ -22,9 +22,9 @@ namespace VAS.Services
 {
 	public static class VASServicesInit
 	{
-		public static void ScanController ()
+		public static void Init ()
 		{
-			Scanner.ScanControllers (App.Current.ControllerLocator);
+			Scanner.ScanAll ();
 		}
 	}
 }
