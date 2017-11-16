@@ -43,6 +43,7 @@ namespace VAS.Tests.Services
 		[OneTimeSetUp]
 		public void Init ()
 		{
+			SetupClass.SetUp ();
 			stateControllerMock = new Mock<IStateController> ();
 			App.Current.StateController = stateControllerMock.Object;
 			App.Current.HotkeysService = new HotkeysService ();
