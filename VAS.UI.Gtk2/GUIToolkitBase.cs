@@ -42,14 +42,8 @@ namespace VAS.UI
 		Gtk.Window mainWindow;
 		Registry registry;
 
-		protected GUIToolkitBase (Gtk.Window mainWindow = null)
+		protected GUIToolkitBase ()
 		{
-			if (mainWindow == null) {
-				mainWindow = new MainWindow ();
-			}
-			mainWindow.Hide ();
-			MainWindow = mainWindow;
-
 			registry = new Registry ("GUI backend");
 			Scanner.ScanAll ();
 			DrawingInit.Init ();
@@ -97,6 +91,15 @@ namespace VAS.UI
 				}
 				return (float)(Math.Ceiling (scaleFactor));
 			}
+		}
+
+		public void Init (Window mainWindow = null)
+		{
+			if (mainWindow == null) {
+				mainWindow = new MainWindow ();
+			}
+			mainWindow.Hide ();
+			MainWindow = mainWindow;
 		}
 
 		public virtual List<EditionJob> ConfigureRenderingJob (Playlist playlist)
