@@ -17,10 +17,10 @@
 //
 using Gtk;
 using VAS.Core.Common;
-using VAS.Core.Events;
 using VAS.Core.MVVMC;
+using Action = System.Action;
 
-namespace VAS.UI.Helpers.Gtk2
+namespace VAS.UI.Helpers
 {
 	/// <summary>
 	/// Helper to detach any widget and re-attach it again to the specified one.
@@ -28,6 +28,24 @@ namespace VAS.UI.Helpers.Gtk2
 	public class DetachHelper : DisposableBase
 	{
 		ExternalWindow externalWindow;
+		Widget widgetToDetach, widgetWhereReattach;
+		Action callbackFunction;
+		string windowTitle;
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:VAS.UI.Helpers.Gtk2.DetachHelper"/> class.
+		/// </summary>
+		/// <param name="widgetToDetach">Widget to detach.</param>
+		/// <param name="windowTitle">Window title.</param>
+		/// <param name="widgetWhereReattach">Widget where reattach.</param>
+		/// <param name="callbackFunction">Function executed detaching and attaching by the view in order to do specific work as
+		public DetachHelper (Widget widgetToDetach, string windowTitle, Widget widgetWhereReattach, Action callbackFunction)
+		{
+			this.widgetToDetach = widgetToDetach;
+			this.widgetWhereReattach = widgetWhereReattach;
+			this.windowTitle = windowTitle;
+			this.callbackFunction = callbackFunction;
+		}
 
 		protected override void DisposeManagedResources ()
 		{
@@ -40,12 +58,7 @@ namespace VAS.UI.Helpers.Gtk2
 		/// <summary>
 		/// Detach the specified widget to an external window or re-attach it again to its previous container.
 		/// </summary>
-		/// <param name="widgetToDetach">Widget to detach.</param>
-		/// <param name="windowTitle">Window title.</param>
-		/// <param name="widgetWhereReattach">Widget where reattach.</param>
-		/// <param name="func">Function executed detaching and attaching by the view in order to do specific work as
-		/// hiding widgets</param>
-		public void Detach (Widget widgetToDetach, string windowTitle, Widget widgetWhereReattach, Function func)
+		public void Detach ()
 		{
 			if (externalWindow == null) {
 				Log.Debug ("Detaching widget");
@@ -54,7 +67,7 @@ namespace VAS.UI.Helpers.Gtk2
 				int window_width = widgetToDetach.Allocation.Width;
 				int window_height = widgetToDetach.Allocation.Height;
 				externalWindow.SetDefaultSize (window_width, window_height);
-				externalWindow.DeleteEvent += (o, args) => Detach (widgetToDetach, windowTitle, widgetWhereReattach, func);
+				externalWindow.DeleteEvent += (o, args) => Detach ();
 				externalWindow.Show ();
 				widgetToDetach.Reparent (externalWindow.Box);
 				// Hack to reposition widget window in widget for OSX
@@ -65,8 +78,7 @@ namespace VAS.UI.Helpers.Gtk2
 				externalWindow.Destroy ();
 				externalWindow = null;
 			}
-
-			func.Invoke ();
+			callbackFunction.Invoke ();
 		}
 	}
 }

@@ -16,13 +16,11 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using Gtk;
-using VAS.Core.Common;
 using VAS.Core.Events;
-using VAS.Core.Interfaces.GUI;
 
 namespace VAS.UI.Helpers
 {
-	public class ExternalWindow: Window
+	public class ExternalWindow : Window
 	{
 		EventBox box;
 

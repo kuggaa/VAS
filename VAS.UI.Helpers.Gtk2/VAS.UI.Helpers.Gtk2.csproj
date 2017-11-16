@@ -68,6 +68,7 @@
     <Compile Include="TypeConverters\ImageConverter.cs" />
     <Compile Include="GtkSynchronizationContext.cs" />
     <Compile Include="GtkOSXApplication.cs" />
+    <Compile Include="DetachHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
