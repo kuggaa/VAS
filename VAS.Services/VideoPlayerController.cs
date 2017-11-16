@@ -403,7 +403,7 @@ namespace VAS.Services
 				InternalOpen (fileSet, true, true, play, true);
 			} else {
 				Log.Debug ("Player is not ready, delaying ...");
-				delayedOpen = () => InternalOpen (FileSet, true, true, play, true);
+				delayedOpen = () => InternalOpen (fileSet, true, true, play, true);
 				FileSet = fileSet;
 			}
 		}
@@ -863,50 +863,51 @@ namespace VAS.Services
 		{
 			return new KeyAction [] {
 				new KeyAction (
-					App.Current.HotkeysService.GetByName("PLAYER_RATE_INCREMENT"),
+					App.Current.HotkeysService.GetByName(PlaybackHotkeys.PLAYER_RATE_INCREMENT),
 					FramerateUp
 				),
 				new KeyAction (
-					App.Current.HotkeysService.GetByName("PLAYER_RATE_DECREMENT"),
+					App.Current.HotkeysService.GetByName(PlaybackHotkeys.PLAYER_RATE_DECREMENT),
 					FramerateDown
 				),
 				new KeyAction (
-					App.Current.HotkeysService.GetByName("PLAYER_RATE_MAX"),
+					App.Current.HotkeysService.GetByName(PlaybackHotkeys.PLAYER_RATE_MAX),
 					FramerateUpper
 				),
-				new KeyAction (App.Current.HotkeysService.GetByName("PLAYER_RATE_DEFAULT"),
+				new KeyAction (
+					App.Current.HotkeysService.GetByName(PlaybackHotkeys.PLAYER_RATE_DEFAULT),
 					FramerateLower
 				),
 				new KeyAction (
-					App.Current.HotkeysService.GetByName("PLAYER_TOGGLE_PLAY"),
+					App.Current.HotkeysService.GetByName(PlaybackHotkeys.PLAYER_TOGGLE_PLAY),
 					TogglePlay
 				),
 				new KeyAction (
-					App.Current.HotkeysService.GetByName("PLAYER_SEEK_LEFT_SHORT"),
+					App.Current.HotkeysService.GetByName(PlaybackHotkeys.PLAYER_SEEK_LEFT_SHORT),
 					() => SeekToPreviousFrame()
 				),
 				new KeyAction (
-					App.Current.HotkeysService.GetByName("PLAYER_SEEK_LEFT_LONG"),
+					App.Current.HotkeysService.GetByName(PlaybackHotkeys.PLAYER_SEEK_LEFT_LONG),
 					() => StepBackward()
 				),
 				new KeyAction (
-					App.Current.HotkeysService.GetByName("PLAYER_SEEK_RIGHT_SHORT"),
+					App.Current.HotkeysService.GetByName(PlaybackHotkeys.PLAYER_SEEK_RIGHT_SHORT),
 					() => SeekToNextFrame()
 				),
 				new KeyAction (
-					App.Current.HotkeysService.GetByName("PLAYER_SEEK_RIGHT_LONG"),
+					App.Current.HotkeysService.GetByName(PlaybackHotkeys.PLAYER_SEEK_RIGHT_LONG),
 					() => StepForward()
 				),
 				new KeyAction (
-					App.Current.HotkeysService.GetByName("PLAYER_NEXT_ELEMENT"),
+					App.Current.HotkeysService.GetByName(PlaybackHotkeys.PLAYER_NEXT_ELEMENT),
 					Next
 				),
 				new KeyAction (
-					App.Current.HotkeysService.GetByName("PLAYER_PREVIOUS_ELEMENT"),
+					App.Current.HotkeysService.GetByName(PlaybackHotkeys.PLAYER_PREVIOUS_ELEMENT),
 					() => Previous()
 				),
 				new KeyAction (
-					App.Current.HotkeysService.GetByName("OPEN_DRAWING_TOOL"),
+					App.Current.HotkeysService.GetByName(PlaybackHotkeys.OPEN_DRAWING_TOOL),
 					() => playerVM.DrawCommand.Execute ()
 				),
 				new KeyAction (
@@ -929,6 +930,10 @@ namespace VAS.Services
 						}
 					}
 				),
+				new KeyAction (
+					App.Current.HotkeysService.GetByName(PlaybackHotkeys.CLOSE_LOADED_EVENT),
+					UnloadCurrentEvent
+				)
 			};
 		}
 
