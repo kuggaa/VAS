@@ -629,7 +629,7 @@ namespace VAS.Services
 			Log.Debug (string.Format ("Loading playlist element \"{0}\"", element?.Description));
 
 			if (!ready) {
-				EmitPrepareViewEvent ();
+				EmitPrepareViewEvent (element.CamerasConfig, element.CamerasLayout);
 				delayedOpen = () => LoadPlaylistEvent (playlist, element, playing);
 				return;
 			}
@@ -664,7 +664,7 @@ namespace VAS.Services
 			Log.Debug (string.Format ("Loading event \"{0}\" seek:{1} playing:{2}", evt.Name, seekTime, playing));
 
 			if (!ready) {
-				EmitPrepareViewEvent ();
+				EmitPrepareViewEvent (evt.CamerasConfig, evt.CamerasLayout);
 				delayedOpen = () => LoadEvent (evt, seekTime, playing);
 				return;
 			}
@@ -944,9 +944,12 @@ namespace VAS.Services
 			}
 		}
 
-		void EmitPrepareViewEvent ()
+		void EmitPrepareViewEvent (ObservableCollection<CameraConfig> camConfig, object camLayout)
 		{
 			playerVM.PrepareView = true;
+			if (camConfig != null) {
+				UpdateCamerasConfig (camConfig, camLayout);
+			}
 			if (PrepareViewEvent != null && !disposed) {
 				PrepareViewEvent ();
 			}
@@ -1394,6 +1397,7 @@ namespace VAS.Services
 		void LoadStillImage (PlaylistImage image, bool playing)
 		{
 			loadedPlaylistElement = image;
+			playerVM.ControlsSensitive = true;
 			StillImageLoaded = true;
 			if (playing) {
 				Play ();
@@ -1415,7 +1419,7 @@ namespace VAS.Services
 			MediaFileSet fileSet = new MediaFileSet ();
 			fileSet.Add (video.File);
 			EmitLoadDrawings (null);
-			UpdateCamerasConfig (new ObservableCollection<CameraConfig> { new CameraConfig (0) }, null);
+			UpdateCamerasConfig (video.CamerasConfig, video.CamerasLayout);
 			InternalOpen (fileSet, true, true, playing);
 		}
 
