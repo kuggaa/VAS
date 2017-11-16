@@ -42,6 +42,7 @@ using VAS.UI.Helpers.Bindings;
 
 namespace VAS.Tests.Gtk2.MVVMC
 {
+	[TestFixture]
 	public class TestToggleButtonBinding
 	{
 		Mock<ILicenseLimitationsService> mockLimitationService;
