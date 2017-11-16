@@ -76,13 +76,14 @@ namespace VAS
 			set;
 		}
 
-		public static void Init (App appInit, string evUninstalled, string softwareName, string softwareIconName,
-								 string portableFile, string evHome)
+		public static void Init (App appInit, string softwareName, string softwareIconName,
+								 string portableFile, string evHome, string debugPrefix = null)
 		{
 			Current = appInit;
 			Current.SoftwareName = softwareName;
 			Current.SoftwareIconName = softwareIconName;
-			App.Current.Uninstalled = Environment.GetEnvironmentVariable (evUninstalled) != null;
+			App.Current.DebugPrefix = debugPrefix ?? softwareName.ToUpper ();
+			App.Current.Uninstalled = Environment.GetEnvironmentVariable (App.Current.UninstalledEnvironmentVariable) != null;
 			App.Current.MainThreadId = Thread.CurrentThread.ManagedThreadId;
 
 			App.Current.InitDirectories (portableFile, evHome);
@@ -212,6 +213,10 @@ namespace VAS
 			}
 		}
 
+		public string DebugEnvironmentVariable { get => DebugPrefix + "_DEBUG"; }
+
+		public string UninstalledEnvironmentVariable { get => DebugPrefix + "_UNINSTALLED"; }
+
 		public ILicenseLimitationsService LicenseLimitationsService { get; set; }
 
 
@@ -220,6 +225,8 @@ namespace VAS
 		public string BuildVersion { get; protected set; }
 
 		public string Copyright { get; set; }
+
+		public string DebugPrefix { get; protected set; }
 
 		public string DefaultDBName { get; set; }
 
@@ -303,7 +310,7 @@ namespace VAS
 				return true;
 #else
 				if (debugging == null) {
-					debugging = EnvironmentIsSet ("LGM_DEBUG");
+					debugging = EnvironmentIsSet (DebugEnvironmentVariable);
 				}
 				return debugging.Value;
 #endif
@@ -318,7 +325,7 @@ namespace VAS
 			get {
 #if DEBUG
 				if (verboseDebugging == null) {
-					verboseDebugging = EnvironmentIsSet ("LGM_DEBUG_VERBOSE");
+					verboseDebugging = EnvironmentIsSet (DebugEnvironmentVariable);
 				}
 				return verboseDebugging.Value;
 #else
