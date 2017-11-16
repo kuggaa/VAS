@@ -8,6 +8,8 @@ namespace VAS.UI.Panel
 
 		private global::Gtk.VBox mainVBox;
 
+		private global::Gtk.Fixed captionFixedHeader;
+
 		private global::Gtk.Alignment headersAlignment;
 
 		private global::Gtk.VBox headersVBox;
@@ -26,7 +28,7 @@ namespace VAS.UI.Panel
 
 		private global::Gtk.Label featuresCaption;
 
-		private global::Gtk.Fixed captionFixed;
+		private global::Gtk.Fixed captionFixedBottom;
 
 		protected virtual void Build ()
 		{
@@ -42,10 +44,18 @@ namespace VAS.UI.Panel
 			this.mainVBox.Name = "mainVBox";
 			this.mainVBox.Spacing = 6;
 			// Container child mainVBox.Gtk.Box+BoxChild
+			this.captionFixedHeader = new global::Gtk.Fixed ();
+			this.captionFixedHeader.Name = "captionFixedHeader";
+			this.captionFixedHeader.HasWindow = false;
+			this.mainVBox.Add (this.captionFixedHeader);
+			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.mainVBox [this.captionFixedHeader]));
+			w1.Position = 0;
+			w1.Expand = false;
+			w1.Fill = false;
+			// Container child mainVBox.Gtk.Box+BoxChild
 			this.headersAlignment = new global::Gtk.Alignment (0F, 0.5F, 1F, 1F);
 			this.headersAlignment.Name = "headersAlignment";
 			this.headersAlignment.LeftPadding = ((uint)(75));
-			this.headersAlignment.TopPadding = ((uint)(26));
 			this.headersAlignment.RightPadding = ((uint)(75));
 			// Container child headersAlignment.Gtk.Container+ContainerChild
 			this.headersVBox = new global::Gtk.VBox ();
@@ -57,26 +67,26 @@ namespace VAS.UI.Panel
 			this.header.Xalign = 0F;
 			this.header.LabelProp = global::VAS.Core.Catalog.GetString ("label1");
 			this.headersVBox.Add (this.header);
-			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.headersVBox [this.header]));
-			w1.Position = 0;
-			w1.Expand = false;
-			w1.Fill = false;
+			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.headersVBox [this.header]));
+			w2.Position = 0;
+			w2.Expand = false;
+			w2.Fill = false;
 			// Container child headersVBox.Gtk.Box+BoxChild
 			this.featuresHeader = new global::Gtk.Label ();
 			this.featuresHeader.Name = "featuresHeader";
 			this.featuresHeader.Xalign = 0F;
 			this.featuresHeader.LabelProp = global::VAS.Core.Catalog.GetString ("label3");
 			this.headersVBox.Add (this.featuresHeader);
-			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.headersVBox [this.featuresHeader]));
-			w2.Position = 1;
-			w2.Expand = false;
-			w2.Fill = false;
+			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.headersVBox [this.featuresHeader]));
+			w3.Position = 1;
+			w3.Expand = false;
+			w3.Fill = false;
 			this.headersAlignment.Add (this.headersVBox);
 			this.mainVBox.Add (this.headersAlignment);
-			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.mainVBox [this.headersAlignment]));
-			w4.Position = 0;
-			w4.Expand = false;
-			w4.Fill = false;
+			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.mainVBox [this.headersAlignment]));
+			w5.Position = 1;
+			w5.Expand = false;
+			w5.Fill = false;
 			// Container child mainVBox.Gtk.Box+BoxChild
 			this.featuresAlignment = new global::Gtk.Alignment (0F, 0.5F, 1F, 1F);
 			this.featuresAlignment.Name = "featuresAlignment";
@@ -94,16 +104,16 @@ namespace VAS.UI.Panel
 			this.featuresTable.RowSpacing = ((uint)(10));
 			this.featuresTable.ColumnSpacing = ((uint)(10));
 			this.bodyVBox.Add (this.featuresTable);
-			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.bodyVBox [this.featuresTable]));
-			w5.Position = 0;
+			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.bodyVBox [this.featuresTable]));
+			w6.Position = 0;
 			// Container child bodyVBox.Gtk.Box+BoxChild
 			this.featuresVBox = new global::Gtk.VBox ();
 			this.featuresVBox.Name = "featuresVBox";
 			this.featuresVBox.Spacing = 10;
 			this.bodyVBox.Add (this.featuresVBox);
-			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.bodyVBox [this.featuresVBox]));
-			w6.Position = 1;
-			w6.Expand = false;
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.bodyVBox [this.featuresVBox]));
+			w7.Position = 1;
+			w7.Expand = false;
 			// Container child bodyVBox.Gtk.Box+BoxChild
 			this.featuresCaption = new global::Gtk.Label ();
 			this.featuresCaption.Name = "featuresCaption";
@@ -111,23 +121,23 @@ namespace VAS.UI.Panel
 			this.featuresCaption.LabelProp = global::VAS.Core.Catalog.GetString ("label5");
 			this.featuresCaption.Justify = ((global::Gtk.Justification)(1));
 			this.bodyVBox.Add (this.featuresCaption);
-			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.bodyVBox [this.featuresCaption]));
-			w7.Position = 2;
-			w7.Expand = false;
-			w7.Fill = false;
+			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.bodyVBox [this.featuresCaption]));
+			w8.Position = 2;
+			w8.Expand = false;
+			w8.Fill = false;
 			this.featuresAlignment.Add (this.bodyVBox);
 			this.mainVBox.Add (this.featuresAlignment);
-			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.mainVBox [this.featuresAlignment]));
-			w9.Position = 1;
-			// Container child mainVBox.Gtk.Box+BoxChild
-			this.captionFixed = new global::Gtk.Fixed ();
-			this.captionFixed.Name = "captionFixed";
-			this.captionFixed.HasWindow = false;
-			this.mainVBox.Add (this.captionFixed);
-			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.mainVBox [this.captionFixed]));
+			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.mainVBox [this.featuresAlignment]));
 			w10.Position = 2;
-			w10.Expand = false;
-			w10.Fill = false;
+			// Container child mainVBox.Gtk.Box+BoxChild
+			this.captionFixedBottom = new global::Gtk.Fixed ();
+			this.captionFixedBottom.Name = "captionFixedBottom";
+			this.captionFixedBottom.HasWindow = false;
+			this.mainVBox.Add (this.captionFixedBottom);
+			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.mainVBox [this.captionFixedBottom]));
+			w11.Position = 3;
+			w11.Expand = false;
+			w11.Fill = false;
 			this.eventbox.Add (this.mainVBox);
 			this.Add (this.eventbox);
 			if ((this.Child != null)) {

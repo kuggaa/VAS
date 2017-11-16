@@ -46,7 +46,8 @@ namespace VAS.UI.Panel
 
 		UpgradeLimitationVM viewModel;
 		BindingContext ctx;
-		ImageView captionBackground;
+		ImageView captionBackgroundBottom;
+		ImageView captionBackgroundHeader;
 		Button upgradeButton2;
 		Label undecidedlbl;
 		Label seeOtherPlanslbl;
@@ -80,15 +81,18 @@ namespace VAS.UI.Panel
 			seeOtherPlanslbl.ModifyFont (FontDescription.FromString ($"{App.Current.Style.Font} normal {FEATURE_LABEL_SIZE}px"));
 			seeOtherPlanslbl.ModifyText (StateType.Normal, Helpers.Misc.ToGdkColor (CommonColor.Parse (UPGRADE_BUTTON_COLOR)));
 
-			captionBackground = new ImageView (App.Current.ResourcesLocator.LoadImage (StyleConf.UpgradeDialogBackground));
-			captionFixed.Put (captionBackground, 0, 0);
-			captionFixed.Put (upgradeButton2, (captionBackground.Image.Width / 2) - (upgradeButton2.WidthRequest / 2), 0);
-			captionFixed.Put (undecidedlbl, (captionBackground.Image.Width / 2) - (undecidedlbl.WidthRequest / 2),
+			captionBackgroundHeader = new ImageView (App.Current.ResourcesLocator.LoadImage (StyleConf.UpgradeDialogBackgroundTop));
+			captionFixedHeader.Put (captionBackgroundHeader, 0, 0);
+
+			captionBackgroundBottom = new ImageView (App.Current.ResourcesLocator.LoadImage (StyleConf.UpgradeDialogBackgroundBottom));
+			captionFixedBottom.Put (captionBackgroundBottom, 0, 0);
+			captionFixedBottom.Put (upgradeButton2, (captionBackgroundBottom.Image.Width / 2) - (upgradeButton2.WidthRequest / 2), 0);
+			captionFixedBottom.Put (undecidedlbl, (captionBackgroundBottom.Image.Width / 2) - (undecidedlbl.WidthRequest / 2),
 							  upgradeButton2.HeightRequest + 15);
-			captionFixed.Put (seeOtherPlanslbl, (captionBackground.Image.Width / 2) - (seeOtherPlanslbl.WidthRequest / 2),
+			captionFixedBottom.Put (seeOtherPlanslbl, (captionBackgroundBottom.Image.Width / 2) - (seeOtherPlanslbl.WidthRequest / 2),
 							  upgradeButton2.HeightRequest + 15 + undecidedlbl.HeightRequest + 5);
 
-			WidthRequest = captionBackground.Image.Width;
+			WidthRequest = captionBackgroundBottom.Image.Width;
 			header.WidthRequest = WidthRequest - (int)headersAlignment.LeftPadding - (int)headersAlignment.RightPadding;
 			header.Wrap = true;
 			header.LineWrap = true;
@@ -179,6 +183,9 @@ namespace VAS.UI.Panel
 				seeOtherPlanslbl.UseMarkup = true;
 				seeOtherPlanslbl.UseUnderline = false;
 				seeOtherPlanslbl.SetLinkHandler (HandleLinkClicked);
+			} else {
+				seeOtherPlanslbl.Visible = false;
+				undecidedlbl.Visible = false;
 			}
 		}
 
