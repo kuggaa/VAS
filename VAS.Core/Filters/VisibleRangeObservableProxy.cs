@@ -29,17 +29,23 @@ namespace VAS.Core.Filters
 	{
 		public VisibleRangeObservableProxy (IEnumerable<TVisibleViewModel> rootCollection)
 		{
-			ApplyPropertyChanges ();
 			if (rootCollection is INotifyCollectionChanged observableCollection) {
 				observableCollection.CollectionChanged += HandleCollectionChanged;
 			}
-			if (rootCollection is INotifyPropertyChanged bindableObject) {
-				bindableObject.PropertyChanged += HandlePropertyChanged;
+			foreach (var item in rootCollection) {
+				if (item is INotifyPropertyChanged bindableObject) {
+					bindableObject.PropertyChanged += HandlePropertyChanged;
+				}
 			}
 
 			foreach (var item in rootCollection) {
 				AddItem (item);
 			}
+			PropertyChangeList.Clear ();
+		}
+
+		public VisibleRangeObservableProxy ()
+		{
 		}
 
 		void AddItem (TVisibleViewModel viewModel)
@@ -52,7 +58,7 @@ namespace VAS.Core.Filters
 
 		void RemoveItem (TVisibleViewModel viewModel)
 		{
-			viewModel.PropertyChanged -= HandlePropertyChanged;
+			//viewModel.PropertyChanged -= HandlePropertyChanged;
 			Remove (viewModel);
 		}
 
@@ -94,6 +100,9 @@ namespace VAS.Core.Filters
 		void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == nameof (IVisible.Visible)) {
+				if (PropertyChangeList.Contains (sender as TVisibleViewModel)) {
+					PropertyChangeList.Remove (sender as TVisibleViewModel);
+				}
 				PropertyChangeList.Add (sender as TVisibleViewModel);
 			}
 		}
