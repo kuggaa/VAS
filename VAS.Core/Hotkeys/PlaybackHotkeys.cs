@@ -26,83 +26,100 @@ namespace VAS.Core.Hotkeys
 	public static class PlaybackHotkeys
 	{
 		static List<KeyConfig> playbackHotkeys;
+
 		public const string CATEGORY = "Playback";
+
+		// Keep this sorted alphabetically
+		public const string CLOSE_LOADED_EVENT = "CLOSE_LOADED_EVENT";
+		public const string EDIT_EVENT_DURATION = "EDIT_EVENT_DURATION";
+		public const string OPEN_DRAWING_TOOL = "OPEN_DRAWING_TOOL";
+		public const string PLAYER_NEXT_ELEMENT = "PLAYER_NEXT_ELEMENT";
+		public const string PLAYER_PREVIOUS_ELEMENT = "PLAYER_PREVIOUS_ELEMENT";
+		public const string PLAYER_RATE_DECREMENT = "PLAYER_RATE_DECREMENT";
+		public const string PLAYER_RATE_DEFAULT = "PLAYER_RATE_DEFAULT";
+		public const string PLAYER_RATE_INCREMENT = "PLAYER_RATE_INCREMENT";
+		public const string PLAYER_RATE_MAX = "PLAYER_RATE_MAX";
+		public const string PLAYER_SEEK_LEFT_LONG = "PLAYER_SEEK_LEFT_LONG";
+		public const string PLAYER_SEEK_LEFT_SHORT = "PLAYER_SEEK_LEFT_SHORT";
+		public const string PLAYER_SEEK_RIGHT_LONG = "PLAYER_SEEK_RIGHT_LONG";
+		public const string PLAYER_SEEK_RIGHT_SHORT = "PLAYER_SEEK_RIGHT_SHORT";
+		public const string PLAYER_TOGGLE_PLAY = "PLAYER_TOGGLE_PLAY";
+
 		public const string ZOOM_RESTORE = "ZOOM_RESTORE";
 		public const string ZOOM_DECREASE = "ZOOM_DECREASE";
 		public const string ZOOM_INCREASE = "ZOOM_INCREASE";
-		public const string EDIT_EVENT_DURATION = "EDIT_EVENT_DURATION";
 
 		static PlaybackHotkeys ()
 		{
 			playbackHotkeys = new List<KeyConfig> {
 				new KeyConfig {
-					Name = "PLAYER_TOGGLE_PLAY",
+					Name = PLAYER_TOGGLE_PLAY,
 					Key = App.Current.Keyboard.ParseName ("space"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Play/Pause")
 				},
 				new KeyConfig {
-					Name = "PLAYER_SEEK_RIGHT_LONG",
+					Name = PLAYER_SEEK_RIGHT_LONG,
 					Key = App.Current.Keyboard.ParseName ("<Shift_L>+Right"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Jump right")
 				},
 				new KeyConfig {
-					Name = "PLAYER_SEEK_LEFT_LONG",
+					Name = PLAYER_SEEK_LEFT_LONG,
 					Key = App.Current.Keyboard.ParseName ("<Shift_L>+Left"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Jump left")
 				},
 				new KeyConfig {
-					Name = "PLAYER_SEEK_LEFT_SHORT",
+					Name = PLAYER_SEEK_LEFT_SHORT,
 					Key = App.Current.Keyboard.ParseName ("Left"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Frame step left")
 				},
 				new KeyConfig {
-					Name = "PLAYER_SEEK_RIGHT_SHORT",
+					Name = PLAYER_SEEK_RIGHT_SHORT,
 					Key = App.Current.Keyboard.ParseName ("Right"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Frame step right")
 				},
 				new KeyConfig {
-					Name = "PLAYER_RATE_INCREMENT",
+					Name = PLAYER_RATE_INCREMENT,
 					Key = App.Current.Keyboard.ParseName ("Up"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Speed up")
 				},
 				new KeyConfig {
-					Name = "PLAYER_RATE_DECREMENT",
+					Name = PLAYER_RATE_DECREMENT,
 					Key = App.Current.Keyboard.ParseName ("Down"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Speed down")
 				},
 				new KeyConfig {
-					Name = "PLAYER_RATE_MAX",
-					Key = App.Current.Keyboard.ParseName ("<Control_L>+<Shift_L>+Up"),
+					Name = PLAYER_RATE_MAX,
+					Key = App.Current.Keyboard.ParseName ("<Alt_L>+<Shift_L>+Up"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Max speed")
 				},
 				new KeyConfig {
-					Name = "PLAYER_RATE_DEFAULT",
-					Key = App.Current.Keyboard.ParseName ("<Control_L>+<Shift_L>+Down"),
+					Name = PLAYER_RATE_DEFAULT,
+					Key = App.Current.Keyboard.ParseName ("<Alt_L>+<Shift_L>+Down"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Speed 1x")
 				},
 				new KeyConfig {
-					Name = "PLAYER_NEXT_ELEMENT",
+					Name = PLAYER_NEXT_ELEMENT,
 					Key = App.Current.Keyboard.ParseName ("<Control_L>+x"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Next event")
 				},
 				new KeyConfig {
-					Name = "PLAYER_PREVIOUS_ELEMENT",
+					Name = PLAYER_PREVIOUS_ELEMENT,
 					Key = App.Current.Keyboard.ParseName ("<Control_L>+z"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Previous event")
 				},
 				new KeyConfig {
-					Name = "OPEN_DRAWING_TOOL",
+					Name = OPEN_DRAWING_TOOL,
 					Key = App.Current.Keyboard.ParseName ("<Control_L>+d"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Open drawing tool")
@@ -130,6 +147,12 @@ namespace VAS.Core.Hotkeys
 					Key = App.Current.Keyboard.ParseName ("<Primary>+j"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Edit event duration")
+				},
+				new KeyConfig {
+					Name = CLOSE_LOADED_EVENT,
+					Key = App.Current.Keyboard.ParseName ("<Shift_L>+a"),
+					Category = CATEGORY,
+					Description = Catalog.GetString("Close loaded event")
 				}
 			};
 		}
