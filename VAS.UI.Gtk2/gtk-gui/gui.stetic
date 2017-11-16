@@ -1934,6 +1934,7 @@
                   <widget class="VAS.UI.UI.Component.ImagePreviewWidget" id="watermarkSelector">
                     <property name="MemberName" />
                     <property name="Events">ButtonPressMask</property>
+                    <property name="ResetButtonHeight">0</property>
                   </widget>
                   <packing>
                     <property name="TopAttach">5</property>
@@ -2806,11 +2807,22 @@
             <property name="MemberName" />
             <property name="Spacing">6</property>
             <child>
+              <widget class="Gtk.Fixed" id="captionFixedHeader">
+                <property name="MemberName" />
+                <property name="HasWindow">False</property>
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
               <widget class="Gtk.Alignment" id="headersAlignment">
                 <property name="MemberName" />
                 <property name="Xalign">0</property>
                 <property name="LeftPadding">75</property>
-                <property name="TopPadding">26</property>
                 <property name="RightPadding">75</property>
                 <child>
                   <widget class="Gtk.VBox" id="headersVBox">
@@ -2846,7 +2858,7 @@
                 </child>
               </widget>
               <packing>
-                <property name="Position">0</property>
+                <property name="Position">1</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
@@ -2910,17 +2922,17 @@
                 </child>
               </widget>
               <packing>
-                <property name="Position">1</property>
+                <property name="Position">2</property>
                 <property name="AutoSize">True</property>
               </packing>
             </child>
             <child>
-              <widget class="Gtk.Fixed" id="captionFixed">
+              <widget class="Gtk.Fixed" id="captionFixedBottom">
                 <property name="MemberName" />
                 <property name="HasWindow">False</property>
               </widget>
               <packing>
-                <property name="Position">2</property>
+                <property name="Position">3</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
