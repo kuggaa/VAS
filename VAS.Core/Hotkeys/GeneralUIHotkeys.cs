@@ -31,15 +31,11 @@ namespace VAS.Core.Hotkeys
 		public const string CLOSE_APP = "CLOSE_APP";
 		public const string COPY = "COPY";
 		public const string DELETE = "DELETE";
-		public const string FIND_PLAYHEAD = "FIND_PLAYHEAD";
 		public const string FIT_TIMELINE = "FIT_TIMELINE";
 		public const string OK = "OK";
 		public const string OPEN_PREFERENCES = "OPEN_PREFERENCES";
 		public const string PASTE = "PASTE";
 		public const string SAVE = "SAVE";
-		public const string SHOW_DASHBOARD = "SHOW_DASHBOARD";
-		public const string SHOW_TIMELINE = "SHOW_TIMELINE";
-		public const string TOGGLE_MAP_VISIBILITY = "TOGGLE_MAP_VISIBILITY";
 		public const string ZOOM_IN = "ZOOM_IN";
 		public const string ZOOM_OUT = "ZOOM_OUT";
 
@@ -83,22 +79,10 @@ namespace VAS.Core.Hotkeys
 					Description = Catalog.GetString("Close application")
 				},
 				new KeyConfig {
-					Name = TOGGLE_MAP_VISIBILITY,
-					Key = App.Current.Keyboard.ParseName ("F9"),
-					Category = CATEGORY,
-					Description = Catalog.GetString("Hide map")
-				},
-				new KeyConfig {
 					Name = OPEN_PREFERENCES,
 					Key = App.Current.Keyboard.ParseName ("<Primary>+p"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Open preferences")
-				},
-				new KeyConfig {
-					Name = FIND_PLAYHEAD,
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+p"),
-					Category = CATEGORY,
-					Description = Catalog.GetString("Find playhead")
 				},
 				new KeyConfig {
 					Name = ZOOM_IN,
@@ -119,18 +103,6 @@ namespace VAS.Core.Hotkeys
 					Description = Catalog.GetString("Adjust timeline to current position")
 				},
 				new KeyConfig {
-					Name = SHOW_DASHBOARD,
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+z"),
-					Category = CATEGORY,
-					Description = Catalog.GetString("Show dashboard")
-				},
-				new KeyConfig {
-					Name = SHOW_TIMELINE,
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+x"),
-					Category = CATEGORY,
-					Description = Catalog.GetString("Show timeline")
-				},
-				new KeyConfig {
 					Name = COPY,
 					Key = App.Current.Keyboard.ParseName ("<Primary>+c"),
 					Category = CATEGORY,
@@ -144,12 +116,7 @@ namespace VAS.Core.Hotkeys
 				},
 				//FIXME: Not entering on first release, but should be
 				//done in a future
-				/*new KeyConfig {
-					Name = "DELETE_SELECTED_EVENT",
-					Key = App.Current.Keyboard.ParseName ("Delete"),
-					Category = CATEGORY,
-					Description = Catalog.GetString("Delete selected event")
-				},
+				/*
 				new KeyConfig {
 					Name = "LOCK_SELECTION_MODIFIER",
 					Key = App.Current.Keyboard.ParseName ("<Control_L>"),

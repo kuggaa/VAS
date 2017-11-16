@@ -81,7 +81,7 @@ namespace VAS.Core.Hotkeys
 				},
 				new KeyConfig {
 					Name = "DRAWING_TOOL_FILLED_SQUARE",
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+s"),
+					Key = App.Current.Keyboard.ParseName ("<Alt_L>+s"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Filled square")
 				},
@@ -93,7 +93,7 @@ namespace VAS.Core.Hotkeys
 				},
 				new KeyConfig {
 					Name = "DRAWING_TOOL_FILLED_CIRCLE",
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+c"),
+					Key = App.Current.Keyboard.ParseName ("<Alt_L>+c"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Filled circle")
 				},
