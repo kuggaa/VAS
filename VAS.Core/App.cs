@@ -17,7 +17,6 @@ using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.MVVMC;
 using VAS.Core.Serialization;
 using VAS.KPI;
-using Timer = VAS.Core.Common.Timer;
 
 namespace VAS
 {
@@ -30,6 +29,7 @@ namespace VAS
 		bool? verboseDebugging = null;
 		List<string> dataDir;
 		List<IService> services = new List<IService> ();
+		List<IService> startedServices = new List<IService> ();
 
 		protected StyleConf style;
 
@@ -354,6 +354,7 @@ namespace VAS
 			foreach (IService service in services.OrderBy (s => s.Level)) {
 				if (service.Start ()) {
 					Log.InformationFormat ("Started service {0} successfully", service.Name);
+					startedServices.Add (service);
 				} else {
 					Log.InformationFormat ("Failed starting service {0}", service.Name);
 				}
@@ -362,9 +363,10 @@ namespace VAS
 
 		public void StopServices ()
 		{
-			foreach (IService service in services.OrderByDescending (s => s.Level)) {
+			foreach (IService service in startedServices.OrderByDescending (s => s.Level)) {
 				if (service.Stop ()) {
 					Log.InformationFormat ("Stopped service {0} successfully", service.Name);
+					startedServices.Remove (service);
 				} else {
 					Log.InformationFormat ("Failed stopping service {0}", service.Name);
 				}
