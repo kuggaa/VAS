@@ -492,6 +492,8 @@ namespace VAS.Drawing.Widgets
 				foreach (TimeNodeVM viewModel in e.OldItems.OfType<TimeNodeVM> ()) {
 					Selections.RemoveAll (s => (s.Drawable as TimeNodeView).TimeNode == viewModel);
 				}
+			} else if (e.Action == NotifyCollectionChangedAction.Reset) {
+				Selections.Clear ();
 			}
 		}
 
