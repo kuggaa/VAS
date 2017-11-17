@@ -17,6 +17,7 @@
 //
 
 using System.Linq;
+using System.Threading.Tasks;
 using VAS.Core.Events;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
@@ -64,9 +65,9 @@ namespace VAS.Core.ViewModel
 			protected set;
 		}
 
-		public void LoadEventType ()
+		public async Task LoadEventType ()
 		{
-			App.Current.EventsBroker.Publish (new LoadTimelineEventEvent<EventTypeTimelineVM> {
+			await App.Current.EventsBroker.Publish (new LoadTimelineEventEvent<EventTypeTimelineVM> {
 				Object = this,
 				Playing = true
 			});

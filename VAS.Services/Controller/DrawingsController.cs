@@ -73,13 +73,14 @@ namespace VAS.Services.Controller
 
 			videoPlayer.PauseCommand.Execute (true);
 
-			if (drawEvent.Play == null) {
-				drawEvent.Play = videoPlayer.LoadedElement as TimelineEvent;
+			if (drawEvent.PlayVM != null &&
+				drawEvent.PlayVM.Model == null) {
+				drawEvent.PlayVM = videoPlayer.TimelineEventVM;
 			}
 
-			fileSet = drawEvent.Play?.FileSet;
+			fileSet = drawEvent.PlayVM?.Model?.FileSet;
 
-			if (drawEvent.Play != null) {
+			if (drawEvent.PlayVM?.Model != null) {
 				if (drawEvent.DrawingIndex == -1) {
 					drawEvent.CamConfig = drawEvent.CamConfig ?? new CameraConfig (0);
 					drawing = new FrameDrawing {
@@ -88,7 +89,7 @@ namespace VAS.Services.Controller
 						RegionOfInterest = drawEvent.CamConfig.RegionOfInterest.Clone (),
 					};
 				} else {
-					drawing = drawEvent.Play.Drawings [drawEvent.DrawingIndex];
+					drawing = drawEvent.PlayVM.Model.Drawings [drawEvent.DrawingIndex];
 					drawEvent.CamConfig = drawEvent.CamConfig ?? drawing.CameraConfig;
 				}
 				pos = drawing.Render;
@@ -115,8 +116,8 @@ namespace VAS.Services.Controller
 			}
 
 			dynamic properties = new ExpandoObject ();
-			properties.project = project?.Model ?? drawEvent.Play?.Project;
-			properties.timelineEvent = drawEvent.Play;
+			properties.project = project?.Model ?? drawEvent.PlayVM?.Model?.Project;
+			properties.timelineEventVM = drawEvent.PlayVM;
 			properties.frame = drawEvent.Frame;
 			properties.drawing = drawing;
 			properties.cameraconfig = drawEvent.CamConfig;
@@ -126,7 +127,7 @@ namespace VAS.Services.Controller
 		protected virtual void HandleCreateSnaphotSeries (SnapshotSeriesEvent e)
 		{
 			videoPlayer.PauseCommand.Execute (false);
-			App.Current.GUIToolkit.ExportFrameSeries (e.TimelineEvent, App.Current.SnapshotsDir);
+			App.Current.GUIToolkit.ExportFrameSeries (e.TimelineEventVM.Model, App.Current.SnapshotsDir);
 		}
 	}
 }

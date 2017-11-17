@@ -34,7 +34,7 @@ namespace VAS.Services.State
 		{
 			ViewModel = new DrawingToolVM ();
 			ViewModel.Project = data.project;
-			ViewModel.TimelineEvent = data.timelineEvent;
+			ViewModel.TimelineEventVM = data.timelineEventVM;
 			ViewModel.Frame = data.frame;
 			ViewModel.Drawing = data.drawing;
 			ViewModel.CameraConfig = data.cameraconfig;

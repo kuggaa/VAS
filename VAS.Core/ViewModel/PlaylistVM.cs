@@ -21,22 +21,23 @@ using System;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
+using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 
 namespace VAS.Core.ViewModel
 {
 	/// <summary>
-	/// ViewModel for a Playlist containing a collection of <see cref="PlaylistElementVM"/>.
+	/// ViewModel for a Playlist containing a collection of <see cref="IPlaylistElementVM"/>.
 	/// </summary>
-	public class PlaylistVM : NestedSubViewModel<Playlist, IPlaylistElement, PlaylistElementVM>
+	public class PlaylistVM : NestedSubViewModel<Playlist, IPlaylistElement, IPlaylistElementVM<IPlaylistElement>>
 	{
 		public PlaylistVM ()
 		{
+			SubViewModel.TypeMappings.Add (typeof (TimelineEvent), typeof (TimelineEventVM));
 			SubViewModel.TypeMappings.Add (typeof (PlaylistPlayElement), typeof (PlaylistPlayElementVM));
 			SubViewModel.TypeMappings.Add (typeof (PlaylistVideo), typeof (PlaylistVideoVM));
 			SubViewModel.TypeMappings.Add (typeof (PlaylistImage), typeof (PlaylistImageVM));
 			SubViewModel.TypeMappings.Add (typeof (PlaylistDrawing), typeof (PlaylistDrawingVM));
-
 		}
 
 		/// <summary>
@@ -72,6 +73,18 @@ namespace VAS.Core.ViewModel
 			}
 			set {
 				Model.LastModified = value;
+			}
+		}
+
+		/// <summary>
+		/// Duration in time for the playlist.
+		/// </summary>
+		public Time Duration {
+			get {
+				return Model.Duration;
+			}
+			set {
+				Model.Duration = value;
 			}
 		}
 

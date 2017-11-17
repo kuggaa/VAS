@@ -145,7 +145,7 @@ namespace VAS.Tests.Services
 			await App.Current.EventsBroker.Publish (
 				new AddPlaylistElementEvent {
 					PlaylistElements = new List<IPlaylistElement> { new PlaylistPlayElement (new TimelineEvent ()) },
-					Playlist = null
+					PlaylistVM = null
 				}
 			);
 
@@ -167,7 +167,7 @@ namespace VAS.Tests.Services
 			await App.Current.EventsBroker.Publish (
 				new AddPlaylistElementEvent {
 					PlaylistElements = new List<IPlaylistElement> { new PlaylistPlayElement (new TimelineEvent ()) },
-					Playlist = null
+					PlaylistVM = null
 				}
 			);
 
@@ -193,7 +193,7 @@ namespace VAS.Tests.Services
 			await App.Current.EventsBroker.Publish (
 				new AddPlaylistElementEvent {
 					PlaylistElements = new List<IPlaylistElement> { new PlaylistPlayElement (new TimelineEvent ()) },
-					Playlist = playlistCollectionVM.ViewModels [0].Model
+					PlaylistVM = playlistCollectionVM.ViewModels [0]
 				}
 			);
 
@@ -216,7 +216,7 @@ namespace VAS.Tests.Services
 			await App.Current.EventsBroker.Publish (
 				new AddPlaylistElementEvent {
 					PlaylistElements = new List<IPlaylistElement> { new PlaylistPlayElement (new TimelineEvent ()) },
-					Playlist = newPlaylist,
+					PlaylistVM = new PlaylistVM { Model = newPlaylist },
 				}
 			);
 
@@ -241,7 +241,7 @@ namespace VAS.Tests.Services
 			await App.Current.EventsBroker.Publish (
 				new AddPlaylistElementEvent {
 					PlaylistElements = new List<IPlaylistElement> (),
-					Playlist = null
+					PlaylistVM = null
 				}
 			);
 
@@ -262,7 +262,7 @@ namespace VAS.Tests.Services
 			await App.Current.EventsBroker.Publish (
 				new AddPlaylistElementEvent {
 					PlaylistElements = new List<IPlaylistElement> (),
-					Playlist = null
+					PlaylistVM = null
 				}
 			);
 
@@ -282,7 +282,7 @@ namespace VAS.Tests.Services
 
 			await App.Current.EventsBroker.Publish (
 				new DeletePlaylistEvent {
-					Playlist = newPlaylist,
+					PlaylistVM = new PlaylistVM { Model = newPlaylist },
 				}
 			);
 
@@ -301,7 +301,7 @@ namespace VAS.Tests.Services
 
 			await App.Current.EventsBroker.Publish (
 				new DeletePlaylistEvent {
-					Playlist = playlistCollectionVM.Model.FirstOrDefault ()
+					PlaylistVM = playlistCollectionVM.FirstOrDefault ()
 				}
 			);
 
@@ -353,7 +353,7 @@ namespace VAS.Tests.Services
 				element1, element2, element3 });
 			playlistCollectionVM.Model.Add (newPlaylist);
 
-			playlistCollectionVM.ViewModels [0].Selection.Replace (new List<PlaylistElementVM> {
+			playlistCollectionVM.ViewModels [0].Selection.Replace (new List<IPlaylistElementVM<IPlaylistElement>> {
 				playlistCollectionVM.ViewModels [0].ViewModels[0],
 				playlistCollectionVM.ViewModels [0].ViewModels[2]
 			});
@@ -375,7 +375,7 @@ namespace VAS.Tests.Services
 			await App.Current.EventsBroker.Publish (
 				new AddPlaylistElementEvent {
 					PlaylistElements = new List<IPlaylistElement> (),
-					Playlist = playlist
+					PlaylistVM = new PlaylistVM { Model = playlist },
 				}
 			);
 
@@ -394,7 +394,7 @@ namespace VAS.Tests.Services
 			await App.Current.EventsBroker.Publish (
 				new AddPlaylistElementEvent {
 					PlaylistElements = new List<IPlaylistElement> (),
-					Playlist = playlist
+					PlaylistVM = new PlaylistVM { Model = playlist },
 				}
 			);
 
@@ -409,11 +409,11 @@ namespace VAS.Tests.Services
 			SetupWithStorage ();
 
 			// Act
-			var ev = new CreateEvent<Playlist> ();
+			var ev = new CreateEvent<PlaylistVM> ();
 			await App.Current.EventsBroker.Publish (ev);
 
 			// Assert
-			storageMock.Verify (s => s.Store<Playlist> (ev.Object, true), Times.Once ());
+			storageMock.Verify (s => s.Store<Playlist> (ev.Object.Model, true), Times.Once ());
 		}
 
 		[Test]
@@ -444,7 +444,7 @@ namespace VAS.Tests.Services
 						new PlaylistPlayElement (new TimelineEvent { Name = "event1" }),
 						new PlaylistPlayElement (new TimelineEvent { Name = "event2" }),
 					},
-					Playlist = playlist
+					PlaylistVM = new PlaylistVM { Model = playlist },
 				}
 			);
 
@@ -454,7 +454,7 @@ namespace VAS.Tests.Services
 			await App.Current.EventsBroker.Publish (
 				new AddPlaylistElementEvent {
 					PlaylistElements = new List<IPlaylistElement> (),
-					Playlist = playlist2
+					PlaylistVM = new PlaylistVM { Model = playlist2 },
 				}
 			);
 
@@ -498,7 +498,7 @@ namespace VAS.Tests.Services
 						new PlaylistPlayElement (new TimelineEvent { Name = "event1" }),
 						new PlaylistPlayElement (new TimelineEvent { Name = "event2" }),
 					},
-					Playlist = playlist
+					PlaylistVM = new PlaylistVM { Model = playlist }
 				}
 			);
 
@@ -508,7 +508,7 @@ namespace VAS.Tests.Services
 			await App.Current.EventsBroker.Publish (
 				new AddPlaylistElementEvent {
 					PlaylistElements = new List<IPlaylistElement> (),
-					Playlist = playlist2
+					PlaylistVM = new PlaylistVM { Model = playlist2 },
 				}
 			);
 
