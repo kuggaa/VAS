@@ -222,8 +222,9 @@ namespace VAS.Services.Controller
 
 		void HandleVideoPlayerPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if (sender == videoPlayer && e.PropertyName == "CurrentTime" && project.ProjectType == ProjectType.FileProject) {
-				project.Dashboard.CurrentTime = VideoPlayer.CurrentTime;
+			if (videoPlayer.NeedsSync (e.PropertyName, nameof (videoPlayer.CurrentTime), sender, videoPlayer) &&
+			    project.ProjectType == ProjectType.FileProject) {
+				project.Dashboard.CurrentTime = VideoPlayer.AbsoluteCurrentTime;
 			}
 		}
 
