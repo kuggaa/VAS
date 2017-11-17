@@ -297,7 +297,7 @@ namespace VAS.Services.Controller
 				play.CamerasConfig = VideoPlayer.CamerasConfig.Clone ();
 			} else {
 				play.CamerasLayout = null;
-				play.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+				play.CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) };
 			}
 
 			var evt = Project.Timeline.FullTimeline.Where (vm => vm.Model == play).FirstOrDefault ();

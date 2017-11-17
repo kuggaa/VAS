@@ -109,7 +109,7 @@ namespace VAS.Tests.Multimedia
 
 	class DummyMultiPlayer : IMultiVideoPlayer
 	{
-		public ObservableCollection<CameraConfig> CamerasConfig {
+		public RangeObservableCollection<CameraConfig> CamerasConfig {
 			set {
 				throw new NotImplementedException ();
 			}

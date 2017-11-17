@@ -60,9 +60,9 @@ namespace VAS.Services
 		IVideoPlayer player;
 		IMultiVideoPlayer multiPlayer;
 		List<IViewPort> viewPorts;
-		ObservableCollection<CameraConfig> camerasConfig;
-		ObservableCollection<CameraConfig> clonedCamerasConfig;
-		ObservableCollection<CameraConfig> defaultCamerasConfig;
+		RangeObservableCollection<CameraConfig> camerasConfig;
+		RangeObservableCollection<CameraConfig> clonedCamerasConfig;
+		RangeObservableCollection<CameraConfig> defaultCamerasConfig;
 		object defaultCamerasLayout;
 		MediaFileSet defaultFileSet;
 		MediaFileSet mediafileSet;
@@ -152,7 +152,7 @@ namespace VAS.Services
 			set;
 		}
 
-		public virtual ObservableCollection<CameraConfig> CamerasConfig {
+		public virtual RangeObservableCollection<CameraConfig> CamerasConfig {
 			set {
 				Log.Debug ("Updating cameras configuration: " + value);
 				camerasConfig = value;
@@ -174,7 +174,7 @@ namespace VAS.Services
 					defaultCamerasConfig = camerasConfig;
 				}
 				if (LoadedTimelineEvent != null && !(LoadedTimelineEvent.CamerasConfig.SequenceEqualSafe (camerasConfig))) {
-					LoadedTimelineEvent.CamerasConfig = new ObservableCollection<CameraConfig> (camerasConfig);
+					LoadedTimelineEvent.CamerasConfig.Replace (camerasConfig);
 				}
 				if (multiPlayer != null) {
 					multiPlayer.CamerasConfig = camerasConfig;
@@ -979,7 +979,7 @@ namespace VAS.Services
 			}
 		}
 
-		void EmitPrepareViewEvent (ObservableCollection<CameraConfig> camConfig, object camLayout)
+		void EmitPrepareViewEvent (RangeObservableCollection<CameraConfig> camConfig, object camLayout)
 		{
 			playerVM.PrepareView = true;
 			if (camConfig != null) {
@@ -1207,7 +1207,7 @@ namespace VAS.Services
 		/// </summary>
 		/// <param name="camerasConfig">The cameras configuration.</param>
 		/// <param name="layout">The cameras layout.</param>
-		void UpdateCamerasConfig (ObservableCollection<CameraConfig> camerasConfig, object layout)
+		void UpdateCamerasConfig (RangeObservableCollection<CameraConfig> camerasConfig, object layout)
 		{
 			skipApplyCamerasConfig = true;
 			CamerasConfig = camerasConfig;
@@ -1256,7 +1256,7 @@ namespace VAS.Services
 			if (FileSet != null && camerasConfig != null && camerasConfig.Select (c => c.Index).DefaultIfEmpty ().Max () >= FileSet.Count) {
 				Log.Error ("Invalid cameras configuration, fixing list of cameras");
 				UpdateCamerasConfig (
-					new ObservableCollection<CameraConfig> (camerasConfig.Where (i => i.Index < FileSet.Count)),
+					new RangeObservableCollection<CameraConfig> (camerasConfig.Where (i => i.Index < FileSet.Count)),
 					CamerasLayout);
 			}
 		}
@@ -1392,7 +1392,7 @@ namespace VAS.Services
 		/// <param name="camerasLayout">Cameras layout.</param>
 		/// <param name="playing">If set to <c>true</c> starts playing.</param>
 		void LoadSegment (MediaFileSet fileSet, Time start, Time stop, Time seekTime,
-											float rate, ObservableCollection<CameraConfig> camerasConfig, object camerasLayout,
+											float rate, RangeObservableCollection<CameraConfig> camerasConfig, object camerasLayout,
 											bool playing)
 		{
 			Log.Debug (String.Format ("Update player segment {0} {1} {2}",

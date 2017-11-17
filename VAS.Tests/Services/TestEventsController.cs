@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using VAS.Core;
+using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
@@ -34,6 +35,7 @@ using VAS.Services;
 using VAS.Services.Controller;
 using VAS.Services.ViewModel;
 using VASCountLimitedObjects = VAS.Core.Common.VASCountLimitedObjects;
+using Timer = VAS.Core.Store.Timer;
 
 namespace VAS.Tests.Services
 {
@@ -56,9 +58,9 @@ namespace VAS.Tests.Services
 			playerController = new Mock<IVideoPlayerController> ();
 			videoPlayer = new VideoPlayerVM {
 				Player = playerController.Object,
-				CamerasConfig = new ObservableCollection<CameraConfig> ()
+				CamerasConfig = new RangeObservableCollection<CameraConfig> ()
 			};
-				
+
 			Mock<IVideoPlayer> playerMock = new Mock<IVideoPlayer> ();
 			playerMock.SetupAllProperties ();
 			/* Mock properties without setter */
@@ -405,7 +407,7 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (currentCount + 1, projectVM.Timeline.FullTimeline.Count ());
 			Assert.AreSame (ev.EventType, projectVM.Timeline.FullTimeline.Model [currentCount].EventType);
 			mockLimitationService.Verify (ls => ls.MoveToUpgradeDialog (VASCountLimitedObjects.TimelineEvents.ToString ()),
-			                              Times.Never);
+										  Times.Never);
 		}
 
 		[Test]
@@ -433,7 +435,7 @@ namespace VAS.Tests.Services
 
 			Assert.AreEqual (currentCount, projectVM.Timeline.FullTimeline.Count ());
 			mockLimitationService.Verify (ls => ls.MoveToUpgradeDialog (VASCountLimitedObjects.TimelineEvents.ToString ()),
-			                              Times.Once);
+										  Times.Once);
 		}
 
 		[Test]
@@ -575,7 +577,7 @@ namespace VAS.Tests.Services
 				Par = 1,
 				Duration = new Time { TotalSeconds = 5000 }
 			});
-			player.CamerasConfig = new ObservableCollection<CameraConfig> {
+			player.CamerasConfig = new RangeObservableCollection<CameraConfig> {
 					new CameraConfig (0),
 					new CameraConfig (1)
 				};

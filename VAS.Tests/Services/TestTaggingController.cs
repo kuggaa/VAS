@@ -66,7 +66,7 @@ namespace VAS.Tests.Services
 			teams = new List<TeamVM> { team1, team2 };
 			project = new DummyProjectVM (teams) { Model = new Utils.ProjectDummy () };
 			videoPlayer = new VideoPlayerVM {
-				CamerasConfig = new ObservableCollection<CameraConfig> ()
+				CamerasConfig = new RangeObservableCollection<CameraConfig> ()
 			};
 			controller = new Utils.DummyTaggingController ();
 			controller.SetViewModel (new ProjectAnalysisVM<ProjectVM> {

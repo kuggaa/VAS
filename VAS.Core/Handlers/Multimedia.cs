@@ -1,4 +1,4 @@
-//
+﻿//
 //  Copyright (C) 2010 Andoni Morales Alastruey
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -46,7 +46,7 @@ namespace VAS.Core.Handlers
 	public delegate void MediaInfoHandler (int width, int height, int parN, int parD);
 	public delegate void LoadDrawingsHandler (FrameDrawing frameDrawing);
 	public delegate void ElementLoadedHandler (object element, bool hasNext);
-	public delegate void MediaFileSetLoadedHandler (MediaFileSet fileset, ObservableCollection<CameraConfig> camerasConfig = null);
+	public delegate void MediaFileSetLoadedHandler (MediaFileSet fileset, RangeObservableCollection<CameraConfig> camerasConfig = null);
 	public delegate void ScopeStateChangedHandler (int index, bool visible);
 	public delegate void PrepareViewHandler ();
 
