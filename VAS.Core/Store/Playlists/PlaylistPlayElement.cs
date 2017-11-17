@@ -94,8 +94,9 @@ namespace VAS.Core.Store.Playlists
 		}
 
 		/// <summary>
-		/// The title of the playlist element
+		/// Gets or sets the title of the playlist element
 		/// </summary>
+		/// <value>The title of the playlist element</value>
 		public string Title {
 			get;
 			set;

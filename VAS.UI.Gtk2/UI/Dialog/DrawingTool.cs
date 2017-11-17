@@ -29,6 +29,7 @@ using VAS.Core.Interfaces.GUI;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
+using VAS.Core.ViewModel;
 using VAS.Drawing.Cairo;
 using VAS.Drawing.Widgets;
 using VAS.Services.State;
@@ -52,7 +53,7 @@ namespace VAS.UI.Dialog
 		const double ZOOM_PAGE = 0.2;
 
 		readonly Blackboard blackboard;
-		TimelineEvent play;
+		TimelineEventVM playVM;
 		FrameDrawing drawing;
 		CameraConfig camConfig;
 		Drawable selectedDrawable;
@@ -238,8 +239,8 @@ namespace VAS.UI.Dialog
 				viewModel = value;
 				if (viewModel != null) {
 					viewModel.PropertyChanged += HandleViewModelPropertyChanged;
-					if (viewModel.TimelineEvent != null) {
-						LoadPlay (viewModel.TimelineEvent, viewModel.Frame, viewModel.Drawing, viewModel.CameraConfig);
+					if (viewModel.TimelineEventVM?.Model != null) {
+						LoadPlay (viewModel.TimelineEventVM, viewModel.Frame, viewModel.Drawing, viewModel.CameraConfig);
 					} else {
 						LoadFrame (viewModel.Frame);
 					}
@@ -399,10 +400,10 @@ namespace VAS.UI.Dialog
 			}
 		}
 
-		public void LoadPlay (TimelineEvent play, Image frame, FrameDrawing drawing,
+		public void LoadPlay (TimelineEventVM playVM, Image frame, FrameDrawing drawing,
 							  CameraConfig camConfig)
 		{
-			this.play = play;
+			this.playVM = playVM;
 			this.drawing = drawing;
 			this.camConfig = camConfig;
 			scaleFactor = (double)frame.Width / 500;
@@ -671,13 +672,13 @@ namespace VAS.UI.Dialog
 		async Task SaveToProject ()
 		{
 			drawing.RegionOfInterest = blackboard.RegionOfInterest;
-			if (!play.Drawings.Contains (drawing)) {
-				play.Drawings.Add (drawing);
+			if (!playVM.Drawings.Contains (drawing)) {
+				playVM.Drawings.Add (drawing);
 			}
 			drawing.Miniature = blackboard.Save ();
 			drawing.Miniature.ScaleInplace (Constants.MAX_THUMBNAIL_SIZE,
 				Constants.MAX_THUMBNAIL_SIZE);
-			play.UpdateMiniature ();
+			playVM.Model.UpdateMiniature ();
 			drawing = null;
 			ViewModel.DrawingSaved ();
 			await App.Current.StateController.MoveBack ();

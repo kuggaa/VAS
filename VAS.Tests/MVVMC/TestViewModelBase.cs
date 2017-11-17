@@ -69,12 +69,13 @@ namespace VAS.Tests.MVVMC
 		public void TestForwardModelChangesToVMWithPlaylists ()
 		{
 			object senderObject = null;
-			var model = new Playlist ();
 			var viewModel = new PlaylistVM {
-				Model = model,
+				Model = new Playlist (),
 			};
 			TimelineEvent timelineEvent = new TimelineEvent ();
-			model.Elements.Add (new PlaylistPlayElement (timelineEvent));
+
+			viewModel.Model.Elements.Add (new PlaylistPlayElement (timelineEvent));
+
 			viewModel.PropertyChanged += (sender, e) => {
 				senderObject = sender;
 			};

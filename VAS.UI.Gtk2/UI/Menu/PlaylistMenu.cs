@@ -22,6 +22,7 @@ using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
+using VAS.Core.ViewModel;
 
 namespace VAS.UI.Menus
 {
@@ -108,7 +109,7 @@ namespace VAS.UI.Menus
 			render = new MenuItem (Catalog.GetString ("Render"));
 			render.Activated += (sender, e) => App.Current.EventsBroker.Publish<RenderPlaylistEvent> (
 				new RenderPlaylistEvent {
-					Playlist = playlist
+					PlaylistVM = new PlaylistVM { Model = playlist }
 				}
 			);
 			Append (render);

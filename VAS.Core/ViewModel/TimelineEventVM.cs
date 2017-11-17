@@ -16,7 +16,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.ObjectModel;
 using VAS.Core.Common;
+using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
@@ -26,7 +28,7 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// A ViewModel for <see cref="TimelineEvent"/> objects.
 	/// </summary>
-	public class TimelineEventVM : TimeNodeVM, IComparable, IViewModel<TimelineEvent>
+	public class TimelineEventVM : TimeNodeVM, IComparable, IPlaylistElementVM<TimelineEvent>
 	{
 		public virtual new TimelineEvent Model {
 			get {
@@ -91,6 +93,54 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
+		/// Gets the drawings.
+		/// </summary>
+		/// <value>The drawings.</value>
+		public RangeObservableCollection<FrameDrawing> Drawings {
+			get {
+				return Model.Drawings;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the opaque object used by the view to describe the cameras layout.
+		/// </summary>
+		public object CamerasLayout {
+			get {
+				return Model.CamerasLayout;
+			}
+			set {
+				Model.CamerasLayout = value;
+			}
+		}
+
+		/// <summary>
+		/// A list of visible <see cref="CameraConfig"/> for this event.
+		/// </summary>
+		public ObservableCollection<CameraConfig> CamerasConfig {
+			get {
+				return Model.CamerasConfig;
+			}
+			set {
+				Model.CamerasConfig = value;
+			}
+		}
+
+		//FIXME: Use MediaFileSetVM instead of MediaFileset
+		/// <summary>
+		/// Gets or sets the file set for the model.
+		/// </summary>
+		/// <value>The file set.</value>
+		public MediaFileSet FileSet {
+			get {
+				return Model.FileSet;
+			}
+			set {
+				Model.FileSet = value;
+			}
+		}
+
+		/// <summary>
 		/// Gets or sets a value indicating whether this <see cref="VAS.Services.ViewModel.TimelineEventVM`1"/> is selected.
 		/// </summary>
 		/// <value><c>true</c> if selected; otherwise, <c>false</c>.</value>
@@ -119,6 +169,10 @@ namespace VAS.Core.ViewModel
 				Model.FieldPosition = value;
 			}
 		}
+
+		public string Description => Model.Description;
+
+		public Image Miniature => Model.Miniature;
 
 		/// <summary>
 		/// Compare the specified timelineEventVM with the calling one.

@@ -95,8 +95,8 @@ namespace VAS.UI.Component
 		/// <summary>
 		/// Shows the menu for the a list of events.
 		/// </summary>
-		/// <param name="events">Events.</param>
-		protected virtual void ShowMenu (IEnumerable<TimelineEventVM> events)
+		/// <param name="eventVMs">Events.</param>
+		protected virtual void ShowMenu (IEnumerable<TimelineEventVM> eventVMs)
 		{
 		}
 

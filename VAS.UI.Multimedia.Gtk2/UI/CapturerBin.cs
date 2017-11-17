@@ -27,6 +27,7 @@ using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Resources.Styles;
 using VAS.Core.Store;
+using VAS.Core.ViewModel;
 using VAS.UI.Helpers;
 using Image = VAS.Core.Common.Image;
 using Misc = VAS.UI.Helpers.Misc;
@@ -50,7 +51,7 @@ namespace VAS.UI
 		Time accumTime;
 		DateTime currentPeriodStart;
 		List<string> gamePeriods;
-		TimelineEvent lastevent;
+		TimelineEventVM lasteventVM;
 		MediaFile outputFile;
 		bool readyToCapture;
 		TextView hourText;
@@ -393,7 +394,8 @@ namespace VAS.UI
 			InternalRun (settings, outputFile);
 		}
 
-		void InternalRun (CaptureSettings captureSettings, MediaFile outFile) {
+		void InternalRun (CaptureSettings captureSettings, MediaFile outFile)
+		{
 			Reset ();
 			if (type == CapturerType.Live) {
 				ReadyToCapture = false;
@@ -541,17 +543,17 @@ namespace VAS.UI
 		void HandleEventCreated (EventCreatedEvent e)
 		{
 			lasteventbox.Visible = true;
-			lastlabel.Text = e.TimelineEvent.Name;
-			lastlabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (e.TimelineEvent.Color));
-			lastevent = e.TimelineEvent;
+			lastlabel.Text = e.TimelineEventVM.Name;
+			lastlabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (e.TimelineEventVM.Color));
+			lasteventVM = e.TimelineEventVM;
 		}
 
 		void HandlePlayLast (object sender, EventArgs e)
 		{
-			if (lastevent != null) {
+			if (lasteventVM != null) {
 				App.Current.EventsBroker.Publish (
-					new LoadTimelineEventEvent<TimelineEvent> {
-						Object = lastevent,
+					new LoadTimelineEventEvent<TimelineEventVM> {
+						Object = lasteventVM,
 						Playing = true,
 					}
 				);
@@ -560,13 +562,13 @@ namespace VAS.UI
 
 		void HandleDeleteLast (object sender, EventArgs e)
 		{
-			if (lastevent != null) {
+			if (lasteventVM != null) {
 				App.Current.EventsBroker.Publish<EventsDeletedEvent> (
 					new EventsDeletedEvent {
-						TimelineEvents = new List<TimelineEvent> { lastevent }
+						TimelineEventVMs = new List<TimelineEventVM> { lasteventVM }
 					}
 				);
-				lastevent = null;
+				lasteventVM = null;
 				lasteventbox.Visible = false;
 			}
 		}

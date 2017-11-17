@@ -15,6 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -131,7 +132,7 @@ namespace VAS.Tests.Services
 				Object = evVM1
 			});
 
-			playerController.Verify (p => p.LoadEvent (It.Is<TimelineEvent> (tle => tle == ev1),
+			playerController.Verify (p => p.LoadEvent (It.Is<TimelineEventVM> (vm => vm == evVM1),
 													   It.IsAny<Time> (), It.IsAny<bool> ()), Times.Once);
 		}
 
@@ -142,7 +143,7 @@ namespace VAS.Tests.Services
 				Object = null
 			});
 
-			playerController.Verify (p => p.LoadEvent (It.IsAny<TimelineEvent> (),
+			playerController.Verify (p => p.LoadEvent (It.IsAny<TimelineEventVM> (),
 													   It.IsAny<Time> (), It.IsAny<bool> ()), Times.Never);
 			playerController.Verify (p => p.UnloadCurrentEvent (), Times.Once);
 		}
@@ -156,7 +157,7 @@ namespace VAS.Tests.Services
 				Object = eventList
 			});
 
-			playerController.Verify (p => p.LoadPlaylistEvent (It.Is<Playlist> (pl => pl.Elements.Count == 2),
+			playerController.Verify (p => p.LoadPlaylistEvent (It.Is<PlaylistVM> (pl => pl.ChildModels.Count == 2),
 															   It.Is<IPlaylistElement> (pe => ComparePlaylistElement (pe, ev1)),
 															   It.IsAny<bool> ()), Times.Once);
 		}
@@ -171,9 +172,9 @@ namespace VAS.Tests.Services
 				Object = originalEventList
 			});
 
-			playerController.Verify (p => p.LoadPlaylistEvent (It.Is<Playlist> (pl => ComparePlaylist(pl, playedEventList)),
+			playerController.Verify (p => p.LoadPlaylistEvent (It.Is<PlaylistVM> (pl => ComparePlaylist (pl, playedEventList)),
 															   It.Is<IPlaylistElement> (pe => ComparePlaylistElement (pe, ev11)),
-			                                                                    It.IsAny<bool> ()), Times.Once);
+																				It.IsAny<bool> ()), Times.Once);
 		}
 
 		[Test]
@@ -186,7 +187,7 @@ namespace VAS.Tests.Services
 				Object = originalEventList
 			});
 
-			playerController.Verify (p => p.LoadPlaylistEvent (It.Is<Playlist> (pl => ComparePlaylist (pl, playedEventList)),
+			playerController.Verify (p => p.LoadPlaylistEvent (It.Is<PlaylistVM> (pl => ComparePlaylist (pl, playedEventList)),
 															   It.Is<IPlaylistElement> (pe => ComparePlaylistElement (pe, ev1)),
 																				It.IsAny<bool> ()), Times.Once);
 		}
@@ -200,22 +201,22 @@ namespace VAS.Tests.Services
 
 			eTypeVM.LoadEventType ();
 
-			playerController.Verify (p => p.LoadPlaylistEvent (It.Is<Playlist> (pl => pl.Elements.Count == 2),
+			playerController.Verify (p => p.LoadPlaylistEvent (It.Is<PlaylistVM> (pl => pl.ChildModels.Count == 2),
 															   It.Is<IPlaylistElement> (pe => ComparePlaylistElement (pe, ev1)),
 															   It.IsAny<bool> ()), Times.Once);
 		}
 
 		[Test]
-		public void EventsController_LoadEventTypeTimelineVM_OrderedByStartTime ()
+		public async Task EventsController_LoadEventTypeTimelineVM_OrderedByStartTime ()
 		{
 			EventTypeTimelineVM eTypeVM = new EventTypeTimelineVM ();
 			eTypeVM.ViewModels.Add (evVM2);
 			eTypeVM.ViewModels.Add (evVM1);
 			List<TimelineEventVM> playedEventList = new List<TimelineEventVM> { evVM1, evVM2 };
 
-			eTypeVM.LoadEventType ();
+			await eTypeVM.LoadEventType ();
 
-			playerController.Verify (p => p.LoadPlaylistEvent (It.Is<Playlist> (pl => ComparePlaylist (pl, playedEventList)),
+			playerController.Verify (p => p.LoadPlaylistEvent (It.Is<PlaylistVM> (pl => ComparePlaylist (pl, playedEventList)),
 															   It.Is<IPlaylistElement> (pe => ComparePlaylistElement (pe, ev1)),
 															   It.IsAny<bool> ()), Times.Once);
 		}
@@ -230,7 +231,7 @@ namespace VAS.Tests.Services
 
 			eTypeVM.LoadEventType ();
 
-			playerController.Verify (p => p.LoadPlaylistEvent (It.Is<Playlist> (pl => pl.Elements.Count == 1),
+			playerController.Verify (p => p.LoadPlaylistEvent (It.Is<PlaylistVM> (pl => pl.ChildModels.Count == 1),
 															   It.Is<IPlaylistElement> (pe => ComparePlaylistElement (pe, ev2)),
 															   It.IsAny<bool> ()), Times.Once);
 		}
@@ -242,13 +243,15 @@ namespace VAS.Tests.Services
 
 			EventType e1 = projectVM.Model.EventTypes [0];
 			EventType e2 = projectVM.Model.EventTypes [1];
+
 			var eventsToMove = projectVM.Model.Timeline.Where (e => e.EventType == e1).ToList ();
+
 			Assert.AreEqual (1, eventsToMove.Count);
 			Assert.AreEqual (1, projectVM.Model.Timeline.Count (e => e.EventType == e2));
 
 			App.Current.EventsBroker.Publish (
 				new MoveToEventTypeEvent {
-					TimelineEvents = eventsToMove,
+					TimelineEventVMs = eventsToMove.Select (evt => new TimelineEventVM () { Model = evt }).ToList (),
 					EventType = e2,
 				}
 			);
@@ -340,13 +343,13 @@ namespace VAS.Tests.Services
 			};
 
 			App.Current.EventsBroker.Publish (new NewDashboardEvent {
-				TimelineEvent = ev
+				TimelineEventVM = new TimelineEventVM () { Model = ev }
 			});
 
 			Assert.AreEqual (currentCount + 1, projectVM.Timeline.FullTimeline.Count ());
 			Assert.AreSame (ev, projectVM.Timeline.FullTimeline.Model [currentCount]);
 			mockLimitationService.Verify (ls => ls.MoveToUpgradeDialog (VASCountLimitedObjects.TimelineEvents.ToString ()),
-			                              Times.Never);
+										  Times.Never);
 		}
 
 		[Test]
@@ -366,12 +369,12 @@ namespace VAS.Tests.Services
 			};
 
 			App.Current.EventsBroker.Publish (new NewDashboardEvent {
-				TimelineEvent = ev
+				TimelineEventVM = new TimelineEventVM { Model = ev }
 			});
 
 			Assert.AreEqual (currentCount, projectVM.Timeline.FullTimeline.Count ());
 			mockLimitationService.Verify (ls => ls.MoveToUpgradeDialog (VASCountLimitedObjects.TimelineEvents.ToString ()),
-			                              Times.Once);
+										  Times.Once);
 		}
 
 		[Test]
@@ -436,8 +439,10 @@ namespace VAS.Tests.Services
 
 			int currentCount = projectVM.Timeline.FullTimeline.Count ();
 
+			var plays = projectVM.Timeline.FullTimeline.Model.Select (m => new TimelineEventVM () { Model = m }).ToList ();
+
 			App.Current.EventsBroker.Publish (new DuplicateEventsEvent {
-				TimelineEvents = projectVM.Timeline.FullTimeline.Model.ToList ()
+				TimelineEventVMs = plays
 			});
 
 			Assert.AreEqual (2 * currentCount, projectVM.Timeline.FullTimeline.Count ());
@@ -454,8 +459,10 @@ namespace VAS.Tests.Services
 
 			int currentCount = projectVM.Timeline.FullTimeline.Count ();
 
+			var plays = projectVM.Timeline.FullTimeline.Model.Select (m => new TimelineEventVM () { Model = m }).ToList ();
+
 			App.Current.EventsBroker.Publish (new DuplicateEventsEvent {
-				TimelineEvents = projectVM.Timeline.FullTimeline.Model.ToList ()
+				TimelineEventVMs = plays
 			});
 
 			Assert.AreEqual (currentCount, projectVM.Timeline.FullTimeline.Count ());
@@ -476,7 +483,7 @@ namespace VAS.Tests.Services
 			int countBeforeDelete = projectVM.Timeline.Model.Count;
 
 			App.Current.EventsBroker.Publish (new EventsDeletedEvent {
-				TimelineEvents = new List<TimelineEvent> { evNotDeletable }
+				TimelineEventVMs = new List<TimelineEventVM> { new TimelineEventVM () { Model = evNotDeletable } }
 			});
 
 			int countAfterDelete = projectVM.Timeline.Model.Count;
@@ -495,8 +502,10 @@ namespace VAS.Tests.Services
 			evNotDeletable.Stop = new Time (8000);
 			projectVM.Timeline.Model.Add (evNotDeletable);
 
+			var plays = projectVM.Timeline.Model.Select (m => new TimelineEventVM () { Model = m });
+
 			App.Current.EventsBroker.Publish (new EventsDeletedEvent {
-				TimelineEvents = projectVM.Timeline.Model
+				TimelineEventVMs = plays
 			});
 
 			Assert.AreEqual (1, projectVM.Timeline.Model.Count);
@@ -524,19 +533,17 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (countBeforeDelete, projectVM.Timeline.Model.Count);
 		}
 
-		bool ComparePlaylist (Playlist playlist, List<TimelineEventVM> eventList)
+		bool ComparePlaylist (PlaylistVM playlist, List<TimelineEventVM> eventList)
 		{
-			if (playlist.Elements.Count () != eventList.Count ())
-			{
+			if (playlist.ChildModels.Count () != eventList.Count ()) {
 				return false;
 			}
 
-			int count = playlist.Elements.Count ();
+			int count = playlist.ChildModels.Count ();
 
-			for (int i = 0; i < count; i++)
-			{
-				if (!ComparePlaylistElement (playlist.Elements[i],
-				                             eventList[i].Model)) {
+			for (int i = 0; i < count; i++) {
+				if (!ComparePlaylistElement (playlist.ChildModels [i],
+											 eventList [i].Model)) {
 					return false;
 				}
 			}

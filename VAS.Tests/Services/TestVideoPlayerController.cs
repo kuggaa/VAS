@@ -44,9 +44,9 @@ namespace VAS.Tests.Services
 		MediaFileSet mfs;
 		VideoPlayerController player;
 		Time currentTime, streamLength;
-		TimelineEvent evt;
-		TimelineEvent evt2;
-		TimelineEvent evt3;
+		TimelineEventVM eventVM1;
+		TimelineEventVM eventVM2;
+		TimelineEventVM eventVM3;
 		PlaylistImage plImage;
 		Playlist playlist;
 		PlaylistController plController;
@@ -124,27 +124,33 @@ namespace VAS.Tests.Services
 			mtkMock.Setup (m => m.GetMultiPlayer ()).Throws (new Exception ());
 			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
 
-			evt = new TimelineEvent {
-				Start = new Time (100),
-				Stop = new Time (200),
-				CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) },
-				FileSet = mfs
+			eventVM1 = new TimelineEventVM () {
+				Model = new TimelineEvent {
+					Start = new Time (100),
+					Stop = new Time (200),
+					CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) },
+					FileSet = mfs
+				}
 			};
-			evt2 = new TimelineEvent {
-				Start = new Time (1000),
-				Stop = new Time (20000),
-				CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) },
-				FileSet = mfs
+			eventVM2 = new TimelineEventVM () {
+				Model = new TimelineEvent {
+					Start = new Time (1000),
+					Stop = new Time (20000),
+					CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) },
+					FileSet = mfs
+				}
 			};
-			evt3 = new TimelineEvent {
-				Start = new Time (100),
-				Stop = new Time (200),
-				CamerasConfig = new ObservableCollection<CameraConfig> (),
-				FileSet = mfs
+			eventVM3 = new TimelineEventVM () {
+				Model = new TimelineEvent {
+					Start = new Time (100),
+					Stop = new Time (200),
+					CamerasConfig = new ObservableCollection<CameraConfig> (),
+					FileSet = mfs
+				}
 			};
 			plImage = new PlaylistImage (Utils.LoadImageFromFile (), new Time (5000));
 			playlist = new Playlist ();
-			playlist.Elements.Add (new PlaylistPlayElement (evt));
+			playlist.Elements.Add (new PlaylistPlayElement (eventVM1.Model));
 			playlist.Elements.Add (plImage);
 			currentTime = new Time (0);
 
@@ -220,14 +226,14 @@ namespace VAS.Tests.Services
 			double expected = 2;
 
 			PreparePlayer ();
-			player.LoadEvent (evt, currentTime, true);
+			player.LoadEvent (eventVM1, currentTime, true);
 			player.PlaybackRateChangedEvent += (rate) => r = 10;
 
 			player.Rate = expected; // Event is raised
 
 			Assert.AreEqual (10, r, "Fails because PlaybackRateChangedEvent is not called");
 			Assert.AreEqual (expected, player.Rate, "Fails because player has an incorrect rate");
-			Assert.AreEqual (expected, evt.Rate, "Fails because event has an incorrect rate");
+			Assert.AreEqual (expected, eventVM1.Model.Rate, "Fails because event has an incorrect rate");
 		}
 
 		[Test ()]
@@ -414,7 +420,8 @@ namespace VAS.Tests.Services
 			/* Check now with a still image loaded */
 			playerMock.ResetCalls ();
 			player.Ready (true);
-			player.LoadPlaylistEvent (playlist, plImage, true);
+			var playlistVM = new PlaylistVM { Model = playlist };
+			player.LoadPlaylistEvent (playlistVM, plImage, true);
 			player.Play ();
 			playerMock.Verify (p => p.Play (It.IsAny<bool> ()), Times.Never ());
 			playerMock.Verify (p => p.Pause (false), Times.Once ());
@@ -487,7 +494,8 @@ namespace VAS.Tests.Services
 			playerMock.ResetCalls ();
 
 			currentTime = new Time (5000);
-			player.LoadPlaylistEvent (playlist, plImage, true);
+			var playlistVM = new PlaylistVM { Model = playlist };
+			player.LoadPlaylistEvent (playlistVM, plImage, true);
 			player.Seek (currentTime, true, true, false);
 			playerMock.Verify (p => p.Seek (currentTime, It.IsAny<bool> (), It.IsAny<bool> ()), Times.Never ());
 			Assert.AreEqual (2, drawingsCount);
@@ -527,9 +535,9 @@ namespace VAS.Tests.Services
 
 			/* Seek with a segment loaded */
 			timeChanged = 0;
-			seekPos = (int)(evt.Duration.MSeconds * 0.5);
-			currentTime = new Time (evt.Start.MSeconds + seekPos);
-			player.LoadEvent (evt, new Time (0), true);
+			seekPos = (int)(eventVM1.Duration.MSeconds * 0.5);
+			currentTime = new Time (eventVM1.Start.MSeconds + seekPos);
+			player.LoadEvent (eventVM1, new Time (0), true);
 			playerMock.ResetCalls ();
 			player.Seek (0.1f);
 			player.Seek (0.5f);
@@ -540,11 +548,11 @@ namespace VAS.Tests.Services
 			// Check we got called only once
 			playerMock.Verify (p => p.Seek (It.IsAny<Time> (), true, false), Times.Once ());
 			// And with the last value
-			playerMock.Verify (p => p.Seek (new Time (evt.Start.MSeconds + seekPos), true, false), Times.Once ());
+			playerMock.Verify (p => p.Seek (new Time (eventVM1.Start.MSeconds + seekPos), true, false), Times.Once ());
 			Assert.IsTrue (timeChanged != 0);
 			/* current time is now relative to the loaded segment's duration */
-			Assert.AreEqual (evt.Duration * 0.5, curTime);
-			Assert.AreEqual (evt.Duration, strLenght);
+			Assert.AreEqual (eventVM1.Duration * 0.5, curTime);
+			Assert.AreEqual (eventVM1.Duration, strLenght);
 
 			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
 		}
@@ -611,7 +619,8 @@ namespace VAS.Tests.Services
 			playerMock.ResetCalls ();
 			loadDrawingsChanged = 0;
 			timeChanged = 0;
-			player.LoadPlaylistEvent (playlist, plImage, true);
+			var playlistVM = new PlaylistVM { Model = playlist };
+			player.LoadPlaylistEvent (playlistVM, plImage, true);
 			player.SeekToNextFrame ();
 			playerMock.Verify (p => p.SeekToNextFrame (), Times.Never ());
 			Assert.AreEqual (0, loadDrawingsChanged);
@@ -635,14 +644,14 @@ namespace VAS.Tests.Services
 			/* Now with an event loaded */
 			currentTime = new Time (5000);
 			player.UnloadCurrentEvent ();
-			player.LoadEvent (evt2, new Time (0), true);
+			player.LoadEvent (eventVM2, new Time (0), true);
 			timeChanged = 0;
 			playerMock.ResetCalls ();
 			player.SeekToNextFrame ();
 			playerMock.Verify (p => p.SeekToNextFrame (), Times.Once ());
 			Assert.AreEqual (1, timeChanged);
-			Assert.AreEqual (currentTime - evt2.Start, curTime);
-			Assert.AreEqual (evt2.Duration, strLenght);
+			Assert.AreEqual (currentTime - eventVM2.Start, curTime);
+			Assert.AreEqual (eventVM2.Duration, strLenght);
 
 			loadDrawingsChanged = 0;
 			timeChanged = 0;
@@ -650,8 +659,8 @@ namespace VAS.Tests.Services
 			playerMock.Verify (p => p.SeekToPreviousFrame (), Times.Once ());
 			Assert.AreEqual (1, loadDrawingsChanged);
 			Assert.AreEqual (1, timeChanged);
-			Assert.AreEqual (currentTime - evt2.Start, curTime);
-			Assert.AreEqual (evt2.Duration, strLenght);
+			Assert.AreEqual (currentTime - eventVM2.Start, curTime);
+			Assert.AreEqual (eventVM2.Duration, strLenght);
 
 			playerMock.ResetCalls ();
 			loadDrawingsChanged = 0;
@@ -729,7 +738,8 @@ namespace VAS.Tests.Services
 			player.Next ();
 			Assert.AreEqual (0, nextSent);
 
-			player.LoadPlaylistEvent (playlist, playlist.Elements [0], true);
+			var playlistVM = new PlaylistVM { Model = playlist };
+			player.LoadPlaylistEvent (playlistVM, playlist.Elements [0], true);
 			Assert.AreEqual (0, playlist.CurrentIndex);
 			Assert.AreEqual (1, nextSent);
 
@@ -751,14 +761,15 @@ namespace VAS.Tests.Services
 			bool stateBeforeNext, stateAfterNext;
 			PreparePlayer ();
 			//Testing state playing
-			player.LoadPlaylistEvent (playlist, playlist.Elements [0], true);
+			var playlistVM = new PlaylistVM { Model = playlist };
+			player.LoadPlaylistEvent (playlistVM, playlist.Elements [0], true);
 			stateBeforeNext = player.Playing;
 			Assert.IsTrue (stateBeforeNext);
 			player.Next ();
 			stateAfterNext = player.Playing;
 			Assert.AreEqual (stateBeforeNext, stateAfterNext);
 			//Testing State Pause
-			player.LoadPlaylistEvent (playlist, playlist.Elements [0], true);
+			player.LoadPlaylistEvent (playlistVM, playlist.Elements [0], true);
 			player.Pause ();
 			stateBeforeNext = player.Playing;
 			Assert.IsFalse (stateBeforeNext);
@@ -779,13 +790,14 @@ namespace VAS.Tests.Services
 			playerMock.Verify (p => p.Seek (new Time (0), true, false));
 			Assert.AreEqual (0, prevSent);
 
-			player.LoadEvent (evt, new Time (0), false);
+			player.LoadEvent (eventVM1, new Time (0), false);
 			playerMock.ResetCalls ();
 			player.Previous (false);
-			playerMock.Verify (p => p.Seek (evt.Start, true, false));
+			playerMock.Verify (p => p.Seek (eventVM1.Start, true, false));
 			Assert.AreEqual (0, prevSent);
 
-			player.LoadPlaylistEvent (playlist, playlist.Elements [0], true);
+			var playlistVM = new PlaylistVM { Model = playlist };
+			player.LoadPlaylistEvent (playlistVM, playlist.Elements [0], true);
 			Assert.AreEqual (1, prevSent);
 			playerMock.ResetCalls ();
 			player.Previous (false);
@@ -803,14 +815,15 @@ namespace VAS.Tests.Services
 			bool stateBeforePrevious, stateAfterPrevious;
 			PreparePlayer ();
 			//Testing state playing
-			player.LoadPlaylistEvent (playlist, playlist.Elements [1], true);
+			var playlistVM = new PlaylistVM { Model = playlist };
+			player.LoadPlaylistEvent (playlistVM, playlist.Elements [1], true);
 			stateBeforePrevious = player.Playing;
 			Assert.IsTrue (stateBeforePrevious);
 			player.Previous ();
 			stateAfterPrevious = player.Playing;
 			Assert.AreEqual (stateBeforePrevious, stateAfterPrevious);
 			//Testing State Pause
-			player.LoadPlaylistEvent (playlist, playlist.Elements [1], true);
+			player.LoadPlaylistEvent (playlistVM, playlist.Elements [1], true);
 			player.Pause ();
 			stateBeforePrevious = player.Playing;
 			Assert.IsFalse (stateBeforePrevious);
@@ -837,7 +850,7 @@ namespace VAS.Tests.Services
 
 			App.Current.EventsBroker.Publish<LoadEventEvent> (
 				new LoadEventEvent {
-					TimelineEvent = evt
+					TimelineEventVM = eventVM1
 				}
 			);
 			// loadedPlay != null
@@ -845,7 +858,7 @@ namespace VAS.Tests.Services
 
 			player.Previous (false);
 
-			playerMock.Verify (player => player.Seek (evt.Start, It.IsAny<bool> (), It.IsAny<bool> ()), Times.Once ());
+			playerMock.Verify (player => player.Seek (eventVM1.Start, It.IsAny<bool> (), It.IsAny<bool> ()), Times.Once ());
 			Assert.AreEqual (0, playlistElementSelected);
 
 			App.Current.EventsBroker.Unsubscribe<LoadPlaylistElementEvent> (et);
@@ -882,7 +895,8 @@ namespace VAS.Tests.Services
 			element.Play.Start = new Time (0);
 			element.Play.Stop = new Time (10000);
 			localPlaylist.Elements.Add (element);
-			player.LoadPlaylistEvent (localPlaylist, element, false);
+			var localPlaylistVM = new PlaylistVM { Model = localPlaylist };
+			player.LoadPlaylistEvent (localPlaylistVM, element, false);
 			playerMock.ResetCalls ();
 
 			Assert.AreEqual (1, playlistElementLoaded);
@@ -908,7 +922,8 @@ namespace VAS.Tests.Services
 			element.Play.Start = new Time (0);
 			localPlaylist.Elements.Add (element0);
 			localPlaylist.Elements.Add (element);
-			player.Switch (null, localPlaylist, element);
+			var localPlaylistVM = new PlaylistVM { Model = localPlaylist };
+			player.Switch (null, localPlaylistVM, element);
 			playerMock.ResetCalls ();
 
 			player.Previous (false);
@@ -930,7 +945,8 @@ namespace VAS.Tests.Services
 			Playlist localPlaylist = new Playlist ();
 			IPlaylistElement element = new PlaylistImage (new Image (1, 1), new Time (10));
 			localPlaylist.Elements.Add (element);
-			player.Switch (null, localPlaylist, element);
+			var localPlaylistVM = new PlaylistVM { Model = localPlaylist };
+			player.Switch (null, localPlaylistVM, element);
 			playerMock.ResetCalls ();
 
 			player.Previous (false);
@@ -955,7 +971,8 @@ namespace VAS.Tests.Services
 			element.Play.Start = new Time (0);
 			localPlaylist.Elements.Add (element0);
 			localPlaylist.Elements.Add (element);
-			player.Switch (null, localPlaylist, element);
+			var localPlaylistVM = new PlaylistVM { Model = localPlaylist };
+			player.Switch (null, localPlaylistVM, element);
 			playerMock.ResetCalls ();
 
 			player.Previous (true);
@@ -976,16 +993,18 @@ namespace VAS.Tests.Services
 			playerMock.Verify (p => p.Pause (false), Times.Once ());
 			playerMock.ResetCalls ();
 
-			TimelineEvent evtLocal = new TimelineEvent {
-				Start = new Time (100),
-				Stop = new Time (20000),
-				CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) },
-				FileSet = mfs
+			TimelineEventVM evtLocalVM = new TimelineEventVM () {
+				Model = new TimelineEvent {
+					Start = new Time (100),
+					Stop = new Time (20000),
+					CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) },
+					FileSet = mfs
+				}
 			};
-			player.LoadEvent (evtLocal, new Time (0), true);
+			player.LoadEvent (evtLocalVM, new Time (0), true);
 			playerMock.ResetCalls ();
 			playerMock.Raise (p => p.Eos += null, this);
-			playerMock.Verify (p => p.Seek (evtLocal.Start, true, false), Times.Once ());
+			playerMock.Verify (p => p.Seek (evtLocalVM.Start, true, false), Times.Once ());
 			playerMock.Verify (p => p.Pause (false), Times.Once ());
 		}
 
@@ -1008,7 +1027,7 @@ namespace VAS.Tests.Services
 			int brokerElementLoaded = 0;
 			PreparePlayer ();
 			App.Current.EventsBroker.Subscribe<EventLoadedEvent> ((evt) => {
-				if (evt.TimelineEvent == null) {
+				if (evt.TimelineEventVM.Model == null) {
 					brokerElementLoaded--;
 				} else {
 					brokerElementLoaded++;
@@ -1022,10 +1041,10 @@ namespace VAS.Tests.Services
 				}
 			};
 			// Load
-			player.LoadEvent (evt, new Time (0), true);
+			player.LoadEvent (eventVM1, new Time (0), true);
 			Assert.AreEqual (1, elementLoaded);
 			Assert.AreEqual (1, brokerElementLoaded);
-			Assert.AreEqual (evt.CamerasConfig, player.CamerasConfig);
+			Assert.AreEqual (eventVM1.CamerasConfig, player.CamerasConfig);
 			// Unload
 			player.UnloadCurrentEvent ();
 			Assert.AreEqual (0, elementLoaded);
@@ -1038,11 +1057,11 @@ namespace VAS.Tests.Services
 					new CameraConfig (1),
 					new CameraConfig (0)
 				};
-			Assert.AreEqual (evt.CamerasConfig, new List<CameraConfig> { new CameraConfig (0) });
-			player.LoadEvent (evt, new Time (0), true);
+			Assert.AreEqual (eventVM1.CamerasConfig, new List<CameraConfig> { new CameraConfig (0) });
+			player.LoadEvent (eventVM1, new Time (0), true);
 			Assert.AreEqual (1, elementLoaded);
 			Assert.AreEqual (1, brokerElementLoaded);
-			Assert.AreEqual (evt.CamerasConfig, player.CamerasConfig);
+			Assert.AreEqual (eventVM1.CamerasConfig, player.CamerasConfig);
 			/* And unload */
 			player.UnloadCurrentEvent ();
 			Assert.AreEqual (0, elementLoaded);
@@ -1056,29 +1075,31 @@ namespace VAS.Tests.Services
 		{
 			// Arrange
 			PreparePlayer ();
-			player.LoadEvent (evt, new Time (0), true);
+			player.LoadEvent (eventVM1, new Time (0), true);
 
 			// Action
 			player.UnloadCurrentEvent ();
 
 			// Assert
-			Assert.IsFalse (evt.Playing);
+			Assert.IsFalse (eventVM1.Playing);
 		}
 
 		[Test ()]
 		public void TestCamerasVisibleValidation ()
 		{
 			// Create an event referencing unknown MediaFiles in the set.
-			TimelineEvent evt2 = new TimelineEvent {
-				Start = new Time (150),
-				Stop = new Time (200),
-				CamerasConfig = new ObservableCollection<CameraConfig> {
+			TimelineEventVM eventVM2 = new TimelineEventVM () {
+				Model = new TimelineEvent {
+					Start = new Time (150),
+					Stop = new Time (200),
+					CamerasConfig = new ObservableCollection<CameraConfig> {
 						new CameraConfig (0),
 						new CameraConfig (1),
 						new CameraConfig (4),
 						new CameraConfig (6)
 					},
-				FileSet = mfs
+					FileSet = mfs
+				}
 			};
 
 			player.CamerasConfig = new ObservableCollection<CameraConfig> {
@@ -1089,13 +1110,13 @@ namespace VAS.Tests.Services
 			viewPortMock.SetupAllProperties ();
 			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
 			player.Ready (true);
-			player.LoadEvent (evt2, new Time (0), true);
+			player.LoadEvent (eventVM2, new Time (0), true);
 			// Only valid cameras should be visible although no fileset was opened.
 			Assert.AreEqual (2, player.CamerasConfig.Count);
 			Assert.AreEqual (0, player.CamerasConfig [0].Index);
 			Assert.AreEqual (1, player.CamerasConfig [1].Index);
 			// Again now that the fileset is opened
-			player.LoadEvent (evt2, new Time (0), true);
+			player.LoadEvent (eventVM2, new Time (0), true);
 			// Only valid cameras should be visible
 			Assert.AreEqual (2, player.CamerasConfig.Count);
 			Assert.AreEqual (0, player.CamerasConfig [0].Index);
@@ -1133,7 +1154,7 @@ namespace VAS.Tests.Services
 
 			/* Loading an event with the player not ready should trigger the
 			 * PrepareViewEvent and wait until it's ready */
-			player.LoadEvent (evt, new Time (0), true);
+			player.LoadEvent (eventVM1, new Time (0), true);
 			Assert.AreEqual (1, prepareView);
 			Assert.IsNull (player.FileSet);
 
@@ -1142,7 +1163,7 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (1, brokerElementLoaded);
 			Assert.AreEqual (mfs, player.FileSet);
 
-			player.LoadEvent (evt, new Time (0), true);
+			player.LoadEvent (eventVM1, new Time (0), true);
 			Assert.AreEqual (mfs, player.FileSet);
 			Assert.IsFalse (player.Playing);
 			Assert.AreEqual (2, elementLoaded);
@@ -1151,11 +1172,11 @@ namespace VAS.Tests.Services
 
 
 			/* Ready to seek */
-			currentTime = evt.Start;
+			currentTime = eventVM1.Start;
 			playerMock.Raise (p => p.ReadyToSeek += null, this);
 			Assert.IsTrue (player.Playing);
 			playerMock.Verify (p => p.Open (mfs [0]));
-			playerMock.Verify (p => p.Seek (evt.Start, true, false), Times.Once ());
+			playerMock.Verify (p => p.Seek (eventVM1.Start, true, false), Times.Once ());
 			playerMock.Verify (p => p.Play (false), Times.Once ());
 			playerMock.VerifySet (p => p.Rate = 1);
 			Assert.AreEqual (2, elementLoaded);
@@ -1166,8 +1187,8 @@ namespace VAS.Tests.Services
 			/* Open with a new MediaFileSet and also check seekTime and playing values*/
 			MediaFileSet nfs = Cloner.Clone (mfs);
 			nfs.ID = Guid.NewGuid ();
-			evt.FileSet = nfs;
-			player.LoadEvent (evt, evt.Duration, false);
+			eventVM1.FileSet = nfs;
+			player.LoadEvent (eventVM1, eventVM1.Duration, false);
 			Assert.AreEqual (1, elementLoaded);
 			Assert.AreEqual (1, brokerElementLoaded);
 			elementLoaded = brokerElementLoaded = 0;
@@ -1178,32 +1199,34 @@ namespace VAS.Tests.Services
 			playerMock.Verify (p => p.Pause (false), Times.Once ());
 			playerMock.VerifySet (p => p.Rate = 1);
 			playerMock.Raise (p => p.ReadyToSeek += null, this);
-			playerMock.Verify (p => p.Seek (evt.Stop, true, false), Times.Once ());
+			playerMock.Verify (p => p.Seek (eventVM1.Stop, true, false), Times.Once ());
 			playerMock.Verify (p => p.Play (It.IsAny<bool> ()), Times.Never ());
 			playerMock.ResetCalls ();
 
 			/* Open another event with the same MediaFileSet and already ready to seek
 			 * and check the cameras layout and visibility is respected */
-			TimelineEvent evt2 = new TimelineEvent {
-				Start = new Time (400),
-				Stop = new Time (50000),
-				CamerasConfig = new ObservableCollection<CameraConfig> {
+			TimelineEventVM eventVM2 = new TimelineEventVM () {
+				Model = new TimelineEvent {
+					Start = new Time (400),
+					Stop = new Time (50000),
+					CamerasConfig = new ObservableCollection<CameraConfig> {
 						new CameraConfig (1),
 						new CameraConfig (0)
 					},
-				CamerasLayout = "test",
-				FileSet = nfs
+					CamerasLayout = "test",
+					FileSet = nfs
+				}
 			};
-			player.LoadEvent (evt2, new Time (0), true);
+			player.LoadEvent (eventVM2, new Time (0), true);
 			Assert.AreEqual (1, elementLoaded);
 			Assert.AreEqual (1, brokerElementLoaded);
 			elementLoaded = brokerElementLoaded = 0;
 			playerMock.Verify (p => p.Open (nfs [0]), Times.Never ());
-			playerMock.Verify (p => p.Seek (evt2.Start, true, false), Times.Once ());
+			playerMock.Verify (p => p.Seek (eventVM2.Start, true, false), Times.Once ());
 			playerMock.Verify (p => p.Play (false), Times.Once ());
 			playerMock.VerifySet (p => p.Rate = 1);
-			Assert.AreEqual (evt2.CamerasConfig, player.CamerasConfig);
-			Assert.AreEqual (evt2.CamerasLayout, player.CamerasLayout);
+			Assert.AreEqual (eventVM2.CamerasConfig, player.CamerasConfig);
+			Assert.AreEqual (eventVM2.CamerasLayout, player.CamerasLayout);
 			playerMock.ResetCalls ();
 		}
 
@@ -1238,7 +1261,8 @@ namespace VAS.Tests.Services
 			el1 = playlist.Elements [0] as PlaylistPlayElement;
 			el1.Play.FileSet = nfs;
 			currentTime = el1.Play.Start;
-			player.LoadPlaylistEvent (playlist, el1, true);
+			var playlistVM = new PlaylistVM { Model = playlist };
+			player.LoadPlaylistEvent (playlistVM, el1, true);
 			Assert.AreEqual (0, elementLoaded);
 			Assert.AreEqual (1, prepareView);
 
@@ -1256,7 +1280,7 @@ namespace VAS.Tests.Services
 			playerMock.Verify (p => p.Play (false), Times.Once ());
 
 			/* Load still image */
-			player.LoadPlaylistEvent (playlist, plImage, true);
+			player.LoadPlaylistEvent (playlistVM, plImage, true);
 			playerMock.ResetCalls ();
 			Assert.IsTrue (player.Playing);
 			player.Pause ();
@@ -1269,7 +1293,7 @@ namespace VAS.Tests.Services
 			/* Load drawings */
 			PlaylistDrawing dr = new PlaylistDrawing (new FrameDrawing ());
 			dr.Duration = new Time (5000);
-			player.LoadPlaylistEvent (playlist, dr, true);
+			player.LoadPlaylistEvent (playlistVM, dr, true);
 			playerMock.ResetCalls ();
 			Assert.IsTrue (player.Playing);
 			player.Pause ();
@@ -1281,16 +1305,17 @@ namespace VAS.Tests.Services
 
 			/* Load video */
 			PlaylistVideo vid = new PlaylistVideo (mfs [0]);
-			player.LoadPlaylistEvent (playlist, vid, true);
+			player.LoadPlaylistEvent (playlistVM, vid, true);
 			Assert.AreNotEqual (mfs, player.FileSet);
 			Assert.IsTrue (player.Playing);
 			Assert.AreEqual (new List<CameraConfig> { new CameraConfig (0) }, player.CamerasConfig);
 
 			/* Load video from another playlist  (playlist is different than LoadedPlayList)*/
 			Playlist localPlaylist = new Playlist ();
+			var localPlaylistVM = new PlaylistVM { Model = localPlaylist };
 			player.Stop (false);
 			Assert.IsFalse (player.Playing);
-			player.LoadPlaylistEvent (localPlaylist, vid, true);
+			player.LoadPlaylistEvent (localPlaylistVM, vid, true);
 			Assert.AreNotEqual (mfs, player.FileSet);
 			Assert.IsTrue (player.Playing);
 			Assert.AreEqual (new List<CameraConfig> { new CameraConfig (0) }, player.CamerasConfig);
@@ -1304,7 +1329,7 @@ namespace VAS.Tests.Services
 			PlaylistVideo vid = new PlaylistVideo (mfs [0]);
 			player.LoadPlaylistEvent (null, vid, true);
 			Assert.IsFalse (player.Playing);
-			Assert.IsNull (player.LoadedPlaylist);
+			Assert.IsNull (player.LoadedPlaylistVM);
 			Assert.IsNull (player.FileSet);
 		}
 
@@ -1317,15 +1342,16 @@ namespace VAS.Tests.Services
 
 			/* Check the player is stopped when we pass the event stop time */
 			currentTime = new Time (0);
-			player.LoadEvent (evt, new Time (0), true);
+			player.LoadEvent (eventVM1, new Time (0), true);
 			Assert.IsTrue (player.Playing);
-			currentTime = evt.Duration + new Time (1000);
+			currentTime = eventVM1.Duration + new Time (1000);
 			player.Seek (currentTime, true, false);
 			Assert.IsFalse (player.Playing);
 
 			/* Check the player is stopped when we pass the image stop time */
 			currentTime = new Time (0);
-			player.LoadPlaylistEvent (playlist, plImage, true);
+			var playlistVM = new PlaylistVM { Model = playlist };
+			player.LoadPlaylistEvent (playlistVM, plImage, true);
 			playlist.SetActive (plImage);
 			Assert.IsTrue (player.Playing);
 			currentTime = plImage.Duration + 1000;
@@ -1350,11 +1376,11 @@ namespace VAS.Tests.Services
 			PreparePlayer ();
 
 			/* Checks drawings are loaded when the clock reaches the render time */
-			evt.Drawings.Add (dr);
-			player.LoadEvent (evt, new Time (0), true);
+			eventVM1.Drawings.Add (dr);
+			player.LoadEvent (eventVM1, new Time (0), true);
 			Assert.IsTrue (player.Playing);
 			currentTime = dr.Render;
-			player.Seek (currentTime - evt.Start, true, false);
+			player.Seek (currentTime - eventVM1.Start, true, false);
 			Assert.IsFalse (player.Playing);
 			Assert.AreEqual (dr, drSent);
 			player.Play ();
@@ -1362,11 +1388,11 @@ namespace VAS.Tests.Services
 
 			/* Check only drawings for the first camera are loaded */
 			dr.CameraConfig = new CameraConfig (1);
-			currentTime = evt.Start;
-			player.LoadEvent (evt, new Time (0), true);
+			currentTime = eventVM1.Start;
+			player.LoadEvent (eventVM1, new Time (0), true);
 			Assert.IsTrue (player.Playing);
 			currentTime = dr.Render;
-			player.Seek (currentTime - evt.Start, true, false);
+			player.Seek (currentTime - eventVM1.Start, true, false);
 			Assert.IsTrue (player.Playing);
 			Assert.IsNull (drSent);
 		}
@@ -1375,7 +1401,7 @@ namespace VAS.Tests.Services
 		public void TestMultiplayerCamerasConfig ()
 		{
 			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
-			TimelineEvent evt1;
+			TimelineEventVM eventVM1;
 			ObservableCollection<CameraConfig> cams1, cams2;
 			Mock<IMultiVideoPlayer> multiplayerMock = new Mock<IMultiVideoPlayer> ();
 
@@ -1397,18 +1423,20 @@ namespace VAS.Tests.Services
 			multiplayerMock.ResetCalls ();
 
 			/* Now load an event */
-			evt1 = new TimelineEvent {
-				Start = new Time (100),
-				Stop = new Time (200),
-				FileSet = mfs,
-				CamerasConfig = new ObservableCollection<CameraConfig> {
+			eventVM1 = new TimelineEventVM () {
+				Model = new TimelineEvent {
+					Start = new Time (100),
+					Stop = new Time (200),
+					FileSet = mfs,
+					CamerasConfig = new ObservableCollection<CameraConfig> {
 						new CameraConfig (1),
 						new CameraConfig (1)
 					}
+				}
 			};
-			player.LoadEvent (evt1, new Time (0), true);
+			player.LoadEvent (eventVM1, new Time (0), true);
 			multiplayerMock.Verify (p => p.ApplyCamerasConfig (), Times.Once ());
-			Assert.AreEqual (evt1.CamerasConfig, player.CamerasConfig);
+			Assert.AreEqual (eventVM1.CamerasConfig, player.CamerasConfig);
 			multiplayerMock.ResetCalls ();
 
 			/* Change event cams config */
@@ -1417,26 +1445,27 @@ namespace VAS.Tests.Services
 					new CameraConfig (0)
 				};
 			multiplayerMock.Verify (p => p.ApplyCamerasConfig (), Times.Once ());
-			Assert.AreEqual (new List<CameraConfig> { new CameraConfig (0), new CameraConfig (0) }, evt1.CamerasConfig);
-			Assert.AreEqual (player.CamerasConfig, evt1.CamerasConfig);
+			Assert.AreEqual (new List<CameraConfig> { new CameraConfig (0), new CameraConfig (0) }, eventVM1.CamerasConfig);
+			Assert.AreEqual (player.CamerasConfig, eventVM1.CamerasConfig);
 			multiplayerMock.ResetCalls ();
 
 			/* Unload and check the original cams config is set back*/
 			player.UnloadCurrentEvent ();
 			multiplayerMock.Verify (p => p.ApplyCamerasConfig (), Times.Once ());
 			Assert.AreEqual (cams2, player.CamerasConfig);
-			Assert.AreEqual (new List<CameraConfig> { new CameraConfig (0), new CameraConfig (0) }, evt1.CamerasConfig);
+			Assert.AreEqual (new List<CameraConfig> { new CameraConfig (0), new CameraConfig (0) }, eventVM1.CamerasConfig);
 			multiplayerMock.ResetCalls ();
 
 			/* And changing the config does not affects the unloaded event */
 			player.CamerasConfig = cams1;
 			multiplayerMock.Verify (p => p.ApplyCamerasConfig (), Times.Once ());
-			Assert.AreEqual (new List<CameraConfig> { new CameraConfig (0), new CameraConfig (0) }, evt1.CamerasConfig);
+			Assert.AreEqual (new List<CameraConfig> { new CameraConfig (0), new CameraConfig (0) }, eventVM1.CamerasConfig);
 			multiplayerMock.ResetCalls ();
 
 			/* Now load a playlist video */
 			PlaylistVideo plv = new PlaylistVideo (mfs [0]);
-			player.LoadPlaylistEvent (playlist, plv, true);
+			var playlistVM = new PlaylistVM { Model = playlist };
+			player.LoadPlaylistEvent (playlistVM, plv, true);
 			multiplayerMock.Verify (p => p.ApplyCamerasConfig (), Times.Never ());
 			Assert.AreEqual (new List<CameraConfig> { new CameraConfig (0) }, player.CamerasConfig);
 			multiplayerMock.ResetCalls ();
@@ -1448,9 +1477,9 @@ namespace VAS.Tests.Services
 
 			/* Now load a playlist event and make sure its config is loaded
 			 * and not the event's one */
-			PlaylistPlayElement ple = new PlaylistPlayElement (evt);
+			PlaylistPlayElement ple = new PlaylistPlayElement (eventVM1.Model);
 			ple.CamerasConfig = cams2;
-			player.LoadPlaylistEvent (playlist, ple, true);
+			player.LoadPlaylistEvent (playlistVM, ple, true);
 			multiplayerMock.Verify (p => p.ApplyCamerasConfig (), Times.Once ());
 			Assert.AreEqual (cams2, player.CamerasConfig);
 			multiplayerMock.ResetCalls ();
@@ -1461,7 +1490,7 @@ namespace VAS.Tests.Services
 		[Test ()]
 		public void TestROICamerasConfig ()
 		{
-			TimelineEvent evt1;
+			TimelineEventVM eventVM1;
 			ObservableCollection<CameraConfig> cams;
 			Mock<IMultiVideoPlayer> multiplayerMock = new Mock<IMultiVideoPlayer> ();
 
@@ -1481,31 +1510,33 @@ namespace VAS.Tests.Services
 
 			/* Now create an event with current camera config */
 			//Wee need to do a clone here, since now we do not clone in CamerasConfig property getter in videoplayer controller
-			evt1 = new TimelineEvent {
-				Start = new Time (100),
-				Stop = new Time (200),
-				FileSet = mfs,
-				CamerasConfig = player.CamerasConfig.Clone ()
+			eventVM1 = new TimelineEventVM () {
+				Model = new TimelineEvent {
+					Start = new Time (100),
+					Stop = new Time (200),
+					FileSet = mfs,
+					CamerasConfig = player.CamerasConfig.Clone ()
+				}
 			};
 			/* Check that ROI was copied in event */
-			Assert.AreEqual (new Area (10, 10, 20, 20), evt1.CamerasConfig [0].RegionOfInterest);
+			Assert.AreEqual (new Area (10, 10, 20, 20), eventVM1.CamerasConfig [0].RegionOfInterest);
 
 			/* Change ROI again */
 			cams [0].RegionOfInterest = new Area (20, 20, 40, 40);
 			player.ApplyROI (cams [0]);
 
 			/* Check event was not impacted */
-			Assert.AreEqual (new Area (10, 10, 20, 20), evt1.CamerasConfig [0].RegionOfInterest);
+			Assert.AreEqual (new Area (10, 10, 20, 20), eventVM1.CamerasConfig [0].RegionOfInterest);
 
 			/* And load event */
-			player.LoadEvent (evt1, new Time (0), true);
+			player.LoadEvent (eventVM1, new Time (0), true);
 			Assert.AreEqual (new Area (10, 10, 20, 20), player.CamerasConfig [0].RegionOfInterest);
 
 			/* Unload and check the original cams config is set back*/
 			player.UnloadCurrentEvent ();
 			Assert.AreEqual (new Area (20, 20, 40, 40), player.CamerasConfig [0].RegionOfInterest);
 			/* check the event was not impacted */
-			Assert.AreEqual (new Area (10, 10, 20, 20), evt1.CamerasConfig [0].RegionOfInterest);
+			Assert.AreEqual (new Area (10, 10, 20, 20), eventVM1.CamerasConfig [0].RegionOfInterest);
 		}
 
 		[Test ()]
@@ -1522,8 +1553,8 @@ namespace VAS.Tests.Services
 		public void TestPresentationSeekToADifferentElement ()
 		{
 			Playlist localPlaylist = new Playlist ();
-			PlaylistPlayElement element0 = new PlaylistPlayElement (evt.Clone ());
-			PlaylistPlayElement element = new PlaylistPlayElement (evt.Clone ());
+			PlaylistPlayElement element0 = new PlaylistPlayElement (eventVM1.Clone ().Model);
+			PlaylistPlayElement element = new PlaylistPlayElement (eventVM1.Clone ().Model);
 			element0.Play.Start = new Time (10);
 			element0.Play.Stop = new Time (20);
 			element.Play.Start = new Time (0);
@@ -1535,7 +1566,8 @@ namespace VAS.Tests.Services
 			int playlistElementSelected = 0;
 			App.Current.EventsBroker.Subscribe<PlaylistElementLoadedEvent> ((e) => playlistElementSelected++);
 
-			player.LoadPlaylistEvent (localPlaylist, element0, false);
+			var localPlaylistVM = new PlaylistVM { Model = localPlaylist };
+			player.LoadPlaylistEvent (localPlaylistVM, element0, false);
 			player.Mode = VideoPlayerOperationMode.Presentation;
 			player.Seek (new Time (15), true, false, false);
 
@@ -1549,8 +1581,8 @@ namespace VAS.Tests.Services
 		public void TestPresentationSeekSameElement ()
 		{
 			Playlist localPlaylist = new Playlist ();
-			PlaylistPlayElement element0 = new PlaylistPlayElement (evt.Clone ());
-			PlaylistPlayElement element = new PlaylistPlayElement (evt.Clone ());
+			PlaylistPlayElement element0 = new PlaylistPlayElement (eventVM1.Clone ().Model);
+			PlaylistPlayElement element = new PlaylistPlayElement (eventVM1.Clone ().Model);
 			element0.Play.Start = new Time (10);
 			element0.Play.Stop = new Time (20);
 			element.Play.Start = new Time (0);
@@ -1562,7 +1594,8 @@ namespace VAS.Tests.Services
 			int playlistElementLoaded = 0;
 			App.Current.EventsBroker.Subscribe<LoadPlaylistElementEvent> ((e) => playlistElementLoaded++);
 
-			player.LoadPlaylistEvent (localPlaylist, element0, false);
+			var localPlaylistVM = new PlaylistVM { Model = localPlaylist };
+			player.LoadPlaylistEvent (localPlaylistVM, element0, false);
 			player.Mode = VideoPlayerOperationMode.Presentation;
 			player.Seek (new Time (5), true, false, false);
 			Assert.AreEqual (0, playlistElementLoaded);
@@ -1575,15 +1608,16 @@ namespace VAS.Tests.Services
 		{
 			PreparePlayer ();
 			Playlist localPlaylist = new Playlist ();
-			PlaylistPlayElement element0 = new PlaylistPlayElement (evt.Clone ());
-			PlaylistPlayElement element = new PlaylistPlayElement (evt.Clone ());
+			PlaylistPlayElement element0 = new PlaylistPlayElement (eventVM1.Clone ().Model);
+			PlaylistPlayElement element = new PlaylistPlayElement (eventVM1.Clone ().Model);
 			element0.Play.Start = new Time (10);
 			element0.Play.Stop = new Time (20);
 			element.Play.Start = new Time (0);
 			element.Play.Stop = new Time (10);
 			localPlaylist.Elements.Add (element0);
 			localPlaylist.Elements.Add (element);
-			player.Switch (null, localPlaylist, element0);
+			var localPlaylistVM = new PlaylistVM { Model = localPlaylist };
+			player.Switch (null, localPlaylistVM, element0);
 			playerMock.ResetCalls ();
 
 			int playlistElementSelected = 0;
@@ -1602,11 +1636,12 @@ namespace VAS.Tests.Services
 			Assert.Greater (seekTime, mfs.Duration);
 			PreparePlayer ();
 			Playlist localPlaylist = new Playlist ();
-			PlaylistPlayElement element0 = new PlaylistPlayElement (evt.Clone ());
+			PlaylistPlayElement element0 = new PlaylistPlayElement (eventVM1.Clone ().Model);
 			element0.Play.Start = new Time (0);
 			element0.Play.Stop = new Time { TotalSeconds = 6000 };
 			localPlaylist.Elements.Add (element0);
-			player.Switch (null, localPlaylist, element0);
+			var localPlaylistVM = new PlaylistVM { Model = localPlaylist };
+			player.Switch (null, localPlaylistVM, element0);
 			playerMock.ResetCalls ();
 
 			int playlistElementSelected = 0;
@@ -1628,7 +1663,8 @@ namespace VAS.Tests.Services
 			Playlist localPlaylist = new Playlist ();
 			IPlaylistElement element0 = new PlaylistVideo (mfs [0]);
 			localPlaylist.Elements.Add (element0);
-			player.LoadPlaylistEvent (localPlaylist, element0, true);
+			var localPlaylistVM = new PlaylistVM { Model = localPlaylist };
+			player.LoadPlaylistEvent (localPlaylistVM, element0, true);
 
 			Assert.AreEqual (1, elementLoaded);
 			Assert.IsTrue (player.Playing);
@@ -1645,7 +1681,8 @@ namespace VAS.Tests.Services
 			Playlist localPlaylist = new Playlist ();
 			IPlaylistElement element0 = new PlaylistVideo (mfs [0]);
 			localPlaylist.Elements.Add (element0);
-			player.LoadPlaylistEvent (localPlaylist, element0, false);
+			var localPlaylistVM = new PlaylistVM { Model = localPlaylist };
+			player.LoadPlaylistEvent (localPlaylistVM, element0, false);
 
 			Assert.AreEqual (1, elementLoaded);
 			Assert.IsFalse (player.Playing);
@@ -1658,24 +1695,25 @@ namespace VAS.Tests.Services
 			PreparePlayer ();
 			playerMock.ResetCalls ();
 			Playlist localPlaylist = new Playlist ();
-			IPlaylistElement element0 = new PlaylistPlayElement (evt);
+			IPlaylistElement element0 = new PlaylistPlayElement (eventVM1.Model);
 			localPlaylist.Elements.Add (element0);
-			player.LoadPlaylistEvent (localPlaylist, element0, false);
+			var localPlaylistVM = new PlaylistVM { Model = localPlaylist };
 
-			Assert.AreEqual (evt.FileSet, player.FileSet);
+			player.LoadPlaylistEvent (localPlaylistVM, element0, false);
 
-			var fileSet = evt.FileSet.Clone ();
+			Assert.AreEqual (eventVM1.FileSet, player.FileSet);
+
+			var fileSet = eventVM1.FileSet.Clone ();
 			fileSet [0].FilePath = "test3";
 			fileSet.ID = Guid.NewGuid ();
-			evt.FileSet = fileSet;
+			eventVM1.FileSet = fileSet;
 
 			Assert.IsTrue (player.FileSet.CheckMediaFilesModified (fileSet));
+			player.LoadPlaylistEvent (localPlaylistVM, element0, false);
 
-			player.LoadPlaylistEvent (localPlaylist, element0, false);
-
-			playerMock.Verify (prop => prop.Open (evt.FileSet [0]), Times.Once);
-			Assert.AreEqual (player.FileSet [0].FilePath, evt.FileSet [0].FilePath);
-			Assert.IsFalse (player.FileSet.CheckMediaFilesModified (evt.FileSet));
+			playerMock.Verify (prop => prop.Open (eventVM1.FileSet [0]), Times.Once);
+			Assert.AreEqual (player.FileSet [0].FilePath, eventVM1.FileSet [0].FilePath);
+			Assert.IsFalse (player.FileSet.CheckMediaFilesModified (eventVM1.FileSet));
 
 		}
 
@@ -1684,7 +1722,7 @@ namespace VAS.Tests.Services
 		{
 			try {
 				PreparePlayer ();
-				player.LoadEvent (evt3, new Time (0), true);
+				player.LoadEvent (eventVM3, new Time (0), true);
 			} catch {
 				Assert.Fail ("PlaylistController raised exception in LoadEvent");
 			}
@@ -1716,7 +1754,7 @@ namespace VAS.Tests.Services
 			player.FileSet.VisibleRegion.Stop = new Time (15000);
 
 			player.Mode = VideoPlayerOperationMode.Stretched;
-			player.LoadEvent (evt2, new Time (0), false);
+			player.LoadEvent (eventVM2, new Time (0), false);
 			currentTime = new Time (7000);
 			playerMock.ResetCalls ();
 			player.UnloadCurrentEvent ();
@@ -1737,7 +1775,7 @@ namespace VAS.Tests.Services
 			player.FileSet.VisibleRegion.Stop = new Time (5000);
 
 			player.Mode = VideoPlayerOperationMode.Stretched;
-			player.LoadEvent (evt2, new Time (0), false);
+			player.LoadEvent (eventVM2, new Time (0), false);
 			currentTime = new Time (7000);
 			playerMock.ResetCalls ();
 			player.UnloadCurrentEvent ();
@@ -1775,8 +1813,8 @@ namespace VAS.Tests.Services
 		public void TestDurationUpdatedWhenPresentationChanged ()
 		{
 			Playlist localPlaylist = new Playlist ();
-			PlaylistPlayElement element1 = new PlaylistPlayElement (evt.Clone ());
-			PlaylistPlayElement element2 = new PlaylistPlayElement (evt.Clone ());
+			PlaylistPlayElement element1 = new PlaylistPlayElement (eventVM1.Clone ().Model);
+			PlaylistPlayElement element2 = new PlaylistPlayElement (eventVM1.Clone ().Model);
 			element1.Play.Start = new Time (10);
 			element1.Play.Stop = new Time (20);
 			element2.Play.Start = new Time (0);
@@ -1785,10 +1823,11 @@ namespace VAS.Tests.Services
 			localPlaylist.Elements.Add (element2);
 			PreparePlayer ();
 			playerMock.ResetCalls ();
-			player.LoadPlaylistEvent (localPlaylist, element1, false);
+			var localPlaylistVM = new PlaylistVM { Model = localPlaylist };
+			player.LoadPlaylistEvent (localPlaylistVM, element1, false);
 			player.Mode = VideoPlayerOperationMode.Presentation;
 
-			PlaylistPlayElement element3 = new PlaylistPlayElement (evt.Clone ());
+			PlaylistPlayElement element3 = new PlaylistPlayElement (eventVM1.Clone ().Model);
 			element3.Play.Start = new Time (0);
 			element3.Play.Stop = new Time (10);
 			localPlaylist.Elements.Add (element3);
@@ -1801,8 +1840,8 @@ namespace VAS.Tests.Services
 		public void TestDurationUpdatedWhenPresentationElementChanged ()
 		{
 			Playlist localPlaylist = new Playlist ();
-			PlaylistPlayElement element1 = new PlaylistPlayElement (evt.Clone ());
-			PlaylistPlayElement element2 = new PlaylistPlayElement (evt.Clone ());
+			PlaylistPlayElement element1 = new PlaylistPlayElement (eventVM1.Clone ().Model);
+			PlaylistPlayElement element2 = new PlaylistPlayElement (eventVM1.Clone ().Model);
 			element1.Play.Start = new Time (10);
 			element1.Play.Stop = new Time (20);
 			element2.Play.Start = new Time (0);
@@ -1811,7 +1850,8 @@ namespace VAS.Tests.Services
 			localPlaylist.Elements.Add (element2);
 			PreparePlayer ();
 			playerMock.ResetCalls ();
-			player.LoadPlaylistEvent (localPlaylist, element1, false);
+			var localPlaylistVM = new PlaylistVM { Model = localPlaylist };
+			player.LoadPlaylistEvent (localPlaylistVM, element1, false);
 			player.Mode = VideoPlayerOperationMode.Presentation;
 
 			element2.Play.Stop = new Time (20);
@@ -1904,9 +1944,9 @@ namespace VAS.Tests.Services
 				Par = 1,
 				Duration = new Time { TotalSeconds = 5000 }
 			});
-			evt.FileSet = mfsNew;
+			eventVM1.FileSet = mfsNew;
 
-			player.LoadEvent (evt, currentTime, true);
+			player.LoadEvent (eventVM1, currentTime, true);
 
 			Assert.IsTrue (playerVM.ControlsSensitive);
 		}
@@ -1927,7 +1967,8 @@ namespace VAS.Tests.Services
 			});
 			PlaylistVideo vid = new PlaylistVideo (mfsNew [0]);
 
-			player.LoadPlaylistEvent (playlist, vid, true);
+			var playlistVM = new PlaylistVM { Model = playlist };
+			player.LoadPlaylistEvent (playlistVM, vid, true);
 
 			Assert.IsTrue (playerVM.ControlsSensitive);
 		}
@@ -1969,7 +2010,7 @@ namespace VAS.Tests.Services
 				Par = 1,
 				Duration = new Time { TotalSeconds = 5000 }
 			});
-			evt.FileSet = mfsNew;
+			eventVM1.FileSet = mfsNew;
 			playerVM.PropertyChanged += (sender, e) => {
 				if (e.PropertyName == nameof (playerVM.FileSet)) {
 					fileset = playerVM.FileSet;
@@ -1977,7 +2018,7 @@ namespace VAS.Tests.Services
 				}
 			};
 
-			player.LoadEvent (evt, currentTime, true);
+			player.LoadEvent (eventVM1, currentTime, true);
 
 			Assert.AreEqual (1, calls);
 			Assert.AreSame (mfsNew, fileset.Model);
@@ -1987,24 +2028,24 @@ namespace VAS.Tests.Services
 		public void LoadEvent_StartMoved_SeekToNewPosition ()
 		{
 			PreparePlayer ();
-			player.LoadEvent (evt, evt.Start, true);
+			player.LoadEvent (eventVM1, eventVM1.Start, true);
 			playerMock.ResetCalls ();
 
-			evt.Start += 1000;
+			eventVM1.Start += 1000;
 
-			playerMock.Verify (p => p.Seek (evt.Start, true, false));
+			playerMock.Verify (p => p.Seek (eventVM1.Start, true, false));
 		}
 
 		[Test]
 		public void LoadEvent_StopMoved_SeekToNewPosition ()
 		{
 			PreparePlayer ();
-			player.LoadEvent (evt, evt.Start, true);
+			player.LoadEvent (eventVM1, eventVM1.Start, true);
 			playerMock.ResetCalls ();
 
-			evt.Stop += 1000;
+			eventVM1.Stop += 1000;
 
-			playerMock.Verify (p => p.Seek (evt.Stop, true, false));
+			playerMock.Verify (p => p.Seek (eventVM1.Stop, true, false));
 		}
 
 		[Test]
@@ -2012,7 +2053,9 @@ namespace VAS.Tests.Services
 		{
 			PreparePlayer ();
 			var playlistElement = playlist.Elements [0] as PlaylistPlayElement;
-			player.LoadPlaylistEvent (playlist, playlistElement, true);
+
+			var playlistVM = new PlaylistVM { Model = playlist };
+			player.LoadPlaylistEvent (playlistVM, playlistElement, true);
 			playerMock.ResetCalls ();
 
 			playlistElement.Start += 1000;
@@ -2025,7 +2068,8 @@ namespace VAS.Tests.Services
 		{
 			PreparePlayer ();
 			var playlistElement = playlist.Elements [0] as PlaylistPlayElement;
-			player.LoadPlaylistEvent (playlist, playlistElement, true);
+			var playlistVM = new PlaylistVM { Model = playlist };
+			player.LoadPlaylistEvent (playlistVM, playlistElement, true);
 			playerMock.ResetCalls ();
 
 			playlistElement.Stop += 1000;
@@ -2057,7 +2101,8 @@ namespace VAS.Tests.Services
 				}
 			};
 
-			player.LoadPlaylistEvent (playlist, vid, true);
+			var playlistVM = new PlaylistVM { Model = playlist };
+			player.LoadPlaylistEvent (playlistVM, vid, true);
 
 			Assert.AreEqual (1, calls);
 			Assert.AreSame (mfsNew [0], fileset.Model [0]);
@@ -2069,9 +2114,9 @@ namespace VAS.Tests.Services
 			mockLimitationService.Setup (x => x.CanExecute (VASFeature.OpenZoom.ToString ())).
 								 Returns (true);
 			PreparePlayer ();
-			evt.CamerasConfig [0].RegionOfInterest = new Area (0, 0, evt.FileSet [0].VideoWidth / 2, 10);
+			eventVM1.CamerasConfig [0].RegionOfInterest = new Area (0, 0, eventVM1.FileSet [0].VideoWidth / 2, 10);
 
-			player.LoadEvent (evt, new Time (0), true);
+			player.LoadEvent (eventVM1, new Time (0), true);
 
 			Assert.AreEqual (2.0, playerVM.Zoom);
 		}
@@ -2082,9 +2127,9 @@ namespace VAS.Tests.Services
 			mockLimitationService.Setup (x => x.CanExecute (VASFeature.OpenZoom.ToString ())).
 								 Returns (false);
 			PreparePlayer ();
-			evt.CamerasConfig [0].RegionOfInterest = new Area (0, 0, 10, 10);
+			eventVM1.CamerasConfig [0].RegionOfInterest = new Area (0, 0, 10, 10);
 
-			player.LoadEvent (evt, new Time (0), true);
+			player.LoadEvent (eventVM1, new Time (0), true);
 
 			Assert.AreEqual (1.0, playerVM.Zoom);
 		}
@@ -2095,8 +2140,8 @@ namespace VAS.Tests.Services
 			PreparePlayer ();
 			var start = new Time { TotalSeconds = 60 };
 			var stop = new Time { TotalSeconds = 100 };
-			var evt = new TimelineEvent { Start = start, Stop = stop };
-			player.LoadEvent (evt, start, true);
+			var eventVMLocal = new TimelineEventVM () { Model = new TimelineEvent { Start = start, Stop = stop } };
+			player.LoadEvent (eventVMLocal, start, true);
 
 			player.SetEditEventDurationMode (true);
 
@@ -2112,8 +2157,8 @@ namespace VAS.Tests.Services
 			PreparePlayer ();
 			var start = new Time { TotalSeconds = 8 };
 			var stop = new Time { TotalSeconds = 10 };
-			var evt = new TimelineEvent { Start = start, Stop = stop };
-			player.LoadEvent (evt, start, true);
+			var eventVM = new TimelineEventVM () { Model = new TimelineEvent { Start = start, Stop = stop } };
+			player.LoadEvent (eventVM, start, true);
 
 			player.SetEditEventDurationMode (true);
 
@@ -2129,8 +2174,8 @@ namespace VAS.Tests.Services
 			PreparePlayer ();
 			var start = new Time { TotalSeconds = 20 };
 			var stop = playerVM.FileSet.Duration - 5;
-			var evt = new TimelineEvent { Start = start, Stop = stop };
-			player.LoadEvent (evt, start, true);
+			var eventVM = new TimelineEventVM () { Model = new TimelineEvent { Start = start, Stop = stop } };
+			player.LoadEvent (eventVM, start, true);
 
 			player.SetEditEventDurationMode (true);
 
@@ -2148,12 +2193,13 @@ namespace VAS.Tests.Services
 			var stop1 = new Time { TotalSeconds = 100 };
 			var start2 = new Time { TotalSeconds = 200 };
 			var stop2 = new Time { TotalSeconds = 230 };
-			var evt1 = new TimelineEvent { Start = start1, Stop = stop1 };
-			var evt2 = new TimelineEvent { Start = start2, Stop = stop2 };
-			player.LoadEvent (evt, start1, true);
 
+			var eventVMLocal1 = new TimelineEventVM () { Model = new TimelineEvent { Start = start1, Stop = stop1 } };
+			var eventVMLocal2 = new TimelineEventVM () { Model = new TimelineEvent { Start = start2, Stop = stop2 } };
+
+			player.LoadEvent (eventVMLocal1, start1, true);
 			player.SetEditEventDurationMode (true);
-			player.LoadEvent (evt2, start2, true);
+			player.LoadEvent (eventVMLocal2, start2, true);
 
 			Assert.IsTrue (playerVM.EditEventDurationCommand.CanExecute ());
 			Assert.IsFalse (playerVM.EditEventDurationModeEnabled);
@@ -2163,7 +2209,7 @@ namespace VAS.Tests.Services
 		public void SetEditEventDurationMode_EventLoadedNewEventIsNull_EditEventDurationCommandNotExecutable ()
 		{
 			PreparePlayer ();
-			player.LoadEvent (evt, evt.Start, true);
+			player.LoadEvent (eventVM1, eventVM1.Start, true);
 			player.UnloadCurrentEvent ();
 
 			player.SetEditEventDurationMode (true);
@@ -2177,7 +2223,7 @@ namespace VAS.Tests.Services
 		public void SetEditEventDurationMode_DisableModeWithEventLoaded_ModeDisabledNodeUpdated ()
 		{
 			PreparePlayer ();
-			player.LoadEvent (evt, evt.Start, true);
+			player.LoadEvent (eventVM1, eventVM1.Start, true);
 			player.SetEditEventDurationMode (true);
 
 			player.SetEditEventDurationMode (false);
@@ -2193,17 +2239,17 @@ namespace VAS.Tests.Services
 			PreparePlayer ();
 			var start = new Time { TotalSeconds = 60 };
 			var stop = new Time { TotalSeconds = 100 };
-			var evt = new TimelineEvent { Start = start, Stop = stop };
-			player.LoadEvent (evt, start, true);
+			var eventVM = new TimelineEventVM () { Model = new TimelineEvent { Start = start, Stop = stop } };
+			player.LoadEvent (eventVM, start, true);
 			player.SetEditEventDurationMode (true);
 
-			evt.Stop = new Time { TotalSeconds = 120 };
+			eventVM.Stop = new Time { TotalSeconds = 120 };
 			player.SetEditEventDurationMode (true);
 
 			Assert.IsTrue (playerVM.EditEventDurationCommand.CanExecute ());
 			Assert.IsTrue (playerVM.EditEventDurationModeEnabled);
 			Assert.AreEqual (start - new Time { TotalSeconds = 10 }, playerVM.EditEventDurationTimeNode.Start);
-			Assert.AreEqual (evt.Stop + new Time { TotalSeconds = 10 }, playerVM.EditEventDurationTimeNode.Stop);
+			Assert.AreEqual (eventVM.Stop + new Time { TotalSeconds = 10 }, playerVM.EditEventDurationTimeNode.Stop);
 		}
 
 		[Test]
@@ -2216,7 +2262,8 @@ namespace VAS.Tests.Services
 			var plEvt = new PlaylistPlayElement (evt);
 			var playlist = new Playlist ();
 			playlist.Elements.Add ((plEvt));
-			player.LoadPlaylistEvent (playlist, plEvt, true);
+			var playlistVM = new PlaylistVM { Model = playlist };
+			player.LoadPlaylistEvent (playlistVM, plEvt, true);
 
 			player.SetEditEventDurationMode (true);
 
@@ -2232,7 +2279,8 @@ namespace VAS.Tests.Services
 			PreparePlayer ();
 			var playlist = new Playlist ();
 			playlist.Elements.Add (new PlaylistImage (Utils.LoadImageFromFile (), new Time (5000)));
-			player.LoadPlaylistEvent (playlist, playlist.Elements [0], true);
+			var playlistVM = new PlaylistVM { Model = playlist };
+			player.LoadPlaylistEvent (playlistVM, playlist.Elements [0], true);
 
 			player.SetEditEventDurationMode (true);
 
@@ -2244,7 +2292,8 @@ namespace VAS.Tests.Services
 		public void SetEditEventDurationMode_PlaylistPlayElementLoaded_SeekOutsideBoundariesDoesNotCallsNext ()
 		{
 			PreparePlayer ();
-			player.LoadPlaylistEvent (playlist, playlist.Elements [0], true);
+			var playlistVM = new PlaylistVM { Model = playlist };
+			player.LoadPlaylistEvent (playlistVM, playlist.Elements [0], true);
 
 			player.SetEditEventDurationMode (true);
 			var playlistElement = playlist.Elements [0] as PlaylistPlayElement;
@@ -2268,15 +2317,15 @@ namespace VAS.Tests.Services
 			PreparePlayer ();
 
 			var stop = new Time { TotalSeconds = 100 };
-			var evt = new TimelineEvent { Start = start, Stop = stop };
+			var eventVMLocal = new TimelineEventVM () { Model = new TimelineEvent { Start = start, Stop = stop } };
 			var frameDrawing = new FrameDrawing () {
 				Render = renderTime
 			};
-			player.LoadEvent (evt, renderOffsetTime, true);
+			player.LoadEvent (eventVMLocal, renderOffsetTime, true);
 			playerMock.ResetCalls ();
 
 			//Act
-			evt.Drawings.Add (frameDrawing);
+			eventVMLocal.Drawings.Add (frameDrawing);
 			currentTime = new Time (120);
 			timerMock.Raise (t => t.Elapsed += null, new EventArgs () as ElapsedEventArgs);
 
@@ -2297,7 +2346,10 @@ namespace VAS.Tests.Services
 
 			var eventCamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
 			var eventCamerasLayout = new object ();
-			player.LoadPlaylistEvent (new Playlist (), new PlaylistPlayElement (new TimelineEvent ()) {
+
+			var playlistVM = new PlaylistVM { Model = new Playlist () };
+
+			player.LoadPlaylistEvent (playlistVM, new PlaylistPlayElement (new TimelineEvent ()) {
 				CamerasConfig = eventCamerasConfig,
 				CamerasLayout = eventCamerasLayout
 			}, false);
@@ -2316,7 +2368,8 @@ namespace VAS.Tests.Services
 			playerMock.Raise (p => p.ReadyToSeek += null, this);
 
 			var eventCamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
-			player.LoadPlaylistEvent (new Playlist (), new PlaylistVideo (new MediaFile ()), false);
+			var playlistVM = new PlaylistVM { Model = new Playlist () };
+			player.LoadPlaylistEvent (playlistVM, new PlaylistVideo (new MediaFile ()), false);
 
 			Assert.AreEqual (eventCamerasConfig, player.CamerasConfig);
 			Assert.AreEqual (null, player.CamerasLayout);
@@ -2332,7 +2385,8 @@ namespace VAS.Tests.Services
 			playerMock.Raise (p => p.ReadyToSeek += null, this);
 
 			var eventCamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
-			player.LoadPlaylistEvent (new Playlist (), new PlaylistImage (App.Current.ResourcesLocator.LoadImage ("name", 1, 1), new Time (10)), false);
+			var playlistVM = new PlaylistVM { Model = new Playlist () };
+			player.LoadPlaylistEvent (playlistVM, new PlaylistImage (App.Current.ResourcesLocator.LoadImage ("name", 1, 1), new Time (10)), false);
 
 			Assert.AreEqual (eventCamerasConfig, player.CamerasConfig);
 			Assert.AreEqual (null, player.CamerasLayout);
@@ -2348,7 +2402,8 @@ namespace VAS.Tests.Services
 			playerMock.Raise (p => p.ReadyToSeek += null, this);
 
 			var eventCamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
-			player.LoadPlaylistEvent (new Playlist (), new PlaylistDrawing (new FrameDrawing ()), false);
+			var playlistVM = new PlaylistVM { Model = new Playlist () };
+			player.LoadPlaylistEvent (playlistVM, new PlaylistDrawing (new FrameDrawing ()), false);
 
 			Assert.AreEqual (eventCamerasConfig, player.CamerasConfig);
 			Assert.AreEqual (null, player.CamerasLayout);
@@ -2364,7 +2419,7 @@ namespace VAS.Tests.Services
 			playerMock.Raise (p => p.ReadyToSeek += null, this);
 
 			var eventCamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
-			player.LoadEvent (new TimelineEvent (), new Time (0), false);
+			player.LoadEvent (new TimelineEventVM () { Model = new TimelineEvent () }, new Time (0), false);
 
 			Assert.AreEqual (eventCamerasConfig, player.CamerasConfig);
 			Assert.AreEqual (null, player.CamerasLayout);

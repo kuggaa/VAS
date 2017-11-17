@@ -17,6 +17,7 @@
 //
 //
 
+using System.Collections.ObjectModel;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
@@ -28,7 +29,7 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// ViewModel for PlaylistElements, with an IPlaylistElement as Model.
 	/// </summary>
-	public class PlaylistElementVM : ViewModelBase<IPlaylistElement>
+	public class PlaylistElementVM : ViewModelBase<IPlaylistElement>, IPlaylistElementVM<IPlaylistElement>
 	{
 		/// <summary>
 		/// Gets the description of the playlist element
@@ -72,6 +73,10 @@ namespace VAS.Core.ViewModel
 				return Model.Duration;
 			}
 		}
+
+		public ObservableCollection<CameraConfig> CamerasConfig => Model.CamerasConfig;
+
+		public object CamerasLayout => Model.CamerasLayout;
 	}
 
 	public class PlaylistPlayElementVM : PlaylistElementVM

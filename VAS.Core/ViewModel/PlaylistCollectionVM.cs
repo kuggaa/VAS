@@ -23,6 +23,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VAS.Core.Common;
 using VAS.Core.Events;
+using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
 using VAS.Core.Store.Playlists;
 
@@ -137,7 +138,7 @@ namespace VAS.Core.ViewModel
 		public void LoadPlaylist (PlaylistVM playlist, PlaylistElementVM elementToStart, bool playing)
 		{
 			App.Current.EventsBroker.Publish (new LoadPlaylistElementEvent {
-				Playlist = playlist.Model,
+				PlaylistVM = playlist,
 				Element = elementToStart.Model,
 				Playing = playing
 			});
@@ -189,7 +190,7 @@ namespace VAS.Core.ViewModel
 
 		bool CheckJustOneElementSelectedAndIsNotVideo ()
 		{
-			List<PlaylistElementVM> elements = new List<PlaylistElementVM> ();
+			List<IPlaylistElementVM<IPlaylistElement>> elements = new List<IPlaylistElementVM<IPlaylistElement>> ();
 			if (!Selection.Any ()) {
 				foreach (var playlist in ViewModels) {
 					elements.AddRange (playlist.Selection);
@@ -210,14 +211,14 @@ namespace VAS.Core.ViewModel
 
 		void Edit ()
 		{
-			App.Current.EventsBroker.Publish (new EditEvent<Playlist> { Object = Selection.First ().Model });
+			App.Current.EventsBroker.Publish (new EditEvent<PlaylistVM> { Object = Selection.First () });
 		}
 
 		void Render ()
 		{
 			App.Current.EventsBroker.Publish (
 				new RenderPlaylistEvent {
-					Playlist = Selection.First ().Model
+					PlaylistVM = Selection.First ()
 				}
 			);
 		}
@@ -251,7 +252,7 @@ namespace VAS.Core.ViewModel
 		{
 			foreach (var playlist in ViewModels) {
 				if (playlist.Selection.Any ()) {
-					return playlist.Selection.First ();
+					return (PlaylistElementVM)playlist.Selection.First ();
 				}
 			}
 			return null;

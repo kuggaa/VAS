@@ -36,38 +36,20 @@ namespace VAS.Drawing.Widgets
 	{
 		const int BIG_LINE_HEIGHT = 8;
 		const int SMALL_LINE_HEIGHT = 3;
-		const int MSECONDS_STEP = 20;
 		int fontSize;
 		VideoPlayerVM viewModel;
 		TimeNodeEditorView nodeView;
-		TimeNodeVM loadedEventVM;
-		KeyContext moveHandlersContext;
 
 		public EventEditionTimeruleView (IWidget widget) : base (widget)
 		{
 			Accuracy = 20;
 			FontSize = Sizes.TimelineRulePlayerFontSize;
-			loadedEventVM = new TimeNodeVM ();
 			nodeView = new TimeNodeEditorView {
 				SelectionMode = NodeSelectionMode.Borders,
 			};
-			nodeView.ViewModel = loadedEventVM;
-			AddObject (nodeView);
+			nodeView.ViewModel = ViewModel?.TimelineEventVM;
 
-			// FIXME: This should be handled in the VideoPlayerController once we start using VM's for the loaded event
-			// and it could be used in the timeline too, not just here. Right now it's not possible because
-			// the SelectedHandle property is in the VM and hence not accessible from the VideoPlayerController.
-			moveHandlersContext = new KeyContext ();
-			KeyAction actionRight = new KeyAction (new KeyConfig {
-				Name = "",
-				Key = App.Current.Keyboard.ParseName ("Right"),
-			}, () => HandleKeyPressed (true));
-			KeyAction actionLeft = new KeyAction (new KeyConfig {
-				Name = "",
-				Key = App.Current.Keyboard.ParseName ("Left"),
-			}, () => HandleKeyPressed (false));
-			moveHandlersContext.AddAction (actionRight);
-			moveHandlersContext.AddAction (actionLeft);
+			AddObject (nodeView);
 		}
 
 		public VideoPlayerVM ViewModel {
@@ -112,7 +94,7 @@ namespace VAS.Drawing.Widgets
 			double editorStartX, editorStopX, nodeStartX, nodeStopX, start, height, width, startWidth;
 			double interval = 0, secondsPerPixel, totalSeconds, timeSpacing, intervalLot;
 
-			if (loadedEventVM.Model == null || ViewModel.EditEventDurationTimeNode.Model == null) {
+			if (ViewModel.TimelineEventVM == null || ViewModel.EditEventDurationTimeNode.Model == null) {
 				return;
 			}
 			height = widget.Height;
@@ -132,10 +114,10 @@ namespace VAS.Drawing.Widgets
 			}
 
 			editorStartX = Utils.TimeToPos (ViewModel.EditEventDurationTimeNode.Start, secondsPerPixel);
-			nodeStartX = Utils.TimeToPos (loadedEventVM.Start, secondsPerPixel);
+			nodeStartX = Utils.TimeToPos (ViewModel.TimelineEventVM.Start, secondsPerPixel);
 			start = editorStartX - (editorStartX % interval);
 			editorStopX = Utils.TimeToPos (ViewModel.EditEventDurationTimeNode.Stop, secondsPerPixel);
-			nodeStopX = Utils.TimeToPos (loadedEventVM.Stop, secondsPerPixel);
+			nodeStopX = Utils.TimeToPos (ViewModel.TimelineEventVM.Stop, secondsPerPixel);
 			intervalLot = ((interval / secondsPerPixel) / 10);
 			startWidth = nodeStartX - editorStartX;
 
@@ -191,40 +173,19 @@ namespace VAS.Drawing.Widgets
 
 		void HandlePropertyChangedEventHandler (object sender, PropertyChangedEventArgs e)
 		{
-			if (!Moving && sender == loadedEventVM &&
+			if (!Moving && sender == ViewModel.TimelineEventVM &&
 				(e.PropertyName == nameof (TimeNodeVM.Start) || e.PropertyName == nameof (TimeNodeVM.Stop))) {
 				widget?.ReDraw ();
 			} else if (e.PropertyName == nameof (VideoPlayerVM.EditEventDurationModeEnabled)) {
 				if (ViewModel.EditEventDurationModeEnabled) {
-					App.Current.KeyContextManager.AddContext (moveHandlersContext);
 					nodeView.MaxTime = ViewModel.EditEventDurationTimeNode.Stop;
 					widget?.ReDraw ();
-				} else {
-					App.Current.KeyContextManager.RemoveContext (moveHandlersContext);
 				}
 			} else if (e.PropertyName == nameof (VideoPlayerVM.LoadedElement)) {
-				if (ViewModel.LoadedElement is PlaylistPlayElement) {
-					loadedEventVM.Model = (ViewModel.LoadedElement as PlaylistPlayElement).Play;
-				} else {
-					loadedEventVM.Model = ViewModel.LoadedElement as TimeNode;
-				}
-				if (loadedEventVM.Model != null) {
+				if (ViewModel.LoadedElement != null) {
 					widget?.ReDraw ();
 				}
 			}
-		}
-
-		void HandleKeyPressed (bool isRight)
-		{
-			Time time = loadedEventVM.SelectedGrabber == SelectionPosition.Left ? loadedEventVM.Start : loadedEventVM.Stop;
-			ViewModel.PauseCommand.Execute (false);
-
-			if (isRight) {
-				time.MSeconds += MSECONDS_STEP;
-			} else {
-				time.MSeconds -= MSECONDS_STEP;
-			}
-			widget?.ReDraw ();
 		}
 	}
 }

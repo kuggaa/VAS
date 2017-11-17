@@ -54,9 +54,8 @@ namespace VAS.Core.ViewModel
 			FullTimeline = CreateFullTimeline ();
 			FullTimeline.ViewModels.CollectionChanged += HandleTimelineCollectionChanged;
 			FullTimeline.PropertyChanged += FullTimeline_PropertyChanged;
-			EditionCommand = new Command<TimelineEvent> (HandleEditPlay);
+			EditionCommand = new Command<TimelineEventVM> (HandleEditPlay);
 			GroupEventsByEventTypeName = false;
-
 			Filters = new AndPredicate<TimelineEventVM> ();
 			EventsPredicate = new AndPredicate<TimelineEventVM> {
 				Name = Catalog.GetString ("Events")
@@ -438,11 +437,11 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
-		void HandleEditPlay (TimelineEvent playEvent)
+		void HandleEditPlay (TimelineEventVM eventVM)
 		{
 			App.Current.EventsBroker.Publish (
 				new EditEventEvent {
-					TimelineEvent = playEvent
+					TimelineEventVM = eventVM
 				}
 			);
 		}
