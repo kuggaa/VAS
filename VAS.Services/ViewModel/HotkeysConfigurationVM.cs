@@ -34,10 +34,12 @@ namespace VAS.Services.ViewModel
 	public class HotkeysConfigurationVM : CollectionViewModel<KeyConfig, KeyConfigVM>, IPreferencesVM
 	{
 		public const string VIEW = "HotkeysConfiguration";
+		bool autoSave;
 
 		public HotkeysConfigurationVM ()
 		{
-			Model = new RangeObservableCollection<KeyConfig> (App.Current.HotkeysService.GetAll ());
+			Model = new RangeObservableCollection<KeyConfig> (App.Current.HotkeysService.GetAll ().
+			                                                  Where(k => k.Configurable).OrderBy (k => k.Description));
 		}
 
 		/// <summary>
@@ -75,15 +77,22 @@ namespace VAS.Services.ViewModel
 		/// </summary>
 		/// <value><c>true</c> if auto save; otherwise, <c>false</c>.</value>
 		public bool AutoSave {
-			get;
-			set;
+			get {
+				return autoSave;
+			}
+
+			set {
+				autoSave = value;
+				foreach (var vm in ViewModels) {
+					vm.AutoSave = autoSave;
+				}
+			}
 		}
 
 		public string Icon {
 			get {
-				//FIXME: this icon should be renamed to vas-shortcut to be able to use it in VAS (longo/rift)
-				//now will work because rift don't use icons in preferences panel because it uses a different view at the moment
-				return "lm-shortcut";
+				//FIXME: Add this icon in rift too
+				return "vas-shortcut";
 			}
 		}
 
