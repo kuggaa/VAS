@@ -52,6 +52,24 @@ namespace VAS.Core.Interfaces
 		}
 
 		/// <summary>
+		/// Gets or sets the cameras layout.
+		/// </summary>
+		/// <value>The cameras layout.</value>
+		new object CamerasLayout {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the cameras config.
+		/// </summary>
+		/// <value>The cameras config.</value>
+		new ObservableCollection<CameraConfig> CamerasConfig {
+			get;
+			set;
+		}
+
+		/// <summary>
 		/// Gets the drawings.
 		/// </summary>
 		/// <value>The drawings.</value>
