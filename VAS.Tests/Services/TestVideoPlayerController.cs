@@ -2281,6 +2281,90 @@ namespace VAS.Tests.Services
 
 		}
 
+		[Test]
+		public void LoadPlaylistPlayElement_ReadyCalledWithoutCamerasConfig_CamerasConfigFilled ()
+		{
+			player.CamerasConfig = null;
+			viewPortMock = new Mock<IViewPort> ();
+			viewPortMock.SetupAllProperties ();
+			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
+			playerMock.Raise (p => p.ReadyToSeek += null, this);
+
+			var eventCamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+			var eventCamerasLayout = new object ();
+			player.LoadPlaylistEvent (new Playlist (), new PlaylistPlayElement (new TimelineEvent ()) {
+				CamerasConfig = eventCamerasConfig,
+				CamerasLayout = eventCamerasLayout
+			}, false);
+
+			Assert.AreEqual (eventCamerasConfig, player.CamerasConfig);
+			Assert.AreEqual (eventCamerasLayout, player.CamerasLayout);
+		}
+
+		[Test]
+		public void LoadPlaylistVideoElement_ReadyCalledWithoutCamerasConfig_CamerasConfigFilled ()
+		{
+			player.CamerasConfig = null;
+			viewPortMock = new Mock<IViewPort> ();
+			viewPortMock.SetupAllProperties ();
+			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
+			playerMock.Raise (p => p.ReadyToSeek += null, this);
+
+			var eventCamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+			player.LoadPlaylistEvent (new Playlist (), new PlaylistVideo (new MediaFile ()), false);
+
+			Assert.AreEqual (eventCamerasConfig, player.CamerasConfig);
+			Assert.AreEqual (null, player.CamerasLayout);
+		}
+
+		[Test]
+		public void LoadPlaylistImageElement_ReadyCalledWithoutCamerasConfig_CamerasConfigFilled ()
+		{
+			player.CamerasConfig = null;
+			viewPortMock = new Mock<IViewPort> ();
+			viewPortMock.SetupAllProperties ();
+			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
+			playerMock.Raise (p => p.ReadyToSeek += null, this);
+
+			var eventCamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+			player.LoadPlaylistEvent (new Playlist (), new PlaylistImage (App.Current.ResourcesLocator.LoadImage ("name", 1, 1), new Time (10)), false);
+
+			Assert.AreEqual (eventCamerasConfig, player.CamerasConfig);
+			Assert.AreEqual (null, player.CamerasLayout);
+		}
+
+		[Test]
+		public void LoadPlaylistFrameDrawingElement_ReadyCalledWithoutCamerasConfig_CamerasConfigFilled ()
+		{
+			player.CamerasConfig = null;
+			viewPortMock = new Mock<IViewPort> ();
+			viewPortMock.SetupAllProperties ();
+			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
+			playerMock.Raise (p => p.ReadyToSeek += null, this);
+
+			var eventCamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+			player.LoadPlaylistEvent (new Playlist (), new PlaylistDrawing (new FrameDrawing ()), false);
+
+			Assert.AreEqual (eventCamerasConfig, player.CamerasConfig);
+			Assert.AreEqual (null, player.CamerasLayout);
+		}
+
+		[Test]
+		public void LoadEvent_ReadyCalledWithoutCamerasConfig_CamerasConfigFilled ()
+		{
+			player.CamerasConfig = null;
+			viewPortMock = new Mock<IViewPort> ();
+			viewPortMock.SetupAllProperties ();
+			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
+			playerMock.Raise (p => p.ReadyToSeek += null, this);
+
+			var eventCamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+			player.LoadEvent (new TimelineEvent (), new Time (0), false);
+
+			Assert.AreEqual (eventCamerasConfig, player.CamerasConfig);
+			Assert.AreEqual (null, player.CamerasLayout);
+		}
+
 		void HandleElementLoadedEvent (object element, bool hasNext)
 		{
 			elementLoaded++;

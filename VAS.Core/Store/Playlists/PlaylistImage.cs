@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.ObjectModel;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
@@ -36,6 +37,8 @@ namespace VAS.Core.Store.Playlists
 			Miniature = image.Scale (Constants.MAX_THUMBNAIL_SIZE,
 				Constants.MAX_THUMBNAIL_SIZE);
 			Duration = duration;
+			CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+			CamerasLayout = null;
 		}
 
 		protected override void DisposeManagedResources ()
@@ -72,6 +75,18 @@ namespace VAS.Core.Store.Playlists
 			get {
 				return $"{Catalog.GetString ("Image")} ({Duration.ToSecondsString ()})";
 			}
+		}
+
+		[JsonIgnore]
+		public ObservableCollection<CameraConfig> CamerasConfig {
+			get;
+			private set;
+		}
+
+		[JsonIgnore]
+		public object CamerasLayout {
+			get;
+			private set;
 		}
 	}
 }
