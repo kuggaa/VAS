@@ -51,6 +51,12 @@ namespace VAS.Core.Hotkeys
 		public string Description { get; set; }
 
 		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.Hotkeys.KeyConfig"/> is configurable.
+		/// </summary>
+		/// <value><c>true</c> if configurable; otherwise, <c>false</c>.</value>
+		public bool Configurable { get; set; } = true;
+
+		/// <summary>
 		/// Determines whether the specified <see cref="VAS.Core.Hotkeys.KeyConfig"/> is equal to the current <see cref="T:VAS.Core.Hotkeys.KeyConfig"/>.
 		/// Two KeyConfig are equal if their Name are the same
 		/// </summary>
