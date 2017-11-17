@@ -113,11 +113,6 @@ namespace VAS.Services.Controller
 			Capturer = (viewModel as ICapturerBinDealer)?.Capturer;
 		}
 
-		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
-		{
-			return Enumerable.Empty<KeyAction> ();
-		}
-
 		#endregion
 
 		protected virtual void HandlePlayerVMPropertyChanged (object sender, PropertyChangedEventArgs e)

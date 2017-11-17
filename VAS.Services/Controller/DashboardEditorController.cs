@@ -38,10 +38,16 @@ namespace VAS.Services.Controller
 	public class DashboardEditorController : ControllerBase<DashboardVM>
 	{
 		List<AnalysisEventButtonVM> eventButtons;
+		internal KeyContext editDashboardKeyContext;
 
 		public DashboardEditorController()
 		{
 			eventButtons = new List<AnalysisEventButtonVM> ();
+			editDashboardKeyContext = new KeyContext ();
+			editDashboardKeyContext.AddAction (
+				new KeyAction (App.Current.HotkeysService.GetByName (GeneralUIHotkeys.DELETE),
+				               () => ViewModel.DeleteButton.Execute (ViewModel.Selection.FirstOrDefault ()), 10)
+			);
 		}
 
 		public override async Task Start ()
@@ -53,6 +59,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.SubscribeAsync<ReplaceDashboardFieldEvent> (HandleReplaceField);
 			App.Current.EventsBroker.Subscribe<ResetDashboardFieldEvent> (HandleResetField);
 			App.Current.EventsBroker.Subscribe<DuplicateEvent<DashboardButtonVM>> (HandleDuplicateButton);
+			UpdateKeyContext ();
 		}
 
 		public override async Task Stop ()
@@ -76,12 +83,6 @@ namespace VAS.Services.Controller
 		{
 			base.DisconnectEvents ();
 			DisconnectTagChanges ();
-		}
-
-		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
-		{
-			yield return new KeyAction (App.Current.HotkeysService.GetByName (GeneralUIHotkeys.DELETE),
-			                            () => ViewModel.DeleteButton.Execute (ViewModel.Selection.FirstOrDefault ()), 10);
 		}
 
 		public override void SetViewModel (IViewModel viewModel)
@@ -153,6 +154,10 @@ namespace VAS.Services.Controller
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Model))) {
 				DisconnectTagChanges ();
 				ConnectTagChanges ();
+			}
+
+			if (ViewModel.NeedsSync (e.PropertyName, nameof (ViewModel.Mode), sender, ViewModel)) {
+				UpdateKeyContext ();
 			}
 		}
 
@@ -255,6 +260,16 @@ namespace VAS.Services.Controller
 			case FieldPositionType.Goal:
 				ViewModel.GoalBackground = background ?? App.Current.GoalBackground;
 				break;
+			}
+		}
+
+		void UpdateKeyContext ()
+		{
+			if (ViewModel.Mode == DashboardMode.Edit) {
+				App.Current.KeyContextManager.RemoveContext (editDashboardKeyContext);
+				App.Current.KeyContextManager.AddContext (editDashboardKeyContext);
+			} else {
+				App.Current.KeyContextManager.RemoveContext (editDashboardKeyContext);
 			}
 		}
 
