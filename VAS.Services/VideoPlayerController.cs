@@ -1011,6 +1011,7 @@ namespace VAS.Services
 				currentTime = currentTime - visibleRegion.Start;
 			}
 
+			playerVM.AbsoluteCurrentTime = currentTime;
 			playerVM.CurrentTime = relativeTime;
 			playerVM.SeekCommand.Executable = !StillImageLoaded;
 

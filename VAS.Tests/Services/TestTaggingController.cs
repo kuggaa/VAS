@@ -321,16 +321,28 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
-		public void TestCurrenTimeUpdated ()
+		public void DashboardCurrentTime_Updates_WhenCurrentTimeUpdates ()
 		{
 			Time time = new Time (5000);
+			videoPlayer.AbsoluteCurrentTime = time;
 			videoPlayer.CurrentTime = time;
 
 			Assert.AreEqual (time, project.Dashboard.CurrentTime);
 		}
 
 		[Test]
-		public void TestCapturerTimeUpdated ()
+		public void DashboardCurrentTime_Equals_AbsoluteCurrenTime ()
+		{
+			Time time = new Time (5000);
+			Time timeabsolute = new Time (10000);
+			videoPlayer.AbsoluteCurrentTime = timeabsolute;
+			videoPlayer.CurrentTime = time;
+
+			Assert.AreEqual (timeabsolute, project.Dashboard.CurrentTime);
+		}
+
+		[Test]
+		public void DashboardCurrentTime_Updates_WhenCapturerTimeUpdates ()
 		{
 			Time time = new Time (3000);
 
