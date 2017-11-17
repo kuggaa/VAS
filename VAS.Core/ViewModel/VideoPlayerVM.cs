@@ -42,6 +42,7 @@ namespace VAS.Core.ViewModel
 		{
 			ViewPortsSwitchActive = true;
 			CamerasConfig = new ObservableCollection<CameraConfig> ();
+			AbsoluteCurrentTime = new Time (0);
 			CurrentTime = new Time (0);
 			Step = new Time { TotalSeconds = 10 };
 			ShowDetachButton = true;
@@ -285,10 +286,23 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
-		/// Gets or sets the current time.
+		/// Gets or sets the current time, based on the current loaded segment.
 		/// </summary>
-		/// <value>The current time.</value>
+		/// <value>The current time of the loaded segment</value>
 		public Time CurrentTime {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the current absolute time, regardless of the currently loaded element.
+		/// This changes at the same time CurrentTime changes, and does not emit changes to avoid
+		/// too much cpu overhead. So, you should listen for CurrentTime property changes but access
+		/// AbsoluteCurrentTime instead.
+		/// </summary>
+		/// <value>The current absolute time.</value>
+		[PropertyChanged.DoNotNotify]
+		public Time AbsoluteCurrentTime {
 			get;
 			set;
 		}
