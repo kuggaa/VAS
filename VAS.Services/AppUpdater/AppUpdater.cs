@@ -54,10 +54,11 @@ namespace VAS.Services.AppUpdater
 			case OperatingSystemID.OSX:
 #if OSTYPE_OS_X
 				updater = new SparkleOSX ();
+				break;
 #else
 				Log.Error ("Sparkle backend for OS X not enabled in this build, define OSTYPE_OS_X");
+				return false;
 #endif
-				break;
 			case OperatingSystemID.Linux:
 				updater = new SimplifiedAppUpdater ();
 				break;
