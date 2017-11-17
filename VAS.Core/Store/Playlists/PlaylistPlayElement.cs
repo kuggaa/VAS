@@ -34,7 +34,7 @@ namespace VAS.Core.Store.Playlists
 			Title = play.Name;
 			Rate = play.Rate;
 			CamerasLayout = play.CamerasLayout;
-			CamerasConfig = new ObservableCollection<CameraConfig> (play.CamerasConfig);
+			CamerasConfig = new RangeObservableCollection<CameraConfig> (play.CamerasConfig);
 		}
 
 		protected override void DisposeManagedResources ()
@@ -123,7 +123,7 @@ namespace VAS.Core.Store.Playlists
 		/// Override the default <see cref="TimelineEvent.CamerasConfig"/>
 		/// defined by the <see cref="TimelineEvent"/>
 		/// </summary>
-		public ObservableCollection<CameraConfig> CamerasConfig {
+		public RangeObservableCollection<CameraConfig> CamerasConfig {
 			get;
 			set;
 		}

@@ -55,7 +55,7 @@ namespace VAS.Core.ViewModel
 		/// Gets the cameras config.
 		/// </summary>
 		/// <value>The cameras config.</value>
-		public ObservableCollection<CameraConfig> CamerasConfig => Model.CamerasConfig;
+		public RangeObservableCollection<CameraConfig> CamerasConfig => Model.CamerasConfig;
 
 		/// <summary>
 		/// Gets the cameras layout.
@@ -156,7 +156,7 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the VAS . core. interfaces. IP laylist event element. cameras config.
 		/// </summary>
 		/// <value>The VAS . core. interfaces. IP laylist event element. cameras config.</value>
-		ObservableCollection<CameraConfig> IPlaylistEventElement.CamerasConfig { get => TypedModel.CamerasConfig; set => TypedModel.CamerasConfig = value; }
+		RangeObservableCollection<CameraConfig> IPlaylistEventElement.CamerasConfig { get => TypedModel.CamerasConfig; set => TypedModel.CamerasConfig = value; }
 	}
 
 	public class PlaylistVideoVM : PlaylistElementVM

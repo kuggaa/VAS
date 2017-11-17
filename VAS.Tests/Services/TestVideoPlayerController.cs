@@ -128,7 +128,7 @@ namespace VAS.Tests.Services
 				Model = new TimelineEvent {
 					Start = new Time (100),
 					Stop = new Time (200),
-					CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) },
+					CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) },
 					FileSet = mfs
 				}
 			};
@@ -136,7 +136,7 @@ namespace VAS.Tests.Services
 				Model = new TimelineEvent {
 					Start = new Time (1000),
 					Stop = new Time (20000),
-					CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) },
+					CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) },
 					FileSet = mfs
 				}
 			};
@@ -144,7 +144,7 @@ namespace VAS.Tests.Services
 				Model = new TimelineEvent {
 					Start = new Time (100),
 					Stop = new Time (200),
-					CamerasConfig = new ObservableCollection<CameraConfig> (),
+					CamerasConfig = new RangeObservableCollection<CameraConfig> (),
 					FileSet = mfs
 				}
 			};
@@ -182,7 +182,7 @@ namespace VAS.Tests.Services
 
 		void PreparePlayer (bool readyToSeek = true)
 		{
-			player.CamerasConfig = new ObservableCollection<CameraConfig> {
+			player.CamerasConfig = new RangeObservableCollection<CameraConfig> {
 					new CameraConfig (0),
 					new CameraConfig (1)
 				};
@@ -992,7 +992,7 @@ namespace VAS.Tests.Services
 				Model = new TimelineEvent {
 					Start = new Time (100),
 					Stop = new Time (20000),
-					CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) },
+					CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) },
 					FileSet = mfs
 				}
 			};
@@ -1048,7 +1048,7 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (new List<CameraConfig> { new CameraConfig (0), new CameraConfig (1) }, player.CamerasConfig);
 
 			/* Change again the cameras visible */
-			player.CamerasConfig = new ObservableCollection<CameraConfig> {
+			player.CamerasConfig = new RangeObservableCollection<CameraConfig> {
 					new CameraConfig (1),
 					new CameraConfig (0)
 				};
@@ -1087,7 +1087,7 @@ namespace VAS.Tests.Services
 				Model = new TimelineEvent {
 					Start = new Time (150),
 					Stop = new Time (200),
-					CamerasConfig = new ObservableCollection<CameraConfig> {
+					CamerasConfig = new RangeObservableCollection<CameraConfig> {
 						new CameraConfig (0),
 						new CameraConfig (1),
 						new CameraConfig (4),
@@ -1097,7 +1097,7 @@ namespace VAS.Tests.Services
 				}
 			};
 
-			player.CamerasConfig = new ObservableCollection<CameraConfig> {
+			player.CamerasConfig = new RangeObservableCollection<CameraConfig> {
 					new CameraConfig (1),
 					new CameraConfig (0)
 				};
@@ -1138,7 +1138,7 @@ namespace VAS.Tests.Services
 			player.PrepareViewEvent += () => prepareView++;
 
 			/* Not ready to seek */
-			player.CamerasConfig = new ObservableCollection<CameraConfig> {
+			player.CamerasConfig = new RangeObservableCollection<CameraConfig> {
 					new CameraConfig (0),
 					new CameraConfig (1)
 				};
@@ -1204,7 +1204,7 @@ namespace VAS.Tests.Services
 				Model = new TimelineEvent {
 					Start = new Time (400),
 					Stop = new Time (50000),
-					CamerasConfig = new ObservableCollection<CameraConfig> {
+					CamerasConfig = new RangeObservableCollection<CameraConfig> {
 						new CameraConfig (1),
 						new CameraConfig (0)
 					},
@@ -1241,7 +1241,7 @@ namespace VAS.Tests.Services
 			player.PrepareViewEvent += () => prepareView++;
 
 			/* Not ready to seek */
-			player.CamerasConfig = new ObservableCollection<CameraConfig> {
+			player.CamerasConfig = new RangeObservableCollection<CameraConfig> {
 					new CameraConfig (0),
 					new CameraConfig (1)
 				};
@@ -1399,7 +1399,7 @@ namespace VAS.Tests.Services
 		{
 			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
 			TimelineEventVM eventVM1;
-			ObservableCollection<CameraConfig> cams1, cams2;
+			RangeObservableCollection<CameraConfig> cams1, cams2;
 			Mock<IMultiVideoPlayer> multiplayerMock = new Mock<IMultiVideoPlayer> ();
 
 			mtkMock.Setup (m => m.GetMultiPlayer ()).Returns (multiplayerMock.Object);
@@ -1409,8 +1409,8 @@ namespace VAS.Tests.Services
 			PreparePlayer ();
 
 			/* Only called internally in the openning */
-			cams1 = new ObservableCollection<CameraConfig> { new CameraConfig (0), new CameraConfig (1) };
-			cams2 = new ObservableCollection<CameraConfig> { new CameraConfig (1), new CameraConfig (0) };
+			cams1 = new RangeObservableCollection<CameraConfig> { new CameraConfig (0), new CameraConfig (1) };
+			cams2 = new RangeObservableCollection<CameraConfig> { new CameraConfig (1), new CameraConfig (0) };
 			multiplayerMock.Verify (p => p.ApplyCamerasConfig (), Times.Never ());
 			Assert.AreEqual (cams1, player.CamerasConfig);
 
@@ -1425,7 +1425,7 @@ namespace VAS.Tests.Services
 					Start = new Time (100),
 					Stop = new Time (200),
 					FileSet = mfs,
-					CamerasConfig = new ObservableCollection<CameraConfig> {
+					CamerasConfig = new RangeObservableCollection<CameraConfig> {
 						new CameraConfig (1),
 						new CameraConfig (1)
 					}
@@ -1437,7 +1437,7 @@ namespace VAS.Tests.Services
 			multiplayerMock.ResetCalls ();
 
 			/* Change event cams config */
-			player.CamerasConfig = new ObservableCollection<CameraConfig> {
+			player.CamerasConfig = new RangeObservableCollection<CameraConfig> {
 					new CameraConfig (0),
 					new CameraConfig (0)
 				};
@@ -1489,7 +1489,7 @@ namespace VAS.Tests.Services
 		public void TestROICamerasConfig ()
 		{
 			TimelineEventVM eventVM1;
-			ObservableCollection<CameraConfig> cams;
+			RangeObservableCollection<CameraConfig> cams;
 			Mock<IMultiVideoPlayer> multiplayerMock = new Mock<IMultiVideoPlayer> ();
 
 			mtkMock.Setup (m => m.GetMultiPlayer ()).Returns (multiplayerMock.Object);
@@ -2339,7 +2339,7 @@ namespace VAS.Tests.Services
 			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
 			playerMock.Raise (p => p.ReadyToSeek += null, this);
 
-			var eventCamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+			var eventCamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) };
 			var eventCamerasLayout = new object ();
 
 			var playlistVM = new PlaylistVM { Model = new Playlist () };
@@ -2367,7 +2367,7 @@ namespace VAS.Tests.Services
 			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
 			playerMock.Raise (p => p.ReadyToSeek += null, this);
 
-			var eventCamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+			var eventCamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) };
 			var playlistVM = new PlaylistVM { Model = new Playlist () };
 			player.LoadPlaylistEvent (playlistVM, new PlaylistVideoVM { Model = new PlaylistVideo (new MediaFile ()) }, false);
 
@@ -2384,7 +2384,7 @@ namespace VAS.Tests.Services
 			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
 			playerMock.Raise (p => p.ReadyToSeek += null, this);
 
-			var eventCamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+			var eventCamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) };
 			var playlistVM = new PlaylistVM { Model = new Playlist () };
 			player.LoadPlaylistEvent (playlistVM, new PlaylistImageVM {
 				Model = new PlaylistImage (App.Current.ResourcesLocator.LoadImage ("name", 1, 1), new Time (10))
@@ -2403,7 +2403,7 @@ namespace VAS.Tests.Services
 			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
 			playerMock.Raise (p => p.ReadyToSeek += null, this);
 
-			var eventCamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+			var eventCamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) };
 			var playlistVM = new PlaylistVM { Model = new Playlist () };
 			player.LoadPlaylistEvent (playlistVM, new PlaylistDrawingVM {
 				Model = new PlaylistDrawing (new FrameDrawing ())
@@ -2422,7 +2422,7 @@ namespace VAS.Tests.Services
 			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
 			playerMock.Raise (p => p.ReadyToSeek += null, this);
 
-			var eventCamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+			var eventCamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) };
 			player.LoadEvent (new TimelineEventVM () { Model = new TimelineEvent () }, new Time (0), false);
 
 			Assert.AreEqual (eventCamerasConfig, player.CamerasConfig);

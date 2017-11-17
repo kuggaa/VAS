@@ -74,7 +74,7 @@ namespace VAS.Core.Interfaces
 		/// <summary>
 		/// The list of configurations for visible cameras.
 		/// </summary>
-		ObservableCollection<CameraConfig> CamerasConfig { get; set; }
+		RangeObservableCollection<CameraConfig> CamerasConfig { get; set; }
 
 		/// <summary>
 		/// List of view ports set by the view.

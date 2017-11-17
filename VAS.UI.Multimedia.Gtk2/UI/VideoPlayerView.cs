@@ -1,4 +1,4 @@
-// PlayerView.cs
+﻿// PlayerView.cs
 //
 //  Copyright (C) 2007-2009 Andoni Morales Alastruey
 //
@@ -358,13 +358,13 @@ namespace VAS.UI
 			UpdateCombo (subviewport3);
 		}
 
-		void ValidateCameras (ObservableCollection<CameraConfig> cameras)
+		void ValidateCameras (RangeObservableCollection<CameraConfig> cameras)
 		{
 			bool changed = false;
 
 			// As no camera configuration has been defined yet, we should suggest one
 			if (cameras == null) {
-				cameras = new ObservableCollection<CameraConfig> ();
+				cameras = new RangeObservableCollection<CameraConfig> ();
 				for (int i = 0; i < Math.Min (4, ViewModel.FileSet.ViewModels.Count); i++) {
 					changed = true;
 					cameras.Add (new CameraConfig (i));

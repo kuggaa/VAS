@@ -1,4 +1,4 @@
-//
+﻿//
 //  Copyright (C) 2014 Andoni Morales Alastruey
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -511,7 +511,7 @@ namespace VAS.Tests
 				evt.EventType = type;
 				evt.Notes = "";
 				evt.Miniature = miniature;
-				evt.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+				evt.CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) };
 				evt.FileSet = project.Model.FileSet;
 				evt.Project = project.Model;
 
@@ -579,7 +579,7 @@ namespace VAS.Tests
 				evt.EventType = type;
 				evt.Notes = "";
 				evt.Miniature = miniature;
-				evt.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+				evt.CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) };
 				evt.FileSet = FileSet;
 				evt.Project = this;
 

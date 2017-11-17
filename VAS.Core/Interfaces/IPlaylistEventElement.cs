@@ -64,7 +64,7 @@ namespace VAS.Core.Interfaces
 		/// Gets or sets the cameras config.
 		/// </summary>
 		/// <value>The cameras config.</value>
-		new ObservableCollection<CameraConfig> CamerasConfig {
+		new RangeObservableCollection<CameraConfig> CamerasConfig {
 			get;
 			set;
 		}

@@ -1,4 +1,4 @@
-// IPlayer.cs
+﻿// IPlayer.cs
 //
 //  Copyright (C) 2007-2009 Andoni Morales Alastruey
 //
@@ -23,10 +23,11 @@ using System.Collections.ObjectModel;
 using VAS.Core.Store;
 using Image = VAS.Core.Common.Image;
 using VAS.Core.Handlers;
+using VAS.Core.Common;
 
 namespace VAS.Core.Interfaces.Multimedia
 {
-	public interface IPlayback: IDisposable
+	public interface IPlayback : IDisposable
 	{
 		/// <summary>
 		/// Gets the length of the opened media file.
@@ -95,7 +96,7 @@ namespace VAS.Core.Interfaces.Multimedia
 		void Expose ();
 	}
 
-	public interface IVideoPlayer: IPlayback
+	public interface IVideoPlayer : IPlayback
 	{
 		// Events
 		event ErrorHandler Error;
@@ -159,7 +160,7 @@ namespace VAS.Core.Interfaces.Multimedia
 		/// {0, 1} will play MediaFileSet[0] in WindowHandles[0] and MediaFileSet[1] in WindowsHandles[1]
 		/// {2, 3} will play MediaFileSet[2] in WindowHandles[0] and MediaFileSet[3] in WindowsHandles[1]
 		/// </summary>
-		ObservableCollection <CameraConfig> CamerasConfig { set; }
+		RangeObservableCollection<CameraConfig> CamerasConfig { set; }
 
 		void ApplyCamerasConfig ();
 
