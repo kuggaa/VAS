@@ -23,7 +23,6 @@ using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Filters;
-using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
@@ -41,21 +40,22 @@ namespace VAS.Core.ViewModel
 	public class TimelineVM : ViewModelBase<RangeObservableCollection<TimelineEvent>>
 	{
 		RangeObservableCollection<TimelineEvent> model;
-		Dictionary<string, EventTypeTimelineVM> eventTypeToTimeline;
+		Dictionary<EventType, EventTypeTimelineVM> eventTypeToTimeline;
 		Dictionary<Player, PlayerTimelineVM> playerToTimeline;
 		CountLimitationBarChartVM limitationChart;
+		CollectionViewModel<EventType, EventTypeVM> eventTypes;
 
 		public TimelineVM ()
 		{
-			eventTypeToTimeline = new Dictionary<string, EventTypeTimelineVM> ();
+			eventTypeToTimeline = new Dictionary<EventType, EventTypeTimelineVM> ();
 			playerToTimeline = new Dictionary<Player, PlayerTimelineVM> ();
 			EventTypesTimeline = new NestedViewModel<EventTypeTimelineVM> ();
-			EventTypesTimeline.ViewModels.CollectionChanged += HandleEventTypesCollectionChanged;
 			TeamsTimeline = new NestedViewModel<TeamTimelineVM> ();
 			FullTimeline = CreateFullTimeline ();
 			FullTimeline.ViewModels.CollectionChanged += HandleTimelineCollectionChanged;
 			FullTimeline.PropertyChanged += FullTimeline_PropertyChanged;
 			EditionCommand = new Command<TimelineEvent> (HandleEditPlay);
+			GroupEventsByEventTypeName = false;
 
 			Filters = new AndPredicate<TimelineEventVM> ();
 			EventsPredicate = new AndPredicate<TimelineEventVM> {
@@ -90,8 +90,10 @@ namespace VAS.Core.ViewModel
 			if (Model != null) {
 				Model.Clear ();
 			}
+			if (eventTypes != null) {
+				eventTypes.ViewModels.CollectionChanged -= HandleEventTypesCollectionChanged;
+			}
 			Filters.Dispose ();
-			EventTypesTimeline.ViewModels.CollectionChanged -= HandleEventTypesCollectionChanged;
 			EventTypesTimeline.Dispose ();
 			FullTimeline.ViewModels.CollectionChanged -= HandleTimelineCollectionChanged;
 			FullTimeline.Dispose ();
@@ -182,6 +184,19 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.TimelineVM"/> groups events by
+		/// event type name instead of creating one timeline foreach each event type. When set to <c>true</c>, events
+		/// with their event type name identical will be grouped in the same timeline.
+		/// This option does not support yet scenarios in which the event type name can change and it should only
+		/// be used when a name change never happens.
+		/// </summary>
+		/// <value><c>true</c> if group events by event type name; otherwise, <c>false</c>.</value>
+		public bool GroupEventsByEventTypeName {
+			get;
+			set;
+		}
+
+		/// <summary>
 		/// Filters to apply to the contained events.
 		/// This AndPredicate typically contains OrPredicates, 
 		/// which in turn contain the actual filters.
@@ -256,11 +271,20 @@ namespace VAS.Core.ViewModel
 		/// <summary>
 		/// Creates the child event type timelines from the list of the project's event types.
 		/// </summary>
-		/// <param name="eventTypes">Event types.</param>
-		public void CreateEventTypeTimelines (IEnumerable<EventTypeVM> eventTypes)
+		/// <param name="projectEventTypes">Event types.</param>
+		public void CreateEventTypeTimelines (CollectionViewModel<EventType, EventTypeVM> projectEventTypes)
 		{
-			EventTypesTimeline.ViewModels.Clear ();
-			EventTypesTimeline.ViewModels.AddRange (eventTypes.Select (e => new EventTypeTimelineVM (e)));
+			if (projectEventTypes == eventTypes) {
+				return;
+			}
+			if (eventTypes != null) {
+				throw new InvalidOperationException ("Event types collection is already set.");
+			}
+			eventTypes = projectEventTypes;
+			eventTypes.ViewModels.CollectionChanged += HandleEventTypesCollectionChanged;
+			foreach (EventTypeVM evtType in eventTypes) {
+				FindTimelineForEventType (evtType.Model);
+			}
 		}
 
 		public void CreateTeamsTimelines (IEnumerable<TeamVM> teams)
@@ -388,17 +412,21 @@ namespace VAS.Core.ViewModel
 		/// <param name="e">E.</param>
 		protected virtual void HandleEventTypesCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
-			RecreateInternalDictionary ();
-		}
-
-		protected override void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
-		{
-			base.ForwardPropertyChanged (sender, e);
-
-			var viewModel = sender as EventTypeVM;
-			if (viewModel != null) {
-				if (viewModel.NeedsSync (e, nameof (viewModel.Name))) {
-					RecreateInternalDictionary ();
+			switch (e.Action) {
+			case NotifyCollectionChangedAction.Add: {
+					foreach (EventTypeVM evtType in e.NewItems) {
+						FindTimelineForEventType (evtType.Model);
+					}
+					break;
+				}
+			case NotifyCollectionChangedAction.Remove: {
+					foreach (EventTypeVM evtType in e.OldItems) {
+						RemoveTimelineForEventType (evtType.Model);
+					}
+					break;
+				}
+			case NotifyCollectionChangedAction.Reset: {
+					break;
 				}
 			}
 		}
@@ -416,7 +444,7 @@ namespace VAS.Core.ViewModel
 		{
 			eventTypeToTimeline.Clear ();
 			foreach (EventTypeTimelineVM timeline in EventTypesTimeline.ViewModels) {
-				eventTypeToTimeline [timeline.Model.Name] = timeline;
+				eventTypeToTimeline [timeline.EventTypeVM.Model] = timeline;
 			}
 		}
 
@@ -432,28 +460,54 @@ namespace VAS.Core.ViewModel
 			ReplaceToPlayersTimeline (viewModels);
 		}
 
+		EventTypeTimelineVM FindTimelineForEventType (EventType evtType)
+		{
+			EventTypeTimelineVM timeline = null;
+
+			if (!eventTypeToTimeline.TryGetValue (evtType, out timeline)) {
+				var eventType = evtType;
+				if (GroupEventsByEventTypeName) {
+					timeline = eventTypeToTimeline.FirstOrDefault (kv => kv.Key.Name == evtType.Name).Value;
+				}
+				if (timeline == null) {
+					timeline = new EventTypeTimelineVM { Model = evtType };
+					EventTypesTimeline.ViewModels.Add (timeline);
+				}
+				eventTypeToTimeline [evtType] = timeline;
+			}
+			return timeline;
+		}
+
+		void RemoveTimelineForEventType (EventType evtType)
+		{
+			EventTypeTimelineVM timeline = FindTimelineForEventType (evtType);
+			// If the timeline is empty and it does not have an associated dashboard
+			// button, get rid of it
+			if (!timeline.Any () && !eventTypes.Any (evt => evt.Model == evtType)) {
+				EventTypesTimeline.ViewModels.Remove (timeline);
+				timeline.Dispose ();
+				eventTypeToTimeline.Remove (evtType);
+			}
+		}
+
 		void AddToEventTypesTimeline (TimelineEventVM timelineEventVM)
 		{
-			if (!eventTypeToTimeline.ContainsKey (timelineEventVM.Model.EventType.Name)) {
-				EventTypesTimeline.ViewModels.Add (new EventTypeTimelineVM { Model = timelineEventVM.Model.EventType });
-			}
-			eventTypeToTimeline [timelineEventVM.Model.EventType.Name].ViewModels.Add (timelineEventVM);
+			var timeline = FindTimelineForEventType (timelineEventVM.Model.EventType);
+			timeline.ViewModels.Add (timelineEventVM);
 		}
 
 		void ReplaceToEventTypesTimeline (IEnumerable<TimelineEventVM> viewModels)
 		{
-			var groupVMs = viewModels.GroupBy (ev => ev.Model.EventType.Name);
+			var groupVMs = viewModels.GroupBy (ev => ev.Model.EventType);
 			foreach (var grouping in groupVMs) {
-				if (!eventTypeToTimeline.ContainsKey (grouping.Key)) {
-					EventTypesTimeline.ViewModels.Add (new EventTypeTimelineVM { Model = grouping.ToList () [0].Model.EventType });
-				}
-				var timelineEvents = eventTypeToTimeline [grouping.Key].ViewModels;
+				EventTypeTimelineVM timeline = FindTimelineForEventType (grouping.Key);
+				var timelineEvents = timeline.ViewModels;
 				timelineEvents.Replace (grouping);
 			}
 			//Clear the Rest of EventTypeTimelines if necessary
-			foreach (var name in eventTypeToTimeline.Keys.ToList ().Except (groupVMs.Select (g => g.Key))) {
-				if (eventTypeToTimeline [name].ViewModels.Any ()) {
-					eventTypeToTimeline [name].ViewModels.Clear ();
+			foreach (var eventType in eventTypeToTimeline.Keys.ToList ().Except (groupVMs.Select (g => g.Key))) {
+				if (eventTypeToTimeline [eventType].ViewModels.Any ()) {
+					eventTypeToTimeline [eventType].ViewModels.Clear ();
 				}
 			}
 		}
@@ -476,7 +530,7 @@ namespace VAS.Core.ViewModel
 			foreach (var timeline in viewModels) {
 				foreach (var player in timeline.Model.Players) {
 					if (!playerToEvent.ContainsKey (player)) {
-						playerToEvent.Add (player, new List<TimelineEventVM> {timeline});
+						playerToEvent.Add (player, new List<TimelineEventVM> { timeline });
 					} else {
 						playerToEvent [player].Add (timeline);
 					}
@@ -501,7 +555,7 @@ namespace VAS.Core.ViewModel
 			foreach (Player player in viewModel.Model.Players) {
 				playerToTimeline [player].ViewModels.Remove (viewModel);
 			}
-			eventTypeToTimeline [viewModel.Model.EventType.Name].ViewModels.Remove (viewModel);
+			eventTypeToTimeline [viewModel.Model.EventType].ViewModels.Remove (viewModel);
 		}
 
 		void FullTimeline_PropertyChanged (object sender, PropertyChangedEventArgs e)
