@@ -435,6 +435,88 @@ namespace VAS.Tests.Core.Filters
 			Assert.IsFalse (container.Active);
 			Assert.IsTrue (container.Filter (""));
 		}
+
+
+		[Test]
+		public void SetActive_1LevelCompositePredicate_ActivePropertyChangedEittedOnce ()
+		{
+			int count = 0;
+
+			// Arrange
+			var filter = new OrPredicate<string> {
+				new Predicate<string> { Expression = (ev) => true },
+				new Predicate<string> { Expression = (ev) => true },
+			};
+			filter.PropertyChanged += (sender, e) => count++;
+
+			filter.Active = false;
+
+			Assert.AreEqual (1, count);
+		}
+
+		[Test]
+		public void SetActive_1LevelCompositePredicateActiveNotChanged_ActivePropertyChangedEittedOnce ()
+		{
+			int count = 0;
+
+			// Arrange
+			var filter = new OrPredicate<string> {
+				new Predicate<string> { Expression = (ev) => true },
+				new Predicate<string> { Expression = (ev) => true },
+			};
+			filter.PropertyChanged += (sender, e) => count++;
+
+			filter.Active = true;
+
+			Assert.AreEqual (0, count);
+		}
+
+		[Test]
+		public void SetActive_2LevelCompositePredicateRootChanged_ActivePropertyChangedEittedOnce ()
+		{
+			int count = 0;
+
+			// Arrange
+			var filter = new OrPredicate<string> {
+				new OrPredicate<string> {
+					new Predicate<string> { Expression = (ev) => true },
+					new Predicate<string> { Expression = (ev) => true },
+				},
+				new OrPredicate<string> {
+					new Predicate<string> { Expression = (ev) => true },
+					new Predicate<string> { Expression = (ev) => true },
+				}
+			};
+			filter.PropertyChanged += (sender, e) => count++;
+
+			filter.Active = false;
+
+			Assert.AreEqual (1, count);
+		}
+
+		[Test]
+		public void SetActive_2LevelCompositePredicateChildChanged_ActivePropertyChangedEittedOnce ()
+		{
+			int count = 0;
+			var childFilter = new Predicate<string> { Expression = (ev) => true };
+
+			// Arrange
+			var filter = new OrPredicate<string> {
+				new OrPredicate<string> {
+					new Predicate<string> { Expression = (ev) => true },
+					childFilter,
+				},
+				new OrPredicate<string> {
+					new Predicate<string> { Expression = (ev) => true },
+					new Predicate<string> { Expression = (ev) => true },
+				}
+			};
+			filter.PropertyChanged += (sender, e) => count++;
+
+			childFilter.Active = false;
+
+			Assert.AreEqual (1, count);
+		}
 	}
 }
 
