@@ -71,20 +71,6 @@ namespace VAS.Core.ViewModel
 				Playing = true
 			});
 		}
-
-		public override int GetHashCode ()
-		{
-			return Model.Name.GetHashCode ();
-		}
-
-		public override bool Equals (object obj)
-		{
-			EventTypeTimelineVM e = obj as EventTypeTimelineVM;
-			if (e == null) {
-				return false;
-			}
-			return Model.Name == e.Model.Name;
-		}
 	}
 }
 
