@@ -115,6 +115,29 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
+		public void ApplyFilter_EventTypeOne_VisiblePropertyChangedEmmittedOnlyForEventsChangingVisibility ()
+		{
+			int changedCount = 0;
+			var changed = new HashSet<TimelineEventVM> ();
+
+			// Arrange
+			timelineVM.Filters.Active = false;
+			foreach (var evt in timelineVM.FullTimeline.ViewModels) {
+				evt.PropertyChanged += (sender, e) => {
+					changedCount++;
+					changed.Add (evt);
+				};
+			}
+
+			// Act
+			timelineVM.EventTypesPredicate.Elements [0].Active = true;
+
+			// Assert
+			Assert.AreEqual (timelineVM.FullTimeline.Count (e => !e.Visible), changedCount);
+		}
+
+
+		[Test]
 		public void ApplyFilter_AllFiltersActive_AllVisible ()
 		{
 			// Arrange
