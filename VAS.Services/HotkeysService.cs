@@ -176,8 +176,9 @@ namespace VAS.Services
 		{
 			HotKey hotkey = App.Current.GUIToolkit.SelectHotkey (e.Object.Key);
 			if (hotkey != null) {
-				var kconfig = keyConfigs.FirstOrDefault ((arg) => arg.Key == hotkey);
-				if (kconfig != null && kconfig.Key != e.Object.Key) {
+				//Should always be only on keyconfig
+				var kconfig = keyConfigs.FirstOrDefault (kc => kc.Key != e.Object.Key && kc.Key == hotkey && kc.Configurable);
+				if (kconfig != null) {
 					string key = System.Security.SecurityElement.Escape (hotkey.ToString ());
 					string msg = Catalog.GetString ($"Shortcut already in use\n{key}  is in use by  {kconfig.Category}/{kconfig.Description}  " +
 												   $"replacing it will leave  {kconfig.Description}  without a shortcut, are you sure? ");
