@@ -63,7 +63,7 @@ namespace VAS.Drawing.Widgets
 				}
 				viewModel = value;
 				if (viewModel != null) {
-					viewModel.Project.EventTypes.ViewModels.CollectionChanged += HandleCollectionChanged;
+					viewModel.Project.Timeline.EventTypesTimeline.ViewModels.CollectionChanged += HandleCollectionChanged;
 					viewModel.Project.EventTypes.PropertyChanged += HandleEventTypesPropertyChanged;
 				}
 			}
@@ -161,6 +161,10 @@ namespace VAS.Drawing.Widgets
 					foreach (EventTypeTimelineVM viewModel in e.OldItems.OfType<EventTypeTimelineVM> ().ToList ()) {
 						RemoveEventTypeLabel (viewModel);
 					}
+					break;
+				}
+			case NotifyCollectionChangedAction.Move: {
+					UpdateLabelOffsets ();
 					break;
 				}
 			case NotifyCollectionChangedAction.Reset: {
