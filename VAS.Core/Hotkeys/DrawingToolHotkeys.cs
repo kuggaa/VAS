@@ -81,7 +81,7 @@ namespace VAS.Core.Hotkeys
 				},
 				new KeyConfig {
 					Name = "DRAWING_TOOL_FILLED_SQUARE",
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+s"),
+					Key = App.Current.Keyboard.ParseName ("<Alt_L>+s"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Filled square")
 				},
@@ -93,7 +93,7 @@ namespace VAS.Core.Hotkeys
 				},
 				new KeyConfig {
 					Name = "DRAWING_TOOL_FILLED_CIRCLE",
-					Key = App.Current.Keyboard.ParseName ("<Shift_L>+c"),
+					Key = App.Current.Keyboard.ParseName ("<Alt_L>+c"),
 					Category = CATEGORY,
 					Description = Catalog.GetString("Filled circle")
 				},
@@ -119,25 +119,29 @@ namespace VAS.Core.Hotkeys
 					Name = DRAWING_TOOL_MOVE_RIGHT,
 					Key = App.Current.Keyboard.ParseName ("Right"),
 					Category = CATEGORY,
-					Description = Catalog.GetString("Move right")
+					Description = Catalog.GetString("Move right"),
+					Configurable = false
 				},
 				new KeyConfig {
 					Name = DRAWING_TOOL_MOVE_LEFT,
 					Key = App.Current.Keyboard.ParseName ("Left"),
 					Category = CATEGORY,
-					Description = Catalog.GetString("Move left")
+					Description = Catalog.GetString("Move left"),
+					Configurable = false
 				},
 				new KeyConfig {
 					Name = DRAWING_TOOL_MOVE_UP,
 					Key = App.Current.Keyboard.ParseName ("Up"),
 					Category = CATEGORY,
-					Description = Catalog.GetString("Move up")
+					Description = Catalog.GetString("Move up"),
+					Configurable = false
 				},
 				new KeyConfig {
 					Name = DRAWING_TOOL_MOVE_DOWN,
 					Key = App.Current.Keyboard.ParseName ("Down"),
 					Category = CATEGORY,
-					Description = Catalog.GetString("Move down")
+					Description = Catalog.GetString("Move down"),
+					Configurable = false
 				},
 				new KeyConfig {
 					Name = DRAWING_TOOL_MOVE_TO_FRONT,

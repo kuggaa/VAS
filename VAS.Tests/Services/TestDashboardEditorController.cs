@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using VAS.Core;
@@ -50,20 +51,17 @@ namespace VAS.Tests.Services
 		}
 
 		[SetUp]
-		public void SetUp ()
+		public async Task SetUp ()
 		{
 			var dashboard = Utils.DashboardDummy.Default ();
 			dashboard.InsertTimer ();
 			dashboardVM = new DashboardVM { Model = dashboard };
+			dashboardVM.Mode = DashboardMode.Edit;
 			var viewModel = new DummyDashboardManagerVM (dashboardVM);
 			controller = new DashboardEditorController ();
 			controller.SetViewModel (viewModel);
-			controller.Start ();
+			await controller.Start ();
 			KeyContext context = new KeyContext ();
-			foreach (KeyAction action in controller.GetDefaultKeyActions ()) {
-				context.AddAction (action);
-			}
-			App.Current.KeyContextManager.NewKeyContexts (new List<KeyContext> { context });
 		}
 
 		[Test]
@@ -90,8 +88,10 @@ namespace VAS.Tests.Services
 		[Test]
 		public void TestDelete_BackSpace ()
 		{
+			dashboardVM.Mode = DashboardMode.Edit;
 			var first = dashboardVM.ViewModels.First ();
 			dashboardVM.Select (first);
+
 
 			App.Current.KeyContextManager.HandleKeyPressed (App.Current.Keyboard.ParseName ("Delete"));
 
@@ -241,6 +241,80 @@ namespace VAS.Tests.Services
 			Assert.AreSame (dashboardVM.ViewModels[1].Model,
 			                duplicatedButton.Model.ActionLinks[0].DestinationButton);
 			Assert.AreSame (duplicatedButton.Model, duplicatedButton.Model.ActionLinks[0].SourceButton);
+		}
+
+		[Test]
+		public async Task StartController_DashBoardModeIsCode_NoKeyContextAdded ()
+		{
+			await controller.Stop ();
+			dashboardVM.Mode = DashboardMode.Code;
+			App.Current.KeyContextManager.NewKeyContexts (new List<KeyContext> ());
+			await controller.Start ();
+
+			var editKeyContext = App.Current.KeyContextManager.CurrentKeyContexts.Where (
+				k => k == controller.editDashboardKeyContext
+			);
+
+			Assert.IsFalse (editKeyContext.Any ());
+		}
+
+		[Test]
+		public async Task StartController_DashBoardModeIsEdit_KeyContextAdded ()
+		{
+			await controller.Stop ();
+			dashboardVM.Mode = DashboardMode.Edit;
+			App.Current.KeyContextManager.NewKeyContexts (new List<KeyContext> ());
+			await controller.Start ();
+
+			var editKeyContext = App.Current.KeyContextManager.CurrentKeyContexts.Where (
+				k => k == controller.editDashboardKeyContext
+			);
+
+			Assert.AreEqual (1, editKeyContext.Count ());
+		}
+
+		[Test]
+		public async Task StartController_SeveralTimes_MaintainsOnlyOneKeyContext ()
+		{
+			await controller.Stop ();
+			await controller.Start ();
+			await controller.Stop ();
+			await controller.Start ();
+
+			var editKeyContext = App.Current.KeyContextManager.CurrentKeyContexts.Where (
+				k => k == controller.editDashboardKeyContext
+			);
+
+			Assert.AreEqual (1, editKeyContext.Count ());
+		}
+
+		[Test]
+		public async Task DashBoardModeChangeToEdit_KeyContextAdded ()
+		{
+			await controller.Stop ();
+			dashboardVM.Mode = DashboardMode.Code;
+			App.Current.KeyContextManager.NewKeyContexts (new List<KeyContext> ());
+			await controller.Start ();
+
+			dashboardVM.Mode = DashboardMode.Edit;
+
+			var editKeyContext = App.Current.KeyContextManager.CurrentKeyContexts.Where (
+				k => k == controller.editDashboardKeyContext
+			);
+
+			Assert.AreEqual (1, editKeyContext.Count ());
+		}
+
+		[Test]
+		public void DashBoardModeChangeToCode_RemovesKeyContext ()
+		{
+			dashboardVM.Mode = DashboardMode.Code;
+
+			var editKeyContext = App.Current.KeyContextManager.CurrentKeyContexts.Where (
+				k => k == controller.editDashboardKeyContext
+			);
+
+			Assert.IsFalse (editKeyContext.Any ());
 		}
 
 		ActionLink CreateActionLink (DashboardButton source, DashboardButton dest)
