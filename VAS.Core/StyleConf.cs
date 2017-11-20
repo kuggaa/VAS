@@ -179,6 +179,10 @@ namespace VAS.Core.Common
 		public int BenchLineWidth = 2;
 		public int TeamTaggerBenchBorder = 10;
 
+		public int FrameCornerRadius = 4;
+		public int FrameCornerPadding = 0;
+		public int FrameCornerMargin = 2;
+
 		public const string LinkIn = "icons/hicolor/scalable/actions/vas-link-in" + IMAGE_EXT;
 		public const int LinkInHeight = 14;
 		public const int LinkInWidth = 14;
