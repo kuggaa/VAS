@@ -18,6 +18,7 @@
 using System;
 using System.Linq;
 using VAS.Core.MVVMC;
+using VAS.Core.Common;
 
 namespace VAS.Core.ViewModel
 {
@@ -76,6 +77,12 @@ namespace VAS.Core.ViewModel
 			get;
 			private set;
 		}
+
+		/// <summary>
+		/// Gets the color of the menu item.
+		/// </summary>
+		/// <value>The color of the menu item.</value>
+		public Color Color { get; set; }
 
 		/// <summary>
 		/// Gets the submenu.
