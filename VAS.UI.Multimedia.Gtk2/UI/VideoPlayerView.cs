@@ -56,6 +56,7 @@ namespace VAS.UI
 		bool muted, drawingsVisible, updatingView;
 		bool roiMoved, wasPlaying;
 		double previousVLevel = 1;
+		double previousRLevel;
 		uint dragTimerID;
 		Blackboard blackboard;
 		List<CameraConfig> cameraConfigsOutOfScreen;
@@ -592,14 +593,17 @@ namespace VAS.UI
 		{
 			double rateLevel = App.Current.RateList [(int)val];
 			// Mute for rate != 1
-			if (rateLevel != 1 && playerVM.Volume != 0) {
+			if (previousRLevel == 1) {
 				previousVLevel = playerVM.Volume;
-				playerVM.SetVolume (0);
-			} else if (rateLevel != 1 && muted)
-				previousVLevel = 0;
-			else if (rateLevel == 1)
-				playerVM.SetVolume (previousVLevel);
+			}
 
+			if (rateLevel != 1 && playerVM.Volume != 0) {
+				playerVM.SetVolume (0);
+			} else {
+				playerVM.SetVolume (previousVLevel);
+			}
+
+			previousRLevel = rateLevel;
 			playerVM.SetRate (rateLevel);
 		}
 
