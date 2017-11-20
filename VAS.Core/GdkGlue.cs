@@ -29,6 +29,9 @@ namespace VAS
 		[DllImport ("libgdk_pixbuf-2.0-0.dll", CallingConvention = CallingConvention.Cdecl)]
 		static extern bool gdk_pixbuf_save_utf8 (IntPtr raw, string filename, string type, out IntPtr error, IntPtr dummy);
 
+		[DllImport ("libgdk_pixbuf-2.0-0.dll")]
+		static extern IntPtr gdk_pixbuf_new_from_file_utf8 (IntPtr filename, out IntPtr error);
+
 		/// <summary>
 		/// Save the image in the specified path.
 		/// </summary>
@@ -41,6 +44,21 @@ namespace VAS
 			if (error != IntPtr.Zero) {
 				throw new GLib.GException (error);
 			}
+		}
+
+		/// <summary>
+		/// Creates the pixbuf for win32.
+		/// </summary>
+		/// <returns>The pixbuf.</returns>
+		/// <param name="filename">Filename.</param>
+		public static Pixbuf CreatePixbufWin32 (string filename)
+		{
+			IntPtr native_filename = GLib.Marshaller.StringToPtrGStrdup (filename);
+			IntPtr error = IntPtr.Zero;
+			IntPtr raw = gdk_pixbuf_new_from_file_utf8 (native_filename, out error);
+			GLib.Marshaller.Free (native_filename);
+			if (error != IntPtr.Zero) throw new GLib.GException (error);
+			return new Pixbuf (raw);
 		}
 	}
 }
