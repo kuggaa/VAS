@@ -121,6 +121,23 @@ namespace VAS.UI.Component
 			ShowMenu (events);
 		}
 
+		protected TViewModel GetTimelineAtPosition (int x, int y, out TreeIter iter, out TreeViewDropPosition pos)
+		{
+			TreePath path;
+
+			GetDestRowAtPos (x, y, out path, out pos);
+
+			if (path == null) {
+				iter = TreeIter.Zero;
+				pos = TreeViewDropPosition.After;
+				return null;
+			}
+			Model.GetIter (out iter, path);
+			var timeline = Model.GetValue (iter, COL_DATA) as TViewModel;
+			iter = ConvertToRootIter (iter);
+			return timeline;
+		}
+
 		void RenderEvents (TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
 		{
 			IViewModel viewModel = model.GetValue (iter, COL_DATA) as IViewModel;
@@ -137,7 +154,7 @@ namespace VAS.UI.Component
 				foreach (TimelineEventVM eventVM in GetSelectedViewModels ().OfType<TimelineEventVM> ()) {
 					eventVM.Selected = true;
 					events.Add (eventVM);
-					foreach (TreeIter iter in dictionaryStore[eventVM]) {
+					foreach (TreeIter iter in dictionaryStore [eventVM]) {
 						Selection.SelectIter (iter);
 					}
 				}

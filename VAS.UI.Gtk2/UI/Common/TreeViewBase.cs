@@ -205,6 +205,18 @@ namespace VAS.UI.Common
 			return GetViewModelAtPosition (x, y, out column, out cellX, out cellY);
 		}
 
+		/// <summary>
+		/// Converts an iter from the visible store, the TreeModelSort, the original TreeStore store.
+		/// </summary>
+		/// <returns>The to root iter.</returns>
+		/// <param name="iter">Iter.</param>
+		protected TreeIter ConvertToRootIter (TreeIter iter)
+		{
+			TreeIter originalIter = sort.ConvertIterToChildIter (iter);
+			originalIter = filter.ConvertIterToChildIter (originalIter);
+			return originalIter;
+		}
+
 		protected void CreateFilterAndSort ()
 		{
 			filter = new TreeModelFilter (store, null);
