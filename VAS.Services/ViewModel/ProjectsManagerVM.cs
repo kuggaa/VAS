@@ -34,7 +34,7 @@ namespace VAS.Services.ViewModel
 		public ProjectsManagerVM ()
 		{
 			LoadedProject = new TViewModel ();
-			NewCommand = new Command (New);
+			NewCommand = new Command (New) { IconName = "vas-plus" };
 			OpenCommand = new AsyncCommand<TViewModel> (Open, (arg) => Selection.Count == 1);
 			DeleteCommand = new AsyncCommand<TViewModel> (Delete, (arg) => Selection.Any () || arg != null) { IconName = "vas-delete" };
 			SaveCommand = new AsyncCommand (Save, () => LoadedProject?.Model != null && LoadedProject.IsChanged);
