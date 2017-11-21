@@ -539,24 +539,26 @@ namespace VAS.UI
 
 		void HandleVolumeChanged (double level)
 		{
-			double prevLevel;
-			prevLevel = playerVM.Volume * 100;
+			muted = false;
 
-			if (level == 0) {
+			switch (level) {
+			case 0:
 				SetVolumeIcon ("vas-control-volume-off");
-			} else if ((prevLevel >= 50 || prevLevel == 0) && level < 50) {
-				SetVolumeIcon ("vas-control-volume-low");
-			} else if ((prevLevel < 50 || prevLevel == 100) && level >= 50 && level < 100) {
-				SetVolumeIcon ("vas-control-volume-med");
-			} else if (level == 100) {
+				muted = true;
+				break;
+			case 100:
 				SetVolumeIcon ("vas-control-volume-hi");
+				break;
+			default:
+				if (level >= 1 && level <= 49) {
+					SetVolumeIcon ("vas-control-volume-low");
+				} else {
+					SetVolumeIcon ("vas-control-volume-med");
+				}
+				break;
 			}
 
 			playerVM.SetVolume (level / 100);
-			if (level == 0)
-				muted = true;
-			else
-				muted = false;
 		}
 
 		void HandleStepsChanged (double val)
@@ -597,10 +599,19 @@ namespace VAS.UI
 				previousVLevel = playerVM.Volume;
 			}
 
-			if (rateLevel != 1 && playerVM.Volume != 0) {
-				playerVM.SetVolume (0);
-			} else {
+			switch (rateLevel) {
+			case 1:
 				playerVM.SetVolume (previousVLevel);
+				break;
+			default:
+				if (playerVM.Volume != 0) {
+					if (previousRLevel != 1) {
+						previousVLevel = playerVM.Volume;
+					} else {
+						playerVM.SetVolume (0);
+					}
+				}
+				break;
 			}
 
 			previousRLevel = rateLevel;
