@@ -52,26 +52,28 @@ namespace VAS.Services
 		public event MediaFileSetLoadedHandler MediaFileSetLoadedEvent;
 		public event PrepareViewHandler PrepareViewEvent;
 
-		protected const int TIMEOUT_MS = 20;
-		protected IVideoPlayer player;
-		protected IMultiVideoPlayer multiPlayer;
-		protected List<IViewPort> viewPorts;
-		protected ObservableCollection<CameraConfig> camerasConfig;
-		protected ObservableCollection<CameraConfig> defaultCamerasConfig;
-		protected object defaultCamerasLayout;
-		protected MediaFileSet defaultFileSet;
-		protected MediaFileSet mediafileSet;
-		protected MediaFileSet mediaFileSetCopy;
-		protected Time duration, videoTS, imageLoadedTS;
-		protected bool readyToSeek, stillimageLoaded, ready;
-		protected bool disposed, skipApplyCamerasConfig;
-		protected Action delayedOpen;
-		protected Seeker seeker;
-		protected Segment loadedSegment;
-		protected PendingSeek pendingSeek;
-		protected readonly Timer timer;
-		protected readonly ManualResetEvent TimerDisposed;
-		protected bool active;
+		const int TIMEOUT_MS = 20;
+
+		IVideoPlayer player;
+		IMultiVideoPlayer multiPlayer;
+		List<IViewPort> viewPorts;
+		ObservableCollection<CameraConfig> camerasConfig;
+		ObservableCollection<CameraConfig> clonedCamerasConfig;
+		ObservableCollection<CameraConfig> defaultCamerasConfig;
+		object defaultCamerasLayout;
+		MediaFileSet defaultFileSet;
+		MediaFileSet mediafileSet;
+		MediaFileSet mediaFileSetCopy;
+		Time duration, videoTS, imageLoadedTS;
+		bool readyToSeek, stillimageLoaded, ready;
+		bool disposed, skipApplyCamerasConfig;
+		Action delayedOpen;
+		Seeker seeker;
+		Segment loadedSegment;
+		PendingSeek pendingSeek;
+		readonly Timer timer;
+		readonly ManualResetEvent TimerDisposed;
+		bool active;
 
 		readonly Time editDurationOffset = new Time { TotalSeconds = 10 };
 		VideoPlayerVM playerVM;
@@ -153,33 +155,38 @@ namespace VAS.Services
 			set {
 				Log.Debug ("Updating cameras configuration: " + value);
 				camerasConfig = value;
+				clonedCamerasConfig = null;
+
+				if (camerasConfig != null) {
+					//Limit Region of interest if Open Zoom for Events/Filesets is limited
+					if (!App.Current.LicenseLimitationsService.CanExecute
+						(VASFeature.OpenZoom.ToString ())) {
+						clonedCamerasConfig = camerasConfig.Clone ();
+						foreach (var camConfig in clonedCamerasConfig) {
+							camConfig.RegionOfInterest = new Area (0, 0, 0, 0);
+						}
+					}
+				}
+
 				playerVM.CamerasConfig = camerasConfig;
 				if (defaultCamerasConfig == null) {
-					defaultCamerasConfig = value;
+					defaultCamerasConfig = camerasConfig;
 				}
-				if (LoadedTimelineEvent != null && !(LoadedTimelineEvent.CamerasConfig.SequenceEqualSafe (value))) {
-					LoadedTimelineEvent.CamerasConfig = new ObservableCollection<CameraConfig> (value);
+				if (LoadedTimelineEvent != null && !(LoadedTimelineEvent.CamerasConfig.SequenceEqualSafe (camerasConfig))) {
+					LoadedTimelineEvent.CamerasConfig = new ObservableCollection<CameraConfig> (camerasConfig);
 				}
 				if (multiPlayer != null) {
-					multiPlayer.CamerasConfig = CamerasConfig;
+					multiPlayer.CamerasConfig = camerasConfig;
 				}
 				if (!skipApplyCamerasConfig && Opened) {
 					ApplyCamerasConfig ();
 				}
 			}
 			get {
-				if (camerasConfig != null) {
-					var camsConfig = camerasConfig.Clone ();
-					if (!App.Current.LicenseLimitationsService.CanExecute
-						(VASFeature.OpenZoom.ToString ())) {
-						foreach (var camConfig in camsConfig) {
-							camConfig.RegionOfInterest = new Area (0, 0, 0, 0);
-						}
-					}
-					return camsConfig;
-				} else {
-					return null;
+				if (clonedCamerasConfig != null) {
+					return clonedCamerasConfig;
 				}
+				return camerasConfig;
 			}
 		}
 
@@ -826,7 +833,10 @@ namespace VAS.Services
 
 		public virtual void ApplyROI (CameraConfig camConfig)
 		{
-			camerasConfig [camConfig.Index] = camConfig;
+
+			int index = camerasConfig.IndexOf (camConfig);
+			camerasConfig [index] = camConfig;
+
 			if (multiPlayer != null) {
 				multiPlayer.ApplyROI (camConfig);
 			}

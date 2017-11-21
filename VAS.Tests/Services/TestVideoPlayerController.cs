@@ -1459,9 +1459,10 @@ namespace VAS.Tests.Services
 			player.ApplyROI (cams [0]);
 
 			/* Now create an event with current camera config */
+			//Wee need to do a clone here, since now we do not clone in CamerasConfig property getter in videoplayer controller
 			evt1 = new TimelineEvent {
 				Start = new Time (100), Stop = new Time (200), FileSet = mfs,
-				CamerasConfig = player.CamerasConfig
+				CamerasConfig = player.CamerasConfig.Clone ()
 			};
 			/* Check that ROI was copied in event */
 			Assert.AreEqual (new Area (10, 10, 20, 20), evt1.CamerasConfig [0].RegionOfInterest);

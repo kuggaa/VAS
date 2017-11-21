@@ -284,7 +284,7 @@ namespace VAS.Services.Controller
 			if (Project.ProjectType == ProjectType.FileProject) {
 				play.Stop.MSeconds = Math.Min (Project.FileSet.Duration.MSeconds, play.Stop.MSeconds);
 				play.CamerasLayout = VideoPlayer.CamerasLayout;
-				play.CamerasConfig = new ObservableCollection<CameraConfig> (VideoPlayer.CamerasConfig);
+				play.CamerasConfig = VideoPlayer.CamerasConfig.Clone ();
 			} else {
 				play.CamerasLayout = null;
 				play.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
