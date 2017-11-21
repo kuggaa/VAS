@@ -19,7 +19,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
@@ -71,6 +70,7 @@ namespace VAS.Core.Filters
 	{
 		protected Expression<Func<T, bool>> expression;
 		Func<T, bool> compiledExpression;
+		bool emitActivePropertyChanged;
 
 		public CompositePredicate ()
 		{
@@ -128,10 +128,16 @@ namespace VAS.Core.Filters
 			get {
 				return Elements.Any (e => e.Active);
 			}
-
 			set {
+				IgnoreEvents = true;
+				emitActivePropertyChanged = false;
 				foreach (var item in Elements) {
 					item.Active = value;
+				}
+				IgnoreEvents = false;
+				if (emitActivePropertyChanged) {
+					EmitActiveChanged ();
+					emitActivePropertyChanged = false;
 				}
 			}
 		}
@@ -148,11 +154,11 @@ namespace VAS.Core.Filters
 
 		protected override void RaisePropertyChanged (PropertyChangedEventArgs args, object sender = null)
 		{
-			if (IgnoreEvents) {
-				return;
-			}
 			if (args.PropertyName == nameof (Elements) || args.PropertyName == $"Collection_{nameof (Elements)}" ||
 				args.PropertyName == nameof (Active)) {
+				if (IgnoreEvents) {
+					emitActivePropertyChanged = true;
+				}
 				UpdatePredicate ();
 			}
 			base.RaisePropertyChanged (args, sender);
