@@ -1603,17 +1603,17 @@ namespace VAS.Services
 
 		void IncreaseZoom ()
 		{
-			double? newLevel = App.Current.ZoomLevels.Where (l => l > playerVM.Zoom).OrderBy (l => l).FirstOrDefault ();
+			float? newLevel = App.Current.ZoomLevels.Where (l => l > playerVM.Zoom).OrderBy (l => l).FirstOrDefault ();
 			if (newLevel != 0) {
-				playerVM.SetZoomCommand.Execute ((double)newLevel);
+				playerVM.SetZoomCommand.Execute (newLevel);
 			}
 		}
 
 		void DecreaseZoom ()
 		{
-			double? newLevel = App.Current.ZoomLevels.Where (l => l < playerVM.Zoom).OrderByDescending (l => l).FirstOrDefault ();
+			float? newLevel = App.Current.ZoomLevels.Where (l => l < playerVM.Zoom).OrderByDescending (l => l).FirstOrDefault ();
 			if (newLevel != 0) {
-				playerVM.SetZoomCommand.Execute ((double)newLevel);
+				playerVM.SetZoomCommand.Execute (newLevel);
 			}
 		}
 
