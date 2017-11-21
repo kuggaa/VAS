@@ -26,7 +26,7 @@ namespace VAS.Core.Common
 	public abstract class BaseImage<T> : BindableBase, ISerializable, IDisposable where T : IDisposable
 	{
 		protected const string BUF_PROPERTY = "pngbuf";
-		protected float deviceScaleFactor = -1;
+		protected float deviceScaleFactor = 1;
 
 		public BaseImage ()
 		{
@@ -44,6 +44,7 @@ namespace VAS.Core.Common
 
 		public BaseImage (string filename, int width, int height)
 		{
+			deviceScaleFactor = App.Current.GUIToolkit.DeviceScaleFactor;
 			Value = LoadFromFile (filename, (int)(width * DeviceScaleFactor), (int)(height * DeviceScaleFactor));
 		}
 
@@ -54,6 +55,7 @@ namespace VAS.Core.Common
 
 		public BaseImage (Stream stream, int width, int height)
 		{
+			deviceScaleFactor = App.Current.GUIToolkit.DeviceScaleFactor;
 			Value = LoadFromStream (stream, (int)(width * DeviceScaleFactor), (int)(height * DeviceScaleFactor));
 		}
 
@@ -82,9 +84,6 @@ namespace VAS.Core.Common
 
 		public float DeviceScaleFactor {
 			get {
-				if (deviceScaleFactor == -1) {
-					deviceScaleFactor = App.Current.GUIToolkit.DeviceScaleFactor;
-				}
 				return deviceScaleFactor;
 			}
 		}
