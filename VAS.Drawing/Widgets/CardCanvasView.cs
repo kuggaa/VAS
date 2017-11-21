@@ -134,7 +134,7 @@ namespace VAS.Drawing.Widgets
 			tk.FontAlignment = FontAlignment.Left;
 			tk.FontWeight = FontWeight.Bold;
 			tk.FontSize = TITLE_FONT_SIZE;
-			tk.DrawText(titleArea.Start, titleArea.Width, titleArea.Height, Title);
+			tk.DrawText(titleArea.Start, titleArea.Width, titleArea.Height, Title, true, true);
 		}
 
 		void DrawSubtitle ()
@@ -143,7 +143,7 @@ namespace VAS.Drawing.Widgets
 			tk.StrokeColor = textColor;
 			tk.FontSize = SUBTITLE_FONT_SIZE;
 			tk.FontWeight = FontWeight.Light;
-			tk.DrawText(subtitleArea.Start, subtitleArea.Width, subtitleArea.Height, SubTitle);
+			tk.DrawText(subtitleArea.Start, subtitleArea.Width, subtitleArea.Height, SubTitle, true, true);
 		}
 
 		void DrawCreationDate ()
