@@ -47,9 +47,9 @@ namespace VAS.UI.Helpers.Bindings
 		/// Bind the specified label to a property by name.
 		/// </summary>
 		/// <param name="label">Label.</param>
-		public static LabelBinding Bind (this Label label, Expression<Func<IViewModel, string>> propertyExpression)
+		public static LabelBinding<TSourceProperty> Bind<TSourceProperty> (this Label label, Expression<Func<IViewModel, TSourceProperty>> sourcePropertyExpression)
 		{
-			return new LabelBinding (label, propertyExpression);
+			return new LabelBinding<TSourceProperty> (label, sourcePropertyExpression);
 		}
 
 		/// <summary>
@@ -57,11 +57,11 @@ namespace VAS.UI.Helpers.Bindings
 		/// </summary>
 		/// <returns>The bind.</returns>
 		/// <param name="label">Label.</param>
-		/// <param name="propertyExpression">Property expression.</param>
+		/// <param name="sourcePropertyExpression">Property expression.</param>
 		/// <param name="converter">Converter.</param>
-		public static LabelBinding Bind (this Label label, Expression<Func<IViewModel, object>> propertyExpression, TypeConverter converter)
+		public static LabelBinding<TSourceProperty> Bind<TSourceProperty> (this Label label, Expression<Func<IViewModel, TSourceProperty>> sourcePropertyExpression, TypeConverter converter)
 		{
-			return new LabelBinding (label, propertyExpression, converter);
+			return new LabelBinding<TSourceProperty> (label, sourcePropertyExpression, converter);
 		}
 
 		/// <summary>
@@ -84,7 +84,7 @@ namespace VAS.UI.Helpers.Bindings
 		}
 
 		/// <summary>
-		/// Bind the specified image to a property by name. The image is scalled to <paramref name="widt"/> and
+		/// Bind the specified image to a property by name. The image is scalled to <paramref name="width"/> and
 		/// <paramref name="height"/> if specified.
 		/// </summary>
 		/// <param name="image">Image.</param>
@@ -148,10 +148,10 @@ namespace VAS.UI.Helpers.Bindings
 		/// Bind the specified SpinButton to a property by name.
 		/// </summary>
 		/// <param name="SpinButton">SpinButton.</param>
-		public static SpinBinding Bind (this SpinButton spinButton, Expression<Func<IViewModel, object>> propertyExpression,
+		public static SpinBinding<TSourceProperty> Bind<TSourceProperty> (this SpinButton spinButton, Expression<Func<IViewModel, TSourceProperty>> propertyExpression,
 										TypeConverter converter = null)
 		{
-			return new SpinBinding (spinButton, propertyExpression, converter);
+			return new SpinBinding<TSourceProperty> (spinButton, propertyExpression, converter);
 		}
 
 		/// <summary>
@@ -177,18 +177,9 @@ namespace VAS.UI.Helpers.Bindings
 		/// Bind the specified ComboBox to a property by name.
 		/// </summary>
 		/// <param name="comboBox">ComboBox.</param>
-		public static ComboBoxBinding Bind (this ComboBox comboBox, Expression<Func<IViewModel, string>> propertyExpression)
+		public static ComboBoxBinding<TSourceProperty> Bind<TSourceProperty> (this ComboBox comboBox, Expression<Func<IViewModel, TSourceProperty>> propertyExpression, TypeConverter converter = null)
 		{
-			return new ComboBoxBinding (comboBox, propertyExpression);
-		}
-
-		/// <summary>
-		/// Bind the specified ComboBox to a property by name.
-		/// </summary>
-		/// <param name="comboBox">ComboBox.</param>
-		public static ComboBoxBinding Bind (this ComboBox comboBox, Expression<Func<IViewModel, object>> propertyExpression, TypeConverter converter)
-		{
-			return new ComboBoxBinding (comboBox, propertyExpression, converter);
+			return new ComboBoxBinding<TSourceProperty> (comboBox, propertyExpression, converter);
 		}
 
 		/// <summary>

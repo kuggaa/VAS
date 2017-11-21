@@ -110,7 +110,7 @@ namespace VAS.UI.Helpers
 		/// </summary>
 		/// <param name="button">Button.</param>
 		/// <param name="icon">Icon.</param>
-		public static void SetImage (this Button button, Image icon)
+		public static void SetImage (this Button button, Image icon, uint size = 0)
 		{
 			if (icon == null) {
 				return;
@@ -129,7 +129,11 @@ namespace VAS.UI.Helpers
 				image = new ImageView ();
 				button.Image = image;
 			}
+			if (size != 0) {
+				image.SetSize ((int)size);
+			}
 			image.Image = icon;
+			button.Image = image;
 		}
 
 		/// <summary>

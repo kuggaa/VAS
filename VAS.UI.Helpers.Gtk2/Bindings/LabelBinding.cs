@@ -27,16 +27,11 @@ namespace VAS.UI.Helpers.Bindings
 	/// <summary>
 	/// Property bindings for labels.
 	/// </summary>
-	public class LabelBinding : PropertyBinding<string>
+	public class LabelBinding<TSourceProperty> : PropertyBinding<TSourceProperty, string>
 	{
 		Label label;
 
-		public LabelBinding (Label label, Expression<Func<IViewModel, string>> propertyExpression) : base (propertyExpression)
-		{
-			this.label = label;
-		}
-
-		public LabelBinding (Label label, Expression<Func<IViewModel, object>> propertyExpression, TypeConverter converter) : base (propertyExpression, converter)
+		public LabelBinding (Label label, Expression<Func<IViewModel, TSourceProperty>> sourcePropertyExpression, TypeConverter converter = null) : base (sourcePropertyExpression, converter)
 		{
 			this.label = label;
 		}

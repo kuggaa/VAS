@@ -24,15 +24,11 @@ using VAS.UI.UI.Component;
 
 namespace VAS.UI.UI.Bindings
 {
-	public class DatePickerBinding : PropertyBinding<DateTime>
+	public class DatePickerBinding<TSourceProperty> : PropertyBinding<TSourceProperty, DateTime>
 	{
 		DatePicker datePicker;
 
-		public DatePickerBinding (DatePicker widget, Expression<Func<IViewModel, DateTime>> propertyExpression) : base (propertyExpression)
-		{
-			datePicker = widget;
-		}
-		public DatePickerBinding (DatePicker widget, Expression<Func<IViewModel, object>> propertyExpression, TypeConverter converter) : base (propertyExpression, converter)
+		public DatePickerBinding (DatePicker widget, Expression<Func<IViewModel, TSourceProperty>> sourcePropertyExpression, TypeConverter converter = null) : base (sourcePropertyExpression, converter)
 		{
 			datePicker = widget;
 		}

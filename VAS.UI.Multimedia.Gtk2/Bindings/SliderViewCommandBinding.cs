@@ -37,7 +37,7 @@ namespace VAS.Bindings
 
 		SliderView sliderView;
 		Button showButton;
-		OneWayPropertyBinding<double> propBinding;
+		OneWayPropertyBinding<double, double> propBinding;
 		Func<IViewModel, Command<double>> commandFunc;
 
 
@@ -50,7 +50,7 @@ namespace VAS.Bindings
 			WireShowButtonClickEvent (showButton);
 
 			if (propertyExpression != null && updateViewAction != null)
-				propBinding = new OneWayPropertyBinding<double> (propertyExpression, updateViewAction);
+				propBinding = new OneWayPropertyBinding<double, double> (propertyExpression, updateViewAction);
 		}
 
 		protected override void BindViewModel ()
