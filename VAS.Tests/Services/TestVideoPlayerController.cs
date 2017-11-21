@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Timers;
 using Moq;
 using NUnit.Framework;
 using VAS.Core.Common;
@@ -52,6 +53,7 @@ namespace VAS.Tests.Services
 		VideoPlayerVM playerVM;
 		Mock<IFileSystemManager> fileManager;
 		Mock<ILicenseLimitationsService> mockLimitationService;
+		Mock<ITimer> timerMock;
 
 		int elementLoaded;
 
@@ -97,6 +99,7 @@ namespace VAS.Tests.Services
 		[SetUp ()]
 		public void Setup ()
 		{
+			timerMock = new Mock<ITimer> ();
 			mfs = new MediaFileSet ();
 			mfs.Add (new MediaFile {
 				FilePath = "test1",
@@ -145,7 +148,7 @@ namespace VAS.Tests.Services
 			playlist.Elements.Add (plImage);
 			currentTime = new Time (0);
 
-			player = new VideoPlayerController (new Seeker (0));
+			player = new VideoPlayerController (new Seeker (0), timerMock.Object);
 			playerVM = new VideoPlayerVM ();
 			player.SetViewModel (playerVM);
 			playlist.SetActive (playlist.Elements [0]);
@@ -2274,12 +2277,13 @@ namespace VAS.Tests.Services
 
 			//Act
 			evt.Drawings.Add (frameDrawing);
+			currentTime = new Time (120);
+			timerMock.Raise (t => t.Elapsed += null, new EventArgs () as ElapsedEventArgs);
 
 			//Assert
 			playerMock.Verify (v => v.Pause (false), Times.AtLeastOnce ());
 			Assert.AreEqual (frameDrawing, playerVM.FrameDrawing);
 			playerMock.Verify (v => v.Seek (frameDrawing.Render, true, true), Times.Once ());
-
 		}
 
 		[Test]
