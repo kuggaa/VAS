@@ -52,6 +52,7 @@ namespace VAS.Drawing.Widgets
 		CursorType cursor;
 		DrawTool drawTool;
 		bool cursorIsDrawTool;
+		int firstEventTypeTimelineIndex;
 
 		public PlaysTimeline (IWidget widget) : base (widget)
 		{
@@ -146,10 +147,10 @@ namespace VAS.Drawing.Widgets
 
 		protected override void ClearObjects ()
 		{
-			base.ClearObjects ();
 			foreach (var vm in viewModelToView.Keys.ToList ()) {
 				RemoveTimeline (vm);
 			}
+			base.ClearObjects ();
 		}
 
 		protected void Update ()
@@ -264,6 +265,7 @@ namespace VAS.Drawing.Widgets
 
 		protected virtual void FillCanvasForEventTypes (ref int line)
 		{
+			firstEventTypeTimelineIndex = line;
 			foreach (EventTypeTimelineVM timelineVM in ViewModel.Project.Timeline.EventTypesTimeline) {
 				EventTypeTimelineView timelineView = AddEventTypeTimeline (timelineVM);
 				timelineView.OffsetY = line * StyleConf.TimelineCategoryHeight;
@@ -422,6 +424,12 @@ namespace VAS.Drawing.Widgets
 					foreach (EventTypeTimelineVM viewModel in e.OldItems.OfType<EventTypeTimelineVM> ()) {
 						RemoveEventTypeTimeline (viewModel);
 					}
+					break;
+				}
+			case NotifyCollectionChangedAction.Move: {
+					Objects.Move (e.OldStartingIndex + firstEventTypeTimelineIndex,
+								  e.NewStartingIndex + firstEventTypeTimelineIndex);
+					UpdateRowsOffsets ();
 					break;
 				}
 			case NotifyCollectionChangedAction.Reset: {

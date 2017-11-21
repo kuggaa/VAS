@@ -39,6 +39,13 @@ namespace VAS.Core.Common
 			list [index2] = temp;
 		}
 
+		public static void Move<T> (this IList<T> list, int oldIndex, int newIndex)
+		{
+			T removedItem = list [oldIndex];
+			list.Remove (removedItem);
+			list.Insert (newIndex, removedItem);
+		}
+
 		public static T [] Merge<T> (this List<T []> list)
 		{
 			var res = new List<T> ();
