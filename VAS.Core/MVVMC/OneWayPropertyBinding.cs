@@ -26,20 +26,20 @@ namespace VAS.Core.MVVMC
 	/// This class provides one way property binding.
 	/// <see cref="IViewModel" /> property is passed to write action callback performed on the class that setted the binding.
 	/// </summary>
-	public class OneWayPropertyBinding<TSourceProperty> : PropertyBinding<TSourceProperty>
+	public class OneWayPropertyBinding<TSourceProperty, TTargetProperty> : PropertyBinding<TSourceProperty, TTargetProperty>
 	{
-		protected Action<TSourceProperty> writeAction;
+		protected Action<TTargetProperty> writeAction;
 
-		public OneWayPropertyBinding (Expression<Func<IViewModel, TSourceProperty>> propertyExpression, Action<TSourceProperty> writeAction) : base (propertyExpression)
+		public OneWayPropertyBinding (Expression<Func<IViewModel, TSourceProperty>> propertyExpression, Action<TTargetProperty> writeAction, TypeConverter typeConverter = null) : base (propertyExpression, typeConverter)
 		{
 			this.writeAction = writeAction;
 		}
 
-		public OneWayPropertyBinding (object dest, Expression<Func<object, TSourceProperty>> targetExpression,
-									  Expression<Func<IViewModel, TSourceProperty>> sourceExpression) : base (sourceExpression)
+		public OneWayPropertyBinding (object dest, Expression<Func<IViewModel, TSourceProperty>> sourceExpression,
+									  Expression<Func<object, TTargetProperty>> targetExpression) : base (sourceExpression)
 		{
-			var setter = CreateSetter (targetExpression, out string memberName);
-			Action<TSourceProperty> setterAction = (TSourceProperty t) => setter.Invoke (dest, t);
+			var setter = CreateSetter<object, TTargetProperty, TTargetProperty> (targetExpression, out string memberName);
+			Action<TTargetProperty> setterAction = (TTargetProperty t) => setter.Invoke (dest, t);
 			this.writeAction = setterAction;
 		}
 
@@ -51,19 +51,21 @@ namespace VAS.Core.MVVMC
 		{
 		}
 
-		protected override void WriteViewValue (TSourceProperty val)
+		protected override void WriteViewValue (TTargetProperty val)
 		{
 			this.writeAction (val);
 		}
 	}
 
-	public class OneWayPropertyBinding<TSourceProperty, TTarget> : OneWayPropertyBinding<TSourceProperty>
+	public class OneWayPropertyBinding<TSourceProperty, TTarget, TTargetProperty> : OneWayPropertyBinding<TSourceProperty, TTargetProperty>
 	{
-		public OneWayPropertyBinding (TTarget dest, Expression<Func<TTarget, TSourceProperty>> targetExpression,
-									  Expression<Func<IViewModel, TSourceProperty>> sourceExpression) : base (sourceExpression, null)
+		public OneWayPropertyBinding (TTarget dest,
+									  Expression<Func<IViewModel, TSourceProperty>> sourceExpression,
+									  Expression<Func<TTarget, TTargetProperty>> targetExpression,
+									  TypeConverter typeConverter) : base (sourceExpression, null, typeConverter)
 		{
-			var setter = CreateSetter (targetExpression, out string memberName);
-			Action<TSourceProperty> setterAction = (TSourceProperty t) => setter.Invoke (dest, t);
+			var setter = CreateSetter<TTarget, TTargetProperty, TTargetProperty> (targetExpression, out string memberName);
+			Action<TTargetProperty> setterAction = (TTargetProperty t) => setter.Invoke (dest, t);
 			this.writeAction = setterAction;
 		}
 	}
