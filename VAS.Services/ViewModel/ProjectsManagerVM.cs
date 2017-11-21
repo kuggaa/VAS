@@ -41,7 +41,7 @@ namespace VAS.Services.ViewModel
 			DeleteSelectionCommand = new AsyncCommand (DeleteSelection, () => Selection.Any ());
 			SaveCommand = new AsyncCommand (Save, () => LoadedProject?.Model != null && LoadedProject.IsChanged);
 			ExportCommand = new AsyncCommand (Export, () => Selection.Count == 1);
-			DeleteCommand = new AsyncCommand<TViewModel> (Delete, () => true) { IconName = "lma-trash" };
+			DeleteCommand = new Command<TViewModel> (Delete, () => true) { IconName = "lma-trash" };
 		}
 
 		protected override void DisposeManagedResources ()
@@ -161,9 +161,9 @@ namespace VAS.Services.ViewModel
 		/// <summary>
 		/// Command to delete the selected projects.
 		/// </summary>
-		protected virtual async Task Delete (TViewModel vm)
+		protected virtual void Delete (TViewModel vm)
 		{
-			await App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = vm.Model });
+			App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = vm.Model });
 		}
 
 		/// <summary>
@@ -207,7 +207,7 @@ namespace VAS.Services.ViewModel
 			ExportCommand?.EmitCanExecuteChanged ();
 			SaveCommand?.EmitCanExecuteChanged ();
 			OpenCommand?.EmitCanExecuteChanged ();
-			DeleteCommand?.EmitCanExecuteChanged ();
+			DeleteSelectionCommand?.EmitCanExecuteChanged ();
 		}
 	}
 }
