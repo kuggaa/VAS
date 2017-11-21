@@ -38,6 +38,7 @@ namespace VAS.Drawing.Widgets
 		public event ShowDrawToolMenuHandler ShowMenuEvent;
 		public event ConfigureDrawingObjectHandler ConfigureObjectEvent;
 		public event DrawableChangedHandler DrawableChangedEvent;
+		public event EventHandler DrawToolChanged;
 
 		DrawTool tool;
 		FrameDrawing drawing;
@@ -188,6 +189,7 @@ namespace VAS.Drawing.Widgets
 					widget.MoveWaitMS = 200;
 				}
 				widget?.SetCursorForTool (tool);
+				DrawToolChanged?.Invoke (this, null);
 			}
 		}
 
