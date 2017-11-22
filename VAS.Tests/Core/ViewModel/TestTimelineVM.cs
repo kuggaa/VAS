@@ -18,11 +18,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using VAS.Core.Common;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
-using VAS.Core.Store.Templates;
-using VAS.Core.MVVMC;
-using VAS.Core.Common;
 
 namespace VAS.Tests.Core.ViewModel
 {
@@ -30,7 +28,7 @@ namespace VAS.Tests.Core.ViewModel
 	public class TestTimelineVM
 	{
 		[Test]
-		public void TestCreateEventTypesTimeline ()
+		public void CreateEventTypesTimeline_5EventTypesDifferentNamesNoGrouping_5TimelinesCreated ()
 		{
 			Project project = Utils.CreateProject (true);
 			ProjectVM projectVM = new DummyProjectVM { Model = project };
@@ -39,6 +37,33 @@ namespace VAS.Tests.Core.ViewModel
 			viewModel.CreateEventTypeTimelines (projectVM.EventTypes);
 
 			Assert.AreEqual (5, viewModel.EventTypesTimeline.ViewModels.Count);
+		}
+
+		[Test]
+		public void CreateEventTypesTimeline_5EventTypes2WithSameNameNoGrouping_5TimelinesCreated ()
+		{
+			Project project = Utils.CreateProject (true);
+			project.EventTypes [1].Name = project.EventTypes [0].Name;
+			ProjectVM projectVM = new DummyProjectVM { Model = project };
+			TimelineVM viewModel = new TimelineVM ();
+
+			viewModel.CreateEventTypeTimelines (projectVM.EventTypes);
+
+			Assert.AreEqual (5, viewModel.EventTypesTimeline.ViewModels.Count);
+		}
+
+		[Test]
+		public void CreateEventTypesTimeline_5EventTypes2WithSameNameGroupingEnabled_4TimelinesCreated ()
+		{
+			Project project = Utils.CreateProject (true);
+			project.EventTypes [1].Name = project.EventTypes [0].Name;
+			ProjectVM projectVM = new DummyProjectVM { Model = project };
+			TimelineVM viewModel = new TimelineVM ();
+			viewModel.GroupEventsByEventTypeName = true;
+
+			viewModel.CreateEventTypeTimelines (projectVM.EventTypes);
+
+			Assert.AreEqual (4, viewModel.EventTypesTimeline.ViewModels.Count);
 		}
 
 		[Test]
@@ -77,7 +102,7 @@ namespace VAS.Tests.Core.ViewModel
 		}
 
 		[Test]
-		public void TestAddFirstTimelineEventInEventType ()
+		public void AddEvent_FirstInExistingTimeline_EventAddedToExistingTimeline ()
 		{
 			Project project = Utils.CreateProject (true);
 			ProjectVM projectVM = new DummyProjectVM { Model = project };
@@ -95,7 +120,7 @@ namespace VAS.Tests.Core.ViewModel
 		}
 
 		[Test]
-		public void TestAddTimelineEventWithEmptyEventTypes ()
+		public void AddEvent_FirstAndTimelineDoesNotExists_TimelineCreatedAndEventAddedToTimeline ()
 		{
 			Project project = Utils.CreateProject (true);
 			TimelineVM viewModel = new TimelineVM ();
@@ -104,6 +129,37 @@ namespace VAS.Tests.Core.ViewModel
 
 			Assert.AreEqual (project.Timeline [0], viewModel.FullTimeline.ViewModels [0].Model);
 			Assert.IsTrue (viewModel.EventTypesTimeline.ViewModels.Count == 1);
+		}
+
+		[Test]
+		public void RemoveEventType_TimelineEmpty_TimelineRemoved ()
+		{
+			Project project = Utils.CreateProject (true);
+			ProjectVM projectVM = new DummyProjectVM { Model = project };
+			TimelineVM viewModel = new TimelineVM ();
+			viewModel.CreateEventTypeTimelines (projectVM.EventTypes);
+			var timelinesCount = viewModel.EventTypesTimeline.Count ();
+
+			project.EventTypes.Remove (project.EventTypes [0]);
+
+			Assert.AreEqual (timelinesCount - 1, viewModel.EventTypesTimeline.Count ());
+		}
+
+		[Test]
+		public void RemoveEventType_TimelineNotEmpty_TimelineNotRemoved ()
+		{
+			Project project = Utils.CreateProject (true);
+			ProjectVM projectVM = new DummyProjectVM { Model = project };
+			TimelineVM viewModel = new TimelineVM ();
+			viewModel.CreateEventTypeTimelines (projectVM.EventTypes);
+			viewModel.Model = project.Timeline;
+			EventType eventType = project.EventTypes [0];
+			project.AddEvent (eventType, new Time (0), new Time (10), new Time (5), null);
+			var timelinesCount = viewModel.EventTypesTimeline.Count ();
+
+			project.EventTypes.Remove (eventType);
+
+			Assert.AreEqual (timelinesCount, viewModel.EventTypesTimeline.Count ());
 		}
 
 		[Test]
@@ -251,7 +307,7 @@ namespace VAS.Tests.Core.ViewModel
 		}
 
 		[Test]
-		public void Timeline_SetLimitation_SetsInFullTimeline()
+		public void Timeline_SetLimitation_SetsInFullTimeline ()
 		{
 			TimelineVM viewModel = new TimelineVM ();
 			viewModel.Model = new RangeObservableCollection<TimelineEvent> ();
