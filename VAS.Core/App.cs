@@ -156,8 +156,7 @@ namespace VAS
 
 			App.Current.homeDirectory = Path.Combine (home, softwareName);
 			App.Current.configDirectory = App.Current.homeDirectory;
-			if (!Directory.Exists (App.Current.homeDirectory))
-			{
+			if (!Directory.Exists (App.Current.homeDirectory)) {
 				Directory.CreateDirectory (App.Current.homeDirectory);
 			}
 
@@ -234,6 +233,8 @@ namespace VAS
 				App.Current.RelativeToPrefix ("lib/gdk-pixbuf-2.0/2.10.0/loaders"));
 			Environment.SetEnvironmentVariable ("GDK_PIXBUF_MODULE_FILE",
 				App.Current.RelativeToPrefix ("lib/gdk-pixbuf-2.0/2.10.0/loaders.cache"));
+			Environment.SetEnvironmentVariable ("FONTCONFIG_PATH",
+				App.Current.RelativeToPrefix ("etc/fonts"));
 		}
 
 		static string GetPrefixPath ()
