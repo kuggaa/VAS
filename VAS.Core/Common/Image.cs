@@ -71,9 +71,17 @@ namespace VAS.Core.Common
 				//FIXME: this seems a HACK, on non-retina displays it will load @2x and that's why should force a
 				//device scale factor of 2 on non-retina displays.
 				deviceScaleFactor = 2;
-				return new Pixbuf (path);
+				return CreatePixbuf (path);
 			}
-			return new Pixbuf (filepath);
+			return CreatePixbuf (filepath);
+		}
+
+		Pixbuf CreatePixbuf (string filename)
+		{
+			if (Utils.OS == OperatingSystemID.Windows) {
+				return GdkGlue.CreatePixbufWin32 (filename);
+			}
+			return new Pixbuf (filename);
 		}
 
 		protected override Pixbuf LoadFromFile (string filepath, int width, int height)
@@ -132,7 +140,7 @@ namespace VAS.Core.Common
 		public override void Save (string filename)
 		{
 			//HACK: Force gdk_pixbuf_save_utf8 call if windows OS. Otherwhise call gdk_pixbuf_save
-			if (Environment.OSVersion.Platform == PlatformID.Win32NT) {
+			if (Utils.OS == OperatingSystemID.Windows) {
 				Value.SaveUtf (filename, FILE_EXTENSION);
 			} else {
 				Value.Save (filename, FILE_EXTENSION);
