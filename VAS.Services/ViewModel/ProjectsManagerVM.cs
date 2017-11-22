@@ -38,10 +38,9 @@ namespace VAS.Services.ViewModel
 			LoadedProject = new TViewModel ();
 			NewCommand = new Command (New);
 			OpenCommand = new AsyncCommand<TViewModel> (Open, (arg) => Selection.Count == 1);
-			DeleteSelectionCommand = new AsyncCommand (DeleteSelection, () => Selection.Any ());
+			DeleteCommand = new AsyncCommand<TViewModel> (Delete, (arg) => Selection.Any () || arg != null) { IconName = "vas-delete"};
 			SaveCommand = new AsyncCommand (Save, () => LoadedProject?.Model != null && LoadedProject.IsChanged);
 			ExportCommand = new AsyncCommand (Export, () => Selection.Count == 1);
-			DeleteCommand = new Command<TViewModel> (Delete, () => true) { IconName = "lma-trash" };
 		}
 
 		protected override void DisposeManagedResources ()
@@ -87,12 +86,6 @@ namespace VAS.Services.ViewModel
 
 		[PropertyChanged.DoNotNotify]
 		public Command OpenCommand {
-			get;
-			protected set;
-		}
-
-		[PropertyChanged.DoNotNotify]
-		public Command DeleteSelectionCommand {
 			get;
 			protected set;
 		}
@@ -151,19 +144,15 @@ namespace VAS.Services.ViewModel
 		/// <summary>
 		/// Command to delete the selected projects.
 		/// </summary>
-		protected virtual async Task DeleteSelection ()
+		protected virtual async Task Delete (TViewModel viewModel)
 		{
-			foreach (TModel project in Selection.Select (vm => vm.Model).ToList ()) {
-				await App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = project });
+			if (viewModel != null) {
+				await App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = viewModel.Model });
+			} else {
+				foreach (TModel project in Selection.Select (vm => vm.Model).ToList ()) {
+					await App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = project });
+				}
 			}
-		}
-
-		/// <summary>
-		/// Command to delete the selected projects.
-		/// </summary>
-		protected virtual void Delete (TViewModel vm)
-		{
-			App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = vm.Model });
 		}
 
 		/// <summary>
@@ -207,7 +196,7 @@ namespace VAS.Services.ViewModel
 			ExportCommand?.EmitCanExecuteChanged ();
 			SaveCommand?.EmitCanExecuteChanged ();
 			OpenCommand?.EmitCanExecuteChanged ();
-			DeleteSelectionCommand?.EmitCanExecuteChanged ();
+			DeleteCommand?.EmitCanExecuteChanged ();
 		}
 	}
 }
