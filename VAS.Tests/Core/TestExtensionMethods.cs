@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using NUnit.Framework;
@@ -105,6 +106,23 @@ namespace VAS.Tests.Core
 			dynamic obj2 = new ExpandoObject ();
 			obj2.Name = "test";
 			Assert.IsTrue ((obj1 as ExpandoObject).Compare ((ExpandoObject)obj2));
+		}
+
+		[Test]
+		public void Move_ExistingItems_ItemsMoved ()
+		{
+			var object1 = new Object ();
+			var object2 = new Object ();
+			var object3 = new Object ();
+			var list = new List<object> {
+				object1,
+				object2,
+				object3
+			};
+
+			list.Move (0, 2);
+			Assert.AreSame (object2, list [0]);
+			Assert.AreSame (object1, list [2]);
 		}
 
 		CustomDummyClassForTest [] InitCustomDummyClassForTest ()
