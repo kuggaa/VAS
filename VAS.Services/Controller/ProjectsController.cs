@@ -177,7 +177,7 @@ namespace VAS.Services.Controller
 			ViewModel.ExportCommand.EmitCanExecuteChanged ();
 			ViewModel.SaveCommand.EmitCanExecuteChanged ();
 			ViewModel.OpenCommand.EmitCanExecuteChanged ();
-			ViewModel.DeleteSelectionCommand.EmitCanExecuteChanged ();
+			ViewModel.DeleteCommand.EmitCanExecuteChanged ();
 		}
 
 		protected async Task<bool> Save (TViewModel project, bool force)
