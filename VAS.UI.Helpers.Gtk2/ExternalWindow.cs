@@ -57,6 +57,14 @@ namespace VAS.UI.Helpers
 		{
 			box.Add (widget);
 		}
+
+		protected override bool OnKeyPressEvent (Gdk.EventKey evnt)
+		{
+			if (!base.OnKeyPressEvent (evnt) || !(Focus is Entry)) {
+				App.Current.KeyContextManager.HandleKeyPressed (App.Current.Keyboard.ParseEvent (evnt));
+			}
+			return true;
+		}
 	}
 }
 

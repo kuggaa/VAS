@@ -749,8 +749,7 @@ namespace VAS.UI
 			}
 			//FIXME  We need Property binding like -> ctx.Add (control.Bind (c => c.Prop, vm => vm.Prop));
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.ViewPortsSwitchActive))) {
-				subviewportsbox.Visible = ViewModel.ViewPortsSwitchActive;
-
+				SubViewPortsVisible = ViewModel.SupportsMultipleCameras;
 			}
 		}
 
