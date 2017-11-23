@@ -364,8 +364,7 @@ namespace VAS.Services
 		void OnError (object sender, string message)
 		{
 			Log.Debug ("Job finished with errors: " + message);
-			App.Current.Dialogs.ErrorMessage (Catalog.GetString ("An error has occurred in the video editor.")
-			+ Catalog.GetString ("Please, try again."));
+			App.Current.Dialogs.ErrorMessage (Catalog.GetString ("An error has occurred in the video editor.") + "\n" + message);
 			ViewModel.CurrentJob.State = JobState.Error;
 			CleanVideoEditor (true);
 			StartNextJob ();
