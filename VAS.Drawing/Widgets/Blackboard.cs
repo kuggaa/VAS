@@ -250,8 +250,8 @@ namespace VAS.Drawing.Widgets
 			foreach (Selection s in Selections.ToList ()) {
 				UpdateSelection (s, false);
 				ICanvasDrawableObject o = (ICanvasDrawableObject)s.Drawable;
-				RemoveObject (o);
 				drawing.Drawables.Remove ((Drawable)o.IDrawableObject);
+				RemoveObject (o);
 			}
 			UpdateCounters ();
 			widget?.ReDraw ();
