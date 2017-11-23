@@ -42,7 +42,6 @@ namespace VAS.Drawing
 		public static Color PLAYER_NOT_PLAYING_COLOR = Color.Red;
 		public static Color TIMER_UNSELECTED_COLOR = Color.Blue1;
 		public static Color TIMER_SELECTED_COLOR = Color.Red1;
-		public static Color SELECTION_INDICATOR_COLOR = Color.Blue1;
 		public const int TIMELINE_LINE_WIDTH = 1;
 		public const int MINIMUM_TIME_SPACING = 80;
 		public static readonly int [] MARKER = new int [] { 1, 2, 5, 10, 30, 60, 120, 300, 600, 1200 };

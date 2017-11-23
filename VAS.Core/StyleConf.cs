@@ -176,6 +176,10 @@ namespace VAS.Core.Common
 		public static Color ButtonPenaltyColor = Color.Parse ("#ffc7f0");
 		public static Color ButtonEventColor = Color.Parse ("#c7e9ff");
 
+		public const int DrawingSelectorAnchorSize = 6;
+		public const int DrawingSelectorLineWidth = 1;
+		public const LineStyle DrawingSelectorLineStyle = LineStyle.Normal;
+
 		public int BenchLineWidth = 2;
 		public int TeamTaggerBenchBorder = 10;
 
@@ -340,6 +344,10 @@ namespace VAS.Core.Common
 		public Color ThemeContrastBase { get; set; }
 		public Color ThemeContrastSecondary { get; set; }
 		public Color ThemeContrastDisabled { get; set; }
+
+		public Color DrawingSelectorAnchor { get; set; }
+		public Color DrawingSelectorShadow { get; set; }
+		public Color DrawingSelectorBorder { get; set; }
 
 		public Color TextBase { get; set; }
 		public Color TextBaseDisabled { get; set; }
