@@ -62,7 +62,7 @@ namespace VAS.UI.Dialog
 		bool ignoreChanges;
 		DrawingToolVM viewModel;
 		BindingContext ctx;
-		Dictionary<RadioButton, DrawTool> buttonToDrawTool;
+		protected Dictionary<RadioButton, DrawTool> buttonToDrawTool;
 
 		public DrawingTool ()
 		{
