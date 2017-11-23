@@ -109,6 +109,11 @@ namespace VAS.Core.Common
 			return (ushort)((float)val / byte.MaxValue * ushort.MaxValue);
 		}
 
+		static public ushort FloatToUShort (float val)
+		{
+			return (ushort)(ushort.MaxValue * val);
+		}
+
 		static public Color ColorFromUShort (ushort r, ushort g, ushort b, ushort a = ushort.MaxValue)
 		{
 			return new Color (UShortToByte (r), UShortToByte (g),
