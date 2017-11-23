@@ -153,6 +153,7 @@
     <Compile Include="Services\TestDrawingsController.cs" />
     <Compile Include="Services\TestEventsFilterController.cs" />
     <Compile Include="MVVMC\TestOneWayPropertyBinding.cs" />
+    <Compile Include="Drawing\Widgets\TestBlackboard.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
