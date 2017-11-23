@@ -461,10 +461,9 @@
                           <widget class="Gtk.RadioButton" id="anglebutton">
                             <property name="MemberName" />
                             <property name="Visible">False</property>
-                            <property name="Tooltip" translatable="yes">Angle tool</property>
+                            <property name="Tooltip" translatable="yes" />
                             <property name="CanFocus">True</property>
                             <property name="Label" translatable="yes" />
-                            <property name="Active">True</property>
                             <property name="DrawIndicator">False</property>
                             <property name="HasLabel">False</property>
                             <property name="UseUnderline">True</property>
@@ -494,7 +493,7 @@
                         <child>
                           <widget class="Gtk.RadioButton" id="crossbutton">
                             <property name="MemberName" />
-                            <property name="Tooltip" translatable="yes">Cross tool</property>
+                            <property name="Tooltip" translatable="yes" />
                             <property name="CanFocus">True</property>
                             <property name="Label" translatable="yes" />
                             <property name="DrawIndicator">False</property>
@@ -526,7 +525,7 @@
                         <child>
                           <widget class="Gtk.RadioButton" id="ellipsebutton">
                             <property name="MemberName" />
-                            <property name="Tooltip" translatable="yes">Ellipse tool</property>
+                            <property name="Tooltip" translatable="yes" />
                             <property name="CanFocus">True</property>
                             <property name="Label" translatable="yes" />
                             <property name="DrawIndicator">False</property>
@@ -558,7 +557,7 @@
                         <child>
                           <widget class="Gtk.RadioButton" id="ellipsefilledbutton">
                             <property name="MemberName" />
-                            <property name="Tooltip" translatable="yes">Filled ellipse</property>
+                            <property name="Tooltip" translatable="yes" />
                             <property name="CanFocus">True</property>
                             <property name="Label" translatable="yes" />
                             <property name="DrawIndicator">False</property>
@@ -590,7 +589,7 @@
                         <child>
                           <widget class="Gtk.RadioButton" id="eraserbutton">
                             <property name="MemberName" />
-                            <property name="Tooltip" translatable="yes">Rubber tool</property>
+                            <property name="Tooltip" translatable="yes" />
                             <property name="CanFocus">True</property>
                             <property name="Label" translatable="yes" />
                             <property name="DrawIndicator">False</property>
@@ -619,7 +618,7 @@
                         <child>
                           <widget class="Gtk.RadioButton" id="linebutton">
                             <property name="MemberName" />
-                            <property name="Tooltip" translatable="yes">Line tool</property>
+                            <property name="Tooltip" translatable="yes" />
                             <property name="CanFocus">True</property>
                             <property name="Label" translatable="yes" />
                             <property name="DrawIndicator">False</property>
@@ -649,7 +648,7 @@
                         <child>
                           <widget class="Gtk.RadioButton" id="numberbutton">
                             <property name="MemberName" />
-                            <property name="Tooltip" translatable="yes">Index tool</property>
+                            <property name="Tooltip" translatable="yes" />
                             <property name="CanFocus">True</property>
                             <property name="Label" translatable="yes" />
                             <property name="DrawIndicator">False</property>
@@ -681,7 +680,7 @@
                         <child>
                           <widget class="Gtk.RadioButton" id="penbutton">
                             <property name="MemberName" />
-                            <property name="Tooltip" translatable="yes">Pencil tool</property>
+                            <property name="Tooltip" translatable="yes" />
                             <property name="CanFocus">True</property>
                             <property name="Label" translatable="yes" />
                             <property name="DrawIndicator">False</property>
@@ -711,7 +710,7 @@
                         <child>
                           <widget class="Gtk.RadioButton" id="playerbutton">
                             <property name="MemberName" />
-                            <property name="Tooltip" translatable="yes">Player tool</property>
+                            <property name="Tooltip" translatable="yes" />
                             <property name="CanFocus">True</property>
                             <property name="Label" translatable="yes" />
                             <property name="DrawIndicator">False</property>
@@ -741,7 +740,7 @@
                         <child>
                           <widget class="Gtk.RadioButton" id="rectanglebutton">
                             <property name="MemberName" />
-                            <property name="Tooltip" translatable="yes">Rectangle tool</property>
+                            <property name="Tooltip" translatable="yes" />
                             <property name="CanFocus">True</property>
                             <property name="Label" translatable="yes" />
                             <property name="DrawIndicator">False</property>
@@ -771,7 +770,7 @@
                         <child>
                           <widget class="Gtk.RadioButton" id="rectanglefilledbutton">
                             <property name="MemberName" />
-                            <property name="Tooltip" translatable="yes">Filled rectangle tool</property>
+                            <property name="Tooltip" translatable="yes" />
                             <property name="CanFocus">True</property>
                             <property name="Label" translatable="yes" />
                             <property name="DrawIndicator">False</property>
@@ -801,7 +800,7 @@
                         <child>
                           <widget class="Gtk.RadioButton" id="selectbutton">
                             <property name="MemberName" />
-                            <property name="Tooltip" translatable="yes">Selection tool</property>
+                            <property name="Tooltip" translatable="yes" />
                             <property name="CanFocus">True</property>
                             <property name="Label" translatable="yes" />
                             <property name="DrawIndicator">False</property>
@@ -829,7 +828,7 @@
                         <child>
                           <widget class="Gtk.RadioButton" id="textbutton">
                             <property name="MemberName" />
-                            <property name="Tooltip" translatable="yes">Text tool</property>
+                            <property name="Tooltip" translatable="yes" />
                             <property name="CanFocus">True</property>
                             <property name="Label" translatable="yes" />
                             <property name="DrawIndicator">False</property>
@@ -861,7 +860,7 @@
                         <child>
                           <widget class="Gtk.RadioButton" id="zoombutton">
                             <property name="MemberName" />
-                            <property name="Tooltip" translatable="yes">Index tool</property>
+                            <property name="Tooltip" translatable="yes" />
                             <property name="CanFocus">True</property>
                             <property name="Label" translatable="yes" />
                             <property name="DrawIndicator">False</property>
@@ -992,7 +991,8 @@
                                   <widget class="Gtk.ColorButton" id="colorbutton">
                                     <property name="MemberName" />
                                     <property name="Events">ButtonMotionMask, ButtonPressMask, ButtonReleaseMask</property>
-                                    <property name="Alpha">-1</property>
+                                    <property name="UseAlpha">True</property>
+                                    <property name="Alpha">204</property>
                                   </widget>
                                   <packing>
                                     <property name="LeftAttach">1</property>
@@ -1119,7 +1119,7 @@
                                 <child>
                                   <widget class="Gtk.ComboBox" id="stylecombobox">
                                     <property name="MemberName" />
-                                    <property name="Tooltip">Change the line style</property>
+                                    <property name="Tooltip" />
                                     <property name="IsTextCombo">True</property>
                                     <property name="Items" />
                                   </widget>
@@ -1141,7 +1141,7 @@
                                 <child>
                                   <widget class="Gtk.ComboBox" id="typecombobox">
                                     <property name="MemberName" />
-                                    <property name="Tooltip">Change the line style</property>
+                                    <property name="Tooltip" />
                                     <property name="IsTextCombo">True</property>
                                     <property name="Items" />
                                   </widget>
@@ -1351,7 +1351,7 @@
                     <child>
                       <widget class="Gtk.Button" id="clearbutton">
                         <property name="MemberName" />
-                        <property name="Tooltip" translatable="yes">Clear all drawings</property>
+                        <property name="Tooltip" translatable="yes" />
                         <property name="CanFocus">True</property>
                         <property name="Type">TextAndIcon</property>
                         <property name="Icon">stock:gtk-clear LargeToolbar</property>

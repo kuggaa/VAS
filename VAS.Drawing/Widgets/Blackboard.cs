@@ -415,12 +415,10 @@ namespace VAS.Drawing.Widgets
 				pos = SelectionPosition.New;
 				drawable = new Ellipse (MoveStart, 2, 2);
 				drawable.FillColor = Color.Copy ();
-				drawable.FillColor.A = byte.MaxValue / 2;
 				break;
 			case DrawTool.RectangleArea:
 				drawable = new Rectangle (MoveStart, 2, 2);
 				drawable.FillColor = Color.Copy ();
-				drawable.FillColor.A = byte.MaxValue / 2;
 				break;
 			case DrawTool.Counter:
 				drawable = new Counter (MoveStart, 3 * LineWidth, 0);
@@ -475,7 +473,10 @@ namespace VAS.Drawing.Widgets
 				if (copycolor) {
 					drawable.StrokeColor = Color.Copy ();
 				}
-				drawable.LineWidth = LineWidth;
+				if (!(Tool.Equals (DrawTool.RectangleArea) ||
+					  Tool.Equals (DrawTool.CircleArea))) {
+					drawable.LineWidth = LineWidth;
+				}
 				drawable.Style = LineStyle;
 				var selo = Add (drawable);
 				drawing.Drawables.Add (drawable);
