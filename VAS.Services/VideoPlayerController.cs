@@ -59,6 +59,7 @@ namespace VAS.Services
 		IMultiVideoPlayer multiPlayer;
 		List<IViewPort> viewPorts;
 		ObservableCollection<CameraConfig> camerasConfig;
+		ObservableCollection<CameraConfig> clonedCamerasConfig;
 		ObservableCollection<CameraConfig> defaultCamerasConfig;
 		object defaultCamerasLayout;
 		MediaFileSet defaultFileSet;
@@ -155,33 +156,38 @@ namespace VAS.Services
 			set {
 				Log.Debug ("Updating cameras configuration: " + value);
 				camerasConfig = value;
+				clonedCamerasConfig = null;
+
+				if (camerasConfig != null) {
+					//Limit Region of interest if Open Zoom for Events/Filesets is limited
+					if (!App.Current.LicenseLimitationsService.CanExecute
+						(VASFeature.OpenZoom.ToString ())) {
+						clonedCamerasConfig = camerasConfig.Clone ();
+						foreach (var camConfig in clonedCamerasConfig) {
+							camConfig.RegionOfInterest = new Area (0, 0, 0, 0);
+						}
+					}
+				}
+
 				playerVM.CamerasConfig = camerasConfig;
 				if (defaultCamerasConfig == null) {
-					defaultCamerasConfig = value;
+					defaultCamerasConfig = camerasConfig;
 				}
-				if (LoadedTimelineEvent != null && !(LoadedTimelineEvent.CamerasConfig.SequenceEqualSafe (value))) {
-					LoadedTimelineEvent.CamerasConfig = new ObservableCollection<CameraConfig> (value);
+				if (LoadedTimelineEvent != null && !(LoadedTimelineEvent.CamerasConfig.SequenceEqualSafe (camerasConfig))) {
+					LoadedTimelineEvent.CamerasConfig = new ObservableCollection<CameraConfig> (camerasConfig);
 				}
 				if (multiPlayer != null) {
-					multiPlayer.CamerasConfig = CamerasConfig;
+					multiPlayer.CamerasConfig = camerasConfig;
 				}
 				if (!skipApplyCamerasConfig && Opened) {
 					ApplyCamerasConfig ();
 				}
 			}
 			get {
-				if (camerasConfig != null) {
-					var camsConfig = camerasConfig.Clone ();
-					if (!App.Current.LicenseLimitationsService.CanExecute
-						(VASFeature.OpenZoom.ToString ())) {
-						foreach (var camConfig in camsConfig) {
-							camConfig.RegionOfInterest = new Area (0, 0, 0, 0);
-						}
-					}
-					return camsConfig;
-				} else {
-					return null;
+				if (clonedCamerasConfig != null) {
+					return clonedCamerasConfig;
 				}
+				return camerasConfig;
 			}
 		}
 
@@ -756,7 +762,10 @@ namespace VAS.Services
 
 		public virtual void ApplyROI (CameraConfig camConfig)
 		{
-			camerasConfig [camConfig.Index] = camConfig;
+
+			int index = camerasConfig.IndexOf (camConfig);
+			camerasConfig [index] = camConfig;
+
 			if (multiPlayer != null) {
 				multiPlayer.ApplyROI (camConfig);
 			}
@@ -1606,17 +1615,17 @@ namespace VAS.Services
 
 		void IncreaseZoom ()
 		{
-			double? newLevel = App.Current.ZoomLevels.Where (l => l > playerVM.Zoom).OrderBy (l => l).FirstOrDefault ();
+			float? newLevel = App.Current.ZoomLevels.Where (l => l > playerVM.Zoom).OrderBy (l => l).FirstOrDefault ();
 			if (newLevel != 0) {
-				playerVM.SetZoomCommand.Execute ((double)newLevel);
+				playerVM.SetZoomCommand.Execute (newLevel);
 			}
 		}
 
 		void DecreaseZoom ()
 		{
-			double? newLevel = App.Current.ZoomLevels.Where (l => l < playerVM.Zoom).OrderByDescending (l => l).FirstOrDefault ();
+			float? newLevel = App.Current.ZoomLevels.Where (l => l < playerVM.Zoom).OrderByDescending (l => l).FirstOrDefault ();
 			if (newLevel != 0) {
-				playerVM.SetZoomCommand.Execute ((double)newLevel);
+				playerVM.SetZoomCommand.Execute (newLevel);
 			}
 		}
 
