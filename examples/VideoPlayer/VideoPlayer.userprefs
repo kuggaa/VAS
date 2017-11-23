@@ -1,0 +1,10 @@
+﻿<Properties StartupConfiguration="{C12EB59A-2AEE-49B6-AF02-704BDEDD7FD7}|Default">
+  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.GtkVideoPlayer PreferredExecutionTarget="MonoDevelop.Default" />
+</Properties>
