@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Threading.Tasks;
 using Gtk;
 using VAS.Core.Common;
 using VAS.Core.Hotkeys;
@@ -67,6 +68,7 @@ namespace VAS.UI.Dialog
 				}
 			}
 		}
+
 		/// <summary>
 		/// Gets the key context.
 		/// </summary>
@@ -84,6 +86,12 @@ namespace VAS.UI.Dialog
 		public void OnUnload ()
 		{
 
+		}
+
+		protected override void OnDestroyed ()
+		{
+			Task.Run (async () => await App.Current.StateController.MoveBack ());
+			base.OnDestroyed ();
 		}
 
 		public void SetViewModel (object viewModel)
