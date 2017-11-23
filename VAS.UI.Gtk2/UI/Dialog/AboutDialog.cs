@@ -39,7 +39,6 @@ namespace VAS.UI.Dialog
 
 		public AboutDialog ()
 		{
-			Response += HandleResponse;
 			SetBindings ();
 			Show ();
 		}
@@ -67,6 +66,7 @@ namespace VAS.UI.Dialog
 				}
 			}
 		}
+
 		/// <summary>
 		/// Gets the key context.
 		/// </summary>
@@ -102,13 +102,6 @@ namespace VAS.UI.Dialog
 			bindingContext.Add (this.Bind (v => v.License, vm => ((AboutVM)vm).License));
 			bindingContext.Add (this.Bind (v => v.Authors, vm => ((AboutVM)vm).Authors));
 			bindingContext.Add (this.Bind (v => v.TranslatorCredits, vm => ((AboutVM)vm).TranslatorCredits));
-		}
-
-		void HandleResponse (object o, ResponseArgs args)
-		{
-			if (args.ResponseId == ResponseType.Cancel || args.ResponseId == ResponseType.Close) {
-				Destroy ();
-			}
 		}
 	}
 }
