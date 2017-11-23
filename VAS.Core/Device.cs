@@ -16,6 +16,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
@@ -49,6 +51,27 @@ namespace VAS.Core
 					}
 				}
 				return deviceID;
+			}
+		}
+
+		public Version Version {
+			get {
+				Assembly assembly = Assembly.GetEntryAssembly () ?? Assembly.GetExecutingAssembly ();
+				return assembly.GetName ().Version;
+			}
+		}
+
+		public string BuildVersion {
+			get {
+				Assembly assembly = Assembly.GetEntryAssembly () ?? Assembly.GetExecutingAssembly ();
+				var attribute = assembly.
+											GetCustomAttributes (typeof (AssemblyInformationalVersionAttribute), false).
+											FirstOrDefault ();
+				if (attribute != null) {
+					return (attribute as AssemblyInformationalVersionAttribute).InformationalVersion;
+				} else {
+					return Version.ToString ();
+				}
 			}
 		}
 
