@@ -302,7 +302,7 @@ namespace VAS.UI
 			var dialog = panel as Gtk.Dialog;
 			if (dialog != null) {
 				dialog.TransientFor = ((Bin)parent).Toplevel as Window;
-				dialog.DeleteEvent += ModalWindowDeleteEvent;
+				dialog.Response += HandleModalWindowResponse;
 				dialog.Center ();
 				panel.OnLoad ();
 			} else {
@@ -313,7 +313,7 @@ namespace VAS.UI
 				modalWindow.Title = panel.Title;
 				modalWindow.Modal = true;
 				modalWindow.TransientFor = ((Bin)parent).Toplevel as Window;
-				modalWindow.DeleteEvent += ModalWindowDeleteEvent;
+				modalWindow.DeleteEvent += HandleModalWindowDeleteEvent;
 				Widget widget = panel as Gtk.Widget;
 				modalWindow.Add (widget);
 				modalWindow.SetPosition (WindowPosition.CenterOnParent);
@@ -322,18 +322,26 @@ namespace VAS.UI
 			}
 		}
 
-		protected async void ModalWindowDeleteEvent (object o, DeleteEventArgs args)
+		private async void HandleModalWindowResponse (object o, ResponseArgs args)
 		{
-			if (args.Event.Window != null) {
-				args.RetVal = !await App.Current.StateController.MoveBack ();
-			}
+			args.RetVal = !await App.Current.StateController.MoveBack ();
+		}
+
+		private async void HandleModalWindowDeleteEvent (object o, DeleteEventArgs args)
+		{
+			args.RetVal = !await App.Current.StateController.MoveBack ();
 		}
 
 		protected void RemoveModalPanelAndWindow (IPanel panel)
 		{
 			panel.OnUnload ();
-			((Bin)panel).Toplevel.DeleteEvent -= ModalWindowDeleteEvent;
-			((Bin)panel).Toplevel.Destroy ();
+			if (panel is Gtk.Dialog dialog) {
+				dialog.Response -= HandleModalWindowResponse;
+				dialog.Destroy ();
+			} else if (panel is Bin bin) {
+				bin.Toplevel.DeleteEvent -= HandleModalWindowDeleteEvent;
+				bin.Toplevel.Destroy ();
+			}
 			System.GC.Collect ();
 		}
 
