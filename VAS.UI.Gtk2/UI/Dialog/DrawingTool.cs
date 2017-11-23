@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -60,8 +61,8 @@ namespace VAS.UI.Dialog
 		double scaleFactor;
 		bool ignoreChanges;
 		DrawingToolVM viewModel;
-		RadioButton lastButton;
 		BindingContext ctx;
+		Dictionary<RadioButton, DrawTool> buttonToDrawTool;
 
 		public DrawingTool ()
 		{
@@ -70,9 +71,27 @@ namespace VAS.UI.Dialog
 			blackboard.ConfigureObjectEvent += HandleConfigureObjectEvent;
 			blackboard.ShowMenuEvent += HandleShowMenuEvent;
 			blackboard.DrawableChangedEvent += HandleDrawableChangedEvent;
+			blackboard.DrawToolChanged += HandleDrawToolChangedEvent;
 			blackboard.RegionOfInterestChanged += HandleRegionOfInterestChanged;
 
 			selectbutton.Active = true;
+
+			buttonToDrawTool = new Dictionary<RadioButton, DrawTool> () {
+				{selectbutton, DrawTool.Selection},
+				{eraserbutton,DrawTool.Eraser},
+				{penbutton,DrawTool.Pen},
+				{textbutton,DrawTool.Text},
+				{linebutton,DrawTool.Line},
+				{crossbutton,DrawTool.Cross},
+				{rectanglebutton,DrawTool.Rectangle},
+				{ellipsebutton,DrawTool.Ellipse},
+				{rectanglefilledbutton,DrawTool.RectangleArea},
+				{ellipsefilledbutton,DrawTool.CircleArea},
+				{numberbutton,DrawTool.Counter},
+				{anglebutton,DrawTool.Angle},
+				{playerbutton,DrawTool.Player},
+				{zoombutton,DrawTool.Zoom},
+			};
 
 			selectbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-select", 20);
 			eraserbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-eraser", 20);
@@ -140,7 +159,7 @@ namespace VAS.UI.Dialog
 			backgroundcolorbutton.ColorSet += HandleBackgroundColorSet;
 			backgroundcolorbutton.Color = Misc.ToGdkColor (Color.Green1);
 			blackboard.TextBackgroundColor = Misc.ToLgmColor (backgroundcolorbutton.Color,
-				backgroundcolorbutton.Alpha);
+			   backgroundcolorbutton.Alpha);
 			textspinbutton.Value = 12;
 			textspinbutton.ValueChanged += (sender, e) => UpdateTextSize ();
 			linesizespinbutton.ValueChanged += (sender, e) => UpdateLineWidth ();
@@ -617,8 +636,23 @@ namespace VAS.UI.Dialog
 
 		void HandleToolClicked (object sender, EventArgs e)
 		{
-			lastButton = sender as RadioButton;
-			blackboard.Tool = GetTool (lastButton);
+			if (sender is RadioButton button) {
+				if (!button.Active) {
+					return;
+				}
+				DrawTool tool = buttonToDrawTool [button];
+				if (blackboard.Tool != tool) {
+					blackboard.Tool = tool;
+				}
+			}
+		}
+
+		void HandleDrawToolChangedEvent (object sender, EventArgs e)
+		{
+			RadioButton button = buttonToDrawTool.GetKeyByValue (blackboard.Tool);
+			if (!button.Active) {
+				button.Click ();
+			}
 		}
 
 		//FIXME: We need to move the logic of this method to the ViewModel
@@ -668,10 +702,6 @@ namespace VAS.UI.Dialog
 		void HandleDrawableChangedEvent (IBlackboardObject drawable)
 		{
 			selectedDrawable = drawable as Drawable;
-
-			if (blackboard.Tool != GetTool (lastButton)) {
-				selectbutton.Click ();
-			}
 
 			colorbutton.Sensitive = !(drawable is Text);
 
@@ -774,41 +804,6 @@ namespace VAS.UI.Dialog
 				blackboard.RegionOfInterest.Start.Y = hscrollbar.Value;
 			}
 			blackboard.RegionOfInterest = blackboard.RegionOfInterest;
-		}
-
-		DrawTool GetTool (RadioButton sender)
-		{
-			DrawTool tool = DrawTool.None;
-			if (sender == selectbutton) {
-				tool = DrawTool.Selection;
-			} else if (sender == eraserbutton) {
-				tool = DrawTool.Eraser;
-			} else if (sender == penbutton) {
-				tool = DrawTool.Pen;
-			} else if (sender == textbutton) {
-				tool = DrawTool.Text;
-			} else if (sender == linebutton) {
-				tool = DrawTool.Line;
-			} else if (sender == crossbutton) {
-				tool = DrawTool.Cross;
-			} else if (sender == rectanglebutton) {
-				tool = DrawTool.Rectangle;
-			} else if (sender == ellipsebutton) {
-				tool = DrawTool.Ellipse;
-			} else if (sender == rectanglefilledbutton) {
-				tool = DrawTool.RectangleArea;
-			} else if (sender == ellipsefilledbutton) {
-				tool = DrawTool.CircleArea;
-			} else if (sender == numberbutton) {
-				tool = DrawTool.Counter;
-			} else if (sender == anglebutton) {
-				tool = DrawTool.Angle;
-			} else if (sender == playerbutton) {
-				tool = DrawTool.Player;
-			} else if (sender == zoombutton) {
-				tool = DrawTool.Zoom;
-			}
-			return tool;
 		}
 
 		void HandleViewModelPropertyChanged (object sender, PropertyChangedEventArgs e)
