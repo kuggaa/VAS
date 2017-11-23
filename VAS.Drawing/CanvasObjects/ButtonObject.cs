@@ -203,14 +203,14 @@ namespace VAS.Drawing.CanvasObjects
 			if (!Selected || !DrawsSelectionArea) {
 				return;
 			}
-			tk.StrokeColor = VASDrawing.Constants.SELECTION_INDICATOR_COLOR;
-			tk.StrokeColor = App.Current.Style.ThemeContrastDisabled;
+
+			tk.StrokeColor = App.Current.Style.DrawingSelectorShadow;
 			tk.FillColor = null;
 			tk.LineStyle = LineStyle.Dashed;
 			tk.LineWidth = 2;
 			tk.DrawRectangle (Position, Width, Height);
 
-			tk.StrokeColor = tk.FillColor = VASDrawing.Constants.SELECTION_INDICATOR_COLOR;
+			tk.StrokeColor = tk.FillColor = App.Current.Style.DrawingSelectorAnchor;
 			tk.LineStyle = LineStyle.Normal;
 			tk.DrawRectangle (new Point (Position.X + Width - SELECTION_SIZE / 2,
 				Position.Y + Height - SELECTION_SIZE / 2),

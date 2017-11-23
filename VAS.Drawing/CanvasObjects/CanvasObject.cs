@@ -185,8 +185,7 @@ namespace VAS.Drawing.CanvasObjects
 
 	public abstract class CanvasDrawableObject<T> : CanvasObject, ICanvasDrawableObject where T : IBlackboardObject
 	{
-
-		int selectionSize = 3;
+		int selectionSize = StyleConf.DrawingSelectorAnchorSize;
 
 		protected override void DisposeManagedResources ()
 		{
@@ -239,19 +238,28 @@ namespace VAS.Drawing.CanvasObjects
 
 		protected void DrawCornerSelection (IDrawingToolkit tk, Point p)
 		{
-			tk.StrokeColor = tk.FillColor = Constants.SELECTION_INDICATOR_COLOR;
+			tk.StrokeColor = tk.FillColor = App.Current.Style.DrawingSelectorShadow;
 			tk.LineStyle = LineStyle.Normal;
 			tk.LineWidth = 0;
-			tk.DrawRectangle (new Point (p.X - selectionSize,
-				p.Y - selectionSize),
-				selectionSize * 2, selectionSize * 2);
+			tk.DrawRectangle (new Point (p.X + 1 - selectionSize, p.Y + 1 - selectionSize),
+							  selectionSize * 2,
+							  selectionSize * 2);
+
+			tk.StrokeColor = tk.FillColor = App.Current.Style.DrawingSelectorAnchor;
+			tk.DrawRectangle (new Point (p.X - selectionSize, p.Y - selectionSize),
+							  selectionSize * 2,
+							  selectionSize * 2);
 		}
 
 		protected void DrawCenterSelection (IDrawingToolkit tk, Point p)
 		{
-			tk.StrokeColor = tk.FillColor = Constants.SELECTION_INDICATOR_COLOR;
-			tk.LineWidth = 0;
+			tk.StrokeColor = tk.FillColor = App.Current.Style.DrawingSelectorShadow;
 			tk.LineStyle = LineStyle.Normal;
+			tk.LineWidth = 0;
+			tk.DrawCircle (new Point (p.X + 1, p.Y + 1),
+						   selectionSize);
+
+			tk.StrokeColor = tk.FillColor = App.Current.Style.DrawingSelectorAnchor;
 			tk.DrawCircle (p, selectionSize);
 		}
 
@@ -277,11 +285,11 @@ namespace VAS.Drawing.CanvasObjects
 			if (!Selected || area == null) {
 				return;
 			}
-			tk.StrokeColor = Constants.SELECTION_INDICATOR_COLOR;
-			tk.StrokeColor = App.Current.Style.ThemeContrastDisabled;
+
+			tk.StrokeColor = App.Current.Style.DrawingSelectorBorder;
 			tk.FillColor = null;
-			tk.LineStyle = LineStyle.Dashed;
-			tk.LineWidth = 2;
+			tk.LineStyle = StyleConf.DrawingSelectorLineStyle;
+			tk.LineWidth = StyleConf.DrawingSelectorLineWidth;
 			tk.DrawRectangle (area.Start, area.Width, area.Height);
 			foreach (Point p in area.Vertices) {
 				DrawCornerSelection (tk, p);
