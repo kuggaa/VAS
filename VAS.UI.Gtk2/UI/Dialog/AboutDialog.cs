@@ -16,7 +16,6 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using System.Threading.Tasks;
 using Gtk;
 using VAS.Core.Common;
 using VAS.Core.Hotkeys;
@@ -40,7 +39,6 @@ namespace VAS.UI.Dialog
 
 		public AboutDialog ()
 		{
-			Response += HandleResponse;
 			SetBindings ();
 			Show ();
 		}
@@ -88,12 +86,6 @@ namespace VAS.UI.Dialog
 
 		}
 
-		protected override void OnDestroyed ()
-		{
-			Task.Run (async () => await App.Current.StateController.MoveBack ());
-			base.OnDestroyed ();
-		}
-
 		public void SetViewModel (object viewModel)
 		{
 			ViewModel = (AboutVM)viewModel;
@@ -110,13 +102,6 @@ namespace VAS.UI.Dialog
 			bindingContext.Add (this.Bind (v => v.License, vm => ((AboutVM)vm).License));
 			bindingContext.Add (this.Bind (v => v.Authors, vm => ((AboutVM)vm).Authors));
 			bindingContext.Add (this.Bind (v => v.TranslatorCredits, vm => ((AboutVM)vm).TranslatorCredits));
-		}
-
-		void HandleResponse (object o, ResponseArgs args)
-		{
-			if (args.ResponseId == ResponseType.Cancel || args.ResponseId == ResponseType.Close) {
-				Destroy ();
-			}
 		}
 	}
 }
