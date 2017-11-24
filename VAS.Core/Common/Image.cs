@@ -68,9 +68,6 @@ namespace VAS.Core.Common
 			int idx = filepath.LastIndexOf ('.');
 			var path = filepath.Substring (0, idx) + "@2x" + filepath.Substring (idx);
 			if (App.Current.FileSystemManager.Exists (path)) {
-				//FIXME: this seems a HACK, on non-retina displays it will load @2x and that's why should force a
-				//device scale factor of 2 on non-retina displays.
-				deviceScaleFactor = 2;
 				return CreatePixbuf (path);
 			}
 			return CreatePixbuf (filepath);
