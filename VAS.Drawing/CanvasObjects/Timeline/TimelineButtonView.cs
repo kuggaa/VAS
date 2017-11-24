@@ -18,6 +18,7 @@
 using System;
 using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Resources.Styles;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store.Drawables;
 
@@ -34,10 +35,10 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		public TimelineButtonView ()
 		{
 			BackgroundColor = App.Current.Style.ThemeContrastDisabled;
-			BackgroundImage = App.Current.ResourcesLocator.LoadImage (StyleConf.TimelineButtonNormalTheme);
-			BackgroundImageActive = App.Current.ResourcesLocator.LoadImage (StyleConf.TimelineButtonActiveTheme);
-			BackgroundImageInsensitive = App.Current.ResourcesLocator.LoadImage (StyleConf.TimelineButtonInsensititveTheme);
-			BackgroundImageHighlighted = App.Current.ResourcesLocator.LoadImage (StyleConf.TimelineButtonPrelightTheme);
+			BackgroundImage = App.Current.ResourcesLocator.LoadImage (Themes.TimelineButtonNormalTheme);
+			BackgroundImageActive = App.Current.ResourcesLocator.LoadImage (Themes.TimelineButtonActiveTheme);
+			BackgroundImageInsensitive = App.Current.ResourcesLocator.LoadImage (Themes.TimelineButtonInsensititveTheme);
+			BackgroundImageHighlighted = App.Current.ResourcesLocator.LoadImage (Themes.TimelineButtonPrelightTheme);
 			Width = App.Current.Style.ButtonTimelineWidth;
 			Height = App.Current.Style.ButtonTimelineHeight;
 			IconWidth = App.Current.Style.IconXSmallWidth;

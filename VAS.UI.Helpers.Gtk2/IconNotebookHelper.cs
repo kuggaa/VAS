@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using Gtk;
 using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Resources.Styles;
 using Image = VAS.Core.Common.Image;
 
 namespace VAS.UI.Helpers
@@ -68,8 +69,8 @@ namespace VAS.UI.Helpers
 		/// <param name="tooltiptext">Text to add to the tab of the widget as tooltip</param>
 		public void SetTabIcon (Widget widget, string icon, string activeIcon, string tooltiptext)
 		{
-			var pixIcon = App.Current.ResourcesLocator.LoadIcon (icon, StyleConf.NotebookTabIconSize);
-			var pixActiveIcon = App.Current.ResourcesLocator.LoadIcon (activeIcon, StyleConf.NotebookTabIconSize);
+			var pixIcon = App.Current.ResourcesLocator.LoadIcon (icon, Sizes.NotebookTabIconSize);
+			var pixActiveIcon = App.Current.ResourcesLocator.LoadIcon (activeIcon, Sizes.NotebookTabIconSize);
 			SetTabIcon (widget, pixIcon, pixActiveIcon, tooltiptext);
 		}
 
@@ -123,8 +124,8 @@ namespace VAS.UI.Helpers
 			img = Notebook.GetTabLabel (widget) as ImageView;
 			if (img == null) {
 				img = new ImageView ();
-				img.SetSize (StyleConf.NotebookTabSize, StyleConf.NotebookTabSize);
-				img.Xpad = img.Ypad = (StyleConf.NotebookTabSize - StyleConf.NotebookTabIconSize) / 2;
+				img.SetSize (Sizes.NotebookTabSize, Sizes.NotebookTabSize);
+				img.Xpad = img.Ypad = (Sizes.NotebookTabSize - Sizes.NotebookTabIconSize) / 2;
 				Notebook.SetTabLabel (widget, img);
 			}
 			try {

@@ -24,6 +24,7 @@ using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.MVVMC;
+using VAS.Core.Resources.Styles;
 using VAS.Core.Serialization;
 
 namespace VAS.Core.Store
@@ -183,7 +184,7 @@ namespace VAS.Core.Store
 	{
 		public TagButton ()
 		{
-			BackgroundColor = StyleConf.ButtonTagColor.Copy (true);
+			BackgroundColor = Colors.ButtonTagColor.Copy (true);
 		}
 
 		public Tag Tag {
@@ -221,7 +222,7 @@ namespace VAS.Core.Store
 	{
 		public TimerButton ()
 		{
-			BackgroundColor = StyleConf.ButtonTimerColor.Copy (true);
+			BackgroundColor = Colors.ButtonTimerColor.Copy (true);
 		}
 
 		virtual public Timer Timer {

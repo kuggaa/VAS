@@ -23,13 +23,14 @@ using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Handlers;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.Resources.Styles;
 using VAS.Drawing.Cairo;
 using Image = VAS.Core.Common.Image;
 using Point = VAS.Core.Common.Point;
 
 namespace VAS.UI.Component
 {
-	public class CellRendererButton: CellRendererToggle
+	public class CellRendererButton : CellRendererToggle
 	{
 		public event ClickedHandler Clicked;
 
@@ -57,20 +58,20 @@ namespace VAS.UI.Component
 
 			App.Current.DrawingToolkit.MeasureText (Text, out width, out height, App.Current.Style.Font, 12, FontWeight.Normal);
 
-			width += StyleConf.FilterTreeViewOnlyRightOffset * 2;
+			width += Sizes.FilterTreeViewOnlyRightOffset * 2;
 			height += 10;
 		}
 
 		protected override void Render (Drawable window, Widget widget, Rectangle backgroundArea,
-		                                Rectangle cellArea, Rectangle exposeArea, CellRendererState flags)
+										Rectangle cellArea, Rectangle exposeArea, CellRendererState flags)
 		{
 			IDrawingToolkit tk = App.Current.DrawingToolkit;
 
 			using (IContext context = new CairoContext (window)) {
-				int width = cellArea.Width - StyleConf.FilterTreeViewOnlyRightOffset;
-				int height = cellArea.Height - StyleConf.FilterTreeViewOnlyTopOffset * 2;
+				int width = cellArea.Width - Sizes.FilterTreeViewOnlyRightOffset;
+				int height = cellArea.Height - Sizes.FilterTreeViewOnlyTopOffset * 2;
 				Point pos = new Point (cellArea.X + backgroundArea.Width - cellArea.Width,
-					            cellArea.Y + StyleConf.FilterTreeViewOnlyTopOffset);
+									   cellArea.Y + Sizes.FilterTreeViewOnlyTopOffset);
 				tk.Context = context;
 				tk.Begin ();
 				tk.FontSize = 12;

@@ -19,6 +19,7 @@ using System;
 
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.Resources.Styles;
 using VAS.Core.Store.Drawables;
 using VAS.Drawing.CanvasObjects;
 using VASDrawing = VAS.Drawing;
@@ -226,7 +227,7 @@ namespace VAS.Drawing.CanvasObjects
 			Color front, back;
 
 			if (Active) {
-				tk.LineWidth = StyleConf.ButtonLineWidth;
+				tk.LineWidth = Sizes.ButtonLineWidth;
 				front = BackgroundColor;
 				back = BorderColor;
 			} else {
@@ -240,7 +241,7 @@ namespace VAS.Drawing.CanvasObjects
 			if (Icon != null) {
 				tk.FillColor = front;
 				tk.DrawImage (new Point (Position.X + 5, Position.Y + 5),
-					StyleConf.ButtonHeaderWidth, StyleConf.ButtonHeaderHeight, Icon, ScaleMode.AspectFit, true);
+							  Sizes.ButtonHeaderWidth, Sizes.ButtonHeaderHeight, Icon, ScaleMode.AspectFit, true);
 			}
 		}
 
@@ -271,7 +272,7 @@ namespace VAS.Drawing.CanvasObjects
 					tk.FillColor = TextColor;
 					tk.StrokeColor = TextColor;
 				}
-				tk.FontSize = StyleConf.ButtonNameFontSize;
+				tk.FontSize = Sizes.ButtonNameFontSize;
 				tk.FontWeight = FontWeight.Light;
 				tk.FontAlignment = FontAlignment.Center;
 				tk.DrawText (Position, Width, Height, Text);

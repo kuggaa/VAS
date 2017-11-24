@@ -275,6 +275,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\VideoPlayerSeekOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\OneWayPropertyBinding.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IApplicationMenu.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resources\Icons.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resources\Images.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resources\Styles\Colors.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resources\Styles\Sizes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resources\Fonts.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resources\Styles\Themes.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
@@ -299,6 +305,8 @@
     <Folder Include="$(MSBuildThisFileDirectory)License\" />
     <Folder Include="$(MSBuildThisFileDirectory)Interfaces\License\" />
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\Statistics\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Resources\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Resources\Styles\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)VAS.Core.dll.config">

@@ -18,6 +18,7 @@
 using System;
 using NUnit.Framework;
 using VAS.Core.Common;
+using VAS.Core.Resources.Styles;
 using VAS.Core.ViewModel;
 using VAS.Drawing.CanvasObjects.Timeline;
 
@@ -35,7 +36,7 @@ namespace VAS.Tests.Drawing
 			eventTypeLabel = new EventTypeLabelView ();
 			eventTypeLabel.Width = 100;
 			eventTypeLabel.Height = 40;
-			buttonPos = new Point (eventTypeLabel.Width - (eventTypeLabel.Height - StyleConf.TimelineLabelVSpacing * 2) - 3 + 1,
+			buttonPos = new Point (eventTypeLabel.Width - (eventTypeLabel.Height - Sizes.TimelineLabelVSpacing * 2) - 3 + 1,
 								  3 + 1);
 			eventTypeLabel.SetViewModel (new EventTypeTimelineVM ());
 		}

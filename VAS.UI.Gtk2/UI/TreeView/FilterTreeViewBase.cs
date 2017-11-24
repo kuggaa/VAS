@@ -21,6 +21,7 @@ using Pango;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
+using VAS.Core.Resources.Styles;
 using VAS.UI.Component;
 using EventType = VAS.Core.Store.EventType;
 using Misc = VAS.UI.Helpers.Misc;
@@ -46,14 +47,14 @@ namespace VAS.UI.Component
 
 			TreeViewColumn filterColumn = new TreeViewColumn ();
 			CellRendererToggle filterCell = new CellRendererToggle ();
-			filterCell.Width = StyleConf.FilterTreeViewToogleWidth;
+			filterCell.Width = Sizes.FilterTreeViewToogleWidth;
 			filterCell.Toggled += HandleFilterCellToggled;
 			filterColumn.PackStart (filterCell, false);
 			filterColumn.AddAttribute (filterCell, "active", COL_ACTIVE);
 
 			CellRendererText nameCell = new CellRendererText ();
 			nameCell.FontDesc = FontDescription.FromString (
-				String.Format ("{0} {1} {2}px", App.Current.Style.Font, "semibold", StyleConf.ListTextFontSize));
+				String.Format ("{0} {1} {2}px", App.Current.Style.Font, "semibold", Sizes.ListTextFontSize));
 			nameCell.Height = 32;
 			filterColumn.PackStart (nameCell, true);
 			filterColumn.AddAttribute (nameCell, "text", COL_DESCRIPTION);

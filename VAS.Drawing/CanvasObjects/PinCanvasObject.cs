@@ -22,6 +22,7 @@ using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
 using VAS.Core.Store.Drawables;
 using VAS.Core.ViewModel;
+using VAS.Core.Resources;
 
 namespace VAS.Drawing.CanvasObjects
 {
@@ -41,9 +42,9 @@ namespace VAS.Drawing.CanvasObjects
 
 		static PinCanvasObject ()
 		{
-			missingLocationPinImage = App.Current.ResourcesLocator.LoadImage (StyleConf.LocationPinNotSet);
-			locationPinImageMoving = App.Current.ResourcesLocator.LoadImage (StyleConf.LocationPinMoving);
-			locationPinImageSet = App.Current.ResourcesLocator.LoadImage (StyleConf.LocationSet);
+			missingLocationPinImage = App.Current.ResourcesLocator.LoadIcon (Icons.LocationPinNotSet);
+			locationPinImageMoving = App.Current.ResourcesLocator.LoadIcon (Icons.LocationPinMoving);
+			locationPinImageSet = App.Current.ResourcesLocator.LoadIcon (Icons.LocationSet);
 		}
 
 		public PinCanvasObject ()

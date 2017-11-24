@@ -16,6 +16,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using VAS.Core.Resources.Styles;
+
 namespace VAS.Core.Common
 {
 	/// <summary>
@@ -65,7 +67,7 @@ namespace VAS.Core.Common
 			double videoHeight = videoStandard.Height;
 			Image originalImage = image ?? App.Current.ResourcesLocator.LoadEmbeddedImage (Constants.WATERMARK_RESOURCE_ID);
 
-			double sizeChanged = (videoHeight * StyleConf.WatermarkHeightNormalization) / originalImage.Height;
+			double sizeChanged = (videoHeight * Sizes.WatermarkHeightNormalization) / originalImage.Height;
 			int newWidth = (int)(originalImage.Width * sizeChanged);
 			int newHeight = (int)(originalImage.Height * sizeChanged);
 
@@ -80,25 +82,25 @@ namespace VAS.Core.Common
 
 			switch (position) {
 			case WatermarkPosition.TOP_LEFT:
-				offsetX = StyleConf.WatermarkPadding / videoWidth;
-				offsetY = StyleConf.WatermarkPadding / videoHeight;
+				offsetX = Sizes.WatermarkPadding / videoWidth;
+				offsetY = Sizes.WatermarkPadding / videoHeight;
 				break;
 			case WatermarkPosition.TOP_RIGHT:
-				offsetX = (videoWidth - newImage.Width - StyleConf.WatermarkPadding) / videoWidth;
-				offsetY = StyleConf.WatermarkPadding / videoHeight;
+				offsetX = (videoWidth - newImage.Width - Sizes.WatermarkPadding) / videoWidth;
+				offsetY = Sizes.WatermarkPadding / videoHeight;
 				break;
 			case WatermarkPosition.BOTTOM_LEFT:
-				offsetX = StyleConf.WatermarkPadding / videoWidth;
-				offsetY = (videoHeight - newImage.Height - StyleConf.WatermarkPadding) / videoHeight;
+				offsetX = Sizes.WatermarkPadding / videoWidth;
+				offsetY = (videoHeight - newImage.Height - Sizes.WatermarkPadding) / videoHeight;
 				break;
 			case WatermarkPosition.BOTTOM_RIGHT:
-				offsetX = (videoWidth - newImage.Width - StyleConf.WatermarkPadding) / videoWidth;
-				offsetY = (videoHeight - newImage.Height - StyleConf.WatermarkPadding) / videoStandard.Height;
+				offsetX = (videoWidth - newImage.Width - Sizes.WatermarkPadding) / videoWidth;
+				offsetY = (videoHeight - newImage.Height - Sizes.WatermarkPadding) / videoStandard.Height;
 				break;
 			default:
 				return null;
 			}
-			return new Watermark (newImage, StyleConf.WatermarkHeightNormalization, offsetX, offsetY);
+			return new Watermark (newImage, Sizes.WatermarkHeightNormalization, offsetX, offsetY);
 		}
 	}
 }

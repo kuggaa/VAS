@@ -24,6 +24,8 @@ using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
+using VAS.Core.Resources;
+using VAS.Core.Resources.Styles;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 
@@ -59,7 +61,7 @@ namespace VAS.Core.ViewModel
 			SetZoomCommand = new LimitationCommand<float> (VASFeature.Zoom.ToString (), zoomLevel => Player.SetZoom (zoomLevel));
 
 			EditEventDurationCommand = new Command<bool> (b => Player.SetEditEventDurationMode (b)) {
-				Icon = App.Current.ResourcesLocator.LoadIcon (StyleConf.PlayerControlTrim, StyleConf.PlayerCapturerIconSize),
+				Icon = App.Current.ResourcesLocator.LoadIcon (Icons.PlayerControlTrim, Sizes.PlayerCapturerIconSize),
 				Text = Catalog.GetString ("Edit event duration"),
 				ToolTipText = Catalog.GetString ("Edit event duration"),
 				Executable = false,
@@ -636,19 +638,19 @@ namespace VAS.Core.ViewModel
 		void InitializeCommands ()
 		{
 			ShowZoomCommand = new LimitationCommand (VASFeature.Zoom.ToString (), () => { ShowZoom = true; });
-			ConfigureCommand (ShowZoomCommand, StyleConf.PlayerControlZoom, StyleConf.PlayerCapturerSmallIconSize, StyleConf.PlayerTooltipZoom);
+			ConfigureCommand (ShowZoomCommand, Icons.PlayerControlZoom, Sizes.PlayerCapturerSmallIconSize, StyleConf.PlayerTooltipZoom);
 
 			SetZoomCommand = new LimitationCommand<float> (VASFeature.Zoom.ToString (), zoomLevel => Player.SetZoom (zoomLevel));
 
 			ChangeVolumeCommand = new Command<double> (level => {
 				Player.Volume = level / 100;
 			});
-			ConfigureCommand (ChangeVolumeCommand, StyleConf.PlayerControlHigh, StyleConf.PlayerCapturerIconSize, StyleConf.PlayerTooltipVolume);
+			ConfigureCommand (ChangeVolumeCommand, Icons.PlayerControlHigh, Sizes.PlayerCapturerIconSize, StyleConf.PlayerTooltipVolume);
 
 			ChangeStepCommand = new Command<double> (val => {
 				Player.SetStep (new Time { TotalSeconds = App.Current.StepList [(int)val] });
 			});
-			ConfigureCommand (ChangeStepCommand, StyleConf.PlayerControlJumps, StyleConf.PlayerCapturerSmallIconSize, StyleConf.PlayerTooltipJumps);
+			ConfigureCommand (ChangeStepCommand, Icons.PlayerControlJumps, Sizes.PlayerCapturerSmallIconSize, StyleConf.PlayerTooltipJumps);
 
 			ChangeRateCommand = new Command<double> (val => {
 				double rateLevel = App.Current.RateList [(int)val];
@@ -661,33 +663,33 @@ namespace VAS.Core.ViewModel
 
 				Player.Rate = rateLevel;
 			});
-			ConfigureCommand (ChangeRateCommand, StyleConf.PlayerControlSpeedRate, StyleConf.PlayerCapturerSmallIconSize, StyleConf.PlayerTooltipRate);
+			ConfigureCommand (ChangeRateCommand, Icons.PlayerControlSpeedRate, Sizes.PlayerCapturerSmallIconSize, StyleConf.PlayerTooltipRate);
 
 			CloseCommand = new Command (() => { LoadEvent (null, Playing); });
-			ConfigureCommand (CloseCommand, StyleConf.PlayerControlCancelRec, StyleConf.PlayerCapturerIconSize, StyleConf.PlayerTooltipClose);
+			ConfigureCommand (CloseCommand, Icons.PlayerControlCancelRec, Sizes.PlayerCapturerIconSize, StyleConf.PlayerTooltipClose);
 
 			PreviousCommand = new Command (() => { Player.Previous (); });
-			ConfigureCommand (PreviousCommand, StyleConf.PlayerControlRewind, StyleConf.PlayerCapturerIconSize, StyleConf.PlayerTooltipPrevious);
+			ConfigureCommand (PreviousCommand, Icons.PlayerControlRewind, Sizes.PlayerCapturerIconSize, StyleConf.PlayerTooltipPrevious);
 
 			NextCommand = new Command (() => { Player.Next (); });
-			ConfigureCommand (NextCommand, StyleConf.PlayerControlFastForward, StyleConf.PlayerCapturerIconSize, StyleConf.PlayerTooltipNext);
+			ConfigureCommand (NextCommand, Icons.PlayerControlFastForward, Sizes.PlayerCapturerIconSize, StyleConf.PlayerTooltipNext);
 
 			PlayCommand = new Command (() => { Player.Play (); });
-			ConfigureCommand (PlayCommand, StyleConf.PlayerControlPlay, StyleConf.PlayerCapturerIconSize, StyleConf.PlayerTooltipPlay);
+			ConfigureCommand (PlayCommand, Icons.PlayerControlPlay, Sizes.PlayerCapturerIconSize, StyleConf.PlayerTooltipPlay);
 
 			PauseCommand = new Command<bool> (sync => Player.Pause (sync));
-			ConfigureCommand (PauseCommand, StyleConf.PlayerControlPause, StyleConf.PlayerCapturerIconSize, StyleConf.PlayerTooltipPause);
+			ConfigureCommand (PauseCommand, Icons.PlayerControlPause, Sizes.PlayerCapturerIconSize, StyleConf.PlayerTooltipPause);
 
 			DrawCommand = new Command (() => Player.DrawFrame ());
-			ConfigureCommand (DrawCommand, StyleConf.PlayerControlDraw, StyleConf.PlayerCapturerIconSize, StyleConf.PlayerTooltipDraw);
+			ConfigureCommand (DrawCommand, Icons.PlayerControlDraw, Sizes.PlayerCapturerIconSize, StyleConf.PlayerTooltipDraw);
 
 			DetachCommand = new Command (() => { App.Current.EventsBroker.Publish (new DetachEvent ()); });
-			ConfigureCommand (DetachCommand, StyleConf.PlayerControlDetach, StyleConf.PlayerCapturerIconSize, StyleConf.PlayerTooltipDetach);
+			ConfigureCommand (DetachCommand, Icons.PlayerControlDetach, Sizes.PlayerCapturerIconSize, StyleConf.PlayerTooltipDetach);
 
 			ViewPortsSwitchToggleCommand = new Command (() => {
 				ViewPortsSwitchActive = !ViewPortsSwitchActive;
 			});
-			ConfigureCommand (ViewPortsSwitchToggleCommand, StyleConf.PlayerControlMulticam, StyleConf.PlayerCapturerIconSize);
+			ConfigureCommand (ViewPortsSwitchToggleCommand, Icons.PlayerControlMulticam, Sizes.PlayerCapturerIconSize);
 
 			SeekCommand = new Command<VideoPlayerSeekOptions> (seekOptions => {
 				Player.Seek (seekOptions.Time, seekOptions.Accurate, seekOptions.Synchronous, seekOptions.Throttled);

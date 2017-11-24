@@ -23,6 +23,8 @@ using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.ViewModel;
+using VAS.Core.Resources;
+using VAS.Core.Resources.Styles;
 using VAS.Drawing.Cairo;
 using Color = VAS.Core.Common.Color;
 using Point = VAS.Core.Common.Point;
@@ -66,16 +68,16 @@ namespace VAS.UI.Component
 
 		static EventCellRenderer ()
 		{
-			PlayIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.PlayButton, false);
-			BtnNormalBackground = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.NormalButtonNormalTheme, false);
-			BtnNormalBackgroundPrelight = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.NormalButtonPrelightTheme, false);
-			BtnNormalBackgroundActive = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.NormalButtonActiveTheme, false);
-			BtnNormalBackgroundInsensitive = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.NormalButtonInsensititveTheme, false);
-			Drawings = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.NormalDrawings, false);
-			PrelightDrawings = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.PrelightDrawings, false);
-			Location = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.NormalLocation, false);
-			PrelightLocation = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.PrelightLocation, false);
-			Eye = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.NormalEye, false);
+			PlayIcon = App.Current.DrawingToolkit.CreateSurfaceFromIcon (Icons.PlayButton, false);
+			BtnNormalBackground = App.Current.DrawingToolkit.CreateSurfaceFromResource (Themes.NormalButtonNormalTheme, false);
+			BtnNormalBackgroundPrelight = App.Current.DrawingToolkit.CreateSurfaceFromResource (Themes.NormalButtonPrelightTheme, false);
+			BtnNormalBackgroundActive = App.Current.DrawingToolkit.CreateSurfaceFromResource (Themes.NormalButtonActiveTheme, false);
+			BtnNormalBackgroundInsensitive = App.Current.DrawingToolkit.CreateSurfaceFromResource (Themes.NormalButtonInsensititveTheme, false);
+			Drawings = App.Current.DrawingToolkit.CreateSurfaceFromResource (Images.NormalDrawings, false);
+			PrelightDrawings = App.Current.DrawingToolkit.CreateSurfaceFromResource (Images.PrelightDrawings, false);
+			Location = App.Current.DrawingToolkit.CreateSurfaceFromResource (Images.NormalLocation, false);
+			PrelightLocation = App.Current.DrawingToolkit.CreateSurfaceFromResource (Images.PrelightLocation, false);
+			Eye = App.Current.DrawingToolkit.CreateSurfaceFromResource (Images.NormalEye, false);
 		}
 
 		public EventCellRenderer ()
@@ -234,7 +236,7 @@ namespace VAS.UI.Component
 		void RenderType (string name, int childsCount, Color color, IDrawingToolkit tk, IContext context,
 							  Area backgroundArea, Area cellArea, CellState state)
 		{
-			Point textP = new Point (StyleConf.ListTextOffset, backgroundArea.Start.Y);
+			Point textP = new Point (Sizes.ListTextOffset, backgroundArea.Start.Y);
 			tk.Context = context;
 			tk.Begin ();
 			RenderBackgroundAndTitleText (tk, backgroundArea, textP, cellArea.Width - textP.X, name, App.Current.Style.ScreenBase, color);
@@ -277,7 +279,7 @@ namespace VAS.UI.Component
 
 			/* Text */
 			tk.StrokeColor = textColor;
-			tk.FontSize = StyleConf.ListTextFontSize;
+			tk.FontSize = Sizes.ListTextFontSize;
 			tk.FontWeight = FontWeight.Bold;
 			tk.FontAlignment = FontAlignment.Left;
 			tk.DrawText (textP, textW, backgroundArea.Height, text, false, true);
@@ -287,7 +289,7 @@ namespace VAS.UI.Component
 		{
 			double posX, posY;
 
-			posX = cellArea.Start.X + StyleConf.ListRowSeparator;
+			posX = cellArea.Start.X + Sizes.ListRowSeparator;
 			posY = cellArea.Start.Y + VERTICAL_OFFSET;
 
 			tk.LineWidth = 0;
@@ -298,8 +300,8 @@ namespace VAS.UI.Component
 			tk.FontWeight = FontWeight.Bold;
 			tk.FontSize = 14;
 			posX = posX + COUNT_RECTANGLE_WIDTH / 4;
-			tk.DrawText (new Point (posX, posY), StyleConf.ListCountWidth,
-				2 * StyleConf.ListCountRadio, count.ToString ());
+			tk.DrawText (new Point (posX, posY), Sizes.ListCountWidth,
+						 2 * Sizes.ListCountRadio, count.ToString ());
 		}
 
 		void RenderSeparationLine (IDrawingToolkit tk, IContext context, Area backgroundArea)

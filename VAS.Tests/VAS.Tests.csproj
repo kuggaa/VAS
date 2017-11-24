@@ -157,10 +157,10 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="paket.references" />
-    <None Include="data\vas-dark-bg.svg">
+    <None Include="data\vas-longomatch.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\vas-longomatch.svg">
+    <None Include="data\icons\hicolor\scalable\actions\vas-dark-bg.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -224,6 +224,10 @@
     <Folder Include="Drawing\Widgets\" />
     <Folder Include="Helpers\" />
     <Folder Include="Multimedia\" />
+    <Folder Include="data\icons\" />
+    <Folder Include="data\icons\hicolor\" />
+    <Folder Include="data\icons\hicolor\scalable\" />
+    <Folder Include="data\icons\hicolor\scalable\actions\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Core\vas-dibujo.svg">
