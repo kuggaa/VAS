@@ -67,5 +67,14 @@ namespace VAS.Core.Interfaces.License
 			get;
 			set;
 		}
+
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="T:VAS.Core.Interfaces.License.ILicenseStatus"/> is trial only,
+		/// this means that the user does not have any license in the device except for the trial
+		/// </summary>
+		/// <value><c>true</c> if trial; otherwise, <c>false</c>.</value>
+		bool TrialOnly {
+			get;
+		}
 	}
 }
