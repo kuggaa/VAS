@@ -19,6 +19,7 @@ using System;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.Resources;
 
 namespace VAS.Drawing.Widgets
 {
@@ -58,9 +59,10 @@ namespace VAS.Drawing.Widgets
 
 		TViewModel viewModel;
 
-		static CardCanvasView() {
-			calendarIcon = App.Current.DrawingToolkit.CreateSurfaceFromIcon (StyleConf.CalendarIcon);
-			defaultBackground = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.DefaultCardBackground);
+		static CardCanvasView ()
+		{
+			calendarIcon = App.Current.DrawingToolkit.CreateSurfaceFromIcon (Icons.Calendar);
+			defaultBackground = App.Current.DrawingToolkit.CreateSurfaceFromResource (Images.DefaultCardBackground);
 		}
 
 		public CardCanvasView ()

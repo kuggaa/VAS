@@ -23,6 +23,7 @@ using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.Resources.Styles;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
 using VAS.Drawing.Cairo;
@@ -173,7 +174,7 @@ namespace VAS.UI.Component
 			focusscale.ButtonPressEvent += HandleFocusScaleButtonPress;
 			focusscale.ButtonReleaseEvent += HandleFocusScaleButtonRelease;
 			timerulearea.HeightRequest = VASDrawing.Constants.TIMERULE_HEIGHT;
-			leftbox.WidthRequest = StyleConf.TimelineLabelsWidth;
+			leftbox.WidthRequest = Sizes.TimelineLabelsWidth;
 			labelsarea.SizeRequested += (o, args) => {
 				leftbox.WidthRequest = args.Requisition.Width;
 			};

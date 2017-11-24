@@ -21,6 +21,8 @@ using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
 using VAS.Core.ViewModel;
+using VAS.Core.Resources;
+using VAS.Core.Resources.Styles;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
@@ -43,10 +45,10 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 		static LinkAnchorView ()
 		{
-			InIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.LinkIn, false);
-			InPrelightIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.LinkInPrelight, false);
-			OutIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.LinkOut, false);
-			OutPrelightIcon = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.LinkOutPrelight, false);
+			InIcon = App.Current.DrawingToolkit.CreateSurfaceFromIcon (Icons.LinkIn, false);
+			InPrelightIcon = App.Current.DrawingToolkit.CreateSurfaceFromIcon (Icons.LinkInPrelight, false);
+			OutIcon = App.Current.DrawingToolkit.CreateSurfaceFromIcon (Icons.LinkOut, false);
+			OutPrelightIcon = App.Current.DrawingToolkit.CreateSurfaceFromIcon (Icons.LinkOutPrelight, false);
 		}
 
 		public LinkAnchorView (DashboardButtonView button, List<TagVM> tags, Point relPos)
@@ -185,8 +187,8 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			Point outPoint = new Point (Out.X - iconWidth / 2, In.Y - iconHeight / 2);
 
 			tk.Begin ();
-			tk.DrawSurface (inPoint, StyleConf.LinkInWidth, StyleConf.LinkInHeight, linkIn, ScaleMode.AspectFit);
-			tk.DrawSurface (outPoint, StyleConf.LinkOutWidth, StyleConf.LinkOutHeight, linkOut, ScaleMode.AspectFit);
+			tk.DrawSurface (inPoint, Sizes.LinkInWidth, Sizes.LinkInHeight, linkIn, ScaleMode.AspectFit);
+			tk.DrawSurface (outPoint, Sizes.LinkOutWidth, Sizes.LinkOutHeight, linkOut, ScaleMode.AspectFit);
 			tk.End ();
 		}
 	}

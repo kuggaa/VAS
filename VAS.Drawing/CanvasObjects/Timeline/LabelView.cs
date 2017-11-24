@@ -18,6 +18,7 @@
 using System;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.Resources.Styles;
 using VAS.Core.Store.Drawables;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
@@ -87,7 +88,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				App.Current.DrawingToolkit.MeasureText (
 					Name, out width, out height, App.Current.Style.Font,
 					DEFAULT_FONT_SIZE, DEFAULT_FONT_WEIGHT);
-				return TextOffset + width + StyleConf.TimelineLabelHSpacing;
+				return TextOffset + width + Sizes.TimelineLabelHSpacing;
 			}
 		}
 
@@ -109,13 +110,13 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 		protected double RectSize {
 			get {
-				return Height - StyleConf.TimelineLabelVSpacing * 2;
+				return Height - Sizes.TimelineLabelVSpacing * 2;
 			}
 		}
 
 		protected double TextOffset {
 			get {
-				return StyleConf.TimelineLabelHSpacing * 2 + RectSize;
+				return Sizes.TimelineLabelHSpacing * 2 + RectSize;
 			}
 		}
 
@@ -123,8 +124,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		{
 			double hs, vs;
 
-			hs = StyleConf.TimelineLabelHSpacing;
-			vs = StyleConf.TimelineLabelVSpacing;
+			hs = Sizes.TimelineLabelHSpacing;
+			vs = Sizes.TimelineLabelVSpacing;
 
 			tk.Begin ();
 			tk.FillColor = BackgroundColor;

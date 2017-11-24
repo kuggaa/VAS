@@ -17,11 +17,13 @@
 //
 using System.ComponentModel;
 using VAS.Core;
+using VAS.Core.Resources;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
 using VAS.Core.ViewModel;
+using VAS.Core.Resources;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
@@ -38,7 +40,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			Toggle = true;
 			SupportsLinks = false;
 			if (iconImage == null) {
-				iconImage = App.Current.ResourcesLocator.LoadImage (StyleConf.ButtonTagIcon);
+				iconImage = App.Current.ResourcesLocator.LoadImage (Images.ButtonTag);
 			}
 		}
 
@@ -95,8 +97,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		protected override void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			base.HandlePropertyChanged (sender, e);
-			if (ViewModel.NeedsSync (e.PropertyName, nameof(ViewModel.Active), sender, ButtonVM))
-			{
+			if (ViewModel.NeedsSync (e.PropertyName, nameof (ViewModel.Active), sender, ButtonVM)) {
 				ReDraw ();
 			}
 		}

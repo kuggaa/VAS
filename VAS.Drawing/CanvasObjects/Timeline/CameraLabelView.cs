@@ -20,6 +20,7 @@ using System;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
+using VAS.Core.Resources.Styles;
 using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
@@ -65,11 +66,11 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			/* Draw category name */
 			tk.FontSlant = FontSlant.Normal;
 			tk.FontWeight = FontWeight.Bold;
-			tk.FontSize = StyleConf.TimelineCameraFontSize;
+			tk.FontSize = Sizes.TimelineCameraFontSize;
 			tk.FillColor = App.Current.Style.TextBase;
 			tk.FontAlignment = FontAlignment.Right;
 			tk.StrokeColor = App.Current.Style.TextBase;
-			tk.DrawText (new Point (0, scrolledY), Width - StyleConf.TimelineLabelHSpacing, Height, Name);
+			tk.DrawText (new Point (0, scrolledY), Width - Sizes.TimelineLabelHSpacing, Height, Name);
 			tk.End ();
 		}
 	}

@@ -22,6 +22,8 @@ using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
 using VAS.Core.Store.Drawables;
 using VAS.Core.ViewModel;
+using VAS.Core.Resources;
+using VAS.Core.Resources.Styles;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
@@ -40,13 +42,13 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		{
 			Toggle = true;
 			if (iconImage == null) {
-				iconImage = App.Current.ResourcesLocator.LoadImage (StyleConf.ButtonTimerIcon, StyleConf.ButtonHeaderWidth * 2, StyleConf.ButtonHeaderHeight * 2);
+				iconImage = App.Current.ResourcesLocator.LoadImage (Images.ButtonTimer, Sizes.ButtonHeaderSize * 2);
 			}
 			if (cancelImage == null) {
-				cancelImage = App.Current.ResourcesLocator.LoadImage (StyleConf.CancelButton, StyleConf.ButtonHeaderWidth * 2, StyleConf.ButtonHeaderHeight * 2);
+				cancelImage = App.Current.ResourcesLocator.LoadIcon (Icons.CancelButton, Sizes.ButtonHeaderSize * 2);
 			}
-			MinWidth = StyleConf.ButtonMinWidth;
-			MinHeight = iconImage.Height + StyleConf.ButtonTimerFontSize;
+			MinWidth = Sizes.ButtonMinWidth;
+			MinHeight = iconImage.Height + Sizes.ButtonTimerFontSize;
 			cancelRect = new Rectangle ();
 		}
 
@@ -148,23 +150,23 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		protected virtual void DrawTimer (IDrawingToolkit tk)
 		{
 			cancelRect = new Rectangle (
-				new Point ((Position.X + Width) - StyleConf.ButtonRecWidth, Position.Y),
-				StyleConf.ButtonRecWidth, HeaderHeight);
+				new Point ((Position.X + Width) - Sizes.ButtonRecWidth, Position.Y),
+				Sizes.ButtonRecWidth, HeaderHeight);
 
 			if (ViewModel.TimerTime != null && ButtonVM.Mode != DashboardMode.Edit) {
-				tk.LineWidth = StyleConf.ButtonLineWidth;
+				tk.LineWidth = Sizes.ButtonLineWidth;
 				tk.StrokeColor = Button.BackgroundColor;
 				tk.FillColor = Button.BackgroundColor;
 				tk.FontWeight = FontWeight.Normal;
-				tk.FontSize = StyleConf.ButtonHeaderFontSize;
+				tk.FontSize = Sizes.ButtonHeaderFontSize;
 				tk.FontAlignment = FontAlignment.Left;
 				tk.DrawText (new Point (Position.X + TextHeaderX, Position.Y),
-							 Button.Width - TextHeaderX, StyleConf.ButtonHeaderHeight, ViewModel.Name);
+							 Button.Width - TextHeaderX, Sizes.ButtonHeaderHeight, ViewModel.Name);
 				tk.FontWeight = FontWeight.Bold;
-				tk.FontSize = StyleConf.ButtonTimerFontSize;
+				tk.FontSize = Sizes.ButtonTimerFontSize;
 				tk.FontAlignment = FontAlignment.Center;
-				tk.DrawText (new Point (Position.X, Position.Y + StyleConf.ButtonHeaderHeight),
-					Button.Width, Button.Height - StyleConf.ButtonHeaderHeight,
+				tk.DrawText (new Point (Position.X, Position.Y + Sizes.ButtonHeaderHeight),
+							 Button.Width, Button.Height - Sizes.ButtonHeaderHeight,
 					ViewModel.TimerTime.ToSecondsString (), false, true);
 
 				tk.FillColor = tk.StrokeColor = BackgroundColor;

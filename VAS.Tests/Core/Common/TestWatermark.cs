@@ -18,6 +18,7 @@
 using System;
 using NUnit.Framework;
 using VAS.Core.Common;
+using VAS.Core.Resources.Styles;
 
 namespace VAS.Tests.Core.Common
 {
@@ -30,9 +31,9 @@ namespace VAS.Tests.Core.Common
 			VideoStandard videoStandard = VideoStandards.P720;
 			Watermark watermark = Watermark.ConfigureNewWatermark (WatermarkPosition.TOP_LEFT, videoStandard);
 
-			var expectedOffsetX = StyleConf.WatermarkPadding / (double)videoStandard.Width;
-			var expectedOffsetY = StyleConf.WatermarkPadding / (double)videoStandard.Height;
-			int expectedHeight = (int)(videoStandard.Height * StyleConf.WatermarkHeightNormalization);
+			var expectedOffsetX = Sizes.WatermarkPadding / (double)videoStandard.Width;
+			var expectedOffsetY = Sizes.WatermarkPadding / (double)videoStandard.Height;
+			int expectedHeight = (int)(videoStandard.Height * Sizes.WatermarkHeightNormalization);
 
 			Assert.AreEqual (expectedOffsetX, watermark.OffsetX);
 			Assert.AreEqual (expectedOffsetY, watermark.OffsetY);
@@ -46,9 +47,9 @@ namespace VAS.Tests.Core.Common
 			VideoStandard videoStandard = VideoStandards.P720;
 			Watermark watermark = Watermark.ConfigureNewWatermark (WatermarkPosition.TOP_RIGHT, videoStandard);
 
-			expectedHeight = expectedWidth = (int)(videoStandard.Height * StyleConf.WatermarkHeightNormalization);
-			var expectedOffsetX = (videoStandard.Width - expectedWidth - StyleConf.WatermarkPadding) / (double)videoStandard.Width;
-			var expectedOffsetY = StyleConf.WatermarkPadding / (double)videoStandard.Height;
+			expectedHeight = expectedWidth = (int)(videoStandard.Height * Sizes.WatermarkHeightNormalization);
+			var expectedOffsetX = (videoStandard.Width - expectedWidth - Sizes.WatermarkPadding) / (double)videoStandard.Width;
+			var expectedOffsetY = Sizes.WatermarkPadding / (double)videoStandard.Height;
 
 
 			Assert.AreEqual (expectedOffsetX, watermark.OffsetX);
@@ -62,9 +63,9 @@ namespace VAS.Tests.Core.Common
 			VideoStandard videoStandard = VideoStandards.P720;
 			Watermark watermark = Watermark.ConfigureNewWatermark (WatermarkPosition.BOTTOM_LEFT, videoStandard);
 
-			int expectedHeight = (int)(videoStandard.Height * StyleConf.WatermarkHeightNormalization);
-			var expectedOffsetX = StyleConf.WatermarkPadding / (double)videoStandard.Width;
-			var expectedOffsetY = (videoStandard.Height - expectedHeight - StyleConf.WatermarkPadding) / (double)videoStandard.Height;
+			int expectedHeight = (int)(videoStandard.Height * Sizes.WatermarkHeightNormalization);
+			var expectedOffsetX = Sizes.WatermarkPadding / (double)videoStandard.Width;
+			var expectedOffsetY = (videoStandard.Height - expectedHeight - Sizes.WatermarkPadding) / (double)videoStandard.Height;
 
 
 			Assert.AreEqual (expectedOffsetX, watermark.OffsetX);
@@ -79,9 +80,9 @@ namespace VAS.Tests.Core.Common
 			VideoStandard videoStandard = VideoStandards.P720;
 			Watermark watermark = Watermark.ConfigureNewWatermark (WatermarkPosition.BOTTOM_RIGHT, videoStandard);
 
-			expectedHeight = expectedWidth = (int)(videoStandard.Height * StyleConf.WatermarkHeightNormalization);
-			var expectedOffsetX = (videoStandard.Width - expectedWidth - StyleConf.WatermarkPadding) / (double)videoStandard.Width;
-			var expectedOffsetY = (videoStandard.Height - expectedHeight - StyleConf.WatermarkPadding) / (double)videoStandard.Height;
+			expectedHeight = expectedWidth = (int)(videoStandard.Height * Sizes.WatermarkHeightNormalization);
+			var expectedOffsetX = (videoStandard.Width - expectedWidth - Sizes.WatermarkPadding) / (double)videoStandard.Width;
+			var expectedOffsetY = (videoStandard.Height - expectedHeight - Sizes.WatermarkPadding) / (double)videoStandard.Height;
 
 
 			Assert.AreEqual (expectedOffsetX, watermark.OffsetX);
@@ -96,9 +97,9 @@ namespace VAS.Tests.Core.Common
 			VideoStandard videoStandard = VideoStandards.P480;
 			Watermark watermark = Watermark.ConfigureNewWatermark (WatermarkPosition.BOTTOM_RIGHT, videoStandard);
 
-			expectedHeight = expectedWidth = (int)(videoStandard.Height * StyleConf.WatermarkHeightNormalization);
-			var expectedOffsetX = (videoStandard.Width - expectedWidth - StyleConf.WatermarkPadding) / (double)videoStandard.Width;
-			var expectedOffsetY = (videoStandard.Height - expectedHeight - StyleConf.WatermarkPadding) / (double)videoStandard.Height;
+			expectedHeight = expectedWidth = (int)(videoStandard.Height * Sizes.WatermarkHeightNormalization);
+			var expectedOffsetX = (videoStandard.Width - expectedWidth - Sizes.WatermarkPadding) / (double)videoStandard.Width;
+			var expectedOffsetY = (videoStandard.Height - expectedHeight - Sizes.WatermarkPadding) / (double)videoStandard.Height;
 
 
 			Assert.AreEqual (expectedOffsetX, watermark.OffsetX);
@@ -113,9 +114,9 @@ namespace VAS.Tests.Core.Common
 			VideoStandard videoStandard = VideoStandards.P1080;
 			Watermark watermark = Watermark.ConfigureNewWatermark (WatermarkPosition.BOTTOM_RIGHT, videoStandard);
 
-			expectedHeight = expectedWidth = (int)(videoStandard.Height * StyleConf.WatermarkHeightNormalization);
-			var expectedOffsetX = (videoStandard.Width - expectedWidth - StyleConf.WatermarkPadding) / (double)videoStandard.Width;
-			var expectedOffsetY = (videoStandard.Height - expectedHeight - StyleConf.WatermarkPadding) / (double)videoStandard.Height;
+			expectedHeight = expectedWidth = (int)(videoStandard.Height * Sizes.WatermarkHeightNormalization);
+			var expectedOffsetX = (videoStandard.Width - expectedWidth - Sizes.WatermarkPadding) / (double)videoStandard.Width;
+			var expectedOffsetY = (videoStandard.Height - expectedHeight - Sizes.WatermarkPadding) / (double)videoStandard.Height;
 
 
 			Assert.AreEqual (expectedOffsetX, watermark.OffsetX);

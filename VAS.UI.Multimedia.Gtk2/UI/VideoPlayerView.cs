@@ -32,6 +32,8 @@ using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
+using VAS.Core.Resources;
+using VAS.Core.Resources.Styles;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
@@ -98,7 +100,7 @@ namespace VAS.UI
 			eventNameLabel.Ellipsize = EllipsizeMode.End;
 
 			centerplayheadbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-dash-center-view",
-				StyleConf.PlayerCapturerIconSize);
+																					 Sizes.PlayerCapturerIconSize);
 			DurationButtonImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-duration", 15);
 
 			// Force tooltips to be translatable as there seems to be a bug in stetic 
@@ -127,7 +129,7 @@ namespace VAS.UI
 
 			maineventbox.ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.ScreenBase));
 
-			controlsbox.HeightRequest = StyleConf.PlayerCapturerControlsHeight;
+			controlsbox.HeightRequest = Sizes.PlayerCapturerControlsHeight;
 
 			cameraConfigsOutOfScreen = new List<CameraConfig> ();
 
@@ -333,7 +335,7 @@ namespace VAS.UI
 
 		void SetVolumeIcon (string name)
 		{
-			volumebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon (name, StyleConf.PlayerCapturerIconSize);
+			volumebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon (name, Sizes.PlayerCapturerIconSize);
 		}
 
 		void UpdateComboboxes ()
@@ -478,13 +480,13 @@ namespace VAS.UI
 		void HandleVolumeChanged (double level)
 		{
 			if (level <= 0) {
-				SetVolumeIcon (StyleConf.PlayerControlVolumeOff);
+				SetVolumeIcon (Icons.PlayerControlVolumeOff);
 			} else if (level > 0 && level < 0.5) {
-				SetVolumeIcon (StyleConf.PlayerControlVolumeLow);
+				SetVolumeIcon (Icons.PlayerControlVolumeLow);
 			} else if (level >= 0.5 && level < 1) {
-				SetVolumeIcon (StyleConf.PlayerControlVolumeMedium);
+				SetVolumeIcon (Icons.PlayerControlVolumeMedium);
 			} else if (level >= 1) {
-				SetVolumeIcon (StyleConf.PlayerControlVolumeHigh);
+				SetVolumeIcon (Icons.PlayerControlVolumeHigh);
 			}
 		}
 
@@ -852,11 +854,11 @@ namespace VAS.UI
 		{
 			if (playerVM.PlayerAttached) {
 				detachbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-attach",
-					StyleConf.PlayerCapturerIconSize);
+																				 Sizes.PlayerCapturerIconSize);
 				detachbutton.TooltipMarkup = Catalog.GetString ("Attach window");
 			} else {
 				detachbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-detach",
-					StyleConf.PlayerCapturerIconSize);
+																				 Sizes.PlayerCapturerIconSize);
 				detachbutton.TooltipMarkup = Catalog.GetString ("Detach window");
 			}
 		}

@@ -20,6 +20,7 @@ using System.ComponentModel;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
+using VAS.Core.Resources.Styles;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
 
@@ -127,8 +128,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				tk.FillColor = App.Current.Style.TextBaseDisabled;
 				tk.StrokeColor = App.Current.Style.TextBaseDisabled;
 				tk.DrawText (new Point (StartX, OffsetY), StopX - StartX,
-					Height - StyleConf.TimelineLineSize,
-					TimeNode.Name);
+							 Height - Sizes.TimelineLineSize,
+							TimeNode.Name);
 			}
 			tk.End ();
 		}

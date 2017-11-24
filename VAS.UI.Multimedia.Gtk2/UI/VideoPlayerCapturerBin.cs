@@ -19,6 +19,7 @@ using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.Resources.Styles;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
 using VAS.UI.Helpers;
@@ -36,9 +37,9 @@ namespace VAS.UI
 		public VideoPlayerCapturerBin ()
 		{
 			this.Build ();
-			replayhbox.HeightRequest = livebox.HeightRequest = StyleConf.PlayerCapturerControlsHeight;
-			replayimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-replay", StyleConf.PlayerCapturerIconSize);
-			liveimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-live", StyleConf.PlayerCapturerIconSize);
+			replayhbox.HeightRequest = livebox.HeightRequest = Sizes.PlayerCapturerControlsHeight;
+			replayimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-replay", Sizes.PlayerCapturerIconSize);
+			liveimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-live", Sizes.PlayerCapturerIconSize);
 			livelabel.ModifyFg (Gtk.StateType.Normal, Misc.ToGdkColor (App.Current.Style.TextBaseDisabled));
 			replaylabel.ModifyFg (Gtk.StateType.Normal, Misc.ToGdkColor (App.Current.Style.TextBaseDisabled));
 			livebox.Visible = replayhbox.Visible = true;

@@ -20,6 +20,7 @@ using VAS.Core.Common;
 using VAS.Core.Handlers.Drawing;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
+using VAS.Core.Resources.Styles;
 using VAS.Core.Store.Drawables;
 
 namespace VAS.Drawing.CanvasObjects
@@ -185,7 +186,7 @@ namespace VAS.Drawing.CanvasObjects
 
 	public abstract class CanvasDrawableObject<T> : CanvasObject, ICanvasDrawableObject where T : IBlackboardObject
 	{
-		int selectionSize = StyleConf.DrawingSelectorAnchorSize;
+		int selectionSize = Sizes.DrawingSelectorAnchorSize;
 
 		protected override void DisposeManagedResources ()
 		{
@@ -289,7 +290,7 @@ namespace VAS.Drawing.CanvasObjects
 			tk.StrokeColor = App.Current.Style.DrawingSelectorBorder;
 			tk.FillColor = null;
 			tk.LineStyle = StyleConf.DrawingSelectorLineStyle;
-			tk.LineWidth = StyleConf.DrawingSelectorLineWidth;
+			tk.LineWidth = Sizes.DrawingSelectorLineWidth;
 			tk.DrawRectangle (area.Start, area.Width, area.Height);
 			foreach (Point p in area.Vertices) {
 				DrawCornerSelection (tk, p);

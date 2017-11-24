@@ -24,6 +24,8 @@ using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
 using VAS.Core.ViewModel;
+using VAS.Core.Resources;
+using VAS.Core.Resources.Styles;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
@@ -43,8 +45,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		{
 			BackgroundColor = Color.Grey1;
 			nodes = new List<TimeNodeView> ();
-			selectionBorderL = LoadBorder (StyleConf.TimelineSelectionLeft);
-			selectionBorderR = LoadBorder (StyleConf.TimelineSelectionRight);
+			selectionBorderL = LoadBorder (Icons.TimelineSelectionLeft);
+			selectionBorderR = LoadBorder (Icons.TimelineSelectionRight);
 			Visible = true;
 			Duration = new Time (0);
 			CurrentTime = new Time (0);
@@ -280,7 +282,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 		ISurface LoadBorder (string name)
 		{
-			Image img = App.Current.ResourcesLocator.LoadImage (name, StyleConf.TimelineCategoryHeight);
+			Image img = App.Current.ResourcesLocator.LoadIcon (name, Sizes.TimelineCategoryHeight);
 			return App.Current.DrawingToolkit.CreateSurface (img.Width, img.Height, img);
 		}
 	}

@@ -18,6 +18,8 @@
 using System.ComponentModel;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.Resources;
+using VAS.Core.Resources.Styles;
 using VAS.Core.Store.Drawables;
 using VAS.Core.ViewModel;
 
@@ -75,7 +77,7 @@ namespace VAS.Drawing.CanvasObjects.Teams
 		public virtual void LoadSurfaces ()
 		{
 			if (!surfacesCached) {
-				DefaultPhoto = App.Current.DrawingToolkit.CreateSurfaceFromResource (StyleConf.PlayerPhoto, false);
+				DefaultPhoto = App.Current.DrawingToolkit.CreateSurfaceFromResource (Images.PlayerPhoto, false);
 				surfacesCached = true;
 			}
 		}
@@ -103,7 +105,7 @@ namespace VAS.Drawing.CanvasObjects.Teams
 				return;
 
 			zero = new Point (0, 0);
-			size = StyleConf.PlayerSize;
+			size = Sizes.PlayerSize;
 			scale = (double)Width / size;
 
 
@@ -118,17 +120,17 @@ namespace VAS.Drawing.CanvasObjects.Teams
 			/* Background */
 			tk.FillColor = App.Current.Style.ThemeBase;
 			tk.LineWidth = 0;
-			tk.DrawRectangle (zero, StyleConf.PlayerSize, StyleConf.PlayerSize);
+			tk.DrawRectangle (zero, Sizes.PlayerSize, Sizes.PlayerSize);
 
 			/* Image */
 			if (Player.Photo != null) {
 				tk.DrawImage (zero, size, size, Player.Photo, ScaleMode.AspectFit);
 			} else {
-				tk.DrawSurface (zero, StyleConf.PlayerSize, StyleConf.PlayerSize, DefaultPhoto, ScaleMode.AspectFit);
+				tk.DrawSurface (zero, Sizes.PlayerSize, Sizes.PlayerSize, DefaultPhoto, ScaleMode.AspectFit);
 			}
 
 			/* Bottom line */
-			p = new Point (0, size - StyleConf.PlayerLineWidth);
+			p = new Point (0, size - Sizes.PlayerLineWidth);
 			tk.FillColor = Color;
 			tk.DrawRectangle (p, size, 3);
 

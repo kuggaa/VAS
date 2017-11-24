@@ -21,6 +21,7 @@ using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Handlers;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.Resources.Styles;
 using VAS.Drawing.Cairo;
 using Image = VAS.Core.Common.Image;
 
@@ -111,7 +112,7 @@ namespace VAS.UI.Component
 			cursor.X = column0_width + cellX;
 			cursor.Y = TotalY;
 			double startX = offsetX;
-			int tx = cellWidth - StyleConf.FilterTreeViewOnlyRightOffset;
+			int tx = cellWidth - Sizes.FilterTreeViewOnlyRightOffset;
 			double startY = offsetY;
 			double margin = cellY - startY;
 			if (startX < cellX && offsetX + tx > cellX &&
@@ -136,9 +137,9 @@ namespace VAS.UI.Component
 				cellHeight = cellArea.Height;
 
 				Point pos = new Point (cellArea.X + backgroundArea.Width / 2 - BUTTON_WIDTH / 2,
-									   cellArea.Y + StyleConf.FilterTreeViewOnlyTopOffset);
+									   cellArea.Y + Sizes.FilterTreeViewOnlyTopOffset);
 
-				Point imagePos = new Point (pos.X + SPACING, pos.Y + StyleConf.FilterTreeViewOnlyTopOffset);
+				Point imagePos = new Point (pos.X + SPACING, pos.Y + Sizes.FilterTreeViewOnlyTopOffset);
 
 				//Get the offset to properly calculate if needs tooltip or redraw
 				offsetX = pos.X - backgroundArea.X;
@@ -154,7 +155,7 @@ namespace VAS.UI.Component
 				}
 
 				tk.DrawRectangle (pos, BUTTON_WIDTH, BUTTON_HEIGHT);
-				tk.DrawImage (imagePos, BUTTON_WIDTH - (SPACING * 2), BUTTON_HEIGHT - (StyleConf.FilterTreeViewOnlyTopOffset * 2), Icon, ScaleMode.AspectFit);
+				tk.DrawImage (imagePos, BUTTON_WIDTH - (SPACING * 2), BUTTON_HEIGHT - (Sizes.FilterTreeViewOnlyTopOffset * 2), Icon, ScaleMode.AspectFit);
 				tk.End ();
 				tk.Context = null;
 			}
