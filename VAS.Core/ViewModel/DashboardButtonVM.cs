@@ -696,21 +696,20 @@ namespace VAS.Core.ViewModel
 		/// <param name="buttons">Buttons.</param>
 		public bool Start (List<DashboardButtonVM> buttons)
 		{
-			bool result = false;
-
-			if (currentNode == null) {
-				currentNode = new TimeNode { Name = Name, Start = CurrentTime };
-				Active = true;
-				TimerTime = new Time (0);
-				result = true;
-				App.Current.EventsBroker.Publish (new TimeNodeStartedEvent {
-					DashboardButtons = buttons,
-					TimerButton = this,
-					TimeNode = currentNode
-				});
+			if (currentNode != null) {
+				return false;
 			}
 
-			return result;
+			currentNode = new TimeNode { Name = Name, Start = CurrentTime };
+			Active = true;
+			TimerTime = new Time (0);
+			App.Current.EventsBroker.Publish (new TimeNodeStartedEvent {
+				DashboardButtons = buttons,
+				TimerButton = this,
+				TimeNode = currentNode
+			});
+
+			return true;
 		}
 
 		/// <summary>
@@ -719,6 +718,10 @@ namespace VAS.Core.ViewModel
 		/// <param name="buttons">Buttons.</param>
 		public void Stop (List<DashboardButtonVM> buttons)
 		{
+			if (currentNode == null) {
+				return;
+			}
+
 			if (currentNode.Start.MSeconds != CurrentTime.MSeconds) {
 				currentNode.Stop = CurrentTime;
 				Timer.Nodes.Add (currentNode);
