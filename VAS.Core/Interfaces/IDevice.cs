@@ -33,6 +33,19 @@ namespace VAS.Core.Interfaces
 		Guid ID { get; }
 
 		/// <summary>
+		/// Gets the version of the application in a device specific way.
+		/// </summary>
+		/// <value>The version.</value>
+		Version Version { get; }
+
+		/// <summary>
+		/// Gets the build version of the application in a device specific way.
+		/// It can be something like 1.3.7.262-28bf-dirty
+		/// </summary>
+		/// <value>The build version.</value>
+		string BuildVersion { get; }
+
+		/// <summary>
 		/// Shares the files if sharing files is allowed in the platform.
 		/// </summary>
 		/// <param name="filePaths">File paths.</param>

@@ -176,9 +176,9 @@ namespace VAS
 				}
 			}
 
-			InitVersion ();
 			InitTranslations (softwareName);
 			InitDependencies ();
+			InitVersion ();
 		}
 
 		internal static void InitDependencies ()
@@ -216,16 +216,8 @@ namespace VAS
 
 		static void InitVersion ()
 		{
-			Assembly assembly = Assembly.GetEntryAssembly () ?? Assembly.GetExecutingAssembly ();
-			Current.Version = assembly.GetName ().Version;
-			var attribute = assembly.
-									GetCustomAttributes (typeof (AssemblyInformationalVersionAttribute), false).
-									FirstOrDefault ();
-			if (attribute != null) {
-				Current.BuildVersion = (attribute as AssemblyInformationalVersionAttribute).InformationalVersion;
-			} else {
-				Current.BuildVersion = Current.Version.ToString ();
-			}
+			Current.Version = Current.Device.Version;
+			Current.BuildVersion = Current.Device.BuildVersion;
 		}
 
 		static void ConfigureEnvVariables ()
