@@ -225,7 +225,7 @@ namespace VAS.UI
 		// FIXME: Used in presentations while MVVM is not implemented there
 		public bool SubViewPortsVisible {
 			set {
-				bool b = value && (ViewModel.FileSet == null || ViewModel.FileSet.ViewModels.Count > 1);
+				bool b = value && (playerVM.CamerasConfig == null || playerVM.CamerasConfig.Count > 1);
 				viewportsBox.Visible = b;
 				subviewportsbox.Visible = b && viewportsSwitchButton.Active;
 			}
@@ -358,6 +358,7 @@ namespace VAS.UI
 			UpdateCombo (subviewport3);
 		}
 
+		// TODO: Move to the controller, when modifying the CameraConfig.
 		void ValidateCameras (RangeObservableCollection<CameraConfig> cameras)
 		{
 			bool changed = false;
@@ -738,9 +739,11 @@ namespace VAS.UI
 				}
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.CamerasConfig)) ||
-				ViewModel.NeedsSync (e, nameof (ViewModel.FileSet)) ||
 				ViewModel.NeedsSync (e, nameof (ViewModel.SupportsMultipleCameras))) {
 				HandleCamerasConfigChanged ();
+			}
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.FileSet))) {
+				HandleFileSetChanged ();
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.ShowDetachButton))) {
 				detachbutton.Visible = ViewModel.ShowDetachButton;
@@ -880,10 +883,8 @@ namespace VAS.UI
 
 		void HandleCamerasConfigChanged ()
 		{
-			if (ViewModel.FileSet != null) {
-				ValidateCameras (playerVM.CamerasConfig);
-				mainviewport.Visible = ViewModel.FileSet.ViewModels.Count > 0 && !IsPlaylistImageLoaded;
-				UpdateComboboxes ();
+			if (playerVM.CamerasConfig != null) {
+				mainviewport.Visible = playerVM.CamerasConfig.Any () && !IsPlaylistImageLoaded;
 				DebugCamerasVisible ();
 				SubViewPortsVisible = ViewModel.SupportsMultipleCameras;
 				zoomBox.Visible = true;
@@ -906,6 +907,15 @@ namespace VAS.UI
 				{ FontSize = 10, TextColor = App.Current.Style.TextBaseSecondary, FontSlant = FontSlant.Normal };
 		}
 			
+		void HandleFileSetChanged ()
+		{
+			if (ViewModel.FileSet != null) {
+				ValidateCameras (playerVM.CamerasConfig);
+				UpdateComboboxes ();
+				DebugCamerasVisible ();
+				HandleCamerasConfigChanged ();
+			}
+		}
 	}
 }
 
