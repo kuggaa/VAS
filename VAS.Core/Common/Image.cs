@@ -73,17 +73,9 @@ namespace VAS.Core.Common
 			return CreatePixbuf (filepath);
 		}
 
-		Pixbuf CreatePixbuf (string filename)
-		{
-			if (Utils.OS == OperatingSystemID.Windows) {
-				return GdkGlue.CreatePixbufWin32 (filename);
-			}
-			return new Pixbuf (filename);
-		}
-
 		protected override Pixbuf LoadFromFile (string filepath, int width, int height)
 		{
-			return new Pixbuf (filepath, width, height);
+			return CreatePixbuf (filepath, width, height);
 		}
 
 		protected override Pixbuf LoadFromStream (Stream stream)
@@ -164,5 +156,20 @@ namespace VAS.Core.Common
 			return new Image (dest);
 		}
 
+		Pixbuf CreatePixbuf (string filename)
+		{
+			if (Utils.OS == OperatingSystemID.Windows) {
+				return GdkGlue.CreatePixbufWin32 (filename);
+			}
+			return new Pixbuf (filename);
+		}
+
+		Pixbuf CreatePixbuf (string filename, int width, int height)
+		{
+			if (Utils.OS == OperatingSystemID.Windows) {
+				return GdkGlue.CreatePixbufWin32 (filename, width, height);
+			}
+			return new Pixbuf (filename, width, height);
+		}
 	}
 }
