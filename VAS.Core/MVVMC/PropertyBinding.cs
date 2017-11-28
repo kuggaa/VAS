@@ -157,11 +157,7 @@ namespace VAS.Core.MVVMC
 		void HandlePropertyChanged (object s, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == sourcePropertyName || e.PropertyName == null) {
-				try {
-					WriteViewValue (sourcePropertyGet (ViewModel));
-				} catch (Exception exception) {
-
-				}
+				WriteViewValue (sourcePropertyGet (ViewModel));
 			}
 		}
 	}

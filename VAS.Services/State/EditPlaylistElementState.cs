@@ -18,10 +18,14 @@
 using System;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.ViewModel;
+using VAS.Services.ViewModel;
 
 namespace VAS.Services.State
 {
-	public class EditPlaylistElementState : ScreenState<PlaylistElementVM>
+	/// <summary>
+	/// State for the Edit playlist element view
+	/// </summary>
+	public class EditPlaylistElementState : ScreenState<EditPlaylistElementVM>
 	{
 		public const string NAME = "EditPlaylistElement";
 
@@ -33,8 +37,9 @@ namespace VAS.Services.State
 
 		protected override void CreateViewModel (dynamic data)
 		{
-			ViewModelOwner = false;
-			ViewModel = data.PlaylistElement;
+			ViewModel = new EditPlaylistElementVM {
+				Model = data.PlaylistElement
+			};
 		}
 	}
 }
