@@ -32,6 +32,9 @@ namespace VAS
 		[DllImport ("libgdk_pixbuf-2.0-0.dll")]
 		static extern IntPtr gdk_pixbuf_new_from_file_utf8 (IntPtr filename, out IntPtr error);
 
+		[DllImport ("libgdk_pixbuf-2.0-0.dll")]
+		static extern IntPtr gdk_pixbuf_new_from_file_at_size_utf8 (IntPtr filename, int width, int height, out IntPtr error);
+
 		/// <summary>
 		/// Save the image in the specified path.
 		/// </summary>
@@ -56,6 +59,21 @@ namespace VAS
 			IntPtr native_filename = GLib.Marshaller.StringToPtrGStrdup (filename);
 			IntPtr error = IntPtr.Zero;
 			IntPtr raw = gdk_pixbuf_new_from_file_utf8 (native_filename, out error);
+			GLib.Marshaller.Free (native_filename);
+			if (error != IntPtr.Zero) throw new GLib.GException (error);
+			return new Pixbuf (raw);
+		}
+
+		/// <summary>
+		/// Creates the pixbuf at size for win32.
+		/// </summary>
+		/// <returns>The pixbuf.</returns>
+		/// <param name="filename">Filename.</param>
+		public static Pixbuf CreatePixbufWin32 (string filename, int width, int height)
+		{
+			IntPtr native_filename = GLib.Marshaller.StringToPtrGStrdup (filename);
+			IntPtr error = IntPtr.Zero;
+			IntPtr raw = gdk_pixbuf_new_from_file_at_size_utf8 (native_filename, width, height, out error);
 			GLib.Marshaller.Free (native_filename);
 			if (error != IntPtr.Zero) throw new GLib.GException (error);
 			return new Pixbuf (raw);
