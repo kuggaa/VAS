@@ -60,7 +60,6 @@ namespace VAS.UI.Dialog
 				}
 			}
 			buttonOk.Clicked += HandleButtonOkClicked;
-			Bind ();
 		}
 
 		public override void Dispose ()
@@ -107,15 +106,14 @@ namespace VAS.UI.Dialog
 
 				plElement = value;
 				if (plElement != null) {
+					Bind ();
 					if (plElement is PlaylistImageVM || plElement is PlaylistDrawingVM) {
 						slidetable.Visible = true;
-						durationspinbutton.Value = plElement.Duration.Seconds;
 					} else {
 						slidetable.Visible = false;
 					}
 
 					if (plElement is PlaylistPlayElementVM) {
-						nameentry.Text = ((PlaylistPlayElementVM)plElement).Title;
 						nametable.Visible = true;
 					} else {
 						nametable.Visible = false;
@@ -146,10 +144,16 @@ namespace VAS.UI.Dialog
 
 		void Bind ()
 		{
+			if (ctx != null) {
+				return;
+			}
 			ctx = this.GetBindingContext ();
-			ctx.Add (nameentry.Bind (vm => ((PlaylistPlayElementVM)vm).Title));
-			ctx.Add (durationspinbutton.Bind (vm => ((PlaylistElementVM)vm).Duration.TotalSeconds,
-											 new VASInt32Converter ()));
+			if (ViewModel is PlaylistPlayElementVM) {
+				ctx.Add (nameentry.Bind (vm => ((PlaylistPlayElementVM)vm).Title));
+			} else {
+				ctx.Add (durationspinbutton.Bind (vm => ((PlaylistElementVM)vm).Duration.TotalSeconds,
+												 new VASInt32Converter ()));
+			}
 		}
 
 		void HandleButtonOkClicked (object sender, EventArgs e)
