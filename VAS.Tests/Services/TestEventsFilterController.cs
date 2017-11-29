@@ -283,7 +283,7 @@ namespace VAS.Tests.Services
 			CompositePredicate<TimelineEventVM> secondEventTypePredicate = ((CompositePredicate<TimelineEventVM>)timelineVM.EventTypesPredicate.Elements [1]);
 
 			// Act
-			secondEventTypePredicate.Elements [2].Active = true;
+			secondEventTypePredicate.Elements [1].Active = true;
 
 			// Assert
 			Assert.IsTrue (timelineVM.FullTimeline.All (e => !e.Visible));
