@@ -23,6 +23,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
@@ -72,8 +73,7 @@ namespace VAS.Services
 		Seeker seeker;
 		Segment loadedSegment;
 		PendingSeek pendingSeek;
-		readonly Timer timer;
-		readonly ManualResetEvent TimerDisposed;
+		readonly ITimer timer;
 		bool active;
 
 		readonly Time editDurationOffset = new Time { TotalSeconds = 10 };
@@ -86,7 +86,7 @@ namespace VAS.Services
 		IPlaylistElement loadedPlaylistElement;
 		object camerasLayout;
 		bool supportsMultipleCameras;
-
+		Time drawingCurrentTime;
 
 		protected struct Segment
 		{
@@ -106,9 +106,9 @@ namespace VAS.Services
 
 		#region Constructors
 
-		public VideoPlayerController (Seeker testSeeker = null)
+		public VideoPlayerController (Seeker testSeeker = null, ITimer testTimer = null)
 		{
-			// Injected seeker should only be used for unit tests
+			// Injected seeker and timer should only be used for unit tests
 			seeker = testSeeker ?? new Seeker ();
 			seeker.SeekEvent += HandleSeekEvent;
 			loadedSegment.Start = new Time (-1);
@@ -116,8 +116,8 @@ namespace VAS.Services
 			videoTS = new Time (0);
 			imageLoadedTS = new Time (0);
 			duration = new Time (0);
-			timer = new Timer (HandleTimeout);
-			TimerDisposed = new ManualResetEvent (false);
+			timer = testTimer ?? App.Current.DependencyRegistry.Retrieve<ITimer> ();
+			timer.Elapsed += HandleTimeout;
 			ready = false;
 			CreatePlayer ();
 			Active = true;
@@ -130,9 +130,8 @@ namespace VAS.Services
 			ReconfigureTimeout (0);
 			IgnoreTicks = true;
 			seeker.Dispose ();
-			timer.Dispose (TimerDisposed);
-			TimerDisposed.WaitOne (200);
-			TimerDisposed.Dispose ();
+			timer.Stop ();
+			timer.Dispose ();
 			player.Error -= HandleError;
 			player.StateChange -= HandleStateChange;
 			player.Eos -= HandleEndOfStream;
@@ -1500,9 +1499,10 @@ namespace VAS.Services
 		void ReconfigureTimeout (uint mseconds)
 		{
 			if (mseconds == 0) {
-				timer.Change (Timeout.Infinite, Timeout.Infinite);
+				timer.Stop ();
 			} else {
-				timer.Change (mseconds, mseconds);
+				timer.Interval = mseconds;
+				timer.Start ();
 			}
 		}
 
@@ -1556,10 +1556,13 @@ namespace VAS.Services
 							var drawings = LoadedTimelineEvent?.Drawings;
 							if (drawings != null) {
 								/* Check if the event has drawings to display */
-								FrameDrawing fd = drawings.FirstOrDefault (f => IsDrawingVisibleForCurrentTime (f, currentTime));
-								if (fd != null) {
-									LoadPlayDrawing (fd);
+								var frameDrawing = drawings.FirstOrDefault (f => IsDrawingVisibleForCurrentTime (f, currentTime));
+								if (frameDrawing != null) {
+									LoadPlayDrawing (frameDrawing);
+									drawingCurrentTime = CurrentTime;
 								}
+							} else {
+								drawingCurrentTime = null;
 							}
 						}
 					}
@@ -1573,9 +1576,11 @@ namespace VAS.Services
 
 		bool IsDrawingVisibleForCurrentTime (FrameDrawing f, Time currentTime)
 		{
-			return (f.CameraConfig.Index == CamerasConfig [0].Index && (
+			return f.CameraConfig.Index == camerasConfig [0].Index && (
 				(currentTime == videoTS && f.Render == currentTime) ||
-				f.Render > videoTS && f.Render <= currentTime));
+				f.Render > videoTS && f.Render <= currentTime) &&
+					f != playerVM.FrameDrawing &&
+					drawingCurrentTime != currentTime;
 		}
 
 		void UpdateDuration ()
@@ -1713,7 +1718,7 @@ namespace VAS.Services
 
 		#region Callbacks
 
-		void HandleTimeout (Object state)
+		void HandleTimeout (object sender, ElapsedEventArgs e)
 		{
 			App.Current.GUIToolkit.Invoke (delegate {
 				if (!IgnoreTicks) {
