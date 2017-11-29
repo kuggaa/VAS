@@ -27,6 +27,8 @@ namespace VAS.Tests.MVVMC
 	class DummyOneWayPropertyViewModel : ViewModelBase
 	{
 		string viewModelProperty;
+		int viewModelPropertyInt;
+		ConfigDummy viewModelComplexProperty;
 
 		public string ViewModelProperty {
 			get {
@@ -38,7 +40,6 @@ namespace VAS.Tests.MVVMC
 				RaisePropertyChanged (nameof (ViewModelProperty));
 			}
 		}
-		int viewModelPropertyInt;
 
 		public int ViewModelPropertyInt {
 			get {
@@ -50,23 +51,26 @@ namespace VAS.Tests.MVVMC
 				RaisePropertyChanged (nameof (ViewModelPropertyInt));
 			}
 		}
+
+		public ConfigDummy ViewModelComplexProperty {
+			get {
+				return viewModelComplexProperty;
+			}
+
+			set {
+				viewModelComplexProperty = value;
+				RaisePropertyChanged (nameof (ViewModelComplexProperty));
+			}
+		}
 	}
 
 	class DummyOneWayPropertyView
 	{
 		public BindingContext BindingContext;
-		string viewProperty;
 
-		public string ViewProperty {
-			get {
-				return viewProperty;
-			}
-			set {
-				viewProperty = value;
-			}
-		}
-
+		public string ViewProperty { get; set; }
 		public int ViewPropertyInt { get; set; }
+		public ConfigDummy ViewComplexProperty { get; set; }
 
 
 		DummyOneWayPropertyViewModel viewModel;
@@ -274,6 +278,47 @@ namespace VAS.Tests.MVVMC
 
 			Assert.AreEqual (12, view.ViewPropertyInt);
 		}
+
+		[Test]
+		public void OneWayPropertyBindingDefaultValueValueType_SetSource_DestinationUpdated ()
+		{
+			///Arrange
+
+			var view = new DummyOneWayPropertyView ();
+			var viewModel = new DummyOneWayPropertyViewModel ();
+			view.BindingContext = new BindingContext ();
+			view.BindingContext.Add (view.Bind (v => v.ViewPropertyInt,
+												vm => ((DummyOneWayPropertyViewModel)vm).ViewModelPropertyInt,
+												null, 1234));
+			view.ViewModel = viewModel;
+
+			///Act
+
+			///Assert
+
+			Assert.AreEqual (1234, view.ViewPropertyInt);
+		}
+
+		[Test]
+		public void OneWayPropertyBindingDefaultValueReferenceType_SetSource_DestinationUpdated ()
+		{
+			///Arrange
+
+			var view = new DummyOneWayPropertyView ();
+			var viewModel = new DummyOneWayPropertyViewModel ();
+			view.BindingContext = new BindingContext ();
+			view.BindingContext.Add (view.Bind (v => v.ViewComplexProperty,
+												vm => ((DummyOneWayPropertyViewModel)vm).ViewModelComplexProperty,
+												null, new ConfigDummy () { Lang = "MyLang" }));
+			view.ViewModel = viewModel;
+
+			///Act
+
+			///Assert
+
+			Assert.AreEqual ("MyLang", view.ViewComplexProperty.Lang);
+		}
+
 
 		[Test]
 		public void OneWayPropertyBindingWithConverterFrom_SetSource_DestinationUpdated ()
