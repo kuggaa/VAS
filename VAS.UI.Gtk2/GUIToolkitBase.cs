@@ -40,8 +40,6 @@ namespace VAS.UI
 	{
 		Gtk.Window mainWindow;
 		Registry registry;
-		TaskCompletionSource<bool> tcs;
-		bool taskResult;
 
 		protected GUIToolkitBase ()
 		{
@@ -263,9 +261,9 @@ namespace VAS.UI
 
 		public Task<bool> Push (IPanel panel)
 		{
-			tcs = new TaskCompletionSource<bool> ();
-			taskResult = LoadPanel (panel);
-			GLib.Idle.Add (SetTaskCompletionResult);
+			var tcs = new TaskCompletionSource<bool> ();
+			bool taskResult = LoadPanel (panel);
+			Application.Invoke ((sender, e) => SetTaskCompletionResult (tcs, taskResult));
 			return tcs.Task;
 		}
 
@@ -278,9 +276,9 @@ namespace VAS.UI
 
 		public Task PushModal (IPanel panel, IPanel parent)
 		{
-			tcs = new TaskCompletionSource<bool> ();
-			ShowModalWindow (panel, parent);
-			GLib.Idle.Add (SetTaskCompletionResult);
+			var tcs = new TaskCompletionSource<bool> ();
+			bool taskResult = ShowModalWindow (panel, parent);
+			Application.Invoke ((sender, e) => SetTaskCompletionResult (tcs, taskResult));
 			return tcs.Task;
 		}
 
@@ -290,9 +288,8 @@ namespace VAS.UI
 			return AsyncHelpers.Return ();
 		}
 
-		protected void ShowModalWindow (IPanel panel, IPanel parent)
+		protected bool ShowModalWindow (IPanel panel, IPanel parent)
 		{
-			taskResult = true;
 			var dialog = panel as Gtk.Dialog;
 			if (dialog != null) {
 				dialog.TransientFor = ((Bin)parent).Toplevel as Window;
@@ -314,6 +311,7 @@ namespace VAS.UI
 				modalWindow.ShowAll ();
 				panel.OnLoad ();
 			}
+			return true;
 		}
 
 		protected async void ModalWindowDeleteEvent (object o, DeleteEventArgs args)
@@ -335,10 +333,9 @@ namespace VAS.UI
 		/// Sets the task completion result as true when the main thread has finished showing the panel.
 		/// </summary>
 		/// <returns><c>true</c>, if task completion result was set, <c>false</c> otherwise.</returns>
-		bool SetTaskCompletionResult ()
+		void SetTaskCompletionResult (TaskCompletionSource<bool> tcs, bool taskResult)
 		{
 			tcs.SetResult (taskResult);
-			return false;
 		}
 	}
 }
