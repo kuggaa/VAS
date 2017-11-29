@@ -59,11 +59,7 @@ namespace VAS.Core.MVVMC
 		protected override void WriteViewValue (TTargetProperty val)
 		{
 			if (object.Equals (val, default (TTargetProperty))) {
-				try {
-					val = defaultValue;
-				} catch (Exception) {
-					val = default (TTargetProperty);
-				}
+				val = defaultValue;
 			}
 			writeAction (val);
 		}
