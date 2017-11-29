@@ -23,8 +23,22 @@ namespace VAS.Drawing.Widgets
 {
 	public class ImageView : Canvas
 	{
+		/// <summary>
+		/// Gets or sets the image.
+		/// </summary>
+		/// <value>The image.</value>
 		public Image Image { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Drawing.Widgets.ImageView"/> is sensitive.
+		/// </summary>
+		/// <value><c>true</c> if is sensitive; otherwise, <c>false</c>.</value>
 		public bool IsSensitive { get; set; }
+
+		/// <summary>
+		/// Gets or sets the color of the mask, image will be filled with this color.
+		/// </summary>
+		/// <value>The color of the mask.</value>
 		public Color MaskColor { get; set; }
 
 		public ImageView ()
@@ -36,11 +50,13 @@ namespace VAS.Drawing.Widgets
 
 		public override void Draw (IContext context, Area area)
 		{
-			App.Current.DrawingToolkit.Context = context;
 			var alpha = IsSensitive ? 1f : 0.4f;
-			App.Current.DrawingToolkit.FillColor = MaskColor;
-			App.Current.DrawingToolkit.DrawImage (new Point (0, 0), widget.Width, widget.Height, Image,
+
+			Begin (context);
+			tk.FillColor = MaskColor;
+			tk.DrawImage (new Point (0, 0), widget.Width, widget.Height, Image,
 												  ScaleMode.AspectFit, MaskColor != null, alpha);
+			End ();
 		}
 	}
 }
