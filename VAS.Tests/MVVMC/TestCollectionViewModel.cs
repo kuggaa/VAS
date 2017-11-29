@@ -59,6 +59,23 @@ namespace VAS.Tests.MVVMC
 		}
 
 		[Test]
+		public void CollectionViewModel_RemoveChangedModel_ModelRemovedFromCollection()
+		{
+			// Arrange
+			CollectionViewModel<Tag, TagVM> tagsViewModel = new CollectionViewModel<Tag, TagVM> ();
+			RangeObservableCollection<Tag> tags = new RangeObservableCollection<Tag> ();
+			tags.Add (new Tag ("Success"));
+			tagsViewModel.Model = tags;
+
+			// Action
+			tagsViewModel.Model [0].Value = "Failure";
+			tags.Remove (tagsViewModel.Model [0]);
+
+			// Assertion
+			Assert.AreEqual (0, tagsViewModel.ViewModels.Count);
+		}
+
+		[Test]
 		public void TestSyncModel ()
 		{
 			viewModel.ViewModels.RemoveAt (0);
