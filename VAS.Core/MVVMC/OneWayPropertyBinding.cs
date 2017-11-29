@@ -28,11 +28,16 @@ namespace VAS.Core.MVVMC
 	/// </summary>
 	public class OneWayPropertyBinding<TSourceProperty, TTargetProperty> : PropertyBinding<TSourceProperty, TTargetProperty>
 	{
+		TTargetProperty defaultValue;
 		protected Action<TTargetProperty> writeAction;
 
-		public OneWayPropertyBinding (Expression<Func<IViewModel, TSourceProperty>> propertyExpression, Action<TTargetProperty> writeAction, TypeConverter typeConverter = null) : base (propertyExpression, typeConverter)
+		public OneWayPropertyBinding (Expression<Func<IViewModel, TSourceProperty>> propertyExpression,
+									  Action<TTargetProperty> writeAction,
+									  TypeConverter typeConverter = null,
+									  TTargetProperty defaultValue = default (TTargetProperty)) : base (propertyExpression, typeConverter)
 		{
 			this.writeAction = writeAction;
+			this.defaultValue = defaultValue;
 		}
 
 		public OneWayPropertyBinding (object dest, Expression<Func<IViewModel, TSourceProperty>> sourceExpression,
@@ -53,7 +58,14 @@ namespace VAS.Core.MVVMC
 
 		protected override void WriteViewValue (TTargetProperty val)
 		{
-			this.writeAction (val);
+			if (object.Equals (val, default (TTargetProperty))) {
+				try {
+					val = defaultValue;
+				} catch (Exception) {
+					val = default (TTargetProperty);
+				}
+			}
+			writeAction (val);
 		}
 	}
 
@@ -62,7 +74,8 @@ namespace VAS.Core.MVVMC
 		public OneWayPropertyBinding (TTarget dest,
 									  Expression<Func<IViewModel, TSourceProperty>> sourceExpression,
 									  Expression<Func<TTarget, TTargetProperty>> targetExpression,
-									  TypeConverter typeConverter) : base (sourceExpression, null, typeConverter)
+									  TypeConverter typeConverter,
+									  TTargetProperty defaultValue) : base (sourceExpression, null, typeConverter, defaultValue)
 		{
 			var setter = CreateSetter<TTarget, TTargetProperty, TTargetProperty> (targetExpression, out string memberName);
 			Action<TTargetProperty> setterAction = (TTargetProperty t) => setter.Invoke (dest, t);
