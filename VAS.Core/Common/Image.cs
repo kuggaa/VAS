@@ -68,6 +68,7 @@ namespace VAS.Core.Common
 			int idx = filepath.LastIndexOf ('.');
 			var path = filepath.Substring (0, idx) + "@2x" + filepath.Substring (idx);
 			if (App.Current.FileSystemManager.Exists (path)) {
+				DeviceScaleFactor = 2;
 				return CreatePixbuf (path);
 			}
 			return CreatePixbuf (filepath);
