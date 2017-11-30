@@ -62,6 +62,10 @@ namespace VAS.Core.Store
 		{
 			foreach (TimelineEvent evt in Timeline) {
 				evt.Project = this;
+				//Remove duplicated drawing by Render time:
+				// from : https://stackoverflow.com/questions/1606679/remove-duplicates-in-the-list-using-linq
+				var distinctDrawings = evt.Drawings.GroupBy (x => x.Render.MSeconds).Select (y => y.First ());
+				evt.Drawings.Reset (distinctDrawings);
 			}
 		}
 
