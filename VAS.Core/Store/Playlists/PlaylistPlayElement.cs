@@ -63,6 +63,7 @@ namespace VAS.Core.Store.Playlists
 			}
 		}
 
+		[JsonIgnore]
 		public Time Start {
 			get {
 				return Play.Start;
@@ -72,6 +73,7 @@ namespace VAS.Core.Store.Playlists
 			}
 		}
 
+		[JsonIgnore]
 		public Time Stop {
 			get {
 				return Play.Stop;
@@ -84,6 +86,7 @@ namespace VAS.Core.Store.Playlists
 		/// <summary>
 		/// The duration of the playlist element
 		/// </summary>
+		[JsonIgnore]
 		public Time Duration {
 			get {
 				return Play.Duration;
@@ -134,6 +137,7 @@ namespace VAS.Core.Store.Playlists
 			set;
 		}
 
+		[JsonIgnore]
 		public RangeObservableCollection<FrameDrawing> Drawings {
 			get {
 				return Play.Drawings;

@@ -509,5 +509,37 @@ namespace VAS.Tests.DB
 			Assert.IsNull (storage.Retrieve<PlayerDummy> (p1.ID));
 			Assert.IsNull (storage.Retrieve<PlayerDummy> (p2.ID));
 		}
+
+		[Test]
+		public void ProjectStoreAndRetrieve_DrawingsNotDuplicated ()
+		{
+			Project project = Utils.CreateProject (true);
+			//Add a Drawing to one Event
+			var ev = project.Timeline [0];
+			FrameDrawing drawing = new FrameDrawing ();
+			drawing.CameraConfig = ev.CamerasConfig[0];
+			drawing.RegionOfInterest = ev.CamerasConfig [0].RegionOfInterest;
+			drawing.Render = ev.EventTime;
+			ev.Drawings.Add (drawing);
+			//Add Playlist
+			var playlist = new Playlist ();
+			playlist.Name = "testDrawings";
+			var playlistElement = new PlaylistPlayElement (ev);
+			playlistElement.Rate = 3;
+			playlist.Elements.Add (playlistElement);
+			project.Playlists.Add (playlist);
+
+			//Store the project
+			storage.Store (project);
+			//Retrieve the project
+			var projectRetrieved = storage.Retrieve<Project> (project.ID);
+			var playlistElementRetrieved = (PlaylistPlayElement)projectRetrieved.Playlists [0].Elements [0];
+
+			Assert.AreEqual (1, projectRetrieved.Timeline[0].Drawings.Count ());
+			Assert.AreEqual (1, playlistElementRetrieved.Drawings.Count ());
+			Assert.AreEqual (ev, playlistElementRetrieved.Play);
+			Assert.AreEqual (playlistElement.CamerasConfig, playlistElementRetrieved.CamerasConfig);
+			Assert.AreEqual (playlistElement.Rate, playlistElementRetrieved.Rate);
+		}
 	}
 }
