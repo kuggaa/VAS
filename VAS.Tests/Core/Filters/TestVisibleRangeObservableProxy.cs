@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
+using VAS.Core.Common;
 using VAS.Core.Filters;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.MVVMC;
@@ -184,6 +185,62 @@ namespace VAS.Tests.Core.Filters
 			///Assert
 
 			Assert.AreEqual (4, target.Count);
+		}
+
+		[Test ()]
+		public void ApplyPropertyChanges_AddSomeVisiblesOthersNotAndClearOriginalList_GetsNoItems ()
+		{
+			///Arrange
+			var visibleItemsList = new ObservableCollection<VisibleItem> ();
+
+			for (int i = 0; i < 10; i++) {
+				visibleItemsList.Add (new VisibleItem () {
+					Visible = (i % 2 == 0)
+				});
+			}
+
+			///Act
+
+			var target = new VisibleRangeObservableProxy<VisibleItem> (visibleItemsList);
+			visibleItemsList.Clear ();
+			target.ApplyPropertyChanges ();
+
+			///Assert
+
+			Assert.AreEqual (0, target.Count);
+		}
+
+		[Test ()]
+		public void ApplyPropertyChanges_AddSomeVisiblesOthersNotAndReplaceOriginalList_GetsNewVisibleItems ()
+		{
+			///Arrange
+			var visibleItemsList = new RangeObservableCollection<VisibleItem> ();
+
+			for (int i = 0; i < 10; i++) {
+				visibleItemsList.Add (new VisibleItem () {
+					Visible = (i % 2 == 0)
+				});
+			}
+
+			///Act
+
+			var target = new VisibleRangeObservableProxy<VisibleItem> (visibleItemsList);
+
+
+			var newVisibleItemsList = new RangeObservableCollection<VisibleItem> ();
+
+			for (int i = 0; i < 5; i++) {
+				newVisibleItemsList.Add (new VisibleItem () {
+					Visible = (i % 2 == 0)
+				});
+			}
+
+			visibleItemsList.Reset (newVisibleItemsList);
+			target.ApplyPropertyChanges ();
+
+			///Assert
+
+			Assert.AreEqual (3, target.Count);
 		}
 	}
 }
