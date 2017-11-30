@@ -27,21 +27,27 @@ namespace VAS.Core.Filters
 {
 	public class VisibleRangeObservableProxy<TVisibleViewModel> : RangeObservableCollection<TVisibleViewModel> where TVisibleViewModel : ViewModelBase, IVisible
 	{
+		readonly List<TVisibleViewModel> propertyChangeList = new List<TVisibleViewModel> ();
+
 		public VisibleRangeObservableProxy (IEnumerable<TVisibleViewModel> rootCollection)
 		{
-			if (rootCollection is INotifyCollectionChanged observableCollection) {
+			if (rootCollection is INotifyCollectionChanged observableCollection)
+			{
 				observableCollection.CollectionChanged += HandleCollectionChanged;
 			}
-			foreach (var item in rootCollection) {
-				if (item is INotifyPropertyChanged bindableObject) {
+			foreach (var item in rootCollection)
+			{
+				if (item is INotifyPropertyChanged bindableObject)
+				{
 					bindableObject.PropertyChanged += HandlePropertyChanged;
 				}
 			}
 
-			foreach (var item in rootCollection) {
+			foreach (var item in rootCollection)
+			{
 				AddItem (item);
 			}
-			PropertyChangeList.Clear ();
+			propertyChangeList.Clear ();
 		}
 
 		public VisibleRangeObservableProxy ()
@@ -50,60 +56,55 @@ namespace VAS.Core.Filters
 
 		void AddItem (TVisibleViewModel viewModel)
 		{
-			if (viewModel.Visible) {
-				viewModel.PropertyChanged += HandlePropertyChanged;
+			if (viewModel.Visible)
+			{
 				Add (viewModel);
 			}
 		}
 
 		void RemoveItem (TVisibleViewModel viewModel)
 		{
-			//viewModel.PropertyChanged -= HandlePropertyChanged;
 			Remove (viewModel);
-		}
-
-		void Update (object sender, NotifyCollectionChangedEventArgs e)
-		{
-			if (e.Action == NotifyCollectionChangedAction.Add) {
-				var newItems = e.NewItems.OfType<TVisibleViewModel> ().Where (tVisibleViewModel => tVisibleViewModel.Visible);
-				foreach (var item in newItems) {
-					AddItem (item);
-				}
-			} else if (e.Action == NotifyCollectionChangedAction.Remove) {
-				var oldItems = e.OldItems.OfType<TVisibleViewModel> ();
-				foreach (var item in oldItems) {
-					RemoveItem (item);
-				}
-			}
 		}
 
 		void HandleCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
-			Update (sender, e);
+			if (e.Action == NotifyCollectionChangedAction.Add)
+			{
+				var newItems = e.NewItems.OfType<TVisibleViewModel> ().Where (tVisibleViewModel => tVisibleViewModel.Visible);
+				foreach (var item in newItems)
+				{
+					item.PropertyChanged += HandlePropertyChanged;
+					AddItem (item);
+				}
+			}
+			else if (e.Action == NotifyCollectionChangedAction.Remove)
+			{
+				var oldItems = e.OldItems.OfType<TVisibleViewModel> ();
+				foreach (var item in oldItems)
+				{
+					item.PropertyChanged -= HandlePropertyChanged;
+					RemoveItem (item);
+				}
+			}
 		}
 
 		public void ApplyPropertyChanges ()
 		{
-			foreach (var item in PropertyChangeList) {
-				if (item.Visible) {
-					AddItem (item);
-				} else {
-					RemoveItem (item);
-				}
-			}
-			PropertyChangeList.Clear ();
+			AddRange (propertyChangeList.Where (v => v.Visible));
+			RemoveRange (propertyChangeList.Where (v => !v.Visible));
+			propertyChangeList.Clear ();
 		}
-
-
-		List<TVisibleViewModel> PropertyChangeList = new List<TVisibleViewModel> ();
 
 		void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == nameof (IVisible.Visible)) {
-				if (PropertyChangeList.Contains (sender as TVisibleViewModel)) {
-					PropertyChangeList.Remove (sender as TVisibleViewModel);
+			if (e.PropertyName == nameof (IVisible.Visible))
+			{
+				if (propertyChangeList.Contains (sender as TVisibleViewModel))
+				{
+					propertyChangeList.Remove (sender as TVisibleViewModel);
 				}
-				PropertyChangeList.Add (sender as TVisibleViewModel);
+				propertyChangeList.Add (sender as TVisibleViewModel);
 			}
 		}
 	}
