@@ -50,14 +50,21 @@ namespace VAS.Core.Store
 			set;
 		}
 
-		// FIXME: In the future we should consider re-overriding the GetHashCode method using
-		// immutable properties. Another solution would be not overriding the Equals method
 		public override bool Equals (object obj)
 		{
 			Tag tag = obj as Tag;
 			if (tag == null)
 				return false;
 			return Value == tag.Value && Group == tag.Group;
+		}
+
+		public override int GetHashCode ()
+		{
+			if (Value != null && Group != null) {
+				return (Value + Group).GetHashCode ();
+			} else {
+				return base.GetHashCode ();
+			}
 		}
 
 		public override string ToString ()
