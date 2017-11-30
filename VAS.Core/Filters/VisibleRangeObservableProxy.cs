@@ -25,26 +25,28 @@ using VAS.Core.MVVMC;
 
 namespace VAS.Core.Filters
 {
+	/// <summary>
+	/// RangeObservableCollection which only shows TVisibleViewModels that property Visible is equals 'true'.
+	/// It also tracks all property changes and collection changes of rootCollection passed in ctor().
+	/// </summary>
 	public class VisibleRangeObservableProxy<TVisibleViewModel> : RangeObservableCollection<TVisibleViewModel> where TVisibleViewModel : ViewModelBase, IVisible
 	{
 		readonly List<TVisibleViewModel> propertyChangeList = new List<TVisibleViewModel> ();
+		readonly IEnumerable<TVisibleViewModel> rootCollection;
 
 		public VisibleRangeObservableProxy (IEnumerable<TVisibleViewModel> rootCollection)
 		{
-			if (rootCollection is INotifyCollectionChanged observableCollection)
-			{
+			this.rootCollection = rootCollection;
+			if (rootCollection is INotifyCollectionChanged observableCollection) {
 				observableCollection.CollectionChanged += HandleCollectionChanged;
 			}
-			foreach (var item in rootCollection)
-			{
-				if (item is INotifyPropertyChanged bindableObject)
-				{
+			foreach (var item in rootCollection) {
+				if (item is INotifyPropertyChanged bindableObject) {
 					bindableObject.PropertyChanged += HandlePropertyChanged;
 				}
 			}
 
-			foreach (var item in rootCollection)
-			{
+			foreach (var item in rootCollection) {
 				AddItem (item);
 			}
 			propertyChangeList.Clear ();
@@ -69,26 +71,34 @@ namespace VAS.Core.Filters
 
 		void HandleCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
-			if (e.Action == NotifyCollectionChangedAction.Add)
-			{
+			if (e.Action == NotifyCollectionChangedAction.Add) {
 				var newItems = e.NewItems.OfType<TVisibleViewModel> ().Where (tVisibleViewModel => tVisibleViewModel.Visible);
-				foreach (var item in newItems)
-				{
+				foreach (var item in newItems) {
+					item.PropertyChanged += HandlePropertyChanged;
+					AddItem (item);
+				}
+			} else if (e.Action == NotifyCollectionChangedAction.Remove) {
+				var oldItems = e.OldItems.OfType<TVisibleViewModel> ();
+				foreach (var item in oldItems) {
+					item.PropertyChanged -= HandlePropertyChanged;
+					RemoveItem (item);
+				}
+			} else if (e.Action == NotifyCollectionChangedAction.Reset) {
+				foreach (var item in this) {
+					item.PropertyChanged -= HandlePropertyChanged;
+				}
+				Clear ();
+
+				foreach (var item in rootCollection) {
 					item.PropertyChanged += HandlePropertyChanged;
 					AddItem (item);
 				}
 			}
-			else if (e.Action == NotifyCollectionChangedAction.Remove)
-			{
-				var oldItems = e.OldItems.OfType<TVisibleViewModel> ();
-				foreach (var item in oldItems)
-				{
-					item.PropertyChanged -= HandlePropertyChanged;
-					RemoveItem (item);
-				}
-			}
-		}
 
+		}
+		/// <summary>
+		/// Applies the property changes for all items that changed its Visible property.
+		/// </summary>
 		public void ApplyPropertyChanges ()
 		{
 			AddRange (propertyChangeList.Where (v => v.Visible));
