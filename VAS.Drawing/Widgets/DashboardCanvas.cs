@@ -301,7 +301,7 @@ namespace VAS.Drawing.Widgets
 		protected virtual void ClearCanvas ()
 		{
 			ClearObjects ();
-			foreach(var vm in buttonsDict.Keys) {
+			foreach (var vm in buttonsDict.Keys) {
 				vm.ActionLinks.ViewModels.CollectionChanged -= HandleActionLinksCollectionChanged;
 			}
 			buttonsDict.Clear ();
@@ -367,7 +367,8 @@ namespace VAS.Drawing.Widgets
 			vm.ActionLinks.ViewModels.CollectionChanged += HandleActionLinksCollectionChanged;
 		}
 
-		void AddActionLinks (DashboardButtonView buttonObject) {
+		void AddActionLinks (DashboardButtonView buttonObject)
+		{
 			foreach (ActionLinkVM link in buttonObject.ButtonVM.ActionLinks) {
 				LinkAnchorView sourceAnchor, destAnchor;
 				ActionLinkView linkObject;
@@ -390,12 +391,13 @@ namespace VAS.Drawing.Widgets
 
 		void AddButtonsWithActionLinks (IEnumerable<DashboardButtonVM> buttons)
 		{
+			Objects.RemoveAll (o => o is ActionLinkView);
+			linksDict.Clear ();
 			foreach (var button in buttons) {
 				AddButton (button);
-
 			}
-			foreach (DashboardButtonView buttonObject in buttonsDict.Values) {
-				AddActionLinks (buttonObject);
+			foreach (var button in buttonsDict.Values) {
+				AddActionLinks (button);
 			}
 		}
 
@@ -461,7 +463,7 @@ namespace VAS.Drawing.Widgets
 		{
 			if (e.Action == NotifyCollectionChangedAction.Remove) {
 				foreach (ActionLinkVM viewModel in e.OldItems.OfType<ActionLinkVM> ()) {
-					RemoveObject (linksDict[viewModel]);
+					RemoveObject (linksDict [viewModel]);
 					linksDict.Remove (viewModel);
 					widget.ReDraw ();
 				}
