@@ -36,7 +36,7 @@ namespace VAS.Services.ViewModel
 			LoadedProject = new TViewModel ();
 			NewCommand = new Command (New);
 			OpenCommand = new AsyncCommand<TViewModel> (Open, (arg) => Selection.Count == 1);
-			DeleteCommand = new AsyncCommand<TViewModel> (Delete, (arg) => Selection.Any () || arg != null) { IconName = "vas-delete"};
+			DeleteCommand = new AsyncCommand<TViewModel> (Delete, (arg) => Selection.Any () || arg != null) { IconName = "vas-delete" };
 			SaveCommand = new AsyncCommand (Save, () => LoadedProject?.Model != null && LoadedProject.IsChanged);
 			ExportCommand = new AsyncCommand (Export, () => Selection.Count == 1);
 			SearchProjectsCommand = new Command (textFilter => App.Current.EventsBroker.Publish (new SearchEvent<TModel> { TextFilter = (string)textFilter }));
@@ -48,29 +48,38 @@ namespace VAS.Services.ViewModel
 			LoadedProject = null;
 		}
 
-		public override CountLimitationVM Limitation {
-			set {
-				if (Limitation != null) {
+		public override CountLimitationVM Limitation
+		{
+			set
+			{
+				if (Limitation != null)
+				{
 					Limitation.PropertyChanged -= HandleLimitationChanged;
 				}
 				base.Limitation = value;
-				if (Limitation != null) {
+				if (Limitation != null)
+				{
 					Limitation.PropertyChanged += HandleLimitationChanged;
 					CheckNewCommandEnabled ();
 				}
 			}
 		}
 
-		public TViewModel LoadedProject {
-			get {
+		public TViewModel LoadedProject
+		{
+			get
+			{
 				return loadedProject;
 			}
-			set {
-				if (loadedProject != null) {
+			set
+			{
+				if (loadedProject != null)
+				{
 					loadedProject.PropertyChanged -= HandleLoadedProjectChanged;
 				}
 				loadedProject = value;
-				if (loadedProject != null) {
+				if (loadedProject != null)
+				{
 					loadedProject.PropertyChanged += HandleLoadedProjectChanged;
 					loadedProject.Sync ();
 				}
@@ -78,37 +87,47 @@ namespace VAS.Services.ViewModel
 		}
 
 		[PropertyChanged.DoNotNotify]
-		public Command NewCommand {
+		public Command NewCommand
+		{
 			get;
 			protected set;
 		}
 
 		[PropertyChanged.DoNotNotify]
-		public Command OpenCommand {
+		public Command OpenCommand
+		{
 			get;
 			protected set;
 		}
 
 		[PropertyChanged.DoNotNotify]
-		public Command DeleteCommand {
+		public Command DeleteCommand
+		{
 			get;
 			protected set;
 		}
 
 		[PropertyChanged.DoNotNotify]
-		public Command SaveCommand {
+		public Command SaveCommand
+		{
 			get;
 			protected set;
 		}
 
 		[PropertyChanged.DoNotNotify]
-		public Command ExportCommand {
+		public Command ExportCommand
+		{
 			get;
 			protected set;
 		}
 
+		/// <summary>
+		/// Publishes SearchEvent<TModel> with text filter as parameter.
+		/// </summary>
+		/// <value>The search projects command.</value>
 		[PropertyChanged.DoNotNotify]
-		public Command SearchProjectsCommand {
+		public Command SearchProjectsCommand
+		{
 			get;
 			protected set;
 		}
@@ -124,7 +143,8 @@ namespace VAS.Services.ViewModel
 		public async Task<bool> Export (string format)
 		{
 			TModel template = Selection.FirstOrDefault ()?.Model;
-			if (template != null) {
+			if (template != null)
+			{
 				return await App.Current.EventsBroker.PublishWithReturn (new ExportEvent<TModel> { Object = template, Format = format });
 			}
 			return false;
@@ -151,10 +171,14 @@ namespace VAS.Services.ViewModel
 		/// </summary>
 		protected virtual async Task Delete (TViewModel viewModel)
 		{
-			if (viewModel != null) {
+			if (viewModel != null)
+			{
 				await App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = viewModel.Model });
-			} else {
-				foreach (TModel project in Selection.Select (vm => vm.Model).ToList ()) {
+			}
+			else
+			{
+				foreach (TModel project in Selection.Select (vm => vm.Model).ToList ())
+				{
 					await App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = project });
 				}
 			}
@@ -172,7 +196,8 @@ namespace VAS.Services.ViewModel
 
 		protected virtual async Task<bool> Save (bool force = true)
 		{
-			if (LoadedProject != null && LoadedProject.Model != null) {
+			if (LoadedProject != null && LoadedProject.Model != null)
+			{
 				return await App.Current.EventsBroker.PublishWithReturn (new UpdateEvent<TViewModel> { Object = LoadedProject, Force = force });
 			}
 			return false;
