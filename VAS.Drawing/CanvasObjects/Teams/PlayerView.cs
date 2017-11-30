@@ -25,7 +25,7 @@ using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Teams
 {
-	public class PlayerView : CanvasButtonObject, ICanvasSelectableObject
+	public class PlayerView : ButtonObject, ICanvasSelectableObject
 	{
 		protected static ISurface DefaultPhoto;
 		static bool surfacesCached = false;

@@ -27,7 +27,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 	/// <summary>
 	/// Draws buttons in the timeline using the style ButtonTimeline in gtkrc
 	/// </summary>
-	public class TimelineButtonView : CanvasButtonObject, ICanvasSelectableObject
+	public class TimelineButtonView : ButtonObject, ICanvasSelectableObject
 	{
 		protected ISurface backBufferSurface;
 		bool insensitive;
