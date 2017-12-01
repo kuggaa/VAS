@@ -279,14 +279,14 @@ namespace VAS.UI.Common
 				foreach (var vm in (nestedSubViewModel as IEnumerable).OfType<IViewModel> ()) {
 					RemoveSubViewModel (vm);
 				}
-			} else {
-				TreeIter iter = dictionaryStore [subViewModel].First ();
-				dictionaryStore [subViewModel].RemoveAt (0);
-				store.Remove (ref iter);
+			}
 
-				if (!dictionaryStore [subViewModel].Any ()) {
-					dictionaryStore.Remove (subViewModel);
-				}
+			TreeIter iter = dictionaryStore [subViewModel].First ();
+			dictionaryStore [subViewModel].RemoveAt (0);
+			store.Remove (ref iter);
+
+			if (!dictionaryStore [subViewModel].Any ()) {
+				dictionaryStore.Remove (subViewModel);
 			}
 		}
 
