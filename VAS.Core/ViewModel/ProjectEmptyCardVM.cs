@@ -22,8 +22,8 @@ namespace VAS.Core.ViewModel
 {
 	public class ProjectEmptyCardVM : ViewModelBase
 	{
-		public string HeaderText { get; set; } = Catalog.GetString ("No projects created yet");
-		public string DescriptionText { get; set; } = Catalog.GetString ("Tap the + icon to create your first project");
-		public string TipText { get; set; } = Catalog.GetString ("Tip: You can get projects from other devices using the sync center");
+		public string HeaderText => Catalog.GetString ("No projects created yet");
+		public string DescriptionText => Catalog.GetString ("Tap the + icon to create your first project");
+		public string TipText => Catalog.GetString ("Tip: You can get projects from other devices using the sync center");
 	}
 }
