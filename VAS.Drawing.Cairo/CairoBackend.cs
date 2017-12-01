@@ -430,7 +430,7 @@ namespace VAS.Drawing.Cairo
 			layout.Width = Units.FromPixels ((int)width);
 			layout.SetPangoLayoutHeight (Units.FromPixels ((int)height));
 			layout.Alignment = fAlignment;
-			layout.SetMarkup (GLib.Markup.EscapeText (text));
+			layout.SetMarkup (text);
 			SetColor (StrokeColor);
 			Pango.CairoHelper.UpdateLayout (CContext, layout);
 			layout.GetPixelExtents (out inkRect, out logRect);
