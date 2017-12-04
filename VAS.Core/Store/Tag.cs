@@ -22,6 +22,11 @@ using VAS.Core.MVVMC;
 
 namespace VAS.Core.Store
 {
+	/// <summary>
+	/// Tag is a mutable object, it cannot be used as a key of any dictionary
+	/// except the CollectionViewModel that is recreated each time that a proeprty 
+	/// is modified
+	/// </summary>
 	[Serializable]
 	public class Tag : BindableBase
 	{
@@ -36,8 +41,8 @@ namespace VAS.Core.Store
 		}
 
 		public string Group {
-			set;
 			get;
+			set;
 		}
 
 		public string Value {
@@ -55,7 +60,17 @@ namespace VAS.Core.Store
 			Tag tag = obj as Tag;
 			if (tag == null)
 				return false;
-			return Value == tag.Value && Group == tag.Group;
+			return tag.Value == Value && tag.Group == Group;
+		}
+
+		public override int GetHashCode ()
+		{
+			if (Value != null && Group != null)
+			{
+				return (Value + Group).GetHashCode ();
+			}
+
+			return base.GetHashCode ();
 		}
 
 		public override int GetHashCode ()
