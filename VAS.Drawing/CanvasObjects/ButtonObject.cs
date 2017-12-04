@@ -205,13 +205,13 @@ namespace VAS.Drawing.CanvasObjects
 				return;
 			}
 
-			tk.StrokeColor = App.Current.Style.DrawingSelectorShadow;
+			tk.StrokeColor = App.Current.Style.ColorShadow;
 			tk.FillColor = null;
 			tk.LineStyle = LineStyle.Dashed;
 			tk.LineWidth = 2;
 			tk.DrawRectangle (Position, Width, Height);
 
-			tk.StrokeColor = tk.FillColor = App.Current.Style.DrawingSelectorAnchor;
+			tk.StrokeColor = tk.FillColor = App.Current.Style.ColorFullWhite;
 			tk.LineStyle = LineStyle.Normal;
 			tk.DrawRectangle (new Point (Position.X + Width - SELECTION_SIZE / 2,
 				Position.Y + Height - SELECTION_SIZE / 2),

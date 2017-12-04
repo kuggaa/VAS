@@ -239,14 +239,14 @@ namespace VAS.Drawing.CanvasObjects
 
 		protected void DrawCornerSelection (IDrawingToolkit tk, Point p)
 		{
-			tk.StrokeColor = tk.FillColor = App.Current.Style.DrawingSelectorShadow;
+			tk.StrokeColor = tk.FillColor = App.Current.Style.ColorShadow;
 			tk.LineStyle = LineStyle.Normal;
 			tk.LineWidth = 0;
 			tk.DrawRectangle (new Point (p.X + 1 - selectionSize, p.Y + 1 - selectionSize),
 							  selectionSize * 2,
 							  selectionSize * 2);
 
-			tk.StrokeColor = tk.FillColor = App.Current.Style.DrawingSelectorAnchor;
+			tk.StrokeColor = tk.FillColor = App.Current.Style.ColorFullWhite;
 			tk.DrawRectangle (new Point (p.X - selectionSize, p.Y - selectionSize),
 							  selectionSize * 2,
 							  selectionSize * 2);
@@ -254,13 +254,13 @@ namespace VAS.Drawing.CanvasObjects
 
 		protected void DrawCenterSelection (IDrawingToolkit tk, Point p)
 		{
-			tk.StrokeColor = tk.FillColor = App.Current.Style.DrawingSelectorShadow;
+			tk.StrokeColor = tk.FillColor = App.Current.Style.ColorShadow;
 			tk.LineStyle = LineStyle.Normal;
 			tk.LineWidth = 0;
 			tk.DrawCircle (new Point (p.X + 1, p.Y + 1),
 						   selectionSize);
 
-			tk.StrokeColor = tk.FillColor = App.Current.Style.DrawingSelectorAnchor;
+			tk.StrokeColor = tk.FillColor = App.Current.Style.ColorFullWhite;
 			tk.DrawCircle (p, selectionSize);
 		}
 
