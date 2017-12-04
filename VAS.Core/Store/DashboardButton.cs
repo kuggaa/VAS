@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using VAS.Core.Common;
@@ -308,6 +309,28 @@ namespace VAS.Core.Store
 		public AnalysisEventType AnalysisEventType {
 			get {
 				return EventType as AnalysisEventType;
+			}
+		}
+
+		[OnDeserialized ()]
+		internal new void OnDeserializedMethod (StreamingContext context)
+		{
+			base.OnDeserializedMethod (context);
+
+			// update source action links with the tags instances in the button to spread changes
+			// in both elements at the same time, without this when a tag is edited link is lost 
+			// because it was not updated and it is considered a different one
+			foreach (var link in ActionLinks) {
+				var sourceTags = link.SourceTags.ToList ();
+				link.SourceTags.IgnoreEvents = true;
+
+				link.SourceTags.Clear ();
+				foreach (var s in sourceTags) {
+					var e = AnalysisEventType.Tags.FirstOrDefault (x => x.Equals (s));
+					link.SourceTags.Add (e);
+				}
+
+				link.SourceTags.IgnoreEvents = false;
 			}
 		}
 	}
