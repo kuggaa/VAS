@@ -23,7 +23,6 @@ using System.Threading.Tasks;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
-using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Interfaces.Plugins;
@@ -54,40 +53,42 @@ namespace VAS.Services.Controller
 			ViewModel = (ProjectsManagerVM<TModel, TViewModel>)viewModel;
 		}
 
-		public override async Task Start ()
+		protected override void ConnectEvents ()
 		{
-			await base.Start ();
+			base.ConnectEvents ();
 			App.Current.EventsBroker.SubscribeAsync<ExportEvent<TModel>> (HandleExport);
 			App.Current.EventsBroker.SubscribeAsync<ImportEvent<TModel>> (HandleImport);
 			App.Current.EventsBroker.SubscribeAsync<UpdateEvent<TViewModel>> (HandleSave);
 			App.Current.EventsBroker.SubscribeAsync<CreateEvent<TModel>> (HandleNew);
 			App.Current.EventsBroker.SubscribeAsync<DeleteEvent<TModel>> (HandleDelete);
+			App.Current.EventsBroker.Subscribe<SearchEvent> (HandleSearchEvent);
 			if (ViewModel != null) {
 				ViewModel.Selection.CollectionChanged += HandleSelectionChanged;
 			}
 		}
 
-		public override async Task Stop ()
+		protected override void DisconnectEvents ()
 		{
-			await base.Stop ();
+			base.DisconnectEvents ();
 			App.Current.EventsBroker.UnsubscribeAsync<ExportEvent<TModel>> (HandleExport);
 			App.Current.EventsBroker.UnsubscribeAsync<ImportEvent<TModel>> (HandleImport);
 			App.Current.EventsBroker.UnsubscribeAsync<UpdateEvent<TViewModel>> (HandleSave);
 			App.Current.EventsBroker.UnsubscribeAsync<CreateEvent<TModel>> (HandleNew);
 			App.Current.EventsBroker.UnsubscribeAsync<DeleteEvent<TModel>> (HandleDelete);
+			App.Current.EventsBroker.Unsubscribe<SearchEvent> (HandleSearchEvent);
 			if (ViewModel != null) {
 				ViewModel.Selection.CollectionChanged -= HandleSelectionChanged;
 			}
 		}
 
-		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
-		{
-			return Enumerable.Empty<KeyAction> ();
-		}
-
 		#endregion
 
-		async Task HandleExport (ExportEvent<TModel> evt)
+		protected virtual bool IsProjectVisibleForSearchCriteria (TViewModel project, string search)
+		{
+			return project.ShortDescription.Contains (search);
+		}
+
+		protected virtual async Task HandleExport (ExportEvent<TModel> evt)
 		{
 			Project project = evt.Object;
 			IProjectExporter exporter;
@@ -108,19 +109,19 @@ namespace VAS.Services.Controller
 			await exporter.Export (project);
 		}
 
-		Task HandleImport (ImportEvent<TModel> evt)
+		protected virtual Task HandleImport (ImportEvent<TModel> evt)
 		{
 			evt.ReturnValue = false;
 			return AsyncHelpers.Return ();
 		}
 
-		Task HandleNew (CreateEvent<TModel> evt)
+		protected virtual Task HandleNew (CreateEvent<TModel> evt)
 		{
 			evt.ReturnValue = false;
 			return AsyncHelpers.Return ();
 		}
 
-		async Task HandleDelete (DeleteEvent<TModel> evt)
+		protected virtual async Task HandleDelete (DeleteEvent<TModel> evt)
 		{
 			TModel project = evt.Object;
 
@@ -148,7 +149,7 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		async Task HandleSave (UpdateEvent<TViewModel> evt)
+		protected virtual async Task HandleSave (UpdateEvent<TViewModel> evt)
 		{
 			TViewModel project = evt.Object;
 			if (project == null) {
@@ -180,7 +181,7 @@ namespace VAS.Services.Controller
 			ViewModel.DeleteCommand.EmitCanExecuteChanged ();
 		}
 
-		protected async Task<bool> Save (TViewModel project, bool force)
+		protected virtual async Task<bool> Save (TViewModel project, bool force)
 		{
 			if (!project.IsChanged) {
 				return false;
@@ -207,6 +208,18 @@ namespace VAS.Services.Controller
 				App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Error saving project:") + "\n" + ex.Message);
 				return false;
 			}
+		}
+
+		protected virtual void HandleSearchEvent (SearchEvent searchEvent)
+		{
+			foreach (var project in ViewModel.ViewModels) {
+				project.Visible = string.IsNullOrEmpty (searchEvent.TextFilter) ||
+					IsProjectVisibleForSearchCriteria (project, searchEvent.TextFilter);
+			}
+			ViewModel.VisibleViewModels.ApplyPropertyChanges ();
+			ViewModel.NoResults = !ViewModel.VisibleViewModels.Any () &&
+				!string.IsNullOrEmpty (searchEvent.TextFilter) &&
+				!(ViewModel.ViewModels.Count == 0);
 		}
 	}
 }

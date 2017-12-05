@@ -91,7 +91,6 @@ namespace VAS.Core.MVVMC
 			}
 		}
 
-
 		/// <summary>
 		/// Selects the specified child viewModel.
 		/// </summary>

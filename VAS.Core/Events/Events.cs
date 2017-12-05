@@ -516,4 +516,9 @@ namespace VAS.Core.Events
 		public string LimitationName { get; set; }
 		public string Source { get; set; }
 	}
+
+	public class SearchEvent : Event
+	{
+		public string TextFilter { get; set; }
+	}
 }

@@ -24,7 +24,6 @@ using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.Store;
-using VAS.Core.ViewModel;
 using VAS.Services.Controller;
 using VAS.Services.ViewModel;
 
@@ -48,7 +47,6 @@ namespace VAS.Tests.Services
 			storageMock = new Mock<IStorage> ();
 			storageManagerMock.Object.ActiveDB = storageMock.Object;
 			App.Current.DatabaseManager = storageManagerMock.Object;
-
 		}
 
 		[SetUp]
@@ -57,9 +55,9 @@ namespace VAS.Tests.Services
 			controller = new ProjectsController<Project, DummyProjectVM> ();
 			controller.ViewModel = new ProjectsManagerVM<Project, DummyProjectVM> {
 				Model = new RangeObservableCollection<Project> {
-					Utils.CreateProject (true),
-					Utils.CreateProject (true),
-					Utils.CreateProject (true),
+					Utils.CreateProject (true, "Champions"),
+					Utils.CreateProject (true, "Liga game"),
+					Utils.CreateProject (true, "Training session"),
 				}
 			};
 		}
@@ -136,6 +134,62 @@ namespace VAS.Tests.Services
 			Assert.IsFalse (firstLoadedProject.Model.IsChanged);
 			Assert.AreEqual (ProjectType.URICaptureProject, firstLoadedProject.ProjectType);
 			Assert.AreEqual (ProjectType.URICaptureProject, firstLoadedProject.Model.ProjectType);
+		}
+
+		[Test]
+		public async Task Search_EmptySearchStringNoProjects_NoResultFalse ()
+		{
+			await controller.Start ();
+			controller.ViewModel.ViewModels.Clear ();
+
+			controller.ViewModel.SearchCommand.Execute ("");
+
+			Assert.IsFalse (controller.ViewModel.NoResults);
+		}
+
+		[Test]
+		public async Task Search_NoResults_EmptyViewModelsAndNoResultTrue ()
+		{
+			await controller.Start ();
+
+			controller.ViewModel.SearchCommand.Execute ("Pedro");
+
+			Assert.IsTrue (controller.ViewModel.NoResults);
+			Assert.IsEmpty (controller.ViewModel.VisibleViewModels);
+		}
+
+		[Test]
+		public async Task Search_MatchingProjectNo_VisibleViewModelUpdateAndNoResultFalse ()
+		{
+			await controller.Start ();
+
+			controller.ViewModel.SearchCommand.Execute ("Champions");
+
+			Assert.IsFalse (controller.ViewModel.NoResults);
+			Assert.AreEqual (controller.ViewModel.ViewModels [0], controller.ViewModel.VisibleViewModels [0]);
+			Assert.AreEqual (1, controller.ViewModel.VisibleViewModels.Count ());
+		}
+
+		[Test]
+		public async Task Search_EmptySearchString_AllProjectsVisible ()
+		{
+			await controller.Start ();
+
+			controller.ViewModel.SearchCommand.Execute ("");
+
+			Assert.IsFalse (controller.ViewModel.NoResults);
+			Assert.AreEqual (3, controller.ViewModel.VisibleViewModels.Count ());
+		}
+
+		[Test]
+		public async Task Search_NullSearchString_AllProjectsVisible ()
+		{
+			await controller.Start ();
+
+			controller.ViewModel.SearchCommand.Execute (null);
+
+			Assert.IsFalse (controller.ViewModel.NoResults);
+			Assert.AreEqual (3, controller.ViewModel.VisibleViewModels.Count ());
 		}
 	}
 }
