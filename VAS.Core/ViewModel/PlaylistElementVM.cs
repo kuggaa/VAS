@@ -29,14 +29,16 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// ViewModel for PlaylistElements, with an IPlaylistElement as Model.
 	/// </summary>
-	public class PlaylistElementVM : ViewModelBase<IPlaylistElement>, IPlaylistElementVM<IPlaylistElement>
+	public class PlaylistElementVM : PlayableElementVM<IPlaylistElement>
 	{
 		/// <summary>
 		/// Gets the description of the playlist element
 		/// </summary>
 		/// <value>The description.</value>
-		public string Description {
-			get {
+		public string Description
+		{
+			get
+			{
 				return Model.Description;
 			}
 		}
@@ -81,23 +83,57 @@ namespace VAS.Core.ViewModel
 
 	public class PlaylistPlayElementVM : PlaylistElementVM
 	{
-		public new PlaylistPlayElement Model {
-			get {
+		public PlaylistPlayElementVM()
+		{
+			Play = new TimelineEventVM();
+		}
+
+		/// <summary>
+		/// Gets or sets the model.
+		/// </summary>
+		/// <value>The model.</value>
+		public PlaylistPlayElement TypedModel
+		{
+			get
+			{
 				return (PlaylistPlayElement)base.Model;
-			}
-			set {
-				base.Model = value;
 			}
 		}
 
-		public string Title {
-			get {
-				return Model.Title;
+		[PropertyChanged.DoNotCheckEquality]
+		public override IPlaylistElement Model
+		{
+			get
+			{
+				return TypedModel;
 			}
-			set {
-				Model.Title = value;
+			set
+			{
+				base.Model = value;
+				Play.Model = ((PlaylistPlayElement)value).Play;
 			}
 		}
+
+
+
+		public string Title
+		{
+			get
+			{
+				return TypedModel.Title;
+			}
+			set
+			{
+				TypedModel.Title = value;
+			}
+		}
+
+		public TimelineEventVM Play
+		{
+			get;
+			set;
+		}
+
 	}
 
 	public class PlaylistVideoVM : PlaylistElementVM

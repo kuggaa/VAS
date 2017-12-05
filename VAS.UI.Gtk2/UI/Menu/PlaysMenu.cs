@@ -39,6 +39,7 @@ namespace VAS.UI.Menus
 		protected List<TimelineEventVM> playVMs;
 		protected EventType eventType;
 		protected Time time;
+		// FIXME: Use ProjectVM
 		protected Project project;
 
 		public PlaysMenu ()
@@ -74,17 +75,17 @@ namespace VAS.UI.Menus
 
 		protected bool Disposed { get; private set; } = false;
 
-		public void ShowListMenu (Project project, List<TimelineEventVM> playVMs)
+		public void ShowListMenu (Project project, IEnumerable<TimelineEventVM> playVMs)
 		{
 			ShowMenu (project, playVMs, null, null, project.EventTypes, true);
 		}
 
-		public virtual void ShowMenu (Project project, List<TimelineEventVM> playVMs)
+		public virtual void ShowMenu (Project project, IEnumerable<TimelineEventVM> playVMs)
 		{
 			ShowMenu (project, playVMs, null, null, project.EventTypes, false);
 		}
 
-		public void ShowTimelineMenu (Project project, List<TimelineEventVM> playVMs, EventType eventType, Time time)
+		public void ShowTimelineMenu (Project project, IEnumerable<TimelineEventVM> playVMs, EventType eventType, Time time)
 		{
 			ShowMenu (project, playVMs, eventType, time, project.EventTypes, false);
 		}
@@ -169,7 +170,7 @@ namespace VAS.UI.Menus
 			}
 			App.Current.EventsBroker.Publish<RenderPlaylistEvent> (
 				new RenderPlaylistEvent {
-					PlaylistVM = new PlaylistVM { Model = pl }
+					Playlist = new PlaylistVM { Model = pl }
 				}
 			);
 		}

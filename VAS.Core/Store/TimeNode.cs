@@ -19,6 +19,7 @@
 //
 using System;
 using Newtonsoft.Json;
+using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
 using VAS.Core.Serialization;
 

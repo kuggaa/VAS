@@ -171,41 +171,42 @@ namespace VAS.Services.Controller
 
 		protected virtual async Task HandleAddPlaylistElement (AddPlaylistElementEvent e)
 		{
-			//FIXME: should use PlaylistVM
-			if (e.PlaylistVM == null) {
-				e.PlaylistVM = await CreateNewPlaylistVM ();
-				if (e.PlaylistVM == null) {
+			if (e.Playlist == null) {
+				e.Playlist = await CreateNewPlaylistVM ();
+				if (e.Playlist == null) {
 					return;
 				}
 			}
+
 			foreach (var item in e.PlaylistElements) {
-				e.PlaylistVM.ChildModels.Add (item);
+				e.Playlist.ViewModels.Add ((PlayableElementVM<IPlaylistElement>)item);
 			}
-			Save (e.PlaylistVM, true);
+
+			Save (e.Playlist, true);
 		}
 
 		protected virtual Task HandleDeletePlaylist (DeletePlaylistEvent e)
 		{
-			PlaylistVM playlistVM = e.PlaylistVM;
+			PlaylistVM playlistVM = e.Playlist;
 
 			if (playlistVM != null && ProjectViewModel == null) {
-				App.Current.DatabaseManager.ActiveDB.Delete (e.PlaylistVM.Model);
+				App.Current.DatabaseManager.ActiveDB.Delete (e.Playlist.Model);
 			}
-			ViewModel.Model.Remove (e.PlaylistVM.Model);
+			ViewModel.Model.Remove (e.Playlist.Model);
 			return AsyncHelpers.Return (true);
 		}
 
 		protected virtual void HandleLoadPlayEvent (LoadEventEvent e)
 		{
-			if (e.TimelineEventVM?.Duration.MSeconds == 0) {
+			if (e.TimelineEvent?.Duration.MSeconds == 0) {
 				// These events don't have duration, we start playing as if it was a seek
 				PlayerVM.Player.Switch (null, null, null);
 				PlayerVM.Player.UnloadCurrentEvent ();
-				PlayerVM.Player.Seek (e.TimelineEventVM.EventTime, true);
+				PlayerVM.Player.Seek (e.TimelineEvent.EventTime, true);
 				PlayerVM.Player.Play ();
 			} else {
-				if (e.TimelineEventVM != null) {
-					LoadPlay (e.TimelineEventVM, new Time (0), true);
+				if (e.TimelineEvent != null) {
+					LoadPlay (e.TimelineEvent, new Time (0), true);
 				} else if (PlayerVM != null && PlayerVM.Player != null) {
 					PlayerVM.Player.UnloadCurrentEvent ();
 				}
@@ -228,16 +229,16 @@ namespace VAS.Services.Controller
 		void HandleLoadPlaylistElement (LoadPlaylistElementEvent e)
 		{
 			if (e.Element != null) {
-				e.PlaylistVM.Model.SetActive (e.Element);
+				e.Playlist.SetActive ((PlayableElementVM<IPlaylistElement>)e.Element);
 			}
-			if (e.PlaylistVM.ChildModels.Count > 0 && PlayerVM != null) {
-				PlayerVM.LoadPlaylistEvent (e.PlaylistVM, e.Element, e.Playing);
+			if (e.Playlist.ChildModels.Count > 0 && PlayerVM != null) {
+				PlayerVM.LoadPlaylistEvent (e.Playlist, e.Element, e.Playing);
 			}
 		}
 
 		void HandleRenderPlaylist (RenderPlaylistEvent e)
 		{
-			List<EditionJob> jobs = App.Current.GUIToolkit.ConfigureRenderingJob (e.PlaylistVM.Model);
+			List<EditionJob> jobs = App.Current.GUIToolkit.ConfigureRenderingJob (e.Playlist.Model);
 			if (jobs == null)
 				return;
 			foreach (Job job in jobs) {

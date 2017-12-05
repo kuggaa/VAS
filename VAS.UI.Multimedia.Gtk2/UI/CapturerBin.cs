@@ -543,9 +543,9 @@ namespace VAS.UI
 		void HandleEventCreated (EventCreatedEvent e)
 		{
 			lasteventbox.Visible = true;
-			lastlabel.Text = e.TimelineEventVM.Name;
-			lastlabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (e.TimelineEventVM.Color));
-			lasteventVM = e.TimelineEventVM;
+			lastlabel.Text = e.TimelineEvent.Name;
+			lastlabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (e.TimelineEvent.Color));
+			lasteventVM = e.TimelineEvent;
 		}
 
 		void HandlePlayLast (object sender, EventArgs e)

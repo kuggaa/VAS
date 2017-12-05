@@ -422,7 +422,7 @@ namespace VAS.Tests.Services
 
 		void HandleNewDashboardEvent (NewDashboardEvent e)
 		{
-			sentTimelineEvent = e.TimelineEventVM.Model;
+			sentTimelineEvent = e.TimelineEvent.Model;
 			hasSentDashboardEvent = true;
 		}
 	}

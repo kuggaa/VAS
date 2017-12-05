@@ -330,7 +330,7 @@ namespace VAS.Drawing.Widgets
 			}
 			App.Current.EventsBroker.Publish (
 				new LoadEventEvent {
-					TimelineEventVM = eventVM
+					TimelineEvent = eventVM
 				}
 			);
 		}
