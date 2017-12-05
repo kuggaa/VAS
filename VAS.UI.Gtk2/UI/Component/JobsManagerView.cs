@@ -70,16 +70,13 @@ namespace VAS.UI.UI.Component
 		protected override void OnDestroyed ()
 		{
 			Log.Verbose ($"Destroying {GetType ()}");
-
+			ViewModel = null;
+			ViewModel?.Dispose ();
 			ctx.Dispose ();
 			ctx = null;
-			ViewModel.Dispose ();
-			ViewModel = null;
 			treeview.Dispose ();
 			treeview = null;
-
 			base.OnDestroyed ();
-
 			Disposed = true;
 		}
 
