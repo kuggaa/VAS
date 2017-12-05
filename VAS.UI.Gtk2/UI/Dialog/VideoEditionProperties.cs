@@ -81,8 +81,8 @@ namespace VAS.UI.Dialog
 					}
 				}
 			}
-			ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.BackgroundLevel3));
-			containerRegular.ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.BackgroundLevel1));
+			ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.ThemeContrastDisabled));
+			containerRegular.ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.ThemeBase));
 		}
 
 		#endregion

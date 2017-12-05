@@ -49,7 +49,7 @@ namespace VAS.Core.ViewModel.Statistics
 		{
 			Series = new SeriesCollectionVM ();
 			Series.ViewModels.Add (leftSerie);
-			Series.ViewModels.Add (rightSerie ?? new SeriesVM ("empty", total - leftSerie.Elements, App.Current.Style.BackgroundLevel1));
+			Series.ViewModels.Add (rightSerie ?? new SeriesVM ("empty", total - leftSerie.Elements, App.Current.Style.ThemeBase));
 			leftTextStyle = rightTextStyle = TwoBarTextStyle.Hidden;
 			TotalNumber = ReferenceNumber = total;
 			UpdateDisplayTexts (TwoBarSide.Left);
