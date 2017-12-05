@@ -95,9 +95,14 @@ namespace VAS.UI.UI.Component
 				return viewModel;
 			}
 			set {
+				if (viewModel != null) {
+					viewModel.Selection.CollectionChanged -= HandleCollectionChanged;
+				}
 				viewModel = value;
-				viewModel.Selection.CollectionChanged += HandleCollectionChanged;
-				treeview.ViewModel = value;
+				if (viewModel != null) {
+					viewModel.Selection.CollectionChanged += HandleCollectionChanged;
+					treeview.ViewModel = value;
+				}
 				ctx.UpdateViewModel (viewModel);
 			}
 		}
