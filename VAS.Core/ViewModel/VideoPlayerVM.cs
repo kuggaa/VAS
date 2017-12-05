@@ -362,20 +362,21 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
-		/// <summary>
-		/// Gets or sets the <see cref="IPlaylistElement"/> Loaded
-		/// </summary>
-		/// <value>The loaded element.</value>
-		public IPlaylistElement LoadedElement {
-			get;
-			set;
-		}
+		///// <summary>
+		///// Gets or sets the <see cref="IPlaylistElement"/> Loaded
+		///// </summary>
+		///// <value>The loaded element.</value>
+		//public IPlaylistElement LoadedElement {
+		//	get;
+		//	set;
+		//}
 
 		/// <summary>
-		/// Gets the <see cref="TimelineEventVM"/> loaded
+		/// Gets the <see cref="LoadedElement"/> loaded
 		/// </summary>
 		/// <value>The loaded element.</value>
-		public TimelineEventVM TimelineEventVM {
+		public IPlayable LoadedElement
+		{
 			get;
 			set;
 		}
@@ -566,21 +567,27 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		/// <param name="evt">The timeline event.</param>
 		/// <param name="playing">If set to <c>true</c> playing.</param>
-		public void LoadEvent (TimelineEventVM eventVM, bool playing)
+		public void LoadEvent(TimelineEventVM eventVM, bool playing)
 		{
-			TimelineEventVM = eventVM;
+			LoadedElement = eventVM as IPlayable;
 
-			if (eventVM?.Duration.MSeconds == 0) {
+			if (eventVM?.Duration.MSeconds == 0)
+			{
 				// These events don't have duration, we start playing as if it was a seek
-				Player.Switch (null, null, null);
-				Player.UnloadCurrentEvent ();
-				Player.Seek (eventVM.EventTime, true);
-				Player.Play ();
-			} else {
-				if (eventVM != null) {
-					LoadEvent (eventVM, new Time (0), playing);
-				} else if (Player != null) {
-					Player.UnloadCurrentEvent ();
+				Player.Switch(null, null, null);
+				Player.UnloadCurrentEvent();
+				Player.Seek(eventVM.EventTime, true);
+				Player.Play();
+			}
+			else
+			{
+				if (eventVM != null)
+				{
+					LoadEvent(eventVM, new Time(0), playing);
+				}
+				else if (Player != null)
+				{
+					Player.UnloadCurrentEvent();
 				}
 			}
 		}
@@ -591,10 +598,10 @@ namespace VAS.Core.ViewModel
 		/// <param name="evt">The timeline event.</param>
 		/// <param name="seekTime">Seek time.</param>
 		/// <param name="playing">If set to <c>true</c> playing.</param>
-		public void LoadEvent (TimelineEventVM eventVM, Time seekTime, bool playing)
+		public void LoadEvent(TimelineEventVM eventVM, Time seekTime, bool playing)
 		{
-			TimelineEventVM = eventVM;
-			Player.LoadEvent (eventVM, seekTime, playing);
+			LoadedElement = eventVM as IPlayable;
+			Player.LoadEvent(eventVM, seekTime, playing);
 		}
 
 		/// <summary>
@@ -602,15 +609,15 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		/// <param name="eventVMs">Events.</param>
 		/// <param name="playing">If set to <c>true</c> playing.</param>
-		public void LoadEvents (IEnumerable<TimelineEventVM> eventVMs, bool playing)
+		public void LoadEvents(IEnumerable<TimelineEventVM> eventVMs, bool playing)
 		{
-			PlaylistVM playlistVM = new PlaylistVM { Model = new Playlist () };
+			PlaylistVM playlistVM = new PlaylistVM { Model = new Playlist() };
 
-			var list = eventVMs.Select (vm => new PlaylistPlayElement (vm.Model));
+			var plays = eventVMs.Select(vm => new PlaylistPlayElementVM { Model = new PlaylistPlayElement(vm.Model) });
 
-			playlistVM.ChildModels.AddRange (list);
+			playlistVM.ViewModels.AddRange(plays);
 
-			Player.LoadPlaylistEvent (playlistVM, list.FirstOrDefault (), playing);
+			Player.LoadPlaylistEvent(playlistVM, plays.FirstOrDefault(), playing);
 		}
 
 		/// <summary>
@@ -619,9 +626,9 @@ namespace VAS.Core.ViewModel
 		/// <param name="playlistVM">Playlist.</param>
 		/// <param name="evt">Event.</param>
 		/// <param name="playing">If set to <c>true</c> playing.</param>
-		public void LoadPlaylistEvent (PlaylistVM playlistVM, IPlaylistElement evt, bool playing)
+		public void LoadPlaylistEvent(PlaylistVM playlistVM, IPlayable evt, bool playing)
 		{
-			Player?.LoadPlaylistEvent (playlistVM, evt, playing);
+			Player?.LoadPlaylistEvent(playlistVM, evt, playing);
 		}
 
 		/// <summary>

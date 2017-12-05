@@ -43,7 +43,7 @@ namespace VAS.UI.Menus
 			}
 			App.Current.EventsBroker.Publish (
 				new RenderPlaylistEvent {
-					PlaylistVM = new PlaylistVM { Model = pl }
+					Playlist = new PlaylistVM { Model = pl }
 				}
 			);
 		}
@@ -56,7 +56,7 @@ namespace VAS.UI.Menus
 		/// <param name="events">Timeline events.</param>
 		//FIXME: Convert this to ViewModels (both Playlist & TimelineEvent)
 		static public void FillAddToPlaylistMenu (MenuItem addToPlaylistMenu, IEnumerable<PlaylistVM> playlistList,
-												  IEnumerable<IPlaylistElement> events)
+												  IEnumerable<IPlayable> events)
 		{
 			if (!events.Any ()) {
 				addToPlaylistMenu.Visible = false;
@@ -75,7 +75,7 @@ namespace VAS.UI.Menus
 				item.Activated += (sender, e) => {
 					item.PublishEvent (
 						new AddPlaylistElementEvent {
-							PlaylistVM = pl,
+							Playlist = pl,
 							PlaylistElements = events.ToList ()
 						}
 					);
@@ -97,7 +97,7 @@ namespace VAS.UI.Menus
 			item.Activated += (sender, e) => {
 				item.PublishEvent (
 					new AddPlaylistElementEvent {
-						PlaylistVM = null,
+						Playlist = null,
 						PlaylistElements = events.ToList ()
 					}
 				);

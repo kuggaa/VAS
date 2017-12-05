@@ -441,7 +441,7 @@ namespace VAS.Core.ViewModel
 		{
 			App.Current.EventsBroker.Publish (
 				new EditEventEvent {
-					TimelineEventVM = eventVM
+					TimelineEvent = eventVM
 				}
 			);
 		}

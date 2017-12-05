@@ -57,18 +57,19 @@ namespace VAS.Core.Interfaces
 		/// Gets or sets the cameras layout.
 		/// </summary>
 		/// <value>The cameras layout.</value>
-		object CamerasLayout {
+		object CamerasLayout
+		{
 			get;
 		}
 	}
 
-	public interface IPlaylistElementVM : IPlaylistElement, IViewModel
-	{
+	//public interface IPlaylistElementVM : IPlaylistElement, IViewModel
+	//{
 
-	}
+	//}
 
-	public interface IPlaylistElementVM<T> : IPlaylistElementVM, IViewModel<T>
-	{
+	//public interface IPlaylistElementVM<T> : IPlaylistElementVM, IViewModel<T>
+	//{
 
-	}
+	//}
 }

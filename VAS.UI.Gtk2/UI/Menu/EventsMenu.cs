@@ -106,7 +106,7 @@ namespace VAS.UI.Menus
 						var playVM = playVMs.FirstOrDefault ();
 						App.Current.EventsBroker.Publish (
 							new DrawFrameEvent {
-								PlayVM = playVM,
+								Play = playVM,
 								DrawingIndex = index,
 								CamConfig = playVM.Drawings [index].CameraConfig,
 							}

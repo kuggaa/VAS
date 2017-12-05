@@ -188,7 +188,7 @@ namespace VAS.Services.Controller
 
 			App.Current.EventsBroker.Publish (
 				new NewDashboardEvent {
-					TimelineEventVM = eventVM,
+					TimelineEvent = eventVM,
 					DashboardButton = e.Button,
 					Edit = !project.Dashboard.DisablePopupWindow,
 					DashboardButtons = null,

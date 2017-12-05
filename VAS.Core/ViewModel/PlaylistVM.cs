@@ -18,6 +18,7 @@
 //
 
 using System;
+using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
@@ -29,8 +30,10 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// ViewModel for a Playlist containing a collection of <see cref="IPlaylistElementVM"/>.
 	/// </summary>
-	public class PlaylistVM : NestedSubViewModel<Playlist, IPlaylistElement, IPlaylistElementVM<IPlaylistElement>>
+	public class PlaylistVM : NestedSubViewModel<Playlist, IPlaylistElement, PlayableElementVM<IPlaylistElement>>
 	{
+		int indexSelection = 0;
+
 		public PlaylistVM ()
 		{
 			SubViewModel.TypeMappings.Add (typeof (TimelineEvent), typeof (TimelineEventVM));
@@ -96,6 +99,141 @@ namespace VAS.Core.ViewModel
 			get {
 				return Model.Elements;
 			}
+		}
+
+		public int CurrentIndex {
+			get {
+				return indexSelection;
+			}
+		}
+
+		public PlayableElementVM<IPlaylistElement> Selected
+		{
+			get
+			{
+				if (ViewModels.Count == 0)
+				{
+					return null;
+				}
+				if (indexSelection >= ViewModels.Count)
+				{
+					indexSelection = 0;
+				}
+				return ViewModels[indexSelection];
+			}
+		}
+
+		public PlayableElementVM<IPlaylistElement> Next()
+		{
+			if (HasNext())
+				indexSelection++;
+
+			return ViewModels[indexSelection];
+		}
+
+		public PlayableElementVM<IPlaylistElement> Prev()
+		{
+			if (HasPrev())
+				indexSelection--;
+
+			return ViewModels[indexSelection];
+		}
+
+		public void Reorder(int indexIn, int indexOut)
+		{
+			var play = ViewModels[indexIn];
+			ViewModels.RemoveAt(indexIn);
+			ViewModels.Insert(indexOut, play);
+
+			/* adjust selection index */
+			if (indexIn == indexSelection)
+				indexSelection = indexOut;
+			if (indexIn < indexOut)
+			{
+				if (indexSelection < indexIn || indexSelection > indexOut)
+					return;
+				indexSelection++;
+			}
+			else
+			{
+				if (indexSelection > indexIn || indexSelection < indexOut)
+					return;
+				indexSelection--;
+			}
+		}
+
+		//FIXME: Use Viewmodels instead ChildModels
+		public bool Remove(PlayableElementVM<IPlaylistElement> plNode)
+		{
+			bool ret = ViewModels.Remove(plNode);
+			if (CurrentIndex >= ViewModels.Count)
+				indexSelection--;
+			return ret;
+		}
+
+		public PlayableElementVM<IPlaylistElement> Select(int index)
+		{
+			indexSelection = index;
+			return ViewModels[index];
+		}
+
+		public void SetActive(PlayableElementVM<IPlaylistElement> play)
+		{
+			int newIndex;
+
+			newIndex = Model.Elements.IndexOf(play.Model);
+			if (newIndex >= 0)
+			{
+				indexSelection = newIndex;
+			}
+		}
+
+		public bool HasNext()
+		{
+			return indexSelection < ViewModels.Count - 1;
+		}
+
+		public bool HasPrev()
+		{
+			return !indexSelection.Equals(0);
+		}
+
+		/// <summary>
+		/// Gets the element and its start at the passed time.
+		/// </summary>
+		/// <returns>A tuple with the element at the passed time and its start time in the playlist.</returns>
+		/// <param name="pos">Time to query.</param>
+		public Tuple<PlayableElementVM<IPlaylistElement>, Time> GetElementAtTime(Time pos)
+		{
+			Time elementStart = new Time(0);
+			PlayableElementVM<IPlaylistElement> element = null;
+			foreach (var elem in ViewModels)
+			{
+				if (pos >= elementStart && pos < elementStart + (elem as PlayableElementVM<IPlaylistElement>).Model.Duration)
+				{
+					element = elem;
+					break;
+				}
+				else if (pos >= elementStart + (elem as PlayableElementVM<IPlaylistElement>).Model.Duration)
+				{
+					elementStart += (elem as PlayableElementVM<IPlaylistElement>).Model.Duration;
+				}
+			}
+			return new Tuple<PlayableElementVM<IPlaylistElement>, Time>(element, elementStart);
+		}
+
+		public Time GetStartTime(PlayableElementVM<IPlaylistElement> element)
+		{
+			return new Time(ChildModels.TakeWhile(elem => elem != element.Model).Sum(elem => elem.Duration.MSeconds));
+		}
+
+		public Time GetCurrentStartTime()
+		{
+			if (CurrentIndex >= 0 && CurrentIndex < ViewModels.Count)
+			{
+				return GetStartTime(ViewModels[CurrentIndex]);
+			}
+			return new Time(0);
 		}
 	}
 }

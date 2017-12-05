@@ -76,8 +76,12 @@ namespace VAS.Tests.MVVMC
 
 			viewModel.Model.Elements.Add (new PlaylistPlayElement (timelineEvent));
 
-			viewModel.PropertyChanged += (sender, e) => {
-				senderObject = sender;
+			viewModel.PropertyChanged += (sender, e) =>
+			{
+				if (sender is PlaylistPlayElementVM)
+				{
+					senderObject = sender;
+				}
 			};
 
 			timelineEvent.Name = "test";

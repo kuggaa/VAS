@@ -176,7 +176,7 @@ namespace VAS.Services.Controller
 			}
 
 			if (!Project.Model.Dashboard.DisablePopupWindow && e.Edit) {
-				e.TimelineEventVM.Model.AddDefaultPositions ();
+				e.TimelineEvent.Model.AddDefaultPositions ();
 
 				PlayEventEditionSettings settings = new PlayEventEditionSettings () {
 					EditTags = true,
@@ -188,22 +188,22 @@ namespace VAS.Services.Controller
 				if (Project.ProjectType == ProjectType.FileProject) {
 					bool playing = VideoPlayer.Playing;
 					VideoPlayer.PauseCommand.Execute (false);
-					await App.Current.EventsBroker.Publish (new EditEventEvent { TimelineEventVM = e.TimelineEventVM });
+					await App.Current.EventsBroker.Publish (new EditEventEvent { TimelineEvent = e.TimelineEvent });
 					if (playing) {
 						VideoPlayer.PlayCommand.Execute ();
 					}
 				} else {
-					await App.Current.EventsBroker.Publish (new EditEventEvent { TimelineEventVM = e.TimelineEventVM });
+					await App.Current.EventsBroker.Publish (new EditEventEvent { TimelineEvent = e.TimelineEvent });
 				}
 			}
 
 			Log.Debug (String.Format ("New play created start:{0} stop:{1} category:{2}",
-				e.TimelineEventVM.Start.ToMSecondsString (), e.TimelineEventVM.Stop.ToMSecondsString (),
-				e.TimelineEventVM.Model.EventType.Name));
-			Project.Model.AddEvent (e.TimelineEventVM.Model);
-			AddNewPlay (e.TimelineEventVM.Model);
+				e.TimelineEvent.Start.ToMSecondsString (), e.TimelineEvent.Stop.ToMSecondsString (),
+				e.TimelineEvent.Model.EventType.Name));
+			Project.Model.AddEvent (e.TimelineEvent.Model);
+			AddNewPlay (e.TimelineEvent.Model);
 			await App.Current.EventsBroker.Publish (new DashboardEventCreatedEvent {
-				TimelineEventVM = e.TimelineEventVM,
+				TimelineEvent = e.TimelineEvent,
 				DashboardButton = e.DashboardButton,
 				DashboardButtons = e.DashboardButtons
 			});
@@ -228,7 +228,7 @@ namespace VAS.Services.Controller
 
 		void HandleDuplicateEvents (DuplicateEventsEvent e)
 		{
-			foreach (var play in e.TimelineEventVMs) {
+			foreach (var play in e.TimelineEvents) {
 				var copy = play.Clone ();
 
 				if (CheckTimelineEventsLimitation ()) {
@@ -238,7 +238,7 @@ namespace VAS.Services.Controller
 				Project.Model.AddEvent (copy.Model);
 
 				App.Current.EventsBroker.Publish (new EventCreatedEvent {
-					TimelineEventVM = copy
+					TimelineEvent = copy
 				});
 			}
 		}
@@ -305,7 +305,7 @@ namespace VAS.Services.Controller
 			}
 
 			App.Current.EventsBroker.Publish (new EventCreatedEvent {
-				TimelineEventVM = new TimelineEventVM () {
+				TimelineEvent = new TimelineEventVM () {
 					Model = play
 				}
 			});
@@ -401,7 +401,7 @@ namespace VAS.Services.Controller
 
 		void HandleEventLoadedEvent (EventLoadedEvent e)
 		{
-			LoadedPlayVM = e.TimelineEventVM;
+			LoadedPlayVM = e.TimelineEvent;
 		}
 
 		void HandlePlaylistElementLoaded (PlaylistElementLoadedEvent e)

@@ -47,7 +47,6 @@ namespace VAS.Drawing.Widgets
 			nodeView = new TimeNodeEditorView {
 				SelectionMode = NodeSelectionMode.Borders,
 			};
-			nodeView.ViewModel = ViewModel?.TimelineEventVM;
 
 			AddObject (nodeView);
 		}
@@ -61,6 +60,7 @@ namespace VAS.Drawing.Widgets
 					viewModel.PropertyChanged -= HandlePropertyChangedEventHandler;
 				}
 				viewModel = value;
+
 				if (viewModel != null) {
 					viewModel.PropertyChanged += HandlePropertyChangedEventHandler;
 				}
@@ -94,7 +94,7 @@ namespace VAS.Drawing.Widgets
 			double editorStartX, editorStopX, nodeStartX, nodeStopX, start, height, width, startWidth;
 			double interval = 0, secondsPerPixel, totalSeconds, timeSpacing, intervalLot;
 
-			if (ViewModel.TimelineEventVM == null || ViewModel.EditEventDurationTimeNode.Model == null) {
+			if (ViewModel.LoadedElement == null || ViewModel.EditEventDurationTimeNode.Model == null) {
 				return;
 			}
 			height = widget.Height;
@@ -114,10 +114,12 @@ namespace VAS.Drawing.Widgets
 			}
 
 			editorStartX = Utils.TimeToPos (ViewModel.EditEventDurationTimeNode.Start, secondsPerPixel);
-			nodeStartX = Utils.TimeToPos (ViewModel.TimelineEventVM.Start, secondsPerPixel);
+
+
+			nodeStartX = Utils.TimeToPos (nodeView.ViewModel.Start, secondsPerPixel);
 			start = editorStartX - (editorStartX % interval);
 			editorStopX = Utils.TimeToPos (ViewModel.EditEventDurationTimeNode.Stop, secondsPerPixel);
-			nodeStopX = Utils.TimeToPos (ViewModel.TimelineEventVM.Stop, secondsPerPixel);
+			nodeStopX = Utils.TimeToPos (nodeView.ViewModel.Stop, secondsPerPixel);
 			intervalLot = ((interval / secondsPerPixel) / 10);
 			startWidth = nodeStartX - editorStartX;
 
@@ -173,7 +175,7 @@ namespace VAS.Drawing.Widgets
 
 		void HandlePropertyChangedEventHandler (object sender, PropertyChangedEventArgs e)
 		{
-			if (!Moving && sender == ViewModel.TimelineEventVM &&
+			if (!Moving && sender == ViewModel.LoadedElement &&
 				(e.PropertyName == nameof (TimeNodeVM.Start) || e.PropertyName == nameof (TimeNodeVM.Stop))) {
 				widget?.ReDraw ();
 			} else if (e.PropertyName == nameof (VideoPlayerVM.EditEventDurationModeEnabled)) {
@@ -183,6 +185,13 @@ namespace VAS.Drawing.Widgets
 				}
 			} else if (e.PropertyName == nameof (VideoPlayerVM.LoadedElement)) {
 				if (ViewModel.LoadedElement != null) {
+
+					if (ViewModel.LoadedElement is PlaylistPlayElementVM) {
+						nodeView.ViewModel = (ViewModel.LoadedElement as PlaylistPlayElementVM).Play;
+					} else {
+						nodeView.ViewModel = ViewModel.LoadedElement as TimeNodeVM;
+					}
+
 					widget?.ReDraw ();
 				}
 			}

@@ -22,13 +22,14 @@ using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
+using VAS.Core.Store.Templates;
 
 namespace VAS.Core.ViewModel
 {
 	/// <summary>
 	/// A ViewModel for <see cref="TimelineEvent"/> objects.
 	/// </summary>
-	public class TimelineEventVM : TimeNodeVM, IComparable, IPlaylistElementVM<TimelineEvent>
+	public class TimelineEventVM : TimeNodeVM, IComparable, IViewModel<TimelineEvent>
 	{
 		public virtual new TimelineEvent Model {
 			get {
@@ -70,12 +71,15 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
-		/// Gets the notes.
+		/// Gets or sets the notes.
 		/// </summary>
 		/// <value>The notes.</value>
 		public string Notes {
 			get {
 				return Model.Notes;
+			}
+			set {
+				Model.Notes = value;
 			}
 		}
 
@@ -170,9 +174,33 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
+		/// <summary>
+		/// The <see cref="EventType"/> in wich this event is tagged
+		/// </summary>
+		public EventType EventType {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// List of tags describing this event.
+		/// </summary>
+		/// <value>The tags.</value>
+		public RangeObservableCollection<Tag> Tags => Model.Tags;
+
 		public string Description => Model.Description;
 
 		public Image Miniature => Model.Miniature;
+
+		/// <summary>
+		/// List of players tagged in this event.
+		/// </summary>
+		public RangeObservableCollection<Player> Players => Model.Players;
+
+		/// <summary>
+		/// A list of teams tagged in this event.
+		/// </summary>
+		public RangeObservableCollection<Team> Teams => Model.Teams;
 
 		/// <summary>
 		/// Compare the specified timelineEventVM with the calling one.

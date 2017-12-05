@@ -90,7 +90,7 @@ namespace VAS.Core.Interfaces
 		/// Gets or sets the loaded playlist.
 		/// </summary>
 		/// <value>The loaded playlist.</value>
-		PlaylistVM LoadedPlaylistVM { get; set; }
+		PlaylistVM LoadedPlaylist { get; set; }
 
 		/// <summary>
 		/// Gets or sets the operation mode.
@@ -104,7 +104,7 @@ namespace VAS.Core.Interfaces
 		/// <param name="playVM">Play.</param>
 		/// <param name="playlistVM">Playlist.</param>
 		/// <param name="element">Element.</param>
-		void Switch (TimelineEventVM playVM, PlaylistVM playlistVM, IPlaylistElement element);
+		void Switch(TimelineEventVM playVM, PlaylistVM playlistVM, IPlayable element);
 
 		/// <summary>
 		/// Open the specified fileSet.
@@ -161,12 +161,12 @@ namespace VAS.Core.Interfaces
 		/// <param name="playlist">The playlist for this event.</param>
 		/// <param name="element">The event to load.</param>
 		/// <param name = "playing">Flag to start playing the event being loaded</param>
-		void LoadPlaylistEvent (PlaylistVM playlist, IPlaylistElement element, bool playing);
+		void LoadPlaylistEvent(PlaylistVM playlist, IPlayable element, bool playing);
 
 		/// <summary>
 		/// Unloads the current event.
 		/// </summary>
-		void UnloadCurrentEvent ();
+		void UnloadCurrentEvent();
 
 		/// <summary>
 		/// Seek the specified position. This position should be relative to whatever is loaded.

@@ -109,7 +109,7 @@ namespace VAS.UI.Menus
 			render = new MenuItem (Catalog.GetString ("Render"));
 			render.Activated += (sender, e) => App.Current.EventsBroker.Publish<RenderPlaylistEvent> (
 				new RenderPlaylistEvent {
-					PlaylistVM = new PlaylistVM { Model = playlist }
+					Playlist = new PlaylistVM { Model = playlist }
 				}
 			);
 			Append (render);

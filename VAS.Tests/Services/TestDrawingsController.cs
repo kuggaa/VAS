@@ -105,7 +105,7 @@ namespace VAS.Tests.Services
 			TimelineEventVM evtVM = CreateTimelineEventVM ();
 			var frame = Utils.LoadImageFromFile ();
 			App.Current.EventsBroker.Publish (new DrawFrameEvent {
-				PlayVM = evtVM,
+				Play = evtVM,
 				DrawingIndex = -1,
 				CamConfig = null,
 				Frame = frame,
@@ -129,7 +129,7 @@ namespace VAS.Tests.Services
 			TimelineEventVM evtVM = CreateTimelineEventVM (true);
 			var frame = Utils.LoadImageFromFile ();
 			App.Current.EventsBroker.Publish (new DrawFrameEvent {
-				PlayVM = evtVM,
+				Play = evtVM,
 				DrawingIndex = 0,
 				CamConfig = null,
 				Frame = frame,
@@ -153,7 +153,7 @@ namespace VAS.Tests.Services
 			TimelineEventVM evtVM = CreateTimelineEventVM (true);
 			var frame = Utils.LoadImageFromFile ();
 			App.Current.EventsBroker.Publish (new DrawFrameEvent {
-				PlayVM = null,
+				Play = null,
 				DrawingIndex = -1,
 				CamConfig = null,
 				Frame = frame,
@@ -175,7 +175,7 @@ namespace VAS.Tests.Services
 			controller.SetViewModel (viewModel.Object);
 
 			await App.Current.EventsBroker.Publish (new DrawFrameEvent {
-				PlayVM = evtVM,
+				Play = evtVM,
 				DrawingIndex = -1,
 				CamConfig = null,
 			});
@@ -199,7 +199,7 @@ namespace VAS.Tests.Services
 			controller.SetViewModel (viewModel.Object);
 
 			App.Current.EventsBroker.Publish (new DrawFrameEvent {
-				PlayVM = evtVM,
+				Play = evtVM,
 				DrawingIndex = 0,
 				CamConfig = null,
 			});
@@ -220,7 +220,7 @@ namespace VAS.Tests.Services
 			playerDealer.SetupGet (vm => vm.VideoPlayer).Returns (videoPlayer);
 			controller.SetViewModel (viewModel.Object);
 			App.Current.EventsBroker.Publish (new DrawFrameEvent {
-				PlayVM = null,
+				Play = null,
 				DrawingIndex = -1,
 				CamConfig = null,
 			});

@@ -25,7 +25,7 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// ViewModel for <see cref="TimeNode"/> objects.
 	/// </summary>
-	public class TimeNodeVM : ViewModelBase<TimeNode>, IVisible
+	public class TimeNodeVM : PlayableElementVM<TimeNode>, IVisible
 	{
 		public TimeNodeVM ()
 		{
@@ -88,6 +88,18 @@ namespace VAS.Core.ViewModel
 		public Time Duration {
 			get {
 				return Model.Duration;
+			}
+		}
+
+		/// <summary>
+		/// Play rate
+		/// </summary>
+		public virtual float Rate {
+			get {
+				return Model.Rate;
+			}
+			set {
+				Model.Rate = value;
 			}
 		}
 
