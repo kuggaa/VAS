@@ -81,10 +81,6 @@ namespace VAS.Core.Common
 		public Color ThemeContrastSecondary { get; set; }
 		public Color ThemeContrastDisabled { get; set; }
 
-		public Color DrawingSelectorAnchor { get; set; }
-		public Color DrawingSelectorShadow { get; set; }
-		public Color DrawingSelectorBorder { get; set; }
-
 		public Color TextBase { get; set; }
 		public Color TextBaseDisabled { get; set; }
 		public Color TextBaseSecondary { get; set; }
@@ -98,6 +94,9 @@ namespace VAS.Core.Common
 		public Color ColorAccentSuccess { get; set; }
 		public Color ColorAccentWarning { get; set; }
 		public Color ColorAccentError { get; set; }
+		public Color ColorShadow { get; set; }
+		public Color ColorWhite { get; set; }
+		public Color ColorGray { get; set; }
 
 		public double SoftDim { get; set; }
 

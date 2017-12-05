@@ -442,7 +442,7 @@ namespace VAS.Drawing.Cairo
 		public void DrawImage (Image image, float alpha = 1)
 		{
 			DrawImage (new Point (0, 0), image.Width, image.Height,
-			           image, ScaleMode.Fill, false, alpha);
+					   image, ScaleMode.Fill, false, alpha);
 		}
 
 		public void DrawImage (Point start, double width, double height, Image image, ScaleMode mode,
@@ -536,10 +536,19 @@ namespace VAS.Drawing.Cairo
 			CContext.Save ();
 			CContext.Translate (offset.X + start.X, offset.Y + start.Y);
 			CContext.Scale (scaleX, scaleY);
+			if (masked) {
+				CContext.PushGroup ();
+			}
 			ImageSurface image = surface.Value as ImageSurface;
 			CContext.SetSourceSurface (image, 0, 0);
 			CContext.Rectangle (0, 0, image.Width, image.Height);
 			CContext.Fill ();
+			if (masked) {
+				var src = CContext.PopGroup ();
+				SetColor (FillColor);
+				CContext.Mask (src);
+				src.Dispose ();
+			}
 			CContext.Restore ();
 		}
 

@@ -22,6 +22,7 @@ using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
 using VAS.Core.Resources.Styles;
 using VAS.Core.Store.Drawables;
+using static VAS.Core.Resources.Styles.Colors;
 
 namespace VAS.Drawing.CanvasObjects
 {
@@ -239,14 +240,14 @@ namespace VAS.Drawing.CanvasObjects
 
 		protected void DrawCornerSelection (IDrawingToolkit tk, Point p)
 		{
-			tk.StrokeColor = tk.FillColor = App.Current.Style.DrawingSelectorShadow;
+			tk.StrokeColor = tk.FillColor = App.Current.Style.ColorShadow;
 			tk.LineStyle = LineStyle.Normal;
 			tk.LineWidth = 0;
 			tk.DrawRectangle (new Point (p.X + 1 - selectionSize, p.Y + 1 - selectionSize),
 							  selectionSize * 2,
 							  selectionSize * 2);
 
-			tk.StrokeColor = tk.FillColor = App.Current.Style.DrawingSelectorAnchor;
+			tk.StrokeColor = tk.FillColor = CanvasSelectionAnchor;
 			tk.DrawRectangle (new Point (p.X - selectionSize, p.Y - selectionSize),
 							  selectionSize * 2,
 							  selectionSize * 2);
@@ -254,13 +255,13 @@ namespace VAS.Drawing.CanvasObjects
 
 		protected void DrawCenterSelection (IDrawingToolkit tk, Point p)
 		{
-			tk.StrokeColor = tk.FillColor = App.Current.Style.DrawingSelectorShadow;
+			tk.StrokeColor = tk.FillColor = App.Current.Style.ColorShadow;
 			tk.LineStyle = LineStyle.Normal;
 			tk.LineWidth = 0;
 			tk.DrawCircle (new Point (p.X + 1, p.Y + 1),
 						   selectionSize);
 
-			tk.StrokeColor = tk.FillColor = App.Current.Style.DrawingSelectorAnchor;
+			tk.StrokeColor = tk.FillColor = CanvasSelectionAnchor;
 			tk.DrawCircle (p, selectionSize);
 		}
 
@@ -287,7 +288,7 @@ namespace VAS.Drawing.CanvasObjects
 				return;
 			}
 
-			tk.StrokeColor = App.Current.Style.DrawingSelectorBorder;
+			tk.StrokeColor = CanvasSelectionBorder;
 			tk.FillColor = null;
 			tk.LineStyle = StyleConf.DrawingSelectorLineStyle;
 			tk.LineWidth = Sizes.DrawingSelectorLineWidth;
