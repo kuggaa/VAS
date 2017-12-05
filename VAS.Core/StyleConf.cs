@@ -118,13 +118,8 @@ namespace VAS.Core.Common
 
 		public Color PaletteTool { get; set; }
 
-		public Color BackgroundLevel0 { get; set; }
-
-		public Color BackgroundLevel1 { get; set; }
-
+		// FIXME: keep these background color until there is a full equivalence with new named colors
 		public Color BackgroundLevel2 { get; set; }
-
-		public Color BackgroundLevel3 { get; set; }
 
 		public Color BackgroundLevel4a { get; set; }
 
