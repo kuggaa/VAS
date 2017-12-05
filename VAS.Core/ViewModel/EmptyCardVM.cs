@@ -15,15 +15,31 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using VAS.Core.MVVMC;
 
 namespace VAS.Core.ViewModel
 {
-	public class ProjectEmptyCardVM : ViewModelBase
+	/// <summary>
+	/// A ViewModel for empty cards with information to help the user in the process of creating a new element
+	/// </summary>
+	public class EmptyCardVM : ViewModelBase
 	{
-		public string HeaderText => Catalog.GetString ("No projects created yet");
-		public string DescriptionText => Catalog.GetString ("Tap the + icon to create your first project");
-		public string TipText => Catalog.GetString ("Tip: You can get projects from other devices using the sync center");
+		/// <summary>
+		/// Gets or sets the header text for the empty card.
+		/// </summary>
+		/// <value>The header text.</value>
+		public string HeaderText { get; set; }
+
+		/// <summary>
+		/// Gets or sets the description text of the empty card.
+		/// </summary>
+		/// <value>The description text.</value>
+		public string DescriptionText { get; set; }
+
+		/// <summary>
+		/// Gets or sets the tip text of the empty card.
+		/// </summary>
+		/// <value>The tip text.</value>
+		public string TipText { get; set; }
 	}
 }

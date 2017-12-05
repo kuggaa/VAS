@@ -15,10 +15,14 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using VAS.Core;
+using VAS.Core.Common;
 using VAS.Core.Events;
+using VAS.Core.Filters;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
@@ -39,7 +43,16 @@ namespace VAS.Services.ViewModel
 			DeleteCommand = new AsyncCommand<TViewModel> (Delete, (arg) => Selection.Any () || arg != null) { IconName = "vas-delete" };
 			SaveCommand = new AsyncCommand (Save, () => LoadedProject?.Model != null && LoadedProject.IsChanged);
 			ExportCommand = new AsyncCommand (Export, () => Selection.Count == 1);
-			SearchProjectsCommand = new Command (textFilter => App.Current.EventsBroker.Publish (new SearchEvent<TModel> { TextFilter = (string)textFilter }));
+			SearchCommand = new Command<string> (textFilter => App.Current.EventsBroker.Publish (
+				new SearchEvent { TextFilter = textFilter }));
+			VisibleViewModels = new VisibleRangeObservableProxy<TViewModel> (ViewModels);
+			ProjectMenu = new MenuVM ();
+			EmptyCard = new EmptyCardVM {
+				HeaderText = Catalog.GetString ("No projects created yet"),
+				DescriptionText = Catalog.GetString ("Tap the + icon to create your first project"),
+				TipText = Catalog.GetString ("Tip: You can get projects from other devices using the sync center"),
+			};
+			FillProjectMenu ();
 		}
 
 		protected override void DisposeManagedResources ()
@@ -48,38 +61,29 @@ namespace VAS.Services.ViewModel
 			LoadedProject = null;
 		}
 
-		public override CountLimitationVM Limitation
-		{
-			set
-			{
-				if (Limitation != null)
-				{
+		public override CountLimitationVM Limitation {
+			set {
+				if (Limitation != null) {
 					Limitation.PropertyChanged -= HandleLimitationChanged;
 				}
 				base.Limitation = value;
-				if (Limitation != null)
-				{
+				if (Limitation != null) {
 					Limitation.PropertyChanged += HandleLimitationChanged;
 					CheckNewCommandEnabled ();
 				}
 			}
 		}
 
-		public TViewModel LoadedProject
-		{
-			get
-			{
+		public TViewModel LoadedProject {
+			get {
 				return loadedProject;
 			}
-			set
-			{
-				if (loadedProject != null)
-				{
+			set {
+				if (loadedProject != null) {
 					loadedProject.PropertyChanged -= HandleLoadedProjectChanged;
 				}
 				loadedProject = value;
-				if (loadedProject != null)
-				{
+				if (loadedProject != null) {
 					loadedProject.PropertyChanged += HandleLoadedProjectChanged;
 					loadedProject.Sync ();
 				}
@@ -87,50 +91,61 @@ namespace VAS.Services.ViewModel
 		}
 
 		[PropertyChanged.DoNotNotify]
-		public Command NewCommand
-		{
-			get;
-			protected set;
-		}
+		public Command NewCommand { get; protected set; }
 
 		[PropertyChanged.DoNotNotify]
-		public Command OpenCommand
-		{
-			get;
-			protected set;
-		}
+		public Command OpenCommand { get; protected set; }
 
 		[PropertyChanged.DoNotNotify]
-		public Command DeleteCommand
-		{
-			get;
-			protected set;
-		}
+		public Command DeleteCommand { get; protected set; }
 
 		[PropertyChanged.DoNotNotify]
-		public Command SaveCommand
-		{
-			get;
-			protected set;
-		}
+		public Command SaveCommand { get; protected set; }
 
-		[PropertyChanged.DoNotNotify]
-		public Command ExportCommand
-		{
-			get;
-			protected set;
-		}
+		public Command ExportCommand { get; protected set; }
 
 		/// <summary>
 		/// Publishes SearchEvent<TModel> with text filter as parameter.
 		/// </summary>
 		/// <value>The search projects command.</value>
 		[PropertyChanged.DoNotNotify]
-		public Command SearchProjectsCommand
-		{
-			get;
-			protected set;
-		}
+		public Command<string> SearchCommand { get; protected set; }
+
+		/// <summary>
+		/// Gets or sets the type of the sort.
+		/// </summary>
+		/// <value>The type of the sort.</value>
+		public ProjectSortType SortType { get; set; }
+
+		/// <summary>
+		/// Gets or sets the filter text.
+		/// </summary>
+		/// <value>The filter text.</value>
+		public string FilterText { get; set; }
+
+		/// <summary>
+		/// Gets the project menu.
+		/// </summary>
+		/// <value>The project menu.</value>
+		public MenuVM ProjectMenu { get; private set; }
+
+		/// <summary>
+		/// Gets or sets the visible view models, viewmodels that has boolean Visible property setted to true.
+		/// </summary>
+		/// <value>The visible view models.</value>
+		public VisibleRangeObservableProxy<TViewModel> VisibleViewModels { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the current search filter returned no results.
+		/// </summary>
+		/// <value><c>true</c> if no results; otherwise, <c>false</c>.</value>
+		public bool NoResults { get; set; }
+
+		/// <summary>
+		/// Gets or sets the empty card View Model to be used when the user has no projects created.
+		/// </summary>
+		/// <value>The empty card.</value>
+		public EmptyCardVM EmptyCard { get; set; }
 
 		/// <summary>
 		/// Command to export the currently loaded project.
@@ -143,8 +158,7 @@ namespace VAS.Services.ViewModel
 		public async Task<bool> Export (string format)
 		{
 			TModel template = Selection.FirstOrDefault ()?.Model;
-			if (template != null)
-			{
+			if (template != null) {
 				return await App.Current.EventsBroker.PublishWithReturn (new ExportEvent<TModel> { Object = template, Format = format });
 			}
 			return false;
@@ -171,14 +185,10 @@ namespace VAS.Services.ViewModel
 		/// </summary>
 		protected virtual async Task Delete (TViewModel viewModel)
 		{
-			if (viewModel != null)
-			{
+			if (viewModel != null) {
 				await App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = viewModel.Model });
-			}
-			else
-			{
-				foreach (TModel project in Selection.Select (vm => vm.Model).ToList ())
-				{
+			} else {
+				foreach (TModel project in Selection.Select (vm => vm.Model).ToList ()) {
 					await App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = project });
 				}
 			}
@@ -196,8 +206,7 @@ namespace VAS.Services.ViewModel
 
 		protected virtual async Task<bool> Save (bool force = true)
 		{
-			if (LoadedProject != null && LoadedProject.Model != null)
-			{
+			if (LoadedProject != null && LoadedProject.Model != null) {
 				return await App.Current.EventsBroker.PublishWithReturn (new UpdateEvent<TViewModel> { Object = LoadedProject, Force = force });
 			}
 			return false;
@@ -209,6 +218,13 @@ namespace VAS.Services.ViewModel
 		protected virtual async Task Open (TViewModel viewModel)
 		{
 			await App.Current.EventsBroker.Publish (new OpenEvent<TModel> { Object = viewModel?.Model });
+		}
+
+		protected virtual void FillProjectMenu ()
+		{
+			ProjectMenu.ViewModels.AddRange (new List<MenuNodeVM> {
+				new MenuNodeVM (DeleteCommand, null, Catalog.GetString("Delete")) { Color = App.Current.Style.ColorAccentError },
+			});
 		}
 
 		void HandleLimitationChanged (object sender, PropertyChangedEventArgs e)

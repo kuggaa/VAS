@@ -296,6 +296,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TimedDashboardButtonVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\TypeConverters\TimeToStringConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectEmptyCardVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EmptyCardVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
