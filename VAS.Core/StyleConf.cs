@@ -94,10 +94,9 @@ namespace VAS.Core.Common
 		public Color ColorAccentSuccess { get; set; }
 		public Color ColorAccentWarning { get; set; }
 		public Color ColorAccentError { get; set; }
-		public Color ColorFullWhite { get; set; }
 		public Color ColorShadow { get; set; }
-
-		public Color DrawingSelectorBorder { get; set; }
+		public Color ColorWhite { get; set; }
+		public Color ColorGray { get; set; }
 
 		public double SoftDim { get; set; }
 

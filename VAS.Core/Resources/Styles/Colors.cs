@@ -22,11 +22,15 @@ namespace VAS.Core.Resources.Styles
 {
 	public class Colors
 	{
-		public static Color NewTeamsFontColor = Color.White;
+		public static Color NewTeamsFontColor => App.Current.Style.ColorWhite;
 		public static Color ButtonTagColor = Color.Parse ("#d8ffc7");
 		public static Color ButtonTimerColor = Color.Parse ("#bebbff");
 		public static Color ButtonScoreColor = Color.Parse ("#d8ffc7");
 		public static Color ButtonPenaltyColor = Color.Parse ("#ffc7f0");
 		public static Color ButtonEventColor = Color.Parse ("#c7e9ff");
+
+		public static Color CanvasSelectionBorder => App.Current.Style.ColorGray;
+		public static Color CanvasSelectionShadow => App.Current.Style.ColorShadow;
+		public static Color CanvasSelectionAnchor => App.Current.Style.ColorWhite;
 	}
 }
