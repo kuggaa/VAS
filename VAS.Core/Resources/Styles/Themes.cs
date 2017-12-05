@@ -22,6 +22,13 @@ namespace VAS.Core.Resources.Styles
 {
 	public class Themes
 	{
+		public enum ButtonStyle
+		{
+			Normal,
+			Timeline,
+			Circular,
+		}
+
 		public const string TimelineButtonActiveTheme = "theme/gtk-2.0/Button/vas-button-tl-a" + Constants.IMAGE_EXT;
 		public const string TimelineButtonNormalTheme = "theme/gtk-2.0/Button/vas-button-tl-n" + Constants.IMAGE_EXT;
 		public const string TimelineButtonInsensititveTheme = "theme/gtk-2.0/Button/vas-button-tl-i" + Constants.IMAGE_EXT;

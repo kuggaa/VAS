@@ -38,15 +38,15 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		protected Rectangle cancelRect;
 		bool cancelPressed;
 
+		static TimerButtonView ()
+		{
+			iconImage = App.Current.ResourcesLocator.LoadImage (Images.ButtonTimer, Sizes.ButtonHeaderSize * 2);
+			cancelImage = App.Current.ResourcesLocator.LoadIcon (Icons.CancelButton, Sizes.ButtonHeaderSize * 2);
+		}
+
 		public TimerButtonView () : base ()
 		{
 			Toggle = true;
-			if (iconImage == null) {
-				iconImage = App.Current.ResourcesLocator.LoadImage (Images.ButtonTimer, Sizes.ButtonHeaderSize * 2);
-			}
-			if (cancelImage == null) {
-				cancelImage = App.Current.ResourcesLocator.LoadIcon (Icons.CancelButton, Sizes.ButtonHeaderSize * 2);
-			}
 			MinWidth = Sizes.ButtonMinWidth;
 			MinHeight = iconImage.Height + Sizes.ButtonTimerFontSize;
 			cancelRect = new Rectangle ();

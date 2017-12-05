@@ -15,35 +15,27 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
-using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Resources.Styles;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store.Drawables;
+using static VAS.Core.Resources.Styles.Themes;
 
 namespace VAS.Drawing.CanvasObjects.Timeline
 {
 	/// <summary>
 	/// Draws buttons in the timeline using the style ButtonTimeline in gtkrc
 	/// </summary>
-	public class TimelineButtonView : ButtonObject, ICanvasSelectableObject
+	public class ThemeButtonView : ButtonView
 	{
-		protected ISurface backBufferSurface;
 		bool insensitive;
 
-		public TimelineButtonView ()
+		public ThemeButtonView (ButtonStyle style)
 		{
 			BackgroundColor = App.Current.Style.ThemeContrastDisabled;
-			BackgroundImage = App.Current.ResourcesLocator.LoadImage (Themes.TimelineButtonNormalTheme);
-			BackgroundImageActive = App.Current.ResourcesLocator.LoadImage (Themes.TimelineButtonActiveTheme);
-			BackgroundImageInsensitive = App.Current.ResourcesLocator.LoadImage (Themes.TimelineButtonInsensititveTheme);
-			BackgroundImageHighlighted = App.Current.ResourcesLocator.LoadImage (Themes.TimelineButtonPrelightTheme);
-			Width = App.Current.Style.ButtonTimelineWidth;
-			Height = App.Current.Style.ButtonTimelineHeight;
-			IconWidth = App.Current.Style.IconXSmallWidth;
-			IconHeight = App.Current.Style.IconXSmallHeight;
+			Style = style;
 			insensitive = false;
+			DrawsSelectionArea = false;
 		}
 
 		protected override void DisposeManagedResources ()
@@ -52,77 +44,73 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			ResetBackbuffer ();
 		}
 
-		/// <summary>
-		/// Gets or sets the color of the background.
-		/// </summary>
-		/// <value>The color of the background.</value>
-		public Color BackgroundColor {
-			get;
-			set;
+		public ButtonStyle Style {
+			set {
+				string normal = null, active = null, insensitive = null, hightlighted = null;
+
+				switch (value) {
+				case ButtonStyle.Timeline:
+					normal = Themes.NormalButtonNormalTheme;
+					active = Themes.NormalButtonActiveTheme;
+					insensitive = Themes.NormalButtonInsensititveTheme;
+					hightlighted = Themes.NormalButtonPrelightTheme;
+					Width = App.Current.Style.ButtonTimelineWidth;
+					Height = App.Current.Style.ButtonTimelineHeight;
+					IconPadding = 0;
+					break;
+				case ButtonStyle.Circular:
+					Width = App.Current.Style.ButtonNormalWidth;
+					Height = App.Current.Style.ButtonNormalHeight;
+					Circular = true;
+					break;
+				case ButtonStyle.Normal:
+				default:
+					normal = Themes.TimelineButtonNormalTheme;
+					active = Themes.TimelineButtonActiveTheme;
+					insensitive = Themes.TimelineButtonInsensititveTheme;
+					hightlighted = Themes.TimelineButtonPrelightTheme;
+					Width = App.Current.Style.ButtonNormalWidth;
+					Height = App.Current.Style.ButtonNormalHeight;
+					break;
+				}
+				if (normal != null) {
+					BackgroundImage = App.Current.ResourcesLocator.LoadImage (normal);
+				}
+				if (active != null) {
+					BackgroundImageActive = App.Current.ResourcesLocator.LoadImage (active);
+				}
+				if (insensitive != null) {
+					BackgroundImageInsensitive = App.Current.ResourcesLocator.LoadImage (insensitive);
+				}
+				if (hightlighted != null) {
+					BackgroundImageHighlighted = App.Current.ResourcesLocator.LoadImage (hightlighted);
+				}
+			}
 		}
 
 		/// <summary>
-		/// Gets or sets the background image
+		/// Gets or sets the background image for the normal state.
 		/// </summary>
 		/// <value>The background image.</value>
-		public Image BackgroundImage {
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// Gets or sets the background image active.
-		/// </summary>
-		/// <value>The background image active.</value>
-		public Image BackgroundImageActive {
-			get;
-			set;
-		}
+		public Image BackgroundImage { get; set; }
 
 		/// <summary>
 		/// Gets or sets the background image insensitive.
 		/// </summary>
 		/// <value>The background image insensitive.</value>
-		public Image BackgroundImageInsensitive {
-			get;
-			set;
-		}
+		public Image BackgroundImageInsensitive { get; set; }
 
 		/// <summary>
 		/// Gets or sets the background image highlighted (Prelight).
 		/// </summary>
 		/// <value>The background image highlighted.</value>
-		public Image BackgroundImageHighlighted {
-			get;
-			set;
-		}
+		public Image BackgroundImageHighlighted { get; set; }
 
 		/// <summary>
-		/// Gets or sets the icon.
+		/// Gets or sets the background image insensitive.
 		/// </summary>
-		/// <value>The icon.</value>
-		public Image Icon {
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// Gets or sets the width of the icon.
-		/// </summary>
-		/// <value>The width of the icon.</value>
-		public int IconWidth {
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// Gets or sets the height of the icon.
-		/// </summary>
-		/// <value>The height of the icon.</value>
-		public int IconHeight {
-			get;
-			set;
-		}
+		/// <value>The background image insensitive.</value>
+		public Image BackgroundImageActive { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this <see cref="T:VAS.Drawing.CanvasObjects.Timeline.TimelineButtonView"/>
@@ -142,18 +130,6 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 		}
 
-		public override void ReDraw ()
-		{
-			ResetBackbuffer ();
-			base.ReDraw ();
-		}
-
-		public override void ResetDrawArea ()
-		{
-			ResetBackbuffer ();
-			base.ResetDrawArea ();
-		}
-
 		public override void ClickPressed (Point p, ButtonModifier modif, Selection selection)
 		{
 			if (!insensitive) {
@@ -162,52 +138,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			}
 		}
 
-		public override void Draw (IDrawingToolkit tk, Area area)
+		protected override void DrawButton (IDrawingToolkit tk)
 		{
-			IContext ctx = tk.Context;
-
-			if (backBufferSurface == null) {
-				CreateBackBufferSurface ();
-			}
-			tk.Context = ctx;
-			tk.Begin ();
-			tk.DrawSurface (backBufferSurface, Position);
-			tk.End ();
-		}
-
-		public Selection GetSelection (Point point, double precision, bool inMotion = false)
-		{
-			if (point.X >= Position.X && point.X <= Position.X + Width) {
-				if (point.Y >= Position.Y && point.Y <= Position.Y + Height) {
-					return new Selection (this, SelectionPosition.All, 0);
-				}
-			}
-			return null;
-		}
-
-		public void Move (Selection s, Point dst, Point start)
-		{
-		}
-
-		protected void ResetBackbuffer ()
-		{
-			if (backBufferSurface != null) {
-				backBufferSurface.Dispose ();
-				backBufferSurface = null;
-			}
-		}
-
-		protected void DrawIcon (IDrawingToolkit tk)
-		{
-			if (Icon != null) {
-				tk.DrawImage (new Point (Position.X + (Width - IconWidth) / 2, Position.Y + (Height - IconHeight) / 2),
-							  IconWidth, IconHeight, Icon, ScaleMode.AspectFit);
-			}
-		}
-
-		protected void DrawBackground (IDrawingToolkit tk)
-		{
-
 			tk.FillColor = BackgroundColor;
 			tk.DrawRectangle (Position, Width, Height);
 
@@ -223,22 +155,6 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			} else if (BackgroundImage != null) {
 				tk.DrawImage (Position, Width, Height, BackgroundImage,
 					ScaleMode.AspectFit);
-			}
-		}
-
-		void CreateBackBufferSurface ()
-		{
-			IDrawingToolkit tk = App.Current.DrawingToolkit;
-
-			ResetBackbuffer ();
-			backBufferSurface = tk.CreateSurface ((int)Width, (int)Height);
-			using (IContext c = backBufferSurface.Context) {
-				tk.Context = c;
-				tk.TranslateAndScale (new Point (-Position.X, -Position.Y),
-					new Point (1, 1));
-				DrawBackground (tk);
-				DrawIcon (tk);
-
 			}
 		}
 	}

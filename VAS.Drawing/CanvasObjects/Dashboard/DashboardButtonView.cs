@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.Resources.Styles;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
 using VAS.Core.ViewModel;
@@ -28,8 +29,9 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 	/// <summary>
 	/// Class for the DashboardButton View.
 	/// </summary>
-	public class DashboardButtonView : ButtonObject, ICanvasSelectableObject
+	public class DashboardButtonView : ButtonView, ICanvasSelectableObject
 	{
+		const int BORDER_SIZE = 8;
 		protected LinkAnchorView anchor;
 		protected const int HOTKEY_WIDTH = 5;
 		DashboardButtonVM buttonVM;
@@ -143,18 +145,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
-		public override Image BackgroundImage {
-			get {
-				return Button.BackgroundImage;
-			}
-		}
-
-		public override Image BackgroundImageActive {
-			get {
-				return Button.BackgroundImage;
-			}
-		}
-
 		public override bool Active {
 			get {
 				return base.Active;
@@ -187,6 +177,28 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			return anchor;
 		}
 
+		public override void ResetDrawArea ()
+		{
+			anchor.ResetDrawArea ();
+			base.ResetDrawArea ();
+		}
+
+		public override void Draw (IDrawingToolkit tk, Area area)
+		{
+			base.Draw (tk, area);
+			DrawAnchor (tk, area);
+		}
+
+		public override Selection GetSelection (Point p, double precision, bool inMotion = false)
+		{
+			if (ShowLinks && SupportsLinks) {
+				Selection sel = anchor.GetSelection (p, precision, inMotion);
+				if (sel != null)
+					return sel;
+			}
+			return base.GetSelection (p, precision, inMotion);
+		}
+
 		/// <summary>
 		/// Draws the hotkey.
 		/// </summary>
@@ -215,26 +227,19 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
-		public override void ResetDrawArea ()
+		protected override void DrawIcon (IDrawingToolkit tk)
 		{
-			anchor.ResetDrawArea ();
-			base.ResetDrawArea ();
-		}
-
-		public override void Draw (IDrawingToolkit tk, Area area)
-		{
-			base.Draw (tk, area);
-			DrawAnchor (tk, area);
-		}
-
-		public override Selection GetSelection (Point p, double precision, bool inMotion = false)
-		{
-			if (ShowLinks && SupportsLinks) {
-				Selection sel = anchor.GetSelection (p, precision, inMotion);
-				if (sel != null)
-					return sel;
+			if (Icon == null) {
+				return;
 			}
-			return base.GetSelection (p, precision, inMotion);
+
+			if (Active) {
+				tk.FillColor = BackgroundColor;
+			} else {
+				tk.FillColor = TextColor;
+			}
+			tk.DrawImage (new Point (Position.X + 5, Position.Y + 5),
+						  Sizes.ButtonHeaderWidth, Sizes.ButtonHeaderHeight, Icon, ScaleMode.AspectFit, true);
 		}
 
 		protected virtual void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)

@@ -31,76 +31,76 @@ namespace VAS.Tests.Drawing
 		Point buttonPos;
 
 		[SetUp]
-		public void SetUp ()
+		public void SetUp()
 		{
-			eventTypeLabel = new EventTypeLabelView ();
+			eventTypeLabel = new EventTypeLabelView();
 			eventTypeLabel.Width = 100;
 			eventTypeLabel.Height = 40;
-			buttonPos = new Point (eventTypeLabel.Width - (eventTypeLabel.Height - Sizes.TimelineLabelVSpacing * 2) - 3 + 1,
+			buttonPos = new Point(eventTypeLabel.Width - (eventTypeLabel.Height - Sizes.TimelineLabelVSpacing * 2) - 3 + 1,
 								  3 + 1);
-			eventTypeLabel.SetViewModel (new EventTypeTimelineVM ());
+			eventTypeLabel.SetViewModel(new EventTypeTimelineVM());
 		}
 
 		[TearDown]
-		public void TearDown ()
+		public void TearDown()
 		{
-			eventTypeLabel.Dispose ();
+			eventTypeLabel.Dispose();
 		}
 
 		[Test]
-		public void TestButtonInitilizationInsensitive ()
+		public void TestButtonInitilizationInsensitive()
 		{
-			var button = eventTypeLabel.GetSelection (buttonPos, 0).Drawable as TimelineButtonView;
+			var button = eventTypeLabel.GetSelection(buttonPos, 0).Drawable as ThemeButtonView;
 
-			Assert.IsTrue (button.Insensitive);
+			Assert.IsTrue(button.Insensitive);
 		}
 
 		[Test]
-		public void TestButtonChangesToSensitiveWhenEventsAreAdded ()
+		public void TestButtonChangesToSensitiveWhenEventsAreAdded()
 		{
-			var button = eventTypeLabel.GetSelection (buttonPos, 0).Drawable as TimelineButtonView;
+			var button = eventTypeLabel.GetSelection(buttonPos, 0).Drawable as ThemeButtonView;
 
-			eventTypeLabel.ViewModel.ViewModels.Add (new TimelineEventVM ());
+			eventTypeLabel.ViewModel.ViewModels.Add(new TimelineEventVM());
 
-			Assert.IsFalse (button.Insensitive);
+			Assert.IsFalse(button.Insensitive);
 		}
 
 		[Test]
-		public void TestButtonChangesToInsensitiveWhenEventsAreRemoved ()
+		public void TestButtonChangesToInsensitiveWhenEventsAreRemoved()
 		{
-			var button = eventTypeLabel.GetSelection (buttonPos, 0).Drawable as TimelineButtonView;
+			var button = eventTypeLabel.GetSelection(buttonPos, 0).Drawable as ThemeButtonView;
 
-			eventTypeLabel.ViewModel.ViewModels.Add (new TimelineEventVM ());
-			eventTypeLabel.ViewModel.ViewModels.Add (new TimelineEventVM ());
+			eventTypeLabel.ViewModel.ViewModels.Add(new TimelineEventVM());
+			eventTypeLabel.ViewModel.ViewModels.Add(new TimelineEventVM());
 
-			Assert.IsFalse (button.Insensitive);
+			Assert.IsFalse(button.Insensitive);
 
 			//Remove All Elements
-			eventTypeLabel.ViewModel.ViewModels.Clear ();
+			eventTypeLabel.ViewModel.ViewModels.Clear();
 
-			Assert.IsTrue (button.Insensitive);
+			Assert.IsTrue(button.Insensitive);
 		}
 
 		[Test]
-		public void TestButtonChangesSensitivenessWhenEventsVisibilityChanges ()
+		public void TestButtonChangesSensitivenessWhenEventsVisibilityChanges()
 		{
-			var button = eventTypeLabel.GetSelection (buttonPos, 0).Drawable as TimelineButtonView;
+			var button = eventTypeLabel.GetSelection(buttonPos, 0).Drawable as ThemeButtonView;
 
-			eventTypeLabel.ViewModel.ViewModels.Add (new TimelineEventVM ());
-			eventTypeLabel.ViewModel.ViewModels.Add (new TimelineEventVM ());
+			eventTypeLabel.ViewModel.ViewModels.Add(new TimelineEventVM());
+			eventTypeLabel.ViewModel.ViewModels.Add(new TimelineEventVM());
 
-			Assert.IsFalse (button.Insensitive);
+			Assert.IsFalse(button.Insensitive);
 
 			//Now Make Events not Visible
-			eventTypeLabel.ViewModel.ViewModels [0].Visible = false;
-			eventTypeLabel.ViewModel.ViewModels [1].Visible = false;
+			eventTypeLabel.ViewModel.ViewModels[0].Visible = false;
+			eventTypeLabel.ViewModel.ViewModels[1].Visible = false;
 
-			Assert.IsTrue (button.Insensitive);
+			Assert.IsTrue(button.Insensitive);
 
 			//Finally Make Only One Event Visible
-			eventTypeLabel.ViewModel.ViewModels [1].Visible = true;
+			eventTypeLabel.ViewModel.ViewModels[1].Visible = true;
 
-			Assert.IsFalse (button.Insensitive);
+			Assert.IsFalse(button.Insensitive);
 		}
 	}
 }

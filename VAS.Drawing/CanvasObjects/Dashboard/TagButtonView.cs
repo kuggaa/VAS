@@ -17,50 +17,49 @@
 //
 using System.ComponentModel;
 using VAS.Core;
-using VAS.Core.Resources;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
-using VAS.Core.ViewModel;
 using VAS.Core.Resources;
+using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Dashboard
 {
 	/// <summary>
 	/// Class for the TagButton View
 	/// </summary>
-	[View ("TagButtonView")]
+	[View("TagButtonView")]
 	public class TagButtonView : DashboardButtonView, ICanvasObjectView<TagButtonVM>
 	{
 		static Image iconImage;
 
-		public TagButtonView () : base ()
+		static TagButtonView()
+		{
+			iconImage = App.Current.ResourcesLocator.LoadImage(Images.ButtonTag);
+		}
+
+		public TagButtonView() : base()
 		{
 			Toggle = true;
 			SupportsLinks = false;
-			if (iconImage == null) {
-				iconImage = App.Current.ResourcesLocator.LoadImage (Images.ButtonTag);
-			}
+			Icon = iconImage;
 		}
 
-		public override Image Icon {
-			get {
-				return iconImage;
-			}
-		}
-
-		public override string Text {
+		public override string Text  
+		{
 			get {
 				return ViewModel.Tag.Value;
 			}
 		}
 
-		public override bool Active {
+		public override bool Active
+		{
 			get {
 				return ViewModel.Active;
 			}
-			set {
+			set
+			{
 				base.Active = value;
 				ViewModel.Active = value;
 			}
@@ -70,7 +69,8 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		/// Gets or sets the view model.
 		/// </summary>
 		/// <value>The view model.</value>
-		public TagButtonVM ViewModel {
+		public TagButtonVM ViewModel
+		{
 			get {
 				return ButtonVM as TagButtonVM;
 			}
@@ -83,22 +83,23 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		/// Sets the view model.
 		/// </summary>
 		/// <param name="viewModel">View model.</param>
-		public void SetViewModel (object viewModel)
+		public void SetViewModel(object viewModel)
 		{
 			ViewModel = (TagButtonVM)viewModel;
 		}
 
-		public override void ClickReleased ()
+		public override void ClickReleased()
 		{
-			ViewModel.Toggle.Execute ();
-			base.ClickReleased ();
+			ViewModel.Toggle.Execute();
+			base.ClickReleased();
 		}
 
-		protected override void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
+		protected override void HandlePropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			base.HandlePropertyChanged (sender, e);
-			if (ViewModel.NeedsSync (e.PropertyName, nameof (ViewModel.Active), sender, ButtonVM)) {
-				ReDraw ();
+			base.HandlePropertyChanged(sender, e);
+			if (ViewModel.NeedsSync(e.PropertyName, nameof(ViewModel.Active), sender, ButtonVM))
+			{
+				ReDraw();
 			}
 		}
 

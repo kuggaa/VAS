@@ -25,7 +25,7 @@ using VAS.Core.ViewModel;
 
 namespace VAS.Drawing.CanvasObjects.Teams
 {
-	public class PlayerView : ButtonObject, ICanvasSelectableObject
+	public class PlayerView : ButtonView
 	{
 		protected static ISurface DefaultPhoto;
 		static bool surfacesCached = false;
@@ -83,20 +83,6 @@ namespace VAS.Drawing.CanvasObjects.Teams
 				DefaultPhoto = App.Current.DrawingToolkit.CreateSurfaceFromResource (Images.PlayerPhoto, false);
 				surfacesCached = true;
 			}
-		}
-
-		public virtual Selection GetSelection (Point point, double precision, bool inMotion = false)
-		{
-			if (point.X >= Position.X && point.X <= Position.X + Width) {
-				if (point.Y >= Position.Y && point.Y <= Position.Y + Height) {
-					return new Selection (this, SelectionPosition.All, 0);
-				}
-			}
-			return null;
-		}
-
-		public void Move (Selection sel, Point p, Point start)
-		{
 		}
 
 		public override void Draw (IDrawingToolkit tk, Area area)

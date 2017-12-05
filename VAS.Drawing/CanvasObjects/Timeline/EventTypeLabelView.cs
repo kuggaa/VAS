@@ -38,12 +38,15 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		const int TIMELINE_BUTTON_MARGIN = 3;
 
 		EventTypeTimelineVM viewModel;
-		TimelineButtonView playButton;
+		ThemeButtonView playButton;
 
 		public EventTypeLabelView ()
 		{
-			playButton = new TimelineButtonView ();
-			playButton.Icon = App.Current.ResourcesLocator.LoadIcon (Icons.PlayButton);
+			playButton = new ThemeButtonView (Themes.ButtonStyle.Timeline) {
+				Icon = App.Current.ResourcesLocator.LoadIcon (Icons.PlayButton),
+				Width = App.Current.Style.ButtonTimelineWidth,
+				Height = App.Current.Style.ButtonTimelineHeight,
+			};
 			playButton.ClickedEvent += PlayButtonClickedEvent;
 			playButton.RedrawEvent += HandleButtonRedrawEvent;
 		}

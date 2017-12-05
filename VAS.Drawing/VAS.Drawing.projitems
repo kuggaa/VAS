@@ -36,7 +36,7 @@
       <Link>AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)CanvasFromDrawableObjectRegistry.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\ButtonObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\ButtonView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\DashboardButtonView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\LinkAnchorView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\ActionLinkView.cs" />
@@ -61,7 +61,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimerTimeNodeView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\CameraView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimelineButtonView.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\CanvasButtonObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Dashboard\TimedTaggerButtonView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Init.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\PinCanvasObject.cs" />

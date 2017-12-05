@@ -59,6 +59,15 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		double catWidth, heightPerRow;
 		Dictionary<LinkAnchorView, TagVM> subcatAnchors;
 
+		static AnalysisEventButtonView ()
+		{
+			iconImage = App.Current.ResourcesLocator.LoadImage (Images.ButtonEvent);
+			recImage = App.Current.ResourcesLocator.LoadIcon (Icons.RecordButton);
+			editImage = App.Current.ResourcesLocator.LoadIcon (Icons.EditButton);
+			cancelImage = App.Current.ResourcesLocator.LoadIcon (Icons.CancelButton);
+			applyImage = App.Current.ResourcesLocator.LoadIcon (Icons.ApplyButton);
+		}
+
 		public AnalysisEventButtonView () : base ()
 		{
 			rects = new Dictionary<Rectangle, object> ();
@@ -66,21 +75,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			cancelRect = new Rectangle (new Point (0, 0), 0, 0);
 			editRect = new Rectangle (new Point (0, 0), 0, 0);
 			applyRect = new Rectangle (new Point (0, 0), 0, 0);
-			if (iconImage == null) {
-				iconImage = App.Current.ResourcesLocator.LoadImage (Images.ButtonEvent);
-			}
-			if (recImage == null) {
-				recImage = App.Current.ResourcesLocator.LoadIcon (Icons.RecordButton);
-			}
-			if (editImage == null) {
-				editImage = App.Current.ResourcesLocator.LoadIcon (Icons.EditButton);
-			}
-			if (cancelImage == null) {
-				cancelImage = App.Current.ResourcesLocator.LoadIcon (Icons.CancelButton);
-			}
-			if (applyImage == null) {
-				applyImage = App.Current.ResourcesLocator.LoadIcon (Icons.ApplyButton);
-			}
 			MinWidth = 100;
 			MinHeight = HeaderHeight * 2;
 			subcatAnchors = new Dictionary<LinkAnchorView, TagVM> ();
@@ -129,58 +123,29 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 		}
 
-		public override Image Icon {
-			get {
-				if (Button.ShowIcon)
-					return iconImage;
-				else
-					return null;
-			}
-		}
+		public override Image Icon => Button.ShowIcon ? iconImage : null;
 
-		public override Color BackgroundColor {
-			get {
-				return Button.BackgroundColor;
-			}
-		}
+		public override Color BackgroundColor => Button.BackgroundColor;
 
-		// FIXME: View accessing the Model/ <value>The button.</value>
-		new AnalysisEventButton Button {
-			get {
-				return ViewModel.TypedModel;
-			}
-		}
-
-		bool ShowApplyButton {
-			get {
-				return ShowTags && tagsByGroup.Count > 1
-											  && ViewModel.TagMode == TagMode.Predefined
-											  && ButtonVM.Mode != DashboardMode.Edit;
-			}
-		}
+		public RangeObservableCollection<TagVM> SelectedTags => ViewModel.SelectedTags;
 
 		/// <summary>
 		/// Gets a value indicating whether this <see cref="T:VAS.Drawing.CanvasObjects.Dashboard.AnalysisEventButtonView"/>
 		/// show tags.
 		/// </summary>
 		/// <value><c>true</c> if show tags; otherwise, <c>false</c>.</value>
-		protected bool ShowTags {
-			get {
-				return (ViewModel.ShowSubcategories || ShowLinks) && Button.AnalysisEventType.Tags.Count != 0;
-			}
-		}
+		protected bool ShowTags => (ViewModel.ShowSubcategories || ShowLinks) && Button.AnalysisEventType.Tags.Count != 0;
 
-		int HeaderHeight {
-			get {
-				return Sizes.ButtonHeaderHeight + 5;
-			}
-		}
+		// FIXME: View accessing the Model/ <value>The button.</value>
+		new AnalysisEventButton Button => ViewModel.TypedModel;
 
-		int HeaderTextOffset {
-			get {
-				return Sizes.ButtonHeaderWidth + 5;
-			}
-		}
+		bool ShowApplyButton => ShowTags && tagsByGroup.Count > 1
+													   && ViewModel.TagMode == TagMode.Predefined
+													   && ButtonVM.Mode != DashboardMode.Edit;
+
+		int HeaderHeight => Sizes.ButtonHeaderHeight + 5;
+
+		int HeaderTextOffset => Sizes.ButtonHeaderWidth + 5;
 
 		double HeaderTextWidth {
 			get {
@@ -189,17 +154,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				} else {
 					return Width - HeaderTextOffset;
 				}
-			}
-		}
-
-		void UpdateRows ()
-		{
-			/* Header */
-			int tagsPerRow = Math.Max (1, ViewModel.TagsPerRow);
-			nrows = 0;
-
-			foreach (List<TagVM> tags in tagsByGroup.Values) {
-				nrows += (int)Math.Ceiling ((float)tags.Count / tagsPerRow);
 			}
 		}
 
@@ -224,6 +178,17 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			emitEvent = false;
 			cancelClicked = false;
 			SelectedTags.Clear ();
+		}
+
+		void UpdateRows ()
+		{
+			/* Header */
+			int tagsPerRow = Math.Max (1, ViewModel.TagsPerRow);
+			nrows = 0;
+
+			foreach (List<TagVM> tags in tagsByGroup.Values) {
+				nrows += (int)Math.Ceiling ((float)tags.Count / tagsPerRow);
+			}
 		}
 
 		void RemoveAnchor (LinkAnchorView anchor)
@@ -292,12 +257,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		void UpdateGroups ()
 		{
 			tagsByGroup = ViewModel.TagsByGroup;
-		}
-
-		public RangeObservableCollection<TagVM> SelectedTags {
-			get {
-				return ViewModel.SelectedTags;
-			}
 		}
 
 		void AddSubcatAnchor (TagVM tag, Point point, double width, double height)
@@ -688,15 +647,6 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 					tk.FillColor = TextColor;
 					tk.DrawRectangle (Position, Width, HeaderHeight);
 				}
-				if (Icon != null) {
-					if (Active) {
-						tk.FillColor = BackgroundColor;
-					} else {
-						tk.FillColor = TextColor;
-					}
-					tk.DrawImage (new Point (Position.X + 5, Position.Y + 5),
-								  Sizes.ButtonHeaderWidth, Sizes.ButtonHeaderHeight, Icon, ScaleMode.AspectFit, true);
-				}
 			}
 		}
 
@@ -722,7 +672,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 			/* Draw Rectangle */
 			DrawButton (tk);
-			DrawImage (tk);
+			DrawIcon (tk);
 			DrawHeader (tk);
 			DrawRecordButton (tk);
 			DrawHotkey (tk);

@@ -73,6 +73,15 @@ namespace VAS.Core.Store
 			return base.GetHashCode ();
 		}
 
+		public override int GetHashCode ()
+		{
+			if (Value != null && Group != null) {
+				return (Value + Group).GetHashCode ();
+			} else {
+				return base.GetHashCode ();
+			}
+		}
+
 		public override string ToString ()
 		{
 			return String.Format ("{0} ({1})", Value, Group);
