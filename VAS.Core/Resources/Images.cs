@@ -29,7 +29,7 @@ namespace VAS.Core.Resources
 
 		public const string PlayerArrowOut = "images/player/lm-arrow-out" + Constants.IMAGE_EXT;
 		public const string PlayerArrowIn = "images/player/lm-arrow-in" + Constants.IMAGE_EXT;
-		public const string PlayerPhoto = "images/player/vas-photo" + Constants.IMAGE_EXT;
+		public const string PlayerPhoto = "images/player/vas-profile-default" + Constants.IMAGE_EXT;
 
 		// Events treeview assets
 		public const string NormalLocation = "images/events/ra-el-location-n" + Constants.IMAGE_EXT;

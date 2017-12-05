@@ -61,6 +61,9 @@ namespace VAS.Drawing.CanvasObjects.Teams
 			set {
 				Width = Height = value;
 			}
+			get {
+				return (int)Width;
+			}
 		}
 
 		public bool DrawPhoto {

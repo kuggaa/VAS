@@ -16,13 +16,11 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Resources.Styles;
 using VAS.Core.Store.Drawables;
-using VAS.Drawing.CanvasObjects;
-using VASDrawing = VAS.Drawing;
+using static VAS.Core.Resources.Styles.Colors;
 
 namespace VAS.Drawing.CanvasObjects
 {
@@ -205,13 +203,13 @@ namespace VAS.Drawing.CanvasObjects
 				return;
 			}
 
-			tk.StrokeColor = App.Current.Style.DrawingSelectorShadow;
+			tk.StrokeColor = App.Current.Style.ColorShadow;
 			tk.FillColor = null;
 			tk.LineStyle = LineStyle.Dashed;
 			tk.LineWidth = 2;
 			tk.DrawRectangle (Position, Width, Height);
 
-			tk.StrokeColor = tk.FillColor = App.Current.Style.DrawingSelectorAnchor;
+			tk.StrokeColor = tk.FillColor = CanvasSelectionAnchor;
 			tk.LineStyle = LineStyle.Normal;
 			tk.DrawRectangle (new Point (Position.X + Width - SELECTION_SIZE / 2,
 				Position.Y + Height - SELECTION_SIZE / 2),
