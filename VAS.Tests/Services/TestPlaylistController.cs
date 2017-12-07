@@ -357,7 +357,7 @@ namespace VAS.Tests.Services
 				element1, element2, element3 });
 			playlistCollectionVM.Model.Add (newPlaylist);
 
-			playlistCollectionVM.ViewModels [0].Selection.Replace (new List<PlayableElementVM<IPlaylistElement>> {
+			playlistCollectionVM.ViewModels [0].Selection.Replace (new List<PlaylistElementVM> {
 				playlistCollectionVM.ViewModels [0].ViewModels[0],
 				playlistCollectionVM.ViewModels [0].ViewModels[2]
 			});

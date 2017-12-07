@@ -117,7 +117,7 @@ namespace VAS.Services.Controller
 
 			dynamic properties = new ExpandoObject ();
 			properties.project = project?.Model ?? drawEvent.Play?.Model?.Project;
-			properties.timelineEventVM = drawEvent.Play;
+			properties.timelineEvent = drawEvent.Play;
 			properties.frame = drawEvent.Frame;
 			properties.drawing = drawing;
 			properties.cameraconfig = drawEvent.CamConfig;

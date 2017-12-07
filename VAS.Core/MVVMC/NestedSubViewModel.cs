@@ -26,7 +26,7 @@ namespace VAS.Core.MVVMC
 	/// </summary>
 	public abstract class NestedSubViewModel<TModel, TModelChild, TVMChild> : NestedViewModel<TVMChild>, IViewModel<TModel>
 		where TModel : BindableBase
-		where TVMChild : IViewModel<TModelChild>
+		where TVMChild : IViewModel<TModelChild>, new()
 	{
 		protected TModel model;
 

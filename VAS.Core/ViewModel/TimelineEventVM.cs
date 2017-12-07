@@ -29,7 +29,7 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// A ViewModel for <see cref="TimelineEvent"/> objects.
 	/// </summary>
-	public class TimelineEventVM : TimeNodeVM, IComparable, IViewModel<TimelineEvent>
+	public class TimelineEventVM : TimeNodeVM, IComparable, IViewModel<TimelineEvent>, IPlayableEvent
 	{
 		public virtual new TimelineEvent Model {
 			get {
@@ -80,19 +80,6 @@ namespace VAS.Core.ViewModel
 			}
 			set {
 				Model.Notes = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets a value indicating whether this <see cref="VAS.Services.ViewModel.TimelineEventVM`1"/> is playing.
-		/// </summary>
-		/// <value><c>true</c> if playing; otherwise, <c>false</c>.</value>
-		public bool Playing {
-			get {
-				return Model.Playing;
-			}
-			set {
-				Model.Playing = value;
 			}
 		}
 
@@ -153,6 +140,7 @@ namespace VAS.Core.ViewModel
 			set;
 		}
 
+		/// <summary>
 		/// Gets or sets a value indicating whether this <see cref="T:VAS.Services.ViewModel.TimelineEventVM`1"/> has focus.
 		/// </summary>
 		/// <value><c>true</c> if focus; otherwise, <c>false</c>.</value>
@@ -178,8 +166,12 @@ namespace VAS.Core.ViewModel
 		/// The <see cref="EventType"/> in wich this event is tagged
 		/// </summary>
 		public EventType EventType {
-			get;
-			set;
+			get {
+				return Model.EventType;
+			}
+			set {
+				Model.EventType = value;
+			}
 		}
 
 		/// <summary>
@@ -188,8 +180,16 @@ namespace VAS.Core.ViewModel
 		/// <value>The tags.</value>
 		public RangeObservableCollection<Tag> Tags => Model.Tags;
 
+		/// <summary>
+		/// Gets the description.
+		/// </summary>
+		/// <value>The description.</value>
 		public string Description => Model.Description;
 
+		/// <summary>
+		/// Gets the miniature.
+		/// </summary>
+		/// <value>The miniature.</value>
 		public Image Miniature => Model.Miniature;
 
 		/// <summary>
@@ -203,7 +203,13 @@ namespace VAS.Core.ViewModel
 		public RangeObservableCollection<Team> Teams => Model.Teams;
 
 		/// <summary>
-		/// Compare the specified timelineEventVM with the calling one.
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.TimelineEventVM"/> is playing.
+		/// </summary>
+		/// <value><c>true</c> if playing; otherwise, <c>false</c>.</value>
+		public bool Playing { get; set; }
+
+		/// <summary>
+		/// Compare the specified TimelineEventVM with the calling one.
 		/// </summary>
 		/// <returns>The compare result.</returns>
 		/// <param name="evt">Timeline event to be compared with.</param>

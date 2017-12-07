@@ -2436,19 +2436,24 @@ namespace VAS.Tests.Services
 
 			PreparePlayer ();
 			IPlaylistElement element = new PlaylistImage (new Image (1, 1), new Time (100));
-			evt.Drawings.Add (new FrameDrawing () {
+			PlaylistDrawingVM elementVM = new PlaylistDrawingVM { Model = element };
+
+			eventVM1.Drawings.Add (new FrameDrawing () {
 				Pause = new Time (100)
 			});
 
-			playlist.Elements.Clear ();
-			playlist.Elements.Add (element);
-			playlist.Elements.Add (new PlaylistPlayElement (evt));
+			PlaylistPlayElementVM playlistPlayVM = new PlaylistPlayElementVM {
+				Model = new PlaylistPlayElement (eventVM1.Model)
+			};
 
+			playlistVM.ViewModels.Clear ();
+			playlistVM.ViewModels.Add (new PlaylistImageVM { Model = element });
+			playlistVM.ViewModels.Add (playlistPlayVM);
 			playerVM.FrameDrawing = new FrameDrawing ();
 
 			///Act
 
-			player.LoadPlaylistEvent (playlist, element, false);
+			player.LoadPlaylistEvent (playlistVM, elementVM, false);
 
 			///Assert
 

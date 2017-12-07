@@ -25,7 +25,7 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// ViewModel for <see cref="TimeNode"/> objects.
 	/// </summary>
-	public class TimeNodeVM : PlayableElementVM<TimeNode>, IVisible
+	public class TimeNodeVM : ViewModelBase<TimeNode>, IVisible
 	{
 		public TimeNodeVM ()
 		{
@@ -85,7 +85,7 @@ namespace VAS.Core.ViewModel
 		/// Gets the duration.
 		/// </summary>
 		/// <value>The duration.</value>
-		public Time Duration {
+		public new Time Duration {
 			get {
 				return Model.Duration;
 			}

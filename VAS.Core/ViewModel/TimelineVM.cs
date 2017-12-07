@@ -488,10 +488,10 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
-		void AddToEventTypesTimeline (TimelineEventVM timelineEventVM)
+		void AddToEventTypesTimeline (TimelineEventVM timelineEvent)
 		{
-			var timeline = FindTimelineForEventType (timelineEventVM.Model.EventType);
-			timeline.ViewModels.Add (timelineEventVM);
+			var timeline = FindTimelineForEventType (timelineEvent.EventType);
+			timeline.ViewModels.Add (timelineEvent);
 		}
 
 		void ReplaceToEventTypesTimeline (IEnumerable<TimelineEventVM> viewModels)
@@ -510,15 +510,15 @@ namespace VAS.Core.ViewModel
 			}
 		}
 
-		void AddToPlayersTimeline (TimelineEventVM timelineEventVM)
+		void AddToPlayersTimeline (TimelineEventVM timelineEvent)
 		{
-			foreach (Player player in timelineEventVM.Model.Players) {
+			foreach (Player player in timelineEvent.Players) {
 				if (!playerToTimeline.ContainsKey (player)) {
 					// FIXME: We are calling this a thousand times. This fix works because the first times
 					// we don't have the teams, but the next ones we do. We should call this only when we do.
 					continue;
 				}
-				playerToTimeline [player].ViewModels.Add (timelineEventVM);
+				playerToTimeline [player].ViewModels.Add (timelineEvent);
 			}
 		}
 

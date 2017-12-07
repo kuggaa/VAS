@@ -31,7 +31,7 @@ namespace VAS.Core.MVVMC
 	/// for selecting items within the collection.
 	/// </summary>
 	public class CollectionViewModel<TModel, TViewModel> : NestedViewModel<TViewModel>
-		where TViewModel : IViewModel<TModel>
+		where TViewModel : IViewModel<TModel>, new()
 	{
 		protected bool editing;
 		protected Dictionary<TModel, TViewModel> modelToViewModel;
@@ -113,7 +113,7 @@ namespace VAS.Core.MVVMC
 
 			if (viewModel == null) {
 				Log.Verbose ($"TypeMapping not found for {modelType}. Using the base ViewModel {typeof (TViewModel).Name}");
-				viewModel = (TViewModel)Activator.CreateInstance (typeof (TViewModel));
+				viewModel = new TViewModel ();
 			}
 			viewModel.Model = model;
 			modelToViewModel [model] = viewModel;
@@ -158,7 +158,7 @@ namespace VAS.Core.MVVMC
 		{
 			if (modelToViewModel.ContainsKey (model)) {
 				return modelToViewModel [model];
-			} 
+			}
 
 			var viewModel = CreateInstance (model);
 			if (!modelToViewModel.ContainsKey (model)) {

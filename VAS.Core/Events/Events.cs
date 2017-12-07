@@ -77,7 +77,7 @@ namespace VAS.Core.Events
 
 	public class EventsDeletedEvent : Event
 	{
-		public IEnumerable<TimelineEventVM> TimelineEventVMs { get; set; }
+		public IEnumerable<TimelineEventVM> TimelineEvents { get; set; }
 	}
 
 	public class EventLoadedEvent : Event
@@ -92,7 +92,7 @@ namespace VAS.Core.Events
 
 	public class MoveToEventTypeEvent : Event
 	{
-		public IList<TimelineEventVM> TimelineEventVMs { get; set; }
+		public IList<TimelineEventVM> TimelineEvents { get; set; }
 
 		public EventType EventType { get; set; }
 	}
@@ -114,7 +114,7 @@ namespace VAS.Core.Events
 
 	public class EventEditedEvent : Event
 	{
-		public TimelineEventVM TimelineEventVM { get; set; }
+		public TimelineEventVM TimelineEvent { get; set; }
 	}
 
 	public class DashboardEditedEvent : Event
@@ -354,7 +354,7 @@ namespace VAS.Core.Events
 
 	public class OpenedPresentationChangedEvent : Event
 	{
-		public Playlist Presentation { get; set; }
+		public PlaylistVM Presentation { get; set; }
 
 		public IVideoPlayerController Player { get; set; }
 	}

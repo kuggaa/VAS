@@ -304,13 +304,13 @@ namespace VAS.Drawing.Widgets
 		protected void ShowPlaysMenu (Point coords, EventTypeTimelineView catTimeline)
 		{
 			EventType ev = null;
-			List<TimelineEventVM> playVMs;
+			List<TimelineEventVM> plays;
 
-			playVMs = Selections.Select (p => (p.Drawable as TimelineEventView).TimelineEvent).ToList ();
+			plays = Selections.Select (p => (p.Drawable as TimelineEventView).TimelineEvent).ToList ();
 
 			ev = catTimeline.ViewModel.EventTypeVM.Model;
 			if (ev != null && ShowMenuEvent != null) {
-				ShowMenuEvent (playVMs, ev, Utils.PosToTime (coords, SecondsPerPixel));
+				ShowMenuEvent (plays, ev, Utils.PosToTime (coords, SecondsPerPixel));
 			}
 		}
 

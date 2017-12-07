@@ -44,7 +44,7 @@ namespace VAS.Services.Controller
 		/// Gets or sets the current loaded play.
 		/// </summary>
 		/// <value>The loaded play, null if no play.</value>
-		protected TimelineEventVM LoadedPlayVM { get; set; }
+		protected TimelineEventVM LoadedPlay { get; set; }
 
 		protected virtual VideoPlayerVM VideoPlayer { get; set; }
 
@@ -212,7 +212,7 @@ namespace VAS.Services.Controller
 		async Task HandleMoveToEventType (MoveToEventTypeEvent e)
 		{
 			// Only move the events where the event type changes for real
-			var newEventVMs = e.TimelineEventVMs.Where (vm => vm.Model.EventType != e.EventType);
+			var newEventVMs = e.TimelineEvents.Where (vm => vm.Model.EventType != e.EventType);
 
 			foreach (var eventVM in newEventVMs) {
 				var newEventVM = Cloner.Clone (eventVM);
@@ -229,27 +229,23 @@ namespace VAS.Services.Controller
 		void HandleDuplicateEvents (DuplicateEventsEvent e)
 		{
 			foreach (var play in e.TimelineEvents) {
-				var copy = play.Clone ();
+				var copy = play.Model.Clone ();
 
 				if (CheckTimelineEventsLimitation ()) {
 					return;
 				}
 
-				Project.Model.AddEvent (copy.Model);
+				Project.Model.AddEvent (copy);
 
 				App.Current.EventsBroker.Publish (new EventCreatedEvent {
-					TimelineEvent = copy
+					TimelineEvent = new TimelineEventVM { Model = copy }
 				});
 			}
 		}
 
 		async Task HandleDeleteEvents (EventsDeletedEvent e)
 		{
-<<<<<<< HEAD
 			await DeletePlays (e.TimelineEvents);
-=======
-			DeletePlays (e.TimelineEventVMs);
->>>>>>> bb2d89dd... Migrate events about TimelineEvent to VM
 		}
 
 		void HandleLoadEvent (LoadTimelineEventEvent<TimelineEventVM> e)
@@ -304,10 +300,10 @@ namespace VAS.Services.Controller
 				play.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
 			}
 
+			var evt = Project.Timeline.FullTimeline.Where (vm => vm.Model == play).FirstOrDefault ();
+
 			App.Current.EventsBroker.Publish (new EventCreatedEvent {
-				TimelineEvent = new TimelineEventVM () {
-					Model = play
-				}
+				TimelineEvent = evt
 			});
 
 			if (Project.ProjectType == ProjectType.FileProject) {
@@ -323,10 +319,9 @@ namespace VAS.Services.Controller
 			}
 		}
 
-<<<<<<< HEAD
-		async Task DeletePlays (IEnumerable<TimelineEvent> plays, bool askConfirmation = true)
+		async Task DeletePlays (IEnumerable<TimelineEventVM> plays, bool askConfirmation = true)
 		{
-			plays = plays.Where (p => p.Deletable);
+			plays = plays.Where (p => p.Model.Deletable);
 			Log.Debug (plays.Count () + " plays deleted");
 			if (askConfirmation) {
 				var delete = await App.Current.Dialogs.QuestionMessage (
@@ -336,25 +331,12 @@ namespace VAS.Services.Controller
 					return;
 				}
 			}
-			Project.Timeline.Model.RemoveRange (plays);
+			Project.Timeline.Model.RemoveRange (plays.Select (vm => vm.Model));
 			if (Project.ProjectType == ProjectType.FileProject) {
 				Save (Project);
 			}
 			if (LoadedPlay != null && plays.Contains (LoadedPlay)) {
 				await App.Current.EventsBroker.Publish (new LoadEventEvent ());
-=======
-		void DeletePlays (IEnumerable<TimelineEventVM> playVMs, bool update = true)
-		{
-			playVMs = playVMs.Where (p => p.Model.Deletable);
-			Log.Debug (playVMs.Count () + " plays deleted");
-
-			Project.Timeline.Model.RemoveRange (playVMs.Select (vm => vm.Model));
-			if (Project.ProjectType == ProjectType.FileProject) {
-				Save (Project);
-			}
-			if (LoadedPlayVM != null && playVMs.Contains (LoadedPlayVM)) {
-				App.Current.EventsBroker.Publish (new LoadEventEvent ());
->>>>>>> bb2d89dd... Migrate events about TimelineEvent to VM
 			}
 		}
 
@@ -401,15 +383,15 @@ namespace VAS.Services.Controller
 
 		void HandleEventLoadedEvent (EventLoadedEvent e)
 		{
-			LoadedPlayVM = e.TimelineEvent;
+			LoadedPlay = e.TimelineEvent;
 		}
 
 		void HandlePlaylistElementLoaded (PlaylistElementLoadedEvent e)
 		{
-			if (e.Element is PlaylistPlayElement) {
-				LoadedPlayVM = new TimelineEventVM () { Model = (e.Element as PlaylistPlayElement).Play };
+			if (e.Element is PlaylistPlayElementVM) {
+				LoadedPlay = (e.Element as PlaylistPlayElementVM).Play;
 			} else {
-				LoadedPlayVM = null;
+				LoadedPlay = null;
 			}
 		}
 	}

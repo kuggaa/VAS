@@ -51,7 +51,7 @@ namespace VAS.UI
 		Time accumTime;
 		DateTime currentPeriodStart;
 		List<string> gamePeriods;
-		TimelineEventVM lasteventVM;
+		TimelineEventVM lastevent;
 		MediaFile outputFile;
 		bool readyToCapture;
 		TextView hourText;
@@ -545,15 +545,15 @@ namespace VAS.UI
 			lasteventbox.Visible = true;
 			lastlabel.Text = e.TimelineEvent.Name;
 			lastlabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (e.TimelineEvent.Color));
-			lasteventVM = e.TimelineEvent;
+			lastevent = e.TimelineEvent;
 		}
 
 		void HandlePlayLast (object sender, EventArgs e)
 		{
-			if (lasteventVM != null) {
+			if (lastevent != null) {
 				App.Current.EventsBroker.Publish (
 					new LoadTimelineEventEvent<TimelineEventVM> {
-						Object = lasteventVM,
+						Object = lastevent,
 						Playing = true,
 					}
 				);
@@ -562,13 +562,13 @@ namespace VAS.UI
 
 		void HandleDeleteLast (object sender, EventArgs e)
 		{
-			if (lasteventVM != null) {
+			if (lastevent != null) {
 				App.Current.EventsBroker.Publish<EventsDeletedEvent> (
 					new EventsDeletedEvent {
-						TimelineEventVMs = new List<TimelineEventVM> { lasteventVM }
+						TimelineEvents = new List<TimelineEventVM> { lastevent }
 					}
 				);
-				lasteventVM = null;
+				lastevent = null;
 				lasteventbox.Visible = false;
 			}
 		}
