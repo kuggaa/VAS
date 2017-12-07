@@ -31,7 +31,7 @@ namespace VAS.UI.Menus
 	public class EventsMenu : Gtk.Menu
 	{
 		protected MenuItem render, drawings;
-		protected List<TimelineEventVM> playVMs;
+		protected List<TimelineEventVM> plays;
 
 		public EventsMenu ()
 		{
@@ -66,33 +66,33 @@ namespace VAS.UI.Menus
 
 		protected bool Disposed { get; private set; } = false;
 
-		public void ShowMenu (Project project, List<TimelineEventVM> playVMs)
+		public void ShowMenu (Project project, List<TimelineEventVM> plays)
 		{
-			ShowMenu (project, playVMs, null, null, null, false);
+			ShowMenu (project, plays, null, null, null, false);
 		}
 
-		protected void ShowMenu (Project project, IEnumerable<TimelineEventVM> playVMs, EventType eventType, Time time,
+		protected void ShowMenu (Project project, IEnumerable<TimelineEventVM> plays, EventType eventType, Time time,
 								 IList<EventType> eventTypes, bool editableName)
 		{
 
-			PrepareMenu (project, playVMs, eventType, time, eventTypes, editableName);
+			PrepareMenu (project, plays, eventType, time, eventTypes, editableName);
 			Popup ();
 		}
 
-		protected virtual void PrepareMenu (Project project, IEnumerable<TimelineEventVM> playVMs, EventType eventType, Time time,
+		protected virtual void PrepareMenu (Project project, IEnumerable<TimelineEventVM> plays, EventType eventType, Time time,
 						 IList<EventType> eventTypes, bool editableName)
 		{
-			this.playVMs = playVMs.ToList ();
-			if (playVMs == null) {
-				playVMs = new List<TimelineEventVM> ();
+			this.plays = plays.ToList ();
+			if (plays == null) {
+				plays = new List<TimelineEventVM> ();
 			}
-			MenuHelpers.FillExportToVideoFileMenu (render, null, playVMs, Catalog.GetString ("Render"));
+			MenuHelpers.FillExportToVideoFileMenu (render, null, plays, Catalog.GetString ("Render"));
 
-			drawings.Visible = this.playVMs.Count == 1 && this.playVMs.FirstOrDefault ().Drawings.Count > 0;
+			drawings.Visible = this.plays.Count == 1 && this.plays.FirstOrDefault ().Drawings.Count > 0;
 
 			if (drawings.Visible) {
 				Menu drawingsMenu = new Menu ();
-				for (int i = 0; i < playVMs.FirstOrDefault ().Drawings.Count; i++) {
+				for (int i = 0; i < plays.FirstOrDefault ().Drawings.Count; i++) {
 					int index = i;
 					MenuItem drawingItem = new MenuItem (Catalog.GetString ("Drawing ") + (i + 1));
 					MenuItem editItem = new MenuItem (Catalog.GetString ("Edit"));
@@ -103,18 +103,18 @@ namespace VAS.UI.Menus
 					drawingMenu.Append (editItem);
 					drawingMenu.Append (deleteItem);
 					editItem.Activated += (sender, e) => {
-						var playVM = playVMs.FirstOrDefault ();
+						var play = plays.FirstOrDefault ();
 						App.Current.EventsBroker.Publish (
 							new DrawFrameEvent {
-								Play = playVM,
+								Play = play,
 								DrawingIndex = index,
-								CamConfig = playVM.Drawings [index].CameraConfig,
+								CamConfig = play.Drawings [index].CameraConfig,
 							}
 						);
 					};
 					deleteItem.Activated += (sender, e) => {
-						playVMs.FirstOrDefault ().Drawings.RemoveAt (index);
-						playVMs.FirstOrDefault ().Model.UpdateMiniature ();
+						plays.FirstOrDefault ().Drawings.RemoveAt (index);
+						plays.FirstOrDefault ().Model.UpdateMiniature ();
 					};
 					drawingItem.Submenu = drawingMenu;
 					drawingMenu.ShowAll ();
@@ -128,7 +128,7 @@ namespace VAS.UI.Menus
 		{
 			render = new MenuItem ("");
 			Add (render);
-			render.Activated += (sender, e) => MenuHelpers.EmitRenderPlaylist (playVMs);
+			render.Activated += (sender, e) => MenuHelpers.EmitRenderPlaylist (plays);
 			drawings = new MenuItem (Catalog.GetString ("Drawings"));
 			Add (drawings);
 

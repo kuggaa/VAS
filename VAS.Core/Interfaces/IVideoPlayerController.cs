@@ -101,10 +101,10 @@ namespace VAS.Core.Interfaces
 		/// <summary>
 		/// Switch the specified play, playlist and element.
 		/// </summary>
-		/// <param name="playVM">Play.</param>
-		/// <param name="playlistVM">Playlist.</param>
+		/// <param name="play">Play.</param>
+		/// <param name="playlist">Playlist.</param>
 		/// <param name="element">Element.</param>
-		void Switch(TimelineEventVM playVM, PlaylistVM playlistVM, IPlayable element);
+		void Switch (TimelineEventVM play, PlaylistVM playlist, IPlayable element);
 
 		/// <summary>
 		/// Open the specified fileSet.

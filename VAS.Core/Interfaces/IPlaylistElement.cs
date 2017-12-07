@@ -18,7 +18,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using VAS.Core.Common;
-using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 
 namespace VAS.Core.Interfaces
@@ -34,11 +33,6 @@ namespace VAS.Core.Interfaces
 
 		Image Miniature {
 			get;
-		}
-
-		bool Playing {
-			get;
-			set;
 		}
 
 		Time Duration {
@@ -57,19 +51,8 @@ namespace VAS.Core.Interfaces
 		/// Gets or sets the cameras layout.
 		/// </summary>
 		/// <value>The cameras layout.</value>
-		object CamerasLayout
-		{
+		object CamerasLayout {
 			get;
 		}
 	}
-
-	//public interface IPlaylistElementVM : IPlaylistElement, IViewModel
-	//{
-
-	//}
-
-	//public interface IPlaylistElementVM<T> : IPlaylistElementVM, IViewModel<T>
-	//{
-
-	//}
 }

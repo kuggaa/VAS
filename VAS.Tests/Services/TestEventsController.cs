@@ -255,7 +255,7 @@ namespace VAS.Tests.Services
 
 			App.Current.EventsBroker.Publish (
 				new MoveToEventTypeEvent {
-					TimelineEventVMs = eventsToMove.Select (evt => new TimelineEventVM () { Model = evt }).ToList (),
+					TimelineEvents = eventsToMove.Select (evt => new TimelineEventVM () { Model = evt }).ToList (),
 					EventType = e2,
 				}
 			);
@@ -487,7 +487,7 @@ namespace VAS.Tests.Services
 			int countBeforeDelete = projectVM.Timeline.Model.Count;
 
 			App.Current.EventsBroker.Publish (new EventsDeletedEvent {
-				TimelineEventVMs = new List<TimelineEventVM> { new TimelineEventVM () { Model = evNotDeletable } }
+				TimelineEvents = new List<TimelineEventVM> { new TimelineEventVM () { Model = evNotDeletable } }
 			});
 
 			int countAfterDelete = projectVM.Timeline.Model.Count;
@@ -509,7 +509,7 @@ namespace VAS.Tests.Services
 			var plays = projectVM.Timeline.Model.Select (m => new TimelineEventVM () { Model = m });
 
 			App.Current.EventsBroker.Publish (new EventsDeletedEvent {
-				TimelineEventVMs = plays
+				TimelineEvents = plays
 			});
 
 			Assert.AreEqual (1, projectVM.Timeline.Model.Count);
@@ -531,7 +531,7 @@ namespace VAS.Tests.Services
 			var countBeforeDelete = projectVM.Timeline.Model.Count;
 
 			App.Current.EventsBroker.Publish (new EventsDeletedEvent {
-				TimelineEvents = projectVM.Timeline.Model
+				TimelineEvents = projectVM.Timeline.FullTimeline
 			});
 
 			Assert.AreEqual (countBeforeDelete, projectVM.Timeline.Model.Count);

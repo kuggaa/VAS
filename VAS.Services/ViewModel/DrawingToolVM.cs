@@ -56,7 +56,7 @@ namespace VAS.Services.ViewModel
 		/// Gets or sets the timeline event.
 		/// </summary>
 		/// <value>The timeline event.</value>
-		public TimelineEventVM TimelineEventVM {
+		public TimelineEventVM TimelineEvent {
 			get;
 			set;
 		}

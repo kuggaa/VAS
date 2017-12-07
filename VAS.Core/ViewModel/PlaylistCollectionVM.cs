@@ -190,7 +190,7 @@ namespace VAS.Core.ViewModel
 
 		bool CheckJustOneElementSelectedAndIsNotVideo ()
 		{
-			List<PlayableElementVM<IPlaylistElement>> elements = new List<PlayableElementVM<IPlaylistElement>> ();
+			List<PlaylistElementVM> elements = new List<PlaylistElementVM> ();
 			if (!Selection.Any ()) {
 				foreach (var playlist in ViewModels) {
 					elements.AddRange (playlist.Selection);

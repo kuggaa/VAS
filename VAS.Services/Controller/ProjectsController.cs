@@ -183,7 +183,7 @@ namespace VAS.Services.Controller
 
 		protected virtual async Task<bool> Save (TViewModel project, bool force)
 		{
-			if (!project.IsChanged) {
+			if (!project.Model.IsChanged) {
 				return false;
 			}
 			if (!force) {

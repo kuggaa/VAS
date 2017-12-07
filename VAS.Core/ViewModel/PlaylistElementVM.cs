@@ -29,16 +29,14 @@ namespace VAS.Core.ViewModel
 	/// <summary>
 	/// ViewModel for PlaylistElements, with an IPlaylistElement as Model.
 	/// </summary>
-	public class PlaylistElementVM : PlayableElementVM<IPlaylistElement>
+	public class PlaylistElementVM : ViewModelBase<IPlaylistElement>, IPlayable
 	{
 		/// <summary>
 		/// Gets the description of the playlist element
 		/// </summary>
 		/// <value>The description.</value>
-		public string Description
-		{
-			get
-			{
+		public string Description {
+			get {
 				return Model.Description;
 			}
 		}
@@ -54,86 +52,111 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
+		/// Gets the cameras config.
+		/// </summary>
+		/// <value>The cameras config.</value>
+		public ObservableCollection<CameraConfig> CamerasConfig => Model.CamerasConfig;
+
+		/// <summary>
+		/// Gets the cameras layout.
+		/// </summary>
+		/// <value>The cameras layout.</value>
+		public object CamerasLayout => Model.CamerasLayout;
+
+		/// <summary>
+		/// Gets the duration.
+		/// </summary>
+		/// <value>The duration.</value>
+		public Time Duration => Model.Duration;
+
+		/// <summary>
 		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.PlaylistElementVM"/> is playing.
 		/// </summary>
 		/// <value><c>true</c> if playing; otherwise, <c>false</c>.</value>
-		public bool Playing {
-			get {
-				return Model.Playing;
-			}
-			set {
-				Model.Playing = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets the duration of the playlist element.
-		/// </summary>
-		/// <value>The duration.</value>
-		public Time Duration {
-			get {
-				return Model.Duration;
-			}
-		}
-
-		public ObservableCollection<CameraConfig> CamerasConfig => Model.CamerasConfig;
-
-		public object CamerasLayout => Model.CamerasLayout;
+		public bool Playing { get; set; }
 	}
 
-	public class PlaylistPlayElementVM : PlaylistElementVM
+	public class PlaylistPlayElementVM : PlaylistElementVM, IPlayableEvent
 	{
-		public PlaylistPlayElementVM()
+		public PlaylistPlayElementVM ()
 		{
-			Play = new TimelineEventVM();
+			Play = new TimelineEventVM ();
 		}
 
 		/// <summary>
 		/// Gets or sets the model.
 		/// </summary>
 		/// <value>The model.</value>
-		public PlaylistPlayElement TypedModel
-		{
-			get
-			{
+		public PlaylistPlayElement TypedModel {
+			get {
 				return (PlaylistPlayElement)base.Model;
 			}
 		}
 
 		[PropertyChanged.DoNotCheckEquality]
-		public override IPlaylistElement Model
-		{
-			get
-			{
+		public override IPlaylistElement Model {
+			get {
 				return TypedModel;
 			}
-			set
-			{
+			set {
 				base.Model = value;
-				Play.Model = ((PlaylistPlayElement)value).Play;
+				Play.Model = ((PlaylistPlayElement)value)?.Play;
 			}
 		}
 
-
-
-		public string Title
-		{
-			get
-			{
+		public string Title {
+			get {
 				return TypedModel.Title;
 			}
-			set
-			{
+			set {
 				TypedModel.Title = value;
 			}
 		}
 
-		public TimelineEventVM Play
-		{
+		/// <summary>
+		/// Gets or sets the play.
+		/// </summary>
+		/// <value>The play.</value>
+		public TimelineEventVM Play {
 			get;
 			set;
 		}
 
+		/// <summary>
+		/// Gets the starting time.
+		/// </summary>
+		/// <value>The start.</value>
+		public Time Start => TypedModel.Start;
+
+		/// <summary>
+		/// Gets the stopping time.
+		/// </summary>
+		/// <value>The stop.</value>
+		public Time Stop => TypedModel.Stop;
+
+		/// <summary>
+		/// Gets or sets the rate.
+		/// </summary>
+		/// <value>The rate.</value>
+		public float Rate { get => TypedModel.Rate; set => TypedModel.Rate = value; }
+
+		/// <summary>
+		/// Gets the drawings.
+		/// </summary>
+		/// <value>The drawings.</value>
+		public RangeObservableCollection<FrameDrawing> Drawings => TypedModel.Drawings;
+
+		/// <summary>
+		/// Gets or sets the VAS . core. interfaces. IP laylist event element. cameras layout.
+		/// </summary>
+		/// <value>The VAS . core. interfaces. IP laylist event element. cameras layout.</value>
+		object IPlaylistEventElement.CamerasLayout { get => TypedModel.CamerasLayout; set => TypedModel.CamerasLayout = value; }
+
+		/// <summary>
+		/// Gets or sets the VAS . core. interfaces. IP laylist event element. cameras config.
+		/// </summary>
+		/// <value>The VAS . core. interfaces. IP laylist event element. cameras config.</value>
+		ObservableCollection<CameraConfig> IPlaylistEventElement.CamerasConfig { get => TypedModel.CamerasConfig; set => TypedModel.CamerasConfig = value; }
 	}
 
 	public class PlaylistVideoVM : PlaylistElementVM

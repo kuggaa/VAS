@@ -144,15 +144,6 @@ namespace VAS.Core.Store
 
 		#endregion
 
-		/// <summary>
-		/// Gets or sets the title of the playlist element
-		/// </summary>
-		/// <value>The title of the playlist element</value>
-		public string Title {
-			get;
-			set;
-		}
-
 		// All properties that are not preload must be overriden so that Fody.Loader can process
 		// this properties and inject the CheckIsLoaded method
 		public override Time Start {
@@ -221,15 +212,6 @@ namespace VAS.Core.Store
 		/// Event notes
 		/// </summary>
 		public string Notes {
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// Whether this event is currently playing.
-		/// </summary>
-		[JsonIgnore]
-		public bool Playing {
 			get;
 			set;
 		}

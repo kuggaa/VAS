@@ -82,8 +82,8 @@ namespace VAS.Services
 		TimeNode visibleRegion;
 		VideoPlayerOperationMode mode;
 		PlaylistVM loadedPlaylistVM;
-		TimelineEvent loadedEvent;
-		IPlaylistEventElement loadedPlaylistEvent;
+		TimelineEventVM loadedEvent;
+		IPlayableEvent loadedPlaylistEvent;
 		IPlayable loadedPlaylistElement;
 		object camerasLayout;
 		bool supportsMultipleCameras;
@@ -618,37 +618,35 @@ namespace VAS.Services
 			player.Expose ();
 		}
 
-		public void Switch (TimelineEventVM playVM, PlaylistVM playlistVM, IPlayable element)
+		public void Switch (TimelineEventVM play, PlaylistVM playlist, IPlayable element)
 		{
 			UpdatePlayingState (false);
 
-			loadedEvent = playVM?.Model;
+			loadedEvent = play;
 			loadedPlaylistElement = element;
 
 			playerVM.FrameDrawing = null;
-			LoadedPlaylistVM = playlistVM;
-			LoadedTimelineEvent = playVM?.Model ?? (element as PlayableElementVM<IPlaylistElement>).Model as IPlaylistEventElement;
+			LoadedPlaylist = playlist;
+			LoadedTimelineEvent = play ?? element as IPlayableEvent;
 
 			UpdatePlayingState (true);
 		}
 
-		public virtual void LoadPlaylistEvent (PlaylistVM playlistVM, IPlayable element, bool playing)
+		public virtual void LoadPlaylistEvent (PlaylistVM playlist, IPlayable element, bool playing)
 		{
-			var model = (element as PlayableElementVM<IPlaylistElement>).Model;
-
-			Log.Debug (string.Format ("Loading playlist element \"{0}\"", model.Description));
+			Log.Debug (string.Format ("Loading playlist element \"{0}\"", element.Description));
 
 			if (!ready) {
-				EmitPrepareViewEvent (model.CamerasConfig, model.CamerasLayout);
-				delayedOpen = () => LoadPlaylistEvent (playlistVM, element, playing);
+				EmitPrepareViewEvent (element.CamerasConfig, element.CamerasLayout);
+				delayedOpen = () => LoadPlaylistEvent (playlist, element, playing);
 				return;
 			}
 
-			if (playlistVM == null) {
+			if (playlist == null) {
 				return;
 			}
 
-			Switch (null, playlistVM, element);
+			Switch (null, playlist, element);
 
 			switch (element) {
 			case PlaylistPlayElementVM ple:
@@ -669,36 +667,35 @@ namespace VAS.Services
 
 			UpdateDuration ();
 			UpdatePlayingState (true);
-			LoadedPlaylist.SetActive ((PlayableElementVM<IPlaylistElement>)element);
-			EmitElementLoaded (element, playlistVM);
+			LoadedPlaylist.SetActive ((PlaylistElementVM)element);
+			EmitElementLoaded (element, playlist);
 		}
 
-		public virtual void LoadEvent (TimelineEventVM eventVM, Time seekTime, bool playing)
+		public virtual void LoadEvent (TimelineEventVM evt, Time seekTime, bool playing)
 		{
-			playerVM.LoadedElement = eventVM;
+			playerVM.LoadedElement = evt;
 
-			TimelineEvent evt = eventVM.Model;
 			MediaFileSet fileSet = evt.FileSet;
-			Log.Debug (string.Format ("Loading event \"{0}\" seek:{1} playing:{2}", eventVM.Name, seekTime, playing));
+			Log.Debug (string.Format ("Loading event \"{0}\" seek:{1} playing:{2}", evt.Name, seekTime, playing));
 
 			if (!ready) {
 				EmitPrepareViewEvent (evt.CamerasConfig, evt.CamerasLayout);
-				delayedOpen = () => LoadEvent (eventVM, seekTime, playing);
+				delayedOpen = () => LoadEvent (evt, seekTime, playing);
 				return;
 			}
 
-			Switch (eventVM, null, null);
+			Switch (evt, null, null);
 
-			if (eventVM.Start != null && eventVM.Stop != null) {
-				LoadSegment (fileSet, eventVM.Start, eventVM.Stop, eventVM.Start + seekTime, evt.Rate,
+			if (evt.Start != null && evt.Stop != null) {
+				LoadSegment (fileSet, evt.Start, evt.Stop, evt.Start + seekTime, evt.Rate,
 							 evt.CamerasConfig, evt.CamerasLayout, playing);
 				if (LoadedTimelineEvent == null) { // LoadSegment sometimes removes the loadedEvent
 					LoadedTimelineEvent = evt;
 				}
-			} else if (eventVM.EventTime != null) {
-				AbsoluteSeek (eventVM.EventTime, true);
+			} else if (evt.EventTime != null) {
+				AbsoluteSeek (evt.EventTime, true);
 			} else {
-				Log.Error ("Event does not have timing info: " + eventVM);
+				Log.Error ("Event does not have timing info: " + evt);
 			}
 			UpdateDuration ();
 
@@ -788,13 +785,15 @@ namespace VAS.Services
 		public virtual void DrawFrame ()
 		{
 			// FIXME: Drawing tool could use IPlaylistEventElement
-			//TimelineEvent evt = loadedEvent ?? (loadedPlaylistElement as PlaylistPlayElement)?.Play;
+
+			TimelineEventVM evt = playerVM.LoadedElement as TimelineEventVM ??
+										   (loadedPlaylistElement as PlaylistPlayElementVM)?.Play;
 
 			App.Current.EventsBroker.Publish (
 				new DrawFrameEvent {
-					Play = playerVM.LoadedElement as TimelineEventVM,
+					Play = evt,
 					DrawingIndex = -1,
-					CamConfig = (playerVM.LoadedElement as PlayableElementVM<IPlaylistElement>).Model.CamerasConfig [0],
+					CamConfig = evt == null ? null : evt.Model.CamerasConfig [0],
 					Frame = CurrentFrame
 				}
 			);
@@ -991,13 +990,12 @@ namespace VAS.Services
 			}
 		}
 
-		void EmitElementLoaded (IPlayable element, PlaylistVM playlistVM)
+		void EmitElementLoaded (IPlayable element, PlaylistVM playlist)
 		{
-			playerVM.NextCommand.Executable = playlistVM != null ? playlistVM.HasNext () : false;
-
+			playerVM.NextCommand.Executable = playlist != null ? playlist.HasNext () : false;
+			playerVM.LoadedElement = element;
 
 			if (element == null || element is TimelineEventVM) {
-				playerVM.LoadedElement = element;
 				App.Current.EventsBroker.Publish (
 					new EventLoadedEvent {
 						TimelineEvent = element as TimelineEventVM,
@@ -1006,7 +1004,7 @@ namespace VAS.Services
 			} else {
 				App.Current.EventsBroker.Publish (
 					new PlaylistElementLoadedEvent {
-						Playlist = playlistVM,
+						Playlist = playlist,
 						Element = element,
 					}
 				);
@@ -1103,7 +1101,7 @@ namespace VAS.Services
 			}
 		}
 
-		IPlaylistEventElement LoadedTimelineEvent {
+		IPlayableEvent LoadedTimelineEvent {
 			set {
 				if (loadedPlaylistEvent != null) {
 					loadedPlaylistEvent.PropertyChanged -= HandleLoadedTimelineEventPropertyChangedEventHandler;
@@ -1177,8 +1175,9 @@ namespace VAS.Services
 			var elementTuple = LoadedPlaylist.GetElementAtTime (time);
 			var elementAtTime = elementTuple.Item1;
 			var elementStart = elementTuple.Item2;
-			if (elementAtTime?.Model != (loadedPlaylistElement as PlayableElementVM<IPlaylistElement>)?.Model || (elementStart > time ||
-				elementStart + elementAtTime.Model.Duration < time)) {
+
+			if (elementAtTime?.Model != (loadedPlaylistElement as PlaylistElementVM)?.Model || (elementStart > time ||
+				elementStart + elementAtTime.Duration < time)) {
 				if (elementAtTime == null) {
 					Log.Debug (String.Format ("There is no playlist element at {0}.", time));
 					return false;
@@ -1551,7 +1550,7 @@ namespace VAS.Services
 
 				EmitTimeChanged (currentTime, relativeTime);
 
-				if (imageLoadedTS >= (loadedPlaylistElement as PlayableElementVM<IPlaylistElement>).Model.Duration) {
+				if (imageLoadedTS >= loadedPlaylistElement.Duration) {
 					Next ();
 				} else {
 					if (Playing) {
@@ -1622,7 +1621,7 @@ namespace VAS.Services
 				}
 
 				if (StillImageLoaded) {
-					duration = (loadedPlaylistElement as PlayableElementVM<IPlaylistElement>).Model.Duration;
+					duration = loadedPlaylistElement.Duration;
 				} else if (SegmentLoaded) {
 					duration = loadedSegment.Stop - loadedSegment.Start;
 				} else {
@@ -1747,10 +1746,10 @@ namespace VAS.Services
 		void HandleKeyPressed (bool isRight)
 		{
 			if (playerVM.LoadedElement is TimelineEventVM) {
-				var timelineEventVM = playerVM.LoadedElement as TimelineEventVM;
+				var timelineEvent = playerVM.LoadedElement as TimelineEventVM;
 
-				Time time = timelineEventVM.SelectedGrabber ==
-										   SelectionPosition.Left ? timelineEventVM.Start : timelineEventVM.Stop;
+				Time time = timelineEvent.SelectedGrabber ==
+										   SelectionPosition.Left ? timelineEvent.Start : timelineEvent.Stop;
 
 				playerVM.PauseCommand.Execute (false);
 

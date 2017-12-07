@@ -59,12 +59,6 @@ namespace VAS.Core.Store.Playlists
 			}
 		}
 
-		[JsonIgnore]
-		public bool Playing {
-			get;
-			set;
-		}
-
 		public Time Duration {
 			get {
 				return File.Duration;

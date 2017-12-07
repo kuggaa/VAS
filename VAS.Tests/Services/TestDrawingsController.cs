@@ -113,8 +113,8 @@ namespace VAS.Tests.Services
 
 			mToolkitMock.Verify (m => m.GetFramesCapturer (), Times.Never ());
 			stateControllerMock.Verify (s => s.MoveToModal (DrawingToolState.NAME, It.IsAny<ExpandoObject> (), false));
-			Assert.AreEqual (evtVM, properties.timelineEventVM);
-			Assert.AreEqual (evtVM.Model.CamerasConfig [0], properties.cameraconfig);
+			Assert.AreEqual (evtVM, properties.timelineEvent);
+			Assert.AreEqual (evtVM.CamerasConfig [0], properties.cameraconfig);
 			Assert.AreEqual (frame, properties.frame);
 			Assert.IsNotNull (properties.drawing);
 		}
@@ -137,9 +137,9 @@ namespace VAS.Tests.Services
 
 			mToolkitMock.Verify (m => m.GetFramesCapturer (), Times.Never ());
 			stateControllerMock.Verify (s => s.MoveToModal (DrawingToolState.NAME, It.IsAny<ExpandoObject> (), false));
-			Assert.AreEqual (evtVM, properties.timelineEventVM);
-			Assert.AreEqual (evtVM.Model.CamerasConfig [0], properties.cameraconfig);
-			Assert.AreEqual (evtVM.Model.Drawings [0], properties.drawing);
+			Assert.AreEqual (evtVM, properties.timelineEvent);
+			Assert.AreEqual (evtVM.CamerasConfig [0], properties.cameraconfig);
+			Assert.AreEqual (evtVM.Drawings [0], properties.drawing);
 			Assert.AreEqual (frame, properties.frame);
 		}
 
@@ -161,7 +161,7 @@ namespace VAS.Tests.Services
 
 			mToolkitMock.Verify (m => m.GetFramesCapturer (), Times.Never ());
 			stateControllerMock.Verify (s => s.MoveToModal (DrawingToolState.NAME, It.IsAny<ExpandoObject> (), false));
-			Assert.IsNull (properties.timelineEventVM);
+			Assert.IsNull (properties.timelineEvent);
 			Assert.AreEqual (frame, properties.frame);
 		}
 
@@ -182,10 +182,10 @@ namespace VAS.Tests.Services
 
 			videoPlayerMock.Verify (p => p.Pause (true), Times.Once ());
 			mToolkitMock.Verify (m => m.GetFramesCapturer (), Times.Once ());
-			framesCapturerMock.Verify (m => m.Open (evtVM.Model.FileSet.MediaFiles [0].FilePath), Times.Once ());
+			framesCapturerMock.Verify (m => m.Open (evtVM.FileSet.MediaFiles [0].FilePath), Times.Once ());
 			framesCapturerMock.Verify (m => m.GetFrame (videoPlayerMock.Object.CurrentTime, true,
-														(int)evtVM.Model.FileSet.MediaFiles [0].DisplayVideoWidth,
-														(int)evtVM.Model.FileSet.MediaFiles [0].DisplayVideoHeight), Times.Once ());
+														(int)evtVM.FileSet.MediaFiles [0].DisplayVideoWidth,
+														(int)evtVM.FileSet.MediaFiles [0].DisplayVideoHeight), Times.Once ());
 			framesCapturerMock.Verify (m => m.Dispose (), Times.Once ());
 		}
 
@@ -205,10 +205,10 @@ namespace VAS.Tests.Services
 			});
 
 			mToolkitMock.Verify (m => m.GetFramesCapturer (), Times.Once ());
-			framesCapturerMock.Verify (m => m.Open (evtVM.Model.FileSet.MediaFiles [0].FilePath), Times.Once ());
-			framesCapturerMock.Verify (m => m.GetFrame (evtVM.Model.Drawings [0].Render, true,
-														(int)evtVM.Model.FileSet.MediaFiles [0].DisplayVideoWidth,
-														(int)evtVM.Model.FileSet.MediaFiles [0].DisplayVideoHeight), Times.Once ());
+			framesCapturerMock.Verify (m => m.Open (evtVM.FileSet.MediaFiles [0].FilePath), Times.Once ());
+			framesCapturerMock.Verify (m => m.GetFrame (evtVM.Drawings [0].Render, true,
+														(int)evtVM.FileSet.MediaFiles [0].DisplayVideoWidth,
+														(int)evtVM.FileSet.MediaFiles [0].DisplayVideoHeight), Times.Once ());
 			framesCapturerMock.Verify (m => m.Dispose (), Times.Once ());
 		}
 

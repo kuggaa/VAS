@@ -16,9 +16,29 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.ObjectModel;
+using VAS.Core.Common;
+using VAS.Core.Store;
+
 namespace VAS.Core.Interfaces
 {
-	public interface IPlayable
+	/// <summary>
+	/// Base interface for ViewModels that can be loaded into a video player
+	/// </summary>
+	public interface IPlayable : IPlaylistElement
 	{
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.Interfaces.IPlayable"/> is playing.
+		/// </summary>
+		/// <value><c>true</c> if playing; otherwise, <c>false</c>.</value>
+		bool Playing { get; set; }
+	}
+
+	/// <summary>
+	/// Base interface for ViewModels that can be loaded into a video player and have a certain duration
+	/// </summary>
+	public interface IPlayableEvent : IPlayable, IPlaylistEventElement
+	{
+
 	}
 }

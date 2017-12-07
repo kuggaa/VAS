@@ -53,7 +53,7 @@ namespace VAS.UI.Dialog
 		const double ZOOM_PAGE = 0.2;
 
 		readonly Blackboard blackboard;
-		TimelineEventVM playVM;
+		TimelineEventVM play;
 		FrameDrawing drawing;
 		CameraConfig camConfig;
 		Drawable selectedDrawable;
@@ -239,8 +239,8 @@ namespace VAS.UI.Dialog
 				viewModel = value;
 				if (viewModel != null) {
 					viewModel.PropertyChanged += HandleViewModelPropertyChanged;
-					if (viewModel.TimelineEventVM?.Model != null) {
-						LoadPlay (viewModel.TimelineEventVM, viewModel.Frame, viewModel.Drawing, viewModel.CameraConfig);
+					if (viewModel.TimelineEvent?.Model != null) {
+						LoadPlay (viewModel.TimelineEvent, viewModel.Frame, viewModel.Drawing, viewModel.CameraConfig);
 					} else {
 						LoadFrame (viewModel.Frame);
 					}
@@ -400,10 +400,10 @@ namespace VAS.UI.Dialog
 			}
 		}
 
-		public void LoadPlay (TimelineEventVM playVM, Image frame, FrameDrawing drawing,
+		public void LoadPlay (TimelineEventVM play, Image frame, FrameDrawing drawing,
 							  CameraConfig camConfig)
 		{
-			this.playVM = playVM;
+			this.play = play;
 			this.drawing = drawing;
 			this.camConfig = camConfig;
 			scaleFactor = (double)frame.Width / 500;
@@ -672,13 +672,13 @@ namespace VAS.UI.Dialog
 		async Task SaveToProject ()
 		{
 			drawing.RegionOfInterest = blackboard.RegionOfInterest;
-			if (!playVM.Drawings.Contains (drawing)) {
-				playVM.Drawings.Add (drawing);
+			if (!play.Drawings.Contains (drawing)) {
+				play.Drawings.Add (drawing);
 			}
 			drawing.Miniature = blackboard.Save ();
 			drawing.Miniature.ScaleInplace (Constants.MAX_THUMBNAIL_SIZE,
 				Constants.MAX_THUMBNAIL_SIZE);
-			playVM.Model.UpdateMiniature ();
+			play.Model.UpdateMiniature ();
 			drawing = null;
 			ViewModel.DrawingSaved ();
 			await App.Current.StateController.MoveBack ();

@@ -36,7 +36,7 @@ namespace VAS.UI.Menus
 
 		protected MenuItem edit, newPlay, del, addPLN, snapshot, render;
 		protected MenuItem duplicate, moveCat, drawings;
-		protected List<TimelineEventVM> playVMs;
+		protected List<TimelineEventVM> plays;
 		protected EventType eventType;
 		protected Time time;
 		// FIXME: Use ProjectVM
@@ -75,32 +75,32 @@ namespace VAS.UI.Menus
 
 		protected bool Disposed { get; private set; } = false;
 
-		public void ShowListMenu (Project project, IEnumerable<TimelineEventVM> playVMs)
+		public void ShowListMenu (Project project, IEnumerable<TimelineEventVM> plays)
 		{
-			ShowMenu (project, playVMs, null, null, project.EventTypes, true);
+			ShowMenu (project, plays, null, null, project.EventTypes, true);
 		}
 
-		public virtual void ShowMenu (Project project, IEnumerable<TimelineEventVM> playVMs)
+		public virtual void ShowMenu (Project project, IEnumerable<TimelineEventVM> plays)
 		{
-			ShowMenu (project, playVMs, null, null, project.EventTypes, false);
+			ShowMenu (project, plays, null, null, project.EventTypes, false);
 		}
 
-		public void ShowTimelineMenu (Project project, IEnumerable<TimelineEventVM> playVMs, EventType eventType, Time time)
+		public void ShowTimelineMenu (Project project, IEnumerable<TimelineEventVM> plays, EventType eventType, Time time)
 		{
-			ShowMenu (project, playVMs, eventType, time, project.EventTypes, false);
+			ShowMenu (project, plays, eventType, time, project.EventTypes, false);
 		}
 
-		protected void ShowMenu (Project project, IEnumerable<TimelineEventVM> playVMs, EventType eventType, Time time,
+		protected void ShowMenu (Project project, IEnumerable<TimelineEventVM> plays, EventType eventType, Time time,
 										 IList<EventType> eventTypes, bool editableName)
 		{
-			PrepareMenu (project, playVMs, eventType, time, eventTypes, editableName);
+			PrepareMenu (project, plays, eventType, time, eventTypes, editableName);
 			Popup ();
 		}
 
-		protected virtual void PrepareMenu (Project project, IEnumerable<TimelineEventVM> playVMs, EventType eventType, Time time,
+		protected virtual void PrepareMenu (Project project, IEnumerable<TimelineEventVM> plays, EventType eventType, Time time,
 										 IList<EventType> eventTypes, bool editableName)
 		{
-			this.playVMs = playVMs.ToList ();
+			this.plays = plays.ToList ();
 			this.eventType = eventType;
 			this.time = time;
 			this.project = project;
@@ -113,14 +113,14 @@ namespace VAS.UI.Menus
 				newPlay.Visible = false;
 			}
 
-			if (playVMs == null) {
-				playVMs = new List<TimelineEventVM> ();
+			if (plays == null) {
+				plays = new List<TimelineEventVM> ();
 			}
 
-			del.Visible = playVMs.Count () > 0;
+			del.Visible = plays.Count () > 0;
 
-			if (playVMs.Count () > 0) {
-				string label = String.Format ("{0} ({1})", Catalog.GetString ("Delete"), playVMs.Count ());
+			if (plays.Count () > 0) {
+				string label = String.Format ("{0} ({1})", Catalog.GetString ("Delete"), plays.Count ());
 				del.SetLabel (label);
 			}
 		}
@@ -141,7 +141,7 @@ namespace VAS.UI.Menus
 			del.Activated += (sender, e) => {
 				App.Current.EventsBroker.Publish<EventsDeletedEvent> (
 					new EventsDeletedEvent {
-						TimelineEventVMs = playVMs
+						TimelineEvents = plays
 					}
 				);
 			};
@@ -162,11 +162,11 @@ namespace VAS.UI.Menus
 			);
 		}
 
-		void EmitRenderPlaylist (List<TimelineEventVM> playVMs)
+		void EmitRenderPlaylist (List<TimelineEventVM> plays)
 		{
 			Playlist pl = new Playlist ();
-			foreach (TimelineEventVM playVM in playVMs) {
-				pl.Elements.Add (new PlaylistPlayElement (playVM.Model));
+			foreach (TimelineEventVM play in plays) {
+				pl.Elements.Add (new PlaylistPlayElement (play.Model));
 			}
 			App.Current.EventsBroker.Publish<RenderPlaylistEvent> (
 				new RenderPlaylistEvent {
