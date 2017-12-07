@@ -57,7 +57,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		object applyButton = new object ();
 		protected Rectangle editRect, cancelRect, applyRect;
 		double catWidth, heightPerRow;
-		Dictionary<TagVM, LinkAnchorView> subcatAnchors, cachedAnchors;
+		Dictionary<LinkAnchorView, TagVM> subcatAnchors;
 
 		public AnalysisEventButtonView () : base ()
 		{
@@ -83,7 +83,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			}
 			MinWidth = 100;
 			MinHeight = HeaderHeight * 2;
-			subcatAnchors = new Dictionary<TagVM, LinkAnchorView> ();
+			subcatAnchors = new Dictionary<LinkAnchorView, TagVM> ();
 		}
 
 		protected override void DisposeManagedResources ()
@@ -93,7 +93,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				timer.Dispose ();
 				timer = null;
 			}
-			foreach (LinkAnchorView anchor in subcatAnchors.Values.ToList ()) {
+			foreach (LinkAnchorView anchor in subcatAnchors.Keys.ToList ()) {
 				RemoveAnchor (anchor);
 			}
 		}
@@ -212,7 +212,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		void RemoveAnchor (LinkAnchorView anchor)
 		{
 			anchor.Dispose ();
-			subcatAnchors.RemoveKeysByValue (anchor);
+			subcatAnchors.Remove (anchor);
 		}
 
 		void EmitCreateEvent ()
@@ -287,15 +287,15 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		{
 			LinkAnchorView anchor;
 
-			if (subcatAnchors.ContainsKey (tag)) {
-				anchor = subcatAnchors [tag];
+			if (subcatAnchors.ContainsValue (tag)) {
+				anchor = subcatAnchors.GetKeyByValue(tag);
 				anchor.RelativePosition = point;
 			} else {
 				anchor = new LinkAnchorView (this, new List<TagVM> { tag }, point);
 				anchor.RedrawEvent += (co, area) => {
 					EmitRedrawEvent (anchor, area);
 				};
-				subcatAnchors.Add (tag, anchor);
+				subcatAnchors.Add (anchor, tag);
 			}
 			anchor.Width = width;
 			anchor.Height = height;
@@ -332,7 +332,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				Selection sel = anchor.GetSelection (p, precision, inMotion);
 				if (sel != null)
 					return sel;
-				foreach (LinkAnchorView subcatAnchor in subcatAnchors.Values) {
+				foreach (LinkAnchorView subcatAnchor in subcatAnchors.Keys) {
 					sel = subcatAnchor.GetSelection (p, precision, inMotion);
 					if (sel != null)
 						return sel;
@@ -352,7 +352,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 			if (sourceTags == null || sourceTags.Count == 0) {
 				return base.GetAnchor (sourceTags);
 			} else {
-				return subcatAnchors [sourceTags [0]];
+				return subcatAnchors.GetKeyByValue (sourceTags [0]);
 			}
 		}
 
@@ -649,7 +649,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 			anchor.Height = HeaderHeight;
 			DrawAnchor (tk, null);
-			foreach (LinkAnchorView a in subcatAnchors.Values) {
+			foreach (LinkAnchorView a in subcatAnchors.Keys) {
 				a.Draw (tk, null);
 			}
 		}
@@ -716,9 +716,9 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 			/* Remove anchor object that where not reused
 				 * eg: after removinga a subcategory tag */
-			foreach (TagVM tag in subcatAnchors.Keys.ToList ()) {
-				if (!ViewModel.Tags.Contains (tag)) {
-					RemoveAnchor (subcatAnchors [tag]);
+			foreach (var tagEntry in subcatAnchors) {
+				if (!ViewModel.Tags.Contains (tagEntry.Value)) {
+					RemoveAnchor (tagEntry.Key);
 				}
 			}
 			if (!ShowLinks) {

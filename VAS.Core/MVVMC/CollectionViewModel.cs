@@ -145,11 +145,22 @@ namespace VAS.Core.MVVMC
 
 			var viewModels = new List<TViewModel> ();
 			foreach (TModel tModel in models) {
-				var viewModel = CreateInstance (tModel);
+				// It is possible that some viewmodel has been created first as dependency of another
+				var viewModel = GetOrCreateViewModel (tModel);
 				viewModels.Add (viewModel);
-				modelToViewModel [tModel] = viewModel;
 			}
 			ViewModels.InsertRange (index, viewModels);
+		}
+
+		protected TViewModel GetOrCreateViewModel (TModel model)
+		{
+			if (modelToViewModel.ContainsKey (model)) {
+				return modelToViewModel [model];
+			} 
+
+			var viewModel = CreateInstance (model);
+			modelToViewModel [model] = viewModel;
+			return viewModel;
 		}
 
 		protected void HandleViewModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
