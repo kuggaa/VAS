@@ -65,21 +65,11 @@ namespace VAS.Core.Store
 
 		public override int GetHashCode ()
 		{
-			if (Value != null && Group != null)
-			{
+			if (Value != null && Group != null) {
 				return (Value + Group).GetHashCode ();
 			}
 
 			return base.GetHashCode ();
-		}
-
-		public override int GetHashCode ()
-		{
-			if (Value != null && Group != null) {
-				return (Value + Group).GetHashCode ();
-			} else {
-				return base.GetHashCode ();
-			}
 		}
 
 		public override string ToString ()
