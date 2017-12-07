@@ -155,6 +155,7 @@
     <Compile Include="MVVMC\TestOneWayPropertyBinding.cs" />
     <Compile Include="Drawing\Widgets\TestBlackboard.cs" />
     <Compile Include="Core\Filters\TestVisibleRangeObservableProxy.cs" />
+    <Compile Include="Core\ViewModel\TestDashboardButtonCollectionVM.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

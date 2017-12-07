@@ -40,31 +40,45 @@ namespace VAS.Core.ViewModel
 
 		protected override DashboardButtonVM CreateInstance (DashboardButton model)
 		{
-			if (cachedButtonVMs.ContainsKey (model)) {
-				return cachedButtonVMs [model];
+			// check if the view model has been already created (as dependency/link of another button)
+			DashboardButtonVM buttonVM = null;
+			if (modelToViewModel.ContainsKey (model)) {
+				buttonVM = modelToViewModel [model];
+			} else {
+				buttonVM = base.CreateInstance (model);
 			}
-
-			DashboardButtonVM buttonVM = base.CreateInstance (model);
-			cachedButtonVMs.Add (model, buttonVM);
 
 			foreach (ActionLinkVM link in buttonVM.ActionLinks) {
-				link.SourceButton = GetLinkedButton (link.Model.SourceButton);
-				link.DestinationButton = GetLinkedButton (link.Model.DestinationButton);
+				if (model == link.Model.SourceButton) {
+					link.SourceButton = buttonVM;
+				} else {
+					link.SourceButton = GetOrCreateViewModel (link.Model.SourceButton);
+				}
+
+				if (model == link.Model.DestinationButton) {
+					link.DestinationButton = buttonVM;
+				} else {
+					link.DestinationButton = GetOrCreateViewModel (link.Model.DestinationButton);
+
+					// update also instances of tags since the deserialization is done in different documents
+					// and the destination buttons tags and the links tags have different instances ( which
+					// causes that a name change in the button will not be updated in the link)
+					var ab = link.DestinationButton.Model as AnalysisEventButton;
+					if (ab != null) {
+						var destinationTags = link.Model.DestinationTags.ToList ();
+						link.Model.DestinationTags.IgnoreEvents = true;
+
+						link.Model.DestinationTags.Clear ();
+						foreach (var s in destinationTags) {
+							var e = ab.AnalysisEventType.Tags.FirstOrDefault (x => x.Equals (s));
+							link.Model.DestinationTags.Add (e);
+						}
+
+						link.Model.DestinationTags.IgnoreEvents = false;
+					}
+				}
 			}
 
-			return buttonVM;
-		}
-
-		DashboardButtonVM GetLinkedButton (DashboardButton model)
-		{
-			if (modelToViewModel.ContainsKey (model)) {
-				return modelToViewModel [model];
-			} else if (cachedButtonVMs.ContainsKey(model)) {
-				return cachedButtonVMs [model];
-			}
-
-			DashboardButtonVM buttonVM = base.CreateInstance (model);
-			cachedButtonVMs.Add (model, buttonVM);
 			return buttonVM;
 		}
 	}
