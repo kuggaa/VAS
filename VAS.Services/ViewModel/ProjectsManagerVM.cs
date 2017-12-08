@@ -26,6 +26,7 @@ using VAS.Core.Filters;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
+using static VAS.Core.Resources.Strings;
 
 namespace VAS.Services.ViewModel
 {
@@ -48,9 +49,9 @@ namespace VAS.Services.ViewModel
 			VisibleViewModels = new VisibleRangeObservableProxy<TViewModel> (ViewModels);
 			ProjectMenu = new MenuVM ();
 			EmptyCard = new EmptyCardVM {
-				HeaderText = Catalog.GetString ("No projects created yet"),
-				DescriptionText = Catalog.GetString ("Tap the + icon to create your first project"),
-				TipText = Catalog.GetString ("Tip: You can get projects from other devices using the sync center"),
+				HeaderText = ProjectsNoneCreated,
+				DescriptionText = ProjectsCreateHelper,
+				TipText = ProjectsCreateTip,
 			};
 			FillProjectMenu ();
 		}
