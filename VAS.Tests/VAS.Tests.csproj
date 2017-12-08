@@ -156,6 +156,7 @@
     <Compile Include="Drawing\Widgets\TestBlackboard.cs" />
     <Compile Include="Core\Filters\TestVisibleRangeObservableProxy.cs" />
     <Compile Include="Core\ViewModel\TestDashboardButtonCollectionVM.cs" />
+    <Compile Include="MVVMC\TestKeyUpdaterCollectionViewModel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
