@@ -169,6 +169,13 @@ namespace VAS.Core.Store.Templates
 		}
 
 		/// <summary>
+		/// Gets or sets the preview.
+		/// </summary>
+		/// <value>The preview.</value>
+		[PropertyPreload]
+		public Image Preview { get; set; }
+
+		/// <summary>
 		/// A list with all the timers used in this dashboard
 		/// </summary>
 		[JsonIgnore]

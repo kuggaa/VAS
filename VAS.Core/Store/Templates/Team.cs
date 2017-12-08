@@ -16,8 +16,6 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
@@ -71,6 +69,13 @@ namespace VAS.Core.Store.Templates
 			get;
 			set;
 		}
+
+		[PropertyPreload]
+		/// <summary>
+		/// Gets the preview of the team aligment.
+		/// </summary>
+		/// <value>The preview.</value>
+		public Image Preview { get; set; }
 
 		/// <summary>
 		/// Gets or sets the list of players.

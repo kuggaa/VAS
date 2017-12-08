@@ -220,7 +220,7 @@ namespace VAS.Services.Controller
 		/// <param name="selectedViewModels">Selected view models.</param>
 		protected bool IsChildSelection (IEnumerable<TViewModel> selectedViewModels)
 		{
-			return selectedViewModels.FirstOrDefault ().Selection.Any ();
+			return selectedViewModels.FirstOrDefault ()?.Selection.Any () ?? false;
 		}
 
 		#region Handle Events
@@ -527,6 +527,10 @@ namespace VAS.Services.Controller
 		bool SaveTemplate (TModel template)
 		{
 			try {
+				if (template != null) {
+					template.Preview = App.Current.PreviewService.CreatePreview (template);
+				}
+
 				Provider.Save (template);
 				return true;
 			} catch (InvalidTemplateFilenameException ex) {

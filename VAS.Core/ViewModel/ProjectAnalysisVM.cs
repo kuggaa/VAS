@@ -20,7 +20,7 @@ using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.ViewModel;
 
-namespace VAS.Services.ViewModel
+namespace VAS.Core.ViewModel
 {
 	/// <summary>
 	/// A ViewModel used in analysis views where there is a video player, a timeline and playlists

@@ -46,6 +46,7 @@ namespace VAS
 		public IFileSystemManager FileSystemManager;
 		public INetworkManager NetworkManager;
 		public IApplicationMenu ApplicationMenu;
+		public IPreviewService PreviewService;
 
 		public string homeDirectory = ".";
 		public string baseDirectory = ".";
