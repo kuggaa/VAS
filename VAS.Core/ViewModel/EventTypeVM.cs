@@ -29,7 +29,7 @@ namespace VAS.Core.ViewModel
 	{
 		public EventTypeVM ()
 		{
-			Tags = new CollectionViewModel<Tag, TagVM> ();
+			Tags = new KeyUpdaterCollectionViewModel<Tag, TagVM> ();
 		}
 
 		public override EventType Model {
@@ -88,7 +88,7 @@ namespace VAS.Core.ViewModel
 		/// Gets the possible subcategories of the event type
 		/// </summary>
 		/// <value>The subcategories.</value>
-		public CollectionViewModel<Tag, TagVM> Tags {
+		public KeyUpdaterCollectionViewModel<Tag, TagVM> Tags {
 			get;
 		}
 	}
