@@ -716,7 +716,7 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 
 			/* Remove anchor object that where not reused
 				 * eg: after removinga a subcategory tag */
-			foreach (var tagEntry in subcatAnchors) {
+			foreach (var tagEntry in subcatAnchors.ToList ()) {
 				if (!ViewModel.Tags.Contains (tagEntry.Value)) {
 					RemoveAnchor (tagEntry.Key);
 				}

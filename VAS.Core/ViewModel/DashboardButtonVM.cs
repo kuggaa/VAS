@@ -454,7 +454,7 @@ namespace VAS.Core.ViewModel
 		/// Gets the subcategories of the event
 		/// </summary>
 		/// <value>The tags.</value>
-		public CollectionViewModel<Tag, TagVM> Tags {
+		public KeyUpdaterCollectionViewModel<Tag, TagVM> Tags {
 			get => EventType.Tags;
 		}
 
