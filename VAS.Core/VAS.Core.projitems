@@ -311,6 +311,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\LicenseBannerVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Service\ILicenseCustomizationService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IRegistry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IPreviewService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TemplateManagerViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectAnalysisVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ManagerBaseVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

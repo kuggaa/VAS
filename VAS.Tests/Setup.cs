@@ -70,6 +70,7 @@ namespace VAS.Tests
 			mockToolkit.SetupGet (o => o.DeviceScaleFactor).Returns (1.0f);
 			App.Current.LicenseLimitationsService = new LicenseLimitationsService ();
 			App.Current.DrawingToolkit = Mock.Of<IDrawingToolkit> ();
+			App.Current.PreviewService = new Mock<IPreviewService> ().Object;
 		}
 	}
 

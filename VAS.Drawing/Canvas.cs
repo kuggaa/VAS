@@ -181,7 +181,7 @@ namespace VAS.Drawing
 		/// <summary>
 		/// Applied scale on the X axis
 		/// </summary>
-		protected double ScaleX {
+		public double ScaleX {
 			get;
 			set;
 		}
@@ -189,7 +189,7 @@ namespace VAS.Drawing
 		/// <summary>
 		/// Applied scale on the Y axis.
 		/// </summary>
-		protected double ScaleY {
+		public double ScaleY {
 			get;
 			set;
 		}
@@ -197,7 +197,7 @@ namespace VAS.Drawing
 		/// <summary>
 		/// Applied XY translation.
 		/// </summary>
-		protected Point Translation {
+		public Point Translation {
 			get;
 			set;
 		}

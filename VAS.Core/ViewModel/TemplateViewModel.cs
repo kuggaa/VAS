@@ -23,14 +23,21 @@ using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
+using VAS.Core.Interfaces.GUI;
 
 namespace VAS.Core.ViewModel
 {
 	/// <summary>
 	/// Generic base class for <see cref="ITemplate"/> ViewModel.
 	/// </summary>
-	public abstract class TemplateViewModel<T> : StorableVM<T> where T : class, ITemplate
+	public abstract class TemplateViewModel<T> : StorableVM<T>, IVisible
+		where T : class, ITemplate
 	{
+		public TemplateViewModel ()
+		{
+			Visible = true;
+		}
+
 		/// <summary>
 		/// Gets the name of the template.
 		/// </summary>
@@ -72,6 +79,12 @@ namespace VAS.Core.ViewModel
 				return Model?.IsChanged == true;
 			}
 		}
+
+		/// <summary>
+		/// Return if the item is visible.
+		/// </summary>
+		/// <returns><c>true</c>, if item is visible, <c>false</c> otherwise.</returns>
+		public bool Visible { get; set; }
 	}
 
 	public abstract class TemplateViewModel<TModel, TChildModel, TChildViewModel> : TemplateViewModel<TModel>, INestedViewModel<TChildViewModel>
