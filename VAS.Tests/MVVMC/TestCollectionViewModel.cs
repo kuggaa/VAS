@@ -15,6 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using VAS.Core.Common;
@@ -139,6 +140,26 @@ namespace VAS.Tests.MVVMC
 
 			// Assert
 			Assert.AreEqual (m, modelNotified);
+		}
+
+		[Test]
+		public void Reset_NewViewModel_CollectionReplaced ()
+		{
+			// Arrange
+			Utils.PlayerDummy m = new Utils.PlayerDummy ();
+			Utils.PlayerDummy modelNotified = null;
+			CollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> collection = new CollectionViewModel<Utils.PlayerDummy, DummyPlayerVM> ();
+			collection.ViewModels.Add (new DummyPlayerVM { Model = m });
+
+
+			Utils.PlayerDummy mToUpdate = new Utils.PlayerDummy ();
+			var vmToUpdate = new DummyPlayerVM { Model = mToUpdate };
+
+			// Act
+			collection.ViewModels.Reset (new List<DummyPlayerVM> { vmToUpdate });
+
+			// Assert
+			Assert.AreEqual (1, collection.ViewModels.Count ());
 		}
 
 		// FIXME: Fix the collection view model notification
