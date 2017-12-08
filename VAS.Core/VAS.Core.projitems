@@ -315,6 +315,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectAnalysisVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ManagerBaseVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Services\ILicenseCustomizationService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IPreviewCreator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
