@@ -163,7 +163,7 @@ namespace VAS.Core.MVVMC
 			return viewModel;
 		}
 
-		protected void HandleViewModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		protected virtual void HandleViewModelsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
 			if (editing) {
 				return;
@@ -183,10 +183,17 @@ namespace VAS.Core.MVVMC
 				}
 				break;
 			case NotifyCollectionChangedAction.Replace:
-			case NotifyCollectionChangedAction.Reset:
 				model.Reset (ViewModels.Select (vm => vm.Model));
 				foreach (TViewModel vm in ViewModels) {
 					modelToViewModel [vm.Model] = vm;
+				}
+
+				break;
+			case NotifyCollectionChangedAction.Reset:
+				model.Reset (ViewModels.Select (vm => vm.Model));
+				modelToViewModel.Clear ();
+				foreach (TViewModel vm in ViewModels) {
+					modelToViewModel.Add (vm.Model, vm);
 				}
 				break;
 			}

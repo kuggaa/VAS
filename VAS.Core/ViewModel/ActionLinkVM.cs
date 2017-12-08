@@ -32,8 +32,8 @@ namespace VAS.Core.ViewModel
 
 		public ActionLinkVM ()
 		{
-			SourceTags = new CollectionViewModel<Tag, TagVM> ();
-			DestinationTags = new CollectionViewModel<Tag, TagVM> ();
+			SourceTags = new KeyUpdaterCollectionViewModel<Tag, TagVM> ();
+			DestinationTags = new KeyUpdaterCollectionViewModel<Tag, TagVM> ();
 		}
 
 		[PropertyChanged.DoNotCheckEquality]
@@ -97,7 +97,7 @@ namespace VAS.Core.ViewModel
 		/// <summary>
 		/// A list of tags that needs to be set in the destination
 		/// </summary>
-		public CollectionViewModel<Tag, TagVM> DestinationTags {
+		public KeyUpdaterCollectionViewModel<Tag, TagVM> DestinationTags {
 			get;
 		}
 
