@@ -15,7 +15,6 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 
@@ -23,6 +22,10 @@ namespace VAS.Drawing.Widgets
 {
 	public class ImageView : Canvas
 	{
+		public ImageView () { }
+
+		public ImageView (IWidget widget) : base (widget) { }
+
 		/// <summary>
 		/// Gets or sets the image.
 		/// </summary>
@@ -41,21 +44,22 @@ namespace VAS.Drawing.Widgets
 		/// <value>The color of the mask.</value>
 		public Color MaskColor { get; set; }
 
-		public ImageView ()
-		{
-
-		}
-
-		public ImageView (IWidget widget) : base (widget) { }
+		/// <summary>
+		/// Gets or sets the scale mode used to draw the image.
+		/// </summary>
+		/// <value>The scale mode.</value>
+		public ScaleMode ScaleMode { get; set; } = ScaleMode.AspectFit;
 
 		public override void Draw (IContext context, Area area)
 		{
+			if (Image == null) {
+				return;
+			}
 			var alpha = IsSensitive ? 1f : 0.4f;
 
 			Begin (context);
 			tk.FillColor = MaskColor;
-			tk.DrawImage (new Point (0, 0), widget.Width, widget.Height, Image,
-												  ScaleMode.AspectFit, MaskColor != null, alpha);
+			tk.DrawImage (new Point (0, 0), widget.Width, widget.Height, Image, ScaleMode, MaskColor != null, alpha);
 			End ();
 		}
 	}
