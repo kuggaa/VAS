@@ -251,8 +251,14 @@ namespace VAS.Services.Controller
 				}, () => HandleSubCategoriesTagging (buttonVM, subcategory));
 				tempContext.AddAction (action);
 			}
-			tempContext.Duration = Constants.TEMP_TAGGING_DURATION;
-			tempContext.ExpiredTimeAction = buttonVM.Click;
+
+			var analysisEventButton = (buttonVM.Model as AnalysisEventButton);
+			if (analysisEventButton != null && analysisEventButton.TagMode == TagMode.Free) {
+				tempContext.ExpiredTimeAction = buttonVM.ToggleIsCategoryClicked;
+			} else {
+				tempContext.Duration = Constants.TEMP_TAGGING_DURATION;
+				tempContext.ExpiredTimeAction = buttonVM.Click;
+			}
 
 			App.Current.KeyContextManager.AddContext (tempContext);
 		}

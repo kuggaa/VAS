@@ -101,11 +101,28 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				return ButtonVM as AnalysisEventButtonVM;
 			}
 			set {
+				if (ButtonVM != null) {
+					ButtonVM.PropertyChanged -= HandleViewModelPropertyChanged;
+				}
 				ButtonVM = value;
+
 				if (value != null) {
 					foreach (TagVM tag in value.Tags.ViewModels) {
 						AddSubcatAnchor (tag, new Point (0, 0), 100, HeaderHeight);
 					}
+					value.PropertyChanged += HandleViewModelPropertyChanged;
+				}
+
+			}
+		}
+
+		void HandleViewModelPropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof (ViewModel.IsCategoryClicked)) {
+				if (ViewModel.IsCategoryClicked) {
+					CategoryClicked (null);
+				} else {
+					EmitCreateEvent ();
 				}
 			}
 		}

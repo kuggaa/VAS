@@ -51,8 +51,8 @@ namespace VAS.Core.Common
 
 	public enum TagMode
 	{
-		Predefined,
-		Free,
+		Predefined, //Auto
+		Free, //Manual
 		Edit
 	}
 
