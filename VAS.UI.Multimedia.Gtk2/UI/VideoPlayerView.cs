@@ -242,6 +242,12 @@ namespace VAS.UI
 			}
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="T:VAS.UI.VideoPlayerView"/> is playlist image loaded.
+		/// </summary>
+		/// <value><c>true</c> if is playlist image loaded; otherwise, <c>false</c>.</value>
+		bool IsPlaylistImageLoaded => (ViewModel.LoadedElement is PlaylistImage);
+
 		#endregion
 
 		#region Private methods
@@ -696,11 +702,15 @@ namespace VAS.UI
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.LoadedElement))) {
 				HandlePlayElementChanged ();
+				if (ViewModel.LoadedElement == null) {
+					DrawingsVisible = false;
+				}
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Rate))) {
 				rateWindow.SetValue (App.Current.RateList.IndexOf (playerVM.Rate));
 				rateLabel.Text = $"{playerVM.Rate}X";
 			}
+
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Volume))) {
 				volumeWindow.SetValue ((float)(playerVM.Volume * 100));
 			}
@@ -724,7 +734,7 @@ namespace VAS.UI
 				if (playerVM.FrameDrawing != null) {
 					LoadImage (playerVM.CurrentFrame, playerVM.FrameDrawing);
 				} else {
-					DrawingsVisible = false;
+					DrawingsVisible = IsPlaylistImageLoaded;
 				}
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.CamerasConfig)) ||
@@ -872,7 +882,7 @@ namespace VAS.UI
 		{
 			if (ViewModel.FileSet != null) {
 				ValidateCameras (playerVM.CamerasConfig);
-				mainviewport.Visible = ViewModel.FileSet.ViewModels.Count > 0;
+				mainviewport.Visible = ViewModel.FileSet.ViewModels.Count > 0 && !IsPlaylistImageLoaded;
 				UpdateComboboxes ();
 				DebugCamerasVisible ();
 				SubViewPortsVisible = ViewModel.SupportsMultipleCameras;
