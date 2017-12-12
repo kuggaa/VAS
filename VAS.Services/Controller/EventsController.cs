@@ -62,9 +62,9 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Subscribe<LoadTimelineEventEvent<EventTypeTimelineVM>> (HandleLoadEventType);
 
 			App.Current.EventsBroker.Subscribe<NewEventEvent> (HandleNewEvent);
-			App.Current.EventsBroker.Subscribe<EventsDeletedEvent> (HandleDeleteEvents);
+			App.Current.EventsBroker.SubscribeAsync<EventsDeletedEvent> (HandleDeleteEvents);
 			App.Current.EventsBroker.SubscribeAsync<NewDashboardEvent> (HandleNewDashboardEvent);
-			App.Current.EventsBroker.Subscribe<MoveToEventTypeEvent> (HandleMoveToEventType);
+			App.Current.EventsBroker.SubscribeAsync<MoveToEventTypeEvent> (HandleMoveToEventType);
 			App.Current.EventsBroker.Subscribe<DuplicateEventsEvent> (HandleDuplicateEvents);
 
 			App.Current.EventsBroker.Subscribe<EventLoadedEvent> (HandleEventLoadedEvent);
@@ -88,9 +88,9 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.Unsubscribe<LoadTimelineEventEvent<EventTypeTimelineVM>> (HandleLoadEventType);
 
 			App.Current.EventsBroker.Unsubscribe<NewEventEvent> (HandleNewEvent);
-			App.Current.EventsBroker.Unsubscribe<EventsDeletedEvent> (HandleDeleteEvents);
+			App.Current.EventsBroker.UnsubscribeAsync<EventsDeletedEvent> (HandleDeleteEvents);
 			App.Current.EventsBroker.UnsubscribeAsync<NewDashboardEvent> (HandleNewDashboardEvent);
-			App.Current.EventsBroker.Unsubscribe<MoveToEventTypeEvent> (HandleMoveToEventType);
+			App.Current.EventsBroker.UnsubscribeAsync<MoveToEventTypeEvent> (HandleMoveToEventType);
 			App.Current.EventsBroker.Unsubscribe<DuplicateEventsEvent> (HandleDuplicateEvents);
 
 			App.Current.EventsBroker.Unsubscribe<EventLoadedEvent> (HandleEventLoadedEvent);
@@ -205,7 +205,7 @@ namespace VAS.Services.Controller
 			});
 		}
 
-		void HandleMoveToEventType (MoveToEventTypeEvent e)
+		async Task HandleMoveToEventType (MoveToEventTypeEvent e)
 		{
 			// Only move the events where the event type changes for real
 			var newEvents = e.TimelineEvents.Where (ev => ev.EventType != e.EventType);
@@ -218,7 +218,7 @@ namespace VAS.Services.Controller
 				newEvent.Tags.RemoveAll (t => (evt.EventType as AnalysisEventType).Tags.Contains (t));
 				Project.Model.AddEvent (newEvent);
 			}
-			DeletePlays (newEvents.ToList (), false);
+			await DeletePlays (newEvents.ToList (), false);
 			Save (Project);
 		}
 
@@ -234,9 +234,9 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		void HandleDeleteEvents (EventsDeletedEvent e)
+		async Task HandleDeleteEvents (EventsDeletedEvent e)
 		{
-			DeletePlays (e.TimelineEvents);
+			await DeletePlays (e.TimelineEvents);
 		}
 
 		void HandleLoadEvent (LoadTimelineEventEvent<TimelineEventVM> e)
@@ -305,16 +305,24 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		void DeletePlays (IEnumerable<TimelineEvent> plays, bool update = true)
+		async Task DeletePlays (IEnumerable<TimelineEvent> plays, bool askConfirmation = true)
 		{
 			plays = plays.Where (p => p.Deletable);
 			Log.Debug (plays.Count () + " plays deleted");
+			if (askConfirmation) {
+				var delete = await App.Current.Dialogs.QuestionMessage (
+					Catalog.GetString (String.Format ("Do you want to delete {0} event(s)?", plays.Count ())),
+												null);
+				if (!delete) {
+					return;
+				}
+			}
 			Project.Timeline.Model.RemoveRange (plays);
 			if (Project.ProjectType == ProjectType.FileProject) {
 				Save (Project);
 			}
 			if (LoadedPlay != null && plays.Contains (LoadedPlay)) {
-				App.Current.EventsBroker.Publish (new LoadEventEvent ());
+				await App.Current.EventsBroker.Publish (new LoadEventEvent ());
 			}
 		}
 
