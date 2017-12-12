@@ -1,6 +1,5 @@
-BUILD_DIR ?= $(top_builddir)/bin/
-ASSEMBLY_FILE ?= $(BUILD_DIR)/$(ASSEMBLY)
-OUTPUT_DIR ?= $(libdir)/@USER_PACKAGE@
+OUTPUT_DIR ?= bin/
+ASSEMBLY_FILE ?= $(OUTPUT_DIR)$(ASSEMBLY)
 
 XBUILD_CMD = $(XBUILD) \
  /property:DefineConstants="$(XBUILD_CONSTANTS)" \
@@ -19,30 +18,9 @@ all-local: $(ASSEMBLY_FILE)
 
 $(ASSEMBLY_FILE):
 	$(AM_V_GEN) $(XBUILD_CMD)
-	@if [ ! -z "$(EXTRA_BUNDLE)" ]; then \
-		cp $(EXTRA_BUNDLE) $(BUILD_DIR); \
-	fi;
 
 clean-local:
 	$(AM_V_GEN) $(XBUILD_CMD) /t:Clean
 	rm -rf obj/
 
-moduledir = $(OUTPUT_DIR)
-module_SCRIPTS = $(OUTPUT_FILES) $(DLLCONFIG)
-
-@INTLTOOL_DESKTOP_RULE@
-desktopdir = $(datadir)/applications
-desktop_in_files = $(DESKTOP_FILE)
-desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
-
-imagesdir = @datadir@/@PACKAGE@/images
-images_DATA = $(IMAGES)
-
-logo_48dir = @datadir@/icons/hicolor/48x48/apps
-logo_48_DATA = $(LOGO_48)
-
-logodir = @datadir@/icons/hicolor/scalable/apps
-logo_DATA = $(LOGO)
-
 CLEANFILES = $(OUTPUT_FILES)
-MAINTAINERCLEANFILES = Makefile.in
