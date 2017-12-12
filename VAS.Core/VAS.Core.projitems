@@ -283,6 +283,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Resources\Styles\Themes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Filters\VisibleRangeObservableProxy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\KeyUpdaterCollectionViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\TypeConverters\IsNotNullOrWhiteSpaceStringConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
@@ -309,6 +310,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\Statistics\" />
     <Folder Include="$(MSBuildThisFileDirectory)Resources\" />
     <Folder Include="$(MSBuildThisFileDirectory)Resources\Styles\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Common\TypeConverters\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)VAS.Core.dll.config">
