@@ -2370,6 +2370,32 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (null, player.CamerasLayout);
 		}
 
+		[Test ()]
+		public void LoadPlaylistEvent_LoadedPlaylistAndFrameDrawing_FrameDrawingisNull ()
+		{
+			///Arrange
+
+			PreparePlayer ();
+			IPlaylistElement element = new PlaylistImage (new Image (1, 1), new Time (100));
+			evt.Drawings.Add (new FrameDrawing () {
+				Pause = new Time (100)
+			});
+
+			playlist.Elements.Clear ();
+			playlist.Elements.Add (element);
+			playlist.Elements.Add (new PlaylistPlayElement (evt));
+
+			playerVM.FrameDrawing = new FrameDrawing ();
+
+			///Act
+
+			player.LoadPlaylistEvent (playlist, element, false);
+
+			///Assert
+
+			Assert.IsNull (playerVM.FrameDrawing);
+		}
+
 		void HandleElementLoadedEvent (object element, bool hasNext)
 		{
 			elementLoaded++;
