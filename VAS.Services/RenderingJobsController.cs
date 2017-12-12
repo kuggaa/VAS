@@ -354,7 +354,7 @@ namespace VAS.Services
 				}
 			} catch (Exception ex) {
 				ViewModel.CurrentJob.State = JobState.Error;
-				Log.Exception (ex);
+				Log.Exception (ex, true);
 				Log.Error ("Error rendering job: ", ViewModel.CurrentJob.Name);
 				App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Error rendering job: ") + ex.Message);
 				StartNextJob ();
