@@ -695,6 +695,7 @@ namespace VAS.Services
 
 			loadedEvent = play;
 			loadedPlaylistElement = element;
+			playerVM.FrameDrawing = null;
 			LoadedPlaylist = playlist;
 			LoadedTimelineEvent = play ?? element as IPlaylistEventElement;
 
