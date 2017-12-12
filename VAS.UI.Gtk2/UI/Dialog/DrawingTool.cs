@@ -93,6 +93,11 @@ namespace VAS.UI.Dialog
 				{zoombutton,DrawTool.Zoom},
 			};
 
+			foreach (var button in buttonToDrawTool.Keys) {
+				button.Name = "DrawingToolButton-" + button.Name;
+				button.Toggled += HandleToolClicked;
+			}
+
 			selectbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-select", 20);
 			eraserbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-eraser", 20);
 			penbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-pencil", 20);
@@ -110,25 +115,10 @@ namespace VAS.UI.Dialog
 			zoomoutimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-zoom-out", 14);
 			zoominimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-zoom-in", 14);
 
-			selectbutton.Toggled += HandleToolClicked;
-			eraserbutton.Toggled += HandleToolClicked;
-			penbutton.Toggled += HandleToolClicked;
-			textbutton.Toggled += HandleToolClicked;
-			linebutton.Toggled += HandleToolClicked;
-			crossbutton.Toggled += HandleToolClicked;
-			rectanglebutton.Toggled += HandleToolClicked;
-			ellipsebutton.Toggled += HandleToolClicked;
-			rectanglefilledbutton.Toggled += HandleToolClicked;
-			ellipsefilledbutton.Toggled += HandleToolClicked;
-			playerbutton.Toggled += HandleToolClicked;
-			anglebutton.Toggled += HandleToolClicked;
-			numberbutton.Toggled += HandleToolClicked;
-			zoombutton.Toggled += HandleToolClicked;
-
 			// Force tooltips to be translatable as there seems to be a bug in stetic 
 			// code generation for translatable tooltips.
 			selectbutton.TooltipMarkup = Catalog.GetString ("Selection tool");
-			eraserbutton.TooltipMarkup = Catalog.GetString ("Rubber tool");
+			eraserbutton.TooltipMarkup = Catalog.GetString ("Eraser tool");
 			penbutton.TooltipMarkup = Catalog.GetString ("Pencil tool");
 			textbutton.TooltipMarkup = Catalog.GetString ("Text tool");
 			linebutton.TooltipMarkup = Catalog.GetString ("Line tool");
