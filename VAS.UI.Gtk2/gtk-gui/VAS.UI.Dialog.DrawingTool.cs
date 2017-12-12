@@ -171,6 +171,8 @@ namespace VAS.UI.Dialog
 			this.hbox1.Spacing = 6;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.vbox2 = new global::Gtk.VBox();
+			this.vbox2.WidthRequest = 180;
+			this.vbox2.HeightRequest = 500;
 			this.vbox2.Name = "vbox2";
 			this.vbox2.Spacing = 6;
 			// Container child vbox2.Gtk.Box+BoxChild
@@ -693,7 +695,7 @@ namespace VAS.UI.Dialog
 			this.textspinbutton.Adjustment.PageIncrement = 10D;
 			this.textspinbutton.ClimbRate = 1D;
 			this.textspinbutton.Numeric = true;
-			this.textspinbutton.Value = 12D;
+			this.textspinbutton.Value = 32D;
 			this.table4.Add(this.textspinbutton);
 			global::Gtk.Table.TableChild w54 = ((global::Gtk.Table.TableChild)(this.table4[this.textspinbutton]));
 			w54.TopAttach = ((uint)(2));
