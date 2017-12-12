@@ -142,4 +142,12 @@ namespace VAS.Core.Common
 			}
 		}
 	}
+
+	/// <summary>
+	/// Exception when rendering a video.
+	/// </summary>
+	public class RenderException : Exception
+	{
+		public RenderException (string message) : base (message) { }
+	}
 }
