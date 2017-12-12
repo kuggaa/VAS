@@ -158,6 +158,7 @@
     <Compile Include="Core\ViewModel\TestDashboardButtonCollectionVM.cs" />
     <Compile Include="MVVMC\TestKeyUpdaterCollectionViewModel.cs" />
     <Compile Include="Core\Common\TestLog.cs" />
+    <Compile Include="Core\Common\TestTypeConverters.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
