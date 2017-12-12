@@ -471,12 +471,22 @@ namespace VAS.Core.Common
 			}
 		}
 
-		public static void Exception (Exception e)
+		/// <summary>
+		/// Log the specified Exception and track it in the KPIService.
+		/// </summary>
+		/// <param name="e">The exception.</param>
+		/// <param name="track">If set to <c>true</c> track it as an exception, else track it as an event.</param>
+		public static void Exception (Exception e, bool track = false)
 		{
-			Exception (null, e);
+			Exception (null, e, track);
 		}
 
-		public static void Exception (string message, Exception e)
+		/// <summary>
+		/// Log the specified Exception and track it in the KPIService.
+		/// </summary>
+		/// <param name="e">The exception.</param>
+		/// <param name="track">If set to <c>true</c> track it as an exception, else track it as an event.</param>
+		public static void Exception (string message, Exception e, bool track = false)
 		{
 			Stack<Exception> exception_chain = new Stack<Exception> ();
 			StringBuilder builder = new StringBuilder ();
@@ -497,9 +507,14 @@ namespace VAS.Core.Common
 
 			// FIXME: We should save these to an actual log file
 			Log.Warning (message ?? "Caught an exception", builder.ToString (), false);
-			App.Current?.KPIService?.TrackEvent ("LogException", new Dictionary<string, string>{
-				{"exception", builder.ToString ()}
-			});
+			if (track) {
+				App.Current?.KPIService?.TrackException (e);
+			} else {
+				App.Current?.KPIService?.TrackEvent ("LogException", new Dictionary<string, string>{
+					{"exception", builder.ToString ()}
+				});
+			}
+
 		}
 
 		#endregion
