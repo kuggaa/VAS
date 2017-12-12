@@ -21,6 +21,7 @@ using Moq;
 using NUnit.Framework;
 using VAS.Core.Common;
 using VAS.Core.Events;
+using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Store;
@@ -37,11 +38,14 @@ namespace VAS.Tests.Services
 		JobsManagerVM manager;
 		RenderingJobsController controller;
 		Mock<IVideoEditor> editorMock;
+		Mock<IKpiService> kpiMock;
 		string file1, file2;
 
 		[OneTimeSetUp]
 		public void SetUpOnce ()
 		{
+			kpiMock = new Mock<IKpiService> ();
+			App.Current.KPIService = kpiMock.Object;
 			file1 = Path.GetTempFileName ();
 			file2 = Path.GetTempFileName ();
 		}
@@ -90,6 +94,7 @@ namespace VAS.Tests.Services
 		[TearDown]
 		public void TearDown ()
 		{
+			kpiMock.ResetCalls ();
 			controller.Stop ();
 		}
 
@@ -175,6 +180,7 @@ namespace VAS.Tests.Services
 			manager.Add (job);
 
 			editorMock.Verify (p => p.Cancel (), Times.Once);
+			kpiMock.Verify (kpi => kpi.TrackException (It.IsAny<RenderException> (), null), Times.Once ());
 		}
 
 		[Test]
