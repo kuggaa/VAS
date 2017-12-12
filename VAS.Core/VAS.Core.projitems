@@ -282,6 +282,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Resources\Fonts.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resources\Styles\Themes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Filters\VisibleRangeObservableProxy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\KeyUpdaterCollectionViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
