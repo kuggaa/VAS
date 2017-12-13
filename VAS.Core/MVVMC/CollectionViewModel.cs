@@ -115,6 +115,7 @@ namespace VAS.Core.MVVMC
 				viewModel = new TViewModel ();
 			}
 			viewModel.Model = model;
+			modelToViewModel [model] = viewModel;
 			return viewModel;
 		}
 
@@ -159,7 +160,6 @@ namespace VAS.Core.MVVMC
 			} 
 
 			var viewModel = CreateInstance (model);
-			modelToViewModel [model] = viewModel;
 			return viewModel;
 		}
 
