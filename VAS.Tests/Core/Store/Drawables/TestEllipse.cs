@@ -37,58 +37,82 @@ namespace VAS.Tests.Core.Store.Drawables
 		}
 
 		[Test ()]
-		public void TestAxis ()
+		public void TestAreaAxis ()
 		{
 			Point c = new Point (10, 10);
 			Ellipse e = new Ellipse (c, 3, 2);
-			Assert.AreEqual (new Point (13, 10), e.Right);
-			Assert.AreEqual (new Point (7, 10), e.Left);
-			Assert.AreEqual (new Point (10, 12), e.Top);
-			Assert.AreEqual (new Point (10, 8), e.Bottom);
+			Assert.AreEqual (new Point (7, 8), e.Area.TopLeft);
+			Assert.AreEqual (new Point (13, 8), e.Area.TopRight);
+			Assert.AreEqual (new Point (7, 12), e.Area.BottomLeft);
+			Assert.AreEqual (new Point (13, 12), e.Area.BottomRight);
 		}
 
 		[Test ()]
 		public void TestMove ()
 		{
+			// Move axis
+
 			Point c = new Point (10, 10);
 			Ellipse e = new Ellipse (c, 3, 2);
 
-			/* Move axis */
-			Point p = new Point (8, 9);
+			Point p = new Point (5, 9);
 			e.Move (SelectionPosition.Left, p, null);
-			Assert.AreEqual (10, e.Center.X);
-			Assert.AreEqual (10, e.Center.Y);
-			Assert.AreEqual (2, e.AxisX);
-			Assert.AreEqual (2, e.AxisY);
+			CompareEllipse (e, new Point (9, 10), 4, 2);
 
-			p = new Point (15, 5);
+			p = new Point (7, 8);
 			e.Move (SelectionPosition.Left, p, null);
-			Assert.AreEqual (10, e.Center.X);
-			Assert.AreEqual (10, e.Center.Y);
-			Assert.AreEqual (5, e.AxisX);
-			Assert.AreEqual (2, e.AxisY);
+			CompareEllipse (e, new Point (10, 10), 3, 2);
 
-			p = new Point (15, 5);
+			p = new Point (9, 16);
 			e.Move (SelectionPosition.Bottom, p, null);
-			Assert.AreEqual (10, e.Center.X);
-			Assert.AreEqual (10, e.Center.Y);
-			Assert.AreEqual (5, e.AxisX);
-			Assert.AreEqual (5, e.AxisY);
+			CompareEllipse (e, new Point (10, 12), 3, 4);
 
-			p = new Point (15, 12);
+			p = new Point (6, 6);
 			e.Move (SelectionPosition.Top, p, null);
-			Assert.AreEqual (10, e.Center.X);
-			Assert.AreEqual (10, e.Center.Y);
-			Assert.AreEqual (5, e.AxisX);
-			Assert.AreEqual (2, e.AxisY);
+			CompareEllipse (e, new Point (10, 11), 3, 5);
 
-			/* Move all */
-			p = new Point (15, 12);
+			p = new Point (11, 10);
+			e.Move (SelectionPosition.TopLeft, p, null);
+			CompareEllipse (e, new Point (12, 13), 1, 3);
+
+			// Move all
+			p = new Point (20, 12);
 			e.Move (SelectionPosition.All, p, new Point (10, 10));
-			Assert.AreEqual (15, e.Center.X);
-			Assert.AreEqual (12, e.Center.Y);
-			Assert.AreEqual (5, e.AxisX);
-			Assert.AreEqual (2, e.AxisY);
+			CompareEllipse (e, new Point (22, 15), 1, 3);
+		}
+
+		[Test ()]
+		public void TestMoveInvertAxis ()
+		{
+			// Move axis
+			// Negative axis value means the axis is inverted
+
+			Point c = new Point (10, 10);
+
+			Ellipse e = new Ellipse (c, 3, 2);
+			Point p = new Point (20, 12);
+			e.Move (SelectionPosition.Left, p, null);
+			CompareEllipse (e, new Point (16.5, 10), -3.5, 2);
+
+			e = new Ellipse (c, 3, 2);
+			p = new Point (12, 20);
+			e.Move (SelectionPosition.Top, p, null);
+			CompareEllipse (e, new Point (10, 16), 3, -4);
+
+			e = new Ellipse (c, 3, 2);
+			p = new Point (20, 20);
+			e.Move (SelectionPosition.TopLeft, p, null);
+			CompareEllipse (e, new Point (16.5, 16), -3.5, -4);
+		}
+
+		public void CompareEllipse (Ellipse e, Point p, double axisX, double axisY)
+		{
+			Ellipse e2 = new Ellipse (p, axisX, axisY);
+
+			Assert.AreEqual (e2.Center.X, e.Center.X);
+			Assert.AreEqual (e2.Center.Y, e.Center.Y);
+			Assert.AreEqual (e2.AxisX, e.AxisX);
+			Assert.AreEqual (e2.AxisY, e.AxisY);
 		}
 	}
 }
