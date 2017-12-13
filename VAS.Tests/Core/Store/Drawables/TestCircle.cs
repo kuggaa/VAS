@@ -166,14 +166,10 @@ namespace VAS.Tests.Core.Store.Drawables
 			var leftSelection = targetCircle.GetSelection (leftPoint);
 
 			///Assert
-
-			//FIXME Why Top returns Bottom and viceversa?
-			//Assert.AreEqual (SelectionPosition.Top, topSelection.Position);
-			//Assert.AreEqual (SelectionPosition.Bottom, bottomSelection.Position);
+			Assert.AreEqual (SelectionPosition.Top, topSelection.Position);
+			Assert.AreEqual (SelectionPosition.Bottom, bottomSelection.Position);
 			Assert.AreEqual (SelectionPosition.Right, rightSelection.Position);
 			Assert.AreEqual (SelectionPosition.Left, leftSelection.Position);
-
-
 		}
 	}
 }

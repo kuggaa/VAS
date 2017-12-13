@@ -22,11 +22,12 @@ using VAS.Core.Common;
 namespace VAS.Core.Store.Drawables
 {
 	[Serializable]
-	public class Ellipse : Drawable
+	public class Ellipse : Rectangle
 	{
-		// When creating a new Ellipse, we store here the originating point so that we
-		// can calculate more easilly the center and radius based on this start point.
-		Point startPoint;
+		bool ignoreChanges;
+		Point center;
+		double axisX;
+		double axisY;
 
 		public Ellipse ()
 		{
@@ -34,26 +35,69 @@ namespace VAS.Core.Store.Drawables
 
 		public Ellipse (Point center, double axisX, double axisY, string text = null)
 		{
-			startPoint = center.Copy ();
+			ignoreChanges = true;
 			Center = center;
 			AxisX = axisX;
 			AxisY = axisY;
+			ignoreChanges = false;
+			Update ();
 			Text = text;
 		}
 
-		public Point Center {
-			get;
-			set;
+		public new Point Center {
+			get {
+				return center;
+			}
+			set {
+				center = value;
+				Update ();
+			}
 		}
 
 		public virtual double AxisX {
-			get;
-			set;
+			get {
+				return axisX;
+			}
+			set {
+				axisX = value;
+				Update ();
+			}
 		}
 
 		public virtual double AxisY {
-			get;
-			set;
+			get {
+				return axisY;
+			}
+
+			set {
+				axisY = value;
+				Update ();
+			}
+		}
+
+		[JsonIgnore]
+		[PropertyChanged.DoNotNotify]
+		public override Point TopLeft => base.TopLeft;
+
+		[JsonIgnore]
+		[PropertyChanged.DoNotNotify]
+		public override Point TopRight => base.TopRight;
+
+		[JsonIgnore]
+		[PropertyChanged.DoNotNotify]
+		public override Point BottomLeft => base.BottomLeft;
+
+		[JsonIgnore]
+		[PropertyChanged.DoNotNotify]
+		public override Point BottomRight => base.BottomRight;
+
+		[JsonIgnore]
+		[PropertyChanged.DoNotNotify]
+		public override Area Area {
+			get {
+				return new Area (new Point (Center.X - AxisX, Center.Y - AxisY),
+					AxisX * 2, AxisY * 2);
+			}
 		}
 
 		public string Text {
@@ -66,117 +110,57 @@ namespace VAS.Core.Store.Drawables
 			set;
 		}
 
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public Point Top {
-			get {
-				return new Point (Center.X, Center.Y + AxisY);
-			}
+		private void Update ()
+		{
+			if (ignoreChanges)
+				return;
+
+			base.Update (new Point (Center.X - AxisX, Center.Y - AxisY),
+								AxisX * 2,
+								AxisY * 2);
 		}
 
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public Point Bottom {
-			get {
-				return new Point (Center.X, Center.Y - AxisY);
-			}
-		}
+		public override void Reorder ()
+		{
+			base.Reorder ();
 
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public Point Left {
-			get {
-				return new Point (Center.X - AxisX, Center.Y);
-			}
-		}
+			ignoreChanges = true;
+			AxisX = Width / 2;
+			AxisY = Height / 2;
+			Center = base.Center;
+			ignoreChanges = false;
 
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public Point Right {
-			get {
-				return new Point (Center.X + AxisX, Center.Y);
-			}
-		}
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public override Area Area {
-			get {
-				return new Area (new Point (Center.X - AxisX, Center.Y - AxisY),
-					AxisX * 2, AxisY * 2);
-			}
+			Update ();
 		}
 
 		public override Selection GetSelection (Point p, double pr = 0.05, bool inMotion = false)
 		{
-			double d;
+			var selection = base.GetSelection (p, pr);
 
-			if (Selected) {
-				return base.GetSelection (p, pr);
-			}
+			if (selection != null && (Selected || selection.Position != SelectionPosition.All))
+				return selection;
 
-			if (MatchPoint (Top, p, pr, out d)) {
-				return new Selection (this, SelectionPosition.Top, d);
-			} else if (MatchPoint (Bottom, p, pr, out d)) {
-				return new Selection (this, SelectionPosition.Bottom, d);
-			} else if (MatchPoint (Left, p, pr, out d)) {
-				return new Selection (this, SelectionPosition.Left, d);
-			} else if (MatchPoint (Right, p, pr, out d)) {
-				return new Selection (this, SelectionPosition.Right, d);
+			/* Ellipse equation */
+			double a = Math.Pow (p.X - Center.X, 2) / Math.Pow (AxisX, 2);
+			double b = Math.Pow (p.Y - Center.Y, 2) / Math.Pow (AxisY, 2);
+			if ((a + b) <= 1) {
+				return new Selection (this, SelectionPosition.All, p.Distance (Center));
 			} else {
-				/* Ellipse equation */
-				double a = Math.Pow (p.X - Center.X, 2) / Math.Pow (AxisX, 2);
-				double b = Math.Pow (p.Y - Center.Y, 2) / Math.Pow (AxisY, 2);
-				if ((a + b) <= 1) {
-					return new Selection (this, SelectionPosition.All, p.Distance (Center));
-				} else {
-					return null;
-				}
+				return null;
 			}
 		}
 
 		public override void Move (Selection sel, Point p, Point moveStart)
 		{
-			switch (sel.Position) {
-			case SelectionPosition.Top:
-			case SelectionPosition.Bottom: {
-					AxisY = Math.Abs (p.Y - Center.Y);
-					break;
-				}
-			case SelectionPosition.Left:
-			case SelectionPosition.Right: {
-					AxisX = Math.Abs (p.X - Center.X);
-					break;
-				}
-			case SelectionPosition.TopLeft:
-			case SelectionPosition.TopRight:
-			case SelectionPosition.BottomLeft:
-			case SelectionPosition.BottomRight: {
-					AxisX = Math.Abs (p.X - Center.X);
-					AxisY = Math.Abs (p.Y - Center.Y);
-					break;
-				}
-			case SelectionPosition.All: {
-					Center.X += p.X - moveStart.X;
-					Center.Y += p.Y - moveStart.Y;
-					break;
-				}
-			case SelectionPosition.New: {
-					if (startPoint == null) {
-						throw new Exception ("Unsupported move for ellipse, start point was not set :  " + sel.Position);
-					}
-					var ax = (p.X - startPoint.X) / 2;
-					var ay = (p.Y - startPoint.Y) / 2;
-					Center.X = startPoint.X + ax;
-					Center.Y = startPoint.Y + ay;
+			base.Move (sel, p, moveStart);
 
-					AxisX = Math.Max (1, Math.Abs (ax));
-					AxisY = Math.Max (1, Math.Abs (ay));
-					break;
-				}
-			default:
-				throw new Exception ("Unsupported move for line:  " + sel.Position);
-			}
+			ignoreChanges = true;
+			AxisX = Width / 2;
+			AxisY = Height / 2;
+			Center = base.Center;
+			ignoreChanges = false;
+
+			Update ();
 		}
 	}
 }
