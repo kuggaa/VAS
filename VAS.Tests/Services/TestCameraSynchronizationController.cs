@@ -228,17 +228,38 @@ namespace VAS.Tests.Services
 			Start ();
 			camSyncVM.SynchronizeEventsWithPeriods = true;
 
-			var firstNode = camSyncVM.InitialPeriods.First ().Nodes.First ();
+			var firstNode = projectVM.Periods.First ().Model.Nodes.First ();
 			// Create a new event
 			var tlEvent = projectVM.Model.CreateEvent (projectVM.EventTypes.First ().Model, firstNode.Start,
 													   firstNode.Start, firstNode.Start + 200, null, 0);
 			projectVM.Timeline.Model.Add (tlEvent);
-			firstNode.Start += 200;
-			firstNode.Stop += 200;
+			const int offset = 200;
+			firstNode.Start += offset;
+			firstNode.Stop += offset;
 			// Offset the period by 20
 			camSyncVM.Save.Execute ();
 
-			Assert.AreEqual (new Time (200), tlEvent.Start);
+			Assert.AreEqual (new Time (offset), tlEvent.Start);
+		}
+
+		[Test]
+		public void ResyncEvents_OffsetOutsidePeriods_EventUpdatedToNewPeriodTime ()
+		{
+			Start ();
+			camSyncVM.SynchronizeEventsWithPeriods = true;
+
+			var firstNode = projectVM.Periods.First ().Model.Nodes.First ();
+			// Create a new event
+			var tlEvent = projectVM.Model.CreateEvent (projectVM.EventTypes.First ().Model, firstNode.Start,
+													   firstNode.Start, firstNode.Start + 200, null, 0);
+			projectVM.Timeline.Model.Add (tlEvent);
+			const int offset = 20000;
+			firstNode.Start += offset;
+			firstNode.Stop += offset;
+			// Offset the period outside the current periods
+			camSyncVM.Save.Execute ();
+
+			Assert.AreEqual (new Time (offset), tlEvent.Start);
 		}
 
 		[Test]
