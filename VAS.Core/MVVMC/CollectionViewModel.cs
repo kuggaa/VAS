@@ -160,6 +160,9 @@ namespace VAS.Core.MVVMC
 			} 
 
 			var viewModel = CreateInstance (model);
+			if (!modelToViewModel.ContainsKey (model)) {
+				modelToViewModel [model] = viewModel;
+			}
 			return viewModel;
 		}
 
