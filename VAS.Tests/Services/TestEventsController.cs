@@ -21,6 +21,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
+using VAS.Core;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
@@ -45,6 +46,7 @@ namespace VAS.Tests.Services
 		ProjectVM projectVM;
 		VideoPlayerVM videoPlayer;
 		Mock<ILicenseLimitationsService> mockLimitationService;
+		Mock<IDialogs> mockDialogs;
 
 		[SetUp]
 		public async Task Setup ()
@@ -110,6 +112,10 @@ namespace VAS.Tests.Services
 			ev11.Start = new Time (6000);
 			ev11.Stop = new Time (8000);
 			evVM11 = new TimelineEventVM { Model = ev11, Visible = true };
+
+			mockDialogs = new Mock<IDialogs> ();
+			App.Current.Dialogs = mockDialogs.Object;
+			mockDialogs.Setup (m => m.QuestionMessage (It.IsAny<string> (), null, It.IsAny<object> ())).Returns (AsyncHelpers.Return (true));
 		}
 
 		[TearDown]
@@ -480,7 +486,7 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
-		public void EventsDeletedEvent_DeleteAllEvents ()
+		public void EventsDeletedEvent_DeleteAllEvents_ExceptNotDeletable ()
 		{
 			EventType e1 = projectVM.Model.EventTypes [0];
 			var evNotDeletable = new StaticTimelineEvent ();
@@ -495,6 +501,27 @@ namespace VAS.Tests.Services
 
 			Assert.AreEqual (1, projectVM.Timeline.Model.Count);
 			Assert.AreSame (evNotDeletable, projectVM.Timeline.Model.FirstOrDefault ());
+		}
+
+		[Test]
+		public void EventsDeletedEvent_NotConfirm_EventsNotDeleted ()
+		{
+			mockDialogs.Setup (m => m.QuestionMessage (It.IsAny<string> (), null, It.IsAny<object> ())).
+			           Returns (AsyncHelpers.Return (false));
+			EventType e1 = projectVM.Model.EventTypes [0];
+			var evNotDeletable = new StaticTimelineEvent ();
+			evNotDeletable.EventType = e1;
+			evNotDeletable.Start = new Time (6000);
+			evNotDeletable.Stop = new Time (8000);
+			projectVM.Timeline.Model.Add (evNotDeletable);
+
+			var countBeforeDelete = projectVM.Timeline.Model.Count;
+
+			App.Current.EventsBroker.Publish (new EventsDeletedEvent {
+				TimelineEvents = projectVM.Timeline.Model
+			});
+
+			Assert.AreEqual (countBeforeDelete, projectVM.Timeline.Model.Count);
 		}
 
 		bool ComparePlaylist (Playlist playlist, List<TimelineEventVM> eventList)
