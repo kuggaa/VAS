@@ -302,20 +302,20 @@ namespace VAS.Core.Store
 		///   Period 1: start=00:05:00 Period 2: start= 00:39:00
 		///   evt1 00:15:00            evt2 00:41:00
 		/// </summary>
-		/// <param name="oldPeriods">The periods baseline to sync against.</param>
-		public void ResyncEvents (IList<Period> oldPeriods)
+		/// <param name="periods">The new periods syncrhonized with the video file.</param>
+		public void ResyncEvents (IList<Period> periods)
 		{
 			RangeObservableCollection<TimelineEvent> newTimeline = new RangeObservableCollection<TimelineEvent> ();
 
-			if (oldPeriods.Count != Periods.Count) {
+			if (periods.Count != Periods.Count) {
 				throw new IndexOutOfRangeException (
 					"Periods count is different from the project's ones");
 			}
 
-			for (int i = 0; i < oldPeriods.Count; i++) {
-				Period oldPeriod = oldPeriods [i];
+			for (int i = 0; i < periods.Count; i++) {
+				Period oldPeriod = Periods [i];
 				TimeNode oldTN = oldPeriod.PeriodNode;
-				TimeNode newTN = Periods [i].PeriodNode;
+				TimeNode newTN = periods [i].PeriodNode;
 				Time diff = newTN.Start - oldTN.Start;
 
 				/* Find the events in this period */
