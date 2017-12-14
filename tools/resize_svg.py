@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import sys
 import os
 import subprocess
@@ -63,14 +63,19 @@ def resize_svg(file_path, scale):
     tree.write(s)
     s.close()
 
-def main ():
-    root = sys.argv[1]
+
+def main(root=None):
+    if not root:
+        root = '.'
     di = os.path.join(root, 'data')
     # List of files commited in the data directory with the .svg extension
-    files =  subprocess.check_output(["git", "ls-files", di]).split('\n')[:-1]
-    files = [x for x in files if x.endswith('.svg') and not "@2x" in x]
+    files = subprocess.check_output(["git", "ls-files", di]).split('\n')[:-1]
+    files = [x for x in files if x.endswith('.svg') and "@2x" not in x]
     for f in files:
         resize_svg(f, 2)
 
 if __name__ == '__main__':
-    main ()
+    home = None
+    if len(sys.argv) > 1:
+        home = sys.argv[1]
+    main(home)
