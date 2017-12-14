@@ -17,7 +17,7 @@ namespace VAS.Drawing.CanvasObjects.Statistics
 		protected override void DisposeManagedResources ()
 		{
 			base.DisposeManagedResources ();
-			ViewModel.Dispose ();
+			ViewModel?.Dispose ();
 			ViewModel = null;
 		}
 
