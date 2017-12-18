@@ -262,6 +262,12 @@ namespace VAS.Core.ViewModel
 			private set;
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether the filters have been initialized.
+		/// </summary>
+		/// <value><c>true</c> if filters initialized; otherwise, <c>false</c>.</value>
+		public bool FiltersInitialized { get; set; }
+
 		public void Clear ()
 		{
 			FullTimeline.Model.Clear ();
