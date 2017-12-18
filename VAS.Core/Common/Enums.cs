@@ -646,7 +646,8 @@ namespace VAS.Core.Common
 		OpenMultiCamera,
 		CreateMultiCamera,
 		LinkingButtons,
-		Watermark
+		Watermark,
+		VideoDetach
 	}
 
 	/// <summary>
