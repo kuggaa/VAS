@@ -74,6 +74,16 @@
     <Compile Include="KPI\Services\UnhandledExceptionTelemetryModule.cs" />
     <Compile Include="KPI\KpiService.cs" />
     <Compile Include="GdkGlue.cs" />
+    <Compile Include="ViewModel\TimedDashboardButtonVM.cs" />
+    <Compile Include="ViewModel\EventButtonVM.cs" />
+    <Compile Include="ViewModel\AnalysisEventButtonVM.cs" />
+    <Compile Include="ViewModel\TagButtonVM.cs" />
+    <Compile Include="ViewModel\TimerButtonVM.cs" />
+    <Compile Include="Store\TimedDashboardButton.cs" />
+    <Compile Include="Store\TagButton.cs" />
+    <Compile Include="Store\TimerButton.cs" />
+    <Compile Include="Store\EventButton.cs" />
+    <Compile Include="Store\AnalysisEventButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="paket.references" />
