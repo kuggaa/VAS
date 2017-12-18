@@ -15,15 +15,9 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using VAS.Core.Common;
-using VAS.Core.Events;
-using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
-using Timer = VAS.Core.Store.Timer;
 
 namespace VAS.Core.ViewModel
 {
