@@ -1,5 +1,5 @@
 ﻿//
-//  Copyright (C) 2017 ${CopyrightHolder}
+//  Copyright (C) 2017 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
