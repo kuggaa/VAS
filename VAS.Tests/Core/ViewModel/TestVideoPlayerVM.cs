@@ -29,6 +29,12 @@ namespace VAS.Tests.Core.ViewModel
 	[TestFixture]
 	public class TestVideoPlayerVM
 	{
+		[OneTimeSetUp]
+		public void OneTimeSetUp ()
+		{
+			SetupClass.SetUp ();
+		}
+
 		[Test]
 		public void TestChangePlaybackRate ()
 		{

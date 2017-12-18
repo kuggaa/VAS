@@ -683,7 +683,7 @@ namespace VAS.Core.ViewModel
 			DrawCommand = new Command (() => Player.DrawFrame ());
 			ConfigureCommand (DrawCommand, Icons.PlayerControlDraw, Sizes.PlayerCapturerIconSize, StyleConf.PlayerTooltipDraw);
 
-			DetachCommand = new Command (() => { App.Current.EventsBroker.Publish (new DetachEvent ()); });
+			DetachCommand = new LimitationCommand (VASFeature.VideoDetach.ToString(), () => { App.Current.EventsBroker.Publish (new DetachEvent ()); });
 			ConfigureCommand (DetachCommand, Icons.PlayerControlDetach, Sizes.PlayerCapturerIconSize, StyleConf.PlayerTooltipDetach);
 
 			ViewPortsSwitchToggleCommand = new Command (() => {
