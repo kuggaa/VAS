@@ -77,7 +77,10 @@ namespace VAS.Services.Controller
 		public override async Task Start ()
 		{
 			await base.Start ();
-			InitializePredicates ();
+			if (!ViewModel.FiltersInitialized) {
+				InitializePredicates ();
+				ViewModel.FiltersInitialized = true;
+			}
 		}
 
 		protected override void ConnectEvents ()
@@ -223,7 +226,7 @@ namespace VAS.Services.Controller
 				var analysisEventType = eventType.Model as AnalysisEventType;
 				if (analysisEventType != null && analysisEventType.Tags.Any ()) {
 					CompositePredicate<TimelineEventVM> composedEventTypePredicate;
-					var composedPredicates = new List<IPredicate<TimelineEventVM>> (); ;
+					var composedPredicates = new List<IPredicate<TimelineEventVM>> ();
 					predicate = composedEventTypePredicate = new OrPredicate<TimelineEventVM> {
 						Name = eventType.EventTypeVM.Name,
 					};
