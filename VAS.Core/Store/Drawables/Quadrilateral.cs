@@ -35,22 +35,22 @@ namespace VAS.Core.Store.Drawables
 			BottomRight = br;
 		}
 
-		public Point TopLeft {
+		public virtual Point TopLeft {
 			get;
 			set;
 		}
 
-		public Point TopRight {
+		public virtual Point TopRight {
 			get;
 			set;
 		}
 
-		public Point BottomLeft {
+		public virtual Point BottomLeft {
 			get;
 			set;
 		}
 
-		public Point BottomRight {
+		public virtual Point BottomRight {
 			get;
 			set;
 		}
