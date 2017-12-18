@@ -284,6 +284,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)Filters\VisibleRangeObservableProxy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\KeyUpdaterCollectionViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\TypeConverters\IsNotNullOrWhiteSpaceStringConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\AnalysisEventButtonVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TagButtonVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TimerButtonVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Store\AnalysisEventButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Store\EventButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Store\TagButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Store\TimerButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Store\TimedDashboardButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventButtonVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TimedDashboardButtonVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
