@@ -15,6 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Store.Drawables;
@@ -44,7 +45,8 @@ namespace VAS.Drawing.CanvasObjects.Blackboard
 			tk.StrokeColor = Drawable.StrokeColor;
 			tk.LineWidth = Drawable.LineWidth;
 			tk.LineStyle = Drawable.Style;
-			tk.DrawEllipse (Drawable.Center, Drawable.AxisX, Drawable.AxisY);
+			// FIXME: AxisX and AxisY should never be negative?
+			tk.DrawEllipse (Drawable.Center, Math.Abs (Drawable.AxisX), Math.Abs (Drawable.AxisY));
 			DrawSelectionArea (tk);
 			tk.End ();
 		}

@@ -405,14 +405,12 @@ namespace VAS.Drawing.Widgets
 					LineStyle);
 				break;
 			case DrawTool.Ellipse:
-				pos = SelectionPosition.New;
 				drawable = new Ellipse (MoveStart, 2, 2);
 				break;
 			case DrawTool.Rectangle:
 				drawable = new Rectangle (MoveStart, 2, 2);
 				break;
 			case DrawTool.CircleArea:
-				pos = SelectionPosition.New;
 				drawable = new Ellipse (MoveStart, 2, 2);
 				drawable.FillColor = Color.Copy ();
 				break;
