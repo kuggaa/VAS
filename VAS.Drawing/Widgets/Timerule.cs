@@ -42,6 +42,7 @@ namespace VAS.Drawing.Widgets
 		double scroll;
 		double secondsPerPixel;
 		double timeSpacing = 100.0;
+		double lastTimeX;
 		Time currentTime;
 		Time duration;
 		VideoPlayerVM viewModel;
@@ -87,10 +88,9 @@ namespace VAS.Drawing.Widgets
 		/// Some timerules need to do it from the property since the updates might be sampled from another component.
 		/// </summary>
 		/// <value><c>true</c> if updates the current time automatically; otherwise, <c>false</c>.</value>
-		public bool AutoUpdate {
-			get;
-			set;
-		}
+		public bool AutoUpdate { get; set; }
+
+		public Area Area { get; set; }
 
 		public double Scroll {
 			set {
@@ -107,30 +107,15 @@ namespace VAS.Drawing.Widgets
 				return currentTime;
 			}
 			set {
-				Area area;
-				double start, stop, timeX;
-
-				timeX = Utils.TimeToPos (value, SecondsPerPixel) - Scroll;
-				if (needle.X < timeX) {
-					start = needle.X;
-					stop = timeX;
-				} else {
-					start = timeX;
-					stop = needle.X;
-				}
-				start -= needle.Width / 2;
-				stop += needle.Width / 2;
-				area = new Area (new Point (start - 1, needle.TopLeft.Y), stop - start + 2, needle.Height);
 				currentTime = value;
-				needle.ResetDrawArea ();
-				widget?.ReDraw (area);
+				UpdateArea ();
 			}
 		}
 
 		public double SecondsPerPixel {
 			set {
 				secondsPerPixel = value;
-				needle.ResetDrawArea ();
+				UpdateArea ();
 			}
 			get {
 				return secondsPerPixel;
@@ -379,6 +364,33 @@ namespace VAS.Drawing.Widgets
 			if (ViewModel.NeedsSync (e, nameof (VideoPlayerVM.CurrentTime)) && AutoUpdate) {
 				CurrentTime = ViewModel.CurrentTime;
 			}
+		}
+
+		void UpdateArea ()
+		{
+			double start, stop, timeX;
+
+			needle.ResetDrawArea ();
+			if (CurrentTime == null) {
+				return;
+			}
+
+			timeX = Utils.TimeToPos (CurrentTime, SecondsPerPixel) - Scroll;
+			if (Math.Abs (timeX - lastTimeX) < 1) {
+				return;
+			}
+			lastTimeX = timeX;
+			if (needle.X < timeX) {
+				start = needle.X;
+				stop = timeX;
+			} else {
+				start = timeX;
+				stop = needle.X;
+			}
+			start -= needle.Width / 2;
+			stop += needle.Width / 2;
+			Area = new Area (new Point (start - 1, needle.TopLeft.Y), stop - start + 2, needle.Height);
+			widget?.ReDraw (Area);
 		}
 	}
 }
