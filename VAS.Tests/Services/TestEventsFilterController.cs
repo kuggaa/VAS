@@ -69,6 +69,47 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
+		public async Task Start_FiltersInitialized_FiltersNotInitializedAgain ()
+		{
+			// Arrange
+			// Arrange
+			try {
+				await eventsFilterController.Stop ();
+			} catch (InvalidOperationException) {
+				// Ignore the already stopped error
+			}
+			timelineVM.EventsPredicate.Clear ();
+			timelineVM.FiltersInitialized = true;
+
+			// Act
+			await eventsFilterController.Start ();
+
+			// Arrange
+			Assert.AreEqual (0, timelineVM.EventsPredicate.Count ());
+		}
+
+		[Test]
+		public async Task Start_FiltersNotInitialized_FiltersInitialized ()
+		{
+			// Arrange
+			// Arrange
+			try {
+				await eventsFilterController.Stop ();
+			} catch (InvalidOperationException) {
+				// Ignore the already stopped error
+			}
+			timelineVM.EventsPredicate.Clear ();
+			timelineVM.FiltersInitialized = false;
+
+			// Act
+			await eventsFilterController.Start ();
+
+			// Arrange
+			Assert.IsTrue (timelineVM.FiltersInitialized);
+			Assert.AreEqual (4, timelineVM.EventsPredicate.Count ());
+		}
+
+		[Test]
 		public async Task SetViewModel_EmptyFilters_EventsFiltersFilled ()
 		{
 			// Arrange
