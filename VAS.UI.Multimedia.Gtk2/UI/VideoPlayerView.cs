@@ -369,6 +369,7 @@ namespace VAS.UI
 
 		void UpdateTime ()
 		{
+			return;
 			if (playerVM.CurrentTime != null && playerVM.Duration != null) {
 				timeLabel.Text = playerVM.CurrentTime.ToMSecondsString (true);
 				totalTimeLabel.Text = playerVM.Duration.ToSecondsString ();
