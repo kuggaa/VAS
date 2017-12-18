@@ -36,7 +36,7 @@ namespace VAS.UI.Dialog
 
 		private global::Gtk.Label watermarkLabel;
 
-		private global::VAS.UI.UI.Component.ImagePreviewWidget watermarkSelector;
+		private global::VAS.UI.Component.ImagePreviewWidget watermarkSelector;
 
 		private global::Gtk.HBox filebox;
 
@@ -247,7 +247,7 @@ namespace VAS.UI.Dialog
 			w15.XOptions = ((global::Gtk.AttachOptions)(4));
 			w15.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
-			this.watermarkSelector = new global::VAS.UI.UI.Component.ImagePreviewWidget ();
+			this.watermarkSelector = new global::VAS.UI.Component.ImagePreviewWidget ();
 			this.watermarkSelector.Events = ((global::Gdk.EventMask)(256));
 			this.watermarkSelector.Name = "watermarkSelector";
 			this.table1.Add (this.watermarkSelector);

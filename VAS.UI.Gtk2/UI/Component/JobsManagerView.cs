@@ -28,7 +28,7 @@ using VAS.Services.ViewModel;
 using VAS.UI.Helpers.Bindings;
 using VAS.UI.TreeViews;
 
-namespace VAS.UI.UI.Component
+namespace VAS.UI.Component
 {
 	[ViewAttribute (JobsManagerState.NAME)]
 	[System.ComponentModel.ToolboxItem (true)]
