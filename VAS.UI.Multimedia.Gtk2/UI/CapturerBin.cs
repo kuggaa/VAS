@@ -31,6 +31,8 @@ using VAS.UI.Helpers;
 using Image = VAS.Core.Common.Image;
 using Misc = VAS.UI.Helpers.Misc;
 using Action = System.Action;
+using VAS.Drawing.Cairo;
+using TextView = VAS.Drawing.Widgets.TextView;
 
 namespace VAS.UI
 {
@@ -51,6 +53,9 @@ namespace VAS.UI
 		TimelineEvent lastevent;
 		MediaFile outputFile;
 		bool readyToCapture;
+		TextView hourText;
+		TextView minutesText;
+		TextView secondsText;
 
 		Action delayedRun;
 		bool capturerBinReady = false;
@@ -96,6 +101,11 @@ namespace VAS.UI
 																		   Sizes.PlayerCapturerIconSize);
 			playlastimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-play",
 																		 Sizes.PlayerCapturerIconSize);
+			
+			hourText = new TextView (new WidgetWrapper (hourArea)) { Text = "00" };
+			minutesText = new TextView (new WidgetWrapper (minutesArea)) { Text = "00" };
+			secondsText = new TextView (new WidgetWrapper (secondsArea)) { Text = "00" };
+
 			lasteventbox.Visible = false;
 			deletelastbutton.Clicked += HandleDeleteLast;
 			playlastbutton.Clicked += HandlePlayLast;
@@ -296,16 +306,21 @@ namespace VAS.UI
 
 			controllerbox.HeightRequest = height;
 			hourseventbox.ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.ThemeBase));
-			hourlabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.TextBase));
-			hourlabel.ModifyFont (desc);
+
+			hourText.FontSize = fontSize;
+			hourText.TextColor = App.Current.Style.TextBase;
+			hourText.FontSlant = FontSlant.Normal;
+			minutesText.FontSize = fontSize;
+			minutesText.TextColor = App.Current.Style.TextBase;
+			minutesText.FontSlant = FontSlant.Normal;
+			secondsText.FontSize = fontSize;
+			secondsText.TextColor = App.Current.Style.TextBase;
+			secondsText.FontSlant = FontSlant.Normal;
+
 			hourseventbox.WidthRequest = timeWidth;
 			minuteseventbox.ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.ThemeBase));
-			minuteslabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.TextBase));
-			minuteslabel.ModifyFont (desc);
 			minuteseventbox.WidthRequest = timeWidth;
 			secondseventbox.ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.ThemeBase));
-			secondslabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.TextBase));
-			secondslabel.ModifyFont (desc);
 			secondseventbox.WidthRequest = timeWidth;
 			label1.ModifyFont (desc);
 			label1.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.TextBase));
@@ -313,7 +328,6 @@ namespace VAS.UI
 			label2.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.TextBase));
 			periodlabel.ModifyFont (desc);
 			periodlabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.TextBase));
-
 		}
 
 		bool UpdateTime ()
@@ -321,9 +335,11 @@ namespace VAS.UI
 			if (currentTimeNode != null) {
 				currentTimeNode.Stop = CurrentCaptureTime;
 			}
-			hourlabel.Markup = ElapsedTime.Hours.ToString ("d2");
-			minuteslabel.Markup = ElapsedTime.Minutes.ToString ("d2");
-			secondslabel.Markup = ElapsedTime.Seconds.ToString ("d2");
+
+			hourText.Text = ElapsedTime.Hours.ToString ("d2");
+			minutesText.Text = ElapsedTime.Minutes.ToString ("d2");
+			secondsText.Text = ElapsedTime.Seconds.ToString ("d2");
+
 			App.Current.EventsBroker.Publish<CapturerTickEvent> (
 				new CapturerTickEvent {
 					Time = CurrentCaptureTime
