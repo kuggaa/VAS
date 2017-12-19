@@ -27,6 +27,7 @@ using Pango;
 using VAS.Bindings;
 using VAS.Core;
 using VAS.Core.Common;
+using VAS.Core.Common.TypeConverters;
 using VAS.Core.Handlers;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
@@ -37,13 +38,16 @@ using VAS.Core.Resources.Styles;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
+using VAS.Drawing;
 using VAS.Drawing.Cairo;
+using VAS.Drawing.CanvasObjects;
 using VAS.Drawing.Widgets;
 using VAS.UI.Helpers.Bindings;
 using DConstants = VAS.Drawing.Constants;
 using Image = VAS.Core.Common.Image;
 using Misc = VAS.UI.Helpers.Misc;
 using Point = VAS.Core.Common.Point;
+using TextView = VAS.Drawing.Widgets.TextView;
 
 namespace VAS.UI
 {
@@ -70,6 +74,8 @@ namespace VAS.UI
 		SliderView rateWindow;
 		int zoomLevel;
 		BindingContext ctx;
+		TextView currentTime;
+		TextView totalTime;
 
 		#region Constructors
 
@@ -95,10 +101,9 @@ namespace VAS.UI
 			rateLabel.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 8px"));
 			jumpsLabel.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 8px"));
 			zoomLabel.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 8px"));
-			totalTimeLabel.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 10px"));
-			totalTimeLabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.TextBaseSecondary));
-			eventNameLabel.Ellipsize = EllipsizeMode.End;
 
+			CreateTimeText ();
+			eventNameLabel.Ellipsize = EllipsizeMode.End;
 			centerplayheadbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-dash-center-view",
 																					 Sizes.PlayerCapturerIconSize);
 			DurationButtonImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-duration", 15);
@@ -245,8 +250,8 @@ namespace VAS.UI
 		{
 			zoomBox.Visible = false;
 			DrawingsVisible = false;
-			totalTimeLabel.Text = "";
-			timeLabel.Text = "";
+			totalTime.Text = "";
+			currentTime.Text = "";
 			viewportsSwitchButton.Active = true;
 			SubViewPortsVisible = true;
 			zoomLevel = 0;
@@ -288,6 +293,8 @@ namespace VAS.UI
 			ctx.Add (drawbutton.Bind ((vm) => ((VideoPlayerVM)vm).DrawCommand));
 			ctx.Add (detachbutton.Bind ((vm) => ((VideoPlayerVM)vm).DetachCommand));
 			ctx.Add (viewportsSwitchButton.Bind ((vm) => ((VideoPlayerVM)vm).ViewPortsSwitchToggleCommand));
+			ctx.Add (currentTime.Bind (t => t.Text, vm => ((VideoPlayerVM)vm).CurrentTime, new TimeToStringConverter (true, true)));
+			ctx.Add (totalTime.Bind (t => t.Text, vm => ((VideoPlayerVM)vm).Duration, new TimeToStringConverter ()));
 		}
 
 		void LoadImage (Image image, FrameDrawing drawing)
@@ -364,15 +371,6 @@ namespace VAS.UI
 			}
 			if (changed) {
 				playerVM.SetCamerasConfig (cameras);
-			}
-		}
-
-		void UpdateTime ()
-		{
-			return;
-			if (playerVM.CurrentTime != null && playerVM.Duration != null) {
-				timeLabel.Text = playerVM.CurrentTime.ToMSecondsString (true);
-				totalTimeLabel.Text = playerVM.Duration.ToSecondsString ();
 			}
 		}
 
@@ -721,12 +719,7 @@ namespace VAS.UI
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Step))) {
 				jumpsWindow.SetValue (App.Current.StepList.IndexOf (playerVM.Step.TotalSeconds));
 				jumpsLabel.Text = $"{playerVM.Step.TotalSeconds}s";
-			}
-			if (ViewModel.NeedsSync (e, nameof (ViewModel.Duration)) ||
-				ViewModel.NeedsSync (e, nameof (ViewModel.CurrentTime)) ||
-				ViewModel.NeedsSync (e, nameof (ViewModel.PlayerMode))) {
-				UpdateTime ();
-			}
+			}    
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.FrameDrawing))) {
 				if (playerVM.FrameDrawing != null) {
 					LoadImage (playerVM.CurrentFrame, playerVM.FrameDrawing);
@@ -889,6 +882,20 @@ namespace VAS.UI
 				zoomBox.Visible = false;
 			}
 		}
+
+		void CreateTimeText ()
+		{
+			// calculate the width of the time label 
+			int timeTextWidth, timeTextHeight;
+			App.Current.DrawingToolkit.MeasureText("00:00:00,000", out timeTextWidth, out timeTextHeight, App.Current.Style.Font, 12, FontWeight.Normal);
+			currentTimeArea.WidthRequest = timeTextWidth;
+			totalTimeArea.WidthRequest = timeTextWidth;
+			currentTime = new TextView (new WidgetWrapper (currentTimeArea))
+				{ FontSize = 12, TextColor = App.Current.Style.TextBase, FontSlant = FontSlant.Normal };
+			totalTime = new TextView (new WidgetWrapper (totalTimeArea))
+				{ FontSize = 10, TextColor = App.Current.Style.TextBaseSecondary, FontSlant = FontSlant.Normal };
+		}
+			
 	}
 }
 

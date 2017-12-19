@@ -294,6 +294,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Store\TimedDashboardButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventButtonVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TimedDashboardButtonVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\TypeConverters\TimeToStringConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
