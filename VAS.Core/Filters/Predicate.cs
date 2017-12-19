@@ -25,6 +25,7 @@ using System.Linq.Expressions;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
+using LExpression = System.Linq.Expressions.Expression;
 
 namespace VAS.Core.Filters
 {
@@ -37,6 +38,7 @@ namespace VAS.Core.Filters
 	{
 		Func<T, bool> compiledExpression;
 		Expression<Func<T, bool>> expression = (a) => true;
+		Expression<Func<T, bool>> originalExpression;
 
 		#region IPredicate implementation
 
@@ -48,7 +50,8 @@ namespace VAS.Core.Filters
 		public Expression<Func<T, bool>> Expression {
 			get { return expression; }
 			set {
-				expression = value;
+				originalExpression = value;
+				expression = ((Expression<Func<T, bool>>)(t => Active)).And (originalExpression);
 				compiledExpression = expression.Compile ();
 			}
 		}
@@ -57,7 +60,7 @@ namespace VAS.Core.Filters
 
 		public bool Filter (T ev)
 		{
-			return Active && compiledExpression.Invoke (ev);
+			return compiledExpression.Invoke (ev);
 		}
 
 		#endregion
@@ -68,8 +71,8 @@ namespace VAS.Core.Filters
 	/// </summary>
 	public abstract class CompositePredicate<T> : BindableBase, IPredicate<T>, IList<IPredicate<T>>
 	{
-		protected Expression<Func<T, bool>> expression;
-		Func<T, bool> compiledExpression;
+		protected Func<T, bool> compiledExpression;
+		Expression<Func<T, bool>> expression;
 		bool emitActivePropertyChanged;
 
 		public CompositePredicate ()
@@ -111,10 +114,13 @@ namespace VAS.Core.Filters
 		}
 
 		#region IPredicate implementation
-
+		[PropertyChanged.DoNotNotify]
 		public Expression<Func<T, bool>> Expression {
 			get {
 				return expression;
+			}
+			protected set {
+				expression = value;
 			}
 		}
 
@@ -154,8 +160,7 @@ namespace VAS.Core.Filters
 
 		protected override void RaisePropertyChanged (PropertyChangedEventArgs args, object sender = null)
 		{
-			if (args.PropertyName == nameof (Elements) || args.PropertyName == $"Collection_{nameof (Elements)}" ||
-				args.PropertyName == nameof (Active)) {
+			if (args.PropertyName == nameof (Elements) || args.PropertyName == $"Collection_{nameof (Elements)}") {
 				if (IgnoreEvents) {
 					emitActivePropertyChanged = true;
 				}
@@ -172,10 +177,7 @@ namespace VAS.Core.Filters
 			return compiledExpression.Invoke (obj);
 		}
 
-		public virtual void UpdatePredicate ()
-		{
-			compiledExpression = Expression.Compile ();
-		}
+		public abstract void UpdatePredicate ();
 
 		#endregion
 
@@ -276,27 +278,26 @@ namespace VAS.Core.Filters
 
 		public OrPredicate ()
 		{
-			expression = PredicateBuilder.False<T> ();
+			UpdatePredicate ();
 		}
 
 		public override void UpdatePredicate ()
 		{
-			// We initialize this with a false, as it's the neutral element for the Or
-			expression = PredicateBuilder.False<T> ();
-			foreach (var el in Elements.Where (e => e.Active)) {
-				expression = expression.Or (el.Expression);
-			}
-			base.UpdatePredicate ();
-		}
-
-		public override bool Filter (T obj)
-		{
-			// If !Active we return a false, as it's the neutral element for the Or
-			if (!Active) {
-				return false;
+			Expression<Func<T, bool>> expression;
+			if (Elements.Any ()) {
+				expression = PredicateBuilder.False<T> ();
+				foreach (var el in Elements) {
+					expression = expression.Or (el.Expression);
+				}
 			} else {
-				return base.Filter (obj);
+				expression = PredicateBuilder.True<T> ();
 			}
+			Expression = LExpression.Lambda<Func<T, bool>> (
+				LExpression.IfThenElse ((System.Linq.Expressions.Expression<Func<bool>>)(() => Active),
+										expression,
+										LExpression.Constant (false)),
+				expression.Parameters);
+			compiledExpression = Expression.Compile ();
 		}
 	}
 
@@ -309,27 +310,27 @@ namespace VAS.Core.Filters
 
 		public AndPredicate ()
 		{
-			expression = PredicateBuilder.True<T> ();
+			UpdatePredicate ();
 		}
 
 		public override void UpdatePredicate ()
 		{
-			// We initialize this with a true, as it's the neutral element for the And
-			expression = PredicateBuilder.True<T> ();
-			foreach (var el in Elements.Where (e => e.Active)) {
-				expression = expression.And (el.Expression);
-			}
-			base.UpdatePredicate ();
-		}
-
-		public override bool Filter (T obj)
-		{
-			// If !Active we return a true, as it's the neutral element for the And
-			if (!Active) {
-				return true;
+			Expression<Func<T, bool>> expression;
+			if (Elements.Any ()) {
+				// We initialize this with a true, as it's the neutral element for the And
+				expression = PredicateBuilder.True<T> ();
+				foreach (var el in Elements) {
+					expression = expression.And (el.Expression);
+				}
 			} else {
-				return base.Filter (obj);
+				expression = PredicateBuilder.True<T> ();
 			}
+			Expression = LExpression.Lambda<Func<T, bool>> (
+				LExpression.IfThenElse ((Expression<Func<bool>>)(() => Active),
+										expression,
+										LExpression.Constant (true)),
+				expression.Parameters);
+			compiledExpression = Expression.Compile ();
 		}
 	}
 
