@@ -274,7 +274,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TagVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IPlaylistEventElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\KeyUpdaterCollectionViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Common\TypeConverters\IsNotNullOrWhiteSpaceStringConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\AnalysisEventButtonVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TagButtonVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TimerButtonVM.cs" />

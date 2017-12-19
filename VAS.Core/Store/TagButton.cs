@@ -16,7 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using VAS.Core.Resources.Styles;
+using VAS.Core.Common;
 using VAS.Core.Serialization;
 
 namespace VAS.Core.Store
@@ -26,7 +26,7 @@ namespace VAS.Core.Store
 	{
 		public TagButton ()
 		{
-			BackgroundColor = Colors.ButtonTagColor.Copy (true);
+			BackgroundColor = StyleConf.ButtonTagColor.Copy (true);
 		}
 
 		public Tag Tag {
