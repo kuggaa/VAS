@@ -101,8 +101,6 @@ namespace VAS.UI
 			rateLabel.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 8px"));
 			jumpsLabel.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 8px"));
 			zoomLabel.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 8px"));
-			totalTimeLabel.ModifyFont (FontDescription.FromString (App.Current.Style.Font + " 10px"));
-			totalTimeLabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.Text_DarkColor));
 			eventNameLabel.Ellipsize = EllipsizeMode.End;
 
 			CreateTimeText ();
@@ -1032,9 +1030,9 @@ namespace VAS.UI
 			currentTimeArea.WidthRequest = timeTextWidth;
 			totalTimeArea.WidthRequest = timeTextWidth;
 			currentTime = new TextView (new WidgetWrapper (currentTimeArea))
-				{ FontSize = 12, TextColor = App.Current.Style.TextBase, FontSlant = FontSlant.Normal };
+			{ FontSize = 12, TextColor = App.Current.Style.PaletteText, FontSlant = FontSlant.Normal };
 			totalTime = new TextView (new WidgetWrapper (totalTimeArea))
-				{ FontSize = 10, TextColor = App.Current.Style.TextBaseSecondary, FontSlant = FontSlant.Normal };
+			{ FontSize = 10, TextColor = App.Current.Style.Text_DarkColor, FontSlant = FontSlant.Normal };
 		}
 			
 	}
