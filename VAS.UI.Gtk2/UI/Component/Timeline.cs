@@ -104,6 +104,7 @@ namespace VAS.UI.Component
 				timerule.ViewModel = viewModel?.VideoPlayer;
 				if (viewModel != null) {
 					UpdateTime ();
+					focusscale.Value = 6;
 					viewModel.PropertyChanged += HandleVideoPlayerPropertyChanged;
 					QueueDraw ();
 				}
@@ -144,7 +145,6 @@ namespace VAS.UI.Component
 			focusbutton.CanFocus = false;
 			focusbutton.Clicked += HandleFocusClicked;
 			focusscale.CanFocus = false;
-			focusscale.Value = 6;
 			focusscale.Adjustment.Lower = 0;
 			focusscale.Adjustment.Upper = 12;
 			focusscale.ValueChanged += HandleValueChanged;
@@ -212,7 +212,7 @@ namespace VAS.UI.Component
 		protected void HandleFocusClicked (object sender, EventArgs e)
 		{
 			// Align the position to 40% of the scrolled width
-			double pos = Player.CurrentTime.TotalSeconds / secondsPerPixel;
+			double pos = CurrentTime.TotalSeconds / secondsPerPixel;
 			pos -= 0.4 * scrolledwindow1.Allocation.Width;
 			double maxPos = timelinearea.Allocation.Width - scrolledwindow1.Allocation.Width;
 
