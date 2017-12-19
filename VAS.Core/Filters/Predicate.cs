@@ -164,7 +164,6 @@ namespace VAS.Core.Filters
 			base.RaisePropertyChanged (args, sender);
 		}
 
-
 		public virtual bool Filter (T obj)
 		{
 			if (compiledExpression == null) {
@@ -257,6 +256,15 @@ namespace VAS.Core.Filters
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Adds a multiple items at once.
+		/// </summary>
+		/// <param name="items">Items.</param>
+		public void AddRange (IEnumerable<IPredicate<T>> items)
+		{
+			Elements.AddRange (items);
+		}
 	}
 
 	/// <summary>
