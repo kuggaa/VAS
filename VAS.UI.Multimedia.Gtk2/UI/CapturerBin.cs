@@ -30,6 +30,8 @@ using VAS.UI.Helpers;
 using Image = VAS.Core.Common.Image;
 using Misc = VAS.UI.Helpers.Misc;
 using Action = System.Action;
+using VAS.Drawing.Cairo;
+using TextView = VAS.Drawing.Widgets.TextView;
 
 namespace VAS.UI
 {
@@ -50,6 +52,9 @@ namespace VAS.UI
 		TimelineEvent lastevent;
 		MediaFile outputFile;
 		bool readyToCapture;
+		TextView hourText;
+		TextView minutesText;
+		TextView secondsText;
 
 		Action delayedRun;
 		bool capturerBinReady = false;
@@ -95,6 +100,11 @@ namespace VAS.UI
 				StyleConf.PlayerCapturerIconSize);
 			playlastimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-play",
 				StyleConf.PlayerCapturerIconSize);
+			
+			hourText = new TextView (new WidgetWrapper (hourArea)) { Text = "00" };
+			minutesText = new TextView (new WidgetWrapper (minutesArea)) { Text = "00" };
+			secondsText = new TextView (new WidgetWrapper (secondsArea)) { Text = "00" };
+
 			lasteventbox.Visible = false;
 			deletelastbutton.Clicked += HandleDeleteLast;
 			playlastbutton.Clicked += HandlePlayLast;
@@ -293,6 +303,15 @@ namespace VAS.UI
 			string font = String.Format ("{0} {1}px", App.Current.Style.Font, fontSize);
 			Pango.FontDescription desc = Pango.FontDescription.FromString (font);
 
+			hourText.FontSize = fontSize;
+			hourText.TextColor = App.Current.Style.TextBase;
+			hourText.FontSlant = FontSlant.Normal;
+			minutesText.FontSize = fontSize;
+			minutesText.TextColor = App.Current.Style.TextBase;
+			minutesText.FontSlant = FontSlant.Normal;
+			secondsText.FontSize = fontSize;
+			secondsText.TextColor = App.Current.Style.TextBase;
+			secondsText.FontSlant = FontSlant.Normal;
 			controllerbox.HeightRequest = height;
 			hourseventbox.ModifyBg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteBackgroundDark));
 			hourlabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.PaletteText));
@@ -320,9 +339,11 @@ namespace VAS.UI
 			if (currentTimeNode != null) {
 				currentTimeNode.Stop = CurrentCaptureTime;
 			}
-			hourlabel.Markup = ElapsedTime.Hours.ToString ("d2");
-			minuteslabel.Markup = ElapsedTime.Minutes.ToString ("d2");
-			secondslabel.Markup = ElapsedTime.Seconds.ToString ("d2");
+
+			hourText.Text = ElapsedTime.Hours.ToString ("d2");
+			minutesText.Text = ElapsedTime.Minutes.ToString ("d2");
+			secondsText.Text = ElapsedTime.Seconds.ToString ("d2");
+
 			App.Current.EventsBroker.Publish<CapturerTickEvent> (
 				new CapturerTickEvent {
 					Time = CurrentCaptureTime

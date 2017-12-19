@@ -35,13 +35,16 @@ using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
+using VAS.Drawing;
 using VAS.Drawing.Cairo;
+using VAS.Drawing.CanvasObjects;
 using VAS.Drawing.Widgets;
 using VAS.UI.Helpers.Bindings;
 using DConstants = VAS.Drawing.Constants;
 using Image = VAS.Core.Common.Image;
 using Misc = VAS.UI.Helpers.Misc;
 using Point = VAS.Core.Common.Point;
+using TextView = VAS.Drawing.Widgets.TextView;
 
 namespace VAS.UI
 {
@@ -71,6 +74,8 @@ namespace VAS.UI
 		double rateLevel;
 		int zoomLevel;
 		BindingContext ctx;
+		TextView currentTime;
+		TextView totalTime;
 
 		#region Constructors
 
@@ -100,6 +105,7 @@ namespace VAS.UI
 			totalTimeLabel.ModifyFg (StateType.Normal, Misc.ToGdkColor (App.Current.Style.Text_DarkColor));
 			eventNameLabel.Ellipsize = EllipsizeMode.End;
 
+			CreateTimeText ();
 			closebuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-cancel-rec",
 				StyleConf.PlayerCapturerIconSize);
 			drawbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-draw",
@@ -278,8 +284,8 @@ namespace VAS.UI
 		{
 			zoomBox.Visible = false;
 			DrawingsVisible = false;
-			totalTimeLabel.Text = "";
-			timeLabel.Text = "";
+			totalTime.Text = "";
+			currentTime.Text = "";
 			muted = false;
 			viewportsSwitchButton.Active = true;
 			SubViewPortsVisible = true;
@@ -415,14 +421,6 @@ namespace VAS.UI
 			}
 			if (changed) {
 				playerVM.SetCamerasConfig (cameras);
-			}
-		}
-
-		void UpdateTime ()
-		{
-			if (playerVM.CurrentTime != null && playerVM.Duration != null) {
-				timeLabel.Text = playerVM.CurrentTime.ToMSecondsString (true);
-				totalTimeLabel.Text = playerVM.Duration.ToSecondsString ();
 			}
 		}
 
@@ -859,11 +857,14 @@ namespace VAS.UI
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Seekable))) {
 				timerule.ObjectsCanMove = playerVM.Seekable;
 			}
-			if (ViewModel.NeedsSync (e, nameof (ViewModel.Duration)) ||
-				ViewModel.NeedsSync (e, nameof (ViewModel.CurrentTime)) ||
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.CurrentTime)) ||
 				ViewModel.NeedsSync (e, nameof (ViewModel.PlayerMode))) {
-				UpdateTime ();
+				currentTime.Text = playerVM.CurrentTime.ToMSecondsString (true);
 			}
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.Duration)) ||
+				ViewModel.NeedsSync (e, nameof (ViewModel.PlayerMode))) {
+				totalTime.Text = playerVM.Duration.ToSecondsString ();
+			}        
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.FrameDrawing))) {
 				if (playerVM.FrameDrawing != null) {
 					LoadImage (playerVM.CurrentFrame, playerVM.FrameDrawing);
@@ -1022,6 +1023,20 @@ namespace VAS.UI
 				zoomBox.Visible = false;
 			}
 		}
+
+		void CreateTimeText ()
+		{
+			// calculate the width of the time label 
+			int timeTextWidth, timeTextHeight;
+			App.Current.DrawingToolkit.MeasureText("00:00:00,000", out timeTextWidth, out timeTextHeight, App.Current.Style.Font, 12, FontWeight.Normal);
+			currentTimeArea.WidthRequest = timeTextWidth;
+			totalTimeArea.WidthRequest = timeTextWidth;
+			currentTime = new TextView (new WidgetWrapper (currentTimeArea))
+				{ FontSize = 12, TextColor = App.Current.Style.TextBase, FontSlant = FontSlant.Normal };
+			totalTime = new TextView (new WidgetWrapper (totalTimeArea))
+				{ FontSize = 10, TextColor = App.Current.Style.TextBaseSecondary, FontSlant = FontSlant.Normal };
+		}
+			
 	}
 }
 
