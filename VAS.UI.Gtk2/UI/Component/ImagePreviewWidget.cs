@@ -20,7 +20,7 @@ using Gtk;
 using VAS.Core.Common;
 using VAS.UI.Helpers;
 
-namespace VAS.UI.UI.Component
+namespace VAS.UI.Component
 {
 	/// <summary>
 	/// Image preview widget.

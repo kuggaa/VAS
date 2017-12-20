@@ -18,7 +18,7 @@
 using System;
 using VAS.Core;
 
-namespace VAS.UI.UI.Component
+namespace VAS.UI.Component
 {
 	[System.ComponentModel.ToolboxItem (true)]
 	public partial class DatePicker : Gtk.Bin
