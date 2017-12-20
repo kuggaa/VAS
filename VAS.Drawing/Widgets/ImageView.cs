@@ -36,7 +36,7 @@ namespace VAS.Drawing.Widgets
 		/// Gets or sets a value indicating whether this <see cref="T:VAS.Drawing.Widgets.ImageView"/> is sensitive.
 		/// </summary>
 		/// <value><c>true</c> if is sensitive; otherwise, <c>false</c>.</value>
-		public bool IsSensitive { get; set; }
+		public bool IsSensitive { get; set; } = true;
 
 		/// <summary>
 		/// Gets or sets the color of the mask, image will be filled with this color.
