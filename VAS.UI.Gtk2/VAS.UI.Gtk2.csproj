@@ -83,7 +83,7 @@
 		<Compile Include="UI\Menu\MenuHelpers.cs" />
 		<Compile Include="UI\Common\PlaylistTreeView.cs" />
 		<Compile Include="UI\Component\DatePicker.cs" />
-		<Compile Include="gtk-gui\VAS.UI.UI.Component.DatePicker.cs" />
+		<Compile Include="gtk-gui\VAS.UI.Component.DatePicker.cs" />
 		<Compile Include="UI\Dialog\DrawingTool.cs" />
 		<Compile Include="gtk-gui\VAS.UI.Dialog.DrawingTool.cs" />
 		<Compile Include="UI\Component\RenderingStateBarView.cs" />
@@ -95,7 +95,7 @@
 		<Compile Include="UI\Menu\EventsMenu.cs" />
 		<Compile Include="UI\Menu\PlaylistMenu.cs" />
 		<Compile Include="UI\Component\JobsManagerView.cs" />
-		<Compile Include="gtk-gui\VAS.UI.UI.Component.JobsManagerView.cs" />
+		<Compile Include="gtk-gui\VAS.UI.Component.JobsManagerView.cs" />
 		<Compile Include="UI\TreeView\JobsTreeView.cs" />
 		<Compile Include="UI\TreeView\FilterTreeViewBase.cs" />
 		<Compile Include="UI\TreeView\StringObject.cs" />
@@ -122,7 +122,7 @@
 		<Compile Include="UI\Bindings\DatePickerBinding.cs" />
 		<Compile Include="UI\Bindings\BindingsExtensions.cs" />
 		<Compile Include="UI\Component\ImagePreviewWidget.cs" />
-		<Compile Include="gtk-gui\VAS.UI.UI.Component.ImagePreviewWidget.cs" />
+		<Compile Include="gtk-gui\VAS.UI.Component.ImagePreviewWidget.cs" />
 		<Compile Include="UI\Dialog\AboutDialog.cs" />
 	</ItemGroup>
 	<Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
