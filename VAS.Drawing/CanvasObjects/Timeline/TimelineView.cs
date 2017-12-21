@@ -240,8 +240,8 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				p.Draw (tk, area);
 			}
 
-			tk.FillColor = App.Current.Style.PaletteTool;
-			tk.StrokeColor = App.Current.Style.PaletteTool;
+			tk.FillColor = App.Current.Style.ColorPrimary;
+			tk.StrokeColor = App.Current.Style.ColorPrimary;
 			tk.LineWidth = Constants.TIMELINE_LINE_WIDTH;
 			position = Utils.TimeToPos (CurrentTime, secondsPerPixel);
 			tk.DrawLine (new Point (position, OffsetY),
