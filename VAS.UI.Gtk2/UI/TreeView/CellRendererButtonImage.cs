@@ -147,10 +147,10 @@ namespace VAS.UI.Component
 
 				tk.Context = context;
 				tk.Begin ();
-				tk.StrokeColor = App.Current.Style.TBD_Black;
+				tk.StrokeColor = App.Current.Style.ThemeBase;
 				tk.FillColor = Color.Transparent;
 				if (flags.HasFlag (CellRendererState.Prelit) && cursor.IsInsideArea (pos, BUTTON_WIDTH, BUTTON_HEIGHT)) {
-					tk.StrokeColor = App.Current.Style.TBD_Orange;
+					tk.StrokeColor = App.Current.Style.ColorPrimary;
 					tk.LineWidth = LINE_WIDTH;
 				}
 

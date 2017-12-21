@@ -68,7 +68,7 @@ namespace VAS.Drawing.CanvasObjects
 		{
 			tk.Begin ();
 			tk.LineWidth = ViewModel.LineWidth;
-			tk.StrokeColor = App.Current.Style.BackgroundLevel2;
+			tk.StrokeColor = App.Current.Style.ThemeSecondary;
 
 			int extraLeft = (ViewModel.ShowLeft) ? ViewModel.PaddingLeft : 0;
 			double xOrigin = area.Start.X + extraLeft;

@@ -64,15 +64,18 @@ namespace VAS.Core.Common
 			ThemeBase = Color.Black;
 			ThemeContrastSecondary = Color.Black;
 			TextBase = Color.Black;
-			PaletteTool = Color.Black;
+			ColorPrimary = Color.Black;
 			TextBase = Color.Black;
 			SoftDim = 0.9;
 		}
 
 		#region Properties
 
+
 		//Colors
 		// New colors pallete --------------------------------------------------
+
+		public Color ScreenBase { get; set; }
 
 		public Color ThemeBase { get; set; }
 		public Color ThemeSecondary { get; set; }
@@ -81,6 +84,12 @@ namespace VAS.Core.Common
 		public Color ThemeContrastSecondary { get; set; }
 		public Color ThemeContrastDisabled { get; set; }
 
+		public Color TextBrand { get; set; }
+		public Color TextPrimary { get; set; }
+		public Color TextSecondary { get; set; }
+		public Color TextAccentSuccess { get; set; }
+		public Color TextAccentWarning { get; set; }
+		public Color TextAccentError { get; set; }
 		public Color TextBase { get; set; }
 		public Color TextBaseDisabled { get; set; }
 		public Color TextBaseSecondary { get; set; }
@@ -100,55 +109,10 @@ namespace VAS.Core.Common
 
 		public double SoftDim { get; set; }
 
-		// -------------------------------------------------------------------------
-
-		public Color TBD_Black { get; set; } = Color.Black;
-		public Color TBD_Orange { get; set; } = Color.Orange;
-
-		// -------------------------------------------------------------------------
-
 		public Color HomeTeamColor { get; set; }
-
 		public Color AwayTeamColor { get; set; }
 
-		public Color ScreenBase { get; set; }
-
 		public Color PaletteBackgroundSemiLight { get; set; } // to be changed in presentations view because is used incorrectly
-
-		public Color PaletteTool { get; set; }
-
-		// FIXME: keep these background color until there is a full equivalence with new named colors
-		public Color BackgroundLevel2 { get; set; }
-
-		public Color BackgroundLevel4a { get; set; }
-
-		public Color BackgroundLevel4b { get; set; }
-
-		public Color TextColor { get; set; }
-
-		public Color Foreground_Team_B { get; set; }
-
-		public Color Foreground_Team_B_tl { get; set; }
-
-		public Color Foreground_Team_A { get; set; }
-
-		public Color Foreground_Team_A_tl { get; set; }
-
-		public Color Foreground_Good { get; set; }
-
-		public Color Foreground_Bad { get; set; }
-
-		public Color Foreground_Highlight { get; set; }
-
-		public Color Stat_Success { get; set; }
-
-		public Color Stat_Failure { get; set; }
-
-		public Color Text_Highlight { get; set; }
-
-		public Color Error { get; set; }
-
-		public Color Warning { get; set; }
 
 		//Sizes
 

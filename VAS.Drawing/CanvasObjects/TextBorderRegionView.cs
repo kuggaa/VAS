@@ -70,7 +70,7 @@ namespace VAS.Drawing.CanvasObjects
 			Point p = new Point (area.Start.X, area.Start.Y);
 
 			tk.FontSize = 12;
-			tk.StrokeColor = App.Current.Style.TextColor;
+			tk.StrokeColor = App.Current.Style.TextBase;
 			tk.FontAlignment = FontAlignment.Center;
 			tk.DrawText (p, area.Width, area.Height, ViewModel.Text);
 
