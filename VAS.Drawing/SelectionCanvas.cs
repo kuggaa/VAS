@@ -113,7 +113,7 @@ namespace VAS.Drawing
 		/// <summary>
 		/// A list with all the selected objects
 		/// </summary>
-		protected List<Selection> Selections {
+		internal protected List<Selection> Selections {
 			get;
 			set;
 		}
