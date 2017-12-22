@@ -1,5 +1,5 @@
 ﻿//
-//  Copyright (C) 2017 Fluendo S.A.
+//  Copyright (C) 2017 
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,18 +15,23 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-
 namespace VAS.Core.ViewModel.Statistics
 {
 	/// <summary>
-	/// Viewmodel for the horizontal series bar graphic
+	/// Viewmodel for the circular series graphic
 	/// </summary>
-	public class BarChartVM : ChartVM
+	public class CircularChartVM : ChartVM
 	{
 		/// <summary>
-		/// Gets or sets a value indicating the height of the bars in the collection
+		/// Gets or sets the radius of the cicle
 		/// </summary>
-		/// <value><c>true</c> if height; otherwise, <c>false</c>.</value>
-		public double Height { get; set; }
+		/// <value>The circle radius.</value>
+		public int Radius { get; set; }
+
+		/// <summary>
+		/// Gets or sets the thickness of the arc line
+		/// </summary>
+		/// <value>The thickness.</value>
+		public int LineWidth { get; set; }
 	}
 }

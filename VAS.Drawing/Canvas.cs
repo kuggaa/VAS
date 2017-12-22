@@ -282,7 +282,10 @@ namespace VAS.Drawing
 
 		protected void DrawBackground ()
 		{
-			tk.Clear (BackgroundColor);
+			// Fixme: clear operation once set a color cannot apply transparency
+			if (BackgroundColor != Color.Transparent) {
+				tk.Clear (BackgroundColor);
+			}
 		}
 
 		protected virtual void DrawObjects (Area area)

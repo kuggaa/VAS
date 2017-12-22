@@ -53,10 +53,12 @@ namespace VAS.UI.Helpers.Bindings
 
 		protected override void UpdateView ()
 		{
-			button.Configure (image ?? Command.Icon,
-							  text ?? Command.Text,
-							  Command.ToolTipText, null);
-			button.Sensitive = Command.CanExecute ();
+			if (Command != null) {
+				button.Configure (image ?? Command.Icon,
+								  text ?? Command.Text,
+								  Command.ToolTipText, null);
+				button.Sensitive = Command.CanExecute ();
+			}
 		}
 
 		protected override void HandleCanExecuteChanged (object sender, EventArgs args)

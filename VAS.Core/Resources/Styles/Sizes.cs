@@ -152,5 +152,11 @@ namespace VAS.Core.Resources.Styles
 		public static int PlayerCapturerSmallIconSize = 15;
 		public static int PlayerCapturerIconSize = 20;
 		public static int PlayerCapturerControlsHeight = 30;
+
+		// profile stats
+		public static int ProfileSeasonChartLineWidth = 18;
+		public static int ProfileSeasonChartRadius = 65;
+		public static int ProfileLaneChartLineWidth = 14;
+		public static int ProfileLaneChartRadius = 50;
 	}
 }
