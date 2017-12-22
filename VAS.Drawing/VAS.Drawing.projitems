@@ -74,5 +74,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Widgets\EventEditionTimeruleView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimeNodeEditorView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Widgets\CardCanvasView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Widgets\TextView.cs" />
   </ItemGroup>
 </Project>

@@ -26,10 +26,10 @@ namespace VAS.Core.Common
 	/// </summary>
 	public class Stopwatch : IStopwatch
 	{
-        /// <summary>
-        /// The frequency of the timer as the number of ticks per second
-        /// </summary>
-        public static readonly long Frequency = SystemStopwatch.Frequency;
+		/// <summary>
+		/// The frequency of the timer as the number of ticks per second
+		/// </summary>
+		public static readonly long Frequency = SystemStopwatch.Frequency;
 
 		SystemStopwatch stopwatch;
 

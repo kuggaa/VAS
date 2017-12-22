@@ -102,13 +102,13 @@ namespace VAS.Drawing.CanvasObjects.Statistics
 			double height = area.Height - ViewModel.TopPadding - ViewModel.BottomPadding;
 
 			// text serie left
-			tk.StrokeColor = App.Current.Style.TextColor;
+			tk.StrokeColor = App.Current.Style.TextBase;
 			tk.FontAlignment = FontAlignment.Left;
 			tk.DrawText (new Point (posX, posY + 5), width, height, ViewModel.LeftDisplayText);
 
 			// text serie right
 			if (ViewModel.RightTextStyle != TwoBarTextStyle.Hidden) {
-				tk.StrokeColor = App.Current.Style.TextColor;
+				tk.StrokeColor = App.Current.Style.TextBase;
 				tk.FontAlignment = FontAlignment.Right;
 				tk.DrawText (new Point (posX, posY + 5), width, height, ViewModel.RightSerie.Elements.ToString ());
 			}
