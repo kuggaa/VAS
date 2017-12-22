@@ -24,11 +24,6 @@ namespace VAS.Core.Events
 		public T Object { get; set; }
 	}
 
-	public class SearchEvent<T> : GenericEvent<T>
-	{
-		public string TextFilter { get; set; }
-	}
-
 	public class CreateEvent<T> : GenericEvent<T>
 	{
 		public T Source { get; set; }

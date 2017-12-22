@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using NUnit.Framework;
 using VAS.Core.Common;
@@ -32,21 +33,29 @@ namespace VAS.Tests.Core.Common
 		List<NotifyCollectionChangedAction> actionsPerformed;
 		int counter;
 		bool notified = false;
-		int notifications;
+		int notifications, countNotifications;
 
 		[SetUp ()]
 		public void SetUp ()
 		{
 			notified = false;
 			notifications = 0;
+			countNotifications = 0;
 			counter = 0;
-			if (collection != null) {
-				collection.CollectionChanged -= CollectionChanged;
-			}
 			collection = new RangeObservableCollection<int> (new List<int> { 0, 1, 2, 3, 4 });
 			index = -2;
 			actionsPerformed = new List<NotifyCollectionChangedAction> ();
 			collection.CollectionChanged += CollectionChanged;
+			(collection as INotifyPropertyChanged).PropertyChanged += HandlePropertyChanged;
+		}
+
+		[TearDown]
+		public void TearDown ()
+		{
+			if (collection != null) {
+				collection.CollectionChanged -= CollectionChanged;
+				(collection as INotifyPropertyChanged).PropertyChanged -= HandlePropertyChanged;
+			}
 		}
 
 		[Test ()]
@@ -62,8 +71,9 @@ namespace VAS.Tests.Core.Common
 			Assert.AreEqual (indexToVerify, index);
 			Assert.AreEqual (7, collection.Count);
 			Assert.AreEqual (6, collection.Last ());
-			Assert.AreEqual (actionsPerformed[0], NotifyCollectionChangedAction.Add);
-			Assert.AreEqual (notifications, 1);
+			Assert.AreEqual (actionsPerformed [0], NotifyCollectionChangedAction.Add);
+			Assert.AreEqual (1, notifications);
+			Assert.AreEqual (1, countNotifications);
 		}
 
 		[Test ()]
@@ -77,6 +87,7 @@ namespace VAS.Tests.Core.Common
 			Assert.AreEqual (2, collection [1]);
 			Assert.AreEqual (actionsPerformed [0], NotifyCollectionChangedAction.Remove);
 			Assert.AreEqual (notifications, 1);
+			Assert.AreEqual (countNotifications, 1);
 		}
 
 		[Test ()]
@@ -90,6 +101,7 @@ namespace VAS.Tests.Core.Common
 
 			// Assert
 			Assert.AreEqual (0, notifications);
+			Assert.AreEqual (0, countNotifications);
 			Assert.AreEqual (5, collection.Count);
 			Assert.AreEqual (1, collection [1]);
 		}
@@ -105,6 +117,7 @@ namespace VAS.Tests.Core.Common
 
 			// Assert
 			Assert.AreEqual (0, notifications);
+			Assert.AreEqual (0, countNotifications);
 			Assert.AreEqual (5, collection.Count);
 			Assert.AreEqual (1, collection [1]);
 		}
@@ -120,6 +133,7 @@ namespace VAS.Tests.Core.Common
 
 			// Assert
 			Assert.AreEqual (2, notifications);
+			Assert.AreEqual (2, countNotifications);
 			Assert.AreEqual (actionsPerformed [0], NotifyCollectionChangedAction.Remove);
 			Assert.AreEqual (actionsPerformed [1], NotifyCollectionChangedAction.Add);
 			Assert.AreEqual (3, collection.Count);
@@ -135,8 +149,9 @@ namespace VAS.Tests.Core.Common
 			Assert.AreEqual (2, counter);
 			Assert.AreEqual (2, index);
 			Assert.AreEqual (5, collection [index]);
-			Assert.AreEqual (actionsPerformed[0], NotifyCollectionChangedAction.Add);
+			Assert.AreEqual (actionsPerformed [0], NotifyCollectionChangedAction.Add);
 			Assert.AreEqual (1, notifications);
+			Assert.AreEqual (1, countNotifications);
 		}
 
 		[Test ()]
@@ -149,6 +164,7 @@ namespace VAS.Tests.Core.Common
 			Assert.AreEqual (collection, collectionToReplace);
 			Assert.AreEqual (actionsPerformed [0], NotifyCollectionChangedAction.Reset);
 			Assert.AreEqual (1, notifications);
+			Assert.AreEqual (1, countNotifications);
 		}
 
 		[Test ()]
@@ -167,9 +183,16 @@ namespace VAS.Tests.Core.Common
 			if (e.Action == NotifyCollectionChangedAction.Add) {
 				index = e.NewStartingIndex;
 			}
-			actionsPerformed.Add(e.Action);
+			actionsPerformed.Add (e.Action);
 			notifications++;
 			notified = true;
+		}
+
+		void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof (collection.Count)) {
+				countNotifications++;
+			}
 		}
 
 		/// <summary>
@@ -182,5 +205,6 @@ namespace VAS.Tests.Core.Common
 			counter++;
 			return value;
 		}
+
 	}
 }
