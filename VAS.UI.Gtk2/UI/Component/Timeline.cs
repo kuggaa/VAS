@@ -195,7 +195,7 @@ namespace VAS.UI.Component
 
 		protected void UpdateTime ()
 		{
-			currentTime = Player.CurrentTime;
+			currentTime = Player.AbsoluteCurrentTime;
 			timeline.CurrentTime = currentTime;
 			timerule.CurrentTime = currentTime;
 		}
@@ -281,7 +281,7 @@ namespace VAS.UI.Component
 
 		void HandleVideoPlayerPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if (Player.NeedsSync (e, nameof (Player.CurrentTime))) {
+			if (Player.NeedsSync (e, nameof (Player.AbsoluteCurrentTime))) {
 				if (!stopWatch.IsRunning || stopWatch.ElapsedMilliseconds >= SAMPLING_INTERVAL_MS) {
 					stopWatch.Reset ();
 					stopWatch.Start ();
