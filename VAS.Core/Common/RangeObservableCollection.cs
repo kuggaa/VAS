@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using Newtonsoft.Json;
 
@@ -120,7 +121,7 @@ namespace VAS.Core.Common
 		/// <param name="items">Items to replace</param>
 		public void Reset (IEnumerable<T> items)
 		{
-			var list = items?.ToList();
+			var list = items?.ToList ();
 			if (Items.SequenceEqualSafe (list)) {
 				return;
 			}
@@ -139,6 +140,7 @@ namespace VAS.Core.Common
 		{
 			if (!IgnoreEvents) {
 				base.OnCollectionChanged (e);
+				OnPropertyChanged (new PropertyChangedEventArgs (nameof (Count)));
 			}
 		}
 	}
