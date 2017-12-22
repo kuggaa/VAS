@@ -404,6 +404,11 @@ namespace VAS.Drawing.Cairo
 			}
 		}
 
+
+		TimeSpan span;
+		DateTime last;
+		int redraws = 0;
+
 		void HandleExposeEvent (object o, ExposeEventArgs args)
 		{
 			Rectangle r;
@@ -420,6 +425,22 @@ namespace VAS.Drawing.Cairo
 
 			r = args.Event.Area;
 			a = new Area (new Point (r.X, r.Y), r.Width, r.Height);
+
+			#if DEBUG
+			DateTime now;
+			if (last == null)
+				now = last = DateTime.Now;
+			else
+				now = DateTime.Now;
+			span = now - last;
+			redraws++;
+			if (span.TotalSeconds >= 1) {
+				Console.WriteLine ($"{this.widget.Name} redraw itseld {redraws} times");
+				redraws = 0;
+				last = now;
+			}
+			#endif
+
 			Draw (a);
 		}
 	}

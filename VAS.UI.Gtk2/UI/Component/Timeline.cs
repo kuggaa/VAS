@@ -18,10 +18,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Gtk;
 using VAS.Core;
 using VAS.Core.Common;
-using VAS.Core.Events;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Resources.Styles;
 using VAS.Core.Store;
@@ -29,8 +29,8 @@ using VAS.Core.ViewModel;
 using VAS.Drawing.Cairo;
 using VAS.Drawing.Widgets;
 using VAS.UI.Menus;
-using VASDrawing = VAS.Drawing;
 using Timer = VAS.Core.Store.Timer;
+using VASDrawing = VAS.Drawing;
 
 namespace VAS.UI.Component
 {
@@ -43,11 +43,11 @@ namespace VAS.UI.Component
 		protected TimelineLabels labels;
 		protected PlaysMenu menu;
 		protected PlaysTimeline timeline;
-		const uint TIMEOUT_MS = 100;
+		const int SAMPLING_INTERVAL_MS = 80;
 		Timerule timerule;
+		Time currentTime;
 		double secondsPerPixel;
-		uint timeoutID;
-		Time currentTime, nextCurrentTime;
+		Stopwatch stopWatch;
 		IAnalysisViewModel viewModel;
 
 		public Timeline ()
@@ -77,13 +77,6 @@ namespace VAS.UI.Component
 		{
 			Log.Verbose ($"Destroying {GetType ()}");
 
-			if (timeoutID != 0) {
-				GLib.Source.Remove (timeoutID);
-				timeoutID = 0;
-			}
-			// Unsubscribe events
-			App.Current.EventsBroker.Unsubscribe<PlayerTickEvent> (HandlePlayerTick);
-
 			timerule?.Dispose ();
 			timeline?.Dispose ();
 			labels?.Dispose ();
@@ -94,57 +87,38 @@ namespace VAS.UI.Component
 			Disposed = true;
 		}
 
-		/// <summary>
-		/// Gets or sets the current time.
-		/// </summary>
-		/// <value>The current time.</value>
-		public Time CurrentTime {
-			set {
-				nextCurrentTime = value;
-			}
-			protected get {
-				return currentTime;
-			}
-		}
-
-		protected bool Disposed {
-			get;
-			private set;
-		}
+		protected bool Disposed { get; private set; }
 
 		public IAnalysisViewModel ViewModel {
 			get {
 				return viewModel;
 			}
 			set {
+				if (viewModel != null) {
+					viewModel.PropertyChanged -= HandleVideoPlayerPropertyChanged;
+				}
+				stopWatch.Reset ();
+				stopWatch.Stop ();
 				viewModel = value;
-
 				labels.SetViewModel (viewModel);
 				timeline.SetViewModel (viewModel);
 				timerule.ViewModel = viewModel?.VideoPlayer;
-
-				if (viewModel == null) {
-					if (timeoutID != 0) {
-						GLib.Source.Remove (timeoutID);
-						timeoutID = 0;
-					}
-					return;
+				if (viewModel != null) {
+					UpdateTime ();
+					focusscale.Value = 6;
+					viewModel.PropertyChanged += HandleVideoPlayerPropertyChanged;
+					QueueDraw ();
 				}
-
-				if (timeoutID == 0) {
-					timeoutID = GLib.Timeout.Add (TIMEOUT_MS, UpdateTime);
-				}
-				focusscale.Value = 6;
-
-				timeline.ShowMenuEvent += HandleShowMenu;
-				timeline.ShowTimersMenuEvent += HandleShowTimersMenu;
-				QueueDraw ();
 			}
 		}
 
-		VideoPlayerVM Player {
-			get {
-				return ViewModel?.VideoPlayer;
+		VideoPlayerVM Player => ViewModel?.VideoPlayer;
+
+		Time CurrentTime {
+			get => currentTime;
+			set {
+				currentTime = value;
+				QueueDraw ();
 			}
 		}
 
@@ -155,11 +129,15 @@ namespace VAS.UI.Component
 
 		void Initialize ()
 		{
+			stopWatch = new Stopwatch ();
+
 			timerule = new Timerule (new WidgetWrapper (timerulearea));
 			timerule.UseAbsoluteDuration = true;
 			timerule.CenterPlayheadClicked += HandleFocusClicked;
 			timeline = App.Current.ViewLocator.Retrieve ("PlaysTimelineView") as PlaysTimeline;
 			timeline.SetWidget (new WidgetWrapper (timelinearea));
+			timeline.ShowMenuEvent += HandleShowMenu;
+			timeline.ShowTimersMenuEvent += HandleShowTimersMenu;
 			labels = App.Current.ViewLocator.Retrieve ("TimelineLabelsView") as TimelineLabels;
 			labels.SetWidget (new WidgetWrapper (labelsarea));
 
@@ -181,7 +159,6 @@ namespace VAS.UI.Component
 			hbox1.HeightRequest = VASDrawing.Constants.TIMERULE_HEIGHT;
 			scrolledwindow1.Vadjustment.ValueChanged += HandleScrollEvent;
 			scrolledwindow1.Hadjustment.ValueChanged += HandleScrollEvent;
-			timeoutID = 0;
 
 			zoominimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-zoom-in", 14);
 			zoomoutimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-zoom-out", 14);
@@ -191,7 +168,6 @@ namespace VAS.UI.Component
 				int spacing = (int)scrolledwindow1.StyleGetProperty ("scrollbar-spacing");
 				zoomhbox.HeightRequest = args.Allocation.Height + spacing;
 			};
-			App.Current.EventsBroker.Subscribe<PlayerTickEvent> (HandlePlayerTick);
 		}
 
 		/// <summary>
@@ -218,14 +194,11 @@ namespace VAS.UI.Component
 			focusscale.Adjustment.Value -= focusscale.Adjustment.StepIncrement;
 		}
 
-		protected bool UpdateTime ()
+		protected void UpdateTime ()
 		{
-			if (nextCurrentTime != currentTime) {
-				currentTime = nextCurrentTime;
-				timeline.CurrentTime = currentTime;
-				timerule.CurrentTime = currentTime;
-			}
-			return true;
+			currentTime = Player.CurrentTime;
+			timeline.CurrentTime = currentTime;
+			timerule.CurrentTime = currentTime;
 		}
 
 		protected void HandleScrollEvent (object sender, System.EventArgs args)
@@ -307,9 +280,15 @@ namespace VAS.UI.Component
 			m.Popup ();
 		}
 
-		void HandlePlayerTick (PlayerTickEvent e)
+		void HandleVideoPlayerPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			CurrentTime = e.Time;
+			if (Player.NeedsSync (e, nameof (Player.CurrentTime))) {
+				if (!stopWatch.IsRunning || stopWatch.ElapsedMilliseconds >= SAMPLING_INTERVAL_MS) {
+					stopWatch.Reset ();
+					stopWatch.Start ();
+					UpdateTime ();
+				}
+			}
 		}
 	}
 }

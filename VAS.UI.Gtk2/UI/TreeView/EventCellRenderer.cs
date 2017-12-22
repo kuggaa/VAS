@@ -226,7 +226,7 @@ namespace VAS.UI.Component
 			tk.FillColor = Color.Transparent;
 			tk.StrokeColor = Color.Transparent;
 			if (state.HasFlag (CellState.Selected)) {
-				tk.StrokeColor = App.Current.Style.TBD_Orange;
+				tk.StrokeColor = App.Current.Style.ColorPrimary;
 			}
 			tk.LineWidth = selectionLineWidth;
 			tk.DrawRectangle (pos, width, height);
@@ -402,7 +402,7 @@ namespace VAS.UI.Component
 			RenderSelection (tk, context, backgroundArea, cellArea, state, true);
 			RenderPrelit (vm.Playing, tk, context, backgroundArea, cellArea, state);
 			RenderChildText (tk, textPoint, (int)textWidth, (int)cellArea.Height, vm.Description, App.Current.Style.TextBase);
-			RenderColorStrip (tk, backgroundArea, App.Current.Style.Text_Highlight);
+			RenderColorStrip (tk, backgroundArea, App.Current.Style.TextBase);
 			Point p = new Point (backgroundArea.Left + LEFT_OFFSET + COLOR_RECTANGLE_WIDTH + SPACING, cellArea.Start.Y + VERTICAL_OFFSET);
 			RenderImage (tk, p, vm.Miniature, MINIATURE_WIDTH, MINIATURE_HEIGHT);
 			RenderEye (tk, backgroundArea, cellArea, vm.Playing);

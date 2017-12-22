@@ -38,6 +38,8 @@
                           <packing>
                             <property name="Position">0</property>
                             <property name="AutoSize">True</property>
+                            <property name="Expand">False</property>
+                            <property name="Fill">False</property>
                           </packing>
                         </child>
                         <child>
@@ -222,33 +224,27 @@
                                           <widget class="Gtk.VBox" id="timeVBox">
                                             <property name="MemberName" />
                                             <child>
-                                              <widget class="Gtk.Label" id="timeLabel">
+                                              <widget class="Gtk.DrawingArea" id="currentTimeArea">
                                                 <property name="MemberName" />
                                               </widget>
                                               <packing>
                                                 <property name="Position">0</property>
-                                                <property name="AutoSize">True</property>
-                                                <property name="Expand">False</property>
-                                                <property name="Fill">False</property>
+                                                <property name="AutoSize">False</property>
                                               </packing>
                                             </child>
                                             <child>
-                                              <widget class="Gtk.Label" id="totalTimeLabel">
+                                              <widget class="Gtk.DrawingArea" id="totalTimeArea">
                                                 <property name="MemberName" />
                                               </widget>
                                               <packing>
                                                 <property name="Position">1</property>
-                                                <property name="AutoSize">True</property>
-                                                <property name="Expand">False</property>
-                                                <property name="Fill">False</property>
+                                                <property name="AutoSize">False</property>
                                               </packing>
                                             </child>
                                           </widget>
                                           <packing>
                                             <property name="Position">1</property>
                                             <property name="AutoSize">True</property>
-                                            <property name="Expand">False</property>
-                                            <property name="Fill">False</property>
                                           </packing>
                                         </child>
                                         <child>
@@ -264,11 +260,9 @@
                                         </child>
                                       </widget>
                                       <packing>
-                                        <property name="PackType">End</property>
                                         <property name="Position">3</property>
-                                        <property name="AutoSize">True</property>
+                                        <property name="AutoSize">False</property>
                                         <property name="Expand">False</property>
-                                        <property name="Fill">False</property>
                                       </packing>
                                     </child>
                                   </widget>
@@ -277,8 +271,6 @@
                               <packing>
                                 <property name="Position">0</property>
                                 <property name="AutoSize">True</property>
-                                <property name="Expand">False</property>
-                                <property name="Fill">False</property>
                               </packing>
                             </child>
                             <child>
@@ -429,8 +421,6 @@
                                                 <child>
                                                   <widget class="VAS.UI.Helpers.ImageView" id="jumpsButtonImage">
                                                     <property name="MemberName" />
-                                                    <property name="Xalign">0</property>
-                                                    <property name="Yalign">0</property>
                                                   </widget>
                                                 </child>
                                               </widget>
@@ -698,8 +688,6 @@
                                           <packing>
                                             <property name="Position">0</property>
                                             <property name="AutoSize">True</property>
-                                            <property name="Expand">False</property>
-                                            <property name="Fill">False</property>
                                           </packing>
                                         </child>
                                         <child>
@@ -717,8 +705,6 @@
                                       <packing>
                                         <property name="Position">4</property>
                                         <property name="AutoSize">True</property>
-                                        <property name="Expand">False</property>
-                                        <property name="Fill">False</property>
                                       </packing>
                                     </child>
                                     <child>
@@ -851,8 +837,6 @@
                                 <property name="PackType">End</property>
                                 <property name="Position">2</property>
                                 <property name="AutoSize">True</property>
-                                <property name="Expand">False</property>
-                                <property name="Fill">False</property>
                               </packing>
                             </child>
                           </widget>
@@ -909,10 +893,8 @@
                   <widget class="Gtk.EventBox" id="hourseventbox">
                     <property name="MemberName" />
                     <child>
-                      <widget class="Gtk.Label" id="hourlabel">
+                      <widget class="Gtk.DrawingArea" id="hourArea">
                         <property name="MemberName" />
-                        <property name="LabelProp" translatable="yes">&lt;b&gt;00&lt;/b&gt;</property>
-                        <property name="UseMarkup">True</property>
                       </widget>
                     </child>
                   </widget>
@@ -939,18 +921,14 @@
                   <widget class="Gtk.EventBox" id="minuteseventbox">
                     <property name="MemberName" />
                     <child>
-                      <widget class="Gtk.Label" id="minuteslabel">
+                      <widget class="Gtk.DrawingArea" id="minutesArea">
                         <property name="MemberName" />
-                        <property name="LabelProp" translatable="yes">&lt;b&gt;00&lt;/b&gt;</property>
-                        <property name="UseMarkup">True</property>
                       </widget>
                     </child>
                   </widget>
                   <packing>
                     <property name="Position">2</property>
                     <property name="AutoSize">True</property>
-                    <property name="Expand">False</property>
-                    <property name="Fill">False</property>
                   </packing>
                 </child>
                 <child>
@@ -970,18 +948,14 @@
                   <widget class="Gtk.EventBox" id="secondseventbox">
                     <property name="MemberName" />
                     <child>
-                      <widget class="Gtk.Label" id="secondslabel">
+                      <widget class="Gtk.DrawingArea" id="secondsArea">
                         <property name="MemberName" />
-                        <property name="LabelProp" translatable="yes">&lt;b&gt;00&lt;/b&gt;</property>
-                        <property name="UseMarkup">True</property>
                       </widget>
                     </child>
                   </widget>
                   <packing>
                     <property name="Position">4</property>
                     <property name="AutoSize">True</property>
-                    <property name="Expand">False</property>
-                    <property name="Fill">False</property>
                   </packing>
                 </child>
                 <child>
@@ -1015,8 +989,6 @@
                     <child>
                       <widget class="VAS.UI.Helpers.ImageView" id="recimage">
                         <property name="MemberName" />
-                        <property name="Xpad">5</property>
-                        <property name="Ypad">5</property>
                       </widget>
                     </child>
                   </widget>
@@ -1037,8 +1009,6 @@
                     <child>
                       <widget class="VAS.UI.Helpers.ImageView" id="stopimage">
                         <property name="MemberName" />
-                        <property name="Xpad">5</property>
-                        <property name="Ypad">5</property>
                       </widget>
                     </child>
                   </widget>
@@ -1059,8 +1029,6 @@
                     <child>
                       <widget class="VAS.UI.Helpers.ImageView" id="pauseimage">
                         <property name="MemberName" />
-                        <property name="Xpad">5</property>
-                        <property name="Ypad">5</property>
                       </widget>
                     </child>
                   </widget>
@@ -1081,8 +1049,6 @@
                     <child>
                       <widget class="VAS.UI.Helpers.ImageView" id="resumeimage">
                         <property name="MemberName" />
-                        <property name="Xpad">5</property>
-                        <property name="Ypad">5</property>
                       </widget>
                     </child>
                   </widget>
@@ -1103,8 +1069,6 @@
                     <child>
                       <widget class="VAS.UI.Helpers.ImageView" id="saveimage">
                         <property name="MemberName" />
-                        <property name="Xpad">5</property>
-                        <property name="Ypad">5</property>
                       </widget>
                     </child>
                   </widget>
@@ -1125,8 +1089,6 @@
                     <child>
                       <widget class="VAS.UI.Helpers.ImageView" id="cancelimage">
                         <property name="MemberName" />
-                        <property name="Xpad">5</property>
-                        <property name="Ypad">5</property>
                       </widget>
                     </child>
                   </widget>
@@ -1172,8 +1134,6 @@
                         <child>
                           <widget class="VAS.UI.Helpers.ImageView" id="deletelastimage">
                             <property name="MemberName" />
-                            <property name="Xpad">5</property>
-                            <property name="Ypad">5</property>
                           </widget>
                         </child>
                       </widget>
@@ -1194,8 +1154,6 @@
                         <child>
                           <widget class="VAS.UI.Helpers.ImageView" id="playlastimage">
                             <property name="MemberName" />
-                            <property name="Xpad">5</property>
-                            <property name="Ypad">5</property>
                           </widget>
                         </child>
                       </widget>
