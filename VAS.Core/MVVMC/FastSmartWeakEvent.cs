@@ -123,11 +123,11 @@ namespace VAS.Core.MVVMC
 			if (eh != null) {
 				Delegate d = (Delegate)(object)eh;
 				RemoveDeadEntries ();
-				object targetInstance = d.Target;
-				if (targetInstance != null) {
+				if (CanUseWeakEvent (d)) {
+					object targetInstance = d.Target;
 					MethodInfo targetMethod = d.Method;
-					var wd = new HandlerEntry (this, targetInstance, targetMethod);
 					var dynamicMethod = GetInvoker (targetMethod);
+					var wd = new HandlerEntry (this, targetInstance, targetMethod);
 					wd.WrappingDelegate = dynamicMethod.CreateDelegate (typeof (T), wd);
 					AddToRaiseDelegate (wd.WrappingDelegate);
 				} else {
@@ -159,12 +159,12 @@ namespace VAS.Core.MVVMC
 			if (eh == null)
 				return;
 			Delegate d = (Delegate)(object)eh;
-			object targetInstance = d.Target;
-			if (targetInstance == null) {
+			if (!CanUseWeakEvent (d)) {
 				// delegate to static method: use directly without wrapping delegate
 				RemoveFromRaiseDelegate (d);
 				return;
 			}
+			object targetInstance = d.Target;
 			MethodInfo targetMethod = d.Method;
 			// Find+Remove the last copy of a delegate pointing to targetInstance/targetMethod
 			Delegate raiseDelegate = GetRaiseDelegateInternal ();
@@ -203,6 +203,12 @@ namespace VAS.Core.MVVMC
 		/// </summary>
 		public bool HasListeners {
 			get { return GetRaiseDelegateInternal () != null; }
+		}
+
+		bool CanUseWeakEvent (Delegate d)
+		{
+			return (d.Target != null &&
+					d.Method.DeclaringType.GetCustomAttributes (typeof (CompilerGeneratedAttribute), false).Length == 0);
 		}
 
 		#region Code Generation
