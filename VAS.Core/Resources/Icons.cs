@@ -41,7 +41,7 @@ namespace VAS.Core.Resources
 		public const string ListArrowRightPath = "vas-arrow-right";
 		public const string ListArrowDownPath = "vas-arrow-down";
 
-		public const string TimelineNeedleResource = "vas-timeline-needle-big";
+		public const string TimelineNeedleResource = "vas-timeline-needle";
 		public const string TimelineNeedleUP = "vas-timeline-needle-up";
 
 		public const string TimelineSelectionLeft = "vas-timeline-select-left";
@@ -95,7 +95,7 @@ namespace VAS.Core.Resources
 		public const string PlayerControlTrimRightActive = "vas-control-trim-right-active";
 		public const string PlayerControlTrimRightInactive = "vas-control-trim-right-inactive";
 		public const string PlayerControlTrim = "vas-control-trim";
-		public const string PlayerControlZoom = "vas-zoom";
+		public const string PlayerControlZoom = "vas-control-zoom";
 		public const string PlayerControlCancelRec = "vas-cancel-rec";
 		public const string PlayerControlRewind = "vas-control-rw";
 		public const string PlayerControlFastForward = "vas-control-ff";
@@ -103,10 +103,10 @@ namespace VAS.Core.Resources
 		public const string PlayerControlPause = "vas-control-pause";
 		public const string PlayerControlDraw = "vas-control-draw";
 		public const string PlayerControlVolumeHigh = "vas-control-volume-hi";
-		public const string PlayerControlSpeedRate = "vas-speed";
-		public const string PlayerControlJumps = "vas-jumps";
+		public const string PlayerControlSpeedRate = "vas-control-speed";
+		public const string PlayerControlJumps = "vas-control-jumps-fw";
 		public const string PlayerControlDetach = "vas-control-detach";
-		public const string PlayerControlMulticam = "vas-multicam";
+		public const string PlayerControlMulticam = "vas-control-multicam";
 
 		public const string PlayerControlVolumeOff = "vas-control-volume-off";
 		public const string PlayerControlVolumeLow = "vas-control-volume-low";
