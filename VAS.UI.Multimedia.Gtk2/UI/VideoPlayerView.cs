@@ -106,7 +106,7 @@ namespace VAS.UI
 			eventNameLabel.Ellipsize = EllipsizeMode.End;
 			centerplayheadbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-dash-center-view",
 																					 Sizes.PlayerCapturerIconSize);
-			DurationButtonImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-duration", 15);
+			DurationButtonImage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-control-duration", 15);
 
 			// Force tooltips to be translatable as there seems to be a bug in stetic 
 			// code generation for translatable tooltips.
