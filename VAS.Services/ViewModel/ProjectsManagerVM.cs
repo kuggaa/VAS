@@ -54,6 +54,7 @@ namespace VAS.Services.ViewModel
 				TipText = ProjectsCreateTip,
 			};
 			FillProjectMenu ();
+			FilterText = string.Empty;
 		}
 
 		protected override void DisposeManagedResources ()
