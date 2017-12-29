@@ -655,7 +655,8 @@ namespace VAS.Core.Common
 	/// </summary>
 	public enum VASCountLimitedObjects
 	{
-		TimelineEvents
+		TimelineEvents,
+		Projects
 	}
 }
 

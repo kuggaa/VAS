@@ -39,7 +39,7 @@ namespace VAS.Services.ViewModel
 		public ProjectsManagerVM ()
 		{
 			LoadedProject = new TViewModel ();
-			NewCommand = new Command (New) { IconName = "vas-plus" };
+			NewCommand = new LimitationCommand (VASCountLimitedObjects.Projects.ToString (), New) { IconName = "vas-plus" };
 			OpenCommand = new AsyncCommand<TViewModel> (Open, (arg) => Selection.Count == 1);
 			DeleteCommand = new AsyncCommand<TViewModel> (Delete, (arg) => Selection.Any () || arg != null) { IconName = "vas-delete" };
 			SaveCommand = new AsyncCommand (Save, () => LoadedProject?.Model != null && LoadedProject.IsChanged);
@@ -61,19 +61,6 @@ namespace VAS.Services.ViewModel
 		{
 			base.DisposeManagedResources ();
 			LoadedProject = null;
-		}
-
-		public override CountLimitationVM Limitation {
-			set {
-				if (Limitation != null) {
-					Limitation.PropertyChanged -= HandleLimitationChanged;
-				}
-				base.Limitation = value;
-				if (Limitation != null) {
-					Limitation.PropertyChanged += HandleLimitationChanged;
-					CheckNewCommandEnabled ();
-				}
-			}
 		}
 
 		public TViewModel LoadedProject {
@@ -227,16 +214,6 @@ namespace VAS.Services.ViewModel
 			ProjectMenu.ViewModels.AddRange (new List<MenuNodeVM> {
 				new MenuNodeVM (DeleteCommand, null, Catalog.GetString("Delete")) { Color = App.Current.Style.ColorAccentError },
 			});
-		}
-
-		void HandleLimitationChanged (object sender, PropertyChangedEventArgs e)
-		{
-			CheckNewCommandEnabled ();
-		}
-
-		void CheckNewCommandEnabled ()
-		{
-			NewCommand.Executable = Limitation == null || Limitation.Count < Limitation.Maximum;
 		}
 
 		void HandleLoadedProjectChanged (object sender, PropertyChangedEventArgs e)
