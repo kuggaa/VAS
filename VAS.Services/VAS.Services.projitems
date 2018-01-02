@@ -23,7 +23,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)RenderingJobsController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)State\JobsManagerState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TemplateManagerViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectsManagerVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\JobsManagerVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\DrawingToolVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UserStatisticsService.cs" />

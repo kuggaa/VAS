@@ -19,16 +19,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Filters;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
-using VAS.Core.ViewModel;
 using static VAS.Core.Resources.Strings;
 
-namespace VAS.Services.ViewModel
+namespace VAS.Core.ViewModel
 {
 	public class ProjectsManagerVM<TModel, TViewModel> : LimitedCollectionViewModel<TModel, TViewModel>
 		where TModel : Project

@@ -24,8 +24,8 @@ using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.Store;
+using VAS.Core.ViewModel;
 using VAS.Services.Controller;
-using VAS.Services.ViewModel;
 
 namespace VAS.Tests.Services
 {
