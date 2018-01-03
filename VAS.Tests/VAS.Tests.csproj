@@ -159,6 +159,8 @@
     <Compile Include="MVVMC\TestKeyUpdaterCollectionViewModel.cs" />
     <Compile Include="Core\Common\TestLog.cs" />
     <Compile Include="Core\Common\TestTypeConverters.cs" />
+    <Compile Include="Services\TestDynamicButtonToolbarService.cs" />
+    <Compile Include="Core\ViewModel\TestProjectsManagerVM.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
