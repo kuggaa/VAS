@@ -646,7 +646,8 @@ namespace VAS.Core.Common
 		OpenMultiCamera,
 		CreateMultiCamera,
 		LinkingButtons,
-		Watermark
+		Watermark,
+		VideoDetach
 	}
 
 	/// <summary>
@@ -654,7 +655,8 @@ namespace VAS.Core.Common
 	/// </summary>
 	public enum VASCountLimitedObjects
 	{
-		TimelineEvents
+		TimelineEvents,
+		Projects
 	}
 }
 

@@ -39,6 +39,7 @@ namespace VAS.Services.State
 			Panel = App.Current.ViewLocator.Retrieve (Name) as IPanel;
 			Controllers = App.Current.ControllerLocator.RetrieveAll (Name);
 			KeyContext = new KeyContext ();
+			ToolbarCommands = new List<Command> ();
 		}
 
 		protected override void DisposeManagedResources ()
@@ -87,6 +88,14 @@ namespace VAS.Services.State
 		public TViewModel ViewModel {
 			get;
 			protected set;
+		}
+
+		/// <summary>
+		/// Gets the toolbar commands.
+		/// </summary>
+		/// <value>The toolbar commands.</value>
+		public virtual IEnumerable<Command> ToolbarCommands {
+			get;
 		}
 
 		public virtual Task<bool> LoadState (dynamic data)

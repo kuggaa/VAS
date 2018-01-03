@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.MVVMC;
 
 namespace VAS.Core.Interfaces.GUI
 {
@@ -52,6 +53,12 @@ namespace VAS.Core.Interfaces.GUI
 		/// </summary>
 		/// <value>The key context.</value>
 		KeyContext KeyContext { get; }
+
+		/// <summary>
+		/// Gets the toolbar commands.
+		/// </summary>
+		/// <value>The toolbar commands.</value>
+		IEnumerable<Command> ToolbarCommands { get; }
 
 		/// <summary>
 		/// Method called once when transition is loaded for first time.

@@ -23,7 +23,6 @@ using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Store;
-using VAS.UI.Menus;
 
 namespace VAS.UI.Menus
 {

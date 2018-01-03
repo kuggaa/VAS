@@ -297,6 +297,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\TypeConverters\TimeToStringConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EmptyCardVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resources\Strings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\DynamicButtonToolbarVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectsManagerVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
