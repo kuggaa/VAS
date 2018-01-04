@@ -107,6 +107,8 @@ namespace VAS.Core.Common
 		public Color ColorWhite { get; set; }
 		public Color ColorGray { get; set; }
 
+		public Color ChartBase { get; set; }
+
 		public double SoftDim { get; set; }
 
 		public Color HomeTeamColor { get; set; }

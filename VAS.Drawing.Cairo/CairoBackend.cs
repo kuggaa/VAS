@@ -392,6 +392,12 @@ namespace VAS.Drawing.Cairo
 			StrokeAndFill ();
 		}
 
+		public void DrawArc (Point center, double radius, double angle1, double angle2) 
+		{
+			CContext.Arc (center.X, center.Y, radius, angle1, angle2);
+			StrokeAndFill (false);
+		}
+
 		public void DrawPoint (Point point)
 		{
 			DrawCircle (point, LineWidth);

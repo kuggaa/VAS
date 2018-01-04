@@ -30,6 +30,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
 
 namespace VAS.Core.ViewModel.Statistics
@@ -62,5 +63,21 @@ namespace VAS.Core.ViewModel.Statistics
 		/// </summary>
 		/// <value>The bottom padding.</value>
 		public int BottomPadding { get; set; }
+
+		/// <summary>
+		/// Series collection
+		/// </summary>
+		/// <value>The series collection.</value>
+		public SeriesCollectionVM Series {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the background image.
+		/// This image will be rendered under the series.
+		/// </summary>
+		/// <value>The background image.</value>
+		public ICanvasObject Background { get; set; }
 	}
 }
