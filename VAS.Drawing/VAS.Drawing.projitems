@@ -76,5 +76,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Widgets\CardCanvasView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Widgets\TextView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Widgets\ImageView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Statistics\PercentCircularChartView.cs" />
   </ItemGroup>
 </Project>

@@ -37,7 +37,7 @@ namespace VAS.Core.ViewModel.Statistics
 	/// <summary>
 	/// View model of a graphic with two horizontal series
 	/// </summary>
-	public class TwoBarChartVM : BarChartVM
+	public sealed class TwoBarChartVM : BarChartVM
 	{
 		TwoBarTextStyle leftTextStyle;
 		TwoBarTextStyle rightTextStyle;

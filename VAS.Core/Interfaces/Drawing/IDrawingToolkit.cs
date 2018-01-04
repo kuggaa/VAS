@@ -114,6 +114,8 @@ namespace VAS.Core.Interfaces.Drawing
 
 		void DrawCircle (Point center, double radius);
 
+		void DrawArc (Point center, double radius, double angle1, double angle2);
+
 		void DrawEllipse (Point center, double axisX, double axisY);
 
 		void DrawText (Point point, double width, double height, string text, bool escape = false, bool ellipsize = false);

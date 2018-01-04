@@ -299,6 +299,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Resources\Strings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\DynamicButtonToolbarVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectsManagerVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Statistics\CircularChartVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Statistics\PercentCircularChartVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
