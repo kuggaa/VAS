@@ -552,7 +552,9 @@ namespace VAS.Core.ViewModel
 		void RemoveTimelineEventVM (TimelineEventVM viewModel)
 		{
 			foreach (Player player in viewModel.Model.Players) {
-				playerToTimeline [player].ViewModels.Remove (viewModel);
+				if (playerToTimeline.ContainsKey (player)) {
+					playerToTimeline [player].ViewModels.Remove (viewModel);
+				}
 			}
 			eventTypeToTimeline [viewModel.Model.EventType].ViewModels.Remove (viewModel);
 		}
