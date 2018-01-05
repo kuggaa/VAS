@@ -110,6 +110,24 @@ namespace VAS.UI.Helpers
 		}
 
 		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.UI.Helpers.ImageView"/> is rendered in a circular shape.
+		/// </summary>
+		/// <value><c>true</c> if circular; otherwise, <c>false</c>.</value>
+		public bool Circular { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.UI.Helpers.ImageView"/> has shadow.
+		/// </summary>
+		/// <value><c>true</c> if has shadow; otherwise, <c>false</c>.</value>
+		public bool HasShadow { get; set; }
+
+		/// <summary>
+		/// Gets or sets the color of the shadow.
+		/// </summary>
+		/// <value>The color of the shadow.</value>
+		public Color ShadowColor { get; set; }
+
+		/// <summary>
 		/// Gets a value indicating whether the parent of this <see cref="ImageView"/> is unsensitive
 		/// </summary>
 		/// <value><c>true</c> if is parent unsensitive; otherwise, <c>false</c>.</value>
@@ -193,7 +211,26 @@ namespace VAS.UI.Helpers
 
 					App.Current.DrawingToolkit.Context = context;
 					var r = evnt.Area;
-					App.Current.DrawingToolkit.Clip (new Area (new Point (r.X, r.Y), r.Width, r.Height));
+
+					Point center = new Point (r.X + r.Width / 2, r.Y + r.Height / 2);
+					double radius = Math.Min (height, width) / 2;
+
+					// Apply shadow
+					if (HasShadow)
+					{
+						App.Current.DrawingToolkit.FillColor = ShadowColor;
+						App.Current.DrawingToolkit.LineWidth = 0;
+						App.Current.DrawingToolkit.DrawCircle (new Point (center.X + 1, center.Y + 1), radius);
+					}
+
+					// Give shape to the image
+					if (Circular) {
+						App.Current.DrawingToolkit.ClipCircle (center, radius);
+					} else {
+						App.Current.DrawingToolkit.Clip (new Area (new Point (r.X, r.Y), r.Width, r.Height));	
+					}
+
+					// Draw image
 					var alpha = IsParentUnsensitive ? 0.4f : 1f;
 					App.Current.DrawingToolkit.FillColor = MaskColor;
 					App.Current.DrawingToolkit.DrawImage (point, width, height, image,
