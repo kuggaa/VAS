@@ -281,7 +281,8 @@ namespace VAS.UI.Component
 
 		void HandleVideoPlayerPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if (Player.NeedsSync (e, nameof (Player.AbsoluteCurrentTime))) {
+			// We use AbsoluteCurrentTime but it's configured as PropertyChanged.DoNotNotify
+			if (Player.NeedsSync (e, nameof (Player.CurrentTime))) {
 				if (!stopWatch.IsRunning || stopWatch.ElapsedMilliseconds >= SAMPLING_INTERVAL_MS) {
 					stopWatch.Reset ();
 					stopWatch.Start ();
