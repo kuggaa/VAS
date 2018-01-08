@@ -21,6 +21,7 @@ using NUnit.Framework;
 using VAS.Core.Common;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
+using VAS.Tests.Core.Common;
 
 namespace VAS.Tests.Core.ViewModel
 {
@@ -319,6 +320,23 @@ namespace VAS.Tests.Core.ViewModel
 			viewModel.LimitationChart = countLimitationChart;
 
 			Assert.AreSame (countLimitation, viewModel.FullTimeline.Limitation);
+		}
+
+		[Test ()]
+		public void RemoveTimelineEventVMWithPlayers_FullTimelineWithTimelineEventVMWithPlayers_FullTimelineWithoutTimelineEventVM ()
+		{
+			// Arrange
+			Project project = Utils.CreateProject (true);
+			project.Timeline [0].Players.Add (new DummyPlayer ());
+			TimelineVM viewModel = new TimelineVM ();
+			var timeLineEventViewModel = new TimelineEventVM { Model = project.Timeline [0] };
+			viewModel.FullTimeline.ViewModels.Add (timeLineEventViewModel);
+
+			// Act
+			viewModel.FullTimeline.ViewModels.Remove (timeLineEventViewModel);
+
+			// Assert
+			Assert.IsFalse (viewModel.FullTimeline.ViewModels.Any ());
 		}
 
 		void CheckPlayerEvents (TimelineVM timeline, PlayerVM player, int count)
