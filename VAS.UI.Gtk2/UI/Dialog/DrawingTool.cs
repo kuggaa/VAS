@@ -63,6 +63,7 @@ namespace VAS.UI.Dialog
 		DrawingToolVM viewModel;
 		BindingContext ctx;
 		protected Dictionary<RadioButton, DrawTool> buttonToDrawTool;
+		Dictionary<DrawTool, ToolSettingBase> toolSettings;
 
 		public DrawingTool ()
 		{
@@ -97,6 +98,9 @@ namespace VAS.UI.Dialog
 				button.Name = "DrawingToolButton-" + button.Name;
 				button.Toggled += HandleToolClicked;
 			}
+			
+			CreateToolSettings ();
+			UpdateSettingsVisibility (DrawTool.Selection);
 
 			selectbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-select", 20);
 			eraserbuttonimage.Image = App.Current.ResourcesLocator.LoadIcon ("vas-eraser", 20);
@@ -634,6 +638,7 @@ namespace VAS.UI.Dialog
 				DrawTool tool = buttonToDrawTool [button];
 				if (blackboard.Tool != tool) {
 					blackboard.Tool = tool;
+					UpdateSettingsVisibility (blackboard.Tool);
 				}
 			}
 		}
@@ -808,6 +813,130 @@ namespace VAS.UI.Dialog
 					blackboard.ZoomCommand.Execute (zoomscale.Value);
 				}
 			}
+		}
+
+		void CreateToolSettings ()
+		{
+			toolSettings = new Dictionary<DrawTool, ToolSettingBase> ();
+
+			toolSettings.Add (DrawTool.Selection, null);
+			toolSettings.Add (DrawTool.Eraser, null);
+			toolSettings.Add (DrawTool.Zoom, null);
+
+			DrawToolSettings complete = new DrawToolSettings { Color = true, Size = true, Style = true, Type = true };
+			toolSettings.Add (DrawTool.Line, complete);
+
+			DrawToolSettings drawArea = new DrawToolSettings { Color = true, Size = true, Style = true };
+			toolSettings.Add (DrawTool.CircleArea, drawArea);
+			toolSettings.Add (DrawTool.RectangleArea, drawArea);
+			toolSettings.Add (DrawTool.Cross, drawArea);
+			toolSettings.Add (DrawTool.Rectangle, drawArea);
+			toolSettings.Add (DrawTool.Ellipse, drawArea);
+
+			DrawToolSettings counter = new DrawToolSettings { Color = true, Size = true };
+			counter.TextSettings = new TextToolSettings { Color = true };
+			toolSettings.Add (DrawTool.Counter, counter);
+
+			TextToolSettings text = new TextToolSettings { Background = true, Color = true, Size = true };
+			toolSettings.Add (DrawTool.Player, text);
+			toolSettings.Add (DrawTool.Text, text);
+
+			DrawToolSettings simple = new DrawToolSettings { Color = true, Size = true };
+			toolSettings.Add (DrawTool.Pen, simple);
+		}
+
+		void UpdateSettingsVisibility (DrawTool tool)
+		{
+			// Retrieve the proper setting type
+			ToolSettingBase settings = toolSettings [tool];
+			DrawToolSettings drawingSettings = settings as DrawToolSettings;
+			TextToolSettings textSettings = (drawingSettings != null) ? 
+				drawingSettings.TextSettings : settings as TextToolSettings;
+
+			// updates frames visibility
+			linesframe.Visible = drawingSettings != null;
+			textframe.Visible = textSettings != null;
+
+			// update drawing settings visibility
+			if (drawingSettings != null) {
+				colorslabel.Visible = drawingSettings.Color;
+				colorbutton.Visible = drawingSettings.Color;
+
+				label3.Visible = drawingSettings.Size;
+				linesizespinbutton.Visible = drawingSettings.Size;
+
+				label4.Visible = drawingSettings.Style;
+				stylecombobox.Visible = drawingSettings.Style;
+
+				label5.Visible = drawingSettings.Type;
+				typecombobox.Visible = drawingSettings.Type;
+			}
+
+			// update text settings visibility
+			if (textSettings != null) {
+				textcolorslabel2.Visible = textSettings.Color;
+				textcolorbutton.Visible = textSettings.Color;
+
+				backgroundcolorslabel2.Visible = textSettings.Background;
+				backgroundcolorbutton.Visible = textSettings.Background;
+
+				backgroundcolorslabel3.Visible = textSettings.Size;
+				textspinbutton.Visible = textSettings.Size;
+			}
+
+			zoombox.Visible = tool == DrawTool.Zoom;
+		}
+	}
+
+	/// <summary>
+	/// Visibilty settings of a drawing tool
+	/// </summary>
+	class DrawToolSettings : ToolSettingBase
+	{
+		public bool Style {
+			get;
+			set;
+		}
+
+		public bool Type {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Visibility Text Settings which is optional depending on the tool
+		/// </summary>
+		/// <value>The text settings.</value>
+		public TextToolSettings TextSettings {
+			get;
+			set;
+		}
+	}
+
+	/// <summary>
+	/// Text tool settings.
+	/// </summary>
+	class TextToolSettings : ToolSettingBase
+	{
+		public bool Background {
+			get;
+			set;
+
+		}
+	}
+
+	/// <summary>
+	/// Abstract class for the tool settings
+	/// </summary>
+	abstract class ToolSettingBase {
+		public bool Color {
+			get;
+			set;
+		}
+
+		public bool Size {
+			get;
+			set;
 		}
 	}
 }
