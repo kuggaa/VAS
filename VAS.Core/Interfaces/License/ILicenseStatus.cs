@@ -30,12 +30,6 @@ namespace VAS.Core.Interfaces.License
 		bool Valid { get; set; }
 
 		/// <summary>
-		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.Interfaces.License.ILicenseStatus"/> is limited.
-		/// </summary>
-		/// <value><c>true</c> if limited; otherwise, <c>false</c>.</value>
-		bool Limited { get; }
-
-		/// <summary>
 		/// Gets the protected data.
 		/// </summary>
 		/// <value>The protected data.</value>
