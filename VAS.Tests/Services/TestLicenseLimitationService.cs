@@ -82,7 +82,7 @@ namespace VAS.Tests.Services
 		[SetUp]
 		public void Setup ()
 		{
-			service = new DummyLicenseLimitationsService ();
+			service = new LicenseLimitationsService ();
 			service.Start ();
 		}
 
@@ -197,7 +197,7 @@ namespace VAS.Tests.Services
 		public void LimitationService_LicenseChangeEvent_EnablesLimitation ()
 		{
 			//Arrange
-			mockLicenseStatus.SetupGet (obj => obj.Limited).Returns (true);
+			mockLicenseStatus.SetupGet (obj => obj.Limitations).Returns ("TestLimitation".ToEnumerable ());
 
 			//Act
 			var limitation = new CountLicenseLimitation {
@@ -217,7 +217,7 @@ namespace VAS.Tests.Services
 		public void LimitationService_LicenseChangeEvent_DisablesLimitation ()
 		{
 			//Arrange
-			mockLicenseStatus.SetupGet (obj => obj.Limited).Returns (false);
+			mockLicenseStatus.SetupGet (obj => obj.Limitations).Returns (new List<string> ());
 
 			//Act
 			var limitation = new CountLicenseLimitation {

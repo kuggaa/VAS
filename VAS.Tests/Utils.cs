@@ -887,15 +887,7 @@ namespace VAS.Tests
 			}
 		}
 	}
-
-	class DummyLicenseLimitationsService : LicenseLimitationsService
-	{
-		protected override void UpdateLimitations ()
-		{
-
-		}
-	}
-
+	
 	/// <summary>
 	/// Seeker that calls seek as soon as it's called, without timeout.
 	/// </summary>

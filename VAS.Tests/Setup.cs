@@ -61,14 +61,13 @@ namespace VAS.Tests
 			var mockLicenseManager = new Mock<ILicenseManager> ();
 			var mockLicenseStatus = new Mock<ILicenseStatus> ();
 			mockLicenseManager.SetupGet (obj => obj.LicenseStatus).Returns (mockLicenseStatus.Object);
-			mockLicenseStatus.SetupGet (obj => obj.Limited).Returns (true);
 			App.Current.LicenseManager = mockLicenseManager.Object;
 			App.Current.ResourcesLocator = new DummyResourcesLocator ();
 			var mockToolkit = new Mock<IGUIToolkit> ();
 			App.Current.GUIToolkit = mockToolkit.Object;
 			App.Current.FileSystemManager = new FileSystemManager ();
 			mockToolkit.SetupGet (o => o.DeviceScaleFactor).Returns (1.0f);
-			App.Current.LicenseLimitationsService = new DummyLicenseLimitationsService ();
+			App.Current.LicenseLimitationsService = new LicenseLimitationsService ();
 			App.Current.DrawingToolkit = Mock.Of<IDrawingToolkit> ();
 		}
 	}
