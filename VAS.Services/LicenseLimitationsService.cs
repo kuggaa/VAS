@@ -71,8 +71,7 @@ namespace VAS.Services
 		/// </summary>
 		public virtual bool Start ()
 		{
-			UpdateCountLimitations ();
-			UpdateFeatureLimitations ();
+			UpdateLimitations ();
 			App.Current.EventsBroker.Subscribe<LicenseChangeEvent> (HandleLicenseChangeEvent);
 			return true;
 		}
@@ -201,14 +200,6 @@ namespace VAS.Services
 			}
 		}
 
-		protected void UpdateCountLimitations ()
-		{
-			bool enable = App.Current.LicenseManager?.LicenseStatus.Limited ?? false;
-			foreach (var limitation in GetAll<CountLimitationVM> ().Select ((arg) => arg.Model)) {
-				limitation.Enabled = enable;
-			}
-		}
-
 		protected void OpenUpgradeLink (string url, string sourcePoint, string limitationName)
 		{
 			Utils.OpenURL (url, sourcePoint);
@@ -218,12 +209,14 @@ namespace VAS.Services
 			});
 		}
 
-		protected abstract void UpdateFeatureLimitations ();
+		/// <summary>
+		/// Updates the enabled state of all limitation, count limitations and feature limitations
+		/// </summary>
+		protected abstract void UpdateLimitations ();
 
 		void HandleLicenseChangeEvent (LicenseChangeEvent e)
 		{
-			UpdateCountLimitations ();
-			UpdateFeatureLimitations ();
+			UpdateLimitations ();
 		}
 
 		public CountLimitationBarChartVM CreateBarChartVM (string limitationName, int showOnRemaining = -1, Color backgroundColor = null)

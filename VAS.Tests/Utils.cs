@@ -890,7 +890,7 @@ namespace VAS.Tests
 
 	class DummyLicenseLimitationsService : LicenseLimitationsService
 	{
-		protected override void UpdateFeatureLimitations ()
+		protected override void UpdateLimitations ()
 		{
 
 		}
