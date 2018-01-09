@@ -527,7 +527,11 @@ namespace VAS.Drawing.Widgets
 		{
 			if (DrawableChangedEvent != null) {
 				if (sel != null && sel.Count > 0) {
-					DrawableChangedEvent ((sel [0].Drawable as ICanvasDrawableObject).IDrawableObject);
+					List<IBlackboardObject> selectedDrawables = new List<IBlackboardObject> ();
+					foreach (var item in sel) {
+						selectedDrawables.Add ((item.Drawable as ICanvasDrawableObject).IDrawableObject);
+					}
+					DrawableChangedEvent (selectedDrawables);
 				} else {
 					DrawableChangedEvent (null);
 				}
