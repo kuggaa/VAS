@@ -113,5 +113,8 @@ namespace VAS.Core.Resources
 		public const string PlayerControlVolumeMedium = "vas-control-volume-med";
 		public const string PlayerControlHigh = "vas-control-volume-hi";
 		public const string Retry = "vas-retry";
+
+		public const string VideoDevice = "vas-video-device";
+		public const string Plugin = "vas-plugin";
 	}
 }
