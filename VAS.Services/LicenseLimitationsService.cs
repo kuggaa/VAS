@@ -37,7 +37,7 @@ namespace VAS.Services
 	/// <summary>
 	/// License limitations service.
 	/// </summary>
-	public abstract class LicenseLimitationsService : IService, ILicenseLimitationsService
+	public class LicenseLimitationsService : IService, ILicenseLimitationsService
 	{
 		protected Dictionary<string, LimitationVM> Limitations;
 
@@ -212,7 +212,13 @@ namespace VAS.Services
 		/// <summary>
 		/// Updates the enabled state of all limitation, count limitations and feature limitations
 		/// </summary>
-		protected abstract void UpdateLimitations ();
+		protected virtual void UpdateLimitations ()
+		{
+			foreach (var limitation in GetAll ()) {
+				limitation.Model.Enabled = App.Current.LicenseManager.LicenseStatus.
+					Limitations.Contains (limitation.RegisterName);
+			}
+		}
 
 		void HandleLicenseChangeEvent (LicenseChangeEvent e)
 		{
