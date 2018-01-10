@@ -191,10 +191,16 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 				return;
 			}
 
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.TimerTime))) {
+				if (ViewModel.TimerTime == null) {
+					Active = false;
+				} else {
+					ReDraw ();
+				}
+			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.BackgroundColor)) ||
 				ViewModel.NeedsSync (e, nameof (ViewModel.TextColor)) ||
 				ViewModel.NeedsSync (e, nameof (ViewModel.Name)) ||
-				ViewModel.NeedsSync (e, nameof (ViewModel.TimerTime)) ||
 				ViewModel.NeedsSync (e, nameof (ViewModel.HotKey))) {
 				ReDraw ();
 			} else if (ViewModel.NeedsSync (e, nameof (ViewModel.Active))) {
