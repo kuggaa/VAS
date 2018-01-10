@@ -164,6 +164,7 @@
     <Compile Include="Drawing\TestCanvasContainer.cs" />
     <Compile Include="Core\ViewModel\TestTimerButtonVM.cs" />
     <Compile Include="Core\Common\TestTimeToStringConverter.cs" />
+    <Compile Include="UI\TestExtensionMethods.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -239,6 +240,7 @@
     <Folder Include="data\icons\hicolor\" />
     <Folder Include="data\icons\hicolor\scalable\" />
     <Folder Include="data\icons\hicolor\scalable\actions\" />
+    <Folder Include="UI\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Core\vas-dibujo.svg">
