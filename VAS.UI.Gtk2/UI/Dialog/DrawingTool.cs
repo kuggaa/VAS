@@ -170,13 +170,6 @@ namespace VAS.UI.Dialog
 
 			Misc.SetFocus (this, false);
 
-			if (!App.Current.SupportsZoom) {
-				zoombox.Visible = false;
-				zoombutton.Visible = false;
-				hscrollbar.Visible = false;
-				wscrollbar.Visible = false;
-			}
-
 			var saveToFileCommand = new AsyncCommand (SaveToFile);
 			saveToFileCommand.Icon = App.Current.ResourcesLocator.LoadIcon ("vas-save", App.Current.Style.IconSmallWidth);
 			saveToFileCommand.Text = Catalog.GetString ("Save to File");

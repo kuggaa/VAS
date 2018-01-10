@@ -306,24 +306,17 @@ namespace VAS.UI.Helpers
 			if (mediaFile != null) {
 				try {
 					if (multimedia.FileNeedsRemux (mediaFile)) {
-						// HACK: We only authorize remuxing in the pro version.
-						if (!App.Current.SupportsFullHD) {
-							string msg = Catalog.GetString ("This file is not in a supported format, " +
-										 "convert it with the video conversion tool");
-							throw new Exception (msg);
-						} else {
-							string q = Catalog.GetString ("This file needs to be converted into a more suitable format." +
-									   "(This step will only take a few minutes)");
-							if (App.Current.Dialogs.QuestionMessage (q, null, parent).Result) {
-								string newFilename = multimedia.RemuxFile (mediaFile, parent);
-								if (newFilename != null) {
-									mediaFile = multimedia.DiscoverFile (newFilename);
-								} else {
-									mediaFile = null;
-								}
+						string q = Catalog.GetString ("This file needs to be converted into a more suitable format." +
+								   "(This step will only take a few minutes)");
+						if (App.Current.Dialogs.QuestionMessage (q, null, parent).Result) {
+							string newFilename = multimedia.RemuxFile (mediaFile, parent);
+							if (newFilename != null) {
+								mediaFile = multimedia.DiscoverFile (newFilename);
 							} else {
 								mediaFile = null;
 							}
+						} else {
+							mediaFile = null;
 						}
 					}
 				} catch (Exception ex) {
