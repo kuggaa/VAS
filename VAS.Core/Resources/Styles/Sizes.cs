@@ -42,6 +42,8 @@ namespace VAS.Core.Resources.Styles
 		public const int TemplatesHeaderIconSize = 54;
 		public const int TemplatesIconSize = 36;
 
+		public const int PreferencesIconSize = 48;
+
 		public const int NewHeaderSpacing = 10;
 		public const int NewEntryWidth = 150;
 		public const int NewEntryHeight = 30;
