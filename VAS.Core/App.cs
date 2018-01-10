@@ -377,26 +377,6 @@ namespace VAS
 			set;
 		}
 
-		public bool SupportsMultiCamera {
-			get;
-			set;
-		}
-
-		public bool SupportsFullHD {
-			get;
-			set;
-		}
-
-		public bool SupportsActionLinks {
-			get;
-			set;
-		}
-
-		public bool SupportsZoom {
-			get;
-			set;
-		}
-
 		public string LatestVersionURL {
 			get;
 			set;

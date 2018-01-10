@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo $(VAS/build/git-version-gen) >&2
+
+exit 0
