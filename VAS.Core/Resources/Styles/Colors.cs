@@ -32,5 +32,9 @@ namespace VAS.Core.Resources.Styles
 		public static Color CanvasSelectionBorder => App.Current.Style.ColorGray;
 		public static Color CanvasSelectionShadow => App.Current.Style.ColorShadow;
 		public static Color CanvasSelectionAnchor => App.Current.Style.ColorWhite;
+
+		// Alphas
+		public static float AlphaImageSensitive = 1f;
+		public static float AlphaImageNoSensitive = 0.4f;
 	}
 }
