@@ -54,7 +54,7 @@ namespace VAS.Core.ViewModel
 													 () => {
 														 ShowZoom = true;
 													 }) {
-				Icon = App.Current.ResourcesLocator.LoadIcon ("vas-zoom", 15),
+				Icon = App.Current.ResourcesLocator.LoadIcon ("vas-control-zoom", 15),
 				ToolTipText = Catalog.GetString ("Zoom"),
 			};
 
