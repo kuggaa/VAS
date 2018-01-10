@@ -40,10 +40,10 @@ namespace VAS.Core.MVVMC
 				viewModel = value;
 				if (viewModel != null) {
 					BindViewModel ();
-				}
-				if (!binded) {
-					BindView ();
-					binded = true;
+					if (!binded) {
+						BindView ();
+						binded = true;
+					}
 				}
 			}
 		}
