@@ -60,7 +60,9 @@ namespace VAS.UI.Helpers.Bindings
 		{
 			hScale.SetRange (min, max);
 			hScale.SetIncrements (step, page);
-			hScale.Sensitive = Command.CanExecute ();
+			if (Command != null) {
+				hScale.Sensitive = Command.CanExecute ();
+			}
 		}
 
 		protected override void HandleCanExecuteChanged (object sender, EventArgs args)
