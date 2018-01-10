@@ -92,8 +92,7 @@ namespace VAS.Core.ViewModel
 					if (currentTime + Constants.PLAYBACK_TOLERANCE < currentNode.Start) {
 						TimerTime = null;
 						currentNode = null;
-					}
-					if (currentTime.TotalSeconds != value.TotalSeconds) {
+					} else if (currentTime.TotalSeconds != value.TotalSeconds) {
 						TimerTime = value - currentNode.Start;
 					}
 				}
