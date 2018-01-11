@@ -17,17 +17,18 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
-using VAS.Drawing.CanvasObjects;
 
 namespace VAS.Drawing
 {
 	/// <summary>
 	/// A canvas stores <see cref="ICanvasObject"/>'s and draws them.
 	/// </summary>
+	// FIXME: Canvas should inherit from CanvasWidget
 	public class Canvas : DisposableBase, ICanvas
 	{
 		protected IDrawingToolkit tk;
@@ -117,6 +118,10 @@ namespace VAS.Drawing
 		{
 			Objects.Add (co);
 			co.RedrawEvent += HandleRedrawEvent;
+			if (co is CanvasContainer container) {
+				container.CollectionChanged += HandleChildrenChanged;
+			}
+
 		}
 
 		/// <summary>
@@ -126,6 +131,9 @@ namespace VAS.Drawing
 		public void RemoveObject (ICanvasObject co)
 		{
 			co.RedrawEvent -= HandleRedrawEvent;
+			if (co is CanvasContainer container) {
+				container.CollectionChanged -= HandleChildrenChanged;
+			}
 			Objects.Remove (co);
 			co.Dispose ();
 		}
@@ -238,6 +246,10 @@ namespace VAS.Drawing
 			get {
 				return Translation != new Point (0, 0) || ScaleX != 1 || ScaleY != 1;
 			}
+		}
+
+		protected virtual void HandleChildrenChanged (object sender, NotifyCollectionChangedEventArgs e)
+		{
 		}
 
 		protected virtual void HandleRedrawEvent (ICanvasObject co, Area area)

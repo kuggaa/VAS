@@ -39,7 +39,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 					viewModel.ViewModels.CollectionChanged -= HandleEventsCollectionChanged;
 				}
 				viewModel = value;
-				ClearObjects ();
+				Clear ();
 				if (viewModel != null) {
 					viewModel.ViewModels.CollectionChanged += HandleEventsCollectionChanged;
 					foreach (TimelineEventVM eventVM in viewModel.ViewModels) {
@@ -61,7 +61,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		/// <param name="evt">The timeline event.</param>
 		public TimelineEventView GetView (TimelineEvent evt)
 		{
-			return (TimelineEventView)nodes.FirstOrDefault (e => (e as TimelineEventView).TimelineEvent.Model == evt);
+			return (TimelineEventView)this.FirstOrDefault (e => (e as TimelineEventView).TimelineEvent.Model == evt);
 		}
 
 		/// <summary>
@@ -78,7 +78,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			po.Height = Height;
 			po.SecondsPerPixel = SecondsPerPixel;
 			po.MaxTime = Duration;
-			AddNode (po);
+			Add (po);
 		}
 
 		protected virtual void HandleEventsCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)

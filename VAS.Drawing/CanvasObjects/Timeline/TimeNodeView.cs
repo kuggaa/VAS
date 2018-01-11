@@ -54,6 +54,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 				needle.Dispose ();
 				needle = null;
 			}
+			TimeNode = null;
 		}
 
 		public override bool Visible {

@@ -153,7 +153,7 @@ namespace VAS.Tests.Drawing.Widgets
 			project.Timers [0].Nodes.Add (new TimeNode { Start = new Time (0), Stop = new Time (2) });
 
 			// Assert
-			Assert.AreEqual (1, (timeline.Objects [0] as TimerTimelineView).nodes.Count);
+			Assert.AreEqual (1, (timeline.Objects [0] as TimerTimelineView).Count);
 		}
 
 		[Test]
@@ -163,7 +163,7 @@ namespace VAS.Tests.Drawing.Widgets
 			var timeNode = new TimeNode { Start = new Time (0), Stop = new Time (2) };
 			project.Timers [0].Nodes.Add (timeNode);
 			var timerTimeline = timeline.Objects [0] as TimerTimelineView;
-			timeline.UpdateSelection (new Selection (timerTimeline.nodes [0], SelectionPosition.All, 0));
+			timeline.UpdateSelection (new Selection (timerTimeline [0] as IMovableObject, SelectionPosition.All, 0));
 
 			// Act
 			project.Timers [0].Nodes.Remove (timeNode);
