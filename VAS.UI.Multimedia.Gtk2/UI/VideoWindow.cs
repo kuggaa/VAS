@@ -33,6 +33,7 @@ namespace VAS.UI
 		protected AspectFrame frame;
 		protected DrawingArea drawingWindow;
 		protected bool dragStarted;
+		bool needShow;
 
 		public event EventHandler ReadyEvent;
 		public event EventHandler UnReadyEvent;
@@ -61,7 +62,7 @@ namespace VAS.UI
 			drawingWindow.ButtonReleaseEvent += HandleButtonReleaseEvent;
 			drawingWindow.Realized += HandleRealized;
 			drawingWindow.Unrealized += HandleUnrealized;
-			drawingWindow.LeaveNotifyEvent += HandleLeaveNotifyEventHandler; ;
+			drawingWindow.LeaveNotifyEvent += HandleLeaveNotifyEventHandler;
 			drawingWindow.AddEvents ((int)(Gdk.EventMask.ButtonPressMask | Gdk.EventMask.ButtonReleaseMask |
 										   Gdk.EventMask.PointerMotionMask | Gdk.EventMask.ScrollMask |
 										   Gdk.EventMask.LeaveNotifyMask));
@@ -71,12 +72,34 @@ namespace VAS.UI
 			videoeventbox.ScrollEvent += HandleScrollEvent;
 			videoeventbox.BorderWidth = 0;
 
+			if (Environment.OSVersion.Platform == PlatformID.Win32NT) {
+				// Workaround for GTK bugs on Windows not showing the video window when detaching
+				videoeventbox.VisibilityNotifyEvent += HandleVisibilityNotifyEvent;
+				needShow = false;
+			}
+
 			frame.Add (drawingWindow);
 			videoeventbox.Add (frame);
 			videoeventbox.ShowAll ();
 
 			MessageVisible = false;
 			messageLabel.Ellipsize = Pango.EllipsizeMode.End;
+		}
+
+		protected override void OnUnmapped ()
+		{
+			needShow = true;
+			base.OnUnmapped ();
+		}
+
+		void HandleVisibilityNotifyEvent (object o, VisibilityNotifyEventArgs args)
+		{
+			if (needShow && videoeventbox.Visible && drawingWindow.GdkWindow != null) {
+				// Hack for Windows needed for Detaching Video Window. Force video window visibility as
+				// EventBox window's might prevent it to be mapped again.
+				drawingWindow.GdkWindow.Show ();
+				needShow = false;
+			}
 		}
 
 		public virtual object WindowHandle {
@@ -94,6 +117,8 @@ namespace VAS.UI
 			set {
 				videoeventbox.Visible = !value;
 				messageLabel.Visible = value;
+				if (!value)
+					needShow = true;
 			}
 		}
 
