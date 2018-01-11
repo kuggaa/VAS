@@ -72,7 +72,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			cameraNodeView.MaxTime = Duration;
 			cameraNodeView.ShowName = ShowName;
 			cameraNodeView.LineColor = LineColor;
-			AddNode (cameraNodeView);
+			Add (cameraNodeView);
 		}
 	}
 }

@@ -34,17 +34,15 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 	/// The sub class is responsible to listen for collection changes in its ViewModel and add/remode
 	/// <see cref="TimeNodeView"/> to the timeline using the funtions provided in the base class. 
 	/// </summary>
-	public abstract class TimelineView : CanvasObject, ICanvasSelectableObject
+	public abstract class TimelineView : CanvasContainer
 	{
 		double secondsPerPixel;
-		internal protected List<TimeNodeView> nodes;
 		Time duration;
 		protected ISurface selectionBorderL, selectionBorderR;
 
 		public TimelineView ()
 		{
 			BackgroundColor = Color.Grey1;
-			nodes = new List<TimeNodeView> ();
 			selectionBorderL = LoadBorder (Icons.TimelineSelectionLeft);
 			selectionBorderR = LoadBorder (Icons.TimelineSelectionRight);
 			Visible = true;
@@ -56,7 +54,6 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		protected override void DisposeManagedResources ()
 		{
 			base.DisposeManagedResources ();
-			ClearObjects ();
 			selectionBorderL?.Dispose ();
 			selectionBorderR?.Dispose ();
 		}
@@ -64,7 +61,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		public double SecondsPerPixel {
 			set {
 				secondsPerPixel = value;
-				foreach (TimeNodeView to in nodes) {
+				foreach (TimeNodeView to in this) {
 					to.SecondsPerPixel = secondsPerPixel;
 					to.ResetDrawArea ();
 				}
@@ -133,27 +130,6 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		}
 
 		/// <summary>
-		/// Adds a new node to the timeline.
-		/// </summary>
-		/// <param name="o">The time node</param>
-		protected void AddNode (TimeNodeView o)
-		{
-			nodes.Add (o);
-			o.RedrawEvent += HandleRedrawEvent;
-		}
-
-		/// <summary>
-		/// Inserts a new node in the timeline.
-		/// </summary>
-		/// <param name="index">Index</param>
-		/// <param name="o">The time node</param>
-		protected void InsertNode (int index, TimeNodeView o)
-		{
-			nodes.Insert (index, o);
-			o.RedrawEvent += HandleRedrawEvent;
-		}
-
-		/// <summary>
 		/// Removes a node from the timeline.
 		/// </summary>
 		/// <param name="node">Node.</param>
@@ -161,9 +137,9 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		{
 			TimeNodeView to;
 
-			to = nodes.FirstOrDefault (n => n.TimeNode == node);
+			to = this.OfType<TimeNodeView> ().FirstOrDefault (n => n.TimeNode == node);
 			if (to != null) {
-				RemoveObject (to, true);
+				Remove (to);
 			}
 		}
 
@@ -174,28 +150,11 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		/// <param name="position">Position.</param>
 		public TimeNodeView GetNodeAtPosition (double position)
 		{
-			TimeNodeView node = nodes.FirstOrDefault (n => position >= n.StartX && position <= n.StopX);
+			TimeNodeView node = this.OfType<TimeNodeView> ().FirstOrDefault (n => position >= n.StartX && position <= n.StopX);
 			if (node == null) {
-				node = nodes.LastOrDefault ();
+				node = this.OfType<TimeNodeView> ().LastOrDefault ();
 			}
 			return node;
-		}
-
-		protected void ClearObjects ()
-		{
-			foreach (TimeNodeView tn in nodes) {
-				RemoveObject (tn, false);
-			}
-			nodes.Clear ();
-		}
-
-		protected void RemoveObject (TimeNodeView to, bool full)
-		{
-			to.RedrawEvent -= HandleRedrawEvent;
-			to.Dispose ();
-			if (full) {
-				nodes.Remove (to);
-			}
 		}
 
 		protected virtual void DrawBackground (IDrawingToolkit tk, Area area)
@@ -205,11 +164,6 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			tk.LineWidth = 0;
 
 			tk.DrawRectangle (new Point (area.Start.X, OffsetY), area.Width, Height);
-		}
-
-		void HandleRedrawEvent (ICanvasObject co, Area area)
-		{
-			EmitRedrawEvent (co as CanvasObject, area);
 		}
 
 		public override void Draw (IDrawingToolkit tk, Area area)
@@ -225,7 +179,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 
 			tk.Begin ();
 			DrawBackground (tk, area);
-			foreach (TimeNodeView p in nodes) {
+			foreach (TimeNodeView p in this) {
 				if (!p.Visible)
 					continue;
 				if (p.Selected) {
@@ -250,32 +204,15 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			tk.End ();
 		}
 
-		public Selection GetSelection (Point point, double precision, bool inMotion = false)
+		public override Selection GetSelection (Point point, double precision, bool inMotion = false)
 		{
-			Selection selection = null;
-
 			if (point.Y >= OffsetY && point.Y < OffsetY + Height) {
-				foreach (TimeNodeView po in nodes) {
-					Selection tmp;
-					if (!po.Visible)
-						continue;
-					tmp = po.GetSelection (point, precision);
-					if (tmp == null) {
-						continue;
-					}
-					if (tmp.Accuracy == 0) {
-						selection = tmp;
-						break;
-					}
-					if (selection == null || tmp.Accuracy < selection.Accuracy) {
-						selection = tmp;
-					}
-				}
+				return base.GetSelection (point, precision, inMotion);
 			}
-			return selection;
+			return null;
 		}
 
-		public void Move (Selection s, Point p, Point start)
+		public override void Move (Selection s, Point p, Point start)
 		{
 			s.Drawable.Move (s, p, start);
 		}

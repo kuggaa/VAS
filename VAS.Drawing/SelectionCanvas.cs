@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
@@ -330,6 +331,16 @@ namespace VAS.Drawing
 				}
 			}
 			return sel;
+		}
+
+		protected override void HandleChildrenChanged (object sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (e.Action == NotifyCollectionChangedAction.Remove) {
+				var removedViews = e.OldItems.OfType<ICanvasObject> ().ToList ();
+				Selections.RemoveAll (s => removedViews.Contains (s.Drawable as ICanvasObject));
+			} else if (e.Action == NotifyCollectionChangedAction.Reset) {
+				Selections.Clear ();
+			}
 		}
 
 		void HandleShowTooltipEvent (Point coords)
