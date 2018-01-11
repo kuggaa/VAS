@@ -70,7 +70,7 @@ namespace VAS.UI.Helpers.Bindings
 
 		void HandleValueChanged (object sender, EventArgs args)
 		{
-			if(skipCommand) {
+			if (skipCommand) {
 				skipCommand = false;
 				return;
 			}
