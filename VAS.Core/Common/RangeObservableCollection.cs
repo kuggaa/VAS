@@ -22,6 +22,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using Newtonsoft.Json;
+using VAS.Core.MVVMC;
 
 namespace VAS.Core.Common
 {
@@ -29,9 +30,26 @@ namespace VAS.Core.Common
 	/// Range observable collection.
 	/// </summary>
 	[Serializable]
-	public class RangeObservableCollection<T> : ObservableCollection<T>
+	public class RangeObservableCollection<T> : ObservableCollection<T>, INotifyPropertyChanged
 	{
-		public RangeObservableCollection () : base ()
+		[field: NonSerialized]
+		public override event NotifyCollectionChangedEventHandler CollectionChanged {
+			add { collectionChanged.Add (value); }
+			remove { collectionChanged.Remove (value); }
+		}
+
+		[field: NonSerialized]
+		event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged {
+			add { propertyChanged.Add (value); }
+			remove { propertyChanged.Remove (value); }
+		}
+
+		FastSmartWeakEvent<PropertyChangedEventHandler> propertyChanged =
+			new FastSmartWeakEvent<PropertyChangedEventHandler> ();
+		FastSmartWeakEvent<NotifyCollectionChangedEventHandler> collectionChanged =
+			new FastSmartWeakEvent<NotifyCollectionChangedEventHandler> ();
+
+		public RangeObservableCollection ()
 		{
 		}
 
@@ -139,9 +157,19 @@ namespace VAS.Core.Common
 		protected override void OnCollectionChanged (NotifyCollectionChangedEventArgs e)
 		{
 			if (!IgnoreEvents) {
-				base.OnCollectionChanged (e);
-				OnPropertyChanged (new PropertyChangedEventArgs (nameof (Count)));
+				var collectionChangedDelegate = collectionChanged.GetRaiseDelegate ();
+				if (collectionChangedDelegate != null) {
+					using (BlockReentrancy ()) {
+						collectionChangedDelegate (this, e);
+						OnPropertyChanged (new PropertyChangedEventArgs (nameof (Count)));
+					}
+				}
 			}
+		}
+
+		protected override void OnPropertyChanged (PropertyChangedEventArgs e)
+		{
+			propertyChanged.GetRaiseDelegate ()?.Invoke (this, e);
 		}
 	}
 }
