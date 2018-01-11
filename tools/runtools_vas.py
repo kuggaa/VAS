@@ -12,11 +12,12 @@ import update_data
 import resize_svg
 import runtools
 
-desktop_tools = [resize_svg, update_data]
 application_tools = [runtools]
+# update_data should be the last one executed, as it depends on everything being already generated
+desktop_tools = [resize_svg, update_data]
 
 def main():
-    tools = desktop_tools + application_tools
+    tools = application_tools + desktop_tools
     if not os.getenv('CERBERO_PREFIX'):
         raise ValueError("This script should be run inside a cerbero shell")
     print "===== Running tools %s =====" % [t.__name__ for t in tools]

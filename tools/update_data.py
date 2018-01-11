@@ -14,6 +14,7 @@ def main(home=None):
         home = '.'
     for d in ['icons', 'theme', 'images']:
         di = os.path.join(home, 'data', d)
+        subprocess.call(["git", "add", di])
         files = subprocess.check_output(["git", "ls-files", di])
         files = [x.replace(os.path.join('data', d) + '/', '') for x in files.split('\n')[:-1]]
         files = [x for x in files if not os.path.isdir(os.path.join(di, x))]
