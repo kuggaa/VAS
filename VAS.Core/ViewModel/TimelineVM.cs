@@ -267,6 +267,8 @@ namespace VAS.Core.ViewModel
 		/// <value><c>true</c> if filters initialized; otherwise, <c>false</c>.</value>
 		public bool FiltersInitialized { get; set; }
 
+		public int SelectedProjects { get; set; }
+
 		public void Clear ()
 		{
 			FullTimeline.Model.Clear ();
