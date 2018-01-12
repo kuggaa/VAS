@@ -57,7 +57,7 @@ namespace VAS.Core.Handlers
 
 	public delegate void ShowDrawToolMenuHandler (IBlackboardObject drawable);
 	public delegate void ConfigureDrawingObjectHandler (IBlackboardObject drawable, DrawTool tool);
-	public delegate void DrawableChangedHandler (List<IBlackboardObject> drawables);
+	public delegate void DrawableChangedHandler (IEnumerable<IBlackboardObject> drawables);
 	public delegate void BackEventHandle ();
 	/* Camera dragging */
 	public delegate void CameraDraggedHandler (MediaFile file, TimeNode timenode);
