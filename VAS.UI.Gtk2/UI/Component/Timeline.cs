@@ -82,10 +82,6 @@ namespace VAS.UI.Component
 			labels?.Dispose ();
 			menu?.Dispose ();
 
-			scrolledwindow1.Vadjustment.ValueChanged -= HandleScrollEvent;
-			scrolledwindow1.Hadjustment.ValueChanged -= HandleScrollEvent;
-
-
 			base.OnDestroyed ();
 
 			Disposed = true;

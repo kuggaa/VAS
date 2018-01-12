@@ -47,7 +47,6 @@ namespace VAS.UI.Menus
 		{
 			foreach (MenuItem item in MenuItems) {
 				(menu.Submenu as Menu).Remove (item);
-				item.Destroy ();
 			}
 
 			this.MenuItems.Clear ();
