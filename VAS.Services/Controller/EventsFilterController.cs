@@ -43,7 +43,7 @@ namespace VAS.Services.Controller
 	/// </summary>
 	public abstract class EventsFilterController : ControllerBase<TimelineVM>
 	{
-		List<IPredicate<TimelineEventVM>> previousEventTypePredicateList = new List<IPredicate<TimelineEventVM>> ();
+		protected List<IPredicate<TimelineEventVM>> previousPredicateList = new List<IPredicate<TimelineEventVM>> ();
 
 		protected override void DisposeManagedResources ()
 		{
@@ -51,6 +51,11 @@ namespace VAS.Services.Controller
 			base.DisposeManagedResources ();
 			ViewModel = null;
 		}
+
+		protected bool DefaultActiveValue {
+			get;
+			set;
+		} = true;
 
 		public ProjectVM Project {
 			get;
@@ -97,6 +102,12 @@ namespace VAS.Services.Controller
 			base.DisconnectEvents ();
 			ViewModel.EventTypesTimeline.ViewModels.CollectionChanged -= UpdateEventTypesPredicates;
 			ViewModel.Filters.PropertyChanged -= HandleFiltersChanged;
+		}
+
+		public override Task Stop ()
+		{
+			previousPredicateList.Clear ();
+			return base.Stop ();
 		}
 
 		/// <summary>
@@ -213,56 +224,34 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		bool GetPreviousActiveValue (string eventTypeName, bool defaultValue)
+		protected void UpdatePreviousPredicatesList (OrPredicate<TimelineEventVM> orPredicate)
 		{
-			var previous = previousEventTypePredicateList.FirstOrDefault (p => p.Name == eventTypeName);
-			if (previous != null) {
-				return previous.Active;
-			}
-			return defaultValue;
-		}
-
-		void UpdatePreviousPredicatesList (OrPredicate<TimelineEventVM> eventTypesPredicate)
-		{
-			foreach (var predicate in eventTypesPredicate) {
-				if (!previousEventTypePredicateList.Exists (p => p.Name == predicate.Name)) {
-					previousEventTypePredicateList.Add (predicate);
+			foreach (var predicate in orPredicate) {
+				if (!previousPredicateList.Exists (p => p.Name == predicate.Name)) {
+					previousPredicateList.Add (predicate);
 				} else {
-					previousEventTypePredicateList.FirstOrDefault (p => p.Name == predicate.Name).Active = predicate.Active;
+					previousPredicateList.FirstOrDefault (p => p.Name == predicate.Name).Active = predicate.Active;
 				}
 			}
 		}
 
+		protected bool GetPreviousActiveValue (string predicateName)
+		{
+			var previous = previousPredicateList.FirstOrDefault (p => p.Name == predicateName);
+			if (previous != null) {
+				return previous.Active;
+			}
+			return DefaultActiveValue;
+		}
 
 		protected virtual void UpdateEventTypesPredicates (object sender = null, NotifyCollectionChangedEventArgs e = null)
 		{
 			bool oldIgnoreEvents = ViewModel.Filters.IgnoreEvents;
 			ViewModel.Filters.IgnoreEvents = true;
-
+			UpdatePreviousPredicatesList (ViewModel.EventTypesPredicate);
+			ViewModel.EventTypesPredicate.Clear ();
 			var predicates = new List<IPredicate<TimelineEventVM>> ();
 
-			if (ViewModel.SelectedProjects > 1) {
-				//Apply previous predicates
-				UpdatePreviousPredicatesList (ViewModel.EventTypesPredicate);
-				ViewModel.EventTypesPredicate.Clear ();
-				AddAllEventTypePredicates (predicates, false);
-
-			} else {
-				ViewModel.EventTypesPredicate.Clear ();
-				previousEventTypePredicateList.Clear ();
-				AddAllEventTypePredicates (predicates, true);
-			}
-
-
-			ViewModel.EventTypesPredicate.AddRange (predicates);
-			ViewModel.Filters.IgnoreEvents = oldIgnoreEvents;
-			if (!ViewModel.Filters.IgnoreEvents) {
-				ViewModel.Filters.EmitPredicateChanged ();
-			}
-		}
-
-		void AddAllEventTypePredicates (List<IPredicate<TimelineEventVM>> predicates, bool defaultPredicateActiveValue)
-		{
 			foreach (var eventType in ViewModel.EventTypesTimeline) {
 				IPredicate<TimelineEventVM> predicate;
 				List<Tag> tagList = new List<Tag> ();
@@ -283,7 +272,7 @@ namespace VAS.Services.Controller
 							composedPredicates.Add (new Predicate {
 								Name = tag.Value,
 								Expression = eventTypeExpression.And (tagGroupExpression.And (ev => ev.Model.Tags.Contains (tag))),
-								Active = GetPreviousActiveValue (eventType.EventTypeVM.Name, defaultPredicateActiveValue)
+								Active = GetPreviousActiveValue (tag.Value)
 							});
 							tagList.Add (tag);
 						}
@@ -292,17 +281,22 @@ namespace VAS.Services.Controller
 					composedPredicates.Add (new Predicate {
 						Name = Catalog.GetString ("No subcategories"),
 						Expression = eventTypeExpression.And (ev => !ev.Model.Tags.Intersect (tagList).Any ()),
-						Active = GetPreviousActiveValue (eventType.EventTypeVM.Name, defaultPredicateActiveValue)
+						Active = GetPreviousActiveValue (Catalog.GetString ("No subcategories"))
 					});
 					composedEventTypePredicate.AddRange (composedPredicates);
 				} else {
 					predicate = new Predicate {
 						Name = eventType.EventTypeVM.Name,
 						Expression = eventTypeExpression,
-						Active = GetPreviousActiveValue (eventType.EventTypeVM.Name, defaultPredicateActiveValue)
+						Active = GetPreviousActiveValue (eventType.EventTypeVM.Name)
 					};
 				}
 				predicates.Add (predicate);
+			}
+			ViewModel.EventTypesPredicate.AddRange (predicates);
+			ViewModel.Filters.IgnoreEvents = oldIgnoreEvents;
+			if (!ViewModel.Filters.IgnoreEvents) {
+				ViewModel.Filters.EmitPredicateChanged ();
 			}
 		}
 
