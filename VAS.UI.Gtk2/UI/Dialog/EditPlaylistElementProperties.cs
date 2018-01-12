@@ -24,16 +24,17 @@ using VAS.Core.Interfaces.GUI;
 using VAS.Core.MVVMC;
 using VAS.Core.ViewModel;
 using VAS.Services.State;
+using VAS.Services.ViewModel;
 using VAS.UI.Helpers.Bindings;
 
 namespace VAS.UI.Dialog
 {
 	[ViewAttribute (EditPlaylistElementState.NAME)]
-	public partial class EditPlaylistElementProperties : Gtk.Dialog, IPanel<PlaylistElementVM>
+	public partial class EditPlaylistElementProperties : Gtk.Dialog, IPanel<EditPlaylistElementVM>
 	{
 		BindingContext ctx;
 		SizeGroup sizegroupLeft, sizegroupRight;
-		PlaylistElementVM plElement;
+		EditPlaylistElementVM viewModel;
 
 		public EditPlaylistElementProperties ()
 		{
@@ -98,30 +99,25 @@ namespace VAS.UI.Dialog
 		protected bool Disposed { get; private set; } = false;
 
 
-		public PlaylistElementVM ViewModel {
+		public EditPlaylistElementVM ViewModel {
 			get {
-				return plElement;
+				return viewModel;
 			}
 
 			set {
 
-				plElement = value;
-				if (plElement != null) {
-					if (plElement is PlaylistImageVM || plElement is PlaylistDrawingVM) {
-						slidetable.Visible = true;
-						durationspinbutton.Value = plElement.Duration.Seconds;
-					} else {
+				viewModel = value;
+				if (viewModel != null) {
+					if (viewModel.TitleVisible) {
 						slidetable.Visible = false;
-					}
-
-					if (plElement is PlaylistPlayElementVM) {
-						nameentry.Text = ((PlaylistPlayElementVM)plElement).Title;
 						nametable.Visible = true;
 					} else {
+						slidetable.Visible = true;
 						nametable.Visible = false;
 					}
+
 					Show ();
-					ctx.UpdateViewModel (plElement);
+					ctx.UpdateViewModel (viewModel);
 				}
 			}
 		}
@@ -136,7 +132,7 @@ namespace VAS.UI.Dialog
 
 		public void SetViewModel (object viewModel)
 		{
-			ViewModel = (PlaylistElementVM)viewModel;
+			ViewModel = (EditPlaylistElementVM)viewModel;
 		}
 
 		public KeyContext GetKeyContext ()
@@ -147,9 +143,9 @@ namespace VAS.UI.Dialog
 		void Bind ()
 		{
 			ctx = this.GetBindingContext ();
-			ctx.Add (nameentry.Bind (vm => ((PlaylistPlayElementVM)vm).Title));
-			ctx.Add (durationspinbutton.Bind (vm => ((PlaylistElementVM)vm).Duration.TotalSeconds,
-											 new VASInt32Converter ()));
+			ctx.Add (nameentry.Bind (vm => ((EditPlaylistElementVM)vm).Title));
+			ctx.Add (durationspinbutton.Bind (vm => ((EditPlaylistElementVM)vm).Duration.TotalSeconds,
+												 new VASInt32Converter ()));
 		}
 
 		void HandleButtonOkClicked (object sender, EventArgs e)

@@ -49,6 +49,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)State\AboutState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\AboutVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DynamicButtonToolbarService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EditPlaylistElementVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />
