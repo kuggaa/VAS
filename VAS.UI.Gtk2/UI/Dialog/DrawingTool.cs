@@ -694,9 +694,9 @@ namespace VAS.UI.Dialog
 			}
 		}
 
-		void HandleDrawableChangedEvent (List<IBlackboardObject> drawables)
+		void HandleDrawableChangedEvent (IEnumerable<IBlackboardObject> drawables)
 		{
-			selectedDrawable = (drawables == null || drawables.Count () > 1) ? null : drawables[0] as Drawable;
+			selectedDrawable = (drawables == null || drawables.Count () > 1) ? null : drawables.FirstOrDefault () as Drawable;
 			colorbutton.Sensitive = !(selectedDrawable is Text);
 
 			ignoreChanges = true;
