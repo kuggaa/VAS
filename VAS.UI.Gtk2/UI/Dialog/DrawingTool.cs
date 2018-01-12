@@ -639,6 +639,12 @@ namespace VAS.UI.Dialog
 		void HandleDrawToolChangedEvent (object sender, EventArgs e)
 		{
 			RadioButton button = buttonToDrawTool.GetKeyByValue (blackboard.Tool);
+
+			if (blackboard.Tool != DrawTool.Selection) {
+				selectedDrawable = null;
+				blackboard.ClearSelection ();
+			}
+
 			if (!button.Active) {
 				button.Click ();
 			}
@@ -688,11 +694,10 @@ namespace VAS.UI.Dialog
 			}
 		}
 
-		void HandleDrawableChangedEvent (IBlackboardObject drawable)
+		void HandleDrawableChangedEvent (IEnumerable<IBlackboardObject> drawables)
 		{
-			selectedDrawable = drawable as Drawable;
-
-			colorbutton.Sensitive = !(drawable is Text);
+			selectedDrawable = (drawables == null || drawables.Count () > 1) ? null : drawables.FirstOrDefault () as Drawable;
+			colorbutton.Sensitive = !(selectedDrawable is Text);
 
 			ignoreChanges = true;
 			if (selectedDrawable == null) {
@@ -709,7 +714,7 @@ namespace VAS.UI.Dialog
 				}
 				typecombobox.Active = (int)blackboard.LineType;
 			} else {
-				if (drawable is Text) {
+				if (selectedDrawable is Text) {
 					textcolorbutton.Color = Misc.ToGdkColor ((selectedDrawable as Text).TextColor);
 					backgroundcolorbutton.Color = Misc.ToGdkColor (selectedDrawable.FillColor);
 					backgroundcolorbutton.Alpha = Color.ByteToUShort (selectedDrawable.FillColor.A);
@@ -719,8 +724,8 @@ namespace VAS.UI.Dialog
 					colorbutton.UseAlpha = true;
 					colorbutton.Alpha = Color.ByteToUShort (selectedDrawable.StrokeColor.A);
 				}
-				if (drawable is Line) {
-					typecombobox.Active = (int)(drawable as Line).Type;
+				if (selectedDrawable is Line) {
+					typecombobox.Active = (int)(selectedDrawable as Line).Type;
 				}
 				linesizespinbutton.Value = OriginalSize (selectedDrawable.LineWidth);
 				if (selectedDrawable.Style == LineStyle.Normal) {
@@ -729,6 +734,8 @@ namespace VAS.UI.Dialog
 					stylecombobox.Active = 1;
 				}
 			}
+
+			UpdateSettingsVisibility (blackboard.Tool);
 			ignoreChanges = false;
 		}
 
@@ -841,7 +848,14 @@ namespace VAS.UI.Dialog
 		void UpdateSettingsVisibility (DrawTool tool)
 		{
 			// Retrieve the proper setting type
-			ToolSettingBase settings = toolSettings [tool];
+			ToolSettingBase settings = null;
+			if (tool == DrawTool.Selection) {
+				// tool selection use the visible settings of the object selected when there is only one
+				settings = GetSettingsForSelectedDrawable ();
+			} else {
+				settings = toolSettings [tool];
+			}
+
 			DrawToolSettings drawingSettings = settings as DrawToolSettings;
 			TextToolSettings textSettings = (drawingSettings != null) ? 
 				drawingSettings.TextSettings : settings as TextToolSettings;
@@ -878,6 +892,22 @@ namespace VAS.UI.Dialog
 			}
 
 			zoombox.Visible = tool == DrawTool.Zoom;
+		}
+
+		ToolSettingBase GetSettingsForSelectedDrawable () {
+			if (selectedDrawable is Text) {
+				return toolSettings [DrawTool.Text];
+			} else if (selectedDrawable is Counter) {
+				return toolSettings [DrawTool.Counter];
+			} else if (selectedDrawable is Line) {
+				return toolSettings [DrawTool.Line];
+			} else if (selectedDrawable is Rectangle) {
+				return toolSettings [DrawTool.CircleArea];
+			} else if (selectedDrawable is Cross) {
+				return toolSettings [DrawTool.Cross];
+			} else {
+				return null;
+			}
 		}
 	}
 
