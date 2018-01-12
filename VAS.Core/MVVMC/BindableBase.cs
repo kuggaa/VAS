@@ -34,20 +34,16 @@ namespace VAS.Core.MVVMC
 	[Serializable]
 	public class BindableBase : DisposableBase, INotifyPropertyChanged, IChanged
 	{
+		Dictionary<INotifyCollectionChanged, string> collectionToPropertyName;
+
 		// Don't serialize observers when cloning this object
 		[field: NonSerialized]
-		public event PropertyChangedEventHandler PropertyChanged {
-			add { propertyChanged.Add (value); }
-			remove { propertyChanged.Remove (value); }
-		}
+		public event PropertyChangedEventHandler PropertyChanged;
 
-		Dictionary<INotifyCollectionChanged, string> collectionToPropertyName;
-		FastSmartWeakEvent<PropertyChangedEventHandler> propertyChanged;
 		bool forwarding;
 
 		public BindableBase ()
 		{
-			propertyChanged = new FastSmartWeakEvent<PropertyChangedEventHandler> ();
 			collectionToPropertyName = new Dictionary<INotifyCollectionChanged, string> ();
 		}
 
@@ -108,13 +104,12 @@ namespace VAS.Core.MVVMC
 			if (IgnoreEvents) {
 				return;
 			}
-			var raiseDelegate = propertyChanged.GetRaiseDelegate ();
-			if (raiseDelegate != null) {
+			if (PropertyChanged != null) {
 				if (sender == null) {
 					sender = this;
 					Log.Verbose ($"RaisePropertyChanged {this} - changing sender: {sender} from null");
 				}
-				raiseDelegate (sender, args);
+				PropertyChanged (sender, args);
 			}
 		}
 
@@ -226,8 +221,9 @@ namespace VAS.Core.MVVMC
 		protected virtual void OnPropertyChanged (PropertyChangedEventArgs e)
 		{
 			if (!IgnoreEvents) {
-				propertyChanged.GetRaiseDelegate ()?.Invoke (this, e);
+				PropertyChanged?.Invoke (this, e);
 			}
 		}
 	}
 }
+
