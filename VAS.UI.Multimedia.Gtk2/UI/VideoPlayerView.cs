@@ -871,8 +871,8 @@ namespace VAS.UI
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Duration)) ||
 				ViewModel.NeedsSync (e, nameof (ViewModel.PlayerMode))) {
-				totalTime.Text = playerVM.Duration.ToSecondsString ();
-			}        
+				totalTime.Text = playerVM.Duration?.ToSecondsString () ?? "";
+			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.FrameDrawing))) {
 				if (playerVM.FrameDrawing != null) {
 					LoadImage (playerVM.CurrentFrame, playerVM.FrameDrawing);
