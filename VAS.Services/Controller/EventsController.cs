@@ -44,7 +44,7 @@ namespace VAS.Services.Controller
 		/// Gets or sets the current loaded play.
 		/// </summary>
 		/// <value>The loaded play, null if no play.</value>
-		protected TimelineEvent LoadedPlay { get; set; }
+		protected TimelineEventVM LoadedPlay { get; set; }
 
 		protected virtual VideoPlayerVM VideoPlayer { get; set; }
 
@@ -176,7 +176,7 @@ namespace VAS.Services.Controller
 			}
 
 			if (!Project.Model.Dashboard.DisablePopupWindow && e.Edit) {
-				e.TimelineEvent.AddDefaultPositions ();
+				e.TimelineEvent.Model.AddDefaultPositions ();
 
 				PlayEventEditionSettings settings = new PlayEventEditionSettings () {
 					EditTags = true,
@@ -199,9 +199,9 @@ namespace VAS.Services.Controller
 
 			Log.Debug (String.Format ("New play created start:{0} stop:{1} category:{2}",
 				e.TimelineEvent.Start.ToMSecondsString (), e.TimelineEvent.Stop.ToMSecondsString (),
-				e.TimelineEvent.EventType.Name));
-			Project.Model.AddEvent (e.TimelineEvent);
-			AddNewPlay (e.TimelineEvent);
+				e.TimelineEvent.Model.EventType.Name));
+			Project.Model.AddEvent (e.TimelineEvent.Model);
+			AddNewPlay (e.TimelineEvent.Model);
 			await App.Current.EventsBroker.Publish (new DashboardEventCreatedEvent {
 				TimelineEvent = e.TimelineEvent,
 				DashboardButton = e.DashboardButton,
@@ -212,29 +212,34 @@ namespace VAS.Services.Controller
 		async Task HandleMoveToEventType (MoveToEventTypeEvent e)
 		{
 			// Only move the events where the event type changes for real
-			var newEvents = e.TimelineEvents.Where (ev => ev.EventType != e.EventType);
+			var newEventVMs = e.TimelineEvents.Where (vm => vm.Model.EventType != e.EventType);
 
-			foreach (var evt in newEvents) {
-				var newEvent = Cloner.Clone (evt);
-				newEvent.ID = Guid.NewGuid ();
-				newEvent.EventType = e.EventType;
+			foreach (var eventVM in newEventVMs) {
+				var newEventVM = Cloner.Clone (eventVM);
+				newEventVM.Model.ID = Guid.NewGuid ();
+				newEventVM.Model.EventType = e.EventType;
 				// Remove all tags from the previous event type but keep global tags
-				newEvent.Tags.RemoveAll (t => (evt.EventType as AnalysisEventType).Tags.Contains (t));
-				Project.Model.AddEvent (newEvent);
+				newEventVM.Model.Tags.RemoveAll (t => (eventVM.Model.EventType as AnalysisEventType).Tags.Contains (t));
+				Project.Model.AddEvent (newEventVM.Model);
 			}
-			await DeletePlays (newEvents.ToList (), false);
+			await DeletePlays (newEventVMs.ToList (), false);
 			Save (Project);
 		}
 
 		void HandleDuplicateEvents (DuplicateEventsEvent e)
 		{
 			foreach (var play in e.TimelineEvents) {
-				var copy = play.Clone ();
+				var copy = play.Model.Clone ();
+
 				if (CheckTimelineEventsLimitation ()) {
 					return;
 				}
+
 				Project.Model.AddEvent (copy);
-				App.Current.EventsBroker.Publish (new EventCreatedEvent { TimelineEvent = copy });
+
+				App.Current.EventsBroker.Publish (new EventCreatedEvent {
+					TimelineEvent = new TimelineEventVM { Model = copy }
+				});
 			}
 		}
 
@@ -245,26 +250,27 @@ namespace VAS.Services.Controller
 
 		void HandleLoadEvent (LoadTimelineEventEvent<TimelineEventVM> e)
 		{
-			VideoPlayer.LoadEvent (e.Object?.Model, e.Playing);
+			VideoPlayer.LoadEvent (e.Object, e.Playing);
 		}
 
 		void HandleLoadEventsList (LoadTimelineEventEvent<IEnumerable<TimelineEventVM>> e)
 		{
-			var events = e.Object.Select (vm => vm.Model);
+			var eventVMs = e.Object;
 			//Only order them if they have the same EventType
-			var firstEvent = events.FirstOrDefault ();
-			if (events.All (evt => evt.EventType == firstEvent.EventType)) {
-				events = events.OrderBy (evt => evt.Start);
+			var firstEventVM = eventVMs.FirstOrDefault ();
+
+			if (eventVMs.All (eventVM => eventVM.Model.EventType == firstEventVM.Model.EventType)) {
+				eventVMs = eventVMs.OrderBy (evt => evt.Start);
 			}
 
-			VideoPlayer.LoadEvents (events, e.Playing);
+			VideoPlayer.LoadEvents (eventVMs, e.Playing);
 		}
 
 		void HandleLoadEventType (LoadTimelineEventEvent<EventTypeTimelineVM> e)
 		{
 			var timelineEvents = e.Object.ViewModels.Where ((arg) => arg.Visible == true)
-								  .Select ((arg) => arg.Model)
 								  .OrderBy (evt => evt.Start);
+
 			VideoPlayer.LoadEvents (timelineEvents, e.Playing);
 		}
 
@@ -294,7 +300,11 @@ namespace VAS.Services.Controller
 				play.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
 			}
 
-			App.Current.EventsBroker.Publish (new EventCreatedEvent { TimelineEvent = play });
+			var evt = Project.Timeline.FullTimeline.Where (vm => vm.Model == play).FirstOrDefault ();
+
+			App.Current.EventsBroker.Publish (new EventCreatedEvent {
+				TimelineEvent = evt
+			});
 
 			if (Project.ProjectType == ProjectType.FileProject) {
 				VideoPlayer.PlayCommand.Execute ();
@@ -309,9 +319,9 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		async Task DeletePlays (IEnumerable<TimelineEvent> plays, bool askConfirmation = true)
+		async Task DeletePlays (IEnumerable<TimelineEventVM> plays, bool askConfirmation = true)
 		{
-			plays = plays.Where (p => p.Deletable);
+			plays = plays.Where (p => p.Model.Deletable);
 			Log.Debug (plays.Count () + " plays deleted");
 			if (askConfirmation) {
 				var delete = await App.Current.Dialogs.QuestionMessage (
@@ -321,7 +331,7 @@ namespace VAS.Services.Controller
 					return;
 				}
 			}
-			Project.Timeline.Model.RemoveRange (plays);
+			Project.Timeline.Model.RemoveRange (plays.Select (vm => vm.Model));
 			if (Project.ProjectType == ProjectType.FileProject) {
 				Save (Project);
 			}
@@ -378,8 +388,8 @@ namespace VAS.Services.Controller
 
 		void HandlePlaylistElementLoaded (PlaylistElementLoadedEvent e)
 		{
-			if (e.Element is PlaylistPlayElement) {
-				LoadedPlay = (e.Element as PlaylistPlayElement).Play;
+			if (e.Element is PlaylistPlayElementVM) {
+				LoadedPlay = (e.Element as PlaylistPlayElementVM).Play;
 			} else {
 				LoadedPlay = null;
 			}

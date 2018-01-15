@@ -24,6 +24,7 @@ using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
+using VAS.Core.ViewModel;
 
 namespace VAS.Core.Interfaces
 {
@@ -89,7 +90,7 @@ namespace VAS.Core.Interfaces
 		/// Gets or sets the loaded playlist.
 		/// </summary>
 		/// <value>The loaded playlist.</value>
-		Playlist LoadedPlaylist { get; set; }
+		PlaylistVM LoadedPlaylist { get; set; }
 
 		/// <summary>
 		/// Gets or sets the operation mode.
@@ -103,7 +104,7 @@ namespace VAS.Core.Interfaces
 		/// <param name="play">Play.</param>
 		/// <param name="playlist">Playlist.</param>
 		/// <param name="element">Element.</param>
-		void Switch (TimelineEvent play, Playlist playlist, IPlaylistElement element);
+		void Switch (TimelineEventVM play, PlaylistVM playlist, IPlayable element);
 
 		/// <summary>
 		/// Open the specified fileSet.
@@ -149,10 +150,10 @@ namespace VAS.Core.Interfaces
 		/// Loads a timeline event.
 		/// The file set for this event comes from <see cref="evt.Fileset"/>
 		/// </summary>
-		/// <param name="evt">The timeline event.</param>
+		/// <param name="eventVM">The timeline event.</param>
 		/// <param name="seekTime">Seek time.</param>
 		/// <param name="playing">If set to <c>true</c> playing.</param>
-		void LoadEvent (TimelineEvent evt, Time seekTime, bool playing);
+		void LoadEvent (TimelineEventVM eventVM, Time seekTime, bool playing);
 
 		/// <summary>
 		/// Loads a playlist event.
@@ -160,12 +161,12 @@ namespace VAS.Core.Interfaces
 		/// <param name="playlist">The playlist for this event.</param>
 		/// <param name="element">The event to load.</param>
 		/// <param name = "playing">Flag to start playing the event being loaded</param>
-		void LoadPlaylistEvent (Playlist playlist, IPlaylistElement element, bool playing);
+		void LoadPlaylistEvent(PlaylistVM playlist, IPlayable element, bool playing);
 
 		/// <summary>
 		/// Unloads the current event.
 		/// </summary>
-		void UnloadCurrentEvent ();
+		void UnloadCurrentEvent();
 
 		/// <summary>
 		/// Seek the specified position. This position should be relative to whatever is loaded.

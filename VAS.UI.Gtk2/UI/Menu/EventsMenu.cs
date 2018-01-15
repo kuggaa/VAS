@@ -23,13 +23,15 @@ using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Store;
+using VAS.Core.ViewModel;
+using VAS.UI.Menus;
 
 namespace VAS.UI.Menus
 {
 	public class EventsMenu : Gtk.Menu
 	{
 		protected MenuItem render, drawings;
-		protected List<TimelineEvent> plays;
+		protected List<TimelineEventVM> plays;
 
 		public EventsMenu ()
 		{
@@ -64,12 +66,12 @@ namespace VAS.UI.Menus
 
 		protected bool Disposed { get; private set; } = false;
 
-		public void ShowMenu (Project project, List<TimelineEvent> plays)
+		public void ShowMenu (Project project, List<TimelineEventVM> plays)
 		{
 			ShowMenu (project, plays, null, null, null, false);
 		}
 
-		protected void ShowMenu (Project project, IEnumerable<TimelineEvent> plays, EventType eventType, Time time,
+		protected void ShowMenu (Project project, IEnumerable<TimelineEventVM> plays, EventType eventType, Time time,
 								 IList<EventType> eventTypes, bool editableName)
 		{
 
@@ -77,12 +79,12 @@ namespace VAS.UI.Menus
 			Popup ();
 		}
 
-		protected virtual void PrepareMenu (Project project, IEnumerable<TimelineEvent> plays, EventType eventType, Time time,
+		protected virtual void PrepareMenu (Project project, IEnumerable<TimelineEventVM> plays, EventType eventType, Time time,
 						 IList<EventType> eventTypes, bool editableName)
 		{
 			this.plays = plays.ToList ();
 			if (plays == null) {
-				plays = new List<TimelineEvent> ();
+				plays = new List<TimelineEventVM> ();
 			}
 			MenuHelpers.FillExportToVideoFileMenu (render, null, plays, Catalog.GetString ("Render"));
 
@@ -112,7 +114,7 @@ namespace VAS.UI.Menus
 					};
 					deleteItem.Activated += (sender, e) => {
 						plays.FirstOrDefault ().Drawings.RemoveAt (index);
-						plays.FirstOrDefault ().UpdateMiniature ();
+						plays.FirstOrDefault ().Model.UpdateMiniature ();
 					};
 					drawingItem.Submenu = drawingMenu;
 					drawingMenu.ShowAll ();

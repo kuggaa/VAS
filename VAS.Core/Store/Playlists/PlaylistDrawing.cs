@@ -42,12 +42,6 @@ namespace VAS.Core.Store.Playlists
 			Drawing = null;
 		}
 
-		[JsonIgnore]
-		public bool Playing {
-			get;
-			set;
-		}
-
 		public int Width {
 			get;
 			set;

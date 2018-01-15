@@ -16,17 +16,20 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.ObjectModel;
 using VAS.Core.Common;
+using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store;
+using VAS.Core.Store.Templates;
 
 namespace VAS.Core.ViewModel
 {
 	/// <summary>
 	/// A ViewModel for <see cref="TimelineEvent"/> objects.
 	/// </summary>
-	public class TimelineEventVM : TimeNodeVM, IComparable, IViewModel<TimelineEvent>
+	public class TimelineEventVM : TimeNodeVM, IComparable, IViewModel<TimelineEvent>, IPlayableEvent
 	{
 		public virtual new TimelineEvent Model {
 			get {
@@ -68,25 +71,63 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
-		/// Gets the notes.
+		/// Gets or sets the notes.
 		/// </summary>
 		/// <value>The notes.</value>
 		public string Notes {
 			get {
 				return Model.Notes;
 			}
+			set {
+				Model.Notes = value;
+			}
 		}
 
 		/// <summary>
-		/// Gets or sets a value indicating whether this <see cref="VAS.Services.ViewModel.TimelineEventVM`1"/> is playing.
+		/// Gets the drawings.
 		/// </summary>
-		/// <value><c>true</c> if playing; otherwise, <c>false</c>.</value>
-		public bool Playing {
+		/// <value>The drawings.</value>
+		public RangeObservableCollection<FrameDrawing> Drawings {
 			get {
-				return Model.Playing;
+				return Model.Drawings;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the opaque object used by the view to describe the cameras layout.
+		/// </summary>
+		public object CamerasLayout {
+			get {
+				return Model.CamerasLayout;
 			}
 			set {
-				Model.Playing = value;
+				Model.CamerasLayout = value;
+			}
+		}
+
+		/// <summary>
+		/// A list of visible <see cref="CameraConfig"/> for this event.
+		/// </summary>
+		public ObservableCollection<CameraConfig> CamerasConfig {
+			get {
+				return Model.CamerasConfig;
+			}
+			set {
+				Model.CamerasConfig = value;
+			}
+		}
+
+		//FIXME: Use MediaFileSetVM instead of MediaFileset
+		/// <summary>
+		/// Gets or sets the file set for the model.
+		/// </summary>
+		/// <value>The file set.</value>
+		public MediaFileSet FileSet {
+			get {
+				return Model.FileSet;
+			}
+			set {
+				Model.FileSet = value;
 			}
 		}
 
@@ -99,6 +140,7 @@ namespace VAS.Core.ViewModel
 			set;
 		}
 
+		/// <summary>
 		/// Gets or sets a value indicating whether this <see cref="T:VAS.Services.ViewModel.TimelineEventVM`1"/> has focus.
 		/// </summary>
 		/// <value><c>true</c> if focus; otherwise, <c>false</c>.</value>
@@ -121,7 +163,53 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
-		/// Compare the specified timelineEventVM with the calling one.
+		/// The <see cref="EventType"/> in wich this event is tagged
+		/// </summary>
+		public EventType EventType {
+			get {
+				return Model.EventType;
+			}
+			set {
+				Model.EventType = value;
+			}
+		}
+
+		/// <summary>
+		/// List of tags describing this event.
+		/// </summary>
+		/// <value>The tags.</value>
+		public RangeObservableCollection<Tag> Tags => Model.Tags;
+
+		/// <summary>
+		/// Gets the description.
+		/// </summary>
+		/// <value>The description.</value>
+		public string Description => Model.Description;
+
+		/// <summary>
+		/// Gets the miniature.
+		/// </summary>
+		/// <value>The miniature.</value>
+		public Image Miniature => Model.Miniature;
+
+		/// <summary>
+		/// List of players tagged in this event.
+		/// </summary>
+		public RangeObservableCollection<Player> Players => Model.Players;
+
+		/// <summary>
+		/// A list of teams tagged in this event.
+		/// </summary>
+		public RangeObservableCollection<Team> Teams => Model.Teams;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.TimelineEventVM"/> is playing.
+		/// </summary>
+		/// <value><c>true</c> if playing; otherwise, <c>false</c>.</value>
+		public bool Playing { get; set; }
+
+		/// <summary>
+		/// Compare the specified TimelineEventVM with the calling one.
 		/// </summary>
 		/// <returns>The compare result.</returns>
 		/// <param name="evt">Timeline event to be compared with.</param>

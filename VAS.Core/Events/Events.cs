@@ -44,7 +44,7 @@ namespace VAS.Core.Events
 		/// Gets or sets the timeline event to load.
 		/// </summary>
 		/// <value>The timeline event.</value>
-		public TimelineEvent TimelineEvent { get; set; }
+		public TimelineEventVM TimelineEvent { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.Events.LoadEventEvent"/> will
@@ -72,34 +72,34 @@ namespace VAS.Core.Events
 
 	public class EventCreatedEvent : Event
 	{
-		public TimelineEvent TimelineEvent { get; set; }
+		public TimelineEventVM TimelineEvent { get; set; }
 	}
 
 	public class EventsDeletedEvent : Event
 	{
-		public IEnumerable<TimelineEvent> TimelineEvents { get; set; }
+		public IEnumerable<TimelineEventVM> TimelineEvents { get; set; }
 	}
 
 	public class EventLoadedEvent : Event
 	{
-		public TimelineEvent TimelineEvent { get; set; }
+		public TimelineEventVM TimelineEvent { get; set; }
 	}
 
 	public class SnapshotSeriesEvent : Event
 	{
-		public TimelineEvent TimelineEvent { get; set; }
+		public TimelineEventVM TimelineEvent { get; set; }
 	}
 
 	public class MoveToEventTypeEvent : Event
 	{
-		public IList<TimelineEvent> TimelineEvents { get; set; }
+		public IList<TimelineEventVM> TimelineEvents { get; set; }
 
 		public EventType EventType { get; set; }
 	}
 
 	public class DuplicateEventsEvent : Event
 	{
-		public List<TimelineEvent> TimelineEvents { get; set; }
+		public List<TimelineEventVM> TimelineEvents { get; set; }
 	}
 
 	public class TagSubcategoriesChangedEvent : Event
@@ -109,12 +109,12 @@ namespace VAS.Core.Events
 
 	public class EditEventEvent : Event
 	{
-		public TimelineEvent TimelineEvent { get; set; }
+		public TimelineEventVM TimelineEvent { get; set; }
 	}
 
 	public class EventEditedEvent : Event
 	{
-		public TimelineEvent TimelineEvent { get; set; }
+		public TimelineEventVM TimelineEvent { get; set; }
 	}
 
 	public class DashboardEditedEvent : Event
@@ -197,9 +197,10 @@ namespace VAS.Core.Events
 	{
 	}
 
+	//FIXME: Use VM (PlaylistVM) instead of model (Playlist)
 	public class RenderPlaylistEvent : Event
 	{
-		public Playlist Playlist { get; set; }
+		public PlaylistVM Playlist { get; set; }
 	}
 
 	public class InsertVideoInPlaylistEvent : Event
@@ -214,30 +215,30 @@ namespace VAS.Core.Events
 
 	public class DeletePlaylistEvent : Event
 	{
-		public Playlist Playlist { get; set; }
+		public PlaylistVM Playlist { get; set; }
 	}
 
 	public class AddPlaylistElementEvent : Event
 	{
-		public Playlist Playlist { get; set; }
+		public PlaylistVM Playlist { get; set; }
 
-		public List<IPlaylistElement> PlaylistElements { get; set; }
+		public List<IPlayable> PlaylistElements { get; set; }
 	}
 
 	public class LoadPlaylistElementEvent : Event
 	{
-		public Playlist Playlist { get; set; }
+		public PlaylistVM Playlist { get; set; }
 
-		public IPlaylistElement Element { get; set; }
+		public IPlayable Element { get; set; }
 
 		public bool Playing { get; set; }
 	}
 
 	public class PlaylistElementLoadedEvent : Event
 	{
-		public Playlist Playlist { get; set; }
+		public PlaylistVM Playlist { get; set; }
 
-		public IPlaylistElement Element { get; set; }
+		public IPlayable Element { get; set; }
 	}
 
 	public class NewPlaylistEvent : Event
@@ -247,12 +248,12 @@ namespace VAS.Core.Events
 
 	public class NextPlaylistElementEvent : Event
 	{
-		public Playlist Playlist { get; set; }
+		public PlaylistVM Playlist { get; set; }
 	}
 
 	public class PreviousPlaylistElementEvent : Event
 	{
-		public Playlist Playlist { get; set; }
+		public PlaylistVM Playlist { get; set; }
 	}
 
 	public class PlayerTickEvent : Event
@@ -284,7 +285,7 @@ namespace VAS.Core.Events
 		/// to edit it.
 		/// </summary>
 		/// <value>The timeline event.</value>
-		public TimelineEvent Play { get; set; }
+		public TimelineEventVM Play { get; set; }
 
 		/// <summary>
 		/// When set in combination with <see cref="Play"/> it defines the index of the event's drawing to use.
@@ -353,7 +354,7 @@ namespace VAS.Core.Events
 
 	public class OpenedPresentationChangedEvent : Event
 	{
-		public Playlist Presentation { get; set; }
+		public PlaylistVM Presentation { get; set; }
 
 		public IVideoPlayerController Player { get; set; }
 	}
@@ -390,7 +391,7 @@ namespace VAS.Core.Events
 
 	public class NewDashboardEvent : Event
 	{
-		public TimelineEvent TimelineEvent { get; set; }
+		public TimelineEventVM TimelineEvent { get; set; }
 
 		public DashboardButton DashboardButton { get; set; }
 
@@ -413,7 +414,7 @@ namespace VAS.Core.Events
 
 	public class DashboardEventCreatedEvent : Event
 	{
-		public TimelineEvent TimelineEvent { get; set; }
+		public TimelineEventVM TimelineEvent { get; set; }
 
 		public DashboardButton DashboardButton { get; set; }
 

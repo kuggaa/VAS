@@ -162,13 +162,13 @@ namespace VAS.Services.Controller
 			});
 		}
 
-		protected virtual void AddTeamsToEvent (TimelineEvent play)
+		protected virtual void AddTeamsToEvent (TimelineEventVM eventVM)
 		{
 			var teams = project.Teams.Where (team => team.Tagged).Select (team => team.Model);
-			play.Teams.AddRange (teams);
+			eventVM.Model.Teams.AddRange (teams);
 		}
 
-		protected abstract TimelineEvent CreateTimelineEvent (EventType type, Time start, Time stop,
+		protected abstract TimelineEventVM CreateTimelineEventVM (EventType type, Time start, Time stop,
 															  Time eventTime, Image miniature);
 
 		void HandleNewTagEvent (NewTagEvent e)
@@ -177,18 +177,18 @@ namespace VAS.Services.Controller
 				return;
 			}
 
-			var play = CreateTimelineEvent (e.EventType, e.Start, e.Stop, e.EventTime, null);
-			play.Tags.AddRange (e.Tags);
+			var eventVM = CreateTimelineEventVM (e.EventType, e.Start, e.Stop, e.EventTime, null);
+			eventVM.Model.Tags.AddRange (e.Tags);
 
 			// add selected tag buttons
-			play.Tags.AddRange (project.Dashboard.ViewModels.OfType<TagButtonVM> ().Where (x => x.Active).Select (x => x.Tag.Model));
+			eventVM.Model.Tags.AddRange (project.Dashboard.ViewModels.OfType<TagButtonVM> ().Where (x => x.Active).Select (x => x.Tag.Model));
 
-			AddPlayersToEvent (play);
-			AddTeamsToEvent (play);
+			AddPlayersToEvent (eventVM);
+			AddTeamsToEvent (eventVM);
 
 			App.Current.EventsBroker.Publish (
 				new NewDashboardEvent {
-					TimelineEvent = play,
+					TimelineEvent = eventVM,
 					DashboardButton = e.Button,
 					Edit = !project.Dashboard.DisablePopupWindow,
 					DashboardButtons = null,
@@ -197,11 +197,11 @@ namespace VAS.Services.Controller
 			Reset ();
 		}
 
-		void AddPlayersToEvent (TimelineEvent play)
+		void AddPlayersToEvent (TimelineEventVM eventVM)
 		{
 			var players = project.Players.Where (p => p.Tagged);
 			foreach (var playerVM in players) {
-				play.Players.Add (playerVM.Model);
+				eventVM.Model.Players.Add (playerVM.Model);
 			}
 		}
 

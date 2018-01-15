@@ -110,6 +110,7 @@ namespace VAS.Core.MVVMC
 					}
 				}
 			}
+
 			if (viewModel == null) {
 				Log.Verbose ($"TypeMapping not found for {modelType}. Using the base ViewModel {typeof (TViewModel).Name}");
 				viewModel = new TViewModel ();
@@ -157,7 +158,7 @@ namespace VAS.Core.MVVMC
 		{
 			if (modelToViewModel.ContainsKey (model)) {
 				return modelToViewModel [model];
-			} 
+			}
 
 			var viewModel = CreateInstance (model);
 			if (!modelToViewModel.ContainsKey (model)) {

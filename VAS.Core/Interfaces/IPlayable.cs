@@ -1,5 +1,5 @@
-//
-//  Copyright (C) 2014 Andoni Morales Alastruey
+﻿//
+//  Copyright (C) 2017 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,44 +15,30 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using VAS.Core.Common;
 using VAS.Core.Store;
 
 namespace VAS.Core.Interfaces
 {
 	/// <summary>
-	/// Base interface for elements that can be loaded in a video player.
+	/// Base interface for ViewModels that can be loaded into a video player
 	/// </summary>
-	public interface IPlaylistElement : IChanged, INotifyPropertyChanged
+	public interface IPlayable : IPlaylistElement
 	{
-		string Description {
-			get;
-		}
-
-		Image Miniature {
-			get;
-		}
-
-		Time Duration {
-			get;
-		}
-
 		/// <summary>
-		/// Gets or sets the cameras config.
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.Interfaces.IPlayable"/> is playing.
 		/// </summary>
-		/// <value>The cameras config.</value>
-		ObservableCollection<CameraConfig> CamerasConfig {
-			get;
-		}
+		/// <value><c>true</c> if playing; otherwise, <c>false</c>.</value>
+		bool Playing { get; set; }
+	}
 
-		/// <summary>
-		/// Gets or sets the cameras layout.
-		/// </summary>
-		/// <value>The cameras layout.</value>
-		object CamerasLayout {
-			get;
-		}
+	/// <summary>
+	/// Base interface for ViewModels that can be loaded into a video player and have a certain duration
+	/// </summary>
+	public interface IPlayableEvent : IPlayable, IPlaylistEventElement
+	{
+
 	}
 }

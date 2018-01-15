@@ -304,9 +304,9 @@ namespace VAS.Drawing.Widgets
 		protected void ShowPlaysMenu (Point coords, EventTypeTimelineView catTimeline)
 		{
 			EventType ev = null;
-			List<TimelineEvent> plays;
+			List<TimelineEventVM> plays;
 
-			plays = Selections.Select (p => (p.Drawable as TimelineEventView).TimelineEvent.Model).ToList ();
+			plays = Selections.Select (p => (p.Drawable as TimelineEventView).TimelineEvent).ToList ();
 
 			ev = catTimeline.ViewModel.EventTypeVM.Model;
 			if (ev != null && ShowMenuEvent != null) {
@@ -316,21 +316,21 @@ namespace VAS.Drawing.Widgets
 
 		protected override void SelectionChanged (List<Selection> selections)
 		{
-			TimelineEventVM ev = null;
+			TimelineEventVM eventVM = null;
 
 			if (selections.Count > 0) {
 				CanvasObject d = selections.Last ().Drawable as CanvasObject;
 				if (d is TimelineEventView) {
-					ev = (d as TimelineEventView).TimelineEvent;
+					eventVM = (d as TimelineEventView).TimelineEvent;
 					// If event is in selections list, must be selected but
 					// in the first time it is incorrectly marked as false
-					ev.Playing = true;
-					loadedEvent = ev.Model;
+					eventVM.Playing = true;
+					loadedEvent = eventVM.Model;
 				}
 			}
 			App.Current.EventsBroker.Publish (
 				new LoadEventEvent {
-					TimelineEvent = ev?.Model
+					TimelineEvent = eventVM
 				}
 			);
 		}

@@ -27,6 +27,7 @@ using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Resources.Styles;
 using VAS.Core.Store;
+using VAS.Core.ViewModel;
 using VAS.UI.Helpers;
 using Image = VAS.Core.Common.Image;
 using Misc = VAS.UI.Helpers.Misc;
@@ -50,7 +51,7 @@ namespace VAS.UI
 		Time accumTime;
 		DateTime currentPeriodStart;
 		List<string> gamePeriods;
-		TimelineEvent lastevent;
+		TimelineEventVM lastevent;
 		MediaFile outputFile;
 		bool readyToCapture;
 		TextView hourText;
@@ -393,7 +394,8 @@ namespace VAS.UI
 			InternalRun (settings, outputFile);
 		}
 
-		void InternalRun (CaptureSettings captureSettings, MediaFile outFile) {
+		void InternalRun (CaptureSettings captureSettings, MediaFile outFile)
+		{
 			Reset ();
 			if (type == CapturerType.Live) {
 				ReadyToCapture = false;
@@ -550,7 +552,7 @@ namespace VAS.UI
 		{
 			if (lastevent != null) {
 				App.Current.EventsBroker.Publish (
-					new LoadTimelineEventEvent<TimelineEvent> {
+					new LoadTimelineEventEvent<TimelineEventVM> {
 						Object = lastevent,
 						Playing = true,
 					}
@@ -563,7 +565,7 @@ namespace VAS.UI
 			if (lastevent != null) {
 				App.Current.EventsBroker.Publish<EventsDeletedEvent> (
 					new EventsDeletedEvent {
-						TimelineEvents = new List<TimelineEvent> { lastevent }
+						TimelineEvents = new List<TimelineEventVM> { lastevent }
 					}
 				);
 				lastevent = null;
