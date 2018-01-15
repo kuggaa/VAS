@@ -78,10 +78,10 @@ namespace VAS.Services.Controller
 				ConnectEvents ();
 			}
 			App.Current.EventsBroker.SubscribeAsync<AddPlaylistElementEvent> (HandleAddPlaylistElement);
-			App.Current.EventsBroker.SubscribeAsync<CreateEvent<Playlist>> (HandleNewPlaylist);
+			App.Current.EventsBroker.SubscribeAsync<CreateEvent<PlaylistVM>> (HandleNewPlaylist);
 			App.Current.EventsBroker.SubscribeAsync<DeletePlaylistEvent> (HandleDeletePlaylist);
 			App.Current.EventsBroker.SubscribeAsync<DeleteEvent<Playlist>> (HandleDeleteSelectedItems);
-			App.Current.EventsBroker.SubscribeAsync<EditEvent<Playlist>> (HandleEditSelectedPlaylist);
+			App.Current.EventsBroker.SubscribeAsync<EditEvent<PlaylistVM>> (HandleEditSelectedPlaylist);
 			App.Current.EventsBroker.Subscribe<RenderPlaylistEvent> (HandleRenderPlaylist);
 			App.Current.EventsBroker.Subscribe<InsertVideoInPlaylistEvent> (HandleInsertVideoInPlaylist);
 			App.Current.EventsBroker.SubscribeAsync<InsertImageInPlaylistEvent> (HandleInsertImageInPlaylist);
@@ -98,10 +98,10 @@ namespace VAS.Services.Controller
 				DisconnectEvents ();
 			}
 			App.Current.EventsBroker.UnsubscribeAsync<AddPlaylistElementEvent> (HandleAddPlaylistElement);
-			App.Current.EventsBroker.UnsubscribeAsync<CreateEvent<Playlist>> (HandleNewPlaylist);
+			App.Current.EventsBroker.UnsubscribeAsync<CreateEvent<PlaylistVM>> (HandleNewPlaylist);
 			App.Current.EventsBroker.UnsubscribeAsync<DeletePlaylistEvent> (HandleDeletePlaylist);
 			App.Current.EventsBroker.UnsubscribeAsync<DeleteEvent<Playlist>> (HandleDeleteSelectedItems);
-			App.Current.EventsBroker.UnsubscribeAsync<EditEvent<Playlist>> (HandleEditSelectedPlaylist);
+			App.Current.EventsBroker.UnsubscribeAsync<EditEvent<PlaylistVM>> (HandleEditSelectedPlaylist);
 			App.Current.EventsBroker.Unsubscribe<RenderPlaylistEvent> (HandleRenderPlaylist);
 			App.Current.EventsBroker.Unsubscribe<InsertVideoInPlaylistEvent> (HandleInsertVideoInPlaylist);
 			App.Current.EventsBroker.UnsubscribeAsync<InsertImageInPlaylistEvent> (HandleInsertImageInPlaylist);
@@ -130,9 +130,9 @@ namespace VAS.Services.Controller
 
 		#endregion
 
-		protected void LoadPlay (TimelineEvent play, Time seekTime, bool playing)
+		protected void LoadPlay (TimelineEventVM play, Time seekTime, bool playing)
 		{
-			if (play != null && PlayerVM != null && PlayerVM.Player != null) {
+			if (play?.Model != null && PlayerVM != null && PlayerVM.Player != null) {
 				play.Playing = true;
 				PlayerVM.Player.LoadEvent (
 					play, seekTime, playing);
@@ -142,10 +142,10 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		protected virtual async Task<Playlist> CreateNewPlaylist ()
+		protected virtual async Task<PlaylistVM> CreateNewPlaylistVM ()
 		{
 			string name = Catalog.GetString ("New playlist");
-			Playlist playlist = null;
+			PlaylistVM playlist = null;
 			bool done = false;
 			while (name != null && !done) {
 				name = await App.Current.Dialogs.QueryMessage (Catalog.GetString ("Playlist name:"), null, name);
@@ -159,8 +159,8 @@ namespace VAS.Services.Controller
 				}
 			}
 			if (name != null) {
-				playlist = new Playlist { Name = name };
-				ViewModel.Model.Add (playlist);
+				playlist = new PlaylistVM { Model = new Playlist { Name = name } };
+				ViewModel.ViewModels.Add (playlist);
 				Save (playlist, true);
 				await App.Current.EventsBroker.Publish (new NewPlaylistEvent ());
 			}
@@ -170,27 +170,34 @@ namespace VAS.Services.Controller
 
 		protected virtual async Task HandleAddPlaylistElement (AddPlaylistElementEvent e)
 		{
-			//FIXME: should use PlaylistVM
 			if (e.Playlist == null) {
-				e.Playlist = await CreateNewPlaylist ();
+				e.Playlist = await CreateNewPlaylistVM ();
 				if (e.Playlist == null) {
 					return;
 				}
 			}
+
 			foreach (var item in e.PlaylistElements) {
-				e.Playlist.Elements.Add (item);
+				if (item is TimelineEventVM) {
+					e.Playlist.ViewModels.Add (new PlaylistPlayElementVM () {
+						Model = new PlaylistPlayElement ((item as TimelineEventVM).Model),
+					});
+				} else {
+					e.Playlist.ViewModels.Add ((PlaylistElementVM)item);
+				}
 			}
+
 			Save (e.Playlist, true);
 		}
 
 		protected virtual Task HandleDeletePlaylist (DeletePlaylistEvent e)
 		{
-			Playlist playlist = e.Playlist;
+			PlaylistVM playlist = e.Playlist;
 
 			if (playlist != null && ProjectViewModel == null) {
-				App.Current.DatabaseManager.ActiveDB.Delete (e.Playlist);
+				App.Current.DatabaseManager.ActiveDB.Delete (e.Playlist.Model);
 			}
-			ViewModel.Model.Remove (e.Playlist);
+			ViewModel.Model.Remove (e.Playlist.Model);
 			return AsyncHelpers.Return (true);
 		}
 
@@ -211,32 +218,32 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		async Task HandleNewPlaylist (CreateEvent<Playlist> e)
+		async Task HandleNewPlaylist (CreateEvent<PlaylistVM> e)
 		{
-			e.Object = await CreateNewPlaylist ();
+			e.Object = await CreateNewPlaylistVM ();
 			e.ReturnValue = e.Object != null;
 		}
 
-		void Save (Playlist playlist, bool force = false)
+		void Save (PlaylistVM playlist, bool force = false)
 		{
 			if (playlist != null && ProjectViewModel == null) {
-				App.Current.DatabaseManager.ActiveDB.Store (playlist, force);
+				App.Current.DatabaseManager.ActiveDB.Store (playlist.Model, force);
 			}
 		}
 
 		void HandleLoadPlaylistElement (LoadPlaylistElementEvent e)
 		{
 			if (e.Element != null) {
-				e.Playlist.SetActive (e.Element);
+				e.Playlist.SetActive ((PlaylistElementVM)e.Element);
 			}
-			if (e.Playlist.Elements.Count > 0 && PlayerVM != null) {
+			if (e.Playlist.ChildModels.Count > 0 && PlayerVM != null) {
 				PlayerVM.LoadPlaylistEvent (e.Playlist, e.Element, e.Playing);
 			}
 		}
 
 		void HandleRenderPlaylist (RenderPlaylistEvent e)
 		{
-			List<EditionJob> jobs = App.Current.GUIToolkit.ConfigureRenderingJob (e.Playlist);
+			List<EditionJob> jobs = App.Current.GUIToolkit.ConfigureRenderingJob (e.Playlist.Model);
 			if (jobs == null)
 				return;
 			foreach (Job job in jobs) {
@@ -269,7 +276,7 @@ namespace VAS.Services.Controller
 			await App.Current.StateController.MoveToModal (EditPlaylistElementState.NAME, properties, true);
 			var playlist = ViewModel.ViewModels.FirstOrDefault ((arg) => arg.ViewModels.Contains (e.Object));
 			if (playlist != null) {
-				Save (playlist.Model);
+				Save (playlist);
 			}
 		}
 
@@ -286,7 +293,7 @@ namespace VAS.Services.Controller
 					save = true;
 				}
 				if (save) {
-					Save (playlist.Model);
+					Save (playlist);
 				}
 			}
 		}
@@ -297,7 +304,7 @@ namespace VAS.Services.Controller
 			bool questioned = false;
 			bool shouldRemove = true;
 
-			foreach (var playlistVM in ViewModel.Selection.ToList ()) {
+			foreach (var playlist in ViewModel.Selection.ToList ()) {
 				if (!questioned) {
 					if (!await App.Current.Dialogs.QuestionMessage (confirmDeletePlaylist, null)) {
 						break;
@@ -305,17 +312,17 @@ namespace VAS.Services.Controller
 					questioned = true;
 				}
 				if (ProjectViewModel == null) {
-					App.Current.DatabaseManager.ActiveDB.Delete (playlistVM.Model);
+					App.Current.DatabaseManager.ActiveDB.Delete (playlist.Model);
 				}
-				ViewModel.Model.Remove (playlistVM.Model);
+				ViewModel.ViewModels.Remove (playlist);
 				removed = true;
 			}
 			if (!removed) {
-				foreach (var playlistVM in ViewModel.ViewModels) {
+				foreach (var playlist in ViewModel.ViewModels) {
 					if (!shouldRemove) {
 						break;
 					}
-					foreach (var playlistElementVM in playlistVM.Selection.ToList ()) {
+					foreach (var playlistElement in playlist.Selection.ToList ()) {
 						if (!questioned) {
 							if (!await App.Current.Dialogs.QuestionMessage (confirmDeletePlaylistElements, null)) {
 								shouldRemove = false;
@@ -323,12 +330,12 @@ namespace VAS.Services.Controller
 							}
 							questioned = true;
 						}
-						playlistVM.ViewModels.Remove (playlistElementVM);
+						playlist.ViewModels.Remove (playlistElement);
 						removed = true;
 					}
 					if (removed) {
-						Save (playlistVM.Model, false);
-						playlistVM.Selection.Clear ();
+						Save (playlist, false);
+						playlist.Selection.Clear ();
 						removed = false;
 					}
 				}
@@ -338,7 +345,7 @@ namespace VAS.Services.Controller
 			e.ReturnValue = true;
 		}
 
-		async Task HandleEditSelectedPlaylist (EditEvent<Playlist> e)
+		async Task HandleEditSelectedPlaylist (EditEvent<PlaylistVM> e)
 		{
 			string name = await App.Current.Dialogs.QueryMessage (Catalog.GetString ("Name:"), null,
 																  e.Object.Name);
@@ -358,11 +365,11 @@ namespace VAS.Services.Controller
 			}
 			foreach (var playlist in e.ElementsToRemove) {
 				playlist.Key.ViewModels.RemoveRange (playlist.Value);
-				Save (playlist.Key.Model, true);
+				Save (playlist.Key, true);
 			}
 			e.Index = e.Index.Clamp (0, e.ElementsToAdd.Key.ViewModels.Count);
 			e.ElementsToAdd.Key.ViewModels.InsertRange (e.Index, e.ElementsToAdd.Value);
-			Save (e.ElementsToAdd.Key.Model, true);
+			Save (e.ElementsToAdd.Key, true);
 		}
 		#region FIXME
 		//FIXME: Copied from ControllerBase<T>, we should change it when migrating to MVVM

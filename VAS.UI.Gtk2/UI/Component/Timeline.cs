@@ -264,7 +264,7 @@ namespace VAS.UI.Component
 			QueueDraw ();
 		}
 
-		protected void HandleShowMenu (List<TimelineEvent> plays, EventType eventType, Time time)
+		protected void HandleShowMenu (List<TimelineEventVM> plays, EventType eventType, Time time)
 		{
 			menu.ShowTimelineMenu (viewModel.Project.Model, plays, eventType, time);
 		}

@@ -32,7 +32,6 @@ namespace VAS.Core.Store.Playlists
 	public class Playlist : StorableBase
 	{
 		DateTime lastModified;
-		int indexSelection = 0;
 		RangeObservableCollection<IPlaylistElement> elements;
 
 		#region Constructors
@@ -74,28 +73,6 @@ namespace VAS.Core.Store.Playlists
 			}
 		}
 
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public int CurrentIndex {
-			get {
-				return indexSelection;
-			}
-		}
-
-		[JsonIgnore]
-		[PropertyChanged.DoNotNotify]
-		public IPlaylistElement Selected {
-			get {
-				if (Elements.Count == 0) {
-					return null;
-				}
-				if (indexSelection >= Elements.Count) {
-					indexSelection = 0;
-				}
-				return Elements [indexSelection];
-			}
-		}
-
 		/// <summary>
 		/// Duration in time for the playlist.
 		/// </summary>
@@ -123,110 +100,9 @@ namespace VAS.Core.Store.Playlists
 
 		#region Public methods
 
-		public IPlaylistElement Next ()
-		{
-			if (HasNext ())
-				indexSelection++;
-			return Elements [indexSelection];
-		}
-
-		public IPlaylistElement Prev ()
-		{
-			if (HasPrev ())
-				indexSelection--;
-			return Elements [indexSelection];
-		}
-
-		public void Reorder (int indexIn, int indexOut)
-		{
-			var play = Elements [indexIn];
-			Elements.RemoveAt (indexIn);
-			Elements.Insert (indexOut, play);
-
-			/* adjust selection index */
-			if (indexIn == indexSelection)
-				indexSelection = indexOut;
-			if (indexIn < indexOut) {
-				if (indexSelection < indexIn || indexSelection > indexOut)
-					return;
-				indexSelection++;
-			} else {
-				if (indexSelection > indexIn || indexSelection < indexOut)
-					return;
-				indexSelection--;
-			}
-		}
-
-		public bool Remove (IPlaylistElement plNode)
-		{
-			bool ret = Elements.Remove (plNode);
-			if (CurrentIndex >= Elements.Count)
-				indexSelection--;
-			return ret;
-		}
-
-		public IPlaylistElement Select (int index)
-		{
-			indexSelection = index;
-			return Elements [index];
-		}
-
-		public void SetActive (IPlaylistElement play)
-		{
-			int newIndex;
-
-			newIndex = Elements.IndexOf (play);
-			if (newIndex >= 0) {
-				indexSelection = newIndex;
-			}
-		}
-
-		public bool HasNext ()
-		{
-			return indexSelection < Elements.Count - 1;
-		}
-
-		public bool HasPrev ()
-		{
-			return !indexSelection.Equals (0);
-		}
-
 		public Playlist Copy ()
 		{
 			return (Playlist)(MemberwiseClone ());
-		}
-
-		/// <summary>
-		/// Gets the element and its start at the passed time.
-		/// </summary>
-		/// <returns>A tuple with the element at the passed time and its start time in the playlist.</returns>
-		/// <param name="pos">Time to query.</param>
-		public Tuple<IPlaylistElement, Time> GetElementAtTime (Time pos)
-		{
-			Time elementStart = new Time (0);
-			IPlaylistElement element = null;
-			foreach (var elem in Elements) {
-				if (pos >= elementStart && pos < elementStart + elem.Duration) {
-					element = elem;
-					break;
-				} else if (pos >= elementStart + elem.Duration) {
-					elementStart += elem.Duration;
-				}
-			}
-			return new Tuple<IPlaylistElement, Time> (element, elementStart);
-		}
-
-		public Time GetStartTime (IPlaylistElement element)
-		{
-			return new Time (Elements.TakeWhile (elem => elem != element).Sum (elem => elem.Duration.MSeconds));
-		}
-
-		public Time GetCurrentStartTime ()
-		{
-			if (CurrentIndex >= 0 && CurrentIndex < Elements.Count) {
-				return GetStartTime (Elements [CurrentIndex]);
-			}
-			return new Time (0);
 		}
 
 		#endregion

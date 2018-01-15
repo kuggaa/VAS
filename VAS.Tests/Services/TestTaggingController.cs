@@ -39,9 +39,9 @@ namespace VAS.Tests.Services
 		TeamVM team2;
 		List<TeamVM> teams;
 		ProjectVM project;
-		TimelineEvent sendedTimelineEvent;
+		TimelineEvent sentTimelineEvent;
 		VideoPlayerVM videoPlayer;
-		bool hasSendedDashboardEvent;
+		bool hasSentDashboardEvent;
 
 		[OneTimeSetUp]
 		public void SetUpOnce ()
@@ -75,8 +75,8 @@ namespace VAS.Tests.Services
 			});
 
 			controller.Start ();
-			sendedTimelineEvent = null;
-			hasSendedDashboardEvent = true;
+			sentTimelineEvent = null;
+			hasSentDashboardEvent = true;
 			App.Current.EventsBroker.Subscribe<NewDashboardEvent> (HandleNewDashboardEvent);
 		}
 
@@ -272,8 +272,8 @@ namespace VAS.Tests.Services
 			// Action
 			App.Current.EventsBroker.Publish (newTagEvent);
 
-			Assert.AreEqual (new Time (9).MSeconds, sendedTimelineEvent.EventTime.MSeconds);
-			Assert.IsTrue (hasSendedDashboardEvent);
+			Assert.AreEqual (new Time (9).MSeconds, sentTimelineEvent.EventTime.MSeconds);
+			Assert.IsTrue (hasSentDashboardEvent);
 		}
 
 		[Test]
@@ -294,8 +294,8 @@ namespace VAS.Tests.Services
 			// Action
 			App.Current.EventsBroker.Publish (newTagEvent);
 
-			Assert.AreEqual (new Time (9).MSeconds, sendedTimelineEvent.EventTime.MSeconds);
-			Assert.AreEqual (2, sendedTimelineEvent.Players.Count);
+			Assert.AreEqual (new Time (9).MSeconds, sentTimelineEvent.EventTime.MSeconds);
+			Assert.AreEqual (2, sentTimelineEvent.Players.Count);
 		}
 
 		[Test]
@@ -315,8 +315,8 @@ namespace VAS.Tests.Services
 			// Action
 			App.Current.EventsBroker.Publish (newTagEvent);
 
-			Assert.AreEqual (1, sendedTimelineEvent.Teams.Count);
-			Assert.AreSame (team1.Model, sendedTimelineEvent.Teams.First ());
+			Assert.AreEqual (1, sentTimelineEvent.Teams.Count);
+			Assert.AreSame (team1.Model, sentTimelineEvent.Teams.First ());
 
 		}
 
@@ -416,14 +416,14 @@ namespace VAS.Tests.Services
 			project.Dashboard.ViewModels.Remove (t1);
 
 			// Assert
-			Assert.AreEqual ("a", sendedTimelineEvent.Tags[0].Group);
-			Assert.AreEqual (1, sendedTimelineEvent.Tags.Count ());
+			Assert.AreEqual ("a", sentTimelineEvent.Tags [0].Group);
+			Assert.AreEqual (1, sentTimelineEvent.Tags.Count ());
 		}
 
 		void HandleNewDashboardEvent (NewDashboardEvent e)
 		{
-			sendedTimelineEvent = e.TimelineEvent;
-			hasSendedDashboardEvent = true;
+			sentTimelineEvent = e.TimelineEvent.Model;
+			hasSentDashboardEvent = true;
 		}
 	}
 }

@@ -29,6 +29,7 @@ using VAS.Core.Interfaces.GUI;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Drawables;
+using VAS.Core.ViewModel;
 using VAS.Drawing.Cairo;
 using VAS.Drawing.Widgets;
 using VAS.Services.State;
@@ -52,7 +53,7 @@ namespace VAS.UI.Dialog
 		const double ZOOM_PAGE = 0.2;
 
 		readonly Blackboard blackboard;
-		TimelineEvent play;
+		TimelineEventVM play;
 		FrameDrawing drawing;
 		CameraConfig camConfig;
 		Drawable selectedDrawable;
@@ -238,7 +239,7 @@ namespace VAS.UI.Dialog
 				viewModel = value;
 				if (viewModel != null) {
 					viewModel.PropertyChanged += HandleViewModelPropertyChanged;
-					if (viewModel.TimelineEvent != null) {
+					if (viewModel.TimelineEvent?.Model != null) {
 						LoadPlay (viewModel.TimelineEvent, viewModel.Frame, viewModel.Drawing, viewModel.CameraConfig);
 					} else {
 						LoadFrame (viewModel.Frame);
@@ -399,7 +400,7 @@ namespace VAS.UI.Dialog
 			}
 		}
 
-		public void LoadPlay (TimelineEvent play, Image frame, FrameDrawing drawing,
+		public void LoadPlay (TimelineEventVM play, Image frame, FrameDrawing drawing,
 							  CameraConfig camConfig)
 		{
 			this.play = play;
@@ -677,7 +678,7 @@ namespace VAS.UI.Dialog
 			drawing.Miniature = blackboard.Save ();
 			drawing.Miniature.ScaleInplace (Constants.MAX_THUMBNAIL_SIZE,
 				Constants.MAX_THUMBNAIL_SIZE);
-			play.UpdateMiniature ();
+			play.Model.UpdateMiniature ();
 			drawing = null;
 			ViewModel.DrawingSaved ();
 			await App.Current.StateController.MoveBack ();

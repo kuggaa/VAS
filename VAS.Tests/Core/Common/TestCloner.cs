@@ -104,36 +104,36 @@ namespace VAS.Tests.Core.Common
 		public void TestClone_CloneIgnore_PlaylistDrawing ()
 		{
 			var playlistDrawing = new PlaylistDrawing (new FrameDrawing ());
-			playlistDrawing.Playing = true;
+			playlistDrawing.Duration = new Time (100);
 			var playlistDrawing2 = playlistDrawing.Clone ();
-			Assert.AreEqual (playlistDrawing.Playing, playlistDrawing2.Playing);
-			playlistDrawing.Playing = false;
+			Assert.AreEqual (playlistDrawing.Duration, playlistDrawing2.Duration);
+			playlistDrawing.Duration = new Time (200);
 			playlistDrawing2 = playlistDrawing.Clone ();
-			Assert.AreEqual (playlistDrawing.Playing, playlistDrawing2.Playing);
+			Assert.AreEqual (playlistDrawing.Duration, playlistDrawing2.Duration);
 		}
 
 		[Test ()]
 		public void TestClone_CloneIgnore_PlaylistPlayElement ()
 		{
 			var playlistPlayElement = new PlaylistPlayElement (new TimelineEvent ());
-			playlistPlayElement.Playing = true;
+			playlistPlayElement.Start = new Time (100);
 			var playlistPlayElement2 = playlistPlayElement.Clone ();
-			Assert.AreEqual (playlistPlayElement.Playing, playlistPlayElement2.Playing);
-			playlistPlayElement.Playing = false;
+			Assert.AreEqual (playlistPlayElement.Start, playlistPlayElement2.Start);
+			playlistPlayElement.Start = new Time (100);
 			playlistPlayElement2 = playlistPlayElement.Clone ();
-			Assert.AreEqual (playlistPlayElement.Playing, playlistPlayElement2.Playing);
+			Assert.AreEqual (playlistPlayElement.Start, playlistPlayElement2.Start);
 		}
 
 		[Test ()]
 		public void TestClone_CloneIgnore_PlaylistVideo ()
 		{
 			var playlistVideo = new PlaylistVideo (new MediaFile ());
-			playlistVideo.Playing = true;
+			playlistVideo.File.Name = "Test1";
 			var playlistVideo2 = playlistVideo.Clone ();
-			Assert.AreEqual (playlistVideo.Playing, playlistVideo2.Playing);
-			playlistVideo.Playing = false;
+			Assert.AreEqual (playlistVideo.File.Name, playlistVideo2.File.Name);
+			playlistVideo.File.Name = "Test2";
 			playlistVideo2 = playlistVideo.Clone ();
-			Assert.AreEqual (playlistVideo.Playing, playlistVideo2.Playing);
+			Assert.AreEqual (playlistVideo.File.Name, playlistVideo2.File.Name);
 		}
 
 		[Test ()]
@@ -178,7 +178,6 @@ namespace VAS.Tests.Core.Common
 			timelineEvent.DocumentID = Guid.NewGuid ().ToString ("N");
 			timelineEvent.ParentID = Guid.NewGuid ();
 			timelineEvent.Project = new DummyProject ();
-			timelineEvent.Playing = true;
 			timelineEvent.IsLoaded = true;
 			timelineEvent.Start = new Time (1000);
 
@@ -187,7 +186,6 @@ namespace VAS.Tests.Core.Common
 			Assert.AreEqual (timelineEvent.DocumentID, timelineEvent2.DocumentID);
 			Assert.AreEqual (timelineEvent.ParentID, timelineEvent2.ParentID);
 			Assert.AreEqual (timelineEvent.Project, timelineEvent2.Project);
-			Assert.AreEqual (timelineEvent.Playing, timelineEvent2.Playing);
 		}
 
 		[Test ()]

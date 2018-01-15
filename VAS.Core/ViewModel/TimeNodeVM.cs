@@ -85,9 +85,21 @@ namespace VAS.Core.ViewModel
 		/// Gets the duration.
 		/// </summary>
 		/// <value>The duration.</value>
-		public Time Duration {
+		public new Time Duration {
 			get {
 				return Model.Duration;
+			}
+		}
+
+		/// <summary>
+		/// Play rate
+		/// </summary>
+		public virtual float Rate {
+			get {
+				return Model.Rate;
+			}
+			set {
+				Model.Rate = value;
 			}
 		}
 

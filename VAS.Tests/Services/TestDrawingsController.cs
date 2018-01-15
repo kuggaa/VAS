@@ -102,10 +102,10 @@ namespace VAS.Tests.Services
 			var playerDealer = viewModel.As<IVideoPlayerDealer> ();
 			playerDealer.SetupGet (vm => vm.VideoPlayer).Returns (videoPlayer);
 			controller.SetViewModel (viewModel.Object);
-			var timelineEvent = CreateTimelineEvent ();
+			TimelineEventVM evtVM = CreateTimelineEventVM ();
 			var frame = Utils.LoadImageFromFile ();
 			App.Current.EventsBroker.Publish (new DrawFrameEvent {
-				Play = timelineEvent,
+				Play = evtVM,
 				DrawingIndex = -1,
 				CamConfig = null,
 				Frame = frame,
@@ -113,8 +113,8 @@ namespace VAS.Tests.Services
 
 			mToolkitMock.Verify (m => m.GetFramesCapturer (), Times.Never ());
 			stateControllerMock.Verify (s => s.MoveToModal (DrawingToolState.NAME, It.IsAny<ExpandoObject> (), false));
-			Assert.AreEqual (timelineEvent, properties.timelineEvent);
-			Assert.AreEqual (timelineEvent.CamerasConfig [0], properties.cameraconfig);
+			Assert.AreEqual (evtVM, properties.timelineEvent);
+			Assert.AreEqual (evtVM.CamerasConfig [0], properties.cameraconfig);
 			Assert.AreEqual (frame, properties.frame);
 			Assert.IsNotNull (properties.drawing);
 		}
@@ -126,10 +126,10 @@ namespace VAS.Tests.Services
 			var playerDealer = viewModel.As<IVideoPlayerDealer> ();
 			playerDealer.SetupGet (vm => vm.VideoPlayer).Returns (videoPlayer);
 			controller.SetViewModel (viewModel.Object);
-			var timelineEvent = CreateTimelineEvent (true);
+			TimelineEventVM evtVM = CreateTimelineEventVM (true);
 			var frame = Utils.LoadImageFromFile ();
 			App.Current.EventsBroker.Publish (new DrawFrameEvent {
-				Play = timelineEvent,
+				Play = evtVM,
 				DrawingIndex = 0,
 				CamConfig = null,
 				Frame = frame,
@@ -137,9 +137,9 @@ namespace VAS.Tests.Services
 
 			mToolkitMock.Verify (m => m.GetFramesCapturer (), Times.Never ());
 			stateControllerMock.Verify (s => s.MoveToModal (DrawingToolState.NAME, It.IsAny<ExpandoObject> (), false));
-			Assert.AreEqual (timelineEvent, properties.timelineEvent);
-			Assert.AreEqual (timelineEvent.CamerasConfig [0], properties.cameraconfig);
-			Assert.AreEqual (timelineEvent.Drawings [0], properties.drawing);
+			Assert.AreEqual (evtVM, properties.timelineEvent);
+			Assert.AreEqual (evtVM.CamerasConfig [0], properties.cameraconfig);
+			Assert.AreEqual (evtVM.Drawings [0], properties.drawing);
 			Assert.AreEqual (frame, properties.frame);
 		}
 
@@ -150,7 +150,7 @@ namespace VAS.Tests.Services
 			var playerDealer = viewModel.As<IVideoPlayerDealer> ();
 			playerDealer.SetupGet (vm => vm.VideoPlayer).Returns (videoPlayer);
 			controller.SetViewModel (viewModel.Object);
-			var timelineEvent = CreateTimelineEvent (true);
+			TimelineEventVM evtVM = CreateTimelineEventVM (true);
 			var frame = Utils.LoadImageFromFile ();
 			App.Current.EventsBroker.Publish (new DrawFrameEvent {
 				Play = null,
@@ -170,22 +170,22 @@ namespace VAS.Tests.Services
 		{
 			var viewModel = new Mock<IViewModel> ();
 			var playerDealer = viewModel.As<IVideoPlayerDealer> ();
-			TimelineEvent evt = CreateTimelineEvent ();
+			TimelineEventVM evtVM = CreateTimelineEventVM ();
 			playerDealer.SetupGet (vm => vm.VideoPlayer).Returns (videoPlayer);
 			controller.SetViewModel (viewModel.Object);
 
 			await App.Current.EventsBroker.Publish (new DrawFrameEvent {
-				Play = evt,
+				Play = evtVM,
 				DrawingIndex = -1,
 				CamConfig = null,
 			});
 
 			videoPlayerMock.Verify (p => p.Pause (true), Times.Once ());
 			mToolkitMock.Verify (m => m.GetFramesCapturer (), Times.Once ());
-			framesCapturerMock.Verify (m => m.Open (evt.FileSet.MediaFiles [0].FilePath), Times.Once ());
+			framesCapturerMock.Verify (m => m.Open (evtVM.FileSet.MediaFiles [0].FilePath), Times.Once ());
 			framesCapturerMock.Verify (m => m.GetFrame (videoPlayerMock.Object.CurrentTime, true,
-														(int)evt.FileSet.MediaFiles [0].DisplayVideoWidth,
-														(int)evt.FileSet.MediaFiles [0].DisplayVideoHeight), Times.Once ());
+														(int)evtVM.FileSet.MediaFiles [0].DisplayVideoWidth,
+														(int)evtVM.FileSet.MediaFiles [0].DisplayVideoHeight), Times.Once ());
 			framesCapturerMock.Verify (m => m.Dispose (), Times.Once ());
 		}
 
@@ -194,21 +194,21 @@ namespace VAS.Tests.Services
 		{
 			var viewModel = new Mock<IViewModel> ();
 			var playerDealer = viewModel.As<IVideoPlayerDealer> ();
-			TimelineEvent evt = CreateTimelineEvent (true);
+			TimelineEventVM evtVM = CreateTimelineEventVM (true);
 			playerDealer.SetupGet (vm => vm.VideoPlayer).Returns (videoPlayer);
 			controller.SetViewModel (viewModel.Object);
 
 			App.Current.EventsBroker.Publish (new DrawFrameEvent {
-				Play = evt,
+				Play = evtVM,
 				DrawingIndex = 0,
 				CamConfig = null,
 			});
 
 			mToolkitMock.Verify (m => m.GetFramesCapturer (), Times.Once ());
-			framesCapturerMock.Verify (m => m.Open (evt.FileSet.MediaFiles [0].FilePath), Times.Once ());
-			framesCapturerMock.Verify (m => m.GetFrame (evt.Drawings [0].Render, true,
-														(int)evt.FileSet.MediaFiles [0].DisplayVideoWidth,
-														(int)evt.FileSet.MediaFiles [0].DisplayVideoHeight), Times.Once ());
+			framesCapturerMock.Verify (m => m.Open (evtVM.FileSet.MediaFiles [0].FilePath), Times.Once ());
+			framesCapturerMock.Verify (m => m.GetFrame (evtVM.Drawings [0].Render, true,
+														(int)evtVM.FileSet.MediaFiles [0].DisplayVideoWidth,
+														(int)evtVM.FileSet.MediaFiles [0].DisplayVideoHeight), Times.Once ());
 			framesCapturerMock.Verify (m => m.Dispose (), Times.Once ());
 		}
 
@@ -228,7 +228,7 @@ namespace VAS.Tests.Services
 			mToolkitMock.Verify (m => m.GetFramesCapturer (), Times.Never ());
 		}
 
-		TimelineEvent CreateTimelineEvent (bool withDrawing = false)
+		TimelineEventVM CreateTimelineEventVM (bool withDrawing = false)
 		{
 			var evt = new TimelineEvent {
 				Start = new Time (100),
@@ -240,7 +240,7 @@ namespace VAS.Tests.Services
 			if (withDrawing) {
 				evt.Drawings.Add (new FrameDrawing { Render = new Time (2000) });
 			}
-			return evt;
+			return new TimelineEventVM () { Model = evt };
 		}
 
 	}

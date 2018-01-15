@@ -217,15 +217,6 @@ namespace VAS.Core.Store
 		}
 
 		/// <summary>
-		/// Whether this event is currently playing.
-		/// </summary>
-		[JsonIgnore]
-		public bool Playing {
-			get;
-			set;
-		}
-
-		/// <summary>
 		/// List of players tagged in this event.
 		/// </summary>
 		[PropertyIndex (0)]

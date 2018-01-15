@@ -494,7 +494,7 @@ namespace VAS.Tests
 
 		public class DummyTaggingController : TaggingController
 		{
-			protected override TimelineEvent CreateTimelineEvent (EventType type, Time start, Time stop, Time eventTime, Image miniature)
+			protected override TimelineEventVM CreateTimelineEventVM (EventType type, Time start, Time stop, Time eventTime, Image miniature)
 			{
 				TimelineEvent evt;
 				string count;
@@ -515,7 +515,7 @@ namespace VAS.Tests
 				evt.FileSet = project.Model.FileSet;
 				evt.Project = project.Model;
 
-				return evt;
+				return new TimelineEventVM { Model = evt };
 			}
 		}
 

@@ -169,7 +169,7 @@ namespace VAS.Core.ViewModel
 		/// <value><c>true</c> if edited; otherwise, <c>false</c>.</value>
 		public bool Edited {
 			get {
-				return this.IsChanged == true;
+				return this.Model.IsChanged == true;
 			}
 		}
 

@@ -20,6 +20,7 @@ using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
+using VAS.Core.ViewModel;
 
 namespace VAS.Services.ViewModel
 {
@@ -55,7 +56,7 @@ namespace VAS.Services.ViewModel
 		/// Gets or sets the timeline event.
 		/// </summary>
 		/// <value>The timeline event.</value>
-		public TimelineEvent TimelineEvent {
+		public TimelineEventVM TimelineEvent {
 			get;
 			set;
 		}

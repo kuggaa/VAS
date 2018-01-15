@@ -22,6 +22,7 @@ using VAS.Core.Common;
 using VAS.Core.Interfaces;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
+using VAS.Core.ViewModel;
 
 namespace VAS.Tests.Core.Store.Playlists
 {
@@ -138,9 +139,11 @@ namespace VAS.Tests.Core.Store.Playlists
 			pl.Elements.Add (playlistPlayElement2);
 			pl.Elements.Add (playlistPlayElement3);
 
-			var time = pl.GetStartTime (playlistPlayElement2);
+			PlaylistVM vm = new PlaylistVM { Model = pl };
+
+			var time = vm.GetStartTime (new PlaylistPlayElementVM { Model = playlistPlayElement2 });
 			Assert.AreEqual (new Time (10), time);
-			var time3 = pl.GetStartTime (playlistPlayElement3);
+			var time3 = vm.GetStartTime (new PlaylistPlayElementVM { Model = playlistPlayElement3 });
 			Assert.AreEqual (new Time (30), time3);
 		}
 
@@ -165,15 +168,17 @@ namespace VAS.Tests.Core.Store.Playlists
 			pl.Elements.Add (playlistPlayElement2);
 			pl.Elements.Add (playlistPlayElement3);
 
-			var time = pl.GetCurrentStartTime ();
+			PlaylistVM vm = new PlaylistVM { Model = pl };
+
+			var time = vm.GetCurrentStartTime ();
 			Assert.AreEqual (new Time (0), time);
 
-			pl.Select (1);
-			var time2 = pl.GetCurrentStartTime ();
+			vm.Select (1);
+			var time2 = vm.GetCurrentStartTime ();
 			Assert.AreEqual (new Time (10), time2);
 
-			pl.Select (2);
-			var time3 = pl.GetCurrentStartTime ();
+			vm.Select (2);
+			var time3 = vm.GetCurrentStartTime ();
 			Assert.AreEqual (new Time (30), time3);
 		}
 
@@ -182,8 +187,9 @@ namespace VAS.Tests.Core.Store.Playlists
 		public void TestGetCurrentStartTimeEmpty ()
 		{
 			Playlist pl = new Playlist ();
+			PlaylistVM vm = new PlaylistVM { Model = pl };
 
-			var time = pl.GetCurrentStartTime ();
+			var time = vm.GetCurrentStartTime ();
 			Assert.AreEqual (new Time (0), time);
 		}
 
@@ -203,16 +209,18 @@ namespace VAS.Tests.Core.Store.Playlists
 			pl.Elements.Add (playlistPlayElement);
 			pl.Elements.Add (playlistPlayElement2);
 
-			var elementTuple = pl.GetElementAtTime (new Time (0));
-			Assert.AreEqual (playlistPlayElement, elementTuple.Item1);
+			PlaylistVM vm = new PlaylistVM { Model = pl };
+
+			var elementTuple = vm.GetElementAtTime (new Time (0));
+			Assert.AreEqual (playlistPlayElement, elementTuple.Item1.Model);
 			Assert.AreEqual (new Time (0), elementTuple.Item2);
 
-			elementTuple = pl.GetElementAtTime (new Time (10));
-			Assert.AreEqual (playlistPlayElement2, elementTuple.Item1);
+			elementTuple = vm.GetElementAtTime (new Time (10));
+			Assert.AreEqual (playlistPlayElement2, elementTuple.Item1.Model);
 			Assert.AreEqual (new Time (10), elementTuple.Item2);
 
-			elementTuple = pl.GetElementAtTime (new Time (15));
-			Assert.AreEqual (playlistPlayElement2, elementTuple.Item1);
+			elementTuple = vm.GetElementAtTime (new Time (15));
+			Assert.AreEqual (playlistPlayElement2, elementTuple.Item1.Model);
 			Assert.AreEqual (new Time (10), elementTuple.Item2);
 		}
 
@@ -227,7 +235,9 @@ namespace VAS.Tests.Core.Store.Playlists
 
 			pl.Elements.Add (playlistPlayElement);
 
-			var elementTuple = pl.GetElementAtTime (new Time (40));
+			PlaylistVM vm = new PlaylistVM { Model = pl };
+
+			var elementTuple = vm.GetElementAtTime (new Time (40));
 			Assert.IsNull (elementTuple.Item1);
 			Assert.AreEqual (new Time (10), elementTuple.Item2);
 		}
@@ -243,7 +253,9 @@ namespace VAS.Tests.Core.Store.Playlists
 
 			pl.Elements.Add (playlistPlayElement);
 
-			var elementTuple = pl.GetElementAtTime (new Time (-10));
+			PlaylistVM vm = new PlaylistVM { Model = pl };
+
+			var elementTuple = vm.GetElementAtTime (new Time (-10));
 			Assert.IsNull (elementTuple.Item1);
 			Assert.AreEqual (new Time (0), elementTuple.Item2);
 		}
@@ -252,8 +264,9 @@ namespace VAS.Tests.Core.Store.Playlists
 		public void TestGetElementAtTimeEmpty ()
 		{
 			Playlist pl = new Playlist ();
+			PlaylistVM vm = new PlaylistVM { Model = pl };
 
-			var elementTuple = pl.GetElementAtTime (new Time (10));
+			var elementTuple = vm.GetElementAtTime (new Time (10));
 			Assert.IsNull (elementTuple.Item1);
 			Assert.AreEqual (new Time (0), elementTuple.Item2);
 		}

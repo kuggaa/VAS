@@ -54,16 +54,6 @@ namespace VAS.Core.Store.Playlists
 		}
 
 		[JsonIgnore]
-		public bool Playing {
-			get {
-				return Play.Playing;
-			}
-			set {
-				Play.Playing = value;
-			}
-		}
-
-		[JsonIgnore]
 		public Time Start {
 			get {
 				return Play.Start;
@@ -94,8 +84,9 @@ namespace VAS.Core.Store.Playlists
 		}
 
 		/// <summary>
-		/// The title of the playlist element
+		/// Gets or sets the title of the playlist element
 		/// </summary>
+		/// <value>The title of the playlist element</value>
 		public string Title {
 			get;
 			set;
