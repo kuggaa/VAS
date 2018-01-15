@@ -19,6 +19,7 @@ using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
+using VAS.Core.Common;
 using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.MVVMC
@@ -157,7 +158,11 @@ namespace VAS.Core.MVVMC
 		void HandlePropertyChanged (object s, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == sourcePropertyName || e.PropertyName == null) {
-				WriteViewValue (sourcePropertyGet (ViewModel));
+				try {
+					WriteViewValue (sourcePropertyGet (ViewModel));
+				} catch (Exception ex) {
+					Log.Exception (ex);
+				}
 			}
 		}
 	}
