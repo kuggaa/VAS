@@ -236,8 +236,15 @@ namespace VAS.Drawing.Cairo
 						Rectangle r = widget.GdkWindow.ClipRegion.Clipbox;
 						area = new Area (new Point (r.X, r.Y), r.Width, r.Height);
 					}
+
 					cc.Rectangle (area.Start.X, area.Start.Y, area.Width, area.Height);
 					cc.Clip ();
+
+					if (widget.WidgetFlags.HasFlag (WidgetFlags.NoWindow)) {
+						cc.Translate (area.Start.X, area.Start.Y);
+						area.Start.X = area.Start.Y = 0;
+					}
+
 					DrawEvent (c, area);
 				}
 			}

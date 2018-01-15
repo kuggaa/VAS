@@ -91,7 +91,7 @@ namespace VAS.Drawing.CanvasObjects.Statistics
 			tk.FontAlignment = FontAlignment.Center;
 			tk.FontSize = 14;
 			tk.StrokeColor = App.Current.Style.TextBase;
-			tk.DrawText (new Point (0, 0), area.Width, area.Height, viewModel.PercentValueText);
+			tk.DrawText (new Point (area.Start.X, area.Start.Y), area.Width, area.Height, viewModel.PercentValueText);
 
 			tk.End ();
 		}

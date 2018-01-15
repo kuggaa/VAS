@@ -182,7 +182,7 @@ namespace VAS.Core.Common
 
 		public string Font {
 			get;
-			protected set;
+			set;
 		} = "Ubuntu";
 
 		public string BigScoresFontFamily { get; set; }
