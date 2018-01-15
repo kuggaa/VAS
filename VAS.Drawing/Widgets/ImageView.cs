@@ -17,6 +17,7 @@
 //
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.Resources.Styles;
 
 namespace VAS.Drawing.Widgets
 {
@@ -55,7 +56,7 @@ namespace VAS.Drawing.Widgets
 			if (Image == null) {
 				return;
 			}
-			var alpha = IsSensitive ? 1f : 0.4f;
+			var alpha = IsSensitive ? Colors.AlphaImageSensitive : Colors.AlphaImageNoSensitive;
 
 			Begin (context);
 			tk.FillColor = MaskColor;
