@@ -35,9 +35,10 @@ namespace VAS.Core.MVVMC
 																				 Expression<Func<TTarget, TTargetProperty>> targetExpression,
 																				 Expression<Func<IViewModel, TSourceProperty>> sourceExpression,
 																				 TypeConverter typeConverter = null,
-																				 TTargetProperty defaultValue = default (TTargetProperty))
+																				 TTargetProperty defaultValue = default (TTargetProperty),
+																				 Func<TTargetProperty, TTargetProperty> formatterCallback = null)
 		{
-			return new OneWayPropertyBinding<TSourceProperty, TTarget, TTargetProperty> (dest, sourceExpression, targetExpression, typeConverter, defaultValue);
+			return new OneWayPropertyBinding<TSourceProperty, TTarget, TTargetProperty> (dest, sourceExpression, targetExpression, typeConverter, defaultValue, formatterCallback);
 		}
 	}
 }
