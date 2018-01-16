@@ -164,7 +164,7 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
-		/// Gets a value indicating whether the project has been edited.
+		/// Gets a value indicating whether the project model has been modified.
 		/// </summary>
 		/// <value><c>true</c> if edited; otherwise, <c>false</c>.</value>
 		public bool Edited {
