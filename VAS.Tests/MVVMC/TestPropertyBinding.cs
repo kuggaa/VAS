@@ -19,6 +19,7 @@ using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using VAS.Core.Common;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 
@@ -173,6 +174,28 @@ namespace VAS.Tests.MVVMC
 
 			binding.ViewModel = null;
 			Assert.DoesNotThrow (binding.Dispose);
+		}
+
+		[Test]
+		public void PropertyBindingWithFormatterCallbak_SetSource_DestinationUpdatedWithFormat ()
+		{
+			///Arrange
+
+			var view = new DummyOneWayPropertyView ();
+			var viewModel = new DummyOneWayPropertyViewModel ();
+			view.BindingContext = new BindingContext ();
+			view.BindingContext.Add (view.Bind (v => v.ViewProperty,
+												vm => ((DummyOneWayPropertyViewModel)vm).ViewModelPropertyInt,
+												new VASInt32Converter (), null, i => i + "FORMATTED!"));
+			view.ViewModel = viewModel;
+
+			///Act
+
+			viewModel.ViewModelPropertyInt = 12;
+
+			///Assert
+
+			Assert.AreEqual ("12FORMATTED!", view.ViewProperty);
 		}
 	}
 

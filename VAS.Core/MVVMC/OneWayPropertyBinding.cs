@@ -39,7 +39,6 @@ namespace VAS.Core.MVVMC
 		{
 			this.writeAction = writeAction;
 			this.defaultValue = defaultValue;
-			this.formatterCallback = formatterCallback;
 		}
 
 		public OneWayPropertyBinding (object dest, Expression<Func<IViewModel, TSourceProperty>> sourceExpression,
