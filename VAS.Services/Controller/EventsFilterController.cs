@@ -224,9 +224,9 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		protected void UpdatePreviousPredicatesList (OrPredicate<TimelineEventVM> orPredicate)
+		protected void UpdatePreviousPredicatesList (CompositePredicate<TimelineEventVM> compositePredicate)
 		{
-			foreach (var predicate in orPredicate) {
+			foreach (var predicate in compositePredicate) {
 				if (!previousPredicateList.Exists (p => p.Name == predicate.Name)) {
 					previousPredicateList.Add (predicate);
 				} else {
@@ -281,7 +281,7 @@ namespace VAS.Services.Controller
 					composedPredicates.Add (new Predicate {
 						Name = Catalog.GetString ("No subcategories"),
 						Expression = eventTypeExpression.And (ev => !ev.Model.Tags.Intersect (tagList).Any ()),
-						Active = GetPreviousActiveValue (Catalog.GetString ("No subcategories"))
+						Active = GetPreviousActiveValue ("No subcategories")
 					});
 					composedEventTypePredicate.AddRange (composedPredicates);
 				} else {
