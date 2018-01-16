@@ -583,8 +583,17 @@ namespace VAS.UI.Common
 
 		protected virtual int HandleSort (TreeModel model, TreeIter a, TreeIter b)
 		{
+			if (a.Equals (TreeIter.Zero) && b.Equals (TreeIter.Zero)) {
+				return 0;
+			} else if (a.Equals (TreeIter.Zero)) {
+				return -1;
+			} else if (b.Equals (TreeIter.Zero)) {
+				return 1;
+			}
+
 			TreePath pathA = model.GetPath (a);
 			TreePath pathB = model.GetPath (b);
+
 			return pathA.Compare (pathB);
 		}
 
