@@ -1253,12 +1253,41 @@ namespace VAS.Services
 		/// </summary>
 		void ValidateVisibleCameras ()
 		{
-			if (FileSet != null && camerasConfig != null && camerasConfig.Select (c => c.Index).DefaultIfEmpty ().Max () >= FileSet.Count) {
-				Log.Error ("Invalid cameras configuration, fixing list of cameras");
+			if (FileSet == null || FileSet.Count == 0) {
+				Log.Error ("Invalid FileSet, cannot validate cameras");
+				return;
+			}
+			bool changed = false;
+
+			List<CameraConfig> cameras = CamerasConfig?.ToList ();
+			int maxCameras = Math.Min (4, FileSet.Count);
+			if (cameras == null) {
+				Log.Warning ("Empty cameras configuration, creating list of cameras from FileSet");
+				cameras = new List<CameraConfig> ();
+				for (int i = 0; i < maxCameras; i++) {
+					cameras.Add (new CameraConfig (i));
+				}
+				changed = true;
+			}
+
+			bool invalidIndexes = cameras.Any (c => c.Index >= FileSet.Count ());
+			if (cameras.Count < maxCameras || invalidIndexes) {
+				Log.Warning ("Invalid cameras configuration, fixing list of cameras");
+				if (invalidIndexes) {
+					cameras = cameras.Where (i => i.Index < FileSet.Count).ToList ();
+				}
+				for (int i = cameras.Count (); i < maxCameras; i++) {
+					cameras.Add (new CameraConfig (i));
+				}
+				changed = true;
+			}
+
+			if (changed) {
 				UpdateCamerasConfig (
-					new RangeObservableCollection<CameraConfig> (camerasConfig.Where (i => i.Index < FileSet.Count)),
+					new RangeObservableCollection<CameraConfig> (cameras),
 					CamerasLayout);
 			}
+
 		}
 
 		/// <summary>

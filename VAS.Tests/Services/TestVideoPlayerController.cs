@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Timers;
 using Moq;
 using NUnit.Framework;
@@ -1052,7 +1053,8 @@ namespace VAS.Tests.Services
 					new CameraConfig (1),
 					new CameraConfig (0)
 				};
-			Assert.AreEqual (eventVM1.CamerasConfig, new List<CameraConfig> { new CameraConfig (0) });
+			Assert.AreEqual (new List<CameraConfig> { new CameraConfig (1), new CameraConfig (0) }, player.CamerasConfig);
+			Assert.AreNotEqual (eventVM1.CamerasConfig, player.CamerasConfig);
 			player.LoadEvent (eventVM1, new Time (0), true);
 			Assert.AreEqual (1, elementLoaded);
 			Assert.AreEqual (1, brokerElementLoaded);
@@ -2459,6 +2461,108 @@ namespace VAS.Tests.Services
 			///Assert
 
 			Assert.IsNull (playerVM.FrameDrawing);
+		}
+
+		[Test]
+		public void LoadPlaylistEvent_MulticamInFilesetAndSingleCamInEvent_UseMulticam ()
+		{
+			///Arrange
+			Mock<IMultiVideoPlayer> multiplayerMock = new Mock<IMultiVideoPlayer> ();
+			mtkMock.Setup (m => m.GetMultiPlayer ()).Returns (multiplayerMock.Object);
+			player = new VideoPlayerController ();
+			//Should set again the ViewModel
+			(player as IController).SetViewModel (playerVM);
+			PreparePlayer ();
+			multiplayerMock.ResetCalls ();
+
+			var playElementVM = new PlaylistPlayElementVM {
+				Model = new PlaylistPlayElement (new TimelineEvent {
+					Start = new Time (100),
+					Stop = new Time (200),
+					CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) },
+					FileSet = mfs
+				})
+			};
+
+			player.LoadPlaylistEvent (playlistVM, playlistVM.ViewModels.First (), false);
+
+			Assert.AreEqual (2, player.CamerasConfig.Count);
+			multiplayerMock.Verify (mp => mp.ApplyCamerasConfig (), Times.Once ());
+			// CamerasConfig is set once with a bad config, and then validated and set again when calling ApplyCamerasConfig
+			multiplayerMock.VerifySet (mp => mp.CamerasConfig = It.IsAny<RangeObservableCollection<CameraConfig>> (), Times.Exactly (2));
+		}
+
+		[Test]
+		public void LoadEvent_MulticamInFilesetAndSingleCamInEvent_UseMulticam ()
+		{
+			///Arrange
+			Mock<IMultiVideoPlayer> multiplayerMock = new Mock<IMultiVideoPlayer> ();
+			mtkMock.Setup (m => m.GetMultiPlayer ()).Returns (multiplayerMock.Object);
+			player = new VideoPlayerController ();
+			//Should set again the ViewModel
+			(player as IController).SetViewModel (playerVM);
+			PreparePlayer ();
+			multiplayerMock.ResetCalls ();
+
+			TimelineEventVM event1 = new TimelineEventVM {
+				Model = new TimelineEvent {
+					Start = new Time (100),
+					Stop = new Time (200),
+					CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) },
+					FileSet = mfs
+				}
+			};
+
+			player.LoadEvent (event1, new Time (0), false);
+
+			Assert.AreEqual (2, player.CamerasConfig.Count);
+			multiplayerMock.Verify (mp => mp.ApplyCamerasConfig (), Times.Once ());
+			// CamerasConfig is set once with a bad config, and then validated and set again when calling ApplyCamerasConfig
+			multiplayerMock.VerifySet (mp => mp.CamerasConfig = It.IsAny<RangeObservableCollection<CameraConfig>> (), Times.Exactly (2));
+		}
+
+		[Test]
+		public void LoadEventTwice_MulticamInFilesetAndSingleCamInEvents_UseMulticam ()
+		{
+			///Arrange
+			Mock<IMultiVideoPlayer> multiplayerMock = new Mock<IMultiVideoPlayer> ();
+			mtkMock.Setup (m => m.GetMultiPlayer ()).Returns (multiplayerMock.Object);
+			player = new VideoPlayerController ();
+			//Should set again the ViewModel
+			(player as IController).SetViewModel (playerVM);
+			PreparePlayer ();
+			multiplayerMock.ResetCalls ();
+
+			TimelineEventVM event1 = new TimelineEventVM {
+				Model = new TimelineEvent {
+					Start = new Time (100),
+					Stop = new Time (200),
+					CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) },
+					FileSet = mfs
+				}
+			};
+
+			TimelineEventVM event2 = new TimelineEventVM {
+				Model = new TimelineEvent {
+					Start = new Time (1000),
+					Stop = new Time (2000),
+					CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (1) },
+					FileSet = mfs
+				}
+			};
+
+			multiplayerMock.ResetCalls ();
+
+			// Act
+			player.LoadEvent (event1, new Time (0), false);
+
+			player.LoadEvent (event2, new Time (0), false);
+
+			// Assert
+			Assert.AreEqual (2, player.CamerasConfig.Count);
+			multiplayerMock.Verify (mp => mp.ApplyCamerasConfig (), Times.Exactly (2));
+			// CamerasConfig is set once with a bad config, and then validated and set again when calling ApplyCamerasConfig
+			multiplayerMock.VerifySet (mp => mp.CamerasConfig = It.IsAny<RangeObservableCollection<CameraConfig>> (), Times.Exactly (4));
 		}
 
 		void HandleElementLoadedEvent (object element, bool hasNext)
