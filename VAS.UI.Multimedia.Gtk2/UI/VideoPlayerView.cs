@@ -358,29 +358,6 @@ namespace VAS.UI
 			UpdateCombo (subviewport3);
 		}
 
-		// TODO: Move to the controller, when modifying the CameraConfig.
-		void ValidateCameras (RangeObservableCollection<CameraConfig> cameras)
-		{
-			bool changed = false;
-
-			// As no camera configuration has been defined yet, we should suggest one
-			if (cameras == null) {
-				cameras = new RangeObservableCollection<CameraConfig> ();
-				for (int i = 0; i < Math.Min (4, ViewModel.FileSet.ViewModels.Count); i++) {
-					changed = true;
-					cameras.Add (new CameraConfig (i));
-				}
-			} else if (cameras.Count < ViewModel.FileSet.ViewModels.Count) {
-				for (int i = cameras.Count; i < ViewModel.FileSet.ViewModels.Count; i++) {
-					changed = true;
-					cameras.Add (new CameraConfig (i));
-				}
-			}
-			if (changed) {
-				playerVM.SetCamerasConfig (cameras);
-			}
-		}
-
 		void DebugCamerasVisible ()
 		{
 			string str = "CamerasConfig =";
@@ -910,7 +887,6 @@ namespace VAS.UI
 		void HandleFileSetChanged ()
 		{
 			if (ViewModel.FileSet != null) {
-				ValidateCameras (playerVM.CamerasConfig);
 				UpdateComboboxes ();
 				DebugCamerasVisible ();
 				HandleCamerasConfigChanged ();
