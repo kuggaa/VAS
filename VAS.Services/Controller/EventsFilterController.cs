@@ -135,11 +135,13 @@ namespace VAS.Services.Controller
 				noPeriodExpression = noPeriodExpression.And (ev => period.All (p => ev.Model.Intersect (p.Model) == null));
 				listPredicates.Add (new Predicate {
 					Name = period.Name,
+					DisplayName = period.Name,
 					Expression = ev => period.Any (p => ev.Model.Intersect (p.Model) != null)
 				});
 			}
 			ViewModel.PeriodsPredicate.Add (new Predicate {
-				Name = Catalog.GetString ("No period"),
+				Name = "No period",
+				DisplayName = Catalog.GetString ("No period"),
 				Expression = noPeriodExpression
 			});
 			ViewModel.PeriodsPredicate.AddRange (listPredicates);
@@ -165,11 +167,13 @@ namespace VAS.Services.Controller
 				noPeriodExpression = noPeriodExpression.And (ev => timer.All (p => ev.Model.Intersect (p.Model) == null));
 				listPredicates.Add (new Predicate {
 					Name = timer.Name,
+					DisplayName = timer.Name,
 					Expression = ev => timer.Any (p => ev.Model.Intersect (p.Model) != null)
 				});
 			}
 			ViewModel.TimersPredicate.Add (new Predicate {
-				Name = Catalog.GetString ("No period"),
+				Name = "No period",
+				DisplayName = Catalog.GetString ("No period"),
 				Expression = noPeriodExpression
 			});
 			ViewModel.TimersPredicate.AddRange (listPredicates);
@@ -199,17 +203,20 @@ namespace VAS.Services.Controller
 
 				Expression<Func<TimelineEventVM, bool>> tagGroupExpression = ev => ev.Model.Tags.Any (tag => tag.Group == tagGroup.Key);
 				var tagGroupPredicate = new OrPredicate<TimelineEventVM> {
-					Name = string.IsNullOrEmpty (tagGroup.Key) ? Catalog.GetString ("General tags") : tagGroup.Key,
+					Name = string.IsNullOrEmpty (tagGroup.Key) ? "General tags" : tagGroup.Key,
+					DisplayName = string.IsNullOrEmpty (tagGroup.Key) ? Catalog.GetString ("General tags") : tagGroup.Key,
 				};
 
 				tagsPredicates.Add (new Predicate {
-					Name = Catalog.GetString ("None"),
+					Name = "None",
+					DisplayName = Catalog.GetString ("None"),
 					Expression = ev => !ev.Model.Tags.Any (tag => tag.Group == tagGroup.Key)
 				});
 
 				foreach (var tag in tagGroup.Value) {
 					tagsPredicates.Add (new Predicate {
 						Name = tag.Value,
+						DisplayName = tag.Value,
 						Expression = tagGroupExpression.And (ev => ev.Model.Tags.Contains (tag))
 					});
 				}
@@ -263,6 +270,7 @@ namespace VAS.Services.Controller
 					var composedPredicates = new List<IPredicate<TimelineEventVM>> ();
 					predicate = composedEventTypePredicate = new OrPredicate<TimelineEventVM> {
 						Name = eventType.EventTypeVM.Name,
+						DisplayName = eventType.EventTypeVM.Name,
 					};
 
 					// We want subcategories to be flat, regardless of the group.
@@ -271,6 +279,7 @@ namespace VAS.Services.Controller
 						foreach (var tag in tagGroup.Value) {
 							composedPredicates.Add (new Predicate {
 								Name = tag.Value,
+								DisplayName = tag.Value,
 								Expression = eventTypeExpression.And (tagGroupExpression.And (ev => ev.Model.Tags.Contains (tag))),
 								Active = GetPreviousActiveValue (tag.Value)
 							});
@@ -279,7 +288,8 @@ namespace VAS.Services.Controller
 					}
 
 					composedPredicates.Add (new Predicate {
-						Name = Catalog.GetString ("No subcategories"),
+						Name = "No subcategories",
+						DisplayName = Catalog.GetString ("No subcategories"),
 						Expression = eventTypeExpression.And (ev => !ev.Model.Tags.Intersect (tagList).Any ()),
 						Active = GetPreviousActiveValue ("No subcategories")
 					});
@@ -287,6 +297,7 @@ namespace VAS.Services.Controller
 				} else {
 					predicate = new Predicate {
 						Name = eventType.EventTypeVM.Name,
+						DisplayName = eventType.EventTypeVM.Name,
 						Expression = eventTypeExpression,
 						Active = GetPreviousActiveValue (eventType.EventTypeVM.Name)
 					};

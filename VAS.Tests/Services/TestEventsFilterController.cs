@@ -77,17 +77,14 @@ namespace VAS.Tests.Services
 		{
 			//Arrange
 			dummyEventsFilterController = new DummyEventsFilterController ();
+			dummyEventsFilterController.ViewModel = new TimelineVM ();
+			await dummyEventsFilterController.Start ();
 			dummyEventsFilterController.PreviousPredicates.Add (new Predicate ());
 			var onStartPreviousPredicatesCount = dummyEventsFilterController.PreviousPredicates.Count ();
 			//Act
 
-			try {
-				await dummyEventsFilterController.Stop ();
-				dummyEventsFilterController.ViewModel = null;
-
-			} catch (InvalidOperationException) {
-				// Ignore the already stopped error
-			}
+			await dummyEventsFilterController.Stop ();
+			dummyEventsFilterController.ViewModel = null;
 
 			//Assert
 			Assert.AreEqual (1, onStartPreviousPredicatesCount);

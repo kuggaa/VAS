@@ -58,22 +58,28 @@ namespace VAS.Core.ViewModel
 			GroupEventsByEventTypeName = false;
 			Filters = new AndPredicate<TimelineEventVM> ();
 			EventsPredicate = new AndPredicate<TimelineEventVM> {
-				Name = Catalog.GetString ("Events")
+				Name = "Events",
+				DisplayName = Catalog.GetString ("Events")
 			};
 			PeriodsPredicate = new OrPredicate<TimelineEventVM> {
-				Name = Catalog.GetString ("Periods")
+				Name = "Periods",
+				DisplayName = Catalog.GetString ("Periods")
 			};
 			TimersPredicate = new OrPredicate<TimelineEventVM> {
-				Name = Catalog.GetString ("Timers")
+				Name = "Timers",
+				DisplayName = Catalog.GetString ("Timers")
 			};
 			CommonTagsPredicate = new AndPredicate<TimelineEventVM> {
-				Name = Catalog.GetString ("Common Tags")
+				Name = "Common Tags",
+				DisplayName = Catalog.GetString ("Common Tags")
 			};
 			EventTypesPredicate = new OrPredicate<TimelineEventVM> {
-				Name = Catalog.GetString ("Event Types")
+				Name = "Event Types",
+				DisplayName = Catalog.GetString ("Event Types")
 			};
 			TeamsPredicate = new OrPredicate<TimelineEventVM> {
-				Name = Catalog.GetString ("Teams"),
+				Name = "Teams",
+				DisplayName = Catalog.GetString ("Teams"),
 			};
 		}
 
