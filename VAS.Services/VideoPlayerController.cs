@@ -71,7 +71,7 @@ namespace VAS.Services
 		bool readyToSeek, stillimageLoaded, ready;
 		bool disposed, skipApplyCamerasConfig;
 		Action delayedOpen;
-		Seeker seeker;
+		ISeeker seeker;
 		Segment loadedSegment;
 		PendingSeek pendingSeek;
 		readonly ITimer timer;
@@ -107,7 +107,7 @@ namespace VAS.Services
 
 		#region Constructors
 
-		public VideoPlayerController (Seeker testSeeker = null, ITimer testTimer = null)
+		public VideoPlayerController (ISeeker testSeeker = null, ITimer testTimer = null)
 		{
 			// Injected seeker and timer should only be used for unit tests
 			seeker = testSeeker ?? new Seeker ();

@@ -62,25 +62,7 @@ namespace VAS.Tests.Services
 		{
 			fileManager = new Mock<IFileSystemManager> ();
 			App.Current.FileSystemManager = fileManager.Object;
-			playerMock = new Mock<IVideoPlayer> ();
-			playerMock.SetupAllProperties ();
-			/* Mock properties without setter */
-			playerMock.Setup (p => p.CurrentTime).Returns (() => currentTime);
-			playerMock.Setup (p => p.StreamLength).Returns (() => streamLength);
-			playerMock.Setup (p => p.Play (It.IsAny<bool> ())).Raises (p => p.StateChange += null,
-				new PlaybackStateChangedEvent {
-					Playing = true
-				}
-			);
-			playerMock.Setup (p => p.Pause (It.IsAny<bool> ())).Raises (p => p.StateChange += null,
-				new PlaybackStateChangedEvent {
-					Playing = false
-				}
-			);
 
-			mtkMock = new Mock<IMultimediaToolkit> ();
-			mtkMock.Setup (m => m.GetPlayer ()).Returns (playerMock.Object);
-			App.Current.MultimediaToolkit = mtkMock.Object;
 
 			var ftk = new Mock<IGUIToolkit> ();
 			ftk.Setup (m => m.Invoke (It.IsAny<EventHandler> ())).Callback<EventHandler> (e => e (null, null));
@@ -100,6 +82,25 @@ namespace VAS.Tests.Services
 		public void Setup ()
 		{
 			timerMock = new Mock<ITimer> ();
+			playerMock = new Mock<IVideoPlayer> ();
+			playerMock.SetupAllProperties ();
+			/* Mock properties without setter */
+			playerMock.Setup (p => p.CurrentTime).Returns (() => currentTime);
+			playerMock.Setup (p => p.StreamLength).Returns (() => streamLength);
+			playerMock.Setup (p => p.Play (It.IsAny<bool> ())).Raises (p => p.StateChange += null,
+				new PlaybackStateChangedEvent {
+					Playing = true
+				}
+			);
+			playerMock.Setup (p => p.Pause (It.IsAny<bool> ())).Raises (p => p.StateChange += null,
+				new PlaybackStateChangedEvent {
+					Playing = false
+				}
+			);
+
+			mtkMock = new Mock<IMultimediaToolkit> ();
+			mtkMock.Setup (m => m.GetPlayer ()).Returns (playerMock.Object);
+			App.Current.MultimediaToolkit = mtkMock.Object;
 			mfs = new MediaFileSet ();
 			mfs.Add (new MediaFile {
 				FilePath = "test1",
@@ -154,7 +155,7 @@ namespace VAS.Tests.Services
 			playlist.Elements.Add (plImage.Model);
 			currentTime = new Time (0);
 
-			player = new VideoPlayerController (new Seeker (0), timerMock.Object);
+			player = new VideoPlayerController (new InstantSeeker (), timerMock.Object);
 			playerVM = new VideoPlayerVM ();
 			player.SetViewModel (playerVM);
 
@@ -509,14 +510,14 @@ namespace VAS.Tests.Services
 		public void TestSeekProportional ()
 		{
 			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
-
 			int seekPos;
 			int timeChanged = 0;
 			Time curTime = new Time (0);
 			Time strLenght = new Time (0);
-			// Create a VideoPlayerController with a Seeker with the normal TimeOut for this test
-			player = new VideoPlayerController ();
+			var triggerableSeeker = new TriggerableSeeker ();
+			player = new VideoPlayerController (triggerableSeeker);
 			player.SetViewModel (playerVM);
+
 
 			player.TimeChangedEvent += (c, d, s) => {
 				timeChanged++;
@@ -542,10 +543,9 @@ namespace VAS.Tests.Services
 			playerMock.ResetCalls ();
 			player.Seek (0.1f);
 			player.Seek (0.5f);
-			//FIXME: this needs a Sleep to work and a videoplayercontroller with a normal seeker timeout
-			//if the videoplayercontroller has a seeker without a timeout and we do not sleep it had a race condition
-			//and sometime the test was success and others fails.
-			System.Threading.Thread.Sleep (100);
+			// this is to avoid the timer + sleep to test the throttled seek. In real code we don't need the trigger.
+			triggerableSeeker.TriggerSeek ();
+
 			// Check we got called only once
 			playerMock.Verify (p => p.Seek (It.IsAny<Time> (), true, false), Times.Once ());
 			// And with the last value
@@ -2024,13 +2024,14 @@ namespace VAS.Tests.Services
 		[Test]
 		public void LoadEvent_StartMoved_SeekToNewPosition ()
 		{
+			var playerEvent = eventVM1;
 			PreparePlayer ();
-			player.LoadEvent (eventVM1, eventVM1.Start, true);
+			player.LoadEvent (playerEvent, playerEvent.Start, true);
 			playerMock.ResetCalls ();
 
-			eventVM1.Start += 1000;
+			playerEvent.Start += 1000;
 
-			playerMock.Verify (p => p.Seek (eventVM1.Start, true, false));
+			playerMock.Verify (p => p.Seek (playerEvent.Start, true, false));
 		}
 
 		[Test]

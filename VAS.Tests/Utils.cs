@@ -33,9 +33,11 @@ using NUnit.Framework;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Filters;
+using VAS.Core.Handlers;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
+using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Serialization;
@@ -891,6 +893,55 @@ namespace VAS.Tests
 		protected override void UpdateFeatureLimitations ()
 		{
 
+		}
+	}
+
+	/// <summary>
+	/// Seeker that calls seek as soon as it's called, without timeout.
+	/// </summary>
+	class InstantSeeker : ISeeker
+	{
+		public event SeekHandler SeekEvent;
+
+		public void Dispose ()
+		{
+		}
+
+		public void Seek (SeekType seekType, Time start = null, float rate = 1)
+		{
+			SeekEvent?.Invoke (seekType, start, rate);
+		}
+	}
+
+	/// <summary>
+	/// Seeker that calls seek when it's triggered and a seek has been called before.
+	/// </summary>
+	class TriggerableSeeker : ISeeker
+	{
+		SeekType seekType = SeekType.None;
+		Time start;
+		float rate;
+
+		public event SeekHandler SeekEvent;
+
+		public void Dispose ()
+		{
+		}
+
+		public void Seek (SeekType seekType, Time start = null, float rate = 1)
+		{
+			this.seekType = seekType;
+			this.start = start;
+			this.rate = rate;
+		}
+
+		public void TriggerSeek ()
+		{
+			if (seekType != SeekType.None) {
+				SeekEvent?.Invoke (seekType, start, rate);
+			} else {
+				throw new InvalidOperationException ("You should call Seek before trying to trigger it");
+			}
 		}
 	}
 }
