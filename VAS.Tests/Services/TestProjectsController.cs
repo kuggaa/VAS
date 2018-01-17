@@ -137,6 +137,27 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
+		public async Task LoadedProjectPlayingChanged_SelectionChanged_ProjectNotSaved ()
+		{
+			// Arrange
+			await controller.Start ();
+			DummyProjectVM firstLoadedProject = controller.ViewModel.ViewModels.First ();
+			firstLoadedProject.IsChanged = false;
+			firstLoadedProject.Model.IsChanged = false;
+
+			controller.ViewModel.Select (firstLoadedProject);
+
+			// Act
+			controller.ViewModel.LoadedProject.Timeline.FullTimeline.FirstOrDefault ().Playing = true;
+			bool edited = controller.ViewModel.LoadedProject.Edited;
+			controller.ViewModel.Select (controller.ViewModel.ViewModels.Skip (1).First ());
+
+			// Assert
+			Assert.IsFalse (edited);
+			storageMock.Verify (s => s.Store (firstLoadedProject.Model, false), Times.Never ());
+		}
+
+		[Test]
 		public async Task Search_EmptySearchStringNoProjects_NoResultFalse ()
 		{
 			await controller.Start ();

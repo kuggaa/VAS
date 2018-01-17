@@ -163,7 +163,7 @@ namespace VAS.Services.Controller
 			TViewModel selectedVM = ViewModel.Selection.FirstOrDefault ();
 
 			if (selectedVM != null) {
-				if (ViewModel.LoadedProject.Model != null && ViewModel.LoadedProject.Edited) {
+				if (ViewModel.LoadedProject?.Model != null && ViewModel.LoadedProject.Edited) {
 					await Save (ViewModel.LoadedProject, false);
 				}
 
