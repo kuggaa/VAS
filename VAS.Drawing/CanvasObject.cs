@@ -24,7 +24,7 @@ using VAS.Core.Resources.Styles;
 using VAS.Core.Store.Drawables;
 using static VAS.Core.Resources.Styles.Colors;
 
-namespace VAS.Drawing.CanvasObjects
+namespace VAS.Drawing
 {
 	public abstract class CanvasObject : DisposableBase, ICanvasObject
 	{
@@ -82,14 +82,14 @@ namespace VAS.Drawing.CanvasObjects
 			}
 		}
 
-		public virtual void ResetDrawArea ()
-		{
-			DrawArea = null;
-		}
-
 		public Area DrawArea {
 			get;
 			protected set;
+		}
+
+		public virtual void ResetDrawArea ()
+		{
+			DrawArea = null;
 		}
 
 		public virtual void ReDraw ()
@@ -105,18 +105,16 @@ namespace VAS.Drawing.CanvasObjects
 		{
 		}
 
+		public abstract void Draw (IDrawingToolkit tk, Area area);
+
 		protected void EmitClickEvent ()
 		{
-			if (ClickedEvent != null) {
-				ClickedEvent (this);
-			}
+			ClickedEvent?.Invoke (this);
 		}
 
-		protected void EmitRedrawEvent (CanvasObject co, Area area)
+		protected void EmitRedrawEvent (ICanvasObject co, Area area)
 		{
-			if (RedrawEvent != null) {
-				RedrawEvent (co, area);
-			}
+			RedrawEvent?.Invoke (co, area);
 		}
 
 		protected bool NeedsRedraw (Area area)
@@ -133,8 +131,6 @@ namespace VAS.Drawing.CanvasObjects
 				return false;
 			}
 		}
-
-		public abstract void Draw (IDrawingToolkit tk, Area area);
 	}
 
 	/// <summary>

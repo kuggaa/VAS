@@ -56,7 +56,7 @@ namespace VAS.Tests.Drawing.CanvasObjects.Timeline
 		[Test]
 		public void TestFillTimeFromViewModel ()
 		{
-			Assert.AreEqual (1, timeline.nodes.OfType<DummyTimelineEventView> ().Count ());
+			Assert.AreEqual (1, timeline.OfType<DummyTimelineEventView> ().Count ());
 		}
 
 		[Test]
@@ -64,7 +64,7 @@ namespace VAS.Tests.Drawing.CanvasObjects.Timeline
 		{
 			timeline.ViewModel = new EventTypeTimelineVM (new EventTypeVM { Model = new EventType () });
 
-			Assert.AreEqual (0, timeline.nodes.OfType<DummyTimelineEventView> ().Count ());
+			Assert.AreEqual (0, timeline.OfType<DummyTimelineEventView> ().Count ());
 		}
 
 		[Test]
@@ -72,7 +72,7 @@ namespace VAS.Tests.Drawing.CanvasObjects.Timeline
 		{
 			project.AddEvent (new TimelineEvent { EventType = project.EventTypes [0] });
 
-			Assert.AreEqual (2, timeline.nodes.OfType<DummyTimelineEventView> ().Count ());
+			Assert.AreEqual (2, timeline.OfType<DummyTimelineEventView> ().Count ());
 		}
 
 		[Test]
@@ -80,7 +80,7 @@ namespace VAS.Tests.Drawing.CanvasObjects.Timeline
 		{
 			project.Timeline.Remove (project.Timeline [0]);
 
-			Assert.AreEqual (0, timeline.nodes.OfType<DummyTimelineEventView> ().Count ());
+			Assert.AreEqual (0, timeline.OfType<DummyTimelineEventView> ().Count ());
 		}
 	}
 }

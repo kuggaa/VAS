@@ -89,11 +89,9 @@ namespace VAS.Core.ViewModel
 			set {
 				if (value != null && currentNode != null &&
 					Mode != DashboardMode.Edit && currentTime != null) {
-					if (currentTime + Constants.PLAYBACK_TOLERANCE < currentNode.Start) {
-						TimerTime = null;
-						currentNode = null;
-					}
-					if (currentTime.TotalSeconds != value.TotalSeconds) {
+					if (value + Constants.PLAYBACK_TOLERANCE < currentNode.Start) {
+						Click (true);
+					} else if (currentTime.TotalSeconds != value.TotalSeconds) {
 						TimerTime = value - currentNode.Start;
 					}
 				}

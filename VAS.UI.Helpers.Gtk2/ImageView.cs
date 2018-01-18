@@ -134,17 +134,15 @@ namespace VAS.UI.Helpers
 		bool IsParentUnsensitive {
 			get {
 				var parent = Parent;
-				if (parent != null) {
-					if (!parent.Sensitive) {
-						return true;
-					}
-					// Handle correctly image in buttons
-					parent = parent.Parent.Parent as Button;
-					if (parent != null && !parent.Sensitive) {
-						return true;
-					}
+				if (parent == null) {
+					return false;
 				}
-				return false;
+				if (!parent.Sensitive) {
+					return true;
+				}
+				// Handle correctly image in buttons
+				parent = parent.Parent?.Parent as Button;
+				return parent != null && !parent.Sensitive;
 			}
 		}
 

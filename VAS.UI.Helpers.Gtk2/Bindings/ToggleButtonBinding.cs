@@ -53,16 +53,14 @@ namespace VAS.UI.Helpers.Bindings
 		{
 			Image icon;
 
-			if (Command != null) {
-				if (button.Active) {
-					icon = Command.Icon;
-				} else {
-					icon = Command.IconInactive ?? Command.Icon;
-				}
-
-				button.Configure (icon, text ?? Command.Text, Command.ToolTipText, null);
-				button.Sensitive = Command.CanExecute ();
+			if (button.Active) {
+				icon = Command.Icon;
+			} else {
+				icon = Command.IconInactive ?? Command.Icon;
 			}
+
+			button.Configure (icon, text ?? Command.Text, Command.ToolTipText, null);
+			button.Sensitive = Command.CanExecute ();
 		}
 
 		protected override void HandleCanExecuteChanged (object sender, EventArgs args)

@@ -161,6 +161,8 @@
     <Compile Include="Core\Common\TestTypeConverters.cs" />
     <Compile Include="Services\TestDynamicButtonToolbarService.cs" />
     <Compile Include="Core\ViewModel\TestProjectsManagerVM.cs" />
+    <Compile Include="Drawing\TestCanvasContainer.cs" />
+    <Compile Include="Core\ViewModel\TestTimerButtonVM.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

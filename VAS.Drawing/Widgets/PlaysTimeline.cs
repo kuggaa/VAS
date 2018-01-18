@@ -169,10 +169,6 @@ namespace VAS.Drawing.Widgets
 		{
 			RemoveObject (viewModelToView [viewModel]);
 			viewModelToView.Remove (viewModel);
-			var nestedVM = viewModel as INestedViewModel;
-			if (nestedVM != null) {
-				nestedVM.GetNotifyCollection ().CollectionChanged -= HandleChildsVMCollectionChanged;
-			}
 		}
 
 		protected void AddTimeline (TimelineView timelineView, IViewModel viewModel)
@@ -180,10 +176,6 @@ namespace VAS.Drawing.Widgets
 			AddObject (timelineView);
 			if (timelineView is EventTypeTimelineView) {
 				viewModelToView [viewModel] = timelineView;
-			}
-			var nestedVM = viewModel as INestedViewModel;
-			if (nestedVM != null) {
-				nestedVM.GetNotifyCollection ().CollectionChanged += HandleChildsVMCollectionChanged;
 			}
 		}
 
@@ -497,13 +489,6 @@ namespace VAS.Drawing.Widgets
 
 		void HandleChildsVMCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
-			if (e.Action == NotifyCollectionChangedAction.Remove) {
-				foreach (TimeNodeVM viewModel in e.OldItems.OfType<TimeNodeVM> ()) {
-					Selections.RemoveAll (s => (s.Drawable as TimeNodeView).TimeNode == viewModel);
-				}
-			} else if (e.Action == NotifyCollectionChangedAction.Reset) {
-				Selections.Clear ();
-			}
 		}
 
 	}
