@@ -169,7 +169,7 @@ namespace VAS.Services
 					}
 				}
 
-				playerVM.CamerasConfig = camerasConfig;
+				PlayerVM.CamerasConfig = camerasConfig;
 				if (defaultCamerasConfig == null) {
 					defaultCamerasConfig = camerasConfig;
 				}
@@ -198,7 +198,7 @@ namespace VAS.Services
 
 			set {
 				camerasLayout = value;
-				playerVM.CamerasLayout = value;
+				PlayerVM.CamerasLayout = value;
 			}
 		}
 
@@ -277,10 +277,10 @@ namespace VAS.Services
 
 		public virtual bool Playing {
 			get {
-				return playerVM.Playing;
+				return PlayerVM.Playing;
 			}
 			set {
-				playerVM.Playing = value;
+				PlayerVM.Playing = value;
 			}
 		}
 
@@ -300,7 +300,7 @@ namespace VAS.Services
 				} else {
 					visibleRegion = null;
 				}
-				playerVM.FileSet = new MediaFileSetVM { Model = mediafileSet };
+				PlayerVM.FileSet = new MediaFileSetVM { Model = mediafileSet };
 			}
 		}
 
@@ -356,14 +356,30 @@ namespace VAS.Services
 			}
 		}
 
+		public VideoPlayerVM PlayerVM {
+			get {
+				return playerVM;
+			}
+
+			set {
+				if (playerVM != null) {
+					playerVM.PropertyChanged -= HandlePlayerVMPropertyChanged;
+				}
+				playerVM = value;
+				if (playerVM != null) {
+					playerVM.PropertyChanged += HandlePlayerVMPropertyChanged;
+				}
+			}
+		}
+
 		public override void SetViewModel (IViewModel viewModel)
 		{
-			playerVM = viewModel as VideoPlayerVM;
-			if (playerVM == null) {
-				playerVM = ((IVideoPlayerDealer)viewModel).VideoPlayer;
+			PlayerVM = viewModel as VideoPlayerVM;
+			if (PlayerVM == null) {
+				PlayerVM = ((IVideoPlayerDealer)viewModel).VideoPlayer;
 			}
-			playerVM.Player = this;
-			playerVM.SupportsMultipleCameras = supportsMultipleCameras;
+			PlayerVM.Player = this;
+			PlayerVM.SupportsMultipleCameras = supportsMultipleCameras;
 		}
 
 		public virtual void Ready (bool ready)
@@ -397,7 +413,7 @@ namespace VAS.Services
 				EmitTimeChanged (new Time (0), new Time (0));
 				FileSet = fileSet;
 				IgnoreTicks = true;
-				playerVM.ControlsSensitive = false;
+				PlayerVM.ControlsSensitive = false;
 				ShowMessageInViewPorts (Catalog.GetString ("No video loaded"), true);
 				UpdateDuration ();
 				return;
@@ -535,7 +551,7 @@ namespace VAS.Services
 			if (StillImageLoaded) {
 				return;
 			}
-			PerformStep (playerVM.Step);
+			PerformStep (PlayerVM.Step);
 		}
 
 		public virtual void StepBackward ()
@@ -544,7 +560,7 @@ namespace VAS.Services
 			if (StillImageLoaded) {
 				return;
 			}
-			PerformStep (new Time (-playerVM.Step.MSeconds));
+			PerformStep (new Time (-PlayerVM.Step.MSeconds));
 		}
 
 		public virtual void FramerateUp ()
@@ -624,8 +640,7 @@ namespace VAS.Services
 
 			loadedEvent = play;
 			loadedPlaylistElement = element;
-
-			playerVM.FrameDrawing = null;
+			PlayerVM.FrameDrawing = null;
 			LoadedPlaylist = playlist;
 			LoadedTimelineEvent = play ?? element as IPlayableEvent;
 
@@ -834,7 +849,7 @@ namespace VAS.Services
 				Log.Error ("Steps are not between the supported boundaries : " + step.TotalSeconds);
 				return;
 			}
-			playerVM.Step = new Time { TotalSeconds = (int)step.TotalSeconds };
+			PlayerVM.Step = new Time { TotalSeconds = (int)step.TotalSeconds };
 		}
 
 		public void MoveROI (Point diff)
@@ -856,14 +871,14 @@ namespace VAS.Services
 				return;
 			}
 			if (enabled) {
-				playerVM.EditEventDurationTimeNode.Model = new TimeNode {
+				PlayerVM.EditEventDurationTimeNode.Model = new TimeNode {
 					Start = (LoadedTimelineEvent.Start - editDurationOffset).Clamp (new Time (0), FileSet.Duration),
 					Stop = (LoadedTimelineEvent.Stop + editDurationOffset).Clamp (new Time (0), FileSet.Duration)
 				};
 			} else {
-				playerVM.EditEventDurationTimeNode.Model = null;
+				PlayerVM.EditEventDurationTimeNode.Model = null;
 			}
-			playerVM.EditEventDurationModeEnabled = enabled;
+			PlayerVM.EditEventDurationModeEnabled = enabled;
 		}
 
 		#endregion
@@ -930,11 +945,11 @@ namespace VAS.Services
 				),
 				new KeyAction (
 					App.Current.HotkeysService.GetByName(PlaybackHotkeys.OPEN_DRAWING_TOOL),
-					() => playerVM.DrawCommand.Execute ()
+					() => PlayerVM.DrawCommand.Execute ()
 				),
 				new KeyAction (
 					App.Current.HotkeysService.GetByName(PlaybackHotkeys.ZOOM_RESTORE),
-					() => playerVM.SetZoomCommand.Execute (App.Current.ZoomLevels[0])
+					() => PlayerVM.SetZoomCommand.Execute (App.Current.ZoomLevels[0])
 				),
 				new KeyAction (
 					App.Current.HotkeysService.GetByName(PlaybackHotkeys.ZOOM_INCREASE),
@@ -947,8 +962,8 @@ namespace VAS.Services
 				new KeyAction (
 					App.Current.HotkeysService.GetByName(PlaybackHotkeys.EDIT_EVENT_DURATION),
 					() => {
-						if (playerVM.EditEventDurationCommand.CanExecute ()) {
-							SetEditEventDurationMode (!playerVM.EditEventDurationModeEnabled);
+						if (PlayerVM.EditEventDurationCommand.CanExecute ()) {
+							SetEditEventDurationMode (!PlayerVM.EditEventDurationModeEnabled);
 						}
 					}
 				),
@@ -973,7 +988,7 @@ namespace VAS.Services
 
 		void EmitLoadDrawings (FrameDrawing drawing = null)
 		{
-			playerVM.FrameDrawing = drawing;
+			PlayerVM.FrameDrawing = drawing;
 			if (LoadDrawingsEvent != null && !disposed) {
 				LoadDrawingsEvent (drawing);
 			}
@@ -981,7 +996,7 @@ namespace VAS.Services
 
 		void EmitPrepareViewEvent (RangeObservableCollection<CameraConfig> camConfig, object camLayout)
 		{
-			playerVM.PrepareView = true;
+			PlayerVM.PrepareView = true;
 			if (camConfig != null) {
 				UpdateCamerasConfig (camConfig, camLayout);
 			}
@@ -992,8 +1007,8 @@ namespace VAS.Services
 
 		void EmitElementLoaded (IPlayable element, PlaylistVM playlist)
 		{
-			playerVM.NextCommand.Executable = playlist != null ? playlist.HasNext () : false;
-			playerVM.LoadedElement = element;
+			PlayerVM.NextCommand.Executable = playlist != null ? playlist.HasNext () : false;
+			PlayerVM.LoadedElement = element;
 
 			if (element == null || element is TimelineEventVM) {
 				App.Current.EventsBroker.Publish (
@@ -1010,7 +1025,7 @@ namespace VAS.Services
 				);
 			}
 			if (ElementLoadedEvent != null && !disposed) {
-				ElementLoadedEvent (element, playerVM.NextCommand.CanExecute ());
+				ElementLoadedEvent (element, PlayerVM.NextCommand.CanExecute ());
 			}
 		}
 
@@ -1021,7 +1036,7 @@ namespace VAS.Services
 
 		void EmitRateChanged (float rate)
 		{
-			playerVM.Rate = rate;
+			PlayerVM.Rate = rate;
 			if (PlaybackRateChangedEvent != null && !disposed) {
 				PlaybackRateChangedEvent (rate);
 			}
@@ -1029,7 +1044,7 @@ namespace VAS.Services
 
 		void EmitVolumeChanged (double volume)
 		{
-			playerVM.Volume = volume;
+			PlayerVM.Volume = volume;
 			if (VolumeChangedEvent != null && !disposed) {
 				VolumeChangedEvent (volume);
 			}
@@ -1041,13 +1056,13 @@ namespace VAS.Services
 				currentTime = currentTime - visibleRegion.Start;
 			}
 
-			playerVM.AbsoluteCurrentTime = currentTime;
-			playerVM.CurrentTime = relativeTime;
-			playerVM.SeekCommand.Executable = !StillImageLoaded;
+			PlayerVM.AbsoluteCurrentTime = currentTime;
+			PlayerVM.CurrentTime = relativeTime;
+			PlayerVM.SeekCommand.Executable = !StillImageLoaded;
 
 
 			if (TimeChangedEvent != null && !disposed) {
-				TimeChangedEvent (relativeTime, playerVM.Duration, !StillImageLoaded);
+				TimeChangedEvent (relativeTime, PlayerVM.Duration, !StillImageLoaded);
 			}
 			App.Current.EventsBroker.Publish (
 				new PlayerTickEvent {
@@ -1059,7 +1074,7 @@ namespace VAS.Services
 
 		void EmitPlaybackStateChanged (object sender, bool playing)
 		{
-			playerVM.Playing = playing;
+			PlayerVM.Playing = playing;
 			if (PlaybackStateChangedEvent != null && !disposed) {
 				PlaybackStateChangedEvent playbackStateChangedEvent = new PlaybackStateChangedEvent {
 					Sender = sender,
@@ -1109,11 +1124,11 @@ namespace VAS.Services
 				}
 				loadedPlaylistEvent = value;
 				if (loadedPlaylistEvent != null) {
-					playerVM.EditEventDurationCommand.Executable = true;
+					PlayerVM.EditEventDurationCommand.Executable = true;
 					loadedPlaylistEvent.PropertyChanged += HandleLoadedTimelineEventPropertyChangedEventHandler;
 					loadedPlaylistEvent.Drawings.CollectionChanged += HandlePlaylistEventDrawingsCollectionChanged;
 				} else {
-					playerVM.EditEventDurationCommand.Executable = false;
+					PlayerVM.EditEventDurationCommand.Executable = false;
 				}
 				SetEditEventDurationMode (false);
 			}
@@ -1234,7 +1249,7 @@ namespace VAS.Services
 		void UpdateZoom ()
 		{
 			if (CamerasConfig.Count == 0) {
-				playerVM.Zoom = 1;
+				PlayerVM.Zoom = 1;
 				return;
 			}
 
@@ -1242,9 +1257,9 @@ namespace VAS.Services
 			MediaFile file = FileSet [cfg.Index];
 
 			if (cfg.RegionOfInterest.Empty) {
-				playerVM.Zoom = 1;
+				PlayerVM.Zoom = 1;
 			} else {
-				playerVM.Zoom = (float)(file.VideoWidth / cfg.RegionOfInterest.Width);
+				PlayerVM.Zoom = (float)(file.VideoWidth / cfg.RegionOfInterest.Width);
 			}
 		}
 
@@ -1351,7 +1366,7 @@ namespace VAS.Services
 				ValidateVisibleCameras ();
 				UpdateZoom ();
 				UpdatePar ();
-				playerVM.ControlsSensitive = true;
+				PlayerVM.ControlsSensitive = true;
 				try {
 					Log.Debug ("Opening new file set " + fileSet);
 					if (multiPlayer != null) {
@@ -1465,7 +1480,7 @@ namespace VAS.Services
 		void LoadStillImage (PlaylistImageVM image, bool playing)
 		{
 			loadedPlaylistElement = image;
-			playerVM.ControlsSensitive = true;
+			PlayerVM.ControlsSensitive = true;
 			StillImageLoaded = true;
 			if (playing) {
 				Play ();
@@ -1602,7 +1617,7 @@ namespace VAS.Services
 					// When editing the duration of a PlaylistPlayElement we can go outside the boundaries
 					// of the segment while seeking, so we need to ignore them to prevent jumping to the next
 					// playlist element.
-					if (!playerVM.EditEventDurationModeEnabled) {
+					if (!PlayerVM.EditEventDurationModeEnabled) {
 						if (currentTime > loadedSegment.Stop) {
 							/* Check if the segment is now finished and jump to next one */
 							Next ();
@@ -1633,7 +1648,7 @@ namespace VAS.Services
 			return f.CameraConfig.Index == camerasConfig [0].Index && (
 				(currentTime == videoTS && f.Render == currentTime) ||
 				f.Render > videoTS && f.Render <= currentTime) &&
-					f != playerVM.FrameDrawing &&
+					f != PlayerVM.FrameDrawing &&
 					drawingCurrentTime != currentTime;
 		}
 
@@ -1657,9 +1672,9 @@ namespace VAS.Services
 					duration = absoluteDuration;
 				}
 			}
-			if (playerVM != null) {
-				playerVM.Duration = duration;
-				playerVM.AbsoluteDuration = absoluteDuration;
+			if (PlayerVM != null) {
+				PlayerVM.Duration = duration;
+				PlayerVM.AbsoluteDuration = absoluteDuration;
 			}
 		}
 
@@ -1674,17 +1689,17 @@ namespace VAS.Services
 
 		void IncreaseZoom ()
 		{
-			float? newLevel = App.Current.ZoomLevels.Where (l => l > playerVM.Zoom).OrderBy (l => l).FirstOrDefault ();
+			float? newLevel = App.Current.ZoomLevels.Where (l => l > PlayerVM.Zoom).OrderBy (l => l).FirstOrDefault ();
 			if (newLevel != 0) {
-				playerVM.SetZoomCommand.Execute (newLevel);
+				PlayerVM.SetZoomCommand.Execute (newLevel);
 			}
 		}
 
 		void DecreaseZoom ()
 		{
-			float? newLevel = App.Current.ZoomLevels.Where (l => l < playerVM.Zoom).OrderByDescending (l => l).FirstOrDefault ();
+			float? newLevel = App.Current.ZoomLevels.Where (l => l < PlayerVM.Zoom).OrderByDescending (l => l).FirstOrDefault ();
 			if (newLevel != 0) {
-				playerVM.SetZoomCommand.Execute (newLevel);
+				PlayerVM.SetZoomCommand.Execute (newLevel);
 			}
 		}
 
@@ -1882,6 +1897,13 @@ namespace VAS.Services
 		{
 			if (LoadedTimelineEvent != null) {
 				LoadedTimelineEvent.Playing = playing;
+			}
+		}
+
+		void HandlePlayerVMPropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (PlayerVM.NeedsSync (e, nameof (PlayerVM.FileSet)) && PlayerVM.FileSet != null) {
+				ValidateVisibleCameras ();
 			}
 		}
 	}
