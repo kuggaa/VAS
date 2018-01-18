@@ -43,12 +43,19 @@ namespace VAS.Services.Controller
 	/// </summary>
 	public abstract class EventsFilterController : ControllerBase<TimelineVM>
 	{
+		protected List<IPredicate<TimelineEventVM>> previousPredicateList = new List<IPredicate<TimelineEventVM>> ();
+
 		protected override void DisposeManagedResources ()
 		{
 			ViewModel.IgnoreEvents = true;
 			base.DisposeManagedResources ();
 			ViewModel = null;
 		}
+
+		protected bool DefaultActiveValue {
+			get;
+			set;
+		} = true;
 
 		public ProjectVM Project {
 			get;
@@ -97,6 +104,12 @@ namespace VAS.Services.Controller
 			ViewModel.Filters.PropertyChanged -= HandleFiltersChanged;
 		}
 
+		public override Task Stop ()
+		{
+			previousPredicateList.Clear ();
+			return base.Stop ();
+		}
+
 		/// <summary>
 		/// Initializes the predicates.
 		/// This method is responsible for filling the predicates and adding the needed ones to 
@@ -122,11 +135,13 @@ namespace VAS.Services.Controller
 				noPeriodExpression = noPeriodExpression.And (ev => period.All (p => ev.Model.Intersect (p.Model) == null));
 				listPredicates.Add (new Predicate {
 					Name = period.Name,
+					DisplayName = period.Name,
 					Expression = ev => period.Any (p => ev.Model.Intersect (p.Model) != null)
 				});
 			}
 			ViewModel.PeriodsPredicate.Add (new Predicate {
-				Name = Catalog.GetString ("No period"),
+				Name = "No period",
+				DisplayName = Catalog.GetString ("No period"),
 				Expression = noPeriodExpression
 			});
 			ViewModel.PeriodsPredicate.AddRange (listPredicates);
@@ -152,11 +167,13 @@ namespace VAS.Services.Controller
 				noPeriodExpression = noPeriodExpression.And (ev => timer.All (p => ev.Model.Intersect (p.Model) == null));
 				listPredicates.Add (new Predicate {
 					Name = timer.Name,
+					DisplayName = timer.Name,
 					Expression = ev => timer.Any (p => ev.Model.Intersect (p.Model) != null)
 				});
 			}
 			ViewModel.TimersPredicate.Add (new Predicate {
-				Name = Catalog.GetString ("No period"),
+				Name = "No period",
+				DisplayName = Catalog.GetString ("No period"),
 				Expression = noPeriodExpression
 			});
 			ViewModel.TimersPredicate.AddRange (listPredicates);
@@ -186,17 +203,20 @@ namespace VAS.Services.Controller
 
 				Expression<Func<TimelineEventVM, bool>> tagGroupExpression = ev => ev.Model.Tags.Any (tag => tag.Group == tagGroup.Key);
 				var tagGroupPredicate = new OrPredicate<TimelineEventVM> {
-					Name = string.IsNullOrEmpty (tagGroup.Key) ? Catalog.GetString ("General tags") : tagGroup.Key,
+					Name = string.IsNullOrEmpty (tagGroup.Key) ? "General tags" : tagGroup.Key,
+					DisplayName = string.IsNullOrEmpty (tagGroup.Key) ? Catalog.GetString ("General tags") : tagGroup.Key,
 				};
 
 				tagsPredicates.Add (new Predicate {
-					Name = Catalog.GetString ("None"),
+					Name = "None",
+					DisplayName = Catalog.GetString ("None"),
 					Expression = ev => !ev.Model.Tags.Any (tag => tag.Group == tagGroup.Key)
 				});
 
 				foreach (var tag in tagGroup.Value) {
 					tagsPredicates.Add (new Predicate {
 						Name = tag.Value,
+						DisplayName = tag.Value,
 						Expression = tagGroupExpression.And (ev => ev.Model.Tags.Contains (tag))
 					});
 				}
@@ -211,17 +231,38 @@ namespace VAS.Services.Controller
 			}
 		}
 
+		protected void UpdatePreviousPredicatesList (CompositePredicate<TimelineEventVM> compositePredicate)
+		{
+			foreach (var predicate in compositePredicate) {
+				if (!previousPredicateList.Exists (p => p.Name == predicate.Name)) {
+					previousPredicateList.Add (predicate);
+				} else {
+					previousPredicateList.FirstOrDefault (p => p.Name == predicate.Name).Active = predicate.Active;
+				}
+			}
+		}
+
+		protected bool GetPreviousActiveValue (string predicateName)
+		{
+			var previous = previousPredicateList.FirstOrDefault (p => p.Name == predicateName);
+			if (previous != null) {
+				return previous.Active;
+			}
+			return DefaultActiveValue;
+		}
+
 		protected virtual void UpdateEventTypesPredicates (object sender = null, NotifyCollectionChangedEventArgs e = null)
 		{
 			bool oldIgnoreEvents = ViewModel.Filters.IgnoreEvents;
 			ViewModel.Filters.IgnoreEvents = true;
+			UpdatePreviousPredicatesList (ViewModel.EventTypesPredicate);
 			ViewModel.EventTypesPredicate.Clear ();
 			var predicates = new List<IPredicate<TimelineEventVM>> ();
 
 			foreach (var eventType in ViewModel.EventTypesTimeline) {
 				IPredicate<TimelineEventVM> predicate;
 				List<Tag> tagList = new List<Tag> ();
-				Expression<Func<TimelineEventVM, bool>> eventTypeExpression = ev => ev.Model.EventType == eventType.Model;
+				Expression<Func<TimelineEventVM, bool>> eventTypeExpression = ev => ev.Model.EventType.Equals (eventType.Model);
 
 				var analysisEventType = eventType.Model as AnalysisEventType;
 				if (analysisEventType != null && analysisEventType.Tags.Any ()) {
@@ -229,6 +270,7 @@ namespace VAS.Services.Controller
 					var composedPredicates = new List<IPredicate<TimelineEventVM>> ();
 					predicate = composedEventTypePredicate = new OrPredicate<TimelineEventVM> {
 						Name = eventType.EventTypeVM.Name,
+						DisplayName = eventType.EventTypeVM.Name,
 					};
 
 					// We want subcategories to be flat, regardless of the group.
@@ -237,21 +279,27 @@ namespace VAS.Services.Controller
 						foreach (var tag in tagGroup.Value) {
 							composedPredicates.Add (new Predicate {
 								Name = tag.Value,
-								Expression = eventTypeExpression.And (tagGroupExpression.And (ev => ev.Model.Tags.Contains (tag)))
+								DisplayName = tag.Value,
+								Expression = eventTypeExpression.And (tagGroupExpression.And (ev => ev.Model.Tags.Contains (tag))),
+								Active = GetPreviousActiveValue (tag.Value)
 							});
 							tagList.Add (tag);
 						}
 					}
 
 					composedPredicates.Add (new Predicate {
-						Name = Catalog.GetString ("No subcategories"),
-						Expression = eventTypeExpression.And (ev => !ev.Model.Tags.Intersect (tagList).Any ())
+						Name = "No subcategories",
+						DisplayName = Catalog.GetString ("No subcategories"),
+						Expression = eventTypeExpression.And (ev => !ev.Model.Tags.Intersect (tagList).Any ()),
+						Active = GetPreviousActiveValue ("No subcategories")
 					});
 					composedEventTypePredicate.AddRange (composedPredicates);
 				} else {
 					predicate = new Predicate {
 						Name = eventType.EventTypeVM.Name,
-						Expression = eventTypeExpression
+						DisplayName = eventType.EventTypeVM.Name,
+						Expression = eventTypeExpression,
+						Active = GetPreviousActiveValue (eventType.EventTypeVM.Name)
 					};
 				}
 				predicates.Add (predicate);

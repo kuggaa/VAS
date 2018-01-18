@@ -20,6 +20,12 @@ namespace VAS.Core.Interfaces
 		/// <summary>
 		/// Gets or sets the name. Used to show this predicate in the UI.
 		/// </summary>
+		/// <value>The display name.</value>
+		string DisplayName { get; set; }
+
+		/// <summary>
+		/// Gets or sets the name. Used as id to filter this predicate internally.
+		/// </summary>
 		/// <value>The name.</value>
 		string Name { get; set; }
 
