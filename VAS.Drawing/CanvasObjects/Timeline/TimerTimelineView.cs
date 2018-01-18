@@ -76,7 +76,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 					viewModel.GetNotifyCollection ().CollectionChanged -= HandleTimerCollectionChanged;
 				}
 				viewModel = value;
-				ClearObjects ();
+				Clear ();
 				if (viewModel != null) {
 					viewModel.GetNotifyCollection ().CollectionChanged += HandleTimerCollectionChanged;
 					Reload ();
@@ -101,19 +101,19 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 			to.DraggingMode = DraggingMode;
 			to.ShowName = ShowName;
 			to.LineColor = LineColor;
-			AddNode (to);
+			Add (to);
 			viewModelToView.Add (timeNodeVM, to);
 		}
 
 		void RemoveTimeNode (TimeNodeVM timeNodeVM)
 		{
-			RemoveObject (viewModelToView [timeNodeVM], true);
+			Remove (viewModelToView [timeNodeVM]);
 			viewModelToView.Remove (timeNodeVM);
 		}
 
 		void Reload ()
 		{
-			ClearObjects ();
+			Clear ();
 			viewModelToView.Clear ();
 			foreach (TimeNodeVM t in viewModel) {
 				AddTimeNode (t);

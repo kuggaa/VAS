@@ -145,5 +145,32 @@ namespace VAS.Tests.Drawing.Widgets
 			Assert.IsFalse (timeline.Selections.Any ());
 
 		}
+
+		[Test]
+		public void AddTimer_NewTimer_TimerNodeAdded ()
+		{
+			// Act
+			project.Timers [0].Nodes.Add (new TimeNode { Start = new Time (0), Stop = new Time (2) });
+
+			// Assert
+			Assert.AreEqual (1, (timeline.Objects [0] as TimerTimelineView).Count);
+		}
+
+		[Test]
+		public void RemovePeriodNode_PeriodNodeSelected_SelectionUpdated ()
+		{
+			// Arrange
+			var timeNode = new TimeNode { Start = new Time (0), Stop = new Time (2) };
+			project.Timers [0].Nodes.Add (timeNode);
+			var timerTimeline = timeline.Objects [0] as TimerTimelineView;
+			timeline.UpdateSelection (new Selection (timerTimeline [0] as IMovableObject, SelectionPosition.All, 0));
+
+			// Act
+			project.Timers [0].Nodes.Remove (timeNode);
+
+			// Assert
+			Assert.AreEqual (0, timeline.Selections.Count);
+		}
+
 	}
 }

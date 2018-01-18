@@ -21,7 +21,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)BackgroundCanvas.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SelectionCanvas.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Canvas.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\CanvasObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Timeline\TimelineView.cs" />
@@ -77,5 +76,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Widgets\TextView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Widgets\ImageView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Statistics\PercentCircularChartView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasContainer.cs" />
   </ItemGroup>
 </Project>
