@@ -26,6 +26,11 @@ using VAS.Core.Store.Drawables;
 
 namespace VAS.Drawing
 {
+
+	/// <summary>
+	/// A canvas object that acts as a container for other canvas objects taking care of forwarding events and calls
+	/// to each of its children.
+	/// </summary>
 	public class CanvasContainer : CanvasObject, ICanvasSelectableObject, INotifyCollectionChanged,
 	ICollection<ICanvasObject>, IEnumerable<ICanvasObject>
 	{
@@ -48,20 +53,17 @@ namespace VAS.Drawing
 
 		public bool IsReadOnly => true;
 
-		public IEnumerator<ICanvasObject> GetEnumerator ()
-		{
-			return children.GetEnumerator ();
-		}
+		public ICanvasObject this [int index] => children [index];
 
-		IEnumerator IEnumerable.GetEnumerator ()
-		{
-			return children.GetEnumerator ();
-		}
+		public IEnumerator<ICanvasObject> GetEnumerator () => children.GetEnumerator ();
 
-		public int IndexOf (ICanvasObject child)
-		{
-			return children.IndexOf (child);
-		}
+		public int IndexOf (ICanvasObject child) => children.IndexOf (child);
+
+		public bool Remove (ICanvasObject co) => RemoveChild (co, true);
+
+		public bool Contains (ICanvasObject item) => children.Contains (item);
+
+		public void CopyTo (ICanvasObject [] array, int arrayIndex) => children.CopyTo (array, arrayIndex);
 
 		public void Add (ICanvasObject child)
 		{
@@ -75,31 +77,12 @@ namespace VAS.Drawing
 			child.RedrawEvent += EmitRedrawEvent;
 		}
 
-		public bool Remove (ICanvasObject co)
-		{
-			return RemoveChild (co, true);
-		}
-
-		public ICanvasObject this [int index] {
-			get { return children [index]; }
-		}
-
 		public void Clear ()
 		{
 			foreach (var child in children) {
 				RemoveChild (child, false);
 			}
 			children.Clear ();
-		}
-
-		public bool Contains (ICanvasObject item)
-		{
-			return children.Contains (item);
-		}
-
-		public void CopyTo (ICanvasObject [] array, int arrayIndex)
-		{
-			children.CopyTo (array, arrayIndex);
 		}
 
 		public virtual Selection GetSelection (Point point, double precision, bool inMotion = false)
@@ -127,7 +110,7 @@ namespace VAS.Drawing
 
 		public virtual void Move (Selection s, Point dst, Point start)
 		{
-			throw new NotImplementedException ("Move not supported for this canvas container");
+			throw new NotImplementedException ($"Move not supported for this {GetType ()}");
 		}
 
 		public override void Draw (IDrawingToolkit tk, Area area)
@@ -136,6 +119,8 @@ namespace VAS.Drawing
 				co.Draw (tk, area);
 			}
 		}
+
+		IEnumerator IEnumerable.GetEnumerator () => children.GetEnumerator ();
 
 		bool RemoveChild (ICanvasObject co, bool full)
 		{

@@ -61,7 +61,7 @@ namespace VAS.Drawing.CanvasObjects.Timeline
 		public double SecondsPerPixel {
 			set {
 				secondsPerPixel = value;
-				foreach (TimeNodeView to in this) {
+				foreach (TimeNodeView to in this.OfType<TimeNodeView> ()) {
 					to.SecondsPerPixel = secondsPerPixel;
 					to.ResetDrawArea ();
 				}
