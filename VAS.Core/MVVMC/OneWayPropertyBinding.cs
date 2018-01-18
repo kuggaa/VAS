@@ -34,7 +34,8 @@ namespace VAS.Core.MVVMC
 		public OneWayPropertyBinding (Expression<Func<IViewModel, TSourceProperty>> propertyExpression,
 									  Action<TTargetProperty> writeAction,
 									  TypeConverter typeConverter = null,
-									  TTargetProperty defaultValue = default (TTargetProperty)) : base (propertyExpression, typeConverter)
+									  TTargetProperty defaultValue = default (TTargetProperty),
+									  Func<TTargetProperty, TTargetProperty> formatterCallback = null) : base (propertyExpression, typeConverter, formatterCallback)
 		{
 			this.writeAction = writeAction;
 			this.defaultValue = defaultValue;
@@ -71,7 +72,8 @@ namespace VAS.Core.MVVMC
 									  Expression<Func<IViewModel, TSourceProperty>> sourceExpression,
 									  Expression<Func<TTarget, TTargetProperty>> targetExpression,
 									  TypeConverter typeConverter,
-									  TTargetProperty defaultValue) : base (sourceExpression, null, typeConverter, defaultValue)
+									  TTargetProperty defaultValue,
+									  Func<TTargetProperty, TTargetProperty> formatterCallback) : base (sourceExpression, null, typeConverter, defaultValue, formatterCallback)
 		{
 			var setter = CreateSetter<TTarget, TTargetProperty, TTargetProperty> (targetExpression, out string memberName);
 			Action<TTargetProperty> setterAction = (TTargetProperty t) => setter.Invoke (dest, t);
