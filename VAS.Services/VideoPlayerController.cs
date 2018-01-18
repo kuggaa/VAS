@@ -293,7 +293,7 @@ namespace VAS.Services
 					mediafileSet.PropertyChanged -= HandleMediaFileSetPropertyChanged;
 				}
 				mediafileSet = value;
-				mediaFileSetCopy = value.Clone ();
+				mediaFileSetCopy = value?.Clone ();
 				if (mediafileSet != null) {
 					visibleRegion = FileSet.VisibleRegion;
 					mediafileSet.PropertyChanged += HandleMediaFileSetPropertyChanged;
@@ -416,6 +416,7 @@ namespace VAS.Services
 				PlayerVM.ControlsSensitive = false;
 				ShowMessageInViewPorts (Catalog.GetString ("No video loaded"), true);
 				UpdateDuration ();
+				delayedOpen = null;
 				return;
 			}
 
@@ -1352,18 +1353,6 @@ namespace VAS.Services
 				readyToSeek = false;
 				FileSet = fileSet;
 				UpdateDuration ();
-				// Check if the view failed to configure a proper cam config
-				if (CamerasConfig == null) {
-					App.Current.EventsBroker.Publish<MultimediaErrorEvent> (
-						new MultimediaErrorEvent {
-							Sender = this,
-							Message = Catalog.GetString ("Invalid camera configuration")
-						}
-					);
-					FileSet = null;
-					return;
-				}
-				ValidateVisibleCameras ();
 				UpdateZoom ();
 				UpdatePar ();
 				PlayerVM.ControlsSensitive = true;

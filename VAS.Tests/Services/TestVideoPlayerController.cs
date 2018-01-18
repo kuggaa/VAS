@@ -347,36 +347,36 @@ namespace VAS.Tests.Services
 			bool multimediaError = false;
 			Time curTime = null, duration = null;
 
-			player.TimeChangedEvent += (c, d, seekable) => {
-				curTime = c;
-				duration = d;
-				timeCount++;
-			};
-
 			/* Open but view is not ready */
 			player.Open (mfs);
 			Assert.AreEqual (mfs, player.FileSet);
 			playerMock.Verify (p => p.Open (mfs [0]), Times.Never ());
 			playerMock.Verify (p => p.Play (It.IsAny<bool> ()), Times.Never ());
 			playerMock.Verify (p => p.Seek (new Time (0), true, false), Times.Never ());
+			player.Open (null);
+			playerMock.ResetCalls ();
 
-			/* Open with an invalid camera configuration */
+			player.TimeChangedEvent += (c, d, seekable) => {
+				curTime = c;
+				duration = d;
+				timeCount++;
+			};
+
+			/* Open with an invalid camera configuration, and the view ready. The CamerasConfig is fixed */
 			EventToken et = App.Current.EventsBroker.Subscribe<MultimediaErrorEvent> ((e) => {
 				multimediaError = true;
 			});
 
-			player.Ready (true);
-			player.Open (mfs);
-			Assert.IsTrue (multimediaError);
-			Assert.IsNull (player.FileSet);
-			Assert.IsFalse (player.Opened);
+			player.CamerasConfig = null;
 
-			/* Open with the view ready */
-			currentTime = new Time (0);
 			PreparePlayer ();
+
 			playerMock.Verify (p => p.Open (mfs [0]), Times.Once ());
 			playerMock.Verify (p => p.Play (It.IsAny<bool> ()), Times.Never ());
 			playerMock.Verify (p => p.Seek (new Time (0), true, false), Times.Once ());
+			Assert.IsFalse (multimediaError);
+			Assert.IsNotNull (player.CamerasConfig);
+			Assert.IsTrue (player.Opened);
 			Assert.AreEqual (1, timeCount);
 			Assert.AreEqual ((float)320 / 240, viewPortMock.Object.Ratio);
 			Assert.AreEqual (streamLength, duration);
@@ -472,7 +472,7 @@ namespace VAS.Tests.Services
 			currentTime = new Time (2000);
 			player.Seek (currentTime, false, false, false);
 			playerMock.Verify (p => p.Seek (It.IsAny<Time> (), It.IsAny<bool> (), It.IsAny<bool> ()), Times.Never ());
-			Assert.AreEqual (1, drawingsCount);
+			Assert.AreEqual (2, drawingsCount);
 			Assert.AreEqual (0, timeChanged);
 			playerMock.ResetCalls ();
 
@@ -482,7 +482,7 @@ namespace VAS.Tests.Services
 			/* ReadyToSeek emits TimeChanged */
 			Assert.AreEqual (1, timeChanged);
 			playerMock.Verify (p => p.Seek (currentTime, false, false), Times.Once ());
-			Assert.AreEqual (1, drawingsCount);
+			Assert.AreEqual (2, drawingsCount);
 			Assert.AreEqual (currentTime, curTime);
 			Assert.AreEqual (strLenght, streamLength);
 			playerMock.ResetCalls ();
@@ -491,7 +491,7 @@ namespace VAS.Tests.Services
 			currentTime = new Time (4000);
 			player.Seek (currentTime, true, true, false);
 			playerMock.Verify (p => p.Seek (currentTime, true, true), Times.Once ());
-			Assert.AreEqual (2, drawingsCount);
+			Assert.AreEqual (3, drawingsCount);
 			Assert.AreEqual (2, timeChanged);
 			Assert.AreEqual (currentTime, curTime);
 			Assert.AreEqual (strLenght, streamLength);
@@ -501,7 +501,7 @@ namespace VAS.Tests.Services
 			player.LoadPlaylistEvent (playlistVM, playlistVM.ViewModels [1], true);
 			player.Seek (currentTime, true, true, false);
 			playerMock.Verify (p => p.Seek (currentTime, It.IsAny<bool> (), It.IsAny<bool> ()), Times.Never ());
-			Assert.AreEqual (2, drawingsCount);
+			Assert.AreEqual (3, drawingsCount);
 			playerMock.ResetCalls ();
 
 			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
