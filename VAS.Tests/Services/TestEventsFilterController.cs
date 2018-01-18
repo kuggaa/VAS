@@ -11,6 +11,7 @@ using NUnit.Framework;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Filters;
+using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Resources.Styles;
@@ -18,6 +19,7 @@ using VAS.Core.Store;
 using VAS.Core.Store.Templates;
 using VAS.Core.ViewModel;
 using VAS.Services.Controller;
+using static VAS.Tests.Services.EventsFilterUtils;
 using Predicate = VAS.Core.Filters.Predicate<VAS.Core.ViewModel.TimelineEventVM>;
 using Timer = VAS.Core.Store.Timer;
 
@@ -28,6 +30,7 @@ namespace VAS.Tests.Services
 	{
 		TimelineVM timelineVM;
 		EventsFilterController eventsFilterController;
+		DummyEventsFilterController dummyEventsFilterController;
 
 		[OneTimeSetUp]
 		public void OneTimeSetUp ()
@@ -67,6 +70,26 @@ namespace VAS.Tests.Services
 			} catch (InvalidOperationException) {
 				// Ignore the already stopped error
 			}
+		}
+
+		[Test]
+		public async Task Stop_PreviousPredicateFiltersFilled_PreviousPredicateFiltersCleared ()
+		{
+			//Arrange
+			dummyEventsFilterController = new DummyEventsFilterController ();
+			dummyEventsFilterController.ViewModel = new TimelineVM ();
+			await dummyEventsFilterController.Start ();
+			dummyEventsFilterController.PreviousPredicates.Add (new Predicate ());
+			var onStartPreviousPredicatesCount = dummyEventsFilterController.PreviousPredicates.Count ();
+			//Act
+
+			await dummyEventsFilterController.Stop ();
+			dummyEventsFilterController.ViewModel = null;
+
+			//Assert
+			Assert.AreEqual (1, onStartPreviousPredicatesCount);
+			Assert.AreEqual (0, dummyEventsFilterController.PreviousPredicates.Count ());
+
 		}
 
 		[Test]
@@ -992,6 +1015,19 @@ namespace VAS.Tests.Services
 				};
 				return button;
 			}
+		}
+
+		public class DummyEventsFilterController : EventsFilterController
+		{
+			protected override void InitializePredicates ()
+			{
+			}
+
+			protected override void UpdateTeamsPredicates ()
+			{
+			}
+
+			public List<IPredicate<TimelineEventVM>> PreviousPredicates => previousPredicateList;
 		}
 	}
 }

@@ -45,6 +45,11 @@ namespace VAS.Core.Filters
 			set;
 		}
 
+		public string DisplayName {
+			get;
+			set;
+		}
+
 		public Expression<Func<T, bool>> Expression {
 			get { return expression; }
 			set {
@@ -119,6 +124,11 @@ namespace VAS.Core.Filters
 		}
 
 		public string Name {
+			get;
+			set;
+		}
+
+		public string DisplayName {
 			get;
 			set;
 		}
