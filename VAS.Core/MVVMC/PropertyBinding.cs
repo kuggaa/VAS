@@ -33,6 +33,7 @@ namespace VAS.Core.MVVMC
 		protected readonly Expression<Func<IViewModel, TSourceProperty>> propertyExpression;
 		protected Action<IViewModel, TTargetProperty> sourcePropertySet;
 		protected Func<IViewModel, TTargetProperty> sourcePropertyGet;
+		protected Func<TTargetProperty, TTargetProperty> formatterCallback;
 		protected string sourcePropertyName;
 
 		protected PropertyBinding ()
@@ -45,8 +46,9 @@ namespace VAS.Core.MVVMC
 		/// a ViewModel Property.
 		/// </summary>
 		/// <param name="sourcePropertyExpresison">Property expression.</param>
-		public PropertyBinding (Expression<Func<IViewModel, TSourceProperty>> sourcePropertyExpresison, TypeConverter typeConverter)
+		public PropertyBinding (Expression<Func<IViewModel, TSourceProperty>> sourcePropertyExpresison, TypeConverter typeConverter, Func<TTargetProperty, TTargetProperty> formatterCallback = null)
 		{
+			this.formatterCallback = formatterCallback;
 			// The expression has the following form
 			// vm => Convert(vm).PropertyFoo;
 			if (typeConverter == null) typeConverter = new DefaultTypeConverter<TSourceProperty, TTargetProperty> ();
@@ -59,8 +61,9 @@ namespace VAS.Core.MVVMC
 				(IViewModel arg) => (TTargetProperty)(typeConverter.ConvertTo (sourcePropertyExpresison.Compile () (arg), typeof (TTargetProperty)));
 		}
 
-		public PropertyBinding (Expression<Func<IViewModel, TSourceProperty>> propertyExpression)
+		public PropertyBinding (Expression<Func<IViewModel, TSourceProperty>> propertyExpression, Func<TTargetProperty, TTargetProperty> formatterCallback = null)
 		{
+			this.formatterCallback = formatterCallback;
 			// The expression has the following form
 			// vm => Convert(vm).PropertyFoo;
 			if (!typeof (TTargetProperty).IsAssignableFrom (typeof (TSourceProperty))) {
@@ -159,7 +162,11 @@ namespace VAS.Core.MVVMC
 		{
 			if (e.PropertyName == sourcePropertyName || e.PropertyName == null) {
 				try {
-					WriteViewValue (sourcePropertyGet (ViewModel));
+					var newValue = sourcePropertyGet (ViewModel);
+					if (formatterCallback != null) {
+						newValue = formatterCallback.Invoke (newValue);
+					}
+					WriteViewValue (newValue);
 				} catch (Exception ex) {
 					Log.Exception (ex);
 				}

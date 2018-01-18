@@ -26,5 +26,6 @@ namespace VAS.Core.Resources
 		public static string ProjectsCreateTip => Catalog.GetString ("Tip: You can get projects from other devices using the sync center");
 		public static string ProjectsNoneCreated => Catalog.GetString ("No projects created yet");
 		public static string ProjectsSearchPlaceholder => Catalog.GetString ("Search project...");
+		public static string MostUsedChampions => Catalog.GetString ("MOST USED CHAMPIONS");
 	}
 }
