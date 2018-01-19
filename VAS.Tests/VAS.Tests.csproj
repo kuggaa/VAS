@@ -163,6 +163,7 @@
     <Compile Include="Core\ViewModel\TestProjectsManagerVM.cs" />
     <Compile Include="Drawing\TestCanvasContainer.cs" />
     <Compile Include="Core\ViewModel\TestTimerButtonVM.cs" />
+    <Compile Include="Core\Common\TestTimeToStringConverter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
