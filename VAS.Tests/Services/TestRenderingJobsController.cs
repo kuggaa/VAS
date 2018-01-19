@@ -109,7 +109,7 @@ namespace VAS.Tests.Services
 				job = PrepareEditon ();
 
 				TimelineEvent evt = p.Timeline [0] as TimelineEvent;
-				evt.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+				evt.CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) };
 				PlaylistPlayElement element = new PlaylistPlayElement (evt);
 				job.Playlist.Elements.Add (element);
 
@@ -123,7 +123,7 @@ namespace VAS.Tests.Services
 				manager.CancelAll ();
 				editorMock.ResetCalls ();
 				evt = p.Timeline [1] as TimelineEvent;
-				evt.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (1) };
+				evt.CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (1) };
 				element = new PlaylistPlayElement (evt);
 				job.Playlist.Elements [0] = element;
 				job.State = JobState.Pending;
@@ -135,7 +135,7 @@ namespace VAS.Tests.Services
 				manager.CancelAll ();
 				editorMock.ResetCalls ();
 				evt = p.Timeline [1] as TimelineEvent;
-				evt.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (2) };
+				evt.CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (2) };
 				element = new PlaylistPlayElement (evt);
 				job.Playlist.Elements [0] = element;
 				job.State = JobState.Pending;

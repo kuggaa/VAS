@@ -302,6 +302,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Statistics\CircularChartVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Statistics\PercentCircularChartVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IPlayable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Multimedia\ISeeker.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

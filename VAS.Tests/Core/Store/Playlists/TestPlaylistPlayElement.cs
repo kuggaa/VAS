@@ -34,6 +34,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
+using VAS.Core.Common;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
 
@@ -70,7 +71,7 @@ namespace VAS.Tests.Core.Store.Playlists
 			evt.Start = new Time (1000);
 			evt.Stop = new Time (2000);
 			evt.CamerasLayout = 1;
-			evt.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (2), new CameraConfig (4) };
+			evt.CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (2), new CameraConfig (4) };
 
 			PlaylistPlayElement element = new PlaylistPlayElement (evt);
 
@@ -88,7 +89,7 @@ namespace VAS.Tests.Core.Store.Playlists
 			evt.Start = new Time (1000);
 			evt.Stop = new Time (2000);
 			evt.CamerasLayout = 1;
-			evt.CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (2), new CameraConfig (4) };
+			evt.CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (2), new CameraConfig (4) };
 			PlaylistPlayElement element = new PlaylistPlayElement (evt);
 			Assert.IsTrue (element.IsChanged);
 			element.IsChanged = false;

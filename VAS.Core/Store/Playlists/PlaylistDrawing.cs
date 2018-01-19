@@ -31,7 +31,7 @@ namespace VAS.Core.Store.Playlists
 		{
 			Duration = new Time (0);
 			Drawing = drawing;
-			CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+			CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) };
 			CamerasLayout = null;
 		}
 
@@ -74,7 +74,7 @@ namespace VAS.Core.Store.Playlists
 		}
 
 		[JsonIgnore]
-		public ObservableCollection<CameraConfig> CamerasConfig {
+		public RangeObservableCollection<CameraConfig> CamerasConfig {
 			get;
 			private set;
 		}
