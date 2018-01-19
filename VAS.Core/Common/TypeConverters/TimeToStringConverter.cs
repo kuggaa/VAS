@@ -46,9 +46,9 @@ namespace VAS.Core.Common.TypeConverters
 		public override object ConvertTo (ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
 		{
 			if (withDetail) {
-				return ((Time)value).ToMSecondsString (includeHour);
+				return ((Time)value)?.ToMSecondsString (includeHour);
 			} else {
-				return ((Time)value).ToSecondsString (includeHour);
+				return ((Time)value)?.ToSecondsString (includeHour);
 			}
 
 		}
