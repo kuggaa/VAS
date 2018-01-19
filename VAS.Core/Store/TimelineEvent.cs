@@ -1,4 +1,4 @@
-// MediaTimeNode.cs
+﻿// MediaTimeNode.cs
 //
 //  Copyright (C) 2007-2009 Andoni Morales Alastruey
 //
@@ -38,7 +38,7 @@ namespace VAS.Core.Store
 	{
 		[NonSerialized]
 		IStorage storage;
-		ObservableCollection<CameraConfig> camerasConfig;
+		RangeObservableCollection<CameraConfig> camerasConfig;
 		DateTime creationDate;
 
 		#region Constructors
@@ -50,7 +50,7 @@ namespace VAS.Core.Store
 			Tags = new RangeObservableCollection<Tag> ();
 			Rate = 1.0f;
 			ID = Guid.NewGuid ();
-			CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+			CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) };
 			Players = new RangeObservableCollection<Player> ();
 			Teams = new RangeObservableCollection<Team> ();
 			CreationDate = DateTime.UtcNow;
@@ -292,7 +292,7 @@ namespace VAS.Core.Store
 		/// <summary>
 		/// A list of visible <see cref="CameraConfig"/> for this event.
 		/// </summary>
-		public ObservableCollection<CameraConfig> CamerasConfig {
+		public RangeObservableCollection<CameraConfig> CamerasConfig {
 			get {
 				return camerasConfig;
 			}
@@ -522,7 +522,7 @@ namespace VAS.Core.Store
 		/// check and fix null values using as camera index a value in the range that is not used
 		/// </summary>
 		/// <param name="cconfig">CameraConfig ObservableCollection to be checked and fixed if needed</param>
-		protected void ValidateCameras (ObservableCollection<CameraConfig> cconfig)
+		protected void ValidateCameras (RangeObservableCollection<CameraConfig> cconfig)
 		{
 			if (cconfig == null) {
 				return;

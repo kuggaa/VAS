@@ -1,13 +1,14 @@
 using System;
 using System.Threading;
 using VAS.Core.Handlers;
+using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using ThreadingTimer = System.Threading.Timer;
 
 namespace VAS.Core.Common
 {
-	public class Seeker : DisposableBase
+	public class Seeker : DisposableBase, ISeeker
 	{
 		public event SeekHandler SeekEvent;
 

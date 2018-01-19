@@ -43,7 +43,7 @@ namespace VAS.Core.ViewModel
 		public VideoPlayerVM ()
 		{
 			ViewPortsSwitchActive = true;
-			CamerasConfig = new ObservableCollection<CameraConfig> ();
+			CamerasConfig = new RangeObservableCollection<CameraConfig> ();
 			AbsoluteCurrentTime = new Time (0);
 			CurrentTime = new Time (0);
 			Step = new Time { TotalSeconds = 10 };
@@ -482,7 +482,7 @@ namespace VAS.Core.ViewModel
 		/// this ViewModel
 		/// </summary>
 		/// <value>The cameras config.</value>
-		public ObservableCollection<CameraConfig> CamerasConfig {
+		public RangeObservableCollection<CameraConfig> CamerasConfig {
 			get;
 			set;
 		}
@@ -628,7 +628,7 @@ namespace VAS.Core.ViewModel
 		/// Changes the cameras config in the player.
 		/// </summary>
 		/// <param name="cameras">Cameras.</param>
-		public void SetCamerasConfig (ObservableCollection<CameraConfig> cameras)
+		public void SetCamerasConfig (RangeObservableCollection<CameraConfig> cameras)
 		{
 			Player.CamerasConfig = cameras;
 		}

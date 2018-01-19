@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Timers;
 using Moq;
 using NUnit.Framework;
@@ -62,25 +63,7 @@ namespace VAS.Tests.Services
 		{
 			fileManager = new Mock<IFileSystemManager> ();
 			App.Current.FileSystemManager = fileManager.Object;
-			playerMock = new Mock<IVideoPlayer> ();
-			playerMock.SetupAllProperties ();
-			/* Mock properties without setter */
-			playerMock.Setup (p => p.CurrentTime).Returns (() => currentTime);
-			playerMock.Setup (p => p.StreamLength).Returns (() => streamLength);
-			playerMock.Setup (p => p.Play (It.IsAny<bool> ())).Raises (p => p.StateChange += null,
-				new PlaybackStateChangedEvent {
-					Playing = true
-				}
-			);
-			playerMock.Setup (p => p.Pause (It.IsAny<bool> ())).Raises (p => p.StateChange += null,
-				new PlaybackStateChangedEvent {
-					Playing = false
-				}
-			);
 
-			mtkMock = new Mock<IMultimediaToolkit> ();
-			mtkMock.Setup (m => m.GetPlayer ()).Returns (playerMock.Object);
-			App.Current.MultimediaToolkit = mtkMock.Object;
 
 			var ftk = new Mock<IGUIToolkit> ();
 			ftk.Setup (m => m.Invoke (It.IsAny<EventHandler> ())).Callback<EventHandler> (e => e (null, null));
@@ -100,6 +83,25 @@ namespace VAS.Tests.Services
 		public void Setup ()
 		{
 			timerMock = new Mock<ITimer> ();
+			playerMock = new Mock<IVideoPlayer> ();
+			playerMock.SetupAllProperties ();
+			/* Mock properties without setter */
+			playerMock.Setup (p => p.CurrentTime).Returns (() => currentTime);
+			playerMock.Setup (p => p.StreamLength).Returns (() => streamLength);
+			playerMock.Setup (p => p.Play (It.IsAny<bool> ())).Raises (p => p.StateChange += null,
+				new PlaybackStateChangedEvent {
+					Playing = true
+				}
+			);
+			playerMock.Setup (p => p.Pause (It.IsAny<bool> ())).Raises (p => p.StateChange += null,
+				new PlaybackStateChangedEvent {
+					Playing = false
+				}
+			);
+
+			mtkMock = new Mock<IMultimediaToolkit> ();
+			mtkMock.Setup (m => m.GetPlayer ()).Returns (playerMock.Object);
+			App.Current.MultimediaToolkit = mtkMock.Object;
 			mfs = new MediaFileSet ();
 			mfs.Add (new MediaFile {
 				FilePath = "test1",
@@ -128,7 +130,7 @@ namespace VAS.Tests.Services
 				Model = new TimelineEvent {
 					Start = new Time (100),
 					Stop = new Time (200),
-					CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) },
+					CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) },
 					FileSet = mfs
 				}
 			};
@@ -136,7 +138,7 @@ namespace VAS.Tests.Services
 				Model = new TimelineEvent {
 					Start = new Time (1000),
 					Stop = new Time (20000),
-					CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) },
+					CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) },
 					FileSet = mfs
 				}
 			};
@@ -144,7 +146,7 @@ namespace VAS.Tests.Services
 				Model = new TimelineEvent {
 					Start = new Time (100),
 					Stop = new Time (200),
-					CamerasConfig = new ObservableCollection<CameraConfig> (),
+					CamerasConfig = new RangeObservableCollection<CameraConfig> (),
 					FileSet = mfs
 				}
 			};
@@ -154,7 +156,7 @@ namespace VAS.Tests.Services
 			playlist.Elements.Add (plImage.Model);
 			currentTime = new Time (0);
 
-			player = new VideoPlayerController (new Seeker (0), timerMock.Object);
+			player = new VideoPlayerController (new InstantSeeker (), timerMock.Object);
 			playerVM = new VideoPlayerVM ();
 			player.SetViewModel (playerVM);
 
@@ -182,7 +184,7 @@ namespace VAS.Tests.Services
 
 		void PreparePlayer (bool readyToSeek = true)
 		{
-			player.CamerasConfig = new ObservableCollection<CameraConfig> {
+			player.CamerasConfig = new RangeObservableCollection<CameraConfig> {
 					new CameraConfig (0),
 					new CameraConfig (1)
 				};
@@ -345,36 +347,36 @@ namespace VAS.Tests.Services
 			bool multimediaError = false;
 			Time curTime = null, duration = null;
 
-			player.TimeChangedEvent += (c, d, seekable) => {
-				curTime = c;
-				duration = d;
-				timeCount++;
-			};
-
 			/* Open but view is not ready */
 			player.Open (mfs);
 			Assert.AreEqual (mfs, player.FileSet);
 			playerMock.Verify (p => p.Open (mfs [0]), Times.Never ());
 			playerMock.Verify (p => p.Play (It.IsAny<bool> ()), Times.Never ());
 			playerMock.Verify (p => p.Seek (new Time (0), true, false), Times.Never ());
+			player.Open (null);
+			playerMock.ResetCalls ();
 
-			/* Open with an invalid camera configuration */
+			player.TimeChangedEvent += (c, d, seekable) => {
+				curTime = c;
+				duration = d;
+				timeCount++;
+			};
+
+			/* Open with an invalid camera configuration, and the view ready. The CamerasConfig is fixed */
 			EventToken et = App.Current.EventsBroker.Subscribe<MultimediaErrorEvent> ((e) => {
 				multimediaError = true;
 			});
 
-			player.Ready (true);
-			player.Open (mfs);
-			Assert.IsTrue (multimediaError);
-			Assert.IsNull (player.FileSet);
-			Assert.IsFalse (player.Opened);
+			player.CamerasConfig = null;
 
-			/* Open with the view ready */
-			currentTime = new Time (0);
 			PreparePlayer ();
+
 			playerMock.Verify (p => p.Open (mfs [0]), Times.Once ());
 			playerMock.Verify (p => p.Play (It.IsAny<bool> ()), Times.Never ());
 			playerMock.Verify (p => p.Seek (new Time (0), true, false), Times.Once ());
+			Assert.IsFalse (multimediaError);
+			Assert.IsNotNull (player.CamerasConfig);
+			Assert.IsTrue (player.Opened);
 			Assert.AreEqual (1, timeCount);
 			Assert.AreEqual ((float)320 / 240, viewPortMock.Object.Ratio);
 			Assert.AreEqual (streamLength, duration);
@@ -470,7 +472,7 @@ namespace VAS.Tests.Services
 			currentTime = new Time (2000);
 			player.Seek (currentTime, false, false, false);
 			playerMock.Verify (p => p.Seek (It.IsAny<Time> (), It.IsAny<bool> (), It.IsAny<bool> ()), Times.Never ());
-			Assert.AreEqual (1, drawingsCount);
+			Assert.AreEqual (2, drawingsCount);
 			Assert.AreEqual (0, timeChanged);
 			playerMock.ResetCalls ();
 
@@ -480,7 +482,7 @@ namespace VAS.Tests.Services
 			/* ReadyToSeek emits TimeChanged */
 			Assert.AreEqual (1, timeChanged);
 			playerMock.Verify (p => p.Seek (currentTime, false, false), Times.Once ());
-			Assert.AreEqual (1, drawingsCount);
+			Assert.AreEqual (2, drawingsCount);
 			Assert.AreEqual (currentTime, curTime);
 			Assert.AreEqual (strLenght, streamLength);
 			playerMock.ResetCalls ();
@@ -489,7 +491,7 @@ namespace VAS.Tests.Services
 			currentTime = new Time (4000);
 			player.Seek (currentTime, true, true, false);
 			playerMock.Verify (p => p.Seek (currentTime, true, true), Times.Once ());
-			Assert.AreEqual (2, drawingsCount);
+			Assert.AreEqual (3, drawingsCount);
 			Assert.AreEqual (2, timeChanged);
 			Assert.AreEqual (currentTime, curTime);
 			Assert.AreEqual (strLenght, streamLength);
@@ -499,7 +501,7 @@ namespace VAS.Tests.Services
 			player.LoadPlaylistEvent (playlistVM, playlistVM.ViewModels [1], true);
 			player.Seek (currentTime, true, true, false);
 			playerMock.Verify (p => p.Seek (currentTime, It.IsAny<bool> (), It.IsAny<bool> ()), Times.Never ());
-			Assert.AreEqual (2, drawingsCount);
+			Assert.AreEqual (3, drawingsCount);
 			playerMock.ResetCalls ();
 
 			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
@@ -509,14 +511,14 @@ namespace VAS.Tests.Services
 		public void TestSeekProportional ()
 		{
 			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
-
 			int seekPos;
 			int timeChanged = 0;
 			Time curTime = new Time (0);
 			Time strLenght = new Time (0);
-			// Create a VideoPlayerController with a Seeker with the normal TimeOut for this test
-			player = new VideoPlayerController ();
+			var triggerableSeeker = new TriggerableSeeker ();
+			player = new VideoPlayerController (triggerableSeeker);
 			player.SetViewModel (playerVM);
+
 
 			player.TimeChangedEvent += (c, d, s) => {
 				timeChanged++;
@@ -542,10 +544,9 @@ namespace VAS.Tests.Services
 			playerMock.ResetCalls ();
 			player.Seek (0.1f);
 			player.Seek (0.5f);
-			//FIXME: this needs a Sleep to work and a videoplayercontroller with a normal seeker timeout
-			//if the videoplayercontroller has a seeker without a timeout and we do not sleep it had a race condition
-			//and sometime the test was success and others fails.
-			System.Threading.Thread.Sleep (100);
+			// this is to avoid the timer + sleep to test the throttled seek. In real code we don't need the trigger.
+			triggerableSeeker.TriggerSeek ();
+
 			// Check we got called only once
 			playerMock.Verify (p => p.Seek (It.IsAny<Time> (), true, false), Times.Once ());
 			// And with the last value
@@ -992,7 +993,7 @@ namespace VAS.Tests.Services
 				Model = new TimelineEvent {
 					Start = new Time (100),
 					Stop = new Time (20000),
-					CamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) },
+					CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) },
 					FileSet = mfs
 				}
 			};
@@ -1048,11 +1049,12 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (new List<CameraConfig> { new CameraConfig (0), new CameraConfig (1) }, player.CamerasConfig);
 
 			/* Change again the cameras visible */
-			player.CamerasConfig = new ObservableCollection<CameraConfig> {
+			player.CamerasConfig = new RangeObservableCollection<CameraConfig> {
 					new CameraConfig (1),
 					new CameraConfig (0)
 				};
-			Assert.AreEqual (eventVM1.CamerasConfig, new List<CameraConfig> { new CameraConfig (0) });
+			Assert.AreEqual (new List<CameraConfig> { new CameraConfig (1), new CameraConfig (0) }, player.CamerasConfig);
+			Assert.AreNotEqual (eventVM1.CamerasConfig, player.CamerasConfig);
 			player.LoadEvent (eventVM1, new Time (0), true);
 			Assert.AreEqual (1, elementLoaded);
 			Assert.AreEqual (1, brokerElementLoaded);
@@ -1087,7 +1089,7 @@ namespace VAS.Tests.Services
 				Model = new TimelineEvent {
 					Start = new Time (150),
 					Stop = new Time (200),
-					CamerasConfig = new ObservableCollection<CameraConfig> {
+					CamerasConfig = new RangeObservableCollection<CameraConfig> {
 						new CameraConfig (0),
 						new CameraConfig (1),
 						new CameraConfig (4),
@@ -1097,7 +1099,7 @@ namespace VAS.Tests.Services
 				}
 			};
 
-			player.CamerasConfig = new ObservableCollection<CameraConfig> {
+			player.CamerasConfig = new RangeObservableCollection<CameraConfig> {
 					new CameraConfig (1),
 					new CameraConfig (0)
 				};
@@ -1138,7 +1140,7 @@ namespace VAS.Tests.Services
 			player.PrepareViewEvent += () => prepareView++;
 
 			/* Not ready to seek */
-			player.CamerasConfig = new ObservableCollection<CameraConfig> {
+			player.CamerasConfig = new RangeObservableCollection<CameraConfig> {
 					new CameraConfig (0),
 					new CameraConfig (1)
 				};
@@ -1204,7 +1206,7 @@ namespace VAS.Tests.Services
 				Model = new TimelineEvent {
 					Start = new Time (400),
 					Stop = new Time (50000),
-					CamerasConfig = new ObservableCollection<CameraConfig> {
+					CamerasConfig = new RangeObservableCollection<CameraConfig> {
 						new CameraConfig (1),
 						new CameraConfig (0)
 					},
@@ -1241,7 +1243,7 @@ namespace VAS.Tests.Services
 			player.PrepareViewEvent += () => prepareView++;
 
 			/* Not ready to seek */
-			player.CamerasConfig = new ObservableCollection<CameraConfig> {
+			player.CamerasConfig = new RangeObservableCollection<CameraConfig> {
 					new CameraConfig (0),
 					new CameraConfig (1)
 				};
@@ -1399,7 +1401,7 @@ namespace VAS.Tests.Services
 		{
 			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
 			TimelineEventVM eventVM1;
-			ObservableCollection<CameraConfig> cams1, cams2;
+			RangeObservableCollection<CameraConfig> cams1, cams2;
 			Mock<IMultiVideoPlayer> multiplayerMock = new Mock<IMultiVideoPlayer> ();
 
 			mtkMock.Setup (m => m.GetMultiPlayer ()).Returns (multiplayerMock.Object);
@@ -1409,8 +1411,8 @@ namespace VAS.Tests.Services
 			PreparePlayer ();
 
 			/* Only called internally in the openning */
-			cams1 = new ObservableCollection<CameraConfig> { new CameraConfig (0), new CameraConfig (1) };
-			cams2 = new ObservableCollection<CameraConfig> { new CameraConfig (1), new CameraConfig (0) };
+			cams1 = new RangeObservableCollection<CameraConfig> { new CameraConfig (0), new CameraConfig (1) };
+			cams2 = new RangeObservableCollection<CameraConfig> { new CameraConfig (1), new CameraConfig (0) };
 			multiplayerMock.Verify (p => p.ApplyCamerasConfig (), Times.Never ());
 			Assert.AreEqual (cams1, player.CamerasConfig);
 
@@ -1425,7 +1427,7 @@ namespace VAS.Tests.Services
 					Start = new Time (100),
 					Stop = new Time (200),
 					FileSet = mfs,
-					CamerasConfig = new ObservableCollection<CameraConfig> {
+					CamerasConfig = new RangeObservableCollection<CameraConfig> {
 						new CameraConfig (1),
 						new CameraConfig (1)
 					}
@@ -1437,7 +1439,7 @@ namespace VAS.Tests.Services
 			multiplayerMock.ResetCalls ();
 
 			/* Change event cams config */
-			player.CamerasConfig = new ObservableCollection<CameraConfig> {
+			player.CamerasConfig = new RangeObservableCollection<CameraConfig> {
 					new CameraConfig (0),
 					new CameraConfig (0)
 				};
@@ -1489,7 +1491,7 @@ namespace VAS.Tests.Services
 		public void TestROICamerasConfig ()
 		{
 			TimelineEventVM eventVM1;
-			ObservableCollection<CameraConfig> cams;
+			RangeObservableCollection<CameraConfig> cams;
 			Mock<IMultiVideoPlayer> multiplayerMock = new Mock<IMultiVideoPlayer> ();
 
 			mtkMock.Setup (m => m.GetMultiPlayer ()).Returns (multiplayerMock.Object);
@@ -2024,13 +2026,14 @@ namespace VAS.Tests.Services
 		[Test]
 		public void LoadEvent_StartMoved_SeekToNewPosition ()
 		{
+			var playerEvent = eventVM1;
 			PreparePlayer ();
-			player.LoadEvent (eventVM1, eventVM1.Start, true);
+			player.LoadEvent (playerEvent, playerEvent.Start, true);
 			playerMock.ResetCalls ();
 
-			eventVM1.Start += 1000;
+			playerEvent.Start += 1000;
 
-			playerMock.Verify (p => p.Seek (eventVM1.Start, true, false));
+			playerMock.Verify (p => p.Seek (playerEvent.Start, true, false));
 		}
 
 		[Test]
@@ -2339,7 +2342,7 @@ namespace VAS.Tests.Services
 			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
 			playerMock.Raise (p => p.ReadyToSeek += null, this);
 
-			var eventCamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+			var eventCamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) };
 			var eventCamerasLayout = new object ();
 
 			var playlistVM = new PlaylistVM { Model = new Playlist () };
@@ -2367,7 +2370,7 @@ namespace VAS.Tests.Services
 			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
 			playerMock.Raise (p => p.ReadyToSeek += null, this);
 
-			var eventCamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+			var eventCamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) };
 			var playlistVM = new PlaylistVM { Model = new Playlist () };
 			player.LoadPlaylistEvent (playlistVM, new PlaylistVideoVM { Model = new PlaylistVideo (new MediaFile ()) }, false);
 
@@ -2384,7 +2387,7 @@ namespace VAS.Tests.Services
 			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
 			playerMock.Raise (p => p.ReadyToSeek += null, this);
 
-			var eventCamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+			var eventCamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) };
 			var playlistVM = new PlaylistVM { Model = new Playlist () };
 			player.LoadPlaylistEvent (playlistVM, new PlaylistImageVM {
 				Model = new PlaylistImage (App.Current.ResourcesLocator.LoadImage ("name", 1, 1), new Time (10))
@@ -2403,7 +2406,7 @@ namespace VAS.Tests.Services
 			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
 			playerMock.Raise (p => p.ReadyToSeek += null, this);
 
-			var eventCamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+			var eventCamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) };
 			var playlistVM = new PlaylistVM { Model = new Playlist () };
 			player.LoadPlaylistEvent (playlistVM, new PlaylistDrawingVM {
 				Model = new PlaylistDrawing (new FrameDrawing ())
@@ -2422,7 +2425,7 @@ namespace VAS.Tests.Services
 			player.ViewPorts = new List<IViewPort> { viewPortMock.Object, viewPortMock.Object };
 			playerMock.Raise (p => p.ReadyToSeek += null, this);
 
-			var eventCamerasConfig = new ObservableCollection<CameraConfig> { new CameraConfig (0) };
+			var eventCamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) };
 			player.LoadEvent (new TimelineEventVM () { Model = new TimelineEvent () }, new Time (0), false);
 
 			Assert.AreEqual (eventCamerasConfig, player.CamerasConfig);
@@ -2458,6 +2461,108 @@ namespace VAS.Tests.Services
 			///Assert
 
 			Assert.IsNull (playerVM.FrameDrawing);
+		}
+
+		[Test]
+		public void LoadPlaylistEvent_MulticamInFilesetAndSingleCamInEvent_UseMulticam ()
+		{
+			///Arrange
+			Mock<IMultiVideoPlayer> multiplayerMock = new Mock<IMultiVideoPlayer> ();
+			mtkMock.Setup (m => m.GetMultiPlayer ()).Returns (multiplayerMock.Object);
+			player = new VideoPlayerController ();
+			//Should set again the ViewModel
+			(player as IController).SetViewModel (playerVM);
+			PreparePlayer ();
+			multiplayerMock.ResetCalls ();
+
+			var playElementVM = new PlaylistPlayElementVM {
+				Model = new PlaylistPlayElement (new TimelineEvent {
+					Start = new Time (100),
+					Stop = new Time (200),
+					CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) },
+					FileSet = mfs
+				})
+			};
+
+			player.LoadPlaylistEvent (playlistVM, playlistVM.ViewModels.First (), false);
+
+			Assert.AreEqual (2, player.CamerasConfig.Count);
+			multiplayerMock.Verify (mp => mp.ApplyCamerasConfig (), Times.Once ());
+			// CamerasConfig is set once with a bad config, and then validated and set again when calling ApplyCamerasConfig
+			multiplayerMock.VerifySet (mp => mp.CamerasConfig = It.IsAny<RangeObservableCollection<CameraConfig>> (), Times.Exactly (2));
+		}
+
+		[Test]
+		public void LoadEvent_MulticamInFilesetAndSingleCamInEvent_UseMulticam ()
+		{
+			///Arrange
+			Mock<IMultiVideoPlayer> multiplayerMock = new Mock<IMultiVideoPlayer> ();
+			mtkMock.Setup (m => m.GetMultiPlayer ()).Returns (multiplayerMock.Object);
+			player = new VideoPlayerController ();
+			//Should set again the ViewModel
+			(player as IController).SetViewModel (playerVM);
+			PreparePlayer ();
+			multiplayerMock.ResetCalls ();
+
+			TimelineEventVM event1 = new TimelineEventVM {
+				Model = new TimelineEvent {
+					Start = new Time (100),
+					Stop = new Time (200),
+					CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) },
+					FileSet = mfs
+				}
+			};
+
+			player.LoadEvent (event1, new Time (0), false);
+
+			Assert.AreEqual (2, player.CamerasConfig.Count);
+			multiplayerMock.Verify (mp => mp.ApplyCamerasConfig (), Times.Once ());
+			// CamerasConfig is set once with a bad config, and then validated and set again when calling ApplyCamerasConfig
+			multiplayerMock.VerifySet (mp => mp.CamerasConfig = It.IsAny<RangeObservableCollection<CameraConfig>> (), Times.Exactly (2));
+		}
+
+		[Test]
+		public void LoadEventTwice_MulticamInFilesetAndSingleCamInEvents_UseMulticam ()
+		{
+			///Arrange
+			Mock<IMultiVideoPlayer> multiplayerMock = new Mock<IMultiVideoPlayer> ();
+			mtkMock.Setup (m => m.GetMultiPlayer ()).Returns (multiplayerMock.Object);
+			player = new VideoPlayerController ();
+			//Should set again the ViewModel
+			(player as IController).SetViewModel (playerVM);
+			PreparePlayer ();
+			multiplayerMock.ResetCalls ();
+
+			TimelineEventVM event1 = new TimelineEventVM {
+				Model = new TimelineEvent {
+					Start = new Time (100),
+					Stop = new Time (200),
+					CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (0) },
+					FileSet = mfs
+				}
+			};
+
+			TimelineEventVM event2 = new TimelineEventVM {
+				Model = new TimelineEvent {
+					Start = new Time (1000),
+					Stop = new Time (2000),
+					CamerasConfig = new RangeObservableCollection<CameraConfig> { new CameraConfig (1) },
+					FileSet = mfs
+				}
+			};
+
+			multiplayerMock.ResetCalls ();
+
+			// Act
+			player.LoadEvent (event1, new Time (0), false);
+
+			player.LoadEvent (event2, new Time (0), false);
+
+			// Assert
+			Assert.AreEqual (2, player.CamerasConfig.Count);
+			multiplayerMock.Verify (mp => mp.ApplyCamerasConfig (), Times.Exactly (2));
+			// CamerasConfig is set once with a bad config, and then validated and set again when calling ApplyCamerasConfig
+			multiplayerMock.VerifySet (mp => mp.CamerasConfig = It.IsAny<RangeObservableCollection<CameraConfig>> (), Times.Exactly (4));
 		}
 
 		void HandleElementLoadedEvent (object element, bool hasNext)

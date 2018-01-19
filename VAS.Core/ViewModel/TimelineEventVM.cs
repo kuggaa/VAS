@@ -108,7 +108,7 @@ namespace VAS.Core.ViewModel
 		/// <summary>
 		/// A list of visible <see cref="CameraConfig"/> for this event.
 		/// </summary>
-		public ObservableCollection<CameraConfig> CamerasConfig {
+		public RangeObservableCollection<CameraConfig> CamerasConfig {
 			get {
 				return Model.CamerasConfig;
 			}

@@ -1,4 +1,4 @@
-// PlayerView.cs
+﻿// PlayerView.cs
 //
 //  Copyright (C) 2007-2009 Andoni Morales Alastruey
 //
@@ -225,7 +225,7 @@ namespace VAS.UI
 		// FIXME: Used in presentations while MVVM is not implemented there
 		public bool SubViewPortsVisible {
 			set {
-				bool b = value && (ViewModel.FileSet == null || ViewModel.FileSet.ViewModels.Count > 1);
+				bool b = value && (playerVM.CamerasConfig == null || playerVM.CamerasConfig.Count > 1);
 				viewportsBox.Visible = b;
 				subviewportsbox.Visible = b && viewportsSwitchButton.Active;
 			}
@@ -356,28 +356,6 @@ namespace VAS.UI
 			UpdateCombo (subviewport1);
 			UpdateCombo (subviewport2);
 			UpdateCombo (subviewport3);
-		}
-
-		void ValidateCameras (ObservableCollection<CameraConfig> cameras)
-		{
-			bool changed = false;
-
-			// As no camera configuration has been defined yet, we should suggest one
-			if (cameras == null) {
-				cameras = new ObservableCollection<CameraConfig> ();
-				for (int i = 0; i < Math.Min (4, ViewModel.FileSet.ViewModels.Count); i++) {
-					changed = true;
-					cameras.Add (new CameraConfig (i));
-				}
-			} else if (cameras.Count < ViewModel.FileSet.ViewModels.Count) {
-				for (int i = cameras.Count; i < ViewModel.FileSet.ViewModels.Count; i++) {
-					changed = true;
-					cameras.Add (new CameraConfig (i));
-				}
-			}
-			if (changed) {
-				playerVM.SetCamerasConfig (cameras);
-			}
 		}
 
 		void DebugCamerasVisible ()
@@ -738,9 +716,11 @@ namespace VAS.UI
 				}
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.CamerasConfig)) ||
-				ViewModel.NeedsSync (e, nameof (ViewModel.FileSet)) ||
 				ViewModel.NeedsSync (e, nameof (ViewModel.SupportsMultipleCameras))) {
 				HandleCamerasConfigChanged ();
+			}
+			if (ViewModel.NeedsSync (e, nameof (ViewModel.FileSet))) {
+				HandleFileSetChanged ();
 			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.ShowDetachButton))) {
 				detachbutton.Visible = ViewModel.ShowDetachButton;
@@ -880,10 +860,8 @@ namespace VAS.UI
 
 		void HandleCamerasConfigChanged ()
 		{
-			if (ViewModel.FileSet != null) {
-				ValidateCameras (playerVM.CamerasConfig);
-				mainviewport.Visible = ViewModel.FileSet.ViewModels.Count > 0 && !IsPlaylistImageLoaded;
-				UpdateComboboxes ();
+			if (playerVM.CamerasConfig != null) {
+				mainviewport.Visible = playerVM.CamerasConfig.Any () && !IsPlaylistImageLoaded;
 				DebugCamerasVisible ();
 				SubViewPortsVisible = ViewModel.SupportsMultipleCameras;
 				zoomBox.Visible = true;
@@ -906,6 +884,14 @@ namespace VAS.UI
 				{ FontSize = 10, TextColor = App.Current.Style.TextBaseSecondary, FontSlant = FontSlant.Normal };
 		}
 			
+		void HandleFileSetChanged ()
+		{
+			if (ViewModel.FileSet != null) {
+				UpdateComboboxes ();
+				DebugCamerasVisible ();
+				HandleCamerasConfigChanged ();
+			}
+		}
 	}
 }
 
