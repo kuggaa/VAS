@@ -100,7 +100,7 @@ namespace VAS.Core.Hotkeys
 			if (context is KeyTemporalContext && !currentKeyContexts.Any (x => x is KeyTemporalContext)) {
 				contextTimer.Stop ();
 			}
-			
+
 			currentKeyContexts.RemoveAll (ctx => ctx == context);
 		}
 
@@ -110,7 +110,7 @@ namespace VAS.Core.Hotkeys
 		/// <param name="contexts">Contexts.</param>
 		public void NewKeyContexts (List<KeyContext> contexts)
 		{
-			contexts.Where(x => x is KeyTemporalContext).ToList().ForEach (x => AddTemporalContext((KeyTemporalContext)x));
+			contexts.Where (x => x is KeyTemporalContext).ToList ().ForEach (x => AddTemporalContext ((KeyTemporalContext)x));
 			currentKeyContexts = contexts;
 		}
 
@@ -168,7 +168,7 @@ namespace VAS.Core.Hotkeys
 		void OnElapsedTimer (object sender, EventArgs e)
 		{
 			contextTimer.Stop ();
-			currentKeyContexts.RemoveAll (x => CheckContextExpired(x));
+			currentKeyContexts.RemoveAll (x => CheckContextExpired (x));
 			if (currentKeyContexts.Any (x => x is KeyTemporalContext)) {
 				contextTimer.Start ();
 			}
@@ -181,7 +181,7 @@ namespace VAS.Core.Hotkeys
 			KeyTemporalContext tmpContext = context as KeyTemporalContext;
 			if (tmpContext != null) {
 				TimeSpan passedTime = DateTime.Now - tmpContext.StartedTime;
-				expired =  passedTime.TotalMilliseconds >= tmpContext.Duration;
+				expired = passedTime.TotalMilliseconds >= tmpContext.Duration;
 				if (expired) {
 					App.Current.GUIToolkit.Invoke ((sender, e) => tmpContext.ExpiredTimeAction ());
 				}
