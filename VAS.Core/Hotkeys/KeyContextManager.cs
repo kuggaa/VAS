@@ -165,7 +165,7 @@ namespace VAS.Core.Hotkeys
 			);
 		}
 
-		void OnElapsedTimer (object sender, ElapsedEventArgs e)
+		void OnElapsedTimer (object sender, EventArgs e)
 		{
 			contextTimer.Stop ();
 			currentKeyContexts.RemoveAll (x => CheckContextExpired(x));
