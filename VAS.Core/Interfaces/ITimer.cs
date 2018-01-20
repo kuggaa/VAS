@@ -15,6 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using System.Timers;
 
 namespace VAS.Core.Interfaces
@@ -55,6 +56,6 @@ namespace VAS.Core.Interfaces
 		/// <summary>
 		/// Eent raised when the time assigned to the interval has expired
 		/// </summary>
-		event ElapsedEventHandler Elapsed;
+		event EventHandler Elapsed;
 	}
 }
