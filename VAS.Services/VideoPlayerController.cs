@@ -1794,7 +1794,7 @@ namespace VAS.Services
 			}
 		}
 
-		void HandleTimeout (object sender, ElapsedEventArgs e)
+		void HandleTimeout (object sender, EventArgs e)
 		{
 			App.Current.GUIToolkit.Invoke (delegate {
 				if (!IgnoreTicks) {
