@@ -35,6 +35,7 @@ namespace VAS.Core.Common
 		public const string ButtonDialog = "ButtonDialog";
 		public const string ButtonCallToActionRounded = "ButtonCallToActionRounded";
 		public const string ButtonRegular = "ButtonRegular";
+		public const string ButtonSelectorTab = "ButtonSelectorTab";
 
 		//Limits Styles
 		public const string LabelLimit = "LabelLimit";
