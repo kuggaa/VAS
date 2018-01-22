@@ -21,6 +21,7 @@ using NUnit.Framework;
 using VAS.Core;
 using VAS.Core.Interfaces;
 using VAS.Core.MVVMC;
+using VAS.Services;
 
 namespace VAS.Tests.MVVMC
 {
@@ -130,7 +131,7 @@ namespace VAS.Tests.MVVMC
 		{
 			// Arrange
 			bool executed = false;
-			App.Current.LicenseLimitationsService = new DummyLicenseLimitationsService ();
+			App.Current.LicenseLimitationsService = new LicenseLimitationsService ();
 			var command = new LimitationCommand (limitationName, () => { executed = true; });
 
 			// Act
