@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 using Gdk;
 using Gtk;
 
@@ -26,6 +27,27 @@ namespace VAS.UI.Helpers
 	/// </summary>
 	public static class ExtensionMethods
 	{
+		/// <summary>
+		/// Autocomplete the specified entry and list.
+		/// </summary>
+		/// <returns>The autocomplete.</returns>
+		/// <param name="entry">Entry.</param>
+		/// <param name="list">List.</param>
+		public static void Autocomplete (this Entry entry, List<string> list)
+		{
+			EntryCompletion completionSeasons = new EntryCompletion ();
+			ListStore storeSeasons = new ListStore (typeof (string));
+
+			foreach (string item in list) {
+				storeSeasons.AppendValues (item);
+			}
+
+			entry.Completion = new EntryCompletion {
+				Model = storeSeasons,
+				TextColumn = 0
+			};
+		}
+
 		/// <summary>
 		/// Centers a dialog on its parent. Dialogs are centered in Show () only if TransientFor is set,
 		/// which has to be done in the constructor with Stetic. When we can't this function can be used instead.
