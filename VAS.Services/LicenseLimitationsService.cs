@@ -233,9 +233,9 @@ namespace VAS.Services
 				return null;
 			}
 
-			TwoBarChartVM barChart = new TwoBarChartVM (limitation.Maximum,
-														new SeriesVM { Title = "Remaining", Elements = limitation.Remaining, Color = App.Current.Style.ColorAccentSuccess },
-														new SeriesVM { Title = "Current", Elements = limitation.Count, Color = Color.Transparent });
+			TwoBarChartVM barChart = new TwoBarChartVM (new SeriesVM { Title = "Remaining", Elements = limitation.Remaining, Color = App.Current.Style.ColorAccentSuccess },
+														new SeriesVM { Title = "Current", Elements = limitation.Count, Color = Color.Transparent },
+			                                            limitation.Maximum);
 			barChart.Height = 10;
 			barChart.Background = new ImageCanvasObject {
 				Image = App.Current.ResourcesLocator.LoadImage ("images/lm-widget-full-bar" + Constants.IMAGE_EXT),

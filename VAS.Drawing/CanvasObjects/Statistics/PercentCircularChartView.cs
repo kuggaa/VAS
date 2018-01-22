@@ -79,12 +79,11 @@ namespace VAS.Drawing.CanvasObjects.Statistics
 			tk.FillColor = Color.Transparent;
 
 			// draw main serie
-			SeriesVM mainSerie = ViewModel.Series.ViewModels [0];
+			SeriesVM mainSerie = ViewModel.PercentSerie;
 			double finalAngle = (360 * (Percent / 100.0) + CIRCLE_START) * RADIANTS_CONVERSION;
 
 			// draw empty serie
-			SeriesVM emptySerie = ViewModel.Series.ViewModels [1];
-			tk.StrokeColor = emptySerie.Color;
+			tk.StrokeColor = ViewModel.EmptySerie.Color;
 			tk.LineWidth = viewModel.LineWidth;
 			tk.DrawArc (center, viewModel.Radius - (viewModel.LineWidth / 2.0), 0, 2 * Math.PI);
 

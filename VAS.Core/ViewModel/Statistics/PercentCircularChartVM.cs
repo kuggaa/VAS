@@ -16,6 +16,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using VAS.Core.Common;
 
 namespace VAS.Core.ViewModel.Statistics
@@ -26,28 +28,64 @@ namespace VAS.Core.ViewModel.Statistics
 	/// </summary>
 	public sealed class PercentCircularChartVM : CircularChartVM
 	{
-		public PercentCircularChartVM (SeriesVM serie, int total, Color emptyChartColor = null)
+		int totalElements;
+
+		public PercentCircularChartVM (SeriesVM serie, Color emptyChartColor = null)
 		{
 			Color emptyColor = emptyChartColor ?? App.Current.Style.ChartBase;
-			SeriesVM emptySerie = new SeriesVM ("empty", total - serie.Elements, emptyColor);
-			Series = new SeriesCollectionVM {
-				ViewModels = { serie, emptySerie }
-			};
+			EmptySerie = new SeriesVM ("empty", emptyColor);
+			PercentSerie = serie;
+			Series.ViewModels.AddRange (new List<SeriesVM> { PercentSerie, EmptySerie });
+		}
 
-			PercentValue = (total != 0) ? serie.Elements * 100.0 / total : 0;
-			PercentValueText = string.Format ("{0:0.0}%", PercentValue);
+		/// <summary>
+		/// Gets or sets the total elements.
+		/// </summary>
+		/// <value>The total.</value>
+		public int TotalElements {
+			get => totalElements;
+			set {
+				totalElements = value;
+				UpdateEmptySerie ();
+			}
 		}
 
 		/// <summary>
 		/// Gets the percent text value of the serie.
 		/// </summary>
 		/// <value>The percent text value.</value>
-		public string PercentValueText { get; private set; }
+		// public string PercentValueText { get => String.Format ("{0:0.0}%", PercentValue); }
 
 		/// <summary>
 		/// Gets the percent value.
 		/// </summary>
 		/// <value>The percent value.</value>
-		public double PercentValue { get; private set; }
+		public double PercentValue { get; set; }
+
+		/// <summary>
+		/// Gets the percent serie .
+		/// </summary>
+		/// <value>The serie.</value>
+		public SeriesVM PercentSerie { get; private set; }
+
+		/// <summary>
+		/// Gets the empty serie.
+		/// </summary>
+		/// <value>The empty serie.</value>
+		public SeriesVM EmptySerie { get; private set; }
+
+		void UpdateEmptySerie () {
+			EmptySerie.Elements = TotalElements - PercentSerie.Elements;
+		}
+
+		protected override void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "Elements" && sender == PercentSerie) {
+				PercentValue = (TotalElements != 0) ? PercentSerie.Elements * 100.0 / TotalElements : 0;
+				UpdateEmptySerie ();
+			}
+
+			base.ForwardPropertyChanged (sender, e);
+		}
 	}
 }
