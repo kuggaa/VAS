@@ -88,5 +88,37 @@ namespace VAS.Tests.Core.Common
 
 			Assert.IsTrue (result);
 		}
+
+		[Test ()]
+		public void ConvertTo_Int32ConvertsToString_ReturnsValueToString ()
+		{
+			///Arrange
+
+			var target = new NegativeInt32ToDashConverter ();
+
+			///Act
+
+			var result = (string)target.ConvertTo (null, null, 1, typeof (int));
+
+			///Assert
+
+			Assert.AreEqual ("1", result);
+		}
+
+		[Test ()]
+		public void ConvertTo_Int32ConvertsToString_ReturnsDash ()
+		{
+			///Arrange
+
+			var target = new NegativeInt32ToDashConverter ();
+
+			///Act
+			int val = -1;
+			var result = (string)target.ConvertTo (null, null, val, typeof (int));
+
+			///Assert
+
+			Assert.AreEqual ("-", result);
+		}
 	}
 }
