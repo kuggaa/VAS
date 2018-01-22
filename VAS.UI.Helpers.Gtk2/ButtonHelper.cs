@@ -17,6 +17,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using Gtk;
 using VAS.Core.Common;
 using VAS.Core.MVVMC;
@@ -212,6 +213,19 @@ namespace VAS.UI.Helpers
 		/// </summary>
 		/// <param name="buttons">Buttons.</param>
 		public static void LinkToggleButtons (params ToggleButton [] buttons)
+		{
+			var toggleButtons = new List<ToggleButton> ();
+			foreach (ToggleButton button in buttons) {
+				toggleButtons.Add (button);
+			}
+			LinkToggleButtons (toggleButtons);
+		}
+
+		/// <summary>
+		/// Links a group of toggle buttons to act like a radio button group.
+		/// </summary>
+		/// <param name="buttons">Buttons.</param>
+		public static void LinkToggleButtons (IEnumerable<ToggleButton> buttons)
 		{
 			foreach (ToggleButton button in buttons) {
 				button.Toggled += (sender, e) => {
