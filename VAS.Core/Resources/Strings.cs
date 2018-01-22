@@ -28,5 +28,6 @@ namespace VAS.Core.Resources
 		public static string ProjectsSearchPlaceholder => Catalog.GetString ("Search project...");
 		public static string Won => Catalog.GetString ("Won");
 		public static string Lost => Catalog.GetString ("Lost");
+		public static string Loading => Catalog.GetString ("Loading...");
 	}
 }
