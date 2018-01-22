@@ -41,6 +41,11 @@ namespace VAS.Core.ViewModel.Statistics
 	/// </summary>
 	public class ChartVM : ViewModelBase
 	{
+		public ChartVM ()
+		{
+			Series = new SeriesCollectionVM ();
+		}
+
 		/// <summary>
 		/// Gets or sets the left padding.
 		/// </summary>
