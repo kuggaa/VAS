@@ -37,7 +37,7 @@ namespace VAS.Services
 	/// <summary>
 	/// License limitations service.
 	/// </summary>
-	public abstract class LicenseLimitationsService : IService, ILicenseLimitationsService
+	public class LicenseLimitationsService : IService, ILicenseLimitationsService
 	{
 		protected Dictionary<string, LimitationVM> Limitations;
 
@@ -71,8 +71,7 @@ namespace VAS.Services
 		/// </summary>
 		public virtual bool Start ()
 		{
-			UpdateCountLimitations ();
-			UpdateFeatureLimitations ();
+			UpdateLimitations ();
 			App.Current.EventsBroker.Subscribe<LicenseChangeEvent> (HandleLicenseChangeEvent);
 			return true;
 		}
@@ -201,14 +200,6 @@ namespace VAS.Services
 			}
 		}
 
-		protected void UpdateCountLimitations ()
-		{
-			bool enable = App.Current.LicenseManager?.LicenseStatus.Limited ?? false;
-			foreach (var limitation in GetAll<CountLimitationVM> ().Select ((arg) => arg.Model)) {
-				limitation.Enabled = enable;
-			}
-		}
-
 		protected void OpenUpgradeLink (string url, string sourcePoint, string limitationName)
 		{
 			Utils.OpenURL (url, sourcePoint);
@@ -218,12 +209,20 @@ namespace VAS.Services
 			});
 		}
 
-		protected abstract void UpdateFeatureLimitations ();
+		/// <summary>
+		/// Updates the enabled state of all limitation, count limitations and feature limitations
+		/// </summary>
+		protected virtual void UpdateLimitations ()
+		{
+			foreach (var limitation in GetAll ()) {
+				limitation.Model.Enabled = App.Current.LicenseManager.LicenseStatus.
+					Limitations.Contains (limitation.RegisterName);
+			}
+		}
 
 		void HandleLicenseChangeEvent (LicenseChangeEvent e)
 		{
-			UpdateCountLimitations ();
-			UpdateFeatureLimitations ();
+			UpdateLimitations ();
 		}
 
 		public CountLimitationBarChartVM CreateBarChartVM (string limitationName, int showOnRemaining = -1, Color backgroundColor = null)
