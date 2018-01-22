@@ -1,5 +1,5 @@
 ﻿//
-//  Copyright (C) 2017 Fluendo S.A.
+//  Copyright (C) 2018 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,16 +15,23 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-namespace VAS.Core.Resources
-{
-	public class Strings
-	{
-		public static string NoResultsFound => Catalog.GetString ("No results found...");
+using System;
+using System.ComponentModel;
+using System.Globalization;
 
-		public static string Projects => Catalog.GetString ("Projects");
-		public static string ProjectsCreateHelper => Catalog.GetString ("Tap the + icon to create your first project");
-		public static string ProjectsCreateTip => Catalog.GetString ("Tip: You can get projects from other devices using the sync center");
-		public static string ProjectsNoneCreated => Catalog.GetString ("No projects created yet");
-		public static string ProjectsSearchPlaceholder => Catalog.GetString ("Search project...");
+namespace VAS.Core.Common.TypeConverters
+{
+	public class NegativeInt32ToDashConverter : TypeConverter
+	{
+		public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
+		{
+			return (destinationType == typeof (Int32));
+		}
+
+		public override object ConvertTo (ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+		{
+
+			return (int)value >= 0 ? ((int)value).ToString () : "-";
+		}
 	}
 }
