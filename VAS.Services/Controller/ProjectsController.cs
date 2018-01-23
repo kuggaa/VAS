@@ -163,7 +163,7 @@ namespace VAS.Services.Controller
 			TViewModel selectedVM = ViewModel.Selection.FirstOrDefault ();
 
 			if (selectedVM != null) {
-				if (ViewModel.LoadedProject.Model != null && ViewModel.LoadedProject.IsChanged) {
+				if (ViewModel.LoadedProject?.Model != null && ViewModel.LoadedProject.Edited) {
 					await Save (ViewModel.LoadedProject, false);
 				}
 
@@ -183,7 +183,7 @@ namespace VAS.Services.Controller
 
 		protected virtual async Task<bool> Save (TViewModel project, bool force)
 		{
-			if (!project.Model.IsChanged) {
+			if (!project.Edited) {
 				return false;
 			}
 			if (!force) {
