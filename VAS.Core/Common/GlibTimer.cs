@@ -1,5 +1,5 @@
 ﻿//
-//  Copyright (C) 2017 FLUENDO S.A.
+//  Copyright (C) 2018 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -16,33 +16,50 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using System.Timers;
+using VAS.Core.Interfaces;
 
-namespace VAS.Core.Interfaces
+namespace VAS.Core.Common
 {
-	public interface ITimer
+	/// <summary>
+	/// Timer wrapper to add an interface
+	/// </summary>
+	public class GlibTimer : ITimer
 	{
+		uint timerID;
+
+		/// <summary>
+		/// Eent raised when the time assigned to the interval has expired
+		/// </summary>
+		public event EventHandler Elapsed;
+
 		/// <summary>
 		/// Gets a value indicating whether timer is running
 		/// </summary>
 		/// <value><c>true</c> if timer running; otherwise, <c>false</c>.</value>
-		bool Enabled { get; }
+		public bool Enabled { get => timerID != 0; }
 
 		/// <summary>
 		/// Gets or sets the interval.
 		/// </summary>
 		/// <value>The interval.</value>
-		double Interval { get; set; }
+		public double Interval { get; set; }
 
 		/// <summary>
 		/// Start the timer.
 		/// </summary>
-		void Start ();
+		public void Start ()
+		{
+			timerID = GLib.Timeout.Add ((uint)Interval, HandleIdleHandler);
+		}
 
 		/// <summary>
 		/// Stop the timer.
 		/// </summary>
-		void Stop ();
+		public void Stop ()
+		{
+			GLib.Source.Remove (timerID);
+			timerID = 0;
+		}
 
 		/// <summary>
 		/// Releases all resource used by the <see cref="T:VAS.Core.Interfaces.ITimer"/> object.
@@ -51,11 +68,20 @@ namespace VAS.Core.Interfaces
 		/// <see cref="Dispose"/> method leaves the <see cref="T:VAS.Core.Interfaces.ITimer"/> in an unusable state. After
 		/// calling <see cref="Dispose"/>, you must release all references to the <see cref="T:VAS.Core.Interfaces.ITimer"/>
 		/// so the garbage collector can reclaim the memory that the <see cref="T:VAS.Core.Interfaces.ITimer"/> was occupying.</remarks>
-		void Dispose ();
+		public void Dispose ()
+		{
+			if (Enabled) {
+				Stop ();
+			}
+		}
 
-		/// <summary>
-		/// Eent raised when the time assigned to the interval has expired
-		/// </summary>
-		event EventHandler Elapsed;
+		bool HandleIdleHandler ()
+		{
+			if (!Enabled) {
+				return false;
+			}
+			Elapsed?.Invoke (this, new EventArgs ());
+			return true;
+		}
 	}
 }

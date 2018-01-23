@@ -15,6 +15,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using System.Timers;
 using VAS.Core.Interfaces;
 using SystemTimer = System.Timers.Timer;
@@ -26,39 +27,32 @@ namespace VAS.Core.Common
 	/// </summary>
 	public class Timer : ITimer
 	{
+		/// <summary>
+		/// Event raised when the time assigned to the interval has expired
+		/// </summary>
+		public event EventHandler Elapsed;
+
 		SystemTimer timer;
 
 		public Timer ()
 		{
 			timer = new SystemTimer ();
-		}
-
-		/// <summary>
-		/// Eent raised when the time assigned to the interval has expired
-		/// </summary>
-		public event ElapsedEventHandler Elapsed {
-			add { timer.Elapsed += value; }
-			remove { timer.Elapsed -= value; }
+			timer.Elapsed += HandleTimeout;
 		}
 
 		/// <summary>
 		/// Gets a value indicating whether timer is running
 		/// </summary>
 		/// <value><c>true</c> if timer running; otherwise, <c>false</c>.</value>
-		public bool Enabled { get { return timer.Enabled; } }
+		public bool Enabled { get; private set; }
 
 		/// <summary>
 		/// Gets or sets the interval.
 		/// </summary>
 		/// <value>The interval.</value>
 		public double Interval {
-			get {
-				return timer.Interval;
-			}
-
-			set {
-				timer.Interval = value;
-			}
+			get => timer.Interval;
+			set => timer.Interval = value;
 		}
 
 		/// <summary>
@@ -66,6 +60,10 @@ namespace VAS.Core.Common
 		/// </summary>
 		public void Start ()
 		{
+			if (Enabled) {
+				return;
+			}
+			Enabled = true;
 			timer.Start ();
 		}
 
@@ -74,6 +72,10 @@ namespace VAS.Core.Common
 		/// </summary>
 		public void Stop ()
 		{
+			if (!Enabled) {
+				return;
+			}
+			Enabled = false;
 			timer.Stop ();
 		}
 
@@ -86,7 +88,19 @@ namespace VAS.Core.Common
 		/// so the garbage collector can reclaim the memory that the <see cref="T:VAS.Core.Interfaces.ITimer"/> was occupying.</remarks>
 		public void Dispose ()
 		{
+			if (Enabled) {
+				Stop ();
+			}
+			timer.Elapsed -= HandleTimeout;
 			timer.Dispose ();
+		}
+
+		void HandleTimeout (object sender, ElapsedEventArgs e)
+		{
+			if (!Enabled) {
+				return;
+			}
+			Elapsed?.Invoke (this, new EventArgs ());
 		}
 	}
 }
