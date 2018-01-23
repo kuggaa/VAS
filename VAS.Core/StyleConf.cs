@@ -36,6 +36,7 @@ namespace VAS.Core.Common
 		public const string ButtonCallToActionRounded = "ButtonCallToActionRounded";
 		public const string ButtonRegular = "ButtonRegular";
 		public const string ButtonEmpty = "ButtonEmpty";
+		public const string ButtonCallToActionInv = "ButtonCallToActionInv";
 
 		//Limits Styles
 		public const string LabelLimit = "LabelLimit";
