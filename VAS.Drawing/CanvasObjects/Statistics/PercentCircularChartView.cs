@@ -23,10 +23,16 @@ using VAS.Core.ViewModel.Statistics;
 
 namespace VAS.Drawing.CanvasObjects.Statistics
 {
-	[System.ComponentModel.ToolboxItem (true)]
+	/// <summary>
+	/// A view to render a percentual circular chart.
+	/// </summary>
 	public class PercentCircularChartView : CanvasObject, ICanvasObjectView<PercentCircularChartVM>
 	{
 		PercentCircularChartVM viewModel;
+		const int CIRCLE_START = -90; // point in the top of the circle
+		const double RADIANTS_CONVERSION = Math.PI / 180.0;
+		const double START_ANGLE = CIRCLE_START * RADIANTS_CONVERSION;
+		double percent = 0;
 
 		public PercentCircularChartVM ViewModel {
 			get {
@@ -39,8 +45,16 @@ namespace VAS.Drawing.CanvasObjects.Statistics
 				viewModel = value;
 				if (viewModel != null) {
 					viewModel.PropertyChanged += HandlePropertyChanged;
-					CallRedraw ();
+					viewModel.Sync ();
 				}
+			}
+		}
+
+		double Percent {
+			get => percent;
+			set {
+				percent = value;
+				ReDraw ();
 			}
 		}
 
@@ -62,51 +76,38 @@ namespace VAS.Drawing.CanvasObjects.Statistics
 			tk.Begin ();
 
 			Point center = new Point (area.Start.X + area.Width / 2.0, area.Start.Y + area.Height / 2.0);
-			tk.FillColor = VAS.Core.Common.Color.Transparent;
-
-			int circleStart = -90; // point in the top of the circle
-			double radiansConversion = (Math.PI / 180.0);
+			tk.FillColor = Color.Transparent;
 
 			// draw main serie
 			SeriesVM mainSerie = ViewModel.Series.ViewModels [0];
-			double startAngle = circleStart * radiansConversion;
-			double finalAngle = (360 * (viewModel.PercentValue / 100.0) + circleStart) * radiansConversion;
-
-			if (viewModel.PercentValue > 0) {
-				tk.StrokeColor = mainSerie.Color;
-				tk.LineWidth = viewModel.LineWidth;
-				tk.DrawArc (center, viewModel.Radius - (viewModel.LineWidth / 2.0), startAngle, finalAngle);
-			} else {
-				finalAngle = startAngle;
-				startAngle = 360 * radiansConversion;
-			}
+			double finalAngle = (360 * (Percent / 100.0) + CIRCLE_START) * RADIANTS_CONVERSION;
 
 			// draw empty serie
 			SeriesVM emptySerie = ViewModel.Series.ViewModels [1];
 			tk.StrokeColor = emptySerie.Color;
 			tk.LineWidth = viewModel.LineWidth;
-			tk.DrawArc (center, viewModel.Radius - (viewModel.LineWidth / 2.0), finalAngle, startAngle);
+			tk.DrawArc (center, viewModel.Radius - (viewModel.LineWidth / 2.0), 0, 2 * Math.PI);
+
+			if (percent > 0) {
+				tk.StrokeColor = mainSerie.Color;
+				tk.LineWidth = viewModel.LineWidth;
+				tk.DrawArc (center, viewModel.Radius - (viewModel.LineWidth / 2.0), START_ANGLE, finalAngle);
+			}
 
 			// draw the percentage value in the middle of the circle
 			tk.FontAlignment = FontAlignment.Center;
 			tk.FontSize = 14;
 			tk.StrokeColor = App.Current.Style.TextBase;
-			tk.DrawText (new Point (area.Start.X, area.Start.Y), area.Width, area.Height, viewModel.PercentValueText);
+			tk.DrawText (new Point (area.Start.X, area.Start.Y), area.Width, area.Height,
+						 string.Format ("{0:0.0}%", Percent));
 
 			tk.End ();
 		}
 
 		void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			CallRedraw ();
-		}
-
-		void CallRedraw ()
-		{
-			if (App.IsMainThread) {
-				ReDraw ();
-			} else {
-				App.Current.GUIToolkit.Invoke ((sender, e) => ReDraw ());
+			if (viewModel.NeedsSync (e, nameof (viewModel.PercentValue))) {
+				Percent = viewModel.PercentValue;
 			}
 		}
 	}
