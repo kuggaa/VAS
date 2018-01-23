@@ -191,6 +191,7 @@ namespace VAS.UI.Helpers
 				var alloc = Allocation;
 				alloc.Inflate (-Xpad, -Ypad);
 				using (var ctx = CairoHelper.Create (evnt.Window)) {
+					// FIXME: Use the ImageView canvas
 					var context = new CairoContext (ctx);
 					var width = WidthRequest > 0 ? WidthRequest : image.Width;
 					var height = HeightRequest > 0 ? HeightRequest : image.Height;
@@ -208,14 +209,12 @@ namespace VAS.UI.Helpers
 					}
 
 					App.Current.DrawingToolkit.Context = context;
-					var r = evnt.Area;
 
-					Point center = new Point (r.X + r.Width / 2, r.Y + r.Height / 2);
+					Point center = new Point (point.X + width / 2, point.Y + height / 2);
 					double radius = Math.Min (height, width) / 2;
 
 					// Apply shadow
-					if (HasShadow)
-					{
+					if (HasShadow) {
 						App.Current.DrawingToolkit.FillColor = ShadowColor;
 						App.Current.DrawingToolkit.LineWidth = 0;
 						App.Current.DrawingToolkit.DrawCircle (new Point (center.X + 1, center.Y + 1), radius);
@@ -224,8 +223,6 @@ namespace VAS.UI.Helpers
 					// Give shape to the image
 					if (Circular) {
 						App.Current.DrawingToolkit.ClipCircle (center, radius);
-					} else {
-						App.Current.DrawingToolkit.Clip (new Area (new Point (r.X, r.Y), r.Width, r.Height));	
 					}
 
 					// Draw image
