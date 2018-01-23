@@ -104,6 +104,16 @@ namespace VAS.Drawing.Cairo
 			}
 		}
 
+		Rectangle WidgetArea {
+			get {
+				if (widget.WidgetFlags.HasFlag (WidgetFlags.NoWindow)) {
+					return widget.Allocation;
+				} else {
+					return widget.GdkWindow.ClipRegion.Clipbox;
+				}
+			}
+		}
+
 		public void ReDraw (Area area = null)
 		{
 			Rectangle invalidationRect;
@@ -112,12 +122,7 @@ namespace VAS.Drawing.Cairo
 				return;
 			}
 			if (area == null) {
-				if ((widget.WidgetFlags & WidgetFlags.NoWindow) != 0) {
-					invalidationRect = widget.Allocation;
-				} else {
-					invalidationRect = widget.GdkWindow.ClipRegion.Clipbox;
-				}
-				Gdk.Region region = widget.GdkWindow.ClipRegion;
+				invalidationRect = WidgetArea;
 			} else {
 				invalidationRect = new Gdk.Rectangle ((int)area.Start.X - 1, (int)area.Start.Y - 1,
 													  (int)Math.Ceiling (area.Width) + 2,
@@ -245,8 +250,10 @@ namespace VAS.Drawing.Cairo
 					cc.Clip ();
 
 					if (widget.WidgetFlags.HasFlag (WidgetFlags.NoWindow)) {
-						cc.Translate (area.Start.X, area.Start.Y);
-						area.Start.X = area.Start.Y = 0;
+						Rectangle widgetArea = WidgetArea;
+						cc.Translate (widgetArea.X, widgetArea.Y);
+						area.Start.X -= widgetArea.X;
+						area.Start.Y -= widgetArea.Y;
 					}
 
 					DrawEvent (c, area);
