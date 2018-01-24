@@ -46,6 +46,9 @@ namespace VAS.Drawing.Cairo
 		double lastX, lastY;
 		bool canMove, inButtonPress;
 		uint moveTimerID, hoverTimerID, lastButtonTime;
+		TimeSpan span;
+		DateTime? last = null;
+		int redraws;
 
 		public WidgetWrapper (DrawingArea widget) : this (widget as Widget)
 		{
@@ -426,11 +429,6 @@ namespace VAS.Drawing.Cairo
 			}
 		}
 
-
-		TimeSpan span;
-		DateTime last;
-		int redraws = 0;
-
 		void HandleExposeEvent (object o, ExposeEventArgs args)
 		{
 			Rectangle r;
@@ -451,13 +449,13 @@ namespace VAS.Drawing.Cairo
 #if DEBUG
 			DateTime now;
 			if (last == null)
-				now = last = DateTime.Now;
+				last = now = DateTime.Now;
 			else
 				now = DateTime.Now;
-			span = now - last;
+			span = now - (DateTime)last;
 			redraws++;
 			if (span.TotalSeconds >= 1) {
-				Console.WriteLine ($"{this.widget.Name} redraw itseld {redraws} times");
+				Console.WriteLine ($"{this.widget.Name} redrew itself {redraws} times");
 				redraws = 0;
 				last = now;
 			}
