@@ -39,6 +39,7 @@
       <Link>AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="PangoGlue.cs" />
+    <Compile Include="OverlayWidgetWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
