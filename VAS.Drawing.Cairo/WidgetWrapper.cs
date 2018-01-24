@@ -19,7 +19,6 @@ using System;
 using System.IO;
 using Gdk;
 using Gtk;
-using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Handlers.Drawing;
 using VAS.Core.Interfaces.Drawing;
@@ -42,13 +41,21 @@ namespace VAS.Drawing.Cairo
 		public event ShowTooltipHandler ShowTooltipEvent;
 		public event VASDrawing.SizeChangedHandler SizeChangedEvent;
 
-		DrawingArea widget;
+		Widget widget;
 		int currentWidth, currentHeight;
 		double lastX, lastY;
 		bool canMove, inButtonPress;
 		uint moveTimerID, hoverTimerID, lastButtonTime;
+		TimeSpan span;
+		DateTime? last = null;
+		int redraws;
 
-		public WidgetWrapper (DrawingArea widget)
+		public WidgetWrapper (DrawingArea widget) : this (widget as Widget)
+		{
+
+		}
+
+		protected WidgetWrapper (Widget widget)
 		{
 			this.widget = widget;
 			MoveWaitMS = 200;
@@ -236,7 +243,7 @@ namespace VAS.Drawing.Cairo
 			}
 		}
 
-		void Draw (Area area)
+		protected void Draw (Area area)
 		{
 			if (DrawEvent != null) {
 				using (CairoContext c = new CairoContext (widget.GdkWindow)) {
@@ -422,11 +429,6 @@ namespace VAS.Drawing.Cairo
 			}
 		}
 
-
-		TimeSpan span;
-		DateTime last;
-		int redraws = 0;
-
 		void HandleExposeEvent (object o, ExposeEventArgs args)
 		{
 			Rectangle r;
@@ -447,13 +449,13 @@ namespace VAS.Drawing.Cairo
 #if DEBUG
 			DateTime now;
 			if (last == null)
-				now = last = DateTime.Now;
+				last = now = DateTime.Now;
 			else
 				now = DateTime.Now;
-			span = now - last;
+			span = now - (DateTime)last;
 			redraws++;
 			if (span.TotalSeconds >= 1) {
-				Console.WriteLine ($"{this.widget.Name} redraw itseld {redraws} times");
+				Console.WriteLine ($"{this.widget.Name} redrew itself {redraws} times");
 				redraws = 0;
 				last = now;
 			}
