@@ -19,7 +19,6 @@ using System;
 using System.IO;
 using Gdk;
 using Gtk;
-using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Handlers.Drawing;
 using VAS.Core.Interfaces.Drawing;
@@ -42,13 +41,18 @@ namespace VAS.Drawing.Cairo
 		public event ShowTooltipHandler ShowTooltipEvent;
 		public event VASDrawing.SizeChangedHandler SizeChangedEvent;
 
-		DrawingArea widget;
+		Widget widget;
 		int currentWidth, currentHeight;
 		double lastX, lastY;
 		bool canMove, inButtonPress;
 		uint moveTimerID, hoverTimerID, lastButtonTime;
 
-		public WidgetWrapper (DrawingArea widget)
+		public WidgetWrapper (DrawingArea widget) : this (widget as Widget)
+		{
+
+		}
+
+		protected WidgetWrapper (Widget widget)
 		{
 			this.widget = widget;
 			MoveWaitMS = 200;
@@ -236,7 +240,7 @@ namespace VAS.Drawing.Cairo
 			}
 		}
 
-		void Draw (Area area)
+		protected void Draw (Area area)
 		{
 			if (DrawEvent != null) {
 				using (CairoContext c = new CairoContext (widget.GdkWindow)) {
