@@ -246,7 +246,7 @@ namespace VAS.UI
 		/// Gets a value indicating whether this <see cref="T:VAS.UI.VideoPlayerView"/> is playlist image loaded.
 		/// </summary>
 		/// <value><c>true</c> if is playlist image loaded; otherwise, <c>false</c>.</value>
-		bool IsPlaylistImageLoaded => (ViewModel.LoadedElement is PlaylistImage);
+		bool IsPlaylistImageLoaded => (ViewModel.LoadedElement is PlaylistImageVM);
 
 		#endregion
 
@@ -707,7 +707,7 @@ namespace VAS.UI
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.Step))) {
 				jumpsWindow.SetValue (App.Current.StepList.IndexOf (playerVM.Step.TotalSeconds));
 				jumpsLabel.Text = $"{playerVM.Step.TotalSeconds}s";
-			}    
+			}
 			if (ViewModel.NeedsSync (e, nameof (ViewModel.FrameDrawing))) {
 				if (playerVM.FrameDrawing != null) {
 					LoadImage (playerVM.CurrentFrame, playerVM.FrameDrawing);
@@ -741,20 +741,20 @@ namespace VAS.UI
 
 		void HandlePlayElementChanged ()
 		{
-			if (playerVM.LoadedElement is IPlaylistEventElement) {
+			if (playerVM.LoadedElement is IPlayableEvent) {
 				DrawingsVisible = false;
 				SetVisibility (closebutton, true);
 				SetVisibility (eventNameLabel, true);
 				// FIME: IPlaylistElement.Description shouldn't return formated string
 				// or the interface should provide a Name property.
-				eventNameLabel.Text = (playerVM.LoadedElement as TimelineEvent)?.Name ??
-					(playerVM.LoadedElement as PlaylistPlayElement)?.Play?.Name;
-			} else if (playerVM.LoadedElement is PlaylistDrawing) {
-				PlaylistDrawing drawing = (PlaylistDrawing)playerVM.LoadedElement;
-				LoadImage (null, drawing.Drawing);
-			} else if (playerVM.LoadedElement is PlaylistImage) {
-				PlaylistImage image = (PlaylistImage)playerVM.LoadedElement;
-				LoadImage (image.Image, null);
+				eventNameLabel.Text = (playerVM.LoadedElement as TimelineEventVM)?.Name ??
+					(playerVM.LoadedElement as PlaylistPlayElementVM)?.Play?.Name;
+			} else if (playerVM.LoadedElement is PlaylistDrawingVM) {
+				PlaylistDrawingVM drawing = (PlaylistDrawingVM)playerVM.LoadedElement;
+				LoadImage (null, (drawing.Model as PlaylistDrawing).Drawing);
+			} else if (playerVM.LoadedElement is PlaylistImageVM) {
+				PlaylistImageVM image = (PlaylistImageVM)playerVM.LoadedElement;
+				LoadImage ((image.Model as PlaylistImage).Image, null);
 				SetVisibility (closebutton, true);
 				SetVisibility (eventNameLabel, true);
 				eventNameLabel.Text = image.Description;

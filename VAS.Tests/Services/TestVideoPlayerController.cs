@@ -2569,6 +2569,67 @@ namespace VAS.Tests.Services
 		{
 			elementLoaded++;
 		}
+
+		[Test]
+		public void SeekToDrawing_SameDrawingWasPreviouslySeeked_DrawingIsShownAndPlayerIsPaused ()
+		{
+			// Arrange
+
+			FrameDrawing dr, drSent = null;
+
+			player.LoadDrawingsEvent += (frameDrawing) => {
+				drSent = frameDrawing;
+			};
+
+			dr = new FrameDrawing {
+				Render = new Time (150),
+				CameraConfig = new CameraConfig (0),
+			};
+
+			eventVM1.Drawings.Add (dr);
+
+			currentTime = new Time (0);
+			PreparePlayer ();
+
+			// Act
+
+			player.LoadEvent (eventVM1, new Time (0), true);
+			currentTime = dr.Render;
+			player.Seek (currentTime - eventVM1.Start, true, false);
+			player.LoadEvent (eventVM1, new Time (0), true);
+			player.Seek (currentTime - eventVM1.Start, true, false);
+
+			// Assert
+
+			Assert.IsFalse (player.Playing);
+			Assert.IsNotNull (player.PlayerVM.FrameDrawing);
+		}
+
+		[Test]
+		public void UnloadCurrentEvent_SeekedToDrawing_FrameDrawingIsNull ()
+		{
+			// Arrange
+
+			FrameDrawing dr = new FrameDrawing {
+				Render = new Time (150),
+				CameraConfig = new CameraConfig (0),
+			};
+
+			eventVM1.Drawings.Add (dr);
+			currentTime = new Time (0);
+			PreparePlayer ();
+
+			// Act
+
+			player.LoadEvent (eventVM1, new Time (0), true);
+			currentTime = dr.Render;
+			player.Seek (currentTime - eventVM1.Start, true, false);
+			player.UnloadCurrentEvent ();
+
+			// Assert
+
+			Assert.IsNull (player.PlayerVM.FrameDrawing);
+		}
 	}
 }
 

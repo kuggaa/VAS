@@ -639,6 +639,7 @@ namespace VAS.Services
 		{
 			UpdatePlayingState (false);
 
+			drawingCurrentTime = null;
 			loadedEvent = play;
 			loadedPlaylistElement = element;
 			PlayerVM.FrameDrawing = null;
@@ -729,6 +730,8 @@ namespace VAS.Services
 			Reset ();
 			loadedEvent = null;
 			LoadedTimelineEvent = null;
+			PlayerVM.FrameDrawing = null;
+
 			if (defaultFileSet != null && !defaultFileSet.Equals (FileSet)) {
 				UpdateCamerasConfig (defaultCamerasConfig, defaultCamerasLayout);
 				EmitEventUnloaded ();
