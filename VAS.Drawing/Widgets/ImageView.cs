@@ -22,8 +22,13 @@ using VAS.Core.Resources.Styles;
 
 namespace VAS.Drawing.Widgets
 {
+	/// <summary>
+	/// A view that draws an Image.
+	/// </summary>
 	public class ImageView : Canvas
 	{
+		Image image;
+
 		public ImageView () { }
 
 		public ImageView (IWidget widget) : base (widget) { }
@@ -32,7 +37,15 @@ namespace VAS.Drawing.Widgets
 		/// Gets or sets the image.
 		/// </summary>
 		/// <value>The image.</value>
-		public Image Image { get; set; }
+		public Image Image {
+			get {
+				return image;
+			}
+			set {
+				image = value;
+				widget.ReDraw ();
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this <see cref="T:VAS.Drawing.Widgets.ImageView"/> is sensitive.
