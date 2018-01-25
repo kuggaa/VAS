@@ -78,5 +78,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObjects\Statistics\PercentCircularChartView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasContainer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FillCanvas.cs" />
   </ItemGroup>
 </Project>
