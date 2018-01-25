@@ -151,6 +151,12 @@ namespace VAS.UI.Helpers
 			}
 			if (text != null) {
 				button.Label = text;
+
+				var label = button.Child as Label;
+				if (label != null) {
+					label.UseMarkup = true;
+					label.Markup = text;
+				}
 			}
 			if (tooltipText != null) {
 				button.TooltipText = tooltipText;
