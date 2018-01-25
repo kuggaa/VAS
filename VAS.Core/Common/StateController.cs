@@ -619,11 +619,12 @@ namespace VAS.Core
 			if (result) {
 				UpdateState (newStatus);
 			}
-			if (freezingState.Completion.Task.Status != TaskStatus.RanToCompletion) {
-				freezingState.Completion.SetResult (result);
+			var freezingStateMemento = freezingState;
+			freezingState = null;
+			if (freezingStateMemento.Completion.Task.Status != TaskStatus.RanToCompletion) {
+				freezingStateMemento.Completion.SetResult (result);
 			}
 
-			freezingState = null;
 			return result;
 		}
 
