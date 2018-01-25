@@ -68,6 +68,8 @@ namespace VAS.Services
 			}
 		}
 
+		public IStorage Storage => storage;
+
 		public virtual bool Start ()
 		{
 			return true;
