@@ -117,6 +117,12 @@ namespace VAS.Core.Interfaces
 		/// <param name="templateName">Template name.</param>
 		/// <param name="count">Number of child items to create.</param>
 		T Create (string templateName, int count = 0);
+
+		/// <summary>
+		/// Gets or sets the active db.
+		/// </summary>
+		/// <value>The active db.</value>
+		IStorage Storage { get; }
 	}
 }
 
