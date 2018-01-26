@@ -25,43 +25,43 @@ namespace VAS.Core.Filters
 	/// <summary>
 	/// A filter used to retrieve objects from the database using <see cref="IStorage.Retrieve</see>"/>.
 	/// </summary>
-	public class QueryFilter: Dictionary<string, List<object>>
+	public class QueryFilter : Dictionary<string, List<object>>
 	{
 
 		public QueryFilter ()
 		{
 			Operator = QueryOperator.And;
 			Children = new List<QueryFilter> ();
+			RemoveDuplicatesByID = true;
 		}
 
 		/// <summary>
 		/// A list of children filtren to nest query filters.
 		/// </summary>
-		public List<QueryFilter> Children {
-			get;
-			set;
-		}
+		public List<QueryFilter> Children { get; set; }
 
 		/// <summary>
 		/// Gets or sets the query operator type.
 		/// </summary>
-		public QueryOperator Operator {
-			get;
-			set;
-		}
+		public QueryOperator Operator { get; set; }
+
+		/// <summary>
+		/// Wether to remove or not all duplicated items sharing the same ID from the results.
+		/// </summary>
+		public bool RemoveDuplicatesByID { get; set; }
 
 		/// <summary>
 		/// Add a new filter constraint for an indexed property with a list of possible values.
 		/// </summary>
 		/// <param name="key">the name of the indexed property to filter .</param>
 		/// <param name="values">A list with the available options.</param>
-		public void Add (string key, params object[] values)
+		public void Add (string key, params object [] values)
 		{
 			List<object> valuesList;
 
 			if (values.Count () == 1 && values [0] is IEnumerable && !(values [0] is string)) {
 				valuesList = new List<object> ();
-				foreach (object o in values[0] as IEnumerable) {
+				foreach (object o in values [0] as IEnumerable) {
 					valuesList.Add (o);
 				}
 			} else {

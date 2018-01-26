@@ -195,7 +195,7 @@ namespace VAS.DB
 		/// </summary>
 		/// <typeparam name="T">The type of IStorable you want to retrieve.</typeparam>
 		/// <param name="filter">The filter used to retrieve the objects</param>
-		public IEnumerable<T> Retrieve<T> (QueryFilter filter) where T : IStorable
+		public IEnumerable<T> Retrieve<T> (QueryFilter filter = null) where T : IStorable
 		{
 			lock (mutex) {
 				IQueryView<T> qview = views [typeof (T)] as IQueryView<T>;
@@ -209,7 +209,7 @@ namespace VAS.DB
 		/// <typeparam name="T">The type of IStorable you want to retrieve.</typeparam>
 		/// <param name="filter">The filter used to retrieve the objects</param>
 		/// <param name="cache">An objects cache to reuse existing retrieved objects</param>
-		public IEnumerable<T> RetrieveFull<T> (QueryFilter filter, IStorableObjectsCache cache) where T : IStorable
+		public IEnumerable<T> RetrieveFull<T> (QueryFilter filter = null, IStorableObjectsCache cache = null) where T : IStorable
 		{
 			lock (mutex) {
 				IQueryView<T> qview = views [typeof (T)] as IQueryView<T>;

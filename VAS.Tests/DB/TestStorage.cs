@@ -82,15 +82,14 @@ namespace VAS.Tests.DB
 
 	class StorableView : GenericView<IStorable>
 	{
-		public StorableView (CouchbaseStorage storage) : base (storage)
-		{
-		}
+		public StorableView (CouchbaseStorage storage) : base (storage) { }
+		protected override string ViewVersion => "1";
+	}
 
-		protected override string ViewVersion {
-			get {
-				return "1";
-			}
-		}
+	class StorableImageTestView : GenericView<StorableImageTest>
+	{
+		public StorableImageTestView (CouchbaseStorage storage) : base (storage) { }
+		protected override string ViewVersion => "1";
 	}
 
 	[TestFixture ()]
@@ -535,11 +534,62 @@ namespace VAS.Tests.DB
 			var projectRetrieved = storage.Retrieve<Project> (project.ID);
 			var playlistElementRetrieved = (PlaylistPlayElement)projectRetrieved.Playlists [0].Elements [0];
 
-			Assert.AreEqual (1, projectRetrieved.Timeline[0].Drawings.Count ());
+			Assert.AreEqual (1, projectRetrieved.Timeline [0].Drawings.Count ());
 			Assert.AreEqual (1, playlistElementRetrieved.Drawings.Count ());
 			Assert.AreEqual (ev, playlistElementRetrieved.Play);
 			Assert.AreEqual (playlistElement.CamerasConfig, playlistElementRetrieved.CamerasConfig);
 			Assert.AreEqual (playlistElement.Rate, playlistElementRetrieved.Rate);
 		}
+
+		[Test]
+		public void Retrieve_NoFilter_1Result ()
+		{
+			ArrangeForRemoveDuplicates ();
+
+			var result = storage.Retrieve<StorableImageTest> ();
+
+			Assert.AreEqual (1, result.Count ());
+		}
+
+		[Test]
+		public void Retrieve_RemoveDuplicatesByID_1Result ()
+		{
+			ArrangeForRemoveDuplicates ();
+
+			var result = storage.Retrieve<StorableImageTest> (new QueryFilter { RemoveDuplicatesByID = true });
+
+			Assert.AreEqual (1, result.Count ());
+		}
+
+		[Test]
+		public void Query_DoNotRemoveDuplicatesByID_2Results ()
+		{
+			ArrangeForRemoveDuplicates ();
+
+			var result = storage.Retrieve<StorableImageTest> (new QueryFilter { RemoveDuplicatesByID = false });
+
+			Assert.AreEqual (2, result.Count ());
+		}
+
+		void ArrangeForRemoveDuplicates ()
+		{
+			StorableImageTest img = new StorableImageTest {
+				ID = Guid.NewGuid (),
+				Image1 = Utils.LoadImageFromFile (),
+			};
+			StorableContainerTest cont1 = new StorableContainerTest {
+				ID = Guid.NewGuid (),
+				Image = img,
+			};
+			StorableContainerTest cont2 = new StorableContainerTest {
+				ID = Guid.NewGuid (),
+				Image = img,
+			};
+			((CouchbaseStorage)storage).AddView (typeof (StorableImageTest),
+												 new StorableImageTestView (((CouchbaseStorage)storage)));
+			storage.Store (cont1);
+			storage.Store (cont2);
+		}
+
 	}
 }
