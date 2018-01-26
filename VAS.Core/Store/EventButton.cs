@@ -17,6 +17,7 @@
 //
 using System;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 using VAS.Core.Common;
 using VAS.Core.Serialization;
 
@@ -31,6 +32,7 @@ namespace VAS.Core.Store
 		}
 
 		[CloneIgnoreAttribute]
+		[JsonIgnore]
 		public override string Name {
 			get {
 				return EventType != null ? EventType.Name : null;
@@ -43,6 +45,7 @@ namespace VAS.Core.Store
 		}
 
 		[CloneIgnoreAttribute]
+		[JsonIgnore]
 		public override Color BackgroundColor {
 			get {
 				return EventType != null ? EventType.Color : null;
