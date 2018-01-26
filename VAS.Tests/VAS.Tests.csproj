@@ -165,6 +165,7 @@
     <Compile Include="Core\ViewModel\TestTimerButtonVM.cs" />
     <Compile Include="Core\Common\TestTimeToStringConverter.cs" />
     <Compile Include="UI\TestExtensionMethods.cs" />
+    <Compile Include="Drawing\Widgets\TestFillCanvas.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

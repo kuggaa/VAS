@@ -26,7 +26,7 @@ namespace VAS.Drawing.CanvasObjects.Statistics
 	/// <summary>
 	/// A view to render a percentual circular chart.
 	/// </summary>
-	public class PercentCircularChartView : CanvasObject, ICanvasObjectView<PercentCircularChartVM>
+	public class PercentCircularChartView : FixedSizeCanvasObject, ICanvasObjectView<PercentCircularChartVM>
 	{
 		PercentCircularChartVM viewModel;
 		const int CIRCLE_START = -90; // point in the top of the circle
@@ -75,7 +75,6 @@ namespace VAS.Drawing.CanvasObjects.Statistics
 
 			tk.Begin ();
 
-			Point center = new Point (area.Start.X + area.Width / 2.0, area.Start.Y + area.Height / 2.0);
 			tk.FillColor = Color.Transparent;
 
 			// draw main serie
@@ -86,19 +85,19 @@ namespace VAS.Drawing.CanvasObjects.Statistics
 			SeriesVM emptySerie = ViewModel.Series.ViewModels [1];
 			tk.StrokeColor = emptySerie.Color;
 			tk.LineWidth = viewModel.LineWidth;
-			tk.DrawArc (center, viewModel.Radius - (viewModel.LineWidth / 2.0), 0, 2 * Math.PI);
+			tk.DrawArc (Center, viewModel.Radius - (viewModel.LineWidth / 2.0), 0, 2 * Math.PI);
 
 			if (percent > 0) {
 				tk.StrokeColor = mainSerie.Color;
 				tk.LineWidth = viewModel.LineWidth;
-				tk.DrawArc (center, viewModel.Radius - (viewModel.LineWidth / 2.0), START_ANGLE, finalAngle);
+				tk.DrawArc (Center, viewModel.Radius - (viewModel.LineWidth / 2.0), START_ANGLE, finalAngle);
 			}
 
 			// draw the percentage value in the middle of the circle
 			tk.FontAlignment = FontAlignment.Center;
 			tk.FontSize = 14;
 			tk.StrokeColor = App.Current.Style.TextBase;
-			tk.DrawText (new Point (area.Start.X, area.Start.Y), area.Width, area.Height,
+			tk.DrawText (Position, Width, Height,
 						 string.Format ("{0:0.0}%", Percent));
 
 			tk.End ();
