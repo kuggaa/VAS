@@ -23,8 +23,8 @@ using VAS.Core.Interfaces.Drawing;
 namespace VAS.Drawing
 {
 	/// <summary>
-	/// Canvas that for each object of type <see cref="FixedSizeCanvasObject"/>
-	/// sets its size to this canvas associated widget's size
+	// A Canvas that layouts its children to fill and expand to the size of the canvas.
+	// It should be used with a single child that will be allocated to take all the space of the widget.
 	/// </summary>
 	public class FillCanvas : Canvas
 	{
