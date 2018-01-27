@@ -19,6 +19,7 @@ using System;
 using System.Threading.Tasks;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
+using VAS.Core.Store;
 using VAS.Services.State;
 using VAS.Services.ViewModel;
 
@@ -42,6 +43,8 @@ namespace VAS.Services.Controller
 			await base.Start ();
 			if (ViewModel.VideoFile.Model == null) {
 				LoadTool (Tool.Welcome);
+			} else {
+				LoadFile ();
 			}
 		}
 
@@ -53,6 +56,21 @@ namespace VAS.Services.Controller
 		public override void SetViewModel (IViewModel viewModel)
 		{
 			ViewModel = (QuickEditorVM)viewModel;
+		}
+
+		void LoadFile ()
+		{
+			if (ViewModel.LoadedEvent.Model == null) {
+				var fileset = new MediaFileSet ();
+				fileset.Add (ViewModel.VideoFile.Model);
+				ViewModel.LoadedEvent.Model = new TimelineEvent {
+					Start = new Time (0),
+					Stop = new Time (ViewModel.VideoFile.Duration.MSeconds),
+					FileSet = fileset,
+				};
+			}
+			LoadTool (Tool.VideoEditor);
+			ViewModel.VideoPlayer.LoadEvent (ViewModel.LoadedEvent, false);
 		}
 
 		void LoadTool (Tool tool)

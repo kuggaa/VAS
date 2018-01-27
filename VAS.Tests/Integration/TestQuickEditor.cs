@@ -16,9 +16,13 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System.Threading.Tasks;
+using Moq;
 using NUnit.Framework;
 using VAS.Core;
+using VAS.Core.Hotkeys;
+using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.MVVMC;
+using VAS.Core.ViewModel;
 using VAS.Services;
 using VAS.Services.State;
 using VAS.Services.ViewModel;
@@ -30,6 +34,7 @@ namespace VAS.Tests.Integration
 	{
 		QuickEditorState state;
 		QuickEditorVM viewModel;
+		Mock<IMultimediaToolkit> mtkMock;
 
 		[OneTimeSetUp]
 		public void OneTimeSetup ()
@@ -41,6 +46,13 @@ namespace VAS.Tests.Integration
 			VASServicesInit.ScanController ();
 			App.Current.ViewLocator = new ViewLocator ();
 			App.Current.ViewLocator.Register (QuickEditorState.NAME, typeof (DummyPanel));
+			mtkMock = new Mock<IMultimediaToolkit> ();
+			App.Current.MultimediaToolkit = mtkMock.Object;
+			mtkMock.Setup (x => x.GetPlayer ()).Returns (Mock.Of<IVideoPlayer> ());
+			App.Current.HotkeysService = new HotkeysService ();
+			GeneralUIHotkeys.RegisterDefaultHotkeys ();
+			PlaybackHotkeys.RegisterDefaultHotkeys ();
+			DrawingToolHotkeys.RegisterDefaultHotkeys ();
 		}
 
 		[Test]
@@ -52,6 +64,20 @@ namespace VAS.Tests.Integration
 			Assert.IsNotNull (viewModel.WelcomeMessage);
 			Assert.IsFalse (viewModel.VideoEditorVisible);
 			Assert.IsFalse (viewModel.DrawingToolVisible);
+		}
+
+		[Test]
+		public async Task When_opened_with_a_file_ItShould_show_the_video_editor_with_the_file_loaded ()
+		{
+			await Init (new MediaFileVM { Model = Utils.CreateMediaFile () });
+
+			Assert.IsFalse (viewModel.WelcomeVisible);
+			Assert.IsTrue (viewModel.VideoEditorVisible);
+			Assert.IsFalse (viewModel.DrawingToolVisible);
+			Assert.IsNotNull (viewModel.LoadedEvent.Model);
+			Assert.AreEqual (viewModel.LoadedEvent, viewModel.VideoPlayer.LoadedElement);
+			Assert.AreEqual (viewModel.VideoFile.Model, viewModel.LoadedEvent.FileSet [0]);
+			Assert.IsFalse (viewModel.VideoPlayer.Playing);
 		}
 
 		async Task Init (object parameters = null)

@@ -842,6 +842,9 @@ namespace VAS.Tests
 
 			return null;
 		}
+
+		public static MediaFile CreateMediaFile () => new MediaFile (Path.GetTempFileName (), 34000, 25, true, true, "mp4",
+																	 "h264", "aac", 320, 240, 1.3, null, "Test asset 1");
 	}
 
 	class CustomDummyClassForTest
@@ -902,7 +905,7 @@ namespace VAS.Tests
 			}
 		}
 	}
-	
+
 	/// <summary>
 	/// Seeker that calls seek as soon as it's called, without timeout.
 	/// </summary>

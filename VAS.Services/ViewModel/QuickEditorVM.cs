@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using VAS.Core.Events;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.ViewModel;
 using static VAS.Core.Resources.Icons;
@@ -25,7 +26,7 @@ namespace VAS.Services.ViewModel
 	/// <summary>
 	/// View Model for the Quick Editor.
 	/// </summary>
-	public class QuickEditorVM : ViewModelBase
+	public class QuickEditorVM : ViewModelBase, IVideoPlayerDealer
 	{
 		public QuickEditorVM ()
 		{
