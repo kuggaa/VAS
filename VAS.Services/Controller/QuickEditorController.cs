@@ -86,7 +86,6 @@ namespace VAS.Services.Controller
 		{
 			ViewModel.WelcomeVisible = tool == Tool.Welcome;
 			ViewModel.VideoEditorVisible = tool == Tool.VideoEditor;
-			ViewModel.DrawingToolVisible = tool == Tool.DrawingTool;
 		}
 
 		void HandleChooseMediaFile (OpenEvent<MediaFileVM> arg)

@@ -68,7 +68,20 @@ namespace VAS.Tests
 			App.Current.FileSystemManager = new FileSystemManager ();
 			mockToolkit.SetupGet (o => o.DeviceScaleFactor).Returns (1.0f);
 			App.Current.LicenseLimitationsService = new LicenseLimitationsService ();
-			App.Current.DrawingToolkit = Mock.Of<IDrawingToolkit> ();
+
+			var dtMock = new Mock<IDrawingToolkit> ();
+			dtMock.Setup (dt => dt.Copy (It.IsAny<ICanvas> (), It.IsAny<Area> ())).Returns (Utils.LoadImageFromFile ());
+			var surfaceMock = new Mock<ISurface> ();
+			surfaceMock.Setup (s => s.Copy ()).Returns (Utils.LoadImageFromFile ());
+			dtMock.Setup (d => d.CreateSurfaceFromResource (It.IsAny<string> (), It.IsAny<bool> (), It.IsAny<bool> ())).
+				  Returns (surfaceMock.Object);
+			dtMock.Setup (d => d.CreateSurface (It.IsAny<string> (), It.IsAny<bool> (), It.IsAny<bool> ())).
+				  Returns (surfaceMock.Object);
+			dtMock.Setup (d => d.CreateSurface (It.IsAny<int> (), It.IsAny<int> (), It.IsAny<Image> (),
+												It.IsAny<bool> (), It.IsAny<bool> ())).
+				  Returns (surfaceMock.Object);
+			App.Current.DrawingToolkit = dtMock.Object;
+
 		}
 	}
 

@@ -19,11 +19,14 @@ using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using VAS.Core;
+using VAS.Core.Common;
 using VAS.Core.Hotkeys;
+using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
+using VAS.Drawing.Widgets;
 using VAS.Services;
 using VAS.Services.State;
 using VAS.Services.ViewModel;
@@ -37,6 +40,8 @@ namespace VAS.Tests.Integration
 		QuickEditorVM viewModel;
 		Mock<IMultimediaToolkit> mtkMock;
 		Mock<IDialogs> dialogsMock;
+		Mock<IVideoPlayer> videoPlayerMock;
+		Image frame;
 
 		[OneTimeSetUp]
 		public void OneTimeSetup ()
@@ -46,29 +51,41 @@ namespace VAS.Tests.Integration
 			VASServicesInit.ScanController ();
 			App.Current.ViewLocator = new ViewLocator ();
 			App.Current.ViewLocator.Register (QuickEditorState.NAME, typeof (DummyPanel));
+			App.Current.ViewLocator.Register (DrawingToolState.NAME, typeof (DummyPanel));
 			App.Current.HotkeysService = new HotkeysService ();
-			App.Current.StateController = new StateController ();
-			App.Current.StateController.Register ("HOME", () => Utils.GetScreenStateMocked ("HOME").Object);
-			App.Current.StateController.SetHomeTransition ("HOME", null);
-			App.Current.StateController.Register (QuickEditorState.NAME, () => new QuickEditorState ());
 			GeneralUIHotkeys.RegisterDefaultHotkeys ();
 			PlaybackHotkeys.RegisterDefaultHotkeys ();
 			DrawingToolHotkeys.RegisterDefaultHotkeys ();
 
+			frame = Utils.LoadImageFromFile ();
+			videoPlayerMock = new Mock<IVideoPlayer> ();
+			videoPlayerMock.Setup (p => p.GetCurrentFrame (It.IsAny<int> (), It.IsAny<int> ())).Returns (frame);
+			videoPlayerMock.Setup (p => p.CurrentTime).Returns (new Time (300));
+
 			mtkMock = new Mock<IMultimediaToolkit> ();
 			App.Current.MultimediaToolkit = mtkMock.Object;
-			mtkMock.Setup (x => x.GetPlayer ()).Returns (Mock.Of<IVideoPlayer> ());
+			mtkMock.Setup (x => x.GetPlayer ()).Returns (videoPlayerMock.Object);
 
 			dialogsMock = new Mock<IDialogs> ();
 			App.Current.Dialogs = dialogsMock.Object;
 			dialogsMock.Setup (x => x.OpenMediaFile (It.IsAny<object> ())).Returns (Utils.CreateMediaFile ());
 		}
 
+		[SetUp]
+		public void SetUp ()
+		{
+			App.Current.StateController = new StateController ();
+			App.Current.StateController.Register ("HOME", () => Utils.GetScreenStateMocked ("HOME").Object);
+			App.Current.StateController.SetHomeTransition ("HOME", null);
+			App.Current.StateController.Register (QuickEditorState.NAME, () => new QuickEditorState ());
+			App.Current.StateController.Register (DrawingToolState.NAME, () => new DrawingToolState ());
+		}
+
 		[TearDown]
-		public void TearDown ()
+		public async Task TearDown ()
 		{
 			dialogsMock.ResetCalls ();
-			App.Current.StateController.MoveToHome (true);
+			Assert.IsTrue (await App.Current.StateController.MoveToHome ());
 		}
 
 		[Test]
@@ -102,11 +119,54 @@ namespace VAS.Tests.Integration
 		{
 			dialogsMock.Setup (x => x.OpenMediaFile (It.IsAny<object> ())).Returns<MediaFile> (null);
 			await Init ();
-			dialogsMock.Verify (s => s.OpenMediaFile (null), Times.Never ());
+
 			await viewModel.ChooseFileCommand.ExecuteAsync ();
 
 			dialogsMock.Verify (s => s.OpenMediaFile (null), Times.Once ());
 			CheckWelcomeVisible ();
+		}
+
+		[Test]
+		public async Task When_draw_button_is_clicked_ItShould_load_the_drawing_tool ()
+		{
+			await Init ();
+			await viewModel.ChooseFileCommand.ExecuteAsync ();
+
+			await viewModel.VideoPlayer.DrawCommand.ExecuteAsync ();
+
+			CheckDrawingToolLoaded ();
+			await App.Current.StateController.MoveBack ();
+		}
+
+		[Test]
+		public async Task When_drawing_tool_closed_ItShould_load_the_editor ()
+		{
+			await Init ();
+			await viewModel.ChooseFileCommand.ExecuteAsync ();
+			await viewModel.VideoPlayer.DrawCommand.ExecuteAsync ();
+
+			await App.Current.StateController.MoveBack ();
+
+			CheckEditorVisibleAndFileLoaded ();
+		}
+
+		[Test]
+		public async Task When_draw_finished_ItShould_save_the_drawing_and_load_the_editor ()
+		{
+			await Init ();
+			await viewModel.ChooseFileCommand.ExecuteAsync ();
+			await viewModel.VideoPlayer.DrawCommand.ExecuteAsync ();
+			var drawingToolVM = (App.Current.StateController.Current as DrawingToolState).ViewModel;
+			// FIXME: the view is currently setting the blackboard until it's fully migrated to MVVM
+			var widgetMock = new Mock<IWidget> ();
+			drawingToolVM.Blackboard = new Blackboard (widgetMock.Object);
+			drawingToolVM.Blackboard.Background = Utils.LoadImageFromFile ();
+			drawingToolVM.Blackboard.Drawing = drawingToolVM.Drawing;
+
+			drawingToolVM.SaveCommand.Execute ();
+
+			CheckEditorVisibleAndFileLoaded ();
+			Assert.AreEqual (1, viewModel.LoadedEvent.Drawings.Count);
 		}
 
 		async Task Init (object parameters = null)
@@ -120,11 +180,11 @@ namespace VAS.Tests.Integration
 		{
 			Assert.IsFalse (viewModel.WelcomeVisible);
 			Assert.IsTrue (viewModel.VideoEditorVisible);
-			Assert.IsFalse (viewModel.DrawingToolVisible);
 			Assert.IsNotNull (viewModel.LoadedEvent.Model);
 			Assert.AreEqual (viewModel.LoadedEvent, viewModel.VideoPlayer.LoadedElement);
 			Assert.AreEqual (viewModel.VideoFile.Model, viewModel.LoadedEvent.FileSet [0]);
 			Assert.IsFalse (viewModel.VideoPlayer.Playing);
+			Assert.AreEqual (QuickEditorState.NAME, App.Current.StateController.Current.Name);
 		}
 
 		void CheckWelcomeVisible ()
@@ -132,7 +192,18 @@ namespace VAS.Tests.Integration
 			Assert.IsTrue (viewModel.WelcomeVisible);
 			Assert.IsNotNull (viewModel.WelcomeMessage);
 			Assert.IsFalse (viewModel.VideoEditorVisible);
-			Assert.IsFalse (viewModel.DrawingToolVisible);
+			Assert.AreEqual (QuickEditorState.NAME, App.Current.StateController.Current.Name);
+		}
+
+		void CheckDrawingToolLoaded ()
+		{
+			Assert.IsFalse (viewModel.WelcomeVisible);
+			Assert.IsTrue (viewModel.VideoEditorVisible);
+			var drawingToolVM = (App.Current.StateController.Current as DrawingToolState).ViewModel;
+			Assert.AreEqual (viewModel.LoadedEvent.CamerasConfig [0], drawingToolVM.CameraConfig);
+			Assert.AreEqual (viewModel.LoadedEvent, drawingToolVM.TimelineEvent);
+			Assert.AreEqual (frame, drawingToolVM.Frame);
+			Assert.AreEqual (DrawingToolState.NAME, App.Current.StateController.Current.Name);
 		}
 	}
 }

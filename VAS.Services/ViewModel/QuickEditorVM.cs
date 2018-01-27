@@ -45,7 +45,6 @@ namespace VAS.Services.ViewModel
 			VideoPlayer = new VideoPlayerVM ();
 			LoadedEvent = new TimelineEventVM ();
 			VideoFile = new MediaFileVM ();
-			DrawingTool = new DrawingToolVM ();
 			WelcomeMessage = "Select a video file for editing";
 		}
 
@@ -74,12 +73,6 @@ namespace VAS.Services.ViewModel
 		public bool VideoEditorVisible { get; set; }
 
 		/// <summary>
-		/// Gets or sets a value indicating whether the drawing tool is visible or not.
-		/// The drawing tool is visible when the user wants to add a drawing or edit an existing one.
-		/// </summary>
-		public bool DrawingToolVisible { get; set; }
-
-		/// <summary>
 		/// Gets or sets the welcome message to be shown to user when the tool is stated and no video file has been
 		/// choosen.
 		/// </summary>
@@ -90,11 +83,6 @@ namespace VAS.Services.ViewModel
 		/// The Video Player being used to edit the video file.
 		/// </summary>
 		public VideoPlayerVM VideoPlayer { get; set; }
-
-		/// <summary>
-		/// The Drawing Used being to draw on frames in the video.
-		/// </summary>
-		public DrawingToolVM DrawingTool { get; set; }
 
 		/// <summary>
 		/// The video file loaded.

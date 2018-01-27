@@ -15,10 +15,10 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using System.Threading.Tasks;
 using VAS.Core.Common;
 using VAS.Core.ViewModel;
+using VAS.Services.Controller;
 using VAS.Services.ViewModel;
 
 namespace VAS.Services.State
@@ -52,6 +52,9 @@ namespace VAS.Services.State
 			var playerController = new VideoPlayerController ();
 			playerController.SetViewModel (ViewModel.VideoPlayer);
 			Controllers.Add (playerController);
+			var drawingsController = new DrawingsController ();
+			drawingsController.SetViewModel (ViewModel);
+			Controllers.Add (drawingsController);
 		}
 	}
 }
