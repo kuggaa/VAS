@@ -22,6 +22,7 @@ using VAS.Core;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.MVVMC;
+using VAS.Core.Store;
 using VAS.Core.ViewModel;
 using VAS.Services;
 using VAS.Services.State;
@@ -35,24 +36,39 @@ namespace VAS.Tests.Integration
 		QuickEditorState state;
 		QuickEditorVM viewModel;
 		Mock<IMultimediaToolkit> mtkMock;
+		Mock<IDialogs> dialogsMock;
 
 		[OneTimeSetUp]
 		public void OneTimeSetup ()
 		{
 			SetupClass.SetUp ();
-			App.Current.StateController = new StateController ();
-			App.Current.StateController.Register (QuickEditorState.NAME, () => new QuickEditorState ());
 			App.Current.ControllerLocator = new ControllerLocator ();
 			VASServicesInit.ScanController ();
 			App.Current.ViewLocator = new ViewLocator ();
 			App.Current.ViewLocator.Register (QuickEditorState.NAME, typeof (DummyPanel));
-			mtkMock = new Mock<IMultimediaToolkit> ();
-			App.Current.MultimediaToolkit = mtkMock.Object;
-			mtkMock.Setup (x => x.GetPlayer ()).Returns (Mock.Of<IVideoPlayer> ());
 			App.Current.HotkeysService = new HotkeysService ();
+			App.Current.StateController = new StateController ();
+			App.Current.StateController.Register ("HOME", () => Utils.GetScreenStateMocked ("HOME").Object);
+			App.Current.StateController.SetHomeTransition ("HOME", null);
+			App.Current.StateController.Register (QuickEditorState.NAME, () => new QuickEditorState ());
 			GeneralUIHotkeys.RegisterDefaultHotkeys ();
 			PlaybackHotkeys.RegisterDefaultHotkeys ();
 			DrawingToolHotkeys.RegisterDefaultHotkeys ();
+
+			mtkMock = new Mock<IMultimediaToolkit> ();
+			App.Current.MultimediaToolkit = mtkMock.Object;
+			mtkMock.Setup (x => x.GetPlayer ()).Returns (Mock.Of<IVideoPlayer> ());
+
+			dialogsMock = new Mock<IDialogs> ();
+			App.Current.Dialogs = dialogsMock.Object;
+			dialogsMock.Setup (x => x.OpenMediaFile (It.IsAny<object> ())).Returns (Utils.CreateMediaFile ());
+		}
+
+		[TearDown]
+		public void TearDown ()
+		{
+			dialogsMock.ResetCalls ();
+			App.Current.StateController.MoveToHome (true);
 		}
 
 		[Test]
@@ -60,10 +76,7 @@ namespace VAS.Tests.Integration
 		{
 			await Init ();
 
-			Assert.IsTrue (viewModel.WelcomeVisible);
-			Assert.IsNotNull (viewModel.WelcomeMessage);
-			Assert.IsFalse (viewModel.VideoEditorVisible);
-			Assert.IsFalse (viewModel.DrawingToolVisible);
+			CheckWelcomeVisible ();
 		}
 
 		[Test]
@@ -71,6 +84,40 @@ namespace VAS.Tests.Integration
 		{
 			await Init (new MediaFileVM { Model = Utils.CreateMediaFile () });
 
+			CheckEditorVisibleAndFileLoaded ();
+		}
+
+		[Test]
+		public async Task When_open_button_is_clicked_and_file_is_choosen_ItShould_load_the_new_file ()
+		{
+			await Init ();
+			await viewModel.ChooseFileCommand.ExecuteAsync ();
+
+			dialogsMock.Verify (s => s.OpenMediaFile (null), Times.Once ());
+			CheckEditorVisibleAndFileLoaded ();
+		}
+
+		[Test]
+		public async Task When_open_button_is_clicked_and_no_file_is_choosen_ItShould_show_the_welcome_message ()
+		{
+			dialogsMock.Setup (x => x.OpenMediaFile (It.IsAny<object> ())).Returns<MediaFile> (null);
+			await Init ();
+			dialogsMock.Verify (s => s.OpenMediaFile (null), Times.Never ());
+			await viewModel.ChooseFileCommand.ExecuteAsync ();
+
+			dialogsMock.Verify (s => s.OpenMediaFile (null), Times.Once ());
+			CheckWelcomeVisible ();
+		}
+
+		async Task Init (object parameters = null)
+		{
+			await App.Current.StateController.MoveTo (QuickEditorState.NAME, parameters);
+			state = App.Current.StateController.Current as QuickEditorState;
+			viewModel = state.ViewModel;
+		}
+
+		void CheckEditorVisibleAndFileLoaded ()
+		{
 			Assert.IsFalse (viewModel.WelcomeVisible);
 			Assert.IsTrue (viewModel.VideoEditorVisible);
 			Assert.IsFalse (viewModel.DrawingToolVisible);
@@ -80,11 +127,12 @@ namespace VAS.Tests.Integration
 			Assert.IsFalse (viewModel.VideoPlayer.Playing);
 		}
 
-		async Task Init (object parameters = null)
+		void CheckWelcomeVisible ()
 		{
-			await App.Current.StateController.MoveTo (QuickEditorState.NAME, parameters);
-			state = App.Current.StateController.Current as QuickEditorState;
-			viewModel = state.ViewModel;
+			Assert.IsTrue (viewModel.WelcomeVisible);
+			Assert.IsNotNull (viewModel.WelcomeMessage);
+			Assert.IsFalse (viewModel.VideoEditorVisible);
+			Assert.IsFalse (viewModel.DrawingToolVisible);
 		}
 	}
 }

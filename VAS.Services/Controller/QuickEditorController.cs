@@ -17,9 +17,11 @@
 //
 using System;
 using System.Threading.Tasks;
+using VAS.Core.Events;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
+using VAS.Core.ViewModel;
 using VAS.Services.State;
 using VAS.Services.ViewModel;
 
@@ -51,6 +53,13 @@ namespace VAS.Services.Controller
 		protected override void ConnectEvents ()
 		{
 			base.ConnectEvents ();
+			App.Current.EventsBroker.Subscribe<OpenEvent<MediaFileVM>> (HandleChooseMediaFile);
+		}
+
+		protected override void DisconnectEvents ()
+		{
+			base.DisconnectEvents ();
+			App.Current.EventsBroker.Unsubscribe<OpenEvent<MediaFileVM>> (HandleChooseMediaFile);
 		}
 
 		public override void SetViewModel (IViewModel viewModel)
@@ -61,14 +70,14 @@ namespace VAS.Services.Controller
 		void LoadFile ()
 		{
 			if (ViewModel.LoadedEvent.Model == null) {
-				var fileset = new MediaFileSet ();
-				fileset.Add (ViewModel.VideoFile.Model);
 				ViewModel.LoadedEvent.Model = new TimelineEvent {
 					Start = new Time (0),
 					Stop = new Time (ViewModel.VideoFile.Duration.MSeconds),
-					FileSet = fileset,
 				};
 			}
+			var fileset = new MediaFileSet ();
+			fileset.Add (ViewModel.VideoFile.Model);
+			ViewModel.LoadedEvent.FileSet = fileset;
 			LoadTool (Tool.VideoEditor);
 			ViewModel.VideoPlayer.LoadEvent (ViewModel.LoadedEvent, false);
 		}
@@ -78,6 +87,15 @@ namespace VAS.Services.Controller
 			ViewModel.WelcomeVisible = tool == Tool.Welcome;
 			ViewModel.VideoEditorVisible = tool == Tool.VideoEditor;
 			ViewModel.DrawingToolVisible = tool == Tool.DrawingTool;
+		}
+
+		void HandleChooseMediaFile (OpenEvent<MediaFileVM> arg)
+		{
+			MediaFile file = App.Current.Dialogs.OpenMediaFile ();
+			if (file != null) {
+				ViewModel.VideoFile.Model = file;
+				LoadFile ();
+			}
 		}
 	}
 }
