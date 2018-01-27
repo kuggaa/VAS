@@ -163,6 +163,21 @@ namespace VAS.Tests
 		}
 	}
 
+	public class DummyPanel : IPanel
+	{
+		public string Title => "Dummy";
+
+		public void Dispose () { }
+
+		public KeyContext GetKeyContext () => new KeyContext ();
+
+		public void OnLoad () { }
+
+		public void OnUnload () { }
+
+		public void SetViewModel (object ViewModel) { }
+	}
+
 	public class DummyController : ControllerBase
 	{
 		public event EventHandler managedDisposeCalled;

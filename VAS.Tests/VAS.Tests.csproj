@@ -167,6 +167,7 @@
     <Compile Include="UI\TestExtensionMethods.cs" />
     <Compile Include="Drawing\Widgets\TestFillCanvas.cs" />
     <Compile Include="Core\ViewModel\TestPercentCircularChartVM.cs" />
+    <Compile Include="Integration\TestQuickEditor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -243,6 +244,7 @@
     <Folder Include="data\icons\hicolor\scalable\" />
     <Folder Include="data\icons\hicolor\scalable\actions\" />
     <Folder Include="UI\" />
+    <Folder Include="Integration\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Core\vas-dibujo.svg">
