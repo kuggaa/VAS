@@ -48,7 +48,7 @@ namespace VAS.Core
 		public async Task<bool> SetHomeTransition (string transition, dynamic properties)
 		{
 			try {
-				Log.Debug ("Setting Home to " + transition);
+				Log.Information ("Setting Home to " + transition);
 				IScreenState homeState = destination [transition] ();
 				if (!await homeState.LoadState (properties)) {
 					return false;
@@ -69,10 +69,10 @@ namespace VAS.Core
 		/// <param name="transition">Transition.</param>
 		public async Task<bool> MoveTo (string transition, dynamic properties, bool emptyStack = false, bool forceMove = false)
 		{
-			Log.Debug ("Moving to " + transition);
+			Log.Information ("Moving to " + transition);
 
 			if (!destination.ContainsKey (transition)) {
-				Log.Debug ("Moving failed because transition " + transition + " is not in destination dictionary.");
+				Log.Information ("Moving failed because transition " + transition + " is not in destination dictionary.");
 				return false;
 			}
 
@@ -80,7 +80,7 @@ namespace VAS.Core
 				bool isModal = false;
 				NavigationState lastState = LastState (out isModal);
 				if (!forceMove && lastState != null && lastState.Name == transition) {
-					Log.Debug ("Not moved to " + transition + "because we're already there");
+					Log.Information ("Not moved to " + transition + "because we're already there");
 					return true;
 				}
 				if (!CanMove (lastState) && !forceMove) return false;
@@ -90,7 +90,7 @@ namespace VAS.Core
 					}
 					if (lastState == home && home.Name != transition) {
 						if (!await lastState.Hide ()) {
-							Log.Debug ("Moving failed because home panel " + lastState.Name + " cannot move.");
+							Log.Information ("Moving failed because home panel " + lastState.Name + " cannot move.");
 							return false;
 						}
 					}
@@ -100,7 +100,7 @@ namespace VAS.Core
 					}
 				} else if (lastState != null) {
 					if (!await lastState.Hide ()) {
-						Log.Debug ("Moving failed because panel " + lastState.Name + " cannot move.");
+						Log.Information ("Moving failed because panel " + lastState.Name + " cannot move.");
 						return false;
 					}
 				}
@@ -142,10 +142,10 @@ namespace VAS.Core
 		/// <param name="transition">Transition.</param>
 		public async Task<bool> MoveToModal (string transition, dynamic properties, bool waitUntilClose = false)
 		{
-			Log.Debug ("Moving to " + transition + " in modal mode");
+			Log.Information ("Moving to " + transition + " in modal mode");
 
 			if (!destination.ContainsKey (transition)) {
-				Log.Debug ("Moving failed because transition " + transition + " is not in destination dictionary.");
+				Log.Information ("Moving failed because transition " + transition + " is not in destination dictionary.");
 				return false;
 			}
 
@@ -168,7 +168,7 @@ namespace VAS.Core
 						await resultantState.Completion.Task;
 					}
 				} else {
-					Log.Debug ("Moving failed because panel " + state.Name + " cannot move.");
+					Log.Information ("Moving failed because panel " + state.Name + " cannot move.");
 				}
 				return ok;
 			} catch (Exception ex) {
@@ -184,7 +184,7 @@ namespace VAS.Core
 		public async Task<bool> MoveBack ()
 		{
 			if (modalStateStack.Count == 0 && navigationStateStack.Count <= 1 && home == null) {
-				Log.Debug ("Moving back failed because is last transition and there isn't any home");
+				Log.Information ("Moving back failed because is last transition and there isn't any home");
 				return false;
 			}
 
@@ -192,7 +192,7 @@ namespace VAS.Core
 				bool triggeredFromModal;
 				NavigationState current = LastState (out triggeredFromModal);
 				if (!CanMove (current)) return false;
-				Log.Debug ("Moving Back");
+				Log.Information ("Moving Back");
 				if (current != null) {
 					if (!triggeredFromModal) {
 						if (!await PopNavigationState ()) {
@@ -228,7 +228,7 @@ namespace VAS.Core
 			try {
 				NavigationState state = LastStateFromTransition (transition);
 				if (state == null) {
-					Log.Debug ("Moving failed because transition " + transition + " is not in history moves");
+					Log.Information ("Moving failed because transition " + transition + " is not in history moves");
 					return false;
 				}
 				if (!CanMove (state)) return false;
@@ -255,7 +255,7 @@ namespace VAS.Core
 		public async Task<bool> MoveToHome (bool forceMove = false)
 		{
 			if (home == null) {
-				Log.Debug ("Moving failed because transition to home doesn't exist");
+				Log.Information ("Moving failed because transition to home doesn't exist");
 				return false;
 			}
 
