@@ -31,5 +31,9 @@ namespace VAS.Core.Resources
 		public static string Won => Catalog.GetString ("Won");
 		public static string Lost => Catalog.GetString ("Lost");
 		public static string Loading => Catalog.GetString ("Loading...");
+
+		public static string Save => Catalog.GetString ("Save");
+		public static string SaveAs => Catalog.GetString ("Save as...");
+		public static string Export => Catalog.GetString ("Export");
 	}
 }

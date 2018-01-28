@@ -53,6 +53,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\QuickEditorVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)State\QuickEditorState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\QuickEditorController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller\DrawingToolController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />

@@ -21,6 +21,8 @@ using VAS.Core.Events;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
+using VAS.Core.Resources;
+using VAS.Drawing.Widgets;
 
 namespace VAS.Services.ViewModel
 {
@@ -33,77 +35,76 @@ namespace VAS.Services.ViewModel
 		{
 			SetZoomCommand = new LimitationCommand<double> (VASFeature.Zoom.ToString (), SetZoom);
 			ZoomLevel = 1;
+			SaveCommand = new AsyncCommand (
+				async () => await App.Current.EventsBroker.Publish (new SaveEvent<Image> ())) {
+				IconName = Icons.Save,
+				Text = Strings.Save,
+			};
+			ExportCommand = new AsyncCommand (
+				async () => await App.Current.EventsBroker.Publish (new ExportEvent<Image> ())) {
+				IconName = Icons.Save,
+				Text = Strings.Export,
+			};
 		}
+
+		/// <summary>
+		/// Gets or sets the export command.
+		/// Export the drawing to a file.
+		/// </summary>
+		/// <value>The export command.</value>
+		public Command ExportCommand { get; protected set; }
+
+		/// <summary>
+		/// Gets or sets the save command.
+		/// Saves the drawing in the timeline event.
+		/// </summary>
+		/// <value>The save command.</value>
+		public Command SaveCommand { get; protected set; }
 
 		/// <summary>
 		/// Gets the zoom limited command
 		/// </summary>
 		/// <value>The set zoom.</value>
-		public LimitationCommand<double> SetZoomCommand {
-			get;
-		}
+		public LimitationCommand<double> SetZoomCommand { get; }
+
 		//FIXME: this should be migrated to MVVM ProjectVM, TimelineEventVM, etc.
 		/// <summary>
 		/// Gets or sets the project.
 		/// </summary>
 		/// <value>The project.</value>
-		public virtual Project Project {
-			get;
-			set;
-		}
+		public virtual Project Project { get; set; }
 
 		/// <summary>
 		/// Gets or sets the timeline event.
 		/// </summary>
 		/// <value>The timeline event.</value>
-		public TimelineEventVM TimelineEvent {
-			get;
-			set;
-		}
+		public TimelineEventVM TimelineEvent { get; set; }
 
 		/// <summary>
 		/// Gets or sets the frame.
 		/// </summary>
 		/// <value>The frame.</value>
-		public Image Frame {
-			get;
-			set;
-		}
+		public Image Frame { get; set; }
 
 		/// <summary>
 		/// Gets or sets the drawing.
 		/// </summary>
 		/// <value>The drawing.</value>
-		public FrameDrawing Drawing {
-			get;
-			set;
-		}
+		public FrameDrawing Drawing { get; set; }
 
 		/// <summary>
 		/// Gets or sets the camera config.
 		/// </summary>
 		/// <value>The camera config.</value>
-		public CameraConfig CameraConfig {
-			get;
-			set;
-		}
+		public CameraConfig CameraConfig { get; set; }
+
+		public Blackboard Blackboard { get; set; }
 
 		/// <summary>
 		/// Gets or sets the zoom level.
 		/// </summary>
 		/// <value>The zoom level.</value>
-		public double ZoomLevel {
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// Throws an event when a drawing has been saved to a project.
-		/// </summary>
-		public void DrawingSaved ()
-		{
-			App.Current.EventsBroker.Publish (new DrawingSavedToProjectEvent ());
-		}
+		public double ZoomLevel { get; set; }
 
 		void SetZoom (double zoom)
 		{

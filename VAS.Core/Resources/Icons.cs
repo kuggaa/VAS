@@ -71,6 +71,7 @@ namespace VAS.Core.Resources
 		public const string DeleteButton = "vas-delete";
 		public const string PlayButton = "vas-video-c-play";
 		public const string QuitButton = "vas-quit";
+		public const string Save = "vas-save";
 
 		// Location Pins
 		public const string LocationPinNotSet = "vas-location-notset";

@@ -99,7 +99,7 @@ namespace VAS.UI.Dialog
 				button.Name = "DrawingToolButton-" + button.Name;
 				button.Toggled += HandleToolClicked;
 			}
-			
+
 			CreateToolSettings ();
 			UpdateSettingsVisibility (DrawTool.Selection);
 
@@ -171,16 +171,6 @@ namespace VAS.UI.Dialog
 
 			Misc.SetFocus (this, false);
 
-			var saveToFileCommand = new AsyncCommand (SaveToFile);
-			saveToFileCommand.Icon = App.Current.ResourcesLocator.LoadIcon ("vas-save", App.Current.Style.IconSmallWidth);
-			saveToFileCommand.Text = Catalog.GetString ("Save to File");
-			savebutton.BindManually (saveToFileCommand);
-
-			var saveToProjectCommand = new AsyncCommand (SaveToProject);
-			saveToProjectCommand.Icon = App.Current.ResourcesLocator.LoadIcon ("vas-save", App.Current.Style.IconSmallWidth);
-			saveToProjectCommand.Text = Catalog.GetString ("Save to Project");
-			savetoprojectbutton.BindManually (saveToProjectCommand);
-
 			var clearCommand = new Command (Clear);
 			clearCommand.Icon = App.Current.ResourcesLocator.LoadIcon ("vas-delete", App.Current.Style.IconSmallWidth);
 			clearbutton.BindManually (clearCommand);
@@ -244,6 +234,10 @@ namespace VAS.UI.Dialog
 					} else {
 						LoadFrame (viewModel.Frame);
 					}
+					// FIXME: temporary hacks until the drawing tool sis fully ported to MVVM
+					viewModel.Blackboard = blackboard;
+					savebutton.ApplyStyle (StyleConf.ButtonNormal, App.Current.Style.IconSmallWidth);
+					savetoprojectbutton.ApplyStyle (StyleConf.ButtonNormal, App.Current.Style.IconSmallWidth);
 				}
 				ctx.UpdateViewModel (viewModel);
 			}
@@ -434,6 +428,8 @@ namespace VAS.UI.Dialog
 			ctx = new BindingContext ();
 			ctx.Add (zoomscale.Bind (vm => ((DrawingToolVM)vm).SetZoomCommand, App.Current.ZoomLevels.Min (),
 									 App.Current.ZoomLevels.Min (), App.Current.ZoomLevels.Max (), ZOOM_STEP, ZOOM_PAGE));
+			ctx.Add (savebutton.Bind (vm => ((DrawingToolVM)vm).ExportCommand));
+			ctx.Add (savetoprojectbutton.Bind (vm => ((DrawingToolVM)vm).SaveCommand));
 		}
 
 		int ScalledSize (int size)
@@ -651,39 +647,6 @@ namespace VAS.UI.Dialog
 			}
 		}
 
-		//FIXME: We need to move the logic of this method to the ViewModel
-		async Task SaveToFile ()
-		{
-			string proposed_filename = String.Format ("{0}-{1}.png", App.Current.SoftwareName,
-										   DateTime.Now.ToShortDateString ().Replace ('/', '-'));
-			string filename = FileChooserHelper.SaveFile (this,
-								  Catalog.GetString ("Save File as..."),
-								  proposed_filename, App.Current.SnapshotsDir,
-								  "PNG Images", new string [] { "*.png" });
-			if (filename != null) {
-				System.IO.Path.ChangeExtension (filename, ".png");
-				blackboard.Save (filename);
-				drawing = null;
-				await App.Current.StateController.MoveBack ();
-			}
-		}
-
-		//FIXME: We need to move the logic of this method to the ViewModel
-		async Task SaveToProject ()
-		{
-			drawing.RegionOfInterest = blackboard.RegionOfInterest;
-			if (!play.Drawings.Contains (drawing)) {
-				play.Drawings.Add (drawing);
-			}
-			drawing.Miniature = blackboard.Save ();
-			drawing.Miniature.ScaleInplace (Constants.MAX_THUMBNAIL_SIZE,
-				Constants.MAX_THUMBNAIL_SIZE);
-			play.Model.UpdateMiniature ();
-			drawing = null;
-			ViewModel.DrawingSaved ();
-			await App.Current.StateController.MoveBack ();
-		}
-
 		void HandleConfigureObjectEvent (IBlackboardObject drawable, DrawTool tool)
 		{
 			if (drawable is Text) {
@@ -895,7 +858,8 @@ namespace VAS.UI.Dialog
 			zoombox.Visible = tool == DrawTool.Zoom;
 		}
 
-		ToolSettingBase GetSettingsForSelectedDrawable () {
+		ToolSettingBase GetSettingsForSelectedDrawable ()
+		{
 			if (selectedDrawable is Text) {
 				return toolSettings [DrawTool.Text];
 			} else if (selectedDrawable is Counter) {
@@ -952,7 +916,8 @@ namespace VAS.UI.Dialog
 	/// <summary>
 	/// Abstract class for the tool settings
 	/// </summary>
-	abstract class ToolSettingBase {
+	abstract class ToolSettingBase
+	{
 		public bool Color {
 			get;
 			set;
