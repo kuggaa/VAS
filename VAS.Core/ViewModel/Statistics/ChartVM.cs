@@ -32,6 +32,7 @@
 //
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.MVVMC;
+using VAS.Core.Common;
 
 namespace VAS.Core.ViewModel.Statistics
 {
@@ -78,6 +79,6 @@ namespace VAS.Core.ViewModel.Statistics
 		/// This image will be rendered under the series.
 		/// </summary>
 		/// <value>The background image.</value>
-		public ICanvasObject Background { get; set; }
+		public Image Background { get; set; }
 	}
 }
