@@ -16,11 +16,14 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
+using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
 using VAS.Services.State;
 using VAS.Services.ViewModel;
@@ -54,12 +57,14 @@ namespace VAS.Services.Controller
 		{
 			base.ConnectEvents ();
 			App.Current.EventsBroker.Subscribe<OpenEvent<MediaFileVM>> (HandleChooseMediaFile);
+			App.Current.EventsBroker.Subscribe<ExportEvent<TimelineEventVM>> (HandleExport);
 		}
 
 		protected override void DisconnectEvents ()
 		{
 			base.DisconnectEvents ();
 			App.Current.EventsBroker.Unsubscribe<OpenEvent<MediaFileVM>> (HandleChooseMediaFile);
+			App.Current.EventsBroker.Unsubscribe<ExportEvent<TimelineEventVM>> (HandleExport);
 		}
 
 		public override void SetViewModel (IViewModel viewModel)
@@ -94,6 +99,18 @@ namespace VAS.Services.Controller
 			if (file != null) {
 				ViewModel.VideoFile.Model = file;
 				LoadFile ();
+			}
+		}
+
+		void HandleExport (ExportEvent<TimelineEventVM> arg)
+		{
+			Playlist pl = new Playlist ();
+			pl.Elements.Add (new PlaylistPlayElement (ViewModel.LoadedEvent.Model));
+			List<EditionJob> jobs = App.Current.GUIToolkit.ConfigureRenderingJob (pl);
+			if (jobs == null)
+				return;
+			foreach (Job job in jobs) {
+				App.Current.JobsManager.Add (job);
 			}
 		}
 	}

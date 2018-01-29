@@ -68,12 +68,13 @@ namespace VAS.Tests.Integration
 
 			dialogsMock = new Mock<IDialogs> ();
 			App.Current.Dialogs = dialogsMock.Object;
-			dialogsMock.Setup (x => x.OpenMediaFile (It.IsAny<object> ())).Returns (Utils.CreateMediaFile ());
 		}
 
 		[SetUp]
 		public void SetUp ()
 		{
+			dialogsMock.Setup (x => x.OpenMediaFile (It.IsAny<object> ())).Returns (Utils.CreateMediaFile ());
+
 			App.Current.StateController = new StateController ();
 			App.Current.StateController.Register ("HOME", () => Utils.GetScreenStateMocked ("HOME").Object);
 			App.Current.StateController.SetHomeTransition ("HOME", null);
@@ -167,6 +168,16 @@ namespace VAS.Tests.Integration
 
 			CheckEditorVisibleAndFileLoaded ();
 			Assert.AreEqual (1, viewModel.LoadedEvent.Drawings.Count);
+		}
+
+		[Test]
+		public async Task When_exporting_ItShould_render_the_event_to_a_file ()
+		{
+
+			await Init ();
+			await viewModel.ChooseFileCommand.ExecuteAsync ();
+			await viewModel.ExportCommand.ExecuteAsync ();
+
 		}
 
 		async Task Init (object parameters = null)
