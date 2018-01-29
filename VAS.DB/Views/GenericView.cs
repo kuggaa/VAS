@@ -328,31 +328,34 @@ namespace VAS.DB.Views
 				Revision rev = row.Document.CurrentRevision;
 				Guid id = DocumentsSerializer.IDFromString (row.DocumentId);
 
-				if (!uids.Contains (id)) {
-					TReal doc = default (TReal);
-					bool noErrors = false;
+				// If we don't have a filter assume we want to remove duplicates by ID which is the default
+				if ((filter == null || filter.RemoveDuplicatesByID) && uids.Contains (id)) {
+					continue;
+				}
 
-					uids.Add (id);
-					try {
-						if (full) {
-							doc = (TReal)DocumentsSerializer.LoadObject (typeof (TReal), row.DocumentId,
-								context.DB, context);
-						} else {
-							doc = DocumentsSerializer.DeserializeFromJson<TReal> (row.Value as string, db, rev);
-							doc.DocumentID = row.DocumentId;
-							doc.ID = id;
-							doc.IsChanged = false;
-							doc.IsLoaded = false;
-						}
-						doc.Storage = storage;
-						noErrors = true;
-					} catch (Exception ex) {
-						Log.Error ("Error deserializing document of type " + typeof (TReal) + " with ID: " + row.DocumentId);
-						Log.Exception (ex);
+				TReal doc = default (TReal);
+				bool noErrors = false;
+
+				uids.Add (id);
+				try {
+					if (full) {
+						doc = (TReal)DocumentsSerializer.LoadObject (typeof (TReal), row.DocumentId,
+							context.DB, context);
+					} else {
+						doc = DocumentsSerializer.DeserializeFromJson<TReal> (row.Value as string, db, rev);
+						doc.DocumentID = row.DocumentId;
+						doc.ID = id;
+						doc.IsChanged = false;
+						doc.IsLoaded = false;
 					}
-					if (noErrors) {
-						yield return doc;
-					}
+					doc.Storage = storage;
+					noErrors = true;
+				} catch (Exception ex) {
+					Log.Error ("Error deserializing document of type " + typeof (TReal) + " with ID: " + row.DocumentId);
+					Log.Exception (ex);
+				}
+				if (noErrors) {
+					yield return doc;
 				}
 			}
 		}

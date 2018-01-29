@@ -31,13 +31,13 @@ namespace VAS.DB.Views
 		string DocumentType { get; }
 	}
 
-	public interface IQueryView<T>: IQueryView
+	public interface IQueryView<T> : IQueryView
 	{
-		IEnumerable<T> Query (QueryFilter filter);
+		IEnumerable<T> Query (QueryFilter filter = null);
 
-		IEnumerable<T> QueryFull (QueryFilter filter, IStorableObjectsCache cache);
+		IEnumerable<T> QueryFull (QueryFilter filter = null, IStorableObjectsCache cache = null);
 
-		int Count (QueryFilter filter);
+		int Count (QueryFilter filter = null);
 	}
 
 }

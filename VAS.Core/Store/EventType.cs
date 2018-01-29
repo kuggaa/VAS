@@ -27,12 +27,14 @@ namespace VAS.Core.Store
 	[Serializable]
 	public class EventType : StorableBase
 	{
+		const int VERSION = 0;
 
 		public EventType ()
 		{
 			ID = Guid.NewGuid ();
 			Color = Color.Red.Copy (true);
 			AllowLocation = true;
+			Version = VERSION;
 		}
 
 		public virtual string Name {
