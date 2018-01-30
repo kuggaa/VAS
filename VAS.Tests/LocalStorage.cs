@@ -106,6 +106,11 @@ namespace Tests
 			// nothing to do here
 		}
 
+		public void Start ()
+		{
+			// nothing to do here
+		}
+
 		public bool Exists<T> (T t) where T : IStorable
 		{
 			return localStorage.ContainsKey (t.ID);
