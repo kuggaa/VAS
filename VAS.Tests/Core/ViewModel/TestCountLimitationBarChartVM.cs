@@ -43,15 +43,14 @@ namespace VAS.Tests.Core.ViewModel
 				}
 			};
 
-			twoBarChartVM = new TwoBarChartVM (countLimitationVM.Maximum,
-											  new SeriesVM {
+			twoBarChartVM = new TwoBarChartVM (new SeriesVM {
 												  Title = "Remaining", Elements = countLimitationVM.Remaining,
 												  Color = Color.Green1
 											  },
 											  new SeriesVM {
 												  Title = "Current", Elements = countLimitationVM.Count,
 												  Color = Color.Transparent
-											  });
+											  }, countLimitationVM.Maximum);
 
 			viewModel = new CountLimitationBarChartVM (showOnRemaining) {
 				Limitation = countLimitationVM,

@@ -37,6 +37,18 @@ namespace VAS.Core.Events
 	{
 	}
 
+	/// <summary>
+	/// Base filter event, base event class to use for filtering purposes
+	/// </summary>
+	public class BaseFilterEvent : Event
+	{
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.Events.BaseFilterEvent"/> is active.
+		/// </summary>
+		/// <value><c>true</c> if active; otherwise, <c>false</c>.</value>
+		public bool Active { get; set; }
+	}
+
 	// FIXME: this event should be replaced with the one using the ViewModel
 	public class LoadEventEvent : Event
 	{
