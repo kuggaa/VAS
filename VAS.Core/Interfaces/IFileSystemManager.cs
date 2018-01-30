@@ -43,6 +43,26 @@ namespace VAS.Core.Interfaces
 		/// Exists the file in the specified path.
 		/// </summary>
 		/// <param name="path">Path.</param>
-		bool Exists (string path);
+		bool FileExists (string path);
+
+		/// <summary>
+		/// Exists the directory in the specified path.
+		/// </summary>
+		/// <param name="path">Path.</param>
+		bool DirectoryExists (string path);
+
+		/// <summary>
+		/// Copy a whole directory to the specified.
+		/// </summary>
+		/// <param name="sourceDirName">Source dir name.</param>
+		/// <param name="destDirName">Destination dir name.</param>
+		/// <param name="copySubDirs">If set to <c>true</c> copy sub dirs.</param>
+		void CopyDirectory (string sourceDirName, string destDirName, bool copySubDirs);
+
+		/// <summary>
+		/// Gets the path of the specified directory name.
+		/// </summary>
+		/// <param name="sourceDirName">Source dir name.</param>
+		string GetDataDirPath (string dirname);
 	}
 }
