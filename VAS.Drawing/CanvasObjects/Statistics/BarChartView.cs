@@ -10,7 +10,7 @@ using VAS.Core.ViewModel.Statistics;
 namespace VAS.Drawing.CanvasObjects.Statistics
 {
 	[System.ComponentModel.ToolboxItem (true)]
-	public class BarChartView : CanvasObject, ICanvasObjectView<BarChartVM>
+	public class BarChartView : FixedSizeCanvasObject, ICanvasObjectView<BarChartVM>
 	{
 		BarChartVM viewModel;
 
@@ -48,25 +48,26 @@ namespace VAS.Drawing.CanvasObjects.Statistics
 				return;
 			}
 
-			ViewModel.Height = ViewModel.Height < 0.1f ? area.Height : ViewModel.Height;
-			double width = area.Width - ViewModel.LeftPadding - ViewModel.RightPadding;
+			double height = ViewModel.Height < 0.1f ? Height : ViewModel.Height;
+			double width = Width - ViewModel.LeftPadding - ViewModel.RightPadding;
 
 			tk.Begin ();
 
-			double posX = area.Start.X + ViewModel.LeftPadding;
-			double posY = area.Start.Y + ViewModel.TopPadding;
+			double posX = Position.X + ViewModel.LeftPadding;
+			double posY = Position.Y + ViewModel.TopPadding;
+
 			double end;
 			double totalX = ViewModel.Series.ViewModels.Sum (x => x.Elements);
 
 			if (ViewModel.Background != null) {
-				ViewModel.Background.Draw (tk, new Area (posX, posY, width, ViewModel.Height));
+				tk.DrawImage (Position, Width, Height, ViewModel.Background, ScaleMode.Fill);
 			}
 
 			foreach (var serie in ViewModel.Series.Where (x => x.Elements != 0)) {
 				tk.FillColor = serie.Color;
 				tk.StrokeColor = serie.Color;
 				end = (serie.Elements / totalX) * width;
-				tk.DrawRectangle (new Point (posX, posY), end, ViewModel.Height);
+				tk.DrawRectangle (new Point (posX, posY), end, height);
 				posX += end;
 			}
 

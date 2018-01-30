@@ -39,7 +39,7 @@ namespace VAS.Drawing.CanvasObjects
 	/// <summary>
 	/// View that displays a border and that is used to decorate other views
 	/// </summary>
-	public class BorderRegionView : CanvasObject, ICanvasObjectView<BorderRegionVM>
+	public class BorderRegionView : FixedSizeCanvasObject, ICanvasObjectView<BorderRegionVM>
 	{
 		public BorderRegionVM ViewModel { get; set; }
 
@@ -71,13 +71,13 @@ namespace VAS.Drawing.CanvasObjects
 			tk.StrokeColor = App.Current.Style.ThemeSecondary;
 
 			int extraLeft = (ViewModel.ShowLeft) ? ViewModel.PaddingLeft : 0;
-			double xOrigin = area.Start.X + extraLeft;
-			double yOrigin = area.Start.Y + 1;
+			double xOrigin = Position.X + extraLeft;
+			double yOrigin = Position.Y + 1;
 
-			double width = area.Width;
+			double width = Width;
 			width -= (ViewModel.ShowLeft) ? ViewModel.PaddingLeft : 0;
 			width -= (ViewModel.ShowRight) ? ViewModel.PaddingRigth : 0;
-			double height = area.Height - (ViewModel.LineWidth * 2) - 5;
+			double height = Height - (ViewModel.LineWidth * 2) - 5;
 
 			Point start = new Point (xOrigin, yOrigin);
 			Point stop = new Point (xOrigin + width, yOrigin);

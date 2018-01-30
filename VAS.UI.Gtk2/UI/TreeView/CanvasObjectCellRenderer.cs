@@ -21,6 +21,7 @@ using Gtk;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Drawing;
 using VAS.Drawing.Cairo;
 using Point = VAS.Core.Common.Point;
 
@@ -61,7 +62,18 @@ namespace VAS.UI.Component
 				tk.Context = context;
 
 				if (viewModel != null) {
-					view?.Draw (tk, new Area (new Point (background_area.X, background_area.Y), background_area.Width, background_area.Height));
+
+					var fixedCanvas = view as FixedSizeCanvasObject;
+					if (fixedCanvas != null) {
+						fixedCanvas.Width = background_area.Width;
+						fixedCanvas.Height = background_area.Height;
+						fixedCanvas.Position = new Point (background_area.X, background_area.Y);
+						fixedCanvas?.Draw (tk, new Area (new Point (background_area.X, background_area.Y), background_area.Width, background_area.Height));
+
+					} else {
+						view?.Draw (tk, new Area (new Point (background_area.X, background_area.Y), background_area.Width, background_area.Height));
+					}
+
 				}
 
 				tk.Context = null;

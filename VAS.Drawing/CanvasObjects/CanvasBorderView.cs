@@ -79,6 +79,13 @@ namespace VAS.Drawing.CanvasObjects
 		public override void Draw (IDrawingToolkit tk, Area area)
 		{
 			base.Draw (tk, area);
+			var fixedCanvasObject = ViewModel.CanvasObject as FixedSizeCanvasObject;
+			if (fixedCanvasObject != null) {
+				fixedCanvasObject.Position = Position;
+				fixedCanvasObject.Width = Width;
+				fixedCanvasObject.Height = Height;
+			}
+
 			ViewModel.CanvasObject.Draw (tk, area);
 		}
 	}
