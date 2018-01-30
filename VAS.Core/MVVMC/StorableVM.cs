@@ -16,8 +16,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System.ComponentModel;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using VAS.Core.Interfaces;
+using VAS.Core.Store;
 
 namespace VAS.Core.MVVMC
 {
@@ -46,6 +48,27 @@ namespace VAS.Core.MVVMC
 					}
 				}
 			}
+		}
+
+		/// <summary>
+		/// Load a model in a background thread disabling emission of events until its loaded to prevent updates
+		/// running in a thread different from the main thread
+		/// </summary>
+		public async Task LoadModel ()
+		{
+			if (Model.IsLoaded) {
+				return;
+			}
+
+			await Task.Run (() => {
+				StorableBase storableBase = Model as StorableBase;
+				if (storableBase != null) {
+					storableBase.IgnoreEvents = true;
+					storableBase.Load ();
+					storableBase.IgnoreEvents = false;
+				}
+			});
+			SyncLoadedModel ();
 		}
 
 		/// <summary>
