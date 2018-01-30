@@ -87,7 +87,7 @@ namespace VAS.Drawing.CanvasObjects.Statistics
 		/// <param name="area">Area.</param>
 		public override void Draw (IDrawingToolkit tk, Area area)
 		{
-			if (ViewModel == null || Math.Abs (ViewModel.TotalNumber) < 0.1f) {
+			if (ViewModel == null || Math.Abs (ViewModel.TotalElements) < 0.1f) {
 				return;
 			}
 

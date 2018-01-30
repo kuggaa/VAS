@@ -30,6 +30,8 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System.Collections.Generic;
+using System.ComponentModel;
 using VAS.Core.MVVMC;
 
 namespace VAS.Core.ViewModel.Statistics
@@ -44,14 +46,17 @@ namespace VAS.Core.ViewModel.Statistics
 		string leftDisplayText;
 		string rightDisplayText;
 		double referenceNumber;
+		double total;
+		bool isRightEmptySerie;
 
-		public TwoBarChartVM (int total, SeriesVM leftSerie, SeriesVM rightSerie = null)
+		public TwoBarChartVM (SeriesVM leftSerie, SeriesVM rightSerie = null, int total = 0)
 		{
-			Series = new SeriesCollectionVM ();
-			Series.ViewModels.Add (leftSerie);
-			Series.ViewModels.Add (rightSerie ?? new SeriesVM ("empty", total - leftSerie.Elements, App.Current.Style.ThemeBase));
+			LeftSerie = leftSerie;
+			isRightEmptySerie = rightSerie == null;
+			RightSerie = rightSerie ?? new SeriesVM ("empty", App.Current.Style.ThemeBase);
+			Series.ViewModels.AddRange (new List<SeriesVM> { LeftSerie, RightSerie });
 			leftTextStyle = rightTextStyle = TwoBarTextStyle.Hidden;
-			TotalNumber = ReferenceNumber = total;
+			TotalElements = ReferenceNumber = total;
 			UpdateDisplayTexts (TwoBarSide.Left);
 			UpdateDisplayTexts (TwoBarSide.Right);
 		}
@@ -60,21 +65,13 @@ namespace VAS.Core.ViewModel.Statistics
 		/// Left serie in the chart
 		/// </summary>
 		/// <value>The left serie.</value>
-		public SeriesVM LeftSerie {
-			get {
-				return Series.ViewModels [0];
-			}
-		}
+		public SeriesVM LeftSerie { get; private set; }
 
 		/// <summary>
 		/// Right serie in the chart which can be optional
 		/// </summary>
 		/// <value>The right serie.</value>
-		public SeriesVM RightSerie {
-			get {
-				return Series.ViewModels [1];
-			}
-		}
+		public SeriesVM RightSerie { get; private set; }
 
 		/// <summary>
 		/// Gets or sets the left text style.
@@ -104,7 +101,13 @@ namespace VAS.Core.ViewModel.Statistics
 		/// Total number of elements in series
 		/// </summary>
 		/// <value>The reference number.</value>
-		public double TotalNumber { get; }
+		public double TotalElements {
+			get => total;
+			set {
+				total = value;
+				SyncEmptySerie ();
+			}
+		}
 
 		/// <summary>
 		/// Number to refer the elements in a serie
@@ -171,6 +174,21 @@ namespace VAS.Core.ViewModel.Statistics
 			default:
 				text = string.Empty;
 				break;
+			}
+		}
+
+		protected override void ForwardPropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (NeedsSync (e.PropertyName, nameof (LeftSerie.Elements), sender, LeftSerie)) {
+				SyncEmptySerie ();
+			}
+
+			base.ForwardPropertyChanged (sender, e);
+		}
+
+		void SyncEmptySerie () {
+			if (isRightEmptySerie) {
+				RightSerie.Elements = (int)TotalElements - LeftSerie.Elements;
 			}
 		}
 	}

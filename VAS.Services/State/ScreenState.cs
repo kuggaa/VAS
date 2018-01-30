@@ -33,6 +33,8 @@ namespace VAS.Services.State
 	/// </summary>
 	public abstract class ScreenState<TViewModel> : DisposableBase, IScreenState where TViewModel : IViewModel
 	{
+		protected List<Task> taskList;
+
 		public ScreenState ()
 		{
 			ViewModelOwner = true;
@@ -40,6 +42,7 @@ namespace VAS.Services.State
 			Controllers = App.Current.ControllerLocator.RetrieveAll (Name);
 			KeyContext = new KeyContext ();
 			ToolbarCommands = new List<Command> ();
+			taskList = new List<Task> ();
 		}
 
 		protected override void DisposeManagedResources ()
@@ -138,6 +141,24 @@ namespace VAS.Services.State
 			return InternalStartState ();
 		}
 
+		/// <summary>
+		/// Registers the task to the list of tasks that will be awaited together.
+		/// </summary>
+		/// <param name="newTask">New task.</param>
+		protected void RegisterTask (Task newTask)
+		{
+			taskList.Add (newTask);
+		}
+
+		/// <summary>
+		/// Waits for all tasks registered.
+		/// </summary>
+		protected internal async Task WhenAllTasks ()
+		{
+			await Task.WhenAll (taskList);
+			taskList.Clear ();
+		}
+
 		protected Task<bool> Initialize (dynamic data)
 		{
 			CreateViewModel (data);
@@ -175,6 +196,7 @@ namespace VAS.Services.State
 
 		async Task<bool> InternalStopState ()
 		{
+			await WhenAllTasks ();
 			foreach (IController controller in Controllers) {
 				await controller.Stop ();
 			}
