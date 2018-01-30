@@ -237,10 +237,7 @@ namespace VAS.Services
 														new SeriesVM { Title = "Remaining", Elements = limitation.Remaining, Color = App.Current.Style.ColorAccentSuccess },
 														new SeriesVM { Title = "Current", Elements = limitation.Count, Color = Color.Transparent });
 			barChart.Height = 10;
-			barChart.Background = new ImageCanvasObject {
-				Image = App.Current.ResourcesLocator.LoadImage ("images/lm-widget-full-bar" + Constants.IMAGE_EXT),
-				Mode = ScaleMode.Fill
-			};
+			barChart.Background = App.Current.ResourcesLocator.LoadImage ("images/lm-widget-full-bar" + Constants.IMAGE_EXT);
 
 			var result = new CountLimitationBarChartVM (showOnRemaining) { Limitation = limitation, BarChart = barChart };
 			if (backgroundColor != null) {
