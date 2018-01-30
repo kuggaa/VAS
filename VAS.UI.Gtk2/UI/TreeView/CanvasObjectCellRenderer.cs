@@ -23,7 +23,6 @@ using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Drawing;
 using VAS.Drawing.Cairo;
-using VAS.Drawing.CanvasObjects;
 using Point = VAS.Core.Common.Point;
 
 namespace VAS.UI.Component
