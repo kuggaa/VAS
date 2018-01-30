@@ -39,7 +39,7 @@ namespace VAS.Core.Common
 					return langs;
 
 				foreach (string dirpath in Directory.EnumerateDirectories (localesDir)) {
-					if (App.Current.FileSystemManager.Exists (Path.Combine (dirpath, "LC_MESSAGES", filename))) {
+					if (App.Current.FileSystemManager.FileExists (Path.Combine (dirpath, "LC_MESSAGES", filename))) {
 						try {
 							string localeName = Path.GetFileName (dirpath).Replace ("_", "-");
 							langs.Add (new CultureInfo (localeName));
