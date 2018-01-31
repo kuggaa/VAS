@@ -201,12 +201,12 @@ namespace VAS.Core.ViewModel
 
 		void New ()
 		{
-			App.Current.EventsBroker.Publish (new CreateEvent<Playlist> ());
+			App.Current.EventsBroker.Publish (new CreateEvent<PlaylistVM> ());
 		}
 
 		void Delete ()
 		{
-			App.Current.EventsBroker.Publish (new DeleteEvent<Playlist> ());
+			App.Current.EventsBroker.Publish (new DeleteEvent<PlaylistVM> ());
 		}
 
 		void Edit ()
