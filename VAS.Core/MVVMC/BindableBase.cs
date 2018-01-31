@@ -109,6 +109,12 @@ namespace VAS.Core.MVVMC
 					sender = this;
 					Log.Verbose ($"RaisePropertyChanged {this} - changing sender: {sender} from null");
 				}
+#if DEBUG_THREADS
+				if (this is ViewModelBase && !App.IsMainThread) {
+					throw new System.InvalidOperationException (
+						$"ViewModel {this} is sending a property changed event from a worker thread");
+				}
+#endif
 				PropertyChanged (sender, args);
 			}
 		}
