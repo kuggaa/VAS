@@ -106,6 +106,11 @@ namespace VAS.Core.Interfaces
 		bool Backup ();
 
 		/// <summary>
+		/// Retrieves a new instance of the current storage and initializes it again.
+		/// </summary>
+		void Start ();
+
+		/// <summary>
 		/// Check whether the object of type T exists in the storage.
 		/// </summary>
 		/// <param name="t">Object to check.</param>

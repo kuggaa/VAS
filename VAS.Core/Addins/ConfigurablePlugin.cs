@@ -69,7 +69,7 @@ namespace VAS.Core.Addins
 
 		void Load ()
 		{
-			if (App.Current.FileSystemManager.Exists (ConfigFile)) {
+			if (App.Current.FileSystemManager.FileExists (ConfigFile)) {
 				using (StreamReader reader = File.OpenText (ConfigFile)) {
 					JObject o;
 					try {
