@@ -80,7 +80,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.SubscribeAsync<AddPlaylistElementEvent> (HandleAddPlaylistElement);
 			App.Current.EventsBroker.SubscribeAsync<CreateEvent<PlaylistVM>> (HandleNewPlaylist);
 			App.Current.EventsBroker.SubscribeAsync<DeletePlaylistEvent> (HandleDeletePlaylist);
-			App.Current.EventsBroker.SubscribeAsync<DeleteEvent<Playlist>> (HandleDeleteSelectedItems);
+			App.Current.EventsBroker.SubscribeAsync<DeleteEvent<PlaylistVM>> (HandleDeleteSelectedItems);
 			App.Current.EventsBroker.SubscribeAsync<EditEvent<PlaylistVM>> (HandleEditSelectedPlaylist);
 			App.Current.EventsBroker.Subscribe<RenderPlaylistEvent> (HandleRenderPlaylist);
 			App.Current.EventsBroker.Subscribe<InsertVideoInPlaylistEvent> (HandleInsertVideoInPlaylist);
@@ -100,7 +100,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.UnsubscribeAsync<AddPlaylistElementEvent> (HandleAddPlaylistElement);
 			App.Current.EventsBroker.UnsubscribeAsync<CreateEvent<PlaylistVM>> (HandleNewPlaylist);
 			App.Current.EventsBroker.UnsubscribeAsync<DeletePlaylistEvent> (HandleDeletePlaylist);
-			App.Current.EventsBroker.UnsubscribeAsync<DeleteEvent<Playlist>> (HandleDeleteSelectedItems);
+			App.Current.EventsBroker.UnsubscribeAsync<DeleteEvent<PlaylistVM>> (HandleDeleteSelectedItems);
 			App.Current.EventsBroker.UnsubscribeAsync<EditEvent<PlaylistVM>> (HandleEditSelectedPlaylist);
 			App.Current.EventsBroker.Unsubscribe<RenderPlaylistEvent> (HandleRenderPlaylist);
 			App.Current.EventsBroker.Unsubscribe<InsertVideoInPlaylistEvent> (HandleInsertVideoInPlaylist);
@@ -298,7 +298,7 @@ namespace VAS.Services.Controller
 			}
 		}
 
-		async Task HandleDeleteSelectedItems (DeleteEvent<Playlist> e)
+		async Task HandleDeleteSelectedItems (DeleteEvent<PlaylistVM> e)
 		{
 			bool removed = false;
 			bool questioned = false;
