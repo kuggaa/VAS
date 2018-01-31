@@ -42,6 +42,7 @@ namespace VAS.DB
 		string storageName;
 		object mutex;
 		bool documentUpdated;
+		string dbDir;
 
 		public CouchbaseStorage (Database db)
 		{
@@ -59,9 +60,8 @@ namespace VAS.DB
 		public CouchbaseStorage (string dbDir, string storageName)
 		{
 			this.storageName = storageName;
-			var manager = (CouchbaseManager)App.Current.DependencyRegistry.Retrieve<IStorageManager> (InstanceType.New, dbDir);
-			db = manager.OpenDatabase (storageName);
-			Init ();
+			this.dbDir = dbDir;
+			Start ();
 		}
 
 		void Init ()
@@ -103,6 +103,16 @@ namespace VAS.DB
 			set {
 				Info.LastBackup = value;
 			}
+		}
+
+		/// <summary>
+		/// Retrieves a new instance of the current storage and initializes it again.
+		/// </summary>
+		public void Start ()
+		{
+			var manager = (CouchbaseManager)App.Current.DependencyRegistry.Retrieve<IStorageManager> (InstanceType.New, dbDir);
+			db = manager.OpenDatabase (storageName);
+			Init ();
 		}
 
 		/// <summary>

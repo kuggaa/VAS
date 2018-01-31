@@ -124,7 +124,7 @@ namespace VAS.Tests.Services
 			App.Current.LicenseLimitationsService = mockLimitationService.Object;
 
 			mtkMock.Setup (m => m.GetMultiPlayer ()).Throws (new Exception ());
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (false);
 
 			eventVM1 = new TimelineEventVM () {
 				Model = new TimelineEvent {
@@ -258,7 +258,7 @@ namespace VAS.Tests.Services
 		[Test ()]
 		public void TestOpenFileSet ()
 		{
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (true);
 
 			viewPortMock = new Mock<IViewPort> ();
 			viewPortMock.SetupAllProperties ();
@@ -270,7 +270,7 @@ namespace VAS.Tests.Services
 			viewPortMock.VerifySet (v => v.MessageVisible = false, Times.Once ());
 			Assert.IsTrue (player.Opened);
 
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (false);
 		}
 
 		[Test ()]
@@ -341,7 +341,7 @@ namespace VAS.Tests.Services
 		[Test ()]
 		public void TestOpen ()
 		{
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (true);
 
 			int timeCount = 0;
 			bool multimediaError = false;
@@ -385,7 +385,7 @@ namespace VAS.Tests.Services
 
 			App.Current.EventsBroker.Unsubscribe<MultimediaErrorEvent> (et);
 
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (false);
 		}
 
 		[Test ()]
@@ -451,7 +451,7 @@ namespace VAS.Tests.Services
 		[Test ()]
 		public void TestSeek ()
 		{
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (true);
 
 			int drawingsCount = 0;
 			int timeChanged = 0;
@@ -504,13 +504,13 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (3, drawingsCount);
 			playerMock.ResetCalls ();
 
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (false);
 		}
 
 		[Test ()]
 		public void TestSeekProportional ()
 		{
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (true);
 			int seekPos;
 			int timeChanged = 0;
 			Time curTime = new Time (0);
@@ -556,14 +556,14 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (eventVM1.Duration * 0.5, curTime);
 			Assert.AreEqual (eventVM1.Duration, strLenght);
 
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (false);
 		}
 
 		[Test ()]
 		public void TestStepping ()
 		{
 
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (true);
 
 			int timeChanged = 0;
 			int loadDrawingsChanged = 0;
@@ -680,7 +680,7 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (1, timeChanged);
 			playerMock.Verify (p => p.Seek (currentTime - playerVM.Step, true, false), Times.Once ());
 
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (false);
 		}
 
 		[Test ()]
@@ -1399,7 +1399,7 @@ namespace VAS.Tests.Services
 		[Test ()]
 		public void TestMultiplayerCamerasConfig ()
 		{
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (true);
 			TimelineEventVM eventVM1;
 			RangeObservableCollection<CameraConfig> cams1, cams2;
 			Mock<IMultiVideoPlayer> multiplayerMock = new Mock<IMultiVideoPlayer> ();
@@ -1484,7 +1484,7 @@ namespace VAS.Tests.Services
 			Assert.AreEqual (cams2, player.CamerasConfig);
 			multiplayerMock.ResetCalls ();
 
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (false);
 		}
 
 		[Test ()]
@@ -1873,22 +1873,22 @@ namespace VAS.Tests.Services
 		[Test]
 		public void SetZoom_OutLowerBoundary_ZoomNotChanged ()
 		{
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (true);
 			PreparePlayer ();
 			player.SetZoom (0);
 
 			Assert.AreEqual (1, playerVM.Zoom);
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (false);
 		}
 
 		[Test]
 		public void SetZoom_OutHigherBoundary_ZoomNotChanged ()
 		{
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (true);
 			PreparePlayer ();
 			player.SetZoom (8);
 			Assert.AreEqual (1, playerVM.Zoom);
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (false);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (false);
 		}
 
 		[Test]
@@ -1923,7 +1923,7 @@ namespace VAS.Tests.Services
 		public void OpenVideo_ControlsSensitiveUpdated ()
 		{
 			PreparePlayer ();
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (true);
 			playerVM.ControlsSensitive = false;
 
 			player.Open (mfs);
@@ -1934,7 +1934,7 @@ namespace VAS.Tests.Services
 		[Test]
 		public void LoadEvent_ControlsSensitiveUpdated ()
 		{
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (true);
 			PreparePlayer ();
 			playerVM.ControlsSensitive = false;
 			var mfsNew = new MediaFileSet ();
@@ -1955,7 +1955,7 @@ namespace VAS.Tests.Services
 		[Test]
 		public void LoadPlaylistVideo_ControlsSensitiveUpdated ()
 		{
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (true);
 			PreparePlayer ();
 			playerVM.ControlsSensitive = false;
 			var mfsNew = new MediaFileSet ();
@@ -1978,7 +1978,7 @@ namespace VAS.Tests.Services
 			MediaFileSetVM fileset = null;
 			int calls = 0;
 			PreparePlayer ();
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (true);
 			playerVM.ControlsSensitive = false;
 			playerVM.PropertyChanged += (sender, e) => {
 				if (e.PropertyName == nameof (playerVM.FileSet)) {
@@ -1998,7 +1998,7 @@ namespace VAS.Tests.Services
 		{
 			MediaFileSetVM fileset = null;
 			int calls = 0;
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (true);
 			PreparePlayer ();
 			playerVM.ControlsSensitive = false;
 			var mfsNew = new MediaFileSet ();
@@ -2081,7 +2081,7 @@ namespace VAS.Tests.Services
 		{
 			MediaFileSetVM fileset = null;
 			int calls = 0;
-			fileManager.Setup (f => f.Exists (It.IsAny<string> ())).Returns (true);
+			fileManager.Setup (f => f.FileExists (It.IsAny<string> ())).Returns (true);
 			PreparePlayer ();
 			playerVM.ControlsSensitive = false;
 			var mfsNew = new MediaFileSet ();

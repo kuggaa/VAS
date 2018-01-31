@@ -47,7 +47,7 @@ namespace VAS.DB
 		{
 			Log.Information ("Saving " + t.ID.ToString () + " to " + at);
 
-			if (App.Current.FileSystemManager.Exists (at)) {
+			if (App.Current.FileSystemManager.FileExists (at)) {
 				throw new Exception ("A file already exists at " + at);
 			}
 
