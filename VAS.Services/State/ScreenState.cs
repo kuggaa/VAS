@@ -196,10 +196,10 @@ namespace VAS.Services.State
 
 		async Task<bool> InternalStopState ()
 		{
-			await WhenAllTasks ();
 			foreach (IController controller in Controllers) {
 				await controller.Stop ();
 			}
+			await WhenAllTasks ();
 			App.Current.KeyContextManager.RemoveContext (KeyContext);
 			return true;
 		}
