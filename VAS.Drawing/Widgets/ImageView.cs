@@ -43,7 +43,7 @@ namespace VAS.Drawing.Widgets
 			}
 			set {
 				image = value;
-				widget.ReDraw ();
+				widget?.ReDraw ();
 			}
 		}
 
