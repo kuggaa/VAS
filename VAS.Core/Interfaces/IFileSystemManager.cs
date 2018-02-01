@@ -64,5 +64,12 @@ namespace VAS.Core.Interfaces
 		/// </summary>
 		/// <param name="sourceDirName">Source dir name.</param>
 		string GetDataDirPath (string dirname);
+
+		/// <summary>
+		/// Gets the path of the specified directory name.
+		/// </summary>
+		/// <param name="path">Source dir name.</param>
+		/// <param name="recursive">Revursive delete.</param>
+		void DeleteDirectory (string path, bool recursive);
 	}
 }
