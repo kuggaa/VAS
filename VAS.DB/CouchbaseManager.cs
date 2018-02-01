@@ -26,10 +26,11 @@ using ICSharpCode.SharpZipLib;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 
 namespace VAS.DB
 {
-	public abstract class CouchbaseManager : IStorageManager
+	public abstract class CouchbaseManager : DisposableBase, IStorageManager
 	{
 		protected readonly Manager manager;
 		protected IStorage activeDB;
@@ -42,8 +43,12 @@ namespace VAS.DB
 				ManagerOptions.Default);
 			options = new DatabaseOptions ();
 			Options.Create = true;
-
 			Databases = new List<IStorage> ();
+		}
+
+		override protected void DisposeManagedResources ()
+		{
+			manager.Close ();
 		}
 
 		public DatabaseOptions Options {
@@ -79,7 +84,6 @@ namespace VAS.DB
 			}
 			return storage;
 		}
-
 
 		public bool Delete (IStorage db)
 		{
