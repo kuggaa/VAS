@@ -22,11 +22,12 @@ using VAS;
 using VAS.Core.Common;
 using VAS.Core.Filters;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
 namespace Tests
 {
-	public class LocalStorage : IStorage
+	public class LocalStorage : DisposableBase, IStorage
 	{
 		Dictionary<Guid, IStorable> localStorage;
 
