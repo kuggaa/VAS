@@ -22,7 +22,7 @@ using VAS.Core.Store;
 
 namespace VAS.Core.Interfaces
 {
-	public interface IStorage
+	public interface IStorage : IDisposable
 	{
 		/// <summary>
 		/// Gets the storage information.
