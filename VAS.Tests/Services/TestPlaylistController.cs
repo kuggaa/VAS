@@ -323,7 +323,7 @@ namespace VAS.Tests.Services
 			playlistCollectionVM.Model.Add (newPlaylist);
 
 			playlistCollectionVM.Selection.Replace (playlistCollectionVM.ViewModels);
-			await App.Current.EventsBroker.Publish (new DeleteEvent<Playlist> ());
+			await App.Current.EventsBroker.Publish (new DeleteEvent<PlaylistVM> ());
 
 			Assert.AreEqual (0, playlistCollectionVM.ViewModels.Count);
 			Assert.AreEqual (0, playlistCollectionVM.Selection.Count);
@@ -338,7 +338,7 @@ namespace VAS.Tests.Services
 			projectVM.Playlists.Model.Add (newPlaylist);
 
 			playlistCollectionVM.Selection.Replace (playlistCollectionVM.ViewModels);
-			await App.Current.EventsBroker.Publish (new DeleteEvent<Playlist> ());
+			await App.Current.EventsBroker.Publish (new DeleteEvent<PlaylistVM> ());
 
 			storageMock.Verify (s => s.Delete<Playlist> (It.IsAny<Playlist> ()), Times.Never ());
 			Assert.AreEqual (0, playlistCollectionVM.ViewModels.Count);
@@ -361,7 +361,7 @@ namespace VAS.Tests.Services
 				playlistCollectionVM.ViewModels [0].ViewModels[0],
 				playlistCollectionVM.ViewModels [0].ViewModels[2]
 			});
-			await App.Current.EventsBroker.Publish (new DeleteEvent<Playlist> ());
+			await App.Current.EventsBroker.Publish (new DeleteEvent<PlaylistVM> ());
 
 			Assert.AreEqual (1, playlistCollectionVM.ViewModels [0].ViewModels.Count);
 			Assert.AreEqual (0, playlistCollectionVM.ViewModels [0].Selection.Count);
