@@ -106,5 +106,15 @@ namespace VAS.Core
 		{
 			return Utils.GetDataDirPath (dirname);
 		}
+
+		/// <summary>
+		/// Gets the path of the specified directory name.
+		/// </summary>
+		/// <param name="path">Source dir name.</param>
+		/// <param name="recursive">Revursive delete.</param>
+		public void DeleteDirectory (string path, bool recursive)
+		{
+			Directory.Delete (path, recursive);
+		}
 	}
 }
