@@ -27,6 +27,7 @@ using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Filters;
 using VAS.Core.Interfaces;
+using VAS.Core.MVVMC;
 using VAS.Core.Serialization;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
@@ -35,7 +36,7 @@ using VAS.DB.Views;
 
 namespace VAS.DB
 {
-	public abstract class CouchbaseStorage : IStorage
+	public abstract class CouchbaseStorage : DisposableBase, IStorage
 	{
 		Database db;
 		Dictionary<Type, object> views;
@@ -43,6 +44,7 @@ namespace VAS.DB
 		object mutex;
 		bool documentUpdated;
 		string dbDir;
+		CouchbaseManager ownedManager;
 
 		public CouchbaseStorage (Database db)
 		{
@@ -62,6 +64,14 @@ namespace VAS.DB
 			this.storageName = storageName;
 			this.dbDir = dbDir;
 			Start ();
+		}
+
+		protected override void DisposeManagedResources ()
+		{
+			if (ownedManager != null) {
+				ownedManager.Dispose ();
+			}
+			db.Dispose ();
 		}
 
 		void Init ()
@@ -110,8 +120,8 @@ namespace VAS.DB
 		/// </summary>
 		public void Start ()
 		{
-			var manager = (CouchbaseManager)App.Current.DependencyRegistry.Retrieve<IStorageManager> (InstanceType.New, dbDir);
-			db = manager.OpenDatabase (storageName);
+			ownedManager = (CouchbaseManager)App.Current.DependencyRegistry.Retrieve<IStorageManager> (InstanceType.New, dbDir);
+			db = ownedManager.OpenDatabase (storageName);
 			Init ();
 		}
 
