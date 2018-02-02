@@ -24,14 +24,14 @@ namespace VAS.Core.MVVMC
 	/// <summary>
 	/// A location service for IView components.
 	/// </summary>
-	public class ViewLocator
+	public class ViewLocator : IViewLocator
 	{
 		readonly Dictionary<string, Type> elements;
 		readonly string locatorName;
 
 		public ViewLocator ()
 		{
-			locatorName = typeof(IView).Name;
+			locatorName = typeof (IView).Name;
 			elements = new Dictionary<string, Type> ();
 		}
 
@@ -42,8 +42,8 @@ namespace VAS.Core.MVVMC
 		/// <param name="klass">Type of the View.</param>
 		public void Register (string name, Type klass)
 		{
-			if (!typeof(IView).IsAssignableFrom (klass)) {
-				throw new InvalidCastException (klass + " is not of type " + typeof(IView));
+			if (!typeof (IView).IsAssignableFrom (klass)) {
+				throw new InvalidCastException (klass + " is not of type " + typeof (IView));
 			}
 			elements [name] = klass;
 		}
@@ -65,7 +65,7 @@ namespace VAS.Core.MVVMC
 		/// </summary>
 		/// <param name="name">Name.</param>
 		/// <param name="args">View Constructor Param Arguments.</param>
-		public IView Retrieve (string name, params object[] args)
+		public IView Retrieve (string name, params object [] args)
 		{
 			if (!elements.ContainsKey (name)) {
 				return null;

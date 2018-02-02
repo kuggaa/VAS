@@ -17,6 +17,7 @@
 //
 using System;
 using System.Reflection;
+using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.MVVMC
 {
@@ -28,7 +29,7 @@ namespace VAS.Core.MVVMC
 		/// the assemblies containing Views in the initialization.
 		/// </summary>
 		/// <param name="viewLocator">View locator.</param>
-		public static void ScanViews (ViewLocator viewLocator)
+		public static void ScanViews (IViewLocator viewLocator)
 		{
 			Assembly assembly = Assembly.GetCallingAssembly ();
 			foreach (Type type in assembly.GetTypes ()) {

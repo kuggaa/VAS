@@ -13,6 +13,7 @@ using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.License;
 using VAS.Core.Interfaces.Multimedia;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.KPI;
 
@@ -36,7 +37,7 @@ namespace VAS
 		public IStorageManager DatabaseManager;
 		public IKpiService KPIService;
 		public IJobsManager JobsManager;
-		public ViewLocator ViewLocator;
+		public IViewLocator ViewLocator;
 		public ControllerLocator ControllerLocator;
 		public DragContext DragContext;
 		public ILicenseManager LicenseManager;

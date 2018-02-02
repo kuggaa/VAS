@@ -305,6 +305,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Multimedia\ISeeker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\TypeConverters\NegativeInt32ToDashConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\StateResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\IViewLocator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
