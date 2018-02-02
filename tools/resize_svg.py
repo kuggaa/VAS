@@ -3,6 +3,8 @@ import sys
 import os
 import subprocess
 import re
+import shlex
+import checksum
 import xml.etree.ElementTree as ET
 
 def parse_length(length):
@@ -68,11 +70,16 @@ def main(root=None):
     if not root:
         root = '.'
     di = os.path.join(root, 'data')
+    if not checksum.checksum_changed(di):
+        return
+
     # List of files commited in the data directory with the .svg extension
     files = subprocess.check_output(["git", "ls-files", di]).split('\n')[:-1]
     files = [x for x in files if x.endswith('.svg') and "@2x" not in x]
     for f in files:
         resize_svg(f, 2)
+
+    checksum.save_checksum(datadir)
 
 if __name__ == '__main__':
     home = None
