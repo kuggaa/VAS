@@ -28,6 +28,7 @@ using VAS.Core.Interfaces.GUI;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
+using VAS.Drawing;
 using VAS.UI.Dialog;
 using VAS.UI.Helpers;
 using VAS.UI.Multimedia;
@@ -48,7 +49,6 @@ namespace VAS.UI
 			Scanner.ScanAll ();
 			DrawingInit.Init ();
 			VASUIMultimediaInit.Init ();
-			RegistryCanvasFromDrawables ();
 		}
 
 		protected Gtk.Window MainWindow {

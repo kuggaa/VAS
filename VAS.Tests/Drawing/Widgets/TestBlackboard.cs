@@ -36,7 +36,7 @@ namespace VAS.Tests.Drawing.Widgets
 		public void OneTimeSetUp ()
 		{
 			SetupClass.SetUp ();
-			VAS.Drawing.DrawingInit.ScanViews ();
+			VAS.Drawing.DrawingInit.Init ();
 		}
 
 		[SetUp]

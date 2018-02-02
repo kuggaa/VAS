@@ -274,7 +274,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\VideoPlayerSeekOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\OneWayPropertyBinding.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IApplicationMenu.cs" />
-<<<<<<< HEAD
     <Compile Include="$(MSBuildThisFileDirectory)Resources\Icons.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resources\Images.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resources\Styles\Colors.cs" />

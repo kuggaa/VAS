@@ -55,6 +55,8 @@ namespace VAS.UI.Helpers
 			}
 		}
 
+		public bool Detached => externalWindow != null;
+
 		/// <summary>
 		/// Detach the specified widget to an external window or re-attach it again to its previous container.
 		/// </summary>

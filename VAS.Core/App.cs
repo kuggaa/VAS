@@ -88,8 +88,8 @@ namespace VAS
 
 			App.Current.InitDirectories (portableFile, evHome);
 			App.Current.MigrateOldConfig ();
-			App.Current.InitVersion ();
 			App.Current.InitDependencies ();
+			App.Current.InitVersion ();
 			App.Current.InitConfig ();
 			App.Current.InitTranslations ();
 
