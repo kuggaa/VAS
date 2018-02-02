@@ -14,7 +14,7 @@ import runtools
 
 application_tools = [runtools]
 # update_data should be the last one executed, as it depends on everything being already generated
-desktop_tools = [resize_svg, update_data]
+desktop_tools = [resize_svg]
 
 def main():
     tools = application_tools + desktop_tools
