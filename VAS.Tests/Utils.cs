@@ -202,12 +202,6 @@ namespace VAS.Tests
 		{
 			return Enumerable.Empty<KeyAction> ();
 		}
-
-		public bool Started {
-			get {
-				return started;
-			}
-		}
 	}
 
 	public class DummyViewModel<T> : IViewModel<T>
@@ -887,7 +881,7 @@ namespace VAS.Tests
 			}
 		}
 	}
-	
+
 	/// <summary>
 	/// Seeker that calls seek as soon as it's called, without timeout.
 	/// </summary>
