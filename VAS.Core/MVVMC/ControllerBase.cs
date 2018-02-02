@@ -28,12 +28,10 @@ namespace VAS.Core.MVVMC
 {
 	public abstract class ControllerBase : DisposableBase, IController
 	{
-		protected bool started;
-
 		protected override void DisposeManagedResources ()
 		{
 			base.DisposeManagedResources ();
-			if (started) {
+			if (Started) {
 				Stop ();
 			}
 		}
@@ -41,12 +39,17 @@ namespace VAS.Core.MVVMC
 		protected override void DisposeUnmanagedResources ()
 		{
 			base.DisposeUnmanagedResources ();
-			if (started) {
+			if (Started) {
 				Log.Error ($"The controller {GetType ()} was not stopped correctly.");
 			}
 		}
 
 		#region IController
+
+		public bool Started {
+			get;
+			private set;
+		}
 
 		public virtual IEnumerable<KeyAction> GetDefaultKeyActions ()
 		{
@@ -62,10 +65,10 @@ namespace VAS.Core.MVVMC
 		public virtual Task Start ()
 		{
 			Log.Debug ($"Starting controller {GetType ()}");
-			if (started) {
+			if (Started) {
 				throw new InvalidOperationException ("The controller is already running");
 			}
-			started = true;
+			Started = true;
 			return AsyncHelpers.Return ();
 		}
 
@@ -76,10 +79,10 @@ namespace VAS.Core.MVVMC
 		public virtual Task Stop ()
 		{
 			Log.Debug ($"Stopping controller {GetType ()}");
-			if (!started) {
+			if (!Started) {
 				throw new InvalidOperationException ("The controller is already stopped");
 			}
-			started = false;
+			Started = false;
 			return AsyncHelpers.Return ();
 		}
 
@@ -100,7 +103,7 @@ namespace VAS.Core.MVVMC
 				return viewModel;
 			}
 			set {
-				if (started) {
+				if (Started) {
 					throw new InvalidOperationException ("The ViewModel can't be changed while the controller is running");
 				}
 				viewModel = value;
