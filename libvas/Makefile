@@ -37,7 +37,7 @@ libvas_OBJS = $(libvas_SOURCES:.c=.o)
 libvas_DEPS = $(libvas_OBJS:.o=.d)
 libvas_LDFLAGS = $(shell pkg-config --libs $(libvas_PKGCONFIG_DEPS))
 libvas_CFLAGS = $(shell pkg-config --cflags $(libvas_PKGCONFIG_DEPS))
-CFLAGS += $(libvas_CFLAGS)
+CFLAGS += $(libvas_CFLAGS) -D$(OSTYPE)
 LDFLAGS += $(libvas_LDFLAGS)
 LIBVAS=$(OUTPUT_DIR)libvas$(SHARED_EXT)
 
