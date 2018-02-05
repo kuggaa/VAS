@@ -17,31 +17,35 @@
 //
 
 using System;
+using System.Collections.Generic;
 
 namespace VAS.Core.Interfaces.MVVMC
 {
-	public interface IViewLocator
+	/// <summary>
+	/// Interface to retrieve classes inheriting from the same class.
+	/// All classes should inherit from the TResult specified.
+	/// </summary>
+	public interface ILocator<TReturn>
 	{
 		/// <summary>
 		/// Register the specified name and class.
 		/// </summary>
 		/// <param name="name">Name.</param>
 		/// <param name="klass">Type to register.</param>
-		void Register (string name, Type klass);
+		void Register (string name, Type klass, int priority = 0);
 
 		/// <summary>
 		/// Retrieve an instance of the class associated with the specified name.
 		/// </summary>
 		/// <returns>Instance of the class.</returns>
 		/// <param name="name">Name.</param>
-		IView Retrieve (string name);
+		TReturn Retrieve (string name);
 
 		/// <summary>
-		/// Retrieve an instance of the class associated with the specified name.
+		/// Retrieve all instances of the class associated with the specified name.
 		/// </summary>
-		/// <returns>Instance of the class.</returns>
+		/// <returns>List containing instances of all the classes registered.</returns>
 		/// <param name="name">Name.</param>
-		/// <param name="args">Constructor arguments.</param>
-		IView Retrieve (string name, params object [] args);
+		IEnumerable<TReturn> RetrieveAll (string name);
 	}
 }

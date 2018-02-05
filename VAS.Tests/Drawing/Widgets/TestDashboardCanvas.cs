@@ -20,6 +20,7 @@ using Moq;
 using NUnit.Framework;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.ViewModel;
 using VAS.Drawing.CanvasObjects.Dashboard;
@@ -36,7 +37,7 @@ namespace VAS.Tests.Drawing.Widgets
 		[OneTimeSetUp]
 		public void Init ()
 		{
-			App.Current.ViewLocator = new ViewLocator ();
+			App.Current.ViewLocator = new Locator<IView> ();
 			App.Current.ViewLocator.Register ("AnalysisEventButtonView", typeof (DummyDashboardButtonView));
 			App.Current.ViewLocator.Register ("TimerButtonView", typeof (DummyDashboardButtonView));
 			var drawingToolkitMock = new Mock<IDrawingToolkit> ();

@@ -83,8 +83,8 @@ namespace VAS.Tests.Services
 		[OneTimeSetUp]
 		public void FixtureSetup ()
 		{
-			App.Current.ViewLocator = new ViewLocator ();
-			App.Current.ControllerLocator = new ControllerLocator ();
+			App.Current.ViewLocator = new Locator<IView> ();
+			App.Current.ControllerLocator = new Locator<IController> ();
 		}
 
 		[SetUp]
