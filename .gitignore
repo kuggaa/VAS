@@ -33,6 +33,7 @@ autom4te.cache
 *~
 *.orig
 *.o
+*.d
 *tar.gz
 *.pidb
 .log.swp
