@@ -28,7 +28,7 @@ namespace VAS.Core.MVVMC
 	public class Locator<TReturn> : ILocator<TReturn>
 	{
 
-		List<RegisteredElement> elements;
+		Dictionary<string, List<RegisteredElement>> elements;
 
 		internal struct RegisteredElement
 		{
@@ -46,7 +46,7 @@ namespace VAS.Core.MVVMC
 
 		public Locator ()
 		{
-			elements = new List<RegisteredElement> ();
+			elements = new Dictionary<string, List<RegisteredElement>> ();
 		}
 
 		/// <summary>
@@ -60,7 +60,12 @@ namespace VAS.Core.MVVMC
 			if (!typeof (TReturn).IsAssignableFrom (type)) {
 				throw new InvalidCastException (type + " is not of type " + typeof (TReturn));
 			}
-			elements.Add (new RegisteredElement (name, type, priority));
+
+			if (!elements.ContainsKey (name)) {
+				elements.Add (name, new List<RegisteredElement> ());
+			}
+
+			elements [name].Add (new RegisteredElement (name, type, priority));
 		}
 
 		/// <summary>
@@ -70,9 +75,10 @@ namespace VAS.Core.MVVMC
 		/// <param name="name">The name to filter by.</param>
 		public IEnumerable<TReturn> RetrieveAll (string name)
 		{
-			return elements.Where (e => e.Name == name).
-				OrderBy (e => e.Priority).
-				Select (e => (TReturn)Activator.CreateInstance (e.Type)).ToList ();
+			if (!elements.TryGetValue (name, out List<RegisteredElement> list)) {
+				return Enumerable.Empty<TReturn> ();
+			}
+			return list.OrderBy (e => e.Priority).Select (e => (TReturn)Activator.CreateInstance (e.Type)).ToList ();
 		}
 
 		/// <summary>
@@ -81,12 +87,10 @@ namespace VAS.Core.MVVMC
 		/// <param name="name">The name.</param>
 		public TReturn Retrieve (string name)
 		{
-			var element = elements.Where (e => e.Name == name).
-				OrderByDescending (e => e.Priority).
-				FirstOrDefault ();
-			if (element.Type == null) {
+			if (!elements.TryGetValue (name, out List<RegisteredElement> list)) {
 				return default (TReturn);
 			}
+			var element = list.OrderByDescending (e => e.Priority).FirstOrDefault ();
 			return (TReturn)Activator.CreateInstance (element.Type);
 		}
 	}

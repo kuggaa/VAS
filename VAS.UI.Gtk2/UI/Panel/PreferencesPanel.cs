@@ -31,7 +31,7 @@ using VAS.UI.Helpers.Bindings;
 namespace VAS.UI.Panel
 {
 	[System.ComponentModel.ToolboxItem (true)]
-	[ViewAttribute (PreferencesState.NAME)]
+	[ViewAttribute (PreferencesState.NAME, 0)]
 	public partial class PreferencesPanel : Gtk.Bin, IPanel<PreferencesPanelVM>
 	{
 		BindingContext ctx;
