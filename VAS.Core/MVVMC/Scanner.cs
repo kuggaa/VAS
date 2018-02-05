@@ -34,7 +34,8 @@ namespace VAS.Core.MVVMC
 			Assembly assembly = Assembly.GetCallingAssembly ();
 			foreach (Type type in assembly.GetTypes ()) {
 				foreach (var attribute in type.GetCustomAttributes (typeof (ViewAttribute), true)) {
-					viewLocator.Register ((attribute as ViewAttribute).ViewName, type);
+					ViewAttribute viewAttribute = (ViewAttribute)attribute;
+					viewLocator.Register (viewAttribute.ViewName, type, viewAttribute.Priority);
 				}
 			}
 		}
@@ -68,7 +69,8 @@ namespace VAS.Core.MVVMC
 		{
 			foreach (Type type in assembly.GetTypes ()) {
 				foreach (var attribute in type.GetCustomAttributes (typeof (ControllerAttribute), true)) {
-					controllerLocator.Register ((attribute as ControllerAttribute).ViewName, type);
+					ControllerAttribute controllerAttribute = (ControllerAttribute)attribute;
+					controllerLocator.Register (controllerAttribute.ViewName, type, controllerAttribute.Priority);
 				}
 			}
 		}
