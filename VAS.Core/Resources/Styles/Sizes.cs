@@ -109,6 +109,7 @@ namespace VAS.Core.Resources.Styles
 		public const int NotebookTabIconSize = 18;
 		public const int NotebookTabSize = NotebookTabIconSize + 14;
 
+		public const int TopBarHeight = 44;
 		public const int TopBarButtonIconSize = 28;
 		public const int TopBarToggleButtonIconSize = 16;
 

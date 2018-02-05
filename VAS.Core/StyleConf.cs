@@ -68,7 +68,6 @@ namespace VAS.Core.Common
 			ThemeContrastSecondary = Color.Black;
 			TextBase = Color.Black;
 			ColorPrimary = Color.Black;
-			TextBase = Color.Black;
 			SoftDim = 0.9;
 		}
 
