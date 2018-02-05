@@ -17,6 +17,7 @@
 //
 using System;
 using NUnit.Framework;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 
 namespace VAS.Tests.MVVMC
@@ -27,22 +28,22 @@ namespace VAS.Tests.MVVMC
 		[Test]
 		public void TestRegisterAndRetrieve ()
 		{
-			var locator = new ViewLocator ();
-			locator.Register ("test", typeof(DummyView));
-			Assert.AreEqual (typeof(DummyView), locator.Retrieve ("test").GetType ());
+			var locator = new Locator<IView> ();
+			locator.Register ("test", typeof (DummyView));
+			Assert.AreEqual (typeof (DummyView), locator.Retrieve ("test").GetType ());
 		}
 
 		[Test]
 		public void TestRegisterWrongType ()
 		{
-			var locator = new ViewLocator ();
-			Assert.Throws<InvalidCastException> (() => locator.Register ("test", typeof(object)));
+			var locator = new Locator<IView> ();
+			Assert.Throws<InvalidCastException> (() => locator.Register ("test", typeof (object)));
 		}
 
 		[Test]
 		public void TestRetrieveNonExistant ()
 		{
-			var locator = new ViewLocator ();
+			var locator = new Locator<IView> ();
 			Assert.IsNull (locator.Retrieve ("test"));
 		}
 	}

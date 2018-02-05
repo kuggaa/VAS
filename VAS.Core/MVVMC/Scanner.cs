@@ -29,7 +29,7 @@ namespace VAS.Core.MVVMC
 		/// the assemblies containing Views in the initialization.
 		/// </summary>
 		/// <param name="viewLocator">View locator.</param>
-		public static void ScanViews (IViewLocator viewLocator)
+		public static void ScanViews (ILocator<IView> viewLocator)
 		{
 			Assembly assembly = Assembly.GetCallingAssembly ();
 			foreach (Type type in assembly.GetTypes ()) {
@@ -44,7 +44,7 @@ namespace VAS.Core.MVVMC
 		/// the assemblies containing Controllers in the initialization.
 		/// </summary>
 		/// <param name="controllerLocator">Controller locator.</param>
-		public static void ScanControllers (ControllerLocator controllerLocator)
+		public static void ScanControllers (ILocator<IController> controllerLocator)
 		{
 			Assembly assembly = Assembly.GetCallingAssembly ();
 			RegisterControllers (assembly, controllerLocator);
@@ -55,7 +55,7 @@ namespace VAS.Core.MVVMC
 		/// referenced assembly This should be called from all tests that are testing states in the initialization.
 		/// </summary>
 		/// <param name="controllerLocator">Controller locator.</param>
-		public static void ScanReferencedControllers (ControllerLocator controllerLocator)
+		public static void ScanReferencedControllers (ILocator<IController> controllerLocator)
 		{
 			Assembly callingAssembly = Assembly.GetCallingAssembly ();
 			foreach (AssemblyName assemblyName in callingAssembly.GetReferencedAssemblies ()) {
@@ -64,7 +64,7 @@ namespace VAS.Core.MVVMC
 			}
 		}
 
-		static void RegisterControllers (Assembly assembly, ControllerLocator controllerLocator)
+		static void RegisterControllers (Assembly assembly, ILocator<IController> controllerLocator)
 		{
 			foreach (Type type in assembly.GetTypes ()) {
 				foreach (var attribute in type.GetCustomAttributes (typeof (ControllerAttribute), true)) {

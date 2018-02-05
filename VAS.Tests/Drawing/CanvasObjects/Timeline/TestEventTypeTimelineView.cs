@@ -19,6 +19,7 @@ using System.Linq;
 using Moq;
 using NUnit.Framework;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
@@ -37,7 +38,7 @@ namespace VAS.Tests.Drawing.CanvasObjects.Timeline
 		[OneTimeSetUp]
 		public void Init ()
 		{
-			App.Current.ViewLocator = new ViewLocator ();
+			App.Current.ViewLocator = new Locator<IView> ();
 			App.Current.ViewLocator.Register ("TimelineEventView", typeof (DummyTimelineEventView));
 			App.Current.DrawingToolkit = new Mock<IDrawingToolkit> ().Object;
 		}
