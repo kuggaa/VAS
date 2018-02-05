@@ -49,5 +49,16 @@ namespace VAS.Core.Resources
 		public static string Dashboards => Catalog.GetString ("Dashboards");
 		public static string DashboardsSearchPlaceholder => Catalog.GetString ("Search dashboard...");
 		public static string EventButtons => Catalog.GetString ("Event Buttons");
+		
+		public static string DashboardEvents => Catalog.GetString ("Dashboard Events");
+		public static string DashboardEventsSubtitle => Catalog.GetString ("Drag and drop to rearrange. Tap to review");
+		public static string Fields => Catalog.GetString ("Fields");
+		public static string FieldsSubtitle => Catalog.GetString ("Tap to modify");
+		public static string Field => Catalog.GetString ("Field");
+		public static string HalfField => Catalog.GetString ("Half field");
+		public static string Goal => Catalog.GetString ("Goal");
+
+		public static string DeleteButton => Catalog.GetString ("Delete");
+		public static string BackButton => Catalog.GetString ("Back");
 	}
 }
