@@ -21,6 +21,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
+using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Interfaces.GUI;
@@ -33,7 +34,7 @@ namespace VAS.Core.ViewModel
 	public abstract class TemplateViewModel<T> : StorableVM<T>, IVisible
 		where T : class, ITemplate
 	{
-		public TemplateViewModel ()
+		protected TemplateViewModel ()
 		{
 			Visible = true;
 		}
