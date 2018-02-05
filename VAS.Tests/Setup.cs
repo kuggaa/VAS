@@ -28,6 +28,8 @@ using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.License;
 using VAS.Core.Interfaces.Multimedia;
+using VAS.Core.Store;
+using VAS.Core.ViewModel;
 using VAS.DB;
 using VAS.Services;
 using Timer = VAS.Core.Common.Timer;
@@ -51,6 +53,7 @@ namespace VAS.Tests
 			App.Current.DependencyRegistry.Register<IStopwatch, Stopwatch> (1);
 			App.Current.DependencyRegistry.Register<ITimer, Timer> (1);
 			App.Current.DependencyRegistry.Register<ISeeker, InstantSeeker> (1);
+			App.Current.DependencyRegistry.Register<IViewModelFactoryService> (new DummyViewModelFactoryService ());
 			App.Current.Dialogs = new Mock<IDialogs> ().Object;
 			var navigation = new Mock<INavigation> ();
 			navigation.Setup (x => x.Push (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
@@ -83,6 +86,16 @@ namespace VAS.Tests
 		public ConfigDummy ()
 		{
 			KeyConfigs = new List<KeyConfig> ();
+		}
+	}
+
+	public class DummyViewModelFactoryService : IViewModelFactoryService
+	{
+		public TimelineEventVM CreateTimelineEventVM (TimelineEvent timelineEvent)
+		{
+			return new TimelineEventVM {
+				Model = timelineEvent
+			};
 		}
 	}
 

@@ -178,9 +178,9 @@ namespace VAS.Services.Controller
 			}
 
 			foreach (var item in e.PlaylistElements) {
-				if (item is TimelineEventVM) {
-					e.Playlist.ViewModels.Add (new PlaylistPlayElementVM () {
-						Model = new PlaylistPlayElement ((item as TimelineEventVM).Model),
+				if (item is TimelineEventVM timelineEventVM) {
+					e.Playlist.ViewModels.Add (new PlaylistPlayElementVM (timelineEventVM) {
+						Model = new PlaylistPlayElement (timelineEventVM.Model),
 					});
 				} else {
 					e.Playlist.ViewModels.Add ((PlaylistElementVM)item);

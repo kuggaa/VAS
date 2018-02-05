@@ -73,14 +73,21 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.PlaylistElementVM"/> is playing.
 		/// </summary>
 		/// <value><c>true</c> if playing; otherwise, <c>false</c>.</value>
-		public bool Playing { get; set; }
+		public virtual bool Playing { get; set; }
 	}
 
 	public class PlaylistPlayElementVM : PlaylistElementVM, IPlayableEvent
 	{
+		IViewModelFactoryService factoryService;
+
 		public PlaylistPlayElementVM ()
 		{
-			Play = new TimelineEventVM ();
+			factoryService = App.Current.DependencyRegistry.Retrieve<IViewModelFactoryService> (InstanceType.Default);
+		}
+
+		public PlaylistPlayElementVM (TimelineEventVM play) : this ()
+		{
+			Play = play;
 		}
 
 		/// <summary>
@@ -100,7 +107,7 @@ namespace VAS.Core.ViewModel
 			}
 			set {
 				base.Model = value;
-				Play.Model = ((PlaylistPlayElement)value)?.Play;
+				SetModelToPlay ((PlaylistPlayElement)value);
 			}
 		}
 
@@ -120,6 +127,20 @@ namespace VAS.Core.ViewModel
 		public TimelineEventVM Play {
 			get;
 			set;
+		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.PlaylistPlayElementVM"/> is playing.
+		/// This updates <see cref="T:VAS.Core.ViewModel.TimelineEventVM"/> Playing property also
+		/// </summary>
+		/// <value><c>true</c> if playing; otherwise, <c>false</c>.</value>
+		public override bool Playing {
+			get {
+				return Play.Playing;
+			}
+			set {
+				Play.Playing = value;
+			}
 		}
 
 		/// <summary>
@@ -157,6 +178,17 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		/// <value>The VAS . core. interfaces. IP laylist event element. cameras config.</value>
 		RangeObservableCollection<CameraConfig> IPlaylistEventElement.CamerasConfig { get => TypedModel.CamerasConfig; set => TypedModel.CamerasConfig = value; }
+
+		void SetModelToPlay (PlaylistPlayElement e)
+		{
+			if (e == null) {
+				return;
+			}
+			if (Play == null) {
+				Play = factoryService.CreateTimelineEventVM (e.Play);
+			}
+			Play.Model = ((PlaylistPlayElement)e)?.Play;
+		}
 	}
 
 	public class PlaylistVideoVM : PlaylistElementVM
