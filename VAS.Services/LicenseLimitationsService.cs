@@ -202,8 +202,8 @@ namespace VAS.Services
 
 		protected void OpenUpgradeLink (string url, string sourcePoint, string limitationName)
 		{
-			Utils.OpenURL (url, sourcePoint);
-			App.Current.EventsBroker.Publish (new UpgradeLinkClickedEvent{
+			App.Current.NetworkManager.OpenURL (url, sourcePoint);
+			App.Current.EventsBroker.Publish (new UpgradeLinkClickedEvent {
 				LimitationName = limitationName,
 				Source = "LimitationWidget"
 			});

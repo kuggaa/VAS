@@ -305,6 +305,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\StateResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\ILocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\Locator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\NetworkManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\INetworkManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
