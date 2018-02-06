@@ -121,13 +121,16 @@ namespace VAS
 					App.Current.baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
 				} else {
 					App.Current.baseDirectory = Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "../");
+					Log.Debug ($"Searching for data path in {App.Current.baseDirectory}");
 					if (!Directory.Exists (Path.Combine (App.Current.baseDirectory, "share", softwareName))) {
 						App.Current.baseDirectory = Path.Combine (App.Current.baseDirectory, "../");
+						Log.Debug ($"Not found, searching for data path in {App.Current.baseDirectory}");
 					}
 				}
-				if (!Directory.Exists (Path.Combine (App.Current.baseDirectory, "share", softwareName)))
-					Log.Warning ("Prefix directory not found");
-				App.Current.DataDir.Add (App.Current.RelativeToPrefix (Path.Combine ("share", softwareName.ToLower ())));
+				string dataDir = App.Current.RelativeToPrefix (Path.Combine ("share", softwareName.ToLower ()));
+				if (!Directory.Exists (dataDir))
+					Log.Warning ($"Prefix directory not found in {dataDir}");
+				App.Current.DataDir.Add (dataDir);
 			}
 			Log.Debug ($"DataDir = [{string.Join (", ", App.Current.DataDir)}]");
 
