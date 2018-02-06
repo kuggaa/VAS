@@ -215,7 +215,7 @@ namespace VAS.UI.Panel
 
 		void HandleLinkClicked (string obj)
 		{
-			Utils.OpenURL (obj);
+			App.Current.NetworkManager.OpenURL (obj);
 		}
 	}
 }
