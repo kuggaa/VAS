@@ -33,6 +33,8 @@ namespace VAS.Core.Resources.Styles
 		public const int WelcomeIconsFirstRow = 3;
 		public const int WelcomeTextHeight = 20;
 		public const int WelcomeMinWidthBorder = 30;
+		public const int WelcomeBarIconSize = 46;
+		public const int WelcomeBarButtonSize = 60;
 
 		public const int ProjectTypeIconSize = 80;
 
@@ -160,5 +162,10 @@ namespace VAS.Core.Resources.Styles
 		public static int ProfileSeasonChartRadius = 65;
 		public static int ProfileLaneChartLineWidth = 14;
 		public static int ProfileLaneChartRadius = 50;
+
+		//license banner
+		public static int LicenseBannerUpgradeButtonWidth = 170;
+		public static int LicenseBannerUpgradeButtonHeight = 60;
+		public static int LicenseTextFontSize = 16;
 	}
 }

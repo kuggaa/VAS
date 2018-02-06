@@ -70,5 +70,22 @@ namespace VAS.Core.Interfaces.License
 		bool TrialOnly {
 			get;
 		}
+
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="T:VAS.Core.Interfaces.License.ILicenseStatus"/> is trial.
+		/// This means that the user can have more licenses but the trial prevails
+		/// </summary>
+		/// <value><c>true</c> if trial; otherwise, <c>false</c>.</value>
+		bool Trial {
+			get;
+		}
+
+		/// <summary>
+		/// Gets the remaining days.
+		/// </summary>
+		/// <value>The remaining days.</value>
+		int RemainingDays {
+			get;
+		}
 	}
 }
