@@ -123,6 +123,8 @@
 		<Compile Include="UI\Bindings\BindingsExtensions.cs" />
 		<Compile Include="UI\Component\ImagePreviewWidget.cs" />
 		<Compile Include="gtk-gui\VAS.UI.UI.Component.ImagePreviewWidget.cs" />
+		<Compile Include="UI\Component\LicenseBannerView.cs" />
+		<Compile Include="gtk-gui\VAS.UI.Component.LicenseBannerView.cs" />
 	</ItemGroup>
 	<Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 	<ItemGroup>

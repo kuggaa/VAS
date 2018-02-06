@@ -284,6 +284,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Store\TimedDashboardButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EventButtonVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TimedDashboardButtonVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resources\Strings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resources\Styles\Sizes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\LicenseBannerVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Service\ILicenseCustomizationService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
@@ -308,6 +312,9 @@
     <Folder Include="$(MSBuildThisFileDirectory)License\" />
     <Folder Include="$(MSBuildThisFileDirectory)Interfaces\License\" />
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\Statistics\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Resources\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Resources\Styles\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Interfaces\Service\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)VAS.Core.dll.config">
