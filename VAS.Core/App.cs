@@ -43,6 +43,7 @@ namespace VAS
 		public IHotkeysService HotkeysService;
 		public IResourcesLocator ResourcesLocator;
 		public IFileSystemManager FileSystemManager;
+		public INetworkManager NetworkManager;
 		public IApplicationMenu ApplicationMenu;
 
 		public string homeDirectory = ".";
@@ -194,6 +195,7 @@ namespace VAS
 			App.Current.DragContext = new DragContext ();
 			App.Current.ResourcesLocator = new ResourcesLocator ();
 			App.Current.FileSystemManager = new FileSystemManager ();
+			App.Current.NetworkManager = new NetworkManager ();
 		}
 
 		// copied from OneplayLongomMatch::CoreServices
