@@ -37,6 +37,12 @@ namespace VAS.Tests
 	[SetUpFixture]
 	public class SetupClass
 	{
+		public static Mock<INavigation> NavigationMock;
+		public static Mock<IDialogs> DialogsMock;
+		public static Mock<IGUIToolkit> UIMock;
+		public static Mock<IDrawingToolkit> DrawingToolkitMock;
+		public static Mock<IMultimediaToolkit> MultimediaToolkitMock;
+
 		[OneTimeSetUp]
 		public static void SetUp ()
 		{
@@ -51,37 +57,44 @@ namespace VAS.Tests
 			App.Current.DependencyRegistry.Register<IStopwatch, Stopwatch> (1);
 			App.Current.DependencyRegistry.Register<ITimer, Timer> (1);
 			App.Current.DependencyRegistry.Register<ISeeker, InstantSeeker> (1);
-			App.Current.Dialogs = new Mock<IDialogs> ().Object;
-			var navigation = new Mock<INavigation> ();
-			navigation.Setup (x => x.Push (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			navigation.Setup (x => x.PushModal (It.IsAny<IPanel> (), It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			navigation.Setup (x => x.PopModal (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			navigation.Setup (x => x.Pop (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
-			App.Current.Navigation = navigation.Object;
+
+			DialogsMock = new Mock<IDialogs> ();
+			App.Current.Dialogs = DialogsMock.Object;
+
+			NavigationMock = new Mock<INavigation> ();
+			NavigationMock.Setup (x => x.Push (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
+			NavigationMock.Setup (x => x.PushModal (It.IsAny<IPanel> (), It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
+			NavigationMock.Setup (x => x.PopModal (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
+			NavigationMock.Setup (x => x.Pop (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
+			App.Current.Navigation = NavigationMock.Object;
+
 			var mockLicenseManager = new Mock<ILicenseManager> ();
 			var mockLicenseStatus = new Mock<ILicenseStatus> ();
 			mockLicenseManager.SetupGet (obj => obj.LicenseStatus).Returns (mockLicenseStatus.Object);
 			App.Current.LicenseManager = mockLicenseManager.Object;
 			App.Current.ResourcesLocator = new DummyResourcesLocator ();
-			var mockToolkit = new Mock<IGUIToolkit> ();
-			App.Current.GUIToolkit = mockToolkit.Object;
+
+			UIMock = new Mock<IGUIToolkit> ();
+			App.Current.GUIToolkit = UIMock.Object;
 			App.Current.FileSystemManager = new FileSystemManager ();
-			mockToolkit.SetupGet (o => o.DeviceScaleFactor).Returns (1.0f);
+			UIMock.SetupGet (o => o.DeviceScaleFactor).Returns (1.0f);
 			App.Current.LicenseLimitationsService = new LicenseLimitationsService ();
 
-			var dtMock = new Mock<IDrawingToolkit> ();
-			dtMock.Setup (dt => dt.Copy (It.IsAny<ICanvas> (), It.IsAny<Area> ())).Returns (Utils.LoadImageFromFile ());
+			DrawingToolkitMock = new Mock<IDrawingToolkit> ();
+			DrawingToolkitMock.Setup (dt => dt.Copy (It.IsAny<ICanvas> (), It.IsAny<Area> ())).Returns (Utils.LoadImageFromFile ());
 			var surfaceMock = new Mock<ISurface> ();
 			surfaceMock.Setup (s => s.Copy ()).Returns (Utils.LoadImageFromFile ());
-			dtMock.Setup (d => d.CreateSurfaceFromResource (It.IsAny<string> (), It.IsAny<bool> (), It.IsAny<bool> ())).
+			DrawingToolkitMock.Setup (d => d.CreateSurfaceFromResource (It.IsAny<string> (), It.IsAny<bool> (), It.IsAny<bool> ())).
 				  Returns (surfaceMock.Object);
-			dtMock.Setup (d => d.CreateSurface (It.IsAny<string> (), It.IsAny<bool> (), It.IsAny<bool> ())).
+			DrawingToolkitMock.Setup (d => d.CreateSurface (It.IsAny<string> (), It.IsAny<bool> (), It.IsAny<bool> ())).
 				  Returns (surfaceMock.Object);
-			dtMock.Setup (d => d.CreateSurface (It.IsAny<int> (), It.IsAny<int> (), It.IsAny<Image> (),
+			DrawingToolkitMock.Setup (d => d.CreateSurface (It.IsAny<int> (), It.IsAny<int> (), It.IsAny<Image> (),
 												It.IsAny<bool> (), It.IsAny<bool> ())).
 				  Returns (surfaceMock.Object);
-			App.Current.DrawingToolkit = dtMock.Object;
+			App.Current.DrawingToolkit = DrawingToolkitMock.Object;
 
+			MultimediaToolkitMock = new Mock<IMultimediaToolkit> ();
+			App.Current.MultimediaToolkit = MultimediaToolkitMock.Object;
 		}
 	}
 

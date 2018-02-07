@@ -85,6 +85,7 @@ namespace VAS.Services.Controller
 			ViewModel.LoadedEvent.FileSet = fileset;
 			LoadTool (Tool.VideoEditor);
 			ViewModel.VideoPlayer.LoadEvent (ViewModel.LoadedEvent, false);
+			ViewModel.VideoPlayer.EditEventDurationCommand.Execute (true);
 		}
 
 		void LoadTool (Tool tool)

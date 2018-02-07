@@ -25,6 +25,7 @@ using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
+using VAS.Core.Store.Playlists;
 using VAS.Core.ViewModel;
 using VAS.Drawing.Widgets;
 using VAS.Services;
@@ -38,8 +39,6 @@ namespace VAS.Tests.Integration
 	{
 		QuickEditorState state;
 		QuickEditorVM viewModel;
-		Mock<IMultimediaToolkit> mtkMock;
-		Mock<IDialogs> dialogsMock;
 		Mock<IVideoPlayer> videoPlayerMock;
 		Image frame;
 
@@ -56,24 +55,18 @@ namespace VAS.Tests.Integration
 			GeneralUIHotkeys.RegisterDefaultHotkeys ();
 			PlaybackHotkeys.RegisterDefaultHotkeys ();
 			DrawingToolHotkeys.RegisterDefaultHotkeys ();
-
 			frame = Utils.LoadImageFromFile ();
-			videoPlayerMock = new Mock<IVideoPlayer> ();
-			videoPlayerMock.Setup (p => p.GetCurrentFrame (It.IsAny<int> (), It.IsAny<int> ())).Returns (frame);
-			videoPlayerMock.Setup (p => p.CurrentTime).Returns (new Time (300));
-
-			mtkMock = new Mock<IMultimediaToolkit> ();
-			App.Current.MultimediaToolkit = mtkMock.Object;
-			mtkMock.Setup (x => x.GetPlayer ()).Returns (videoPlayerMock.Object);
-
-			dialogsMock = new Mock<IDialogs> ();
-			App.Current.Dialogs = dialogsMock.Object;
 		}
 
 		[SetUp]
 		public void SetUp ()
 		{
-			dialogsMock.Setup (x => x.OpenMediaFile (It.IsAny<object> ())).Returns (Utils.CreateMediaFile ());
+			videoPlayerMock = new Mock<IVideoPlayer> ();
+			videoPlayerMock.Setup (p => p.GetCurrentFrame (It.IsAny<int> (), It.IsAny<int> ())).Returns (frame);
+			videoPlayerMock.Setup (p => p.CurrentTime).Returns (new Time (300));
+			SetupClass.MultimediaToolkitMock.Setup (x => x.GetPlayer ()).Returns (videoPlayerMock.Object);
+
+			SetupClass.DialogsMock.Setup (x => x.OpenMediaFile (It.IsAny<object> ())).Returns (Utils.CreateMediaFile ());
 
 			App.Current.StateController = new StateController ();
 			App.Current.StateController.Register ("HOME", () => Utils.GetScreenStateMocked ("HOME").Object);
@@ -85,7 +78,7 @@ namespace VAS.Tests.Integration
 		[TearDown]
 		public async Task TearDown ()
 		{
-			dialogsMock.ResetCalls ();
+			SetupClass.DialogsMock.ResetCalls ();
 			Assert.IsTrue (await App.Current.StateController.MoveToHome ());
 		}
 
@@ -111,21 +104,22 @@ namespace VAS.Tests.Integration
 			await Init ();
 			await viewModel.ChooseFileCommand.ExecuteAsync ();
 
-			dialogsMock.Verify (s => s.OpenMediaFile (null), Times.Once ());
+			SetupClass.DialogsMock.Verify (s => s.OpenMediaFile (null), Times.Once ());
 			CheckEditorVisibleAndFileLoaded ();
 		}
 
 		[Test]
 		public async Task When_open_button_is_clicked_and_no_file_is_choosen_ItShould_show_the_welcome_message ()
 		{
-			dialogsMock.Setup (x => x.OpenMediaFile (It.IsAny<object> ())).Returns<MediaFile> (null);
+			SetupClass.DialogsMock.Setup (x => x.OpenMediaFile (It.IsAny<object> ())).Returns<MediaFile> (null);
 			await Init ();
 
 			await viewModel.ChooseFileCommand.ExecuteAsync ();
 
-			dialogsMock.Verify (s => s.OpenMediaFile (null), Times.Once ());
+			SetupClass.DialogsMock.Verify (s => s.OpenMediaFile (null), Times.Once ());
 			CheckWelcomeVisible ();
 		}
+
 
 		[Test]
 		public async Task When_draw_button_is_clicked_ItShould_load_the_drawing_tool ()
@@ -171,13 +165,15 @@ namespace VAS.Tests.Integration
 		}
 
 		[Test]
-		public async Task When_exporting_ItShould_render_the_event_to_a_file ()
+		public async Task When_exporting_ItShould_render_a_playlist_with_single_event_being_the_loaded_event ()
 		{
 
 			await Init ();
 			await viewModel.ChooseFileCommand.ExecuteAsync ();
 			await viewModel.ExportCommand.ExecuteAsync ();
-
+			SetupClass.UIMock.Verify (u => u.ConfigureRenderingJob (It.Is<Playlist> (
+				(p) => p.Elements.Count == 1 &&
+				(p.Elements [0] as PlaylistPlayElement).Play == viewModel.LoadedEvent.Model)));
 		}
 
 		async Task Init (object parameters = null)
@@ -185,6 +181,7 @@ namespace VAS.Tests.Integration
 			await App.Current.StateController.MoveTo (QuickEditorState.NAME, parameters);
 			state = App.Current.StateController.Current as QuickEditorState;
 			viewModel = state.ViewModel;
+			viewModel.VideoPlayer.ReadyCommand.Execute (true);
 		}
 
 		void CheckEditorVisibleAndFileLoaded ()
@@ -195,6 +192,7 @@ namespace VAS.Tests.Integration
 			Assert.AreEqual (viewModel.LoadedEvent, viewModel.VideoPlayer.LoadedElement);
 			Assert.AreEqual (viewModel.VideoFile.Model, viewModel.LoadedEvent.FileSet [0]);
 			Assert.IsFalse (viewModel.VideoPlayer.Playing);
+			Assert.IsTrue (viewModel.VideoPlayer.EditEventDurationModeEnabled);
 			Assert.AreEqual (QuickEditorState.NAME, App.Current.StateController.Current.Name);
 		}
 
