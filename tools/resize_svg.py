@@ -79,7 +79,7 @@ def main(root=None):
     for f in files:
         resize_svg(f, 2)
 
-    checksum.save_checksum(datadir)
+    checksum.save_checksum(di)
 
 if __name__ == '__main__':
     home = None
