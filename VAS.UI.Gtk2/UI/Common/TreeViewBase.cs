@@ -336,7 +336,8 @@ namespace VAS.UI.Common
 					dragStarted = false;
 					dragStart = new Point (evnt.X, evnt.Y);
 				}
-				if (evnt.State == ModifierType.None) {
+				int modifier = App.Current.Keyboard.ParseModifier (evnt);
+				if (modifier == 0) {
 					GetPathAtPos ((int)evnt.X, (int)evnt.Y, out pathClicked);
 				}
 			}

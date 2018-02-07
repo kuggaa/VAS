@@ -56,5 +56,12 @@ namespace VAS.Core.Interfaces
 		/// <returns>A hotkey.</returns>
 		/// <param name="evt">The event to parse.</param>
 		HotKey ParseEvent (object evt);
+
+		/// <summary>
+		/// Parses a native key or mouse pressed event from the UI toolkit and returns the modifiers used.
+		/// </summary>
+		/// <returns>A hotkey.</returns>
+		/// <param name="evt">The event to parse.</param>
+		int ParseModifier (object evt);
 	}
 }
