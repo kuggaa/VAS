@@ -15,9 +15,10 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using Gdk;
-using VAS.Core.Store;
 using VAS.Core.Interfaces;
+using VAS.Core.Store;
 
 namespace VAS.Core.Common
 {
@@ -35,43 +36,51 @@ namespace VAS.Core.Common
 
 		public HotKey ParseEvent (object obj)
 		{
-			int modifier = 0;
-			EventKey evt = obj as EventKey;
+			EventKey eventKey = obj as EventKey;
 
-			if (IsSupportedModifier (evt.Key)) {
+			if (IsSupportedModifier (eventKey.Key)) {
 				return null;
 			}
+			int keyval = (int)Gdk.Keyval.ToLower ((uint)eventKey.KeyValue);
 
-			int keyval = (int)Gdk.Keyval.ToLower ((uint)evt.KeyValue);
-
-			if (evt.State.HasFlag (Gdk.ModifierType.ShiftMask)) {
-				modifier += (int)ModifierType.ShiftMask;
-			}
-			if (evt.State.HasFlag (Gdk.ModifierType.Mod1Mask) || evt.State.HasFlag (Gdk.ModifierType.Mod5Mask)) {
-				modifier += (int)ModifierType.Mod1Mask;
-			}
-			if (evt.State.HasFlag (Gdk.ModifierType.ControlMask)) {
-				modifier += (int)ModifierType.ControlMask;
-			}
-			if (evt.State.HasFlag (Gdk.ModifierType.MetaMask)) {
-				modifier += (int)ModifierType.MetaMask;
-			}
+			int modifier = ParseModifier (eventKey);
 			if (Utils.OS == OperatingSystemID.OSX) {
 				// Map Command + BackSpace to Delete
-				if (evt.State.HasFlag (Gdk.ModifierType.MetaMask) && evt.Key == Key.BackSpace) {
+				if (eventKey.State.HasFlag (Gdk.ModifierType.MetaMask) && eventKey.Key == Key.BackSpace) {
 					modifier = 0;
 					keyval = (int)Gdk.Key.Delete;
 				}
 			}
 
 			if (modifier != 0) {
-				keyval = (int)NormalizeKeyVal (evt.HardwareKeycode);
+				keyval = (int)NormalizeKeyVal (eventKey.HardwareKeycode);
 			}
 
 			return new HotKey {
 				Key = keyval,
 				Modifier = modifier
 			};
+		}
+
+		public int ParseModifier (object originalEvent)
+		{
+			EventWrapper eventWrapper = new EventWrapper (originalEvent);
+
+			int modifier = 0;
+			if (eventWrapper.State.HasFlag (Gdk.ModifierType.ShiftMask)) {
+				modifier += (int)ModifierType.ShiftMask;
+			}
+			if (eventWrapper.State.HasFlag (Gdk.ModifierType.Mod1Mask) || eventWrapper.State.HasFlag (Gdk.ModifierType.Mod5Mask)) {
+				modifier += (int)ModifierType.Mod1Mask;
+			}
+			if (eventWrapper.State.HasFlag (Gdk.ModifierType.ControlMask)) {
+				modifier += (int)ModifierType.ControlMask;
+			}
+			if (eventWrapper.State.HasFlag (Gdk.ModifierType.MetaMask)) {
+				modifier += (int)ModifierType.MetaMask;
+			}
+
+			return modifier;
 		}
 
 		public HotKey ParseName (string name)
@@ -185,6 +194,30 @@ namespace VAS.Core.Common
 							 key == Key.Meta_L ||
 							 key == Key.Meta_R ||
 							 key == (Key)ModifierType.None;
+		}
+	}
+
+	/// <summary>
+	/// This class wraps over both EventKey and EventButton and exposes their State property.
+	/// </summary>
+	class EventWrapper
+	{
+		EventKey eventKey;
+		Gdk.EventButton eventButton;
+
+		public EventWrapper (object evnt)
+		{
+			eventKey = evnt as EventKey;
+			eventButton = evnt as Gdk.EventButton;
+			if (eventKey == null && eventButton == null) {
+				throw new ArgumentException ("argument must be of a valid type", nameof (evnt));
+			}
+		}
+
+		public ModifierType State {
+			get {
+				return eventKey?.State ?? eventButton.State;
+			}
 		}
 	}
 }
