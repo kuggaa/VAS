@@ -501,7 +501,7 @@ namespace VAS.Services.Controller
 
 		protected virtual bool IsTemplateVisibleForSearchCriteria (TViewModel template, string search)
 		{
-			return template.Name.Contains (search);
+			return template.Name.ToUpper ().Contains (search.ToUpper ());
 		}
 
 		protected virtual void HandleSearchEvent (SearchEvent searchEvent)
