@@ -297,7 +297,8 @@ lgm_device_enum_devices (const gchar * source_name, LgmDeviceType type)
   if (!g_strcmp0 (source_name, "dv1394src"))
     prop_name = "guid";
   else if (!g_strcmp0 (source_name, "v4l2src") ||
-      !g_strcmp0 (source_name, "avfvideosrc"))
+      !g_strcmp0 (source_name, "avfvideosrc") ||
+      !g_strcmp0 (source_name, "osxscreencapsrc"))
     prop_name = "device";
   else if (!g_strcmp0 (source_name, "decklinkvideosrc"))
     prop_name = "device-number";

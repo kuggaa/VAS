@@ -42,7 +42,7 @@ namespace VAS.Multimedia.Utils
 		static extern IntPtr lgm_device_video_format_get_info (IntPtr raw, out int width, out int height,
 															   out int fps_n, out int fps_d);
 
-		static readonly string [] devices_osx = { "avfvideosrc", "decklinkvideosrc" };
+		static readonly string [] devices_osx = { "avfvideosrc", "osxscreencapsrc", "decklinkvideosrc" };
 		static readonly string [] devices_win = { "ksvideosrc", "dshowvideosrc" };
 		static readonly string [] devices_lin = { "v4l2src", "dv1394src" };
 
