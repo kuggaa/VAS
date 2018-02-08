@@ -185,7 +185,7 @@ namespace VAS.Core.ViewModel
 				return;
 			}
 			if (Play == null) {
-				Play = factoryService.CreateTimelineEventVM (e.Play);
+				Play = factoryService.CreateViewModel<TimelineEventVM, TimelineEvent> (e.Play);
 			}
 			Play.Model = ((PlaylistPlayElement)e)?.Play;
 		}

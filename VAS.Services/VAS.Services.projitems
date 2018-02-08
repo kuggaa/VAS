@@ -50,6 +50,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\AboutVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DynamicButtonToolbarService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EditPlaylistElementVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModelFactoryBaseService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />

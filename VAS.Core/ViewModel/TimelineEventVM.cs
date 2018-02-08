@@ -251,21 +251,5 @@ namespace VAS.Core.ViewModel
 			return ret;
 		}
 	}
-
-	/// <summary>
-	/// Timeline event ViewModel Generic Base class
-	/// </summary>
-	public class TimelineEventVM<T> : TimelineEventVM, IViewModel<T>
-		where T : TimelineEvent
-	{
-		public virtual new T Model {
-			get {
-				return (T)base.Model;
-			}
-			set {
-				base.Model = value;
-			}
-		}
-	}
 }
 

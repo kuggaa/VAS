@@ -51,6 +51,7 @@ namespace VAS.Tests
 			App.Current.DependencyRegistry.Register<IStopwatch, Stopwatch> (1);
 			App.Current.DependencyRegistry.Register<ITimer, Timer> (1);
 			App.Current.DependencyRegistry.Register<ISeeker, InstantSeeker> (1);
+			App.Current.DependencyRegistry.Register<IViewModelFactoryService, ViewModelFactoryBaseService> (1);
 			App.Current.Dialogs = new Mock<IDialogs> ().Object;
 			var navigation = new Mock<INavigation> ();
 			navigation.Setup (x => x.Push (It.IsAny<IPanel> ())).Returns (AsyncHelpers.Return (true));
