@@ -33,6 +33,7 @@
 #include "gst-camera-capturer.h"
 #include "gstscreenshot.h"
 #include "lgm-utils.h"
+#include "lgm-device.h"
 #include "baconvideowidget-marshal.h"
 
 
@@ -318,20 +319,8 @@ gst_camera_capturer_update_device_id (GstCameraCapturer * gcc)
 {
   const gchar *prop_name;
 
-  if (!g_strcmp0 (gcc->priv->source_element_name, "dv1394src"))
-    prop_name = "guid";
-  else if (!g_strcmp0 (gcc->priv->source_element_name, "v4l2src"))
-    prop_name = "device";
-  else if (!g_strcmp0 (gcc->priv->source_element_name, "avfvideosrc"))
-    prop_name = "device";
-  else if (!g_strcmp0 (gcc->priv->source_element_name, "osxscreencapsrc"))
-    prop_name = "device";
-  else if (!g_strcmp0 (gcc->priv->source_element_name, "filesrc"))
-    prop_name = "location";
-  else if (!g_strcmp0 (gcc->priv->source_element_name, "gsettingsvideosrc"))
-    prop_name = NULL;
-  else
-    prop_name = "device-name";
+  prop_name = lgm_device_get_property_name_for_source(
+      gcc->priv->source_element_name);
 
   if (!g_strcmp0 (gcc->priv->source_element_name, "decklinkvideosrc")) {
     /* The blackmagic device name we use conforms the pattern "Blackmagic%d" */
