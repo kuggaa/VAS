@@ -91,7 +91,6 @@ namespace VAS.Core.ViewModel
 			if (Model != null) {
 				Model.IgnoreEvents = true;
 			}
-			base.DisposeManagedResources ();
 			if (Model != null) {
 				Model.Clear ();
 			}
@@ -109,6 +108,7 @@ namespace VAS.Core.ViewModel
 			EventTypesTimeline = null;
 			FullTimeline = null;
 			TeamsTimeline = null;
+			base.DisposeManagedResources ();
 		}
 
 		/// <summary>
@@ -117,7 +117,7 @@ namespace VAS.Core.ViewModel
 		/// <value>The edition command.</value>
 		public Command EditionCommand { get; set; }
 
-		public new RangeObservableCollection<TimelineEvent> Model {
+		public override RangeObservableCollection<TimelineEvent> Model {
 			get {
 				return model;
 			}

@@ -16,8 +16,11 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using VAS.Core.ViewModel;
+using System.Collections.Generic;
+using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.MVVMC;
 using VAS.Core.Store;
+using VAS.Core.ViewModel;
 
 namespace VAS.Core.Interfaces
 {
@@ -25,13 +28,21 @@ namespace VAS.Core.Interfaces
 	/// An interface for creating correctly typed ViewModel instances based on it's model, this is useful to work with
 	/// base classes and create child viewmodels without knowing the reference on it.
 	/// </summary>
-	public interface IViewModelFactoryService : IService
+	public interface IViewModelFactoryService
 	{
 		/// <summary>
-		/// Creates a TimelineEventVM based on a TimelineEvent model
+		/// Adds a new TypeMapping
 		/// </summary>
-		/// <returns>The TimelineEventVM</returns>
-		/// <param name="timelineEvent">the timeline event model</param>
-		TimelineEventVM CreateTimelineEventVM (TimelineEvent timelineEvent);
+		/// <param name="modelType">the model type</param>
+		/// <param name="viewModelType">the viewmodel type</param>
+		void AddTypeMapping (Type modelType, Type viewModelType);
+
+		/// <summary>
+		/// Creates a ViewModel based on a Model
+		/// </summary>
+		/// <returns>The derived instance of the ViewModel</returns>
+		/// <param name="model">the model</param>
+		TViewModel CreateViewModel<TViewModel, TModel> (TModel model)
+			where TViewModel : IViewModel<TModel>, new();
 	}
 }
