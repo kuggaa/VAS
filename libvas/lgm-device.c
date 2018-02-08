@@ -366,6 +366,10 @@ lgm_device_get_property_name_for_source (const gchar *source_name)
     prop_name = "device";
   else if (!g_strcmp0 (source_name, "decklinkvideosrc"))
     prop_name = "device-number";
+  else if (!g_strcmp0 (source_name, "dx9screencapsrc"))
+    prop_name = "monitor";
+  else if (!g_strcmp0 (source_name, "gdiscreencapsrc"))
+    prop_name = "monitor";
   else if (!g_strcmp0 (source_name, "filesrc"))
     prop_name = "location";
   else if (!g_strcmp0 (source_name, "gsettingsvideosrc"))

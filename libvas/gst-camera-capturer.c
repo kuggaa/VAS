@@ -326,6 +326,8 @@ gst_camera_capturer_update_device_id (GstCameraCapturer * gcc)
     /* The blackmagic device name we use conforms the pattern "Blackmagic%d" */
     g_object_set (gcc->priv->source, "device-number",
         atoi (gcc->priv->device_id + 10), NULL);
+  } else if (!g_strcmp0 (prop_name, "monitor")) {
+    g_object_set (gcc->priv->source, prop_name, atoi (gcc->priv->device_id), NULL);
   } else {
     if (prop_name)
       g_object_set (gcc->priv->source, prop_name, gcc->priv->device_id, NULL);
