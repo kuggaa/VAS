@@ -43,7 +43,7 @@ namespace VAS.Multimedia.Utils
 															   out int fps_n, out int fps_d);
 
 		static readonly string [] devices_osx = { "avfvideosrc", "osxscreencapsrc", "decklinkvideosrc" };
-		static readonly string [] devices_win = { "ksvideosrc", "dshowvideosrc" };
+		static readonly string [] devices_win = { "ksvideosrc", "dshowvideosrc", "gdiscreencapsrc", "dx9screencapsrc" };
 		static readonly string [] devices_lin = { "v4l2src", "dv1394src" };
 
 		static public List<Device> ListVideoDevices ()
