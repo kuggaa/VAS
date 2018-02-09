@@ -168,12 +168,6 @@ namespace VAS.Core.Common
 			return result;
 		}
 
-		public static Stream GetEmbeddedResourceFileStream (string resourceId)
-		{
-			var assembly = Assembly.GetCallingAssembly ();
-			return assembly.GetManifestResourceStream (resourceId);
-		}
-
 		/// <summary>
 		/// Starts a process with output redirection.
 		/// </summary>
