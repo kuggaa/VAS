@@ -16,9 +16,11 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -202,31 +204,28 @@ namespace VAS.Core.Common
 		}
 
 		/// <summary>
-		/// Opens the URL. if sourcePoint is specified it appends to the URL the necessary parameters for tracking
+		/// Compares the versions provided.
 		/// </summary>
-		/// <param name="url">URL.</param>
-		/// <param name="sourcePoint">Source point.</param>
-		public static void OpenURL (string url, string sourcePoint = null)
+		/// <returns>Returns -1 if version A is lower than B, 0 if equal or 1 if greater.</returns>
+		/// <param name="versionA">Version a.</param>
+		/// <param name="versionB">Version b.</param>
+		public static int CompareVersions (string versionA, string versionB)
 		{
-			try {
-				// FIXME: If there is no ticketId pass the serialId until the web supports retrieving the ticket id
-				// in case is not in the configuration
-				string ticketIdValue = App.Current.Config.LicenseCode ?? App.Current.LicenseManager.ContainerId;
-				if (url.Contains ("?")) {
-					url += "&";
-				} else {
-					url += "?";
+			// FIXME: When finished the techdebt task about creating a base static data provider class. Use the Version
+			// type object
+			var verA = versionA.Split ('.').ToList ();
+			var verB = versionB.Split ('.').ToList ();
+			var items = verA.Zip (verB, (x, y) => new { First = x, Second = y });
+
+			foreach (var item in items) {
+				var result = Int32.Parse (item.First).CompareTo (Int32.Parse (item.Second));
+
+				if (result != 0) {
+					return result;
 				}
-				url += $"ticketID={ticketIdValue}";
-#if !DEBUG
-				if (!string.IsNullOrEmpty (sourcePoint)) {
-					url += $"&utm_source={App.Current.SoftwareName}&utm_medium={sourcePoint}&sessionid={App.Current.KPIService.SessionID}&userid={App.Current.Device.ID}";
-				}
-#endif
-				Process.Start (url);
-			} catch (Exception ex) {
-				Log.Debug ("Failed opening url: " + ex);
 			}
+
+			return 0;
 		}
 
 		/// <summary>
