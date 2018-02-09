@@ -310,6 +310,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IViewModelFactoryService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\LicenseBannerVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Service\ILicenseCustomizationService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IRegistry.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
