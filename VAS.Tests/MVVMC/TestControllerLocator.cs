@@ -16,7 +16,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Linq;
 using NUnit.Framework;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 
 namespace VAS.Tests.MVVMC
@@ -28,34 +30,34 @@ namespace VAS.Tests.MVVMC
 		[Test]
 		public void TestRegisterAndRetrieve ()
 		{
-			var locator = new ControllerLocator ();
-			locator.Register ("test", typeof(DummyController));
-			Assert.AreEqual (typeof(DummyController), locator.Retrieve ("test").GetType ());
-			locator.Register ("test2", typeof(DummyController));
-			Assert.AreEqual (typeof(DummyController), locator.Retrieve ("test2").GetType ());
+			var locator = new Locator<IController> ();
+			locator.Register ("test", typeof (DummyController));
+			Assert.AreEqual (typeof (DummyController), locator.Retrieve ("test").GetType ());
+			locator.Register ("test2", typeof (DummyController));
+			Assert.AreEqual (typeof (DummyController), locator.Retrieve ("test2").GetType ());
 		}
 
 		[Test]
 		public void TestRegisterAndRetrieveAll ()
 		{
-			var locator = new ControllerLocator ();
-			locator.Register ("test", typeof(DummyController));
-			Assert.AreEqual (1, locator.RetrieveAll ("test").Count);
-			locator.Register ("test", typeof(DummyController));
-			Assert.AreEqual (2, locator.RetrieveAll ("test").Count);
+			var locator = new Locator<IController> ();
+			locator.Register ("test", typeof (DummyController));
+			Assert.AreEqual (1, locator.RetrieveAll ("test").Count ());
+			locator.Register ("test", typeof (DummyController));
+			Assert.AreEqual (2, locator.RetrieveAll ("test").Count ());
 		}
 
 		[Test]
 		public void TestRegisterWrongType ()
 		{
-			var locator = new ControllerLocator ();
-			Assert.Throws<InvalidCastException> (() => locator.Register ("test", typeof(object)));
+			var locator = new Locator<IController> ();
+			Assert.Throws<InvalidCastException> (() => locator.Register ("test", typeof (object)));
 		}
 
 		[Test]
 		public void TestRetrieveNonExistant ()
 		{
-			var locator = new ControllerLocator ();
+			var locator = new Locator<IController> ();
 			Assert.IsNull (locator.Retrieve ("test"));
 			Assert.IsEmpty (locator.RetrieveAll ("test"));
 		}

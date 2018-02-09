@@ -131,8 +131,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\ViewAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\ControllerAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\Scanner.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\ViewLocator.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\ControllerLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\ViewModelBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Events\GenericEvents.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Hotkeys\KeyContextManager.cs" />
@@ -305,6 +303,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Multimedia\ISeeker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\TypeConverters\NegativeInt32ToDashConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\StateResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\ILocator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVMC\Locator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

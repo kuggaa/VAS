@@ -25,9 +25,10 @@ namespace VAS.Core.MVVMC
 	[AttributeUsage (AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
 	public class ControllerAttribute : Attribute
 	{
-		public ControllerAttribute (string viewName)
+		public ControllerAttribute (string viewName, int priority = 0)
 		{
 			ViewName = viewName;
+			Priority = priority;
 		}
 
 		/// <summary>
@@ -35,6 +36,16 @@ namespace VAS.Core.MVVMC
 		/// </summary>
 		/// <value>The name of the view.</value>
 		public string ViewName {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the priority used to register this view.
+		/// The higher the more priority.
+		/// </summary>
+		/// <value>The priority.</value>
+		public int Priority {
 			get;
 			set;
 		}

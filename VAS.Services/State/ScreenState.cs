@@ -17,6 +17,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using VAS.Core;
 using VAS.Core.Common;
@@ -39,7 +40,7 @@ namespace VAS.Services.State
 		{
 			ViewModelOwner = true;
 			Panel = App.Current.ViewLocator.Retrieve (Name) as IPanel;
-			Controllers = App.Current.ControllerLocator.RetrieveAll (Name);
+			Controllers = App.Current.ControllerLocator.RetrieveAll (Name).ToList ();
 			KeyContext = new KeyContext ();
 			ToolbarCommands = new List<Command> ();
 			taskList = new List<Task> ();
