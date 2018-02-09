@@ -48,6 +48,12 @@ namespace VAS.Core.Interfaces.MVVMC
 		/// </summary>
 		/// <returns>The default key actions.</returns>
 		IEnumerable<KeyAction> GetDefaultKeyActions ();
+
+		/// <summary>
+		/// Flag indicating whether this <see cref="T:VAS.Core.Interfaces.MVVMC.IController"/> is started.
+		/// </summary>
+		/// <value><c>true</c> if started; otherwise, <c>false</c>.</value>
+		bool Started { get; }
 	}
 }
 

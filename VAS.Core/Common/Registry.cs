@@ -162,7 +162,7 @@ namespace VAS.Core.Common
 		void CheckInterfaceExists (Type interfac)
 		{
 			if (!elements.ContainsKey (interfac)) {
-				throw new Exception (String.Format ("No {0} available in the {0} registry",
+				throw new Exception (String.Format ("No {0} available in the {1} registry",
 					interfac, name));
 			}
 		}

@@ -17,6 +17,7 @@
 //
 using System;
 using System.Reflection;
+using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.MVVMC
 {
@@ -28,12 +29,13 @@ namespace VAS.Core.MVVMC
 		/// the assemblies containing Views in the initialization.
 		/// </summary>
 		/// <param name="viewLocator">View locator.</param>
-		public static void ScanViews (ViewLocator viewLocator)
+		public static void ScanViews (ILocator<IView> viewLocator)
 		{
 			Assembly assembly = Assembly.GetCallingAssembly ();
 			foreach (Type type in assembly.GetTypes ()) {
 				foreach (var attribute in type.GetCustomAttributes (typeof (ViewAttribute), true)) {
-					viewLocator.Register ((attribute as ViewAttribute).ViewName, type);
+					ViewAttribute viewAttribute = (ViewAttribute)attribute;
+					viewLocator.Register (viewAttribute.ViewName, type, viewAttribute.Priority);
 				}
 			}
 		}
@@ -43,7 +45,7 @@ namespace VAS.Core.MVVMC
 		/// the assemblies containing Controllers in the initialization.
 		/// </summary>
 		/// <param name="controllerLocator">Controller locator.</param>
-		public static void ScanControllers (ControllerLocator controllerLocator)
+		public static void ScanControllers (ILocator<IController> controllerLocator)
 		{
 			Assembly assembly = Assembly.GetCallingAssembly ();
 			RegisterControllers (assembly, controllerLocator);
@@ -54,7 +56,7 @@ namespace VAS.Core.MVVMC
 		/// referenced assembly This should be called from all tests that are testing states in the initialization.
 		/// </summary>
 		/// <param name="controllerLocator">Controller locator.</param>
-		public static void ScanReferencedControllers (ControllerLocator controllerLocator)
+		public static void ScanReferencedControllers (ILocator<IController> controllerLocator)
 		{
 			Assembly callingAssembly = Assembly.GetCallingAssembly ();
 			foreach (AssemblyName assemblyName in callingAssembly.GetReferencedAssemblies ()) {
@@ -63,11 +65,12 @@ namespace VAS.Core.MVVMC
 			}
 		}
 
-		static void RegisterControllers (Assembly assembly, ControllerLocator controllerLocator)
+		static void RegisterControllers (Assembly assembly, ILocator<IController> controllerLocator)
 		{
 			foreach (Type type in assembly.GetTypes ()) {
 				foreach (var attribute in type.GetCustomAttributes (typeof (ControllerAttribute), true)) {
-					controllerLocator.Register ((attribute as ControllerAttribute).ViewName, type);
+					ControllerAttribute controllerAttribute = (ControllerAttribute)attribute;
+					controllerLocator.Register (controllerAttribute.ViewName, type, controllerAttribute.Priority);
 				}
 			}
 		}

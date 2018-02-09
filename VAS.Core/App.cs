@@ -13,6 +13,7 @@ using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.License;
 using VAS.Core.Interfaces.Multimedia;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.KPI;
 
@@ -36,8 +37,8 @@ namespace VAS
 		public IStorageManager DatabaseManager;
 		public IKpiService KPIService;
 		public IJobsManager JobsManager;
-		public ViewLocator ViewLocator;
-		public ControllerLocator ControllerLocator;
+		public ILocator<IView> ViewLocator;
+		public ILocator<IController> ControllerLocator;
 		public DragContext DragContext;
 		public ILicenseManager LicenseManager;
 		public IHotkeysService HotkeysService;
@@ -184,8 +185,8 @@ namespace VAS
 		internal static void InitDependencies ()
 		{
 			App.Current.Keyboard = new Keyboard ();
-			App.Current.ViewLocator = new ViewLocator ();
-			App.Current.ControllerLocator = new ControllerLocator ();
+			App.Current.ViewLocator = new Locator<IView> ();
+			App.Current.ControllerLocator = new Locator<IController> ();
 			App.Current.StateController = new StateController ();
 			App.Current.DependencyRegistry = new Registry ("App Registry");
 			App.Current.EventsBroker = new EventsBroker ();
