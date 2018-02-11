@@ -31,9 +31,11 @@ namespace VAS.Drawing
 			CanvasFromDrawableObjectRegistry.AddMapping (typeof (Counter), typeof (CounterObject), "VAS.Drawing");
 			CanvasFromDrawableObjectRegistry.AddMapping (typeof (Cross), typeof (CrossObject), "VAS.Drawing");
 			CanvasFromDrawableObjectRegistry.AddMapping (typeof (Ellipse), typeof (EllipseObject), "VAS.Drawing");
+			CanvasFromDrawableObjectRegistry.AddMapping (typeof (EllipseArea), typeof (EllipseObject), "VAS.Drawing");
 			CanvasFromDrawableObjectRegistry.AddMapping (typeof (Line), typeof (LineObject), "VAS.Drawing");
 			CanvasFromDrawableObjectRegistry.AddMapping (typeof (Quadrilateral), typeof (QuadrilateralObject), "VAS.Drawing");
 			CanvasFromDrawableObjectRegistry.AddMapping (typeof (Rectangle), typeof (RectangleObject), "VAS.Drawing");
+			CanvasFromDrawableObjectRegistry.AddMapping (typeof (RectangleArea), typeof (RectangleObject), "VAS.Drawing");
 			CanvasFromDrawableObjectRegistry.AddMapping (typeof (Text), typeof (TextObject), "VAS.Drawing");
 		}
 	}

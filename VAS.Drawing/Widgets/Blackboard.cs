@@ -409,11 +409,11 @@ namespace VAS.Drawing.Widgets
 				drawable = new Rectangle (MoveStart, 2, 2);
 				break;
 			case DrawTool.CircleArea:
-				drawable = new Ellipse (MoveStart, 2, 2);
+				drawable = new EllipseArea (MoveStart, 2, 2);
 				drawable.FillColor = Color.Copy ();
 				break;
 			case DrawTool.RectangleArea:
-				drawable = new Rectangle (MoveStart, 2, 2);
+				drawable = new RectangleArea (MoveStart, 2, 2);
 				drawable.FillColor = Color.Copy ();
 				break;
 			case DrawTool.Counter:

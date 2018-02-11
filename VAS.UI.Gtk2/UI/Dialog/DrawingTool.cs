@@ -99,7 +99,7 @@ namespace VAS.UI.Dialog
 				button.Name = "DrawingToolButton-" + button.Name;
 				button.Toggled += HandleToolClicked;
 			}
-			
+
 			CreateToolSettings ();
 			UpdateSettingsVisibility (DrawTool.Selection);
 
@@ -574,7 +574,6 @@ namespace VAS.UI.Dialog
 			if (ignoreChanges)
 				return;
 
-
 			c = Misc.ToLgmColor (backgroundcolorbutton.Color,
 				backgroundcolorbutton.Alpha);
 			if (selectedDrawable is Text) {
@@ -604,10 +603,14 @@ namespace VAS.UI.Dialog
 			if (ignoreChanges)
 				return;
 			if (selectedDrawable != null) {
-				selectedDrawable.StrokeColor = Misc.ToLgmColor (colorbutton.Color, colorbutton.Alpha);
-				if (selectedDrawable.FillColor != null) {
-					Color c = Misc.ToLgmColor (colorbutton.Color, colorbutton.Alpha);
-					selectedDrawable.FillColor = c;
+				if (selectedDrawable is RectangleArea || selectedDrawable is EllipseArea) {
+					selectedDrawable.FillColor = Misc.ToLgmColor (colorbutton.Color, colorbutton.Alpha);
+				} else {
+					selectedDrawable.StrokeColor = Misc.ToLgmColor (colorbutton.Color, colorbutton.Alpha);
+					if (selectedDrawable.FillColor != null) {
+						Color c = Misc.ToLgmColor (colorbutton.Color, colorbutton.Alpha);
+						selectedDrawable.FillColor = c;
+					}
 				}
 				QueueDraw ();
 			} else {
@@ -720,6 +723,10 @@ namespace VAS.UI.Dialog
 					backgroundcolorbutton.Color = Misc.ToGdkColor (selectedDrawable.FillColor);
 					backgroundcolorbutton.Alpha = Color.ByteToUShort (selectedDrawable.FillColor.A);
 					textspinbutton.Value = OriginalSize ((selectedDrawable as Text).TextSize);
+				} else if (selectedDrawable is RectangleArea || selectedDrawable is EllipseArea) {
+					colorbutton.Color = Misc.ToGdkColor (selectedDrawable.FillColor);
+					colorbutton.UseAlpha = true;
+					colorbutton.Alpha = Color.ByteToUShort (selectedDrawable.FillColor.A);
 				} else {
 					colorbutton.Color = Misc.ToGdkColor (selectedDrawable.StrokeColor);
 					colorbutton.UseAlpha = true;
@@ -824,12 +831,14 @@ namespace VAS.UI.Dialog
 			toolSettings.Add (DrawTool.Eraser, null);
 			toolSettings.Add (DrawTool.Zoom, null);
 
+			DrawToolSettings colorOnly = new DrawToolSettings { Color = true };
+			toolSettings.Add (DrawTool.CircleArea, colorOnly);
+			toolSettings.Add (DrawTool.RectangleArea, colorOnly);
+
 			DrawToolSettings complete = new DrawToolSettings { Color = true, Size = true, Style = true, Type = true };
 			toolSettings.Add (DrawTool.Line, complete);
 
 			DrawToolSettings drawArea = new DrawToolSettings { Color = true, Size = true, Style = true };
-			toolSettings.Add (DrawTool.CircleArea, drawArea);
-			toolSettings.Add (DrawTool.RectangleArea, drawArea);
 			toolSettings.Add (DrawTool.Cross, drawArea);
 			toolSettings.Add (DrawTool.Rectangle, drawArea);
 			toolSettings.Add (DrawTool.Ellipse, drawArea);
@@ -858,7 +867,7 @@ namespace VAS.UI.Dialog
 			}
 
 			DrawToolSettings drawingSettings = settings as DrawToolSettings;
-			TextToolSettings textSettings = (drawingSettings != null) ? 
+			TextToolSettings textSettings = (drawingSettings != null) ?
 				drawingSettings.TextSettings : settings as TextToolSettings;
 
 			// updates frames visibility
@@ -895,7 +904,8 @@ namespace VAS.UI.Dialog
 			zoombox.Visible = tool == DrawTool.Zoom;
 		}
 
-		ToolSettingBase GetSettingsForSelectedDrawable () {
+		ToolSettingBase GetSettingsForSelectedDrawable ()
+		{
 			if (selectedDrawable is Text) {
 				return toolSettings [DrawTool.Text];
 			} else if (selectedDrawable is Counter) {
@@ -903,7 +913,13 @@ namespace VAS.UI.Dialog
 			} else if (selectedDrawable is Line) {
 				return toolSettings [DrawTool.Line];
 			} else if (selectedDrawable is Rectangle) {
+				return toolSettings [DrawTool.Rectangle];
+			} else if (selectedDrawable is RectangleArea) {
+				return toolSettings [DrawTool.RectangleArea];
+			} else if (selectedDrawable is EllipseArea) {
 				return toolSettings [DrawTool.CircleArea];
+			} else if (selectedDrawable is Ellipse) {
+				return toolSettings [DrawTool.Ellipse];
 			} else if (selectedDrawable is Cross) {
 				return toolSettings [DrawTool.Cross];
 			} else {
@@ -952,7 +968,8 @@ namespace VAS.UI.Dialog
 	/// <summary>
 	/// Abstract class for the tool settings
 	/// </summary>
-	abstract class ToolSettingBase {
+	abstract class ToolSettingBase
+	{
 		public bool Color {
 			get;
 			set;

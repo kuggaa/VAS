@@ -305,6 +305,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\StateResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\ILocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVMC\Locator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Store\Drawables\RectangleArea.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Store\Drawables\EllipseArea.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
