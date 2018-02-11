@@ -20,7 +20,8 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using VAS.Core.Common;
-using VAS.Multimedia.Capturer;
+using VAS.Core.Resources;
+using Device = VAS.Core.Common.Device;
 
 namespace VAS.Multimedia.Utils
 {
@@ -42,9 +43,18 @@ namespace VAS.Multimedia.Utils
 		static extern IntPtr lgm_device_video_format_get_info (IntPtr raw, out int width, out int height,
 															   out int fps_n, out int fps_d);
 
-		static readonly string [] devices_osx = { "avfvideosrc", "osxscreencapsrc", "decklinkvideosrc" };
-		static readonly string [] devices_win = { "ksvideosrc", "dshowvideosrc", "gdiscreencapsrc", "dx9screencapsrc" };
-		static readonly string [] devices_lin = { "v4l2src", "dv1394src" };
+		static readonly string AVFVIDEOSRC = "avfvideosrc";
+		static readonly string OSXSCREENCAPSRC = "osxscreencapsrc";
+		static readonly string DECKLINKVIDEOSRC = "decklinkvideosrc";
+		static readonly string KSVIDEOSRC = "ksvideosrc";
+		static readonly string DSHOWVIDEOSRC = "dshowvideosrc";
+		static readonly string GDISCREENCAPSRC = "gdiscreencapsrc";
+		static readonly string DX9SCREENCAPSRC = "dx9screencapsrc";
+		static readonly string V4L2SRC = "v4l2src";
+		static readonly string DV1394SRC = "dv1394src";
+		static readonly string [] devices_osx = { AVFVIDEOSRC, OSXSCREENCAPSRC, DECKLINKVIDEOSRC };
+		static readonly string [] devices_win = { KSVIDEOSRC, DSHOWVIDEOSRC, GDISCREENCAPSRC, DX9SCREENCAPSRC };
+		static readonly string [] devices_lin = { V4L2SRC, DV1394SRC };
 
 		static public List<Device> ListVideoDevices ()
 		{
@@ -67,7 +77,7 @@ namespace VAS.Multimedia.Utils
 					/* The Direct Show GStreamer element seems to have problems with the
 					 * BlackMagic DeckLink cards, so filter them out. They are also
 					 * available through the ksvideosrc element. */
-					if (source == "dshowvideosrc" &&
+					if (source == DSHOWVIDEOSRC &&
 						Regex.Match (deviceName, ".*blackmagic.*|.*decklink.*", RegexOptions.IgnoreCase).Success) {
 						continue;
 					}
@@ -76,6 +86,9 @@ namespace VAS.Multimedia.Utils
 					device.DeviceType = CaptureSourceType.System;
 					device.SourceElement = source;
 					device.ID = deviceName;
+					if (source == GDISCREENCAPSRC || source == DX9SCREENCAPSRC) {
+						device.Prefix = Strings.Monitor;
+					}
 
 					GLib.List formats_raw = new GLib.List (lgm_device_get_formats (device_raw),
 												typeof (IntPtr), false, false);
