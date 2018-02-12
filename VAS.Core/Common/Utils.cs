@@ -16,9 +16,11 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -168,12 +170,6 @@ namespace VAS.Core.Common
 			return result;
 		}
 
-		public static Stream GetEmbeddedResourceFileStream (string resourceId)
-		{
-			var assembly = Assembly.GetCallingAssembly ();
-			return assembly.GetManifestResourceStream (resourceId);
-		}
-
 		/// <summary>
 		/// Starts a process with output redirection.
 		/// </summary>
@@ -208,86 +204,28 @@ namespace VAS.Core.Common
 		}
 
 		/// <summary>
-		/// Opens the URL. if sourcePoint is specified it appends to the URL the necessary parameters for tracking
+		/// Compares the versions provided.
 		/// </summary>
-		/// <param name="url">URL.</param>
-		/// <param name="sourcePoint">Source point.</param>
-		public static void OpenURL (string url, string sourcePoint = null)
+		/// <returns>Returns -1 if version A is lower than B, 0 if equal or 1 if greater.</returns>
+		/// <param name="versionA">Version a.</param>
+		/// <param name="versionB">Version b.</param>
+		public static int CompareVersions (string versionA, string versionB)
 		{
-			try {
-				// FIXME: If there is no ticketId pass the serialId until the web supports retrieving the ticket id
-				// in case is not in the configuration
-				string ticketIdValue = App.Current.Config.LicenseCode ?? App.Current.LicenseManager.ContainerId;
-				if (url.Contains ("?")) {
-					url += "&";
-				} else {
-					url += "?";
-				}
-				url += $"ticketID={ticketIdValue}";
-#if !DEBUG
-				if (!string.IsNullOrEmpty (sourcePoint)) {
-					url += $"&utm_source={App.Current.SoftwareName}&utm_medium={sourcePoint}&sessionid={App.Current.KPIService.SessionID}&userid={App.Current.Device.ID}";
-				}
-#endif
-				Process.Start (url);
-			} catch (Exception ex) {
-				Log.Debug ("Failed opening url: " + ex);
-			}
-		}
+			// FIXME: When finished the techdebt task about creating a base static data provider class. Use the Version
+			// type object
+			var verA = versionA.Split ('.').ToList ();
+			var verB = versionB.Split ('.').ToList ();
+			var items = verA.Zip (verB, (x, y) => new { First = x, Second = y });
 
-		/// <summary>
-		/// Checks the network connection.
-		/// </summary>
-		/// <returns><c>true</c>, if internet connection is OK, <c>false</c> otherwise.</returns>
-		public static bool CheckNetworkConnection ()
-		{
-			try {
-				Ping myPing = new Ping ();
-				String host = "8.8.8.8";
-				byte [] buffer = new byte [32];
-				int timeout = 1000;
-				PingOptions pingOptions = new PingOptions ();
-				PingReply reply = myPing.Send (host, timeout, buffer, pingOptions);
-				return (reply.Status == IPStatus.Success);
-			} catch (Exception) {
-				try {
-					//Try with NTP server
-					return GetNetworkTime () > new DateTime (1900, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-				} catch (Exception ex) {
-					return false;
+			foreach (var item in items) {
+				var result = Int32.Parse (item.First).CompareTo (Int32.Parse (item.Second));
+
+				if (result != 0) {
+					return result;
 				}
 			}
-		}
 
-		/// <summary>
-		/// Gets the network time.
-		/// </summary>
-		/// <returns>The network time in UTC</returns>
-		public static DateTime GetNetworkTime ()
-		{
-			//From: http://stackoverflow.com/a/20157068
-			const string ntpServer = "pool.ntp.org";
-			var ntpData = new byte [48];
-			ntpData [0] = 0x1B; //LeapIndicator = 0 (no warning), VersionNum = 3 (IPv4 only), Mode = 3 (Client Mode)
-
-			var addresses = Dns.GetHostEntry (ntpServer).AddressList;
-			var ipEndPoint = new IPEndPoint (addresses [0], 123);
-			var socket = new Socket (AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-
-			//Stops code hang if NTP is blocked
-			socket.ReceiveTimeout = 1000;
-			socket.Connect (ipEndPoint);
-			socket.Send (ntpData);
-			socket.Receive (ntpData);
-			socket.Close ();
-
-			ulong intPart = (ulong)ntpData [40] << 24 | (ulong)ntpData [41] << 16 | (ulong)ntpData [42] << 8 | (ulong)ntpData [43];
-			ulong fractPart = (ulong)ntpData [44] << 24 | (ulong)ntpData [45] << 16 | (ulong)ntpData [46] << 8 | (ulong)ntpData [47];
-
-			var milliseconds = (intPart * 1000) + ((fractPart * 1000) / 0x100000000L);
-			var networkDateTime = (new DateTime (1900, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddMilliseconds ((long)milliseconds);
-
-			return networkDateTime;
+			return 0;
 		}
 
 		/// <summary>
