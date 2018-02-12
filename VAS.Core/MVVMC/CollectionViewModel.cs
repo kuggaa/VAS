@@ -15,11 +15,11 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using VAS.Core.Common;
+using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.MVVMC
@@ -36,11 +36,12 @@ namespace VAS.Core.MVVMC
 		protected bool editing;
 		protected Dictionary<TModel, TViewModel> modelToViewModel;
 		protected RangeObservableCollection<TModel> model;
+		IViewModelFactoryService viewModelFactory;
 
 		public CollectionViewModel ()
 		{
 			Model = new RangeObservableCollection<TModel> ();
-			TypeMappings = new Dictionary<Type, Type> ();
+			viewModelFactory = App.Current.DependencyRegistry.Retrieve<IViewModelFactoryService> ();
 		}
 
 		protected override void DisposeManagedResources ()
@@ -68,15 +69,6 @@ namespace VAS.Core.MVVMC
 		}
 
 		/// <summary>
-		/// Gets the type mappings, where Key is the Model and Value the ViewModel to create
-		/// </summary>
-		/// <value>The type mappings.</value>
-		public Dictionary<Type, Type> TypeMappings {
-			get;
-			private set;
-		}
-
-		/// <summary>
 		/// Selects the specified item from the list.
 		/// </summary>
 		/// <param name="item">The item to select.</param>
@@ -86,38 +78,6 @@ namespace VAS.Core.MVVMC
 				return;
 			}
 			Select (ViewModels.FirstOrDefault (vm => vm.Model.Equals (item)));
-		}
-
-		protected virtual TViewModel CreateInstance (TModel model)
-		{
-			Type viewModelType;
-			Type modelType = model.GetType ();
-			TViewModel viewModel = default (TViewModel);
-
-			// If there's a typeMapping defined for the specific type
-			if (TypeMappings.TryGetValue (modelType, out viewModelType)) {
-				Log.Verbose ($"TypeMapping found {modelType} => {viewModelType}");
-				viewModel = (TViewModel)Activator.CreateInstance (viewModelType);
-			} else {
-				// If there isn't, get the first mapping that matches a parent class
-				foreach (var type in TypeMappings.Keys) {
-					if (type.IsAssignableFrom (modelType)) {
-						if (TypeMappings.TryGetValue (type, out viewModelType)) {
-							Log.Verbose ($"TypeMapping found {modelType} => {viewModelType}");
-							viewModel = (TViewModel)Activator.CreateInstance (viewModelType);
-							break;
-						}
-					}
-				}
-			}
-
-			if (viewModel == null) {
-				Log.Verbose ($"TypeMapping not found for {modelType}. Using the base ViewModel {typeof (TViewModel).Name}");
-				viewModel = new TViewModel ();
-			}
-			viewModel.Model = model;
-			modelToViewModel [model] = viewModel;
-			return viewModel;
 		}
 
 		protected virtual void SetModel (RangeObservableCollection<TModel> model)
@@ -152,6 +112,13 @@ namespace VAS.Core.MVVMC
 				viewModels.Add (viewModel);
 			}
 			ViewModels.InsertRange (index, viewModels);
+		}
+
+		protected virtual TViewModel CreateInstance (TModel model)
+		{
+			var vm = viewModelFactory.CreateViewModel<TViewModel, TModel> (model);
+			modelToViewModel [model] = vm;
+			return vm;
 		}
 
 		protected TViewModel GetOrCreateViewModel (TModel model)

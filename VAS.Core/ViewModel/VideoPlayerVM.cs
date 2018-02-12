@@ -596,7 +596,9 @@ namespace VAS.Core.ViewModel
 		{
 			PlaylistVM playlist = new PlaylistVM { Model = new Playlist () };
 
-			var plays = events.Select (vm => new PlaylistPlayElementVM { Model = new PlaylistPlayElement (vm.Model) });
+			var plays = events.Select (vm => new PlaylistPlayElementVM (vm) {
+				Model = new PlaylistPlayElement (vm.Model)
+			}).ToList ();
 
 			playlist.ViewModels.AddRange (plays);
 
@@ -685,7 +687,7 @@ namespace VAS.Core.ViewModel
 			DrawCommand = new Command (() => Player.DrawFrame ());
 			ConfigureCommand (DrawCommand, Icons.PlayerControlDraw, Sizes.PlayerCapturerIconSize, StyleConf.PlayerTooltipDraw);
 
-			DetachCommand = new LimitationCommand (VASFeature.VideoDetach.ToString(), () => { App.Current.EventsBroker.Publish (new DetachEvent ()); });
+			DetachCommand = new LimitationCommand (VASFeature.VideoDetach.ToString (), () => { App.Current.EventsBroker.Publish (new DetachEvent ()); });
 			ConfigureCommand (DetachCommand, Icons.PlayerControlDetach, Sizes.PlayerCapturerIconSize, StyleConf.PlayerTooltipDetach);
 
 			ViewPortsSwitchToggleCommand = new Command (() => {
