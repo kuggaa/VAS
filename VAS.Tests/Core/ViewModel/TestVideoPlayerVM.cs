@@ -540,7 +540,40 @@ namespace VAS.Tests.Core.ViewModel
 			playerController.Verify (p => p.StepForward (), Times.Once ());
 		}
 
+		[Test]
+		public void LoadEvents_ReusesTimelineEventVMInstance ()
+		{
+			var evVM1 = new TimelineEventVM {
+				Model = new TimelineEvent {
+					Name = "evVM1"
+				}
+			};
+			var evVM2 = new TimelineEventVM {
+				Model = new TimelineEvent {
+					Name = "evVM2"
+				}
+			};
+			PlaylistVM playlist = null;
+			IEnumerable<TimelineEventVM> eventList = new List<TimelineEventVM> { evVM1, evVM2 };
+			var playerController = new Mock<IVideoPlayerController> ();
+			playerController.SetupAllProperties ();
+			var viewModel = new VideoPlayerVM { Player = playerController.Object };
+			playerController.Setup (pl => pl.LoadPlaylistEvent
+									(It.IsAny<PlaylistVM> (), It.IsAny<IPlayable> (), true))
+			                .Callback<PlaylistVM, IPlayable, bool> ((a, b, c) => { playlist = a; b.Playing = c; });
 
+			viewModel.LoadEvents (eventList, true);
 
+			Assert.IsTrue (evVM1.Playing);
+			Assert.IsFalse (evVM2.Playing);
+			Assert.AreSame (evVM1, (playlist.ViewModels[0] as PlaylistPlayElementVM).Play);
+			Assert.AreSame (evVM2, (playlist.ViewModels [1] as PlaylistPlayElementVM).Play);
+
+			playlist.ViewModels [0].Playing = false;
+			playlist.ViewModels [1].Playing = true;
+
+			Assert.IsFalse (evVM1.Playing);
+			Assert.IsTrue (evVM2.Playing);
+		}
 	}
 }

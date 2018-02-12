@@ -33,9 +33,6 @@ namespace VAS.Core.ViewModel
 		public DashboardButtonCollectionVM ()
 		{
 			cachedButtonVMs = new Dictionary<DashboardButton, DashboardButtonVM> ();
-			TypeMappings.Add (typeof (AnalysisEventButton), typeof (AnalysisEventButtonVM));
-			TypeMappings.Add (typeof (TagButton), typeof (TagButtonVM));
-			TypeMappings.Add (typeof (TimerButton), typeof (TimerButtonVM));
 		}
 
 		protected override DashboardButtonVM CreateInstance (DashboardButton model)
