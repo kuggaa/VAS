@@ -192,6 +192,7 @@ namespace VAS.Core.Store
 		}
 
 		[PropertyChanged.DoNotNotify]
+		[CloneIgnore]
 		[JsonIgnore]
 		public Project Project {
 			get;
@@ -203,6 +204,7 @@ namespace VAS.Core.Store
 		/// </summary>
 		[PropertyPreload]
 		[PropertyIndex (1)]
+		[CloneIgnore]
 		public EventType EventType {
 			get;
 			set;
@@ -221,6 +223,7 @@ namespace VAS.Core.Store
 		/// </summary>
 		[PropertyIndex (0)]
 		[JsonProperty]
+		[CloneIgnore]
 		public RangeObservableCollection<Player> Players {
 			get;
 			private set;
@@ -481,12 +484,13 @@ namespace VAS.Core.Store
 		/// <summary>
 		/// Clone this instance, creating a deep copy of the object with a new ID
 		/// </summary>
-		public TimelineEvent Clone ()
+		public virtual TimelineEvent Clone ()
 		{
 			var newplay = Cloner.Clone (this);
 			newplay.ID = Guid.NewGuid ();
 			newplay.EventType = EventType;
-			newplay.Players = Players;
+			newplay.Players = new RangeObservableCollection<Player> (Players);
+			newplay.Project = Project;
 			return newplay;
 		}
 
