@@ -209,6 +209,38 @@ namespace VAS.Tests.Services
 		}
 
 		[Test]
+		public async Task AddTimelineEventsToPlaylist_ClonesTimelineEvents ()
+		{
+			SetupWithStorage ();
+			var newPlaylist = new Playlist ();
+			newPlaylist.Elements.Add (new PlaylistPlayElement (new TimelineEvent ()));
+			playlistCollectionVM.Model.Add (newPlaylist);
+
+
+			var timelineEvent = new TimelineEvent {
+				Name = "test",
+				ID = Guid.NewGuid ()
+			};
+
+			await App.Current.EventsBroker.Publish (
+				new AddPlaylistElementEvent {
+					PlaylistElements = new List<IPlayable> {
+						new TimelineEventVM { Model = timelineEvent }},
+					Playlist = playlistCollectionVM.ViewModels [0]
+				}
+			);
+
+			var timelineEventAdded = ((PlaylistPlayElement)playlistCollectionVM.Model [0].Elements [1]).Play;
+
+			Assert.AreNotEqual (timelineEvent.ID, timelineEventAdded.ID);
+			Assert.AreEqual (timelineEvent.Name, timelineEventAdded.Name);
+
+			timelineEventAdded.Name = "test2";
+
+			Assert.AreEqual ("test", timelineEvent.Name);
+		}
+
+		[Test]
 		public async Task TestAddEventsToExistingPlaylistWithProject ()
 		{
 			SetupWithProject ();
