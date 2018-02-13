@@ -116,7 +116,7 @@ namespace VAS.Core.Serialization
 			case SerializationType.Json:
 				StreamReader sr = new StreamReader (stream, Encoding.UTF8);
 				JsonSerializerSettings settings = JsonSettings;
-				settings.ContractResolver = new IsChangedContractResolver ();
+				settings.ContractResolver = IsChangedContractResolver.Instance;
 				return JsonConvert.DeserializeObject (sr.ReadToEnd (), type, settings);
 			default:
 				throw new Exception ();
@@ -175,7 +175,7 @@ namespace VAS.Core.Serialization
 			switch (serType) {
 			case SerializationType.Json:
 				var jsonSettings = JsonSettings;
-				jsonSettings.ContractResolver = new IsChangedContractResolver (true);
+				jsonSettings.ContractResolver = ClonerContractResolver.Instance;
 				using (Stream s = new MemoryStream ()) {
 					using (StreamWriter sw = new StreamWriter (s, Encoding.UTF8)) {
 						sw.NewLine = "\n";
@@ -315,40 +315,58 @@ namespace VAS.Core.Serialization
 		}
 	}
 
-	public class IsChangedContractResolver : DefaultContractResolver
+	/// <summary>
+	// Cloner Contract Resolver. Serializes all writable properties, even those marked as JsonIgnore and only ignore
+	// the properties marked as CloneIgnore or NonSerialized
+	/// </summary>
+	public sealed class ClonerContractResolver : DefaultContractResolver
 	{
-		public bool IgnoreJsonIgnore { get; private set; }
+		private static readonly ClonerContractResolver instance = new ClonerContractResolver ();
 
-		public IsChangedContractResolver (bool ignoreJsonIgnore = false)
-		{
-			IgnoreJsonIgnore = ignoreJsonIgnore;
+		private ClonerContractResolver () { }
+
+		public static ClonerContractResolver Instance {
+			get {
+				return instance;
+			}
 		}
 
 		protected override JsonProperty CreateProperty (MemberInfo member, MemberSerialization memberSerialization)
 		{
 			var property = base.CreateProperty (member, memberSerialization);
-			if (IgnoreJsonIgnore) {
-				var attribs = property.AttributeProvider.GetAttributes (typeof (NonSerializedAttribute), true);
-				var attribs2 = property.AttributeProvider.GetAttributes (typeof (CloneIgnoreAttribute), true);
-				if (attribs.Count + attribs2.Count > 0 || !property.Writable) {
-					property.Ignored = true;
-				} else {
-					property.Ignored = false;
-				}
+			var attribs = property.AttributeProvider.GetAttributes (typeof (NonSerializedAttribute), true);
+			var attribs2 = property.AttributeProvider.GetAttributes (typeof (CloneIgnoreAttribute), true);
+			if (attribs.Count + attribs2.Count > 0 || !property.Writable) {
+				property.Ignored = true;
+			} else {
+				property.Ignored = false;
 			}
 			return property;
 		}
+	}
 
-		protected override JsonContract CreateContract (Type type)
+	/// <summary>
+	/// Is Changed Contract resolver, it sets the IsChanged property to false, used mainly for deserialize/Load
+	/// </summary>
+	public sealed class IsChangedContractResolver : DefaultContractResolver
+	{
+		private static readonly IsChangedContractResolver instance = new IsChangedContractResolver ();
+
+		private IsChangedContractResolver () { }
+
+		public static IsChangedContractResolver Instance {
+			get {
+				return instance;
+			}
+		}
+
+		protected override JsonContract CreateContract (Type objectType)
 		{
-			JsonContract contract = base.CreateContract (type);
-			if (typeof (IChanged).IsAssignableFrom (type)) {
+			JsonContract contract = base.CreateContract (objectType);
+
+			if (typeof (IChanged).IsAssignableFrom (objectType)) {
 				contract.OnDeserializedCallbacks.Add (
-					(o, context) => {
-						if (!IgnoreJsonIgnore) {
-							(o as IChanged).IsChanged = false;
-						}
-					});
+					(o, context) => { (o as IChanged).IsChanged = false; });
 			}
 			return contract;
 		}
