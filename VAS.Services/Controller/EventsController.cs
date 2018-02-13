@@ -28,6 +28,7 @@ using VAS.Core.Events;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.Interfaces.Services;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
@@ -185,15 +186,16 @@ namespace VAS.Services.Controller
 					EditPositions = true
 				};
 
+				IEventEditorService editorService = App.Current.DependencyRegistry.Retrieve<IEventEditorService> ();
 				if (Project.ProjectType == ProjectType.FileProject) {
 					bool playing = VideoPlayer.Playing;
 					VideoPlayer.PauseCommand.Execute (false);
-					await App.Current.EventsBroker.Publish (new EditEventEvent { TimelineEvent = e.TimelineEvent });
+					await editorService.EditEvent (e.TimelineEvent);
 					if (playing) {
 						VideoPlayer.PlayCommand.Execute ();
 					}
 				} else {
-					await App.Current.EventsBroker.Publish (new EditEventEvent { TimelineEvent = e.TimelineEvent });
+					await editorService.EditEvent (e.TimelineEvent);
 				}
 			}
 

@@ -23,6 +23,7 @@ using System.Linq;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Filters;
+using VAS.Core.Interfaces.Services;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 
@@ -446,11 +447,9 @@ namespace VAS.Core.ViewModel
 
 		void HandleEditPlay (TimelineEventVM eventVM)
 		{
-			App.Current.EventsBroker.Publish (
-				new EditEventEvent {
-					TimelineEvent = eventVM
-				}
-			);
+			// FIXME: Not awaited!
+			IEventEditorService editorService = App.Current.DependencyRegistry.Retrieve<IEventEditorService> ();
+			editorService.EditEvent (eventVM);
 		}
 
 		void AddTimelineEventVM (TimelineEventVM viewModel)
