@@ -192,6 +192,7 @@ namespace VAS.Core.Store
 		}
 
 		[PropertyChanged.DoNotNotify]
+		[CloneIgnoreAttribute]
 		[JsonIgnore]
 		public Project Project {
 			get;
