@@ -36,19 +36,19 @@ namespace VAS.Core.ViewModel
 	public abstract class ProjectVM : StorableVM<Project>, IVisible
 	{
 
-		public ProjectVM()
+		public ProjectVM ()
 		{
-			Timers = new CollectionViewModel<Timer, TimerVM>();
-			Timeline = new TimelineVM();
-			Playlists = new PlaylistCollectionVM();
-			EventTypes = new CollectionViewModel<EventType, EventTypeVM>();
-			FileSet = new MediaFileSetVM();
-			Periods = new CollectionViewModel<Period, PeriodVM>();
-			Dashboard = new DashboardVM();
+			Timers = new CollectionViewModel<Timer, TimerVM> ();
+			Timeline = new TimelineVM ();
+			Playlists = new PlaylistCollectionVM ();
+			EventTypes = new CollectionViewModel<EventType, EventTypeVM> ();
+			FileSet = new MediaFileSetVM ();
+			Periods = new CollectionViewModel<Period, PeriodVM> ();
+			Dashboard = new DashboardVM ();
 			Visible = true;
 		}
 
-		protected override void DisposeManagedResources()
+		protected override void DisposeManagedResources ()
 		{
 			Timers.IgnoreEvents = true;
 			Timeline.IgnoreEvents = true;
@@ -56,21 +56,20 @@ namespace VAS.Core.ViewModel
 			EventTypes.IgnoreEvents = true;
 			FileSet.IgnoreEvents = true;
 			Periods.IgnoreEvents = true;
-			base.DisposeManagedResources();
-			Timers.Dispose();
-			Timeline.Dispose();
-			Playlists.Dispose();
-			EventTypes.Dispose();
-			FileSet.Dispose();
-			Periods.Dispose();
+			base.DisposeManagedResources ();
+			Timers.Dispose ();
+			Timeline.Dispose ();
+			Playlists.Dispose ();
+			EventTypes.Dispose ();
+			FileSet.Dispose ();
+			Periods.Dispose ();
 		}
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.ProjectVM"/> is visible or not.
 		/// </summary>
 		/// <value><c>true</c> if visible; otherwise, <c>false</c>.</value>
-		public bool Visible
-		{
+		public bool Visible {
 			get;
 			set;
 		}
@@ -79,8 +78,7 @@ namespace VAS.Core.ViewModel
 		/// Gets the collection of periods in the project.
 		/// </summary>
 		/// <value>The timers.</value>
-		public CollectionViewModel<Period, PeriodVM> Periods
-		{
+		public CollectionViewModel<Period, PeriodVM> Periods {
 			get;
 			private set;
 		}
@@ -222,7 +220,7 @@ namespace VAS.Core.ViewModel
 		where TProject : Project
 	{
 		[PropertyChanged.DoNotCheckEquality]
-		public new TProject Model {
+		public virtual new TProject Model {
 			get {
 				return base.Model as TProject;
 			}
