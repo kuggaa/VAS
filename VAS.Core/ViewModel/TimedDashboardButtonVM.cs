@@ -106,8 +106,7 @@ namespace VAS.Core.ViewModel
 					&& RecordingStart != null && TagMode != TagMode.Predefined) {
 					if (value.MSeconds + Constants.PLAYBACK_TOLERANCE < RecordingStart.MSeconds) {
 						ButtonTime = null;
-					}
-					if (currentTime != null &&
+					} else if (currentTime != null &&
 						currentTime.TotalSeconds != value.TotalSeconds) {
 						ButtonTime = value - RecordingStart;
 					}

@@ -801,9 +801,14 @@ namespace VAS.Drawing.CanvasObjects.Dashboard
 		protected override void HandlePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			base.HandlePropertyChanged (sender, e);
+			if (ViewModel.NeedsSync (e.PropertyName, nameof (ViewModel.ButtonTime), sender, ViewModel)) {
+				if (ViewModel.ButtonTime == null) {
+					Clear ();
+				}
+			}
 			if (sender == ViewModel && (
-				TimedButtonVM.NeedsSync (e, nameof (ViewModel.TagsPerRow)) ||
-				TimedButtonVM.NeedsSync (e, nameof (ViewModel.ShowSubcategories)))) {
+					TimedButtonVM.NeedsSync (e, nameof (ViewModel.TagsPerRow)) ||
+					TimedButtonVM.NeedsSync (e, nameof (ViewModel.ShowSubcategories)))) {
 				ReDraw ();
 			}
 		}
