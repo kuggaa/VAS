@@ -42,7 +42,6 @@ namespace VAS.Core.ViewModel
 			LoadedProject = new TViewModel ();
 			NewCommand = new LimitationCommand (VASCountLimitedObjects.Projects.ToString (), New) { IconName = "vas-plus" };
 			OpenCommand = new AsyncCommand<TViewModel> (Open, (arg) => Selection.Count == 1);
-			DeleteCommand = new AsyncCommand<TViewModel> (Delete, (arg) => Selection.Any () || arg != null) { IconName = "vas-delete" };
 			SaveCommand = new AsyncCommand (Save, () => LoadedProject?.Model != null && LoadedProject.IsChanged);
 			ExportCommand = new AsyncCommand (Export, () => Selection.Count == 1);
 			EmptyCard = new EmptyCardVM {
@@ -135,20 +134,6 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
-		/// Command to delete the selected projects.
-		/// </summary>
-		protected virtual async Task Delete (TViewModel viewModel)
-		{
-			if (viewModel != null) {
-				await App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = viewModel.Model });
-			} else {
-				foreach (TModel project in Selection.Select (vm => vm.Model).ToList ()) {
-					await App.Current.EventsBroker.Publish (new DeleteEvent<TModel> { Object = project });
-				}
-			}
-		}
-
-		/// <summary>
 		/// Command to save the currently loaded project.
 		/// </summary>
 		/// <param name="force">If set to <c>true</c> does not prompt to save.</param>
@@ -172,16 +157,6 @@ namespace VAS.Core.ViewModel
 		protected virtual async Task Open (TViewModel viewModel)
 		{
 			await App.Current.EventsBroker.Publish (new OpenEvent<TModel> { Object = viewModel?.Model });
-		}
-
-		protected override MenuVM CreateMenu (IViewModel viewModel)
-		{
-			MenuVM menu = new MenuVM ();
-			menu.ViewModels.AddRange (new List<MenuNodeVM> {
-				new MenuNodeVM (DeleteCommand, viewModel, Catalog.GetString ("Delete")) { ActiveColor = App.Current.Style.ColorAccentError }
-			});
-
-			return menu;
 		}
 
 		void HandleLoadedProjectChanged (object sender, PropertyChangedEventArgs e)
