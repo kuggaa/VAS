@@ -57,6 +57,13 @@ namespace VAS.Core.ViewModel
 		public Command<string> SearchCommand { get; protected set; }
 
 		/// <summary>
+		/// Moves to an specific details page state
+		/// </summary>
+		/// <value>The details command.</value>
+		[PropertyChanged.DoNotNotify]
+		public Command DetailsCommand { get; protected set; }
+
+		/// <summary>
 		/// Gets or sets the filter text.
 		/// </summary>
 		/// <value>The filter text.</value>
@@ -74,7 +81,8 @@ namespace VAS.Core.ViewModel
 		/// <value><c>true</c> if no results; otherwise, <c>false</c>.</value>
 		public bool NoResults { get; set; }
 
-		protected virtual MenuVM CreateMenu (IViewModel viewModel) {
+		protected virtual MenuVM CreateMenu (IViewModel viewModel)
+		{
 			return null;
 		}
 	}
