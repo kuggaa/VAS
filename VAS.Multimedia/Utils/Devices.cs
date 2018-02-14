@@ -20,7 +20,8 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using VAS.Core.Common;
-using VAS.Multimedia.Capturer;
+using VAS.Core.Resources;
+using Device = VAS.Core.Common.Device;
 
 namespace VAS.Multimedia.Utils
 {
@@ -40,15 +41,24 @@ namespace VAS.Multimedia.Utils
 
 		[DllImport ("libvas.dll")]
 		static extern IntPtr lgm_device_video_format_get_info (IntPtr raw, out int width, out int height,
-		                                                       out int fps_n, out int fps_d);
+															   out int fps_n, out int fps_d);
 
-		static readonly string[] devices_osx = new string[2] { "avfvideosrc", "decklinkvideosrc" };
-		static readonly string[] devices_win = new string[2] { "ksvideosrc", "dshowvideosrc" };
-		static readonly string[] devices_lin = new string[2] { "v4l2src", "dv1394src" };
+		static readonly string AVFVIDEOSRC = "avfvideosrc";
+		static readonly string OSXSCREENCAPSRC = "osxscreencapsrc";
+		static readonly string DECKLINKVIDEOSRC = "decklinkvideosrc";
+		static readonly string KSVIDEOSRC = "ksvideosrc";
+		static readonly string DSHOWVIDEOSRC = "dshowvideosrc";
+		static readonly string GDISCREENCAPSRC = "gdiscreencapsrc";
+		static readonly string DX9SCREENCAPSRC = "dx9screencapsrc";
+		static readonly string V4L2SRC = "v4l2src";
+		static readonly string DV1394SRC = "dv1394src";
+		static readonly string [] devices_osx = { AVFVIDEOSRC, OSXSCREENCAPSRC, DECKLINKVIDEOSRC };
+		static readonly string [] devices_win = { KSVIDEOSRC, DSHOWVIDEOSRC, GDISCREENCAPSRC, DX9SCREENCAPSRC };
+		static readonly string [] devices_lin = { V4L2SRC, DV1394SRC };
 
 		static public List<Device> ListVideoDevices ()
 		{
-			string[] devices;
+			string [] devices;
 			if (VAS.Core.Common.Utils.OS == OperatingSystemID.OSX)
 				devices = devices_osx;
 			else if (VAS.Core.Common.Utils.OS == OperatingSystemID.Windows)
@@ -60,15 +70,15 @@ namespace VAS.Multimedia.Utils
 
 			foreach (string source in devices) {
 				GLib.List devices_raw = new GLib.List (lgm_device_enum_video_devices (source),
-					                        typeof(IntPtr), true, false);
+											typeof (IntPtr), true, false);
 
 				foreach (IntPtr device_raw in devices_raw) {
 					string deviceName = GLib.Marshaller.PtrToStringGFree (lgm_device_get_device_name (device_raw));
 					/* The Direct Show GStreamer element seems to have problems with the
 					 * BlackMagic DeckLink cards, so filter them out. They are also
 					 * available through the ksvideosrc element. */
-					if (source == "dshowvideosrc" &&
-					    Regex.Match (deviceName, ".*blackmagic.*|.*decklink.*", RegexOptions.IgnoreCase).Success) {
+					if (source == DSHOWVIDEOSRC &&
+						Regex.Match (deviceName, ".*blackmagic.*|.*decklink.*", RegexOptions.IgnoreCase).Success) {
 						continue;
 					}
 
@@ -76,9 +86,12 @@ namespace VAS.Multimedia.Utils
 					device.DeviceType = CaptureSourceType.System;
 					device.SourceElement = source;
 					device.ID = deviceName;
+					if (source == GDISCREENCAPSRC || source == DX9SCREENCAPSRC) {
+						device.Prefix = Strings.Monitor;
+					}
 
 					GLib.List formats_raw = new GLib.List (lgm_device_get_formats (device_raw),
-						                        typeof(IntPtr), false, false);
+												typeof (IntPtr), false, false);
 					foreach (IntPtr format_raw in formats_raw) {
 						DeviceVideoFormat format = new DeviceVideoFormat ();
 						lgm_device_video_format_get_info (format_raw, out format.width, out format.height,

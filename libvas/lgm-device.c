@@ -202,8 +202,6 @@ lgm_device_parse_structure (GstStructure * s, GHashTable * table)
   if (G_VALUE_TYPE (val) == GST_TYPE_FRACTION) {
     lgm_device_add_format_from_fps_val (table, width, height, val);
   } else if (G_VALUE_TYPE (val) == GST_TYPE_FRACTION_RANGE) {
-    const GValue *fr_val;
-
     /* For sources returning template caps or ranges set framerate to 0/0 */
     lgm_device_add_format (table, width, height, 0, 0);
   } else if (G_VALUE_TYPE (val) == GST_TYPE_ARRAY) {
@@ -226,7 +224,7 @@ lgm_device_parse_structure (GstStructure * s, GHashTable * table)
 }
 
 static void
-lgm_device_fill_formats (LgmDevice * device, gchar * prop_name)
+lgm_device_fill_formats (LgmDevice * device, const gchar * prop_name)
 {
   GstCaps *source_caps, *caps;
   GstElement *source;
@@ -283,7 +281,7 @@ lgm_device_enum_devices (const gchar * source_name, LgmDeviceType type)
   GstElement *source;
   GstPropertyProbe *probe;
   GValueArray *va;
-  gchar *prop_name;
+  const gchar *prop_name;
   GList *list = NULL;
   guint i = 0;
 
@@ -294,17 +292,7 @@ lgm_device_enum_devices (const gchar * source_name, LgmDeviceType type)
   gst_element_get_state (source, NULL, NULL, 5 * GST_SECOND);
   probe = GST_PROPERTY_PROBE (source);
 
-  if (!g_strcmp0 (source_name, "dv1394src"))
-    prop_name = "guid";
-  else if (!g_strcmp0 (source_name, "v4l2src") ||
-      !g_strcmp0 (source_name, "avfvideosrc"))
-    prop_name = "device";
-  else if (!g_strcmp0 (source_name, "decklinkvideosrc"))
-    prop_name = "device-number";
-  else if (!g_strcmp0 (source_name, "filesrc"))
-    prop_name = "location";
-  else
-    prop_name = "device-name";
+  prop_name = lgm_device_get_property_name_for_source (source_name);
 
   va = gst_property_probe_probe_and_get_values_name (probe, prop_name);
   gst_element_set_state (source, GST_STATE_NULL);
@@ -361,4 +349,33 @@ GList *
 lgm_device_enum_audio_devices (const gchar * device)
 {
   return lgm_device_enum_devices (device, LGM_DEVICE_TYPE_AUDIO);
+}
+
+const gchar *
+lgm_device_get_property_name_for_source (const gchar *source_name)
+{
+  const gchar *prop_name;
+
+  if (!g_strcmp0 (source_name, "dv1394src"))
+    prop_name = "guid";
+  else if (!g_strcmp0 (source_name, "v4l2src"))
+    prop_name = "device";
+  else if (!g_strcmp0 (source_name, "avfvideosrc"))
+    prop_name = "device";
+  else if (!g_strcmp0 (source_name, "osxscreencapsrc"))
+    prop_name = "device";
+  else if (!g_strcmp0 (source_name, "decklinkvideosrc"))
+    prop_name = "device-number";
+  else if (!g_strcmp0 (source_name, "dx9screencapsrc"))
+    prop_name = "monitor";
+  else if (!g_strcmp0 (source_name, "gdiscreencapsrc"))
+    prop_name = "monitor";
+  else if (!g_strcmp0 (source_name, "filesrc"))
+    prop_name = "location";
+  else if (!g_strcmp0 (source_name, "gsettingsvideosrc"))
+    prop_name = NULL;
+  else
+    prop_name = "device-name";
+
+  return prop_name;
 }

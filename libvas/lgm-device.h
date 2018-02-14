@@ -71,5 +71,6 @@ EXPORT GList *    lgm_device_enum_video_devices     (const gchar *source_name);
 
 EXPORT GList *    lgm_device_enum_audio_devices     (const gchar *source_name);
 
+EXPORT const gchar * lgm_device_get_property_name_for_source (const gchar *source_name);
 G_END_DECLS
 #endif

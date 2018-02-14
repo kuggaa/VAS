@@ -46,20 +46,47 @@ namespace VAS.Core.Common
 			set;
 		}
 
+		/// <summary>
+		/// Gets or sets the name of the Multimedia source element.
+		/// </summary>
+		/// <value>The source element.</value>
 		public string SourceElement {
 			get;
 			set;
 		}
+
+		/// <summary>
+		/// Gets or sets a prefix to use in the device description.
+		/// </summary>
+		/// <value>The prefix.</value>
+		public string Prefix { get; set; }
 
 		public List<DeviceVideoFormat> Formats {
 			get;
 			set;
 		}
 
-		public string Desc {
-			get {
-				return String.Format ("{0} ({1})", ID, SourceElement);
+		/// <summary>
+		/// Gets the description of the device.
+		/// </summary>
+		/// <returns>The description.</returns>
+		/// <param name="includeSourceName">If set to <c>true</c> include source name.</param>
+		public string GetDescription (bool includeSourceName)
+		{
+			var deviceName = "";
+			if (!String.IsNullOrEmpty (Prefix)) {
+				deviceName += $"{Prefix} ";
 			}
+
+			if (String.IsNullOrEmpty (ID)) {
+				deviceName += Catalog.GetString ("Unknown");
+			} else {
+				deviceName += ID;
+			}
+			if (includeSourceName) {
+				deviceName += $" ({SourceElement})";
+			}
+			return deviceName;
 		}
 	}
 
