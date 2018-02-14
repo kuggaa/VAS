@@ -32,17 +32,14 @@ namespace VAS.UI.Component
 	{
 		const int TEXT_MIN_SIZE = 370;
 		const int TEXT_MAX_SIZE = 570;
-		const int TEXT_OFFSET = 20;
-		const int CHARSWIDTH_OFFSET = 30;
 		LicenseBannerVM viewModel;
 		BindingContext ctx;
-		int lastSize = 0;
 
 		public LicenseBannerView ()
 		{
 			this.Build ();
 			licenseTextLabel.ModifyFont (FontDescription.FromString ($"{App.Current.Style.Font} {Sizes.LicenseTextFontSize}px"));
-			licenseTextLabel.SizeAllocated += HandleLicenseTextSizeAllocated;
+			licenseTextLabel.DynamicSize (TEXT_MIN_SIZE, TEXT_MAX_SIZE);
 			upgradeButton.ApplyStyle (StyleConf.ButtonCallToActionRounded);
 			upgradeButton.WidthRequest = Sizes.LicenseBannerUpgradeButtonWidth;
 			upgradeButton.HeightRequest = Sizes.LicenseBannerUpgradeButtonHeight;
@@ -72,17 +69,6 @@ namespace VAS.UI.Component
 			ctx.Add (licenseTextLabel.Bind (lbl => lbl.LabelProp, vm => ((LicenseBannerVM)vm).Text));
 			ctx.Add (upgradeButton.Bind (vm => ((LicenseBannerVM)vm).UpgradeCommand));
 			ctx.Add (this.Bind ((banner) => banner.Visible, vm => ((LicenseBannerVM)vm).Visible));
-		}
-
-		void HandleLicenseTextSizeAllocated (object o, Gtk.SizeAllocatedArgs args)
-		{
-			if (lastSize != args.Allocation.Width) {
-				lastSize = args.Allocation.Width;
-				int size = Math.Max (args.Allocation.Width - TEXT_OFFSET, TEXT_MIN_SIZE);
-				size = Math.Min (size, TEXT_MAX_SIZE);
-				licenseTextLabel.WidthRequest = size;
-				licenseTextLabel.WidthChars = size - CHARSWIDTH_OFFSET;
-			}
 		}
 	}
 }
