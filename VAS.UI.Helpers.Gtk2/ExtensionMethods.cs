@@ -26,6 +26,9 @@ namespace VAS.UI.Helpers
 	/// </summary>
 	public static class ExtensionMethods
 	{
+		const int TEXT_OFFSET = 20;
+		const int CHARSWIDTH_OFFSET = 30;
+
 		/// <summary>
 		/// Centers a dialog on its parent. Dialogs are centered in Show () only if TransientFor is set,
 		/// which has to be done in the constructor with Stetic. When we can't this function can be used instead.
@@ -60,6 +63,30 @@ namespace VAS.UI.Helpers
 
 			dialog.Move (x, y);
 		}
+
+		/// <summary>
+		/// Set Label to change its size dynamically, by specifiying a minimum width and a maximum width, if maximum is not
+		/// specified then it will get the first allocated width of the label.
+		/// </summary>
+		/// <param name="label">Label.</param>
+		/// <param name="minWidth">Minimum width.</param>
+		/// <param name="maxWidth">Max width.</param>
+		public static void DynamicSize (this Label label, int minWidth, int maxWidth = -1)
+		{
+			label.SizeAllocated += (o, args) => {
+				int newWidth = args.Allocation.Width;
+				if (maxWidth == -1 && newWidth > 0) {
+					maxWidth = newWidth;
+				}
+				if (((Label)o).WidthRequest != (newWidth - TEXT_OFFSET) && maxWidth > 0) {
+					int size = Math.Max (args.Allocation.Width - TEXT_OFFSET, minWidth);
+					size = Math.Min (size, maxWidth);
+					((Label)o).WidthRequest = size;
+					((Label)o).WidthChars = size - CHARSWIDTH_OFFSET;
+				}
+			};
+		}
+
 
 		static void Clamp (ref int @base, int extent, int clampBase, int clampExtent)
 		{
