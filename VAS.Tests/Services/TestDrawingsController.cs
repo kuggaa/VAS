@@ -35,7 +35,7 @@ namespace VAS.Tests.Services
 	[TestFixture]
 	public class TestDrawingsController
 	{
-		DrawingsController controller;
+		DrawingsService controller;
 		VideoPlayerVM videoPlayer;
 		Mock<IVideoPlayerController> videoPlayerMock;
 		Mock<IMultimediaToolkit> mToolkitMock;
@@ -66,7 +66,7 @@ namespace VAS.Tests.Services
 				});
 			App.Current.StateController = stateControllerMock.Object;
 			App.Current.MultimediaToolkit = mToolkitMock.Object;
-			controller = new DrawingsController ();
+			controller = new DrawingsService ();
 			await controller.Start ();
 		}
 

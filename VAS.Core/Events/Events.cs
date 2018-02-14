@@ -97,6 +97,7 @@ namespace VAS.Core.Events
 		public TimelineEventVM TimelineEvent { get; set; }
 	}
 
+	// TODO [LON-995]: Remove this event and fix the menu that is calling it
 	public class SnapshotSeriesEvent : Event
 	{
 		public TimelineEventVM TimelineEvent { get; set; }
@@ -285,6 +286,7 @@ namespace VAS.Core.Events
 		public string Message { get; set; }
 	}
 
+	// TODO [LON-995]: Remove this event. Fix VideoPlayerController and two menus that are calling it.
 	public class DrawFrameEvent : Event
 	{
 		/// <summary>

@@ -26,6 +26,7 @@ using VAS.Core.Events;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.Interfaces.Services;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
@@ -33,39 +34,13 @@ using VAS.Services.State;
 
 namespace VAS.Services.Controller
 {
-	public class DrawingsController : ControllerBase
+	public class DrawingsService : ControllerBase, IDrawingsService
 	{
-		VideoPlayerVM videoPlayer;
-		ProjectVM project;
-
-		public override async Task Start ()
-		{
-			await base.Start ();
-
-			App.Current.EventsBroker.Subscribe<DrawFrameEvent> (HandleDrawFrame);
-			App.Current.EventsBroker.Subscribe<SnapshotSeriesEvent> (HandleCreateSnaphotSeries);
-		}
-
-		public override async Task Stop ()
-		{
-			await base.Stop ();
-
-			App.Current.EventsBroker.Unsubscribe<DrawFrameEvent> (HandleDrawFrame);
-			App.Current.EventsBroker.Unsubscribe<SnapshotSeriesEvent> (HandleCreateSnaphotSeries);
-		}
-
 		public override void SetViewModel (IViewModel viewModel)
 		{
-			videoPlayer = ((IVideoPlayerDealer)viewModel).VideoPlayer;
-			project = (viewModel as IProjectDealer)?.Project;
 		}
 
-		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
-		{
-			return Enumerable.Empty<KeyAction> ();
-		}
-
-		protected virtual void HandleDrawFrame (DrawFrameEvent drawEvent)
+		public void DrawFrame (VideoPlayerVM videoPlayer, ProjectVM project, TimelineEventVM play, int drawingIndex, CameraConfig cameraConfig, Image frame)
 		{
 			FrameDrawing drawing = null;
 			Time pos;
@@ -73,61 +48,61 @@ namespace VAS.Services.Controller
 
 			videoPlayer.PauseCommand.Execute (true);
 
-			if (drawEvent.Play != null &&
-				drawEvent.Play.Model == null) {
-				drawEvent.Play = videoPlayer.LoadedElement as TimelineEventVM;
+			if (play != null &&
+				play.Model == null) {
+				play = videoPlayer.LoadedElement as TimelineEventVM;
 			}
 
-			fileSet = drawEvent.Play?.Model?.FileSet;
+			fileSet = play?.Model?.FileSet;
 
-			if (drawEvent.Play?.Model != null) {
-				if (drawEvent.DrawingIndex == -1) {
-					drawEvent.CamConfig = drawEvent.CamConfig ?? new CameraConfig (0);
+			if (play?.Model != null) {
+				if (drawingIndex == -1) {
+					cameraConfig = cameraConfig ?? new CameraConfig (0);
 					drawing = new FrameDrawing {
 						Render = videoPlayer.Player.CurrentTime,
-						CameraConfig = drawEvent.CamConfig,
-						RegionOfInterest = drawEvent.CamConfig.RegionOfInterest.Clone (),
+						CameraConfig = cameraConfig,
+						RegionOfInterest = cameraConfig.RegionOfInterest.Clone (),
 					};
 				} else {
-					drawing = drawEvent.Play.Model.Drawings [drawEvent.DrawingIndex];
-					drawEvent.CamConfig = drawEvent.CamConfig ?? drawing.CameraConfig;
+					drawing = play.Model.Drawings [drawingIndex];
+					cameraConfig = cameraConfig ?? drawing.CameraConfig;
 				}
 				pos = drawing.Render;
 			} else {
 				pos = videoPlayer.Player.CurrentTime;
 			}
 
-			if (drawEvent.Frame == null) {
+			if (frame == null) {
 				IFramesCapturer framesCapturer;
 				if (fileSet == null) {
 					throw new InvalidOperationException ("The event doesn't seems to provide a MediaFileset");
 				}
 				framesCapturer = App.Current.MultimediaToolkit.GetFramesCapturer ();
-				MediaFile file = fileSet [drawEvent.CamConfig.Index];
+				MediaFile file = fileSet [cameraConfig.Index];
 				framesCapturer.Open (file.FilePath);
-				drawEvent.Frame = framesCapturer.GetFrame (pos + file.Offset, true,
+				frame = framesCapturer.GetFrame (pos + file.Offset, true,
 												  (int)file.DisplayVideoWidth, (int)file.DisplayVideoHeight);
 				framesCapturer.Dispose ();
 			}
 
-			if (drawEvent.Frame == null) {
+			if (frame == null) {
 				App.Current.Dialogs.ErrorMessage (Catalog.GetString ("Error capturing video frame"));
 				return;
 			}
 
 			dynamic properties = new ExpandoObject ();
-			properties.project = project?.Model ?? drawEvent.Play?.Model?.Project;
-			properties.timelineEvent = drawEvent.Play;
-			properties.frame = drawEvent.Frame;
+			properties.project = project?.Model ?? play?.Model?.Project;
+			properties.timelineEvent = play;
+			properties.frame = frame;
 			properties.drawing = drawing;
-			properties.cameraconfig = drawEvent.CamConfig;
+			properties.cameraconfig = cameraConfig;
 			App.Current.StateController.MoveToModal (DrawingToolState.NAME, properties);
 		}
 
-		protected virtual void HandleCreateSnaphotSeries (SnapshotSeriesEvent e)
+		public void CreateSnapshotSeries (VideoPlayerVM videoPlayer, TimelineEventVM timelineEvent)
 		{
 			videoPlayer.PauseCommand.Execute (false);
-			App.Current.GUIToolkit.ExportFrameSeries (e.TimelineEvent.Model, App.Current.SnapshotsDir);
+			App.Current.GUIToolkit.ExportFrameSeries (timelineEvent.Model, App.Current.SnapshotsDir);
 		}
 	}
 }
