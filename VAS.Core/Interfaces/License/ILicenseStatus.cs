@@ -88,6 +88,7 @@ namespace VAS.Core.Interfaces.License
 			get;
 		}
 
+		/// <summary>
 		/// Gets or sets a value indicating whether this <see cref="T:FluVAS.License.Wibu.LicenseStatus"/> is a subscription license.
 		/// </summary>
 		/// <value><c>true</c> if old license; otherwise, <c>false</c>.</value>
