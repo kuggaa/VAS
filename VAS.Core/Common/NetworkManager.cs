@@ -40,19 +40,23 @@ namespace VAS.Core.Common
 		public bool CheckNetworkConnection ()
 		{
 			try {
+				Log.Debug ("Checking Network Connection");
 				Ping myPing = new Ping ();
 				String host = "8.8.8.8";
 				byte [] buffer = new byte [32];
 				int timeout = 1000;
 				PingOptions pingOptions = new PingOptions ();
 				PingReply reply = myPing.Send (host, timeout, buffer, pingOptions);
-				return (reply.Status == IPStatus.Success);
+				bool result = (reply.Status == IPStatus.Success);
+				Log.Debug ($"Ping to 8.8.8.8 was {result}");
+				return result;
 			} catch (Exception) {
 				try {
 					//Try with NTP server
+					Log.Debug ("Error, checking ping connection, trying with NTP Server");
 					return GetNetworkTime () > new DateTime (1900, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 				} catch (Exception ex) {
-					Log.Warning ("Error getting network time: " + ex);
+					Log.Warning ("Error checking network time: " + ex);
 					return false;
 				}
 			}

@@ -169,6 +169,7 @@
     <Compile Include="Core\ViewModel\TestPercentCircularChartVM.cs" />
     <Compile Include="Services\TestViewModelFactoryBaseService.cs" />
     <Compile Include="Core\ViewModel\TestEventButtonVM.cs" />
+    <Compile Include="Core\ViewModel\TestLicenseBannerVM.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
