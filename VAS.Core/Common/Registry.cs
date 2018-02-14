@@ -19,10 +19,11 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using VAS.Core.Interfaces;
 
 namespace VAS.Core.Common
 {
-	public class Registry
+	public class Registry : IRegistry
 	{
 		ConcurrentDictionary<Type, List<RegistryElement>> elements;
 		string name;

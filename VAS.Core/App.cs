@@ -33,7 +33,7 @@ namespace VAS
 		public IDevice Device;
 		public EventsBroker EventsBroker;
 		public IStateController StateController;
-		public Registry DependencyRegistry;
+		public IRegistry DependencyRegistry;
 		public IStorageManager DatabaseManager;
 		public IKpiService KPIService;
 		public IJobsManager JobsManager;

@@ -114,6 +114,7 @@ namespace VAS.Core.Store
 		}
 
 		[JsonProperty]
+		[CloneIgnore]
 		public RangeObservableCollection<TimelineEvent> Timeline {
 			get;
 			protected set;
@@ -343,6 +344,13 @@ namespace VAS.Core.Store
 				return ID.CompareTo (project.ID);
 			} else
 				throw new ArgumentException ("object is not a Project and cannot be compared");
+		}
+
+		public Project Clone ()
+		{
+			var newProject = Cloner.Clone (this);
+			newProject.Timeline = new RangeObservableCollection<TimelineEvent> (Timeline);
+			return newProject;
 		}
 
 		public static void Export (Project project, string file)
