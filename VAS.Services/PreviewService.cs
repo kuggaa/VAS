@@ -21,6 +21,7 @@ using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store.Templates;
+using VAS.Core.ViewModel;
 using VAS.Drawing.Widgets;
 
 namespace VAS.Services
@@ -50,12 +51,27 @@ namespace VAS.Services
 			return null;
 		}
 
-		protected Image CreatePreview (Dashboard dashboard) {
+		protected Image CreatePreview (Dashboard dashboard)
+		{
 			// instantiate the view and the viewmodel and call the create internal preview
-			return null;
+			DashboardVM dashboardVM = new DashboardVM () { Model = dashboard };
+			dashboardVM.FitMode = FitMode.Fit;
+
+			DashboardCanvas dashboardCanvas = new DashboardCanvas () {
+				ViewModel = dashboardVM,
+				BackgroundColor = Color.Black
+			};
+
+
+			double width = dashboardVM.CanvasWidth;
+			double height = dashboardVM.CanvasHeight;
+			CreateInternalPreview (dashboardCanvas, dashboardVM, width, height);
+
+			return App.Current.DrawingToolkit.Copy (dashboardCanvas, new Area (new Point (0, 0), width, height));
 		}
 
-		protected virtual Image CreatePreview (Team team) {
+		protected virtual Image CreatePreview (Team team)
+		{
 			return null;
 		}
 
