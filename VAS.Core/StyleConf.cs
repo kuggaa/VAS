@@ -56,7 +56,7 @@ namespace VAS.Core.Common
 		public static string PlayerTooltipRate = Catalog.GetString ("Playback speed");
 		public static string PlayerTooltipJumps = Catalog.GetString ("Jump in seconds. Hold the Shift key with the direction keys to activate it.");
 		public static string PlayerTooltipDetach = Catalog.GetString ("Detach window");
-
+		
 		public StyleConf ()
 		{
 			HomeTeamColor = Color.Red;
@@ -109,6 +109,7 @@ namespace VAS.Core.Common
 		public Color ColorShadow { get; set; }
 		public Color ColorWhite { get; set; }
 		public Color ColorGray { get; set; }
+		public Color ColorBackgroundPreview { get; set; }
 
 		public Color ChartBase { get; set; }
 

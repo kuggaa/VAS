@@ -33,6 +33,7 @@ namespace VAS.Drawing.Widgets
 		protected static ISurface defaultBackground;
 		protected static ISurface calendarIcon;
 
+		protected const float SCRIM_ALPHA_BACKGROUND = 0.1f;
 		protected const float ALPHA_BACKGROUND = 0.8f;
 		protected const float ALPHA_EXTRA_INFO = 0.5f;
 		protected const int EXTRA_INFO_ICONS_SIZE = 16;
@@ -68,9 +69,9 @@ namespace VAS.Drawing.Widgets
 		public CardCanvasView ()
 		{
 			textColor = App.Current.Style.TextContrastBase;
-			BackgroundColor = App.Current.Style.ThemeContrastBase;
+			BackgroundColor = App.Current.Style.ThemeContrastBase.Copy ();
 			BackgroundColor.SetAlpha (ALPHA_BACKGROUND);
-			extraInfoColor = App.Current.Style.ThemeContrastBase;
+			extraInfoColor = App.Current.Style.ThemeContrastBase.Copy ();
 			extraInfoColor.SetAlpha (ALPHA_EXTRA_INFO);
 		}
 
@@ -127,6 +128,12 @@ namespace VAS.Drawing.Widgets
 			tk.FillColor = BackgroundColor;
 			tk.StrokeColor = BackgroundColor;
 			tk.DrawRectangle(cardDetailArea.Start, cardDetailArea.Width, cardDetailArea.Height);
+
+			Color scrim = App.Current.Style.ThemeBase.Copy ();
+			scrim.SetAlpha (SCRIM_ALPHA_BACKGROUND);
+			tk.FillColor = scrim;
+			tk.StrokeColor = scrim;
+			tk.DrawRectangle (cardDetailArea.Start, cardDetailArea.Width, cardDetailArea.Height);
 		}
 
 		void DrawTitle ()

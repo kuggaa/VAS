@@ -25,7 +25,9 @@ namespace VAS.Core.Resources
 		public static string ProjectsCreateHelper => Catalog.GetString ("Tap the + icon to create your first project");
 		public static string ProjectsCreateTip => Catalog.GetString ("Tip: You can get projects from other devices using the sync center");
 		public static string ProjectsNoneCreated => Catalog.GetString ("No projects created yet");
-		public static string ProjectsSearchPlaceholder => Catalog.GetString ("Search project...");
+		public static string SearchPlaceholder => Catalog.GetString ("Search project...");
+
+		public static string Teams => Catalog.GetString ("Teams");
 
 		public static string DefaultDashboard => Catalog.GetString ("Default dashboard");
 		public static string Won => Catalog.GetString ("Won");
@@ -35,5 +37,6 @@ namespace VAS.Core.Resources
 		public static string Monitor => Catalog.GetString ("Monitor");
 		public static string UpgradeNow => Catalog.GetString ("Upgrade now");
 		public static string Preferences => Catalog.GetString ("Preferences");
+		public static string Delete => Catalog.GetString ("Delete");
 	}
 }

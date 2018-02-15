@@ -19,6 +19,8 @@ using System;
 using System.Linq;
 using VAS.Core.MVVMC;
 using VAS.Core.Common;
+using Newtonsoft.Json;
+using PropertyChanged;
 
 namespace VAS.Core.ViewModel
 {
@@ -27,11 +29,19 @@ namespace VAS.Core.ViewModel
 	/// </summary>
 	public class MenuNodeVM : ViewModelBase
 	{
+		object commandParameter;
+
+		private MenuNodeVM () 
+		{
+			ActiveColor = App.Current.Style.TextBase;
+			DisableColor = App.Current.Style.TextBaseDisabled;
+		}
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:VAS.Core.ViewModel.MenuNodeVM"/> as a MenuNode with a command.
 		/// </summary>
 		/// <param name="command">Command.</param>
-		public MenuNodeVM (Command command, object commandParameter = null, string name = null)
+		public MenuNodeVM (Command command, object commandParameter = null, string name = null) : this ()
 		{
 			Command = command;
 			CommandParameter = commandParameter;
@@ -45,7 +55,7 @@ namespace VAS.Core.ViewModel
 		/// Initializes a new instance of the <see cref="T:VAS.Core.ViewModel.MenuNodeVM"/> as a SubMenu
 		/// </summary>
 		/// <param name="menu">The Submenu.</param>
-		public MenuNodeVM (MenuVM menu, string name)
+		public MenuNodeVM (MenuVM menu, string name) : this ()
 		{
 			Submenu = menu;
 			Name = name;
@@ -74,20 +84,37 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		/// <value>The command parameter.</value>
 		public object CommandParameter {
-			get;
-			private set;
+			get => commandParameter;
+			set {
+				commandParameter = value;
+				UpdateCanExecute ();
+			}
 		}
 
 		/// <summary>
 		/// Gets the color of the menu item.
 		/// </summary>
 		/// <value>The color of the menu item.</value>
-		public Color Color { get; set; }
+		[DependsOn ("DisableColor", "ActiveColor", "Command", "CommandParameter")]
+		public Color Color { get => Command?.CanExecute (CommandParameter) ?? true ? ActiveColor : DisableColor; }
+
+		/// <summary>
+		/// Gets the color used when the item is disabled
+		/// </summary>
+		/// <value>The color of the menu item.</value>
+		public Color DisableColor { get; set; }
+
+		/// <summary>
+		/// Gets the color used when the item is active
+		/// </summary>
+		/// <value>The color of the menu item.</value>
+		public Color ActiveColor { get; set; }
 
 		/// <summary>
 		/// Gets the submenu.
 		/// </summary>
 		/// <value>The submenu.</value>
+		[JsonIgnore]
 		public MenuVM Submenu {
 			get;
 			private set;
@@ -120,7 +147,7 @@ namespace VAS.Core.ViewModel
 			if (Submenu != null) {
 				Submenu.UpdateCanExecute ();
 			} else {
-				Command.EmitCanExecuteChanged ();
+				Command?.EmitCanExecuteChanged ();
 			}
 		}
 	}
