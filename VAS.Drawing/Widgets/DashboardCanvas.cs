@@ -33,7 +33,7 @@ using VASDrawing = VAS.Drawing;
 
 namespace VAS.Drawing.Widgets
 {
-	public class DashboardCanvas : SelectionCanvas, IView<DashboardVM>
+	public class DashboardCanvas : SelectionCanvas, ICanvasView<DashboardVM>
 	{
 		public event ButtonSelectedHandler EditButtonTagsEvent;
 		public event ActionLinksSelectedHandler ActionLinksSelectedEvent;

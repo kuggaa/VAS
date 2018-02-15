@@ -202,7 +202,7 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the preview of this dashboardVM.
 		/// </summary>
 		/// <value>The preview.</value>
-		public Image Preview { get; set; }
+		public Image Preview => Model.Preview;
 
 		/// <summary>
 		/// Gets or sets the mode.
