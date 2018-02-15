@@ -1,5 +1,5 @@
 ﻿//
-//  Copyright (C) 2017 Fluendo S.A.
+//  Copyright (C) 2017 
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,41 +15,20 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
-using VAS.Core.Common;
-using VAS.Core.Store;
-using VAS.Core.Store.Templates;
-using VAS.Core.Interfaces.GUI;
+using Image = VAS.Core.Common.Image;
 
-namespace VAS.Core.ViewModel
+namespace VAS.Core.Interfaces
 {
-	public class TeamVM : TemplateViewModel<Team, Player, PlayerVM>
+	/// <summary>
+	/// Preview generator for the app templates, teams and dashboards
+	/// </summary>
+	public interface IPreviewService
 	{
 		/// <summary>
-		/// Gets or sets the icon of the team.
+		/// Creates the preview for the given template
 		/// </summary>
-		/// <value>The icon.</value>
-		public override Image Icon {
-			get {
-				return Model.Shield;
-			}
-			set {
-				Model.Shield = value;
-			}
-		}
-
-
-		public Guid ID {
-			get { return Model.ID; }
-		}
-
-		/// <summary>
-		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.TeamVM"/> is tagged.
-		/// </summary>
-		/// <value><c>true</c> if tagged; otherwise, <c>false</c>.</value>
-		public bool Tagged {
-			get;
-			set;
-		}
+		/// <returns>The preview.</returns>
+		/// <param name="template">Template.</param>
+		Image CreatePreview (ITemplate template);
 	}
 }

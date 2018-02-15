@@ -15,20 +15,23 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using VAS.Core.Common;
 using VAS.Core.Events;
 using VAS.Core.Filters;
+using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using static VAS.Core.Resources.Strings;
 
 namespace VAS.Core.ViewModel
 {
-	public class ProjectsManagerVM<TModel, TViewModel> : LimitedCollectionViewModel<TModel, TViewModel>
+	public class ProjectsManagerVM<TModel, TViewModel> : ManagerBaseVM<TModel, TViewModel>
 		where TModel : Project
 		where TViewModel : ProjectVM<TModel>, new()
 	{
@@ -42,17 +45,12 @@ namespace VAS.Core.ViewModel
 			DeleteCommand = new AsyncCommand<TViewModel> (Delete, (arg) => Selection.Any () || arg != null) { IconName = "vas-delete" };
 			SaveCommand = new AsyncCommand (Save, () => LoadedProject?.Model != null && LoadedProject.IsChanged);
 			ExportCommand = new AsyncCommand (Export, () => Selection.Count == 1);
-			SearchCommand = new Command<string> (textFilter => App.Current.EventsBroker.Publish (
-				new SearchEvent { TextFilter = textFilter }));
-			VisibleViewModels = new VisibleRangeObservableProxy<TViewModel> (ViewModels);
-			ProjectMenu = new MenuVM ();
 			EmptyCard = new EmptyCardVM {
 				HeaderText = ProjectsNoneCreated,
 				DescriptionText = ProjectsCreateHelper,
 				TipText = ProjectsCreateTip,
 			};
-			FillProjectMenu ();
-			FilterText = string.Empty;
+			VisibleViewModels = new VisibleRangeObservableProxy<TViewModel> (ViewModels);
 		}
 
 		protected override void DisposeManagedResources ()
@@ -92,47 +90,16 @@ namespace VAS.Core.ViewModel
 		public Command ExportCommand { get; protected set; }
 
 		/// <summary>
-		/// Publishes SearchEvent<TModel> with text filter as parameter.
-		/// </summary>
-		/// <value>The search projects command.</value>
-		[PropertyChanged.DoNotNotify]
-		public Command<string> SearchCommand { get; protected set; }
-
-		/// <summary>
 		/// Gets or sets the type of the sort.
 		/// </summary>
 		/// <value>The type of the sort.</value>
 		public ProjectSortType SortType { get; set; }
 
 		/// <summary>
-		/// Gets or sets the filter text.
-		/// </summary>
-		/// <value>The filter text.</value>
-		public string FilterText { get; set; }
-
-		/// <summary>
-		/// Gets the project menu.
-		/// </summary>
-		/// <value>The project menu.</value>
-		public MenuVM ProjectMenu { get; private set; }
-
-		/// <summary>
 		/// Gets or sets the visible view models, viewmodels that has boolean Visible property setted to true.
 		/// </summary>
 		/// <value>The visible view models.</value>
-		public VisibleRangeObservableProxy<TViewModel> VisibleViewModels { get; set; }
-
-		/// <summary>
-		/// Gets or sets a value indicating whether the current search filter returned no results.
-		/// </summary>
-		/// <value><c>true</c> if no results; otherwise, <c>false</c>.</value>
-		public bool NoResults { get; set; }
-
-		/// <summary>
-		/// Gets or sets the empty card View Model to be used when the user has no projects created.
-		/// </summary>
-		/// <value>The empty card.</value>
-		public EmptyCardVM EmptyCard { get; set; }
+		public VisibleRangeObservableProxy<TViewModel> VisibleViewModels { get; protected set; }
 
 		/// <summary>
 		/// Command to export the currently loaded project.
@@ -207,11 +174,14 @@ namespace VAS.Core.ViewModel
 			await App.Current.EventsBroker.Publish (new OpenEvent<TModel> { Object = viewModel?.Model });
 		}
 
-		protected virtual void FillProjectMenu ()
+		protected override MenuVM CreateMenu (IViewModel viewModel)
 		{
-			ProjectMenu.ViewModels.AddRange (new List<MenuNodeVM> {
-				new MenuNodeVM (DeleteCommand, null, Catalog.GetString("Delete")) { Color = App.Current.Style.ColorAccentError },
+			MenuVM menu = new MenuVM ();
+			menu.ViewModels.AddRange (new List<MenuNodeVM> {
+				new MenuNodeVM (DeleteCommand, viewModel, Catalog.GetString ("Delete")) { ActiveColor = App.Current.Style.ColorAccentError }
 			});
+
+			return menu;
 		}
 
 		void HandleLoadedProjectChanged (object sender, PropertyChangedEventArgs e)

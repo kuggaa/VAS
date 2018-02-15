@@ -26,13 +26,14 @@ using VAS.Core;
 using VAS.Core.ViewModel;
 using VAS.Core.Store;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.Filters;
 
-namespace VAS.Services.ViewModel
+namespace VAS.Core.ViewModel
 {
 	/// <summary>
 	/// Generic base class ViewModel for a templates manager View, like the Dashboards Manager or the Teams Manager
 	/// </summary>
-	public class TemplatesManagerViewModel<TModel, TViewModel, TChildModel, TChildViewModel> : LimitedCollectionViewModel<TModel, TViewModel>
+	public class TemplatesManagerViewModel<TModel, TViewModel, TChildModel, TChildViewModel> : ManagerBaseVM<TModel, TViewModel>
 		where TModel : StorableBase, ITemplate<TChildModel>
 		where TViewModel : TemplateViewModel<TModel, TChildModel, TChildViewModel>, new()
 		where TChildModel : BindableBase
@@ -41,13 +42,20 @@ namespace VAS.Services.ViewModel
 		public TemplatesManagerViewModel ()
 		{
 			LoadedTemplate = new TViewModel ();
-			NewCommand = new AsyncCommand (New);
+			NewCommand = new AsyncCommand (New) { IconName = "vas-plus" };
 			SaveCommand = new AsyncCommand<bool> (Save, () => LoadedTemplate.Model != null && LoadedTemplate.Edited);
-			DeleteCommand = new AsyncCommand (Delete, () => LoadedTemplate.Model != null && LoadedTemplate.Editable);
+			DeleteCommand = new AsyncCommand<TViewModel> (Delete, CanDelete);
 			ExportCommand = new AsyncCommand (Export, () => LoadedTemplate.Model != null);
 			ImportCommand = new AsyncCommand (Import);
 			OpenCommand = new AsyncCommand<TModel> (Open);
+			VisibleViewModels = new VisibleRangeObservableProxy<TViewModel> (ViewModels);
 		}
+
+		/// <summary>
+ 		/// Gets or sets the visible view models, viewmodels that has boolean Visible property setted to true.
+ 		/// </summary>
+ 		/// <value>The visible view models.</value>
+ 		public VisibleRangeObservableProxy<TViewModel> VisibleViewModels { get; protected set; }
 
 		/// <summary>
 		/// Gets or sets the View Model for the template loaded. This view model does not change, instead the model
@@ -120,6 +128,19 @@ namespace VAS.Services.ViewModel
 		}
 
 		/// <summary>
+		/// Command to change the name of a template
+		/// </summary>
+		/// <param name="templateVM">The template ViewModel</param>
+		/// <param name="newName">The new name.</param>
+		public Task<bool> ChangeName (TViewModel templateVM, string newName)
+		{
+			return App.Current.EventsBroker.PublishWithReturn (new ChangeNameEvent<TModel> {
+				Object = templateVM.Model,
+				NewName = newName
+			});
+		}
+
+		/// <summary>
 		/// Command to export the currently loaded template.
 		/// </summary>
 		protected virtual Task<bool> Export ()
@@ -158,9 +179,14 @@ namespace VAS.Services.ViewModel
 		/// <summary>
 		/// Command to delete the currently loaded template.
 		/// </summary>
-		protected virtual async Task Delete ()
+		protected virtual async Task Delete (TViewModel viewModel)
 		{
-			if (Selection != null) {
+			if (viewModel != null) {
+				ObservableCollection<TModel> objects = new ObservableCollection<TModel> ();
+				objects.Add (viewModel.Model);
+				await App.Current.EventsBroker.Publish (
+						new DeleteEvent<ObservableCollection<TModel>> { Object = objects });
+			} else if (Selection != null) {
 				ObservableCollection<TModel> objects = new ObservableCollection<TModel>
 					(Selection.Where (x => x.Model != null).Select (x => x.Model));
 				if (objects.Any ()) {
@@ -184,17 +210,12 @@ namespace VAS.Services.ViewModel
 			return AsyncHelpers.Return (false);
 		}
 
-		/// <summary>
-		/// Command to change the name of a template
-		/// </summary>
-		/// <param name="templateVM">The template ViewModel</param>
-		/// <param name="newName">The new name.</param>
-		public Task<bool> ChangeName (TViewModel templateVM, string newName)
-		{
-			return App.Current.EventsBroker.PublishWithReturn (new ChangeNameEvent<TModel> {
-				Object = templateVM.Model,
-				NewName = newName
-			});
+		protected bool CanDelete (TViewModel viewModel) {
+			if (viewModel != null) {
+				return viewModel.Editable;
+			}
+			
+			return LoadedTemplate.Model != null && LoadedTemplate.Editable;
 		}
 	}
 }

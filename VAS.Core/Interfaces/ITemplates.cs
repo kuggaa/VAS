@@ -43,6 +43,12 @@ namespace VAS.Core.Interfaces
 		int Version { get; set; }
 
 		/// <summary>
+		/// Gets or sets the template preview.
+		/// </summary>
+		/// <value>The preview template.</value>
+		Image Preview { get; set; }
+
+		/// <summary>
 		/// Creates a deep copy of the recipe changing the ID's of the storables too.
 		/// </summary>
 		/// <param name="newName">New name.</param>

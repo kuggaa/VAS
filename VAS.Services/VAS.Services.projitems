@@ -22,12 +22,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)State\DrawingToolState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RenderingJobsController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)State\JobsManagerState.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TemplateManagerViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\JobsManagerVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\DrawingToolVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UserStatisticsService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\CoreEventsController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectAnalysisVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controller\TaggingController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LicenseLimitationsService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HotkeysService.cs" />
@@ -51,6 +49,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)DynamicButtonToolbarService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EditPlaylistElementVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModelFactoryBaseService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PreviewWidget.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PreviewService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />
