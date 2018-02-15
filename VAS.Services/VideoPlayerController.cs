@@ -33,6 +33,7 @@ using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.GUI;
 using VAS.Core.Interfaces.Multimedia;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.Interfaces.Services;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
@@ -89,6 +90,8 @@ namespace VAS.Services
 		bool supportsMultipleCameras;
 		Time drawingCurrentTime;
 
+		IDrawingsService drawingsService;
+
 		protected struct Segment
 		{
 			public Time Start;
@@ -123,6 +126,7 @@ namespace VAS.Services
 			CreatePlayer ();
 			Active = true;
 			Mode = VideoPlayerOperationMode.Normal;
+			drawingsService = App.Current.DependencyRegistry.Retrieve<IDrawingsService> ();
 		}
 
 		protected override void DisposeManagedResources ()
@@ -807,15 +811,7 @@ namespace VAS.Services
 
 			TimelineEventVM evt = playerVM.LoadedElement as TimelineEventVM ??
 										   (loadedPlaylistElement as PlaylistPlayElementVM)?.Play;
-
-			App.Current.EventsBroker.Publish (
-				new DrawFrameEvent {
-					Play = evt,
-					DrawingIndex = -1,
-					CamConfig = evt == null ? null : evt.Model.CamerasConfig [0],
-					Frame = CurrentFrame
-				}
-			);
+			drawingsService.DrawFrame (PlayerVM, null, evt, -1, evt == null ? null : evt.Model.CamerasConfig [0], CurrentFrame);
 		}
 
 		public void SetZoom (float zoomLevel)

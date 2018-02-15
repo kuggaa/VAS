@@ -36,8 +36,40 @@ namespace VAS.Services.Controller
 {
 	public class DrawingsService : ControllerBase, IDrawingsService
 	{
+		// FIXME: Remove subscriptions and ViewModel settings when EventsMenu and SportPlaysMenu are migrated to MVVM
+		VideoPlayerVM videoPlayer;
+		ProjectVM project;
+
 		public override void SetViewModel (IViewModel viewModel)
 		{
+			videoPlayer = ((IVideoPlayerDealer)viewModel).VideoPlayer;
+			project = (viewModel as IProjectDealer)?.Project;
+		}
+
+		public override async Task Start ()
+		{
+			await base.Start ();
+
+			App.Current.EventsBroker.Subscribe<DrawFrameEvent> (HandleDrawFrame);
+			App.Current.EventsBroker.Subscribe<SnapshotSeriesEvent> (HandleCreateSnaphotSeries);
+		}
+
+		public override async Task Stop ()
+		{
+			await base.Stop ();
+
+			App.Current.EventsBroker.Unsubscribe<DrawFrameEvent> (HandleDrawFrame);
+			App.Current.EventsBroker.Unsubscribe<SnapshotSeriesEvent> (HandleCreateSnaphotSeries);
+		}
+
+		void HandleDrawFrame (DrawFrameEvent evt)
+		{
+			DrawFrame (videoPlayer, project, evt.Play, evt.DrawingIndex, evt.CamConfig, evt.Frame);
+		}
+
+		void HandleCreateSnaphotSeries (SnapshotSeriesEvent obj)
+		{
+			CreateSnapshotSeries (videoPlayer, obj.TimelineEvent);
 		}
 
 		public void DrawFrame (VideoPlayerVM videoPlayer, ProjectVM project, TimelineEventVM play, int drawingIndex, CameraConfig cameraConfig, Image frame)
@@ -102,6 +134,7 @@ namespace VAS.Services.Controller
 		public void CreateSnapshotSeries (VideoPlayerVM videoPlayer, TimelineEventVM timelineEvent)
 		{
 			videoPlayer.PauseCommand.Execute (false);
+			// FIXME: Use DrawingsService.CreateSnapshot when this menu is migrated to MVVM
 			App.Current.GUIToolkit.ExportFrameSeries (timelineEvent.Model, App.Current.SnapshotsDir);
 		}
 	}
