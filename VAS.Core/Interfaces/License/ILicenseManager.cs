@@ -47,5 +47,11 @@ namespace VAS.Core.Interfaces.License
 		/// <returns>The subscription license.</returns>
 		/// <param name="ticketID">Ticket identifier.</param>
 		Task<bool> UpdateSubscriptionLicense (string ticketID);
+
+		/// <summary>
+		/// Checks if this application needs to request the user for a license key.
+		/// </summary>
+		/// <returns><c>true</c>, if license key was requested, <c>false</c> otherwise.</returns>
+		bool NeedsLicenseKey ();
 	}
 }
