@@ -104,6 +104,7 @@ namespace VAS.UI.Menus
 					drawingMenu.Append (deleteItem);
 					editItem.Activated += (sender, e) => {
 						var play = plays.FirstOrDefault ();
+						// FIXME: Use DrawingsService.DrawFrame when this menu is migrated to MVVM
 						App.Current.EventsBroker.Publish (
 							new DrawFrameEvent {
 								Play = play,

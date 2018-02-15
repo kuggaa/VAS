@@ -104,12 +104,7 @@ namespace VAS.Tests.Services
 			controller.SetViewModel (viewModel.Object);
 			TimelineEventVM evtVM = CreateTimelineEventVM ();
 			var frame = Utils.LoadImageFromFile ();
-			App.Current.EventsBroker.Publish (new DrawFrameEvent {
-				Play = evtVM,
-				DrawingIndex = -1,
-				CamConfig = null,
-				Frame = frame,
-			});
+			controller.DrawFrame (videoPlayer, null, evtVM, -1, null, frame);
 
 			mToolkitMock.Verify (m => m.GetFramesCapturer (), Times.Never ());
 			stateControllerMock.Verify (s => s.MoveToModal (DrawingToolState.NAME, It.IsAny<ExpandoObject> (), false));
@@ -128,12 +123,7 @@ namespace VAS.Tests.Services
 			controller.SetViewModel (viewModel.Object);
 			TimelineEventVM evtVM = CreateTimelineEventVM (true);
 			var frame = Utils.LoadImageFromFile ();
-			App.Current.EventsBroker.Publish (new DrawFrameEvent {
-				Play = evtVM,
-				DrawingIndex = 0,
-				CamConfig = null,
-				Frame = frame,
-			});
+			controller.DrawFrame (videoPlayer, null, evtVM, 0, null, frame);
 
 			mToolkitMock.Verify (m => m.GetFramesCapturer (), Times.Never ());
 			stateControllerMock.Verify (s => s.MoveToModal (DrawingToolState.NAME, It.IsAny<ExpandoObject> (), false));
@@ -152,12 +142,7 @@ namespace VAS.Tests.Services
 			controller.SetViewModel (viewModel.Object);
 			TimelineEventVM evtVM = CreateTimelineEventVM (true);
 			var frame = Utils.LoadImageFromFile ();
-			App.Current.EventsBroker.Publish (new DrawFrameEvent {
-				Play = null,
-				DrawingIndex = -1,
-				CamConfig = null,
-				Frame = frame,
-			});
+			controller.DrawFrame (videoPlayer, null, null, -1, null, frame);
 
 			mToolkitMock.Verify (m => m.GetFramesCapturer (), Times.Never ());
 			stateControllerMock.Verify (s => s.MoveToModal (DrawingToolState.NAME, It.IsAny<ExpandoObject> (), false));
@@ -174,11 +159,7 @@ namespace VAS.Tests.Services
 			playerDealer.SetupGet (vm => vm.VideoPlayer).Returns (videoPlayer);
 			controller.SetViewModel (viewModel.Object);
 
-			await App.Current.EventsBroker.Publish (new DrawFrameEvent {
-				Play = evtVM,
-				DrawingIndex = -1,
-				CamConfig = null,
-			});
+			controller.DrawFrame (videoPlayer, null, evtVM, -1, null, null);
 
 			videoPlayerMock.Verify (p => p.Pause (true), Times.Once ());
 			mToolkitMock.Verify (m => m.GetFramesCapturer (), Times.Once ());
@@ -198,11 +179,7 @@ namespace VAS.Tests.Services
 			playerDealer.SetupGet (vm => vm.VideoPlayer).Returns (videoPlayer);
 			controller.SetViewModel (viewModel.Object);
 
-			App.Current.EventsBroker.Publish (new DrawFrameEvent {
-				Play = evtVM,
-				DrawingIndex = 0,
-				CamConfig = null,
-			});
+			controller.DrawFrame (videoPlayer, null, evtVM, 0, null, null);
 
 			mToolkitMock.Verify (m => m.GetFramesCapturer (), Times.Once ());
 			framesCapturerMock.Verify (m => m.Open (evtVM.FileSet.MediaFiles [0].FilePath), Times.Once ());
@@ -219,11 +196,12 @@ namespace VAS.Tests.Services
 			var playerDealer = viewModel.As<IVideoPlayerDealer> ();
 			playerDealer.SetupGet (vm => vm.VideoPlayer).Returns (videoPlayer);
 			controller.SetViewModel (viewModel.Object);
-			App.Current.EventsBroker.Publish (new DrawFrameEvent {
-				Play = null,
-				DrawingIndex = -1,
-				CamConfig = null,
-			});
+			App.Current.EventsBroker.Publish (
+				new DrawFrameEvent {
+					Play = null,
+					DrawingIndex = -1,
+					CamConfig = null,
+				});
 
 			mToolkitMock.Verify (m => m.GetFramesCapturer (), Times.Never ());
 		}
