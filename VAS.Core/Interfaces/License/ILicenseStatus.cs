@@ -100,6 +100,7 @@ namespace VAS.Core.Interfaces.License
 		/// <value><c>true</c> if old license; otherwise, <c>false</c>.</value>
 		bool SubsciptionLicense {
 			get;
+			set;
 		}
 	}
 }
