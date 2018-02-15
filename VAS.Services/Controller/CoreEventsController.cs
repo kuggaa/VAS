@@ -61,16 +61,19 @@ namespace VAS.Services.Controller
 			return Enumerable.Empty<KeyAction> ();
 		}
 
+		// FIXME [LON-995]: This is only called from a View, it should be refactored to a command
 		protected virtual void HandleDashboardEditedEvent (DashboardEditedEvent e)
 		{
 			project.Model.UpdateEventTypesAndTimers ();
 		}
 
+		// FIXME [LON-995]: This is never called, should it?
 		protected virtual void HandleTagSubcategoriesChangedEvent (TagSubcategoriesChangedEvent e)
 		{
 			App.Current.Config.FastTagging = !e.Active;
 		}
 
+		// FIXME [LON-995]: This is called only from MainWindow, it should be in a different controller
 		protected virtual void HandleShowFullScreenEvent (ShowFullScreenEvent e)
 		{
 			App.Current.GUIToolkit.FullScreen = e.Active;
