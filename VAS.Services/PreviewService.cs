@@ -65,9 +65,7 @@ namespace VAS.Services
 
 			double width = dashboardVM.CanvasWidth;
 			double height = dashboardVM.CanvasHeight;
-			CreateInternalPreview (dashboardCanvas, dashboardVM, width, height);
-
-			return App.Current.DrawingToolkit.Copy (dashboardCanvas, new Area (new Point (0, 0), width, height));
+			return CreateInternalPreview (dashboardCanvas, dashboardVM, width, height);
 		}
 
 		protected virtual Image CreatePreview (Team team)
@@ -83,6 +81,7 @@ namespace VAS.Services
 			// set the widget sizes after the view model has been set
 			widget.Width = width;
 			widget.Height = height;
+			return App.Current.DrawingToolkit.Copy (view, new Area (new Point (0, 0), width, height));
 		}
 	}
 }
