@@ -44,7 +44,6 @@ using Misc = VAS.UI.Helpers.Misc;
 
 namespace VAS.UI.Dialog
 {
-	[ViewAttribute (DrawingToolState.NAME)]
 	public abstract partial class DrawingTool : Gtk.Dialog, IPanel<DrawingToolVM>
 	{
 		const int MOVE_OFFSET = 5;
