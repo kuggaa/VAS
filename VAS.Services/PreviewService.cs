@@ -62,7 +62,6 @@ namespace VAS.Services
 				BackgroundColor = Color.Black
 			};
 
-
 			double width = dashboardVM.CanvasWidth;
 			double height = dashboardVM.CanvasHeight;
 			return CreateInternalPreview (dashboardCanvas, dashboardVM, width, height);
