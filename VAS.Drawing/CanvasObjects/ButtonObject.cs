@@ -97,6 +97,12 @@ namespace VAS.Drawing.CanvasObjects
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the color of the maskof the background images
+		/// </summary>
+		/// <value>The color of the mask.</value>
+		public Color MaskColor { get; set; }
+
 		public virtual Image BackgroundImage {
 			get;
 			set;
@@ -247,12 +253,13 @@ namespace VAS.Drawing.CanvasObjects
 		{
 			Point pos = new Point (Position.X + BORDER_SIZE / 2, Position.Y + BORDER_SIZE / 2);
 
+			tk.FillColor = MaskColor;
 			if (Active && BackgroundImageActive != null) {
 				tk.DrawImage (pos, Width - BORDER_SIZE, Height - BORDER_SIZE, BackgroundImageActive,
-					ScaleMode.AspectFit);
+					ScaleMode.AspectFit, MaskColor != null);
 			} else if (BackgroundImage != null) {
 				tk.DrawImage (pos, Width - BORDER_SIZE, Height - BORDER_SIZE, BackgroundImage,
-					ScaleMode.AspectFit);
+				    ScaleMode.AspectFit, MaskColor != null);
 			}
 		}
 

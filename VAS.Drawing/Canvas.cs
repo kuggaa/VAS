@@ -82,6 +82,7 @@ namespace VAS.Drawing
 				if (HeightRequest != 0) {
 					widget.Height = HeightRequest;
 				}
+				HandleSizeChangedEvent ();
 				widget.ReDraw ();
 			}
 		}
@@ -230,6 +231,12 @@ namespace VAS.Drawing
 				}
 			}
 		}
+
+		/// <summary>
+		/// Gets the widget.
+		/// </summary>
+		/// <value>The widget.</value>
+		public IWidget Widget => widget;
 
 		/// <summary>
 		/// Gets or sets the color of the background.

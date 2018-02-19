@@ -21,6 +21,7 @@ using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store.Templates;
+using VAS.Drawing.Widgets;
 
 namespace VAS.Services
 {
@@ -59,7 +60,7 @@ namespace VAS.Services
 		}
 
 		protected void CreateInternalPreview (ICanvasView view, IViewModel vm, double width, double height) {
-			PreviewWidget widget = new PreviewWidget ();
+			NoWindowWidget widget = new NoWindowWidget ();
 			view.SetWidget (widget);
 			view.SetViewModel (vm);
 

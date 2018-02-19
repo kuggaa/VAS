@@ -7,13 +7,13 @@ using VAS.Core.Common;
 using VAS.Core.Handlers.Drawing;
 using VAS.Core.Interfaces.Drawing;
 
-namespace VAS.Services
+namespace VAS.Drawing.Widgets
 {
 	/// <summary>
 	/// Preview widget used only by the preview service to specify the size that the canvas must respect for the preview
 	/// </summary>
 	/// <remarks>Only the size notification is implemented from the IWidget</remarks>
-	internal class PreviewWidget : IWidget
+	public class NoWindowWidget : IWidget
 	{
 		public event DrawingHandler DrawEvent;
 		public event ButtonPressedHandler ButtonPressEvent;
