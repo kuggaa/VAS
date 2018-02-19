@@ -15,12 +15,12 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
-using System;
 using Gdk;
 using Gtk;
-using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Drawing.Cairo;
+using VAS.Drawing.Widgets;
+using Color = VAS.Core.Common.Color;
 using Image = VAS.Core.Common.Image;
 using Point = VAS.Core.Common.Point;
 
@@ -28,8 +28,11 @@ namespace VAS.UI.Component
 {
 	public class CellRendererImage : CellRenderer
 	{
+		ImageView imageView;
+
 		public CellRendererImage ()
 		{
+			imageView = new ImageView ();
 		}
 
 		public CellRendererImage (Image image)
@@ -42,6 +45,9 @@ namespace VAS.UI.Component
 			get;
 			set;
 		}
+
+		[GLib.Property ("MaskColor")]
+		public Color MaskColor { get; set; }
 
 		public override void GetSize (Widget widget, ref Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 		{
@@ -56,16 +62,15 @@ namespace VAS.UI.Component
 		{
 			IDrawingToolkit tk = App.Current.DrawingToolkit;
 
+			imageView.Image = Image;
+			imageView.MaskColor = MaskColor;
+			imageView.SetWidget (new NoWindowWidget { Width = cellArea.Width, Height = cellArea.Height });
+
 			using (IContext context = new CairoContext (window)) {
-				Point pos = new Point (cellArea.X, cellArea.Y);
 				tk.Context = context;
-				tk.Begin ();
-				tk.DrawImage (pos, cellArea.Width, cellArea.Height, Image, ScaleMode.AspectFit);
-				tk.End ();
-				tk.Context = null;
+				tk.TranslateAndScale (new Point (cellArea.X, cellArea.Y), new Point (1, 1));
+				imageView.Draw (context, null);
 			}
 		}
 	}
-
-
 }

@@ -23,6 +23,7 @@ using Pango;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Interfaces.Drawing;
+using VAS.Drawing.Widgets;
 using Color = VAS.Core.Common.Color;
 using FontAlignment = VAS.Core.Common.FontAlignment;
 using FontSlant = VAS.Core.Common.FontSlant;
@@ -39,7 +40,6 @@ namespace VAS.Drawing.Cairo
 		Style fSlant;
 		Weight fWeight;
 		Pango.Alignment fAlignment;
-		bool disableScalling;
 		Layout layout;
 		Stack<ContextStatus> contextStatus;
 
@@ -200,19 +200,15 @@ namespace VAS.Drawing.Cairo
 
 		public void TranslateAndScale (Point translation, Point scale)
 		{
-			if (!disableScalling) {
-				CContext.Translate (translation.X, translation.Y);
-				CContext.Scale (scale.X, scale.Y);
-			}
+			CContext.Translate (translation.X, translation.Y);
+			CContext.Scale (scale.X, scale.Y);
 		}
 
 		public void Clip (Area area)
 		{
-			if (!disableScalling) {
-				CContext.Rectangle (area.Start.X, area.Start.Y,
-					area.Width, area.Height);
-				CContext.Clip ();
-			}
+			CContext.Rectangle (area.Start.X, area.Start.Y,
+				area.Width, area.Height);
+			CContext.Clip ();
 		}
 
 		public void ClipCircle (Point center, double radius)
@@ -564,16 +560,21 @@ namespace VAS.Drawing.Cairo
 			Pixmap pm;
 			global::Cairo.Context ctx;
 
+			var w = canvas.Widget;
+			NoWindowWidget widget = new NoWindowWidget { Width = area.Width, Height = area.Height };
+			canvas.SetWidget (widget);
+
 			pm = new Pixmap (null, (int)area.Width, (int)area.Height, 24);
 			ctx = Gdk.CairoHelper.Create (pm);
-			disableScalling = true;
 			using (CairoContext c = new CairoContext (ctx)) {
 				ctx.Translate (-area.Start.X, -area.Start.Y);
 				canvas.Draw (c, null);
 			}
-			disableScalling = false;
+
 			img = new Image (Pixbuf.FromDrawable (pm, Colormap.System, 0, 0, 0, 0,
 				(int)area.Width, (int)area.Height));
+
+			canvas.SetWidget (w);
 			return img;
 		}
 

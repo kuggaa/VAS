@@ -26,6 +26,8 @@ namespace VAS.Core.Interfaces.Drawing
 {
 	public interface ICanvas : IDisposable
 	{
+		IWidget Widget { get; }
+
 		void Draw (IContext context, Area area);
 
 		void SetWidget (IWidget widget);

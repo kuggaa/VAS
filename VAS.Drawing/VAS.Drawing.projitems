@@ -79,5 +79,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)CanvasObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CanvasContainer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FillCanvas.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Widgets\NoWindowWidget.cs" />
   </ItemGroup>
 </Project>
