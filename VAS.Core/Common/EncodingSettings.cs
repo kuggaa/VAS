@@ -69,7 +69,7 @@ namespace VAS.Core.Common
 		public uint VideoBitrate {
 			get {
 				float fps = (float)Framerate_n / Framerate_d;
-				float motionFactor = EncodingQuality.VideoQuality / 1000;
+				float motionFactor = (float)EncodingQuality.VideoQuality / 1000;
 				return (uint)(VideoStandard.Width * VideoStandard.Height * fps * 0.07 * motionFactor / 1000);
 			}
 		}

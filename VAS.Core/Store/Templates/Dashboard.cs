@@ -46,14 +46,6 @@ namespace VAS.Core.Store.Templates
 
 		public Dashboard ()
 		{
-			try {
-				// FIXME: We need a more flexible structure for this
-				FieldBackground = App.Current.FieldBackground;
-				HalfFieldBackground = App.Current.HalfFieldBackground;
-				GoalBackground = App.Current.GoalBackground;
-			} catch {
-				/* Ingore for unit tests */
-			}
 			ID = Guid.NewGuid ();
 			List = new RangeObservableCollection<DashboardButton> ();
 			GamePeriods = new ObservableCollection<string> { "1", "2" };
