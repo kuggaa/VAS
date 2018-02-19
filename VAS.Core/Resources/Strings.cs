@@ -38,5 +38,12 @@ namespace VAS.Core.Resources
 		public static string UpgradeNow => Catalog.GetString ("Upgrade now");
 		public static string Preferences => Catalog.GetString ("Preferences");
 		public static string Delete => Catalog.GetString ("Delete");
+
+		//Recording Controls strings
+		public static string Start => Catalog.GetString ("Start");
+		public static string Record => Catalog.GetString ("Record");
+		public static string SaveAndQuit = Catalog.GetString ("Save & Quit");
+		public static string Cancel = Catalog.GetString ("Cancel");
+
 	}
 }

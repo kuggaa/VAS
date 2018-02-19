@@ -117,5 +117,9 @@ namespace VAS.Core.Resources
 
 		public const string VideoDevice = "vas-video-device";
 		public const string Plugin = "vas-plugin";
+
+		//Capturer
+		public const string Record = "vas-record";
+		public const string ControlDelete = "vas-control-delete";
 	}
 }
