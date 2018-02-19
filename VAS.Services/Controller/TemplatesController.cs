@@ -153,6 +153,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.SubscribeAsync<CreateEvent<TModel>> (async (ev) => await newTemplateCommand.ExecuteAsync (ev));
 			App.Current.EventsBroker.SubscribeAsync<ChangeNameEvent<TModel>> (HandleChangeName);
 			App.Current.EventsBroker.SubscribeAsync<DeleteEvent<ObservableCollection<TModel>>> (HandleDelete);
+			App.Current.EventsBroker.Subscribe<SearchEvent> (HandleSearchEvent);
 		}
 
 		public override async Task Stop ()
@@ -166,6 +167,7 @@ namespace VAS.Services.Controller
 			App.Current.EventsBroker.UnsubscribeAsync<CreateEvent<TModel>> (async (ev) => await newTemplateCommand.ExecuteAsync (ev));
 			App.Current.EventsBroker.UnsubscribeAsync<ChangeNameEvent<TModel>> (HandleChangeName);
 			App.Current.EventsBroker.UnsubscribeAsync<DeleteEvent<ObservableCollection<TModel>>> (HandleDelete);
+			App.Current.EventsBroker.Unsubscribe<SearchEvent> (HandleSearchEvent);
 		}
 
 		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
@@ -495,6 +497,23 @@ namespace VAS.Services.Controller
 			case NotifyCollectionChangedAction.Replace:
 				break;
 			}
+		}
+
+		protected virtual bool IsTemplateVisibleForSearchCriteria (TViewModel template, string search)
+		{
+			return template.Name.ToUpper ().Contains (search.ToUpper ());
+		}
+
+		protected virtual void HandleSearchEvent (SearchEvent searchEvent)
+		{
+			foreach (var template in ViewModel.ViewModels) {
+				template.Visible = string.IsNullOrEmpty (searchEvent.TextFilter) ||
+					IsTemplateVisibleForSearchCriteria (template, searchEvent.TextFilter);
+			}
+			ViewModel.VisibleViewModels.ApplyPropertyChanges ();
+			ViewModel.NoResults = !ViewModel.VisibleViewModels.Any () &&
+				!string.IsNullOrEmpty (searchEvent.TextFilter) &&
+				!(ViewModel.ViewModels.Count == 0);
 		}
 
 		#endregion

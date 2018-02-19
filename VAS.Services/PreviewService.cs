@@ -21,6 +21,7 @@ using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.Drawing;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Store.Templates;
+using VAS.Core.ViewModel;
 using VAS.Drawing.Widgets;
 
 namespace VAS.Services
@@ -50,16 +51,29 @@ namespace VAS.Services
 			return null;
 		}
 
-		protected Image CreatePreview (Dashboard dashboard) {
+		protected Image CreatePreview (Dashboard dashboard)
+		{
 			// instantiate the view and the viewmodel and call the create internal preview
+			DashboardVM dashboardVM = new DashboardVM () { Model = dashboard };
+			dashboardVM.FitMode = FitMode.Fit;
+
+			DashboardCanvas dashboardCanvas = new DashboardCanvas () {
+				ViewModel = dashboardVM,
+				BackgroundColor = Color.Black
+			};
+
+			double width = dashboardVM.CanvasWidth;
+			double height = dashboardVM.CanvasHeight;
+			return CreateInternalPreview (dashboardCanvas, dashboardVM, width, height);
+		}
+
+		protected virtual Image CreatePreview (Team team)
+		{
 			return null;
 		}
 
-		protected virtual Image CreatePreview (Team team) {
-			return null;
-		}
-
-		protected void CreateInternalPreview (ICanvasView view, IViewModel vm, double width, double height) {
+		protected Image CreateInternalPreview (ICanvasView view, IViewModel vm, double width, double height)
+		{
 			NoWindowWidget widget = new NoWindowWidget ();
 			view.SetWidget (widget);
 			view.SetViewModel (vm);
@@ -67,6 +81,7 @@ namespace VAS.Services
 			// set the widget sizes after the view model has been set
 			widget.Width = width;
 			widget.Height = height;
+			return App.Current.DrawingToolkit.Copy (view, new Area (new Point (0, 0), width, height));
 		}
 	}
 }

@@ -92,7 +92,7 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		/// <value>The delete command.</value>
 		[PropertyChanged.DoNotNotify]
-		public Command DeleteCommand {
+		public Command<TViewModel> DeleteCommand {
 			get;
 			protected set;
 		}

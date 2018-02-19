@@ -22,6 +22,12 @@ namespace VAS.Core.Resources
 {
 	public class Icons
 	{
+		//Manager Icons
+		public const string Add = "vas-add";
+		public const string Save = "vas-save";
+		public const string Import = "vas-import";
+		public const string Delete = "vas-delete";
+
 		//Card Icons
 		public const string Calendar = "vas-calendar";
 		public const string Stopwatch = "vas-stopwatch";

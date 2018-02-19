@@ -45,5 +45,9 @@ namespace VAS.Core.Resources
 		public static string SaveAndQuit = Catalog.GetString ("Save & Quit");
 		public static string Cancel = Catalog.GetString ("Cancel");
 
+		
+		public static string Dashboards => Catalog.GetString ("Dashboards");
+		public static string DashboardsSearchPlaceholder => Catalog.GetString ("Search dashboard...");
+		public static string EventButtons => Catalog.GetString ("Event Buttons");
 	}
 }
