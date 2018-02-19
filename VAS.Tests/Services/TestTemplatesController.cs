@@ -270,5 +270,58 @@ namespace VAS.Tests.Services
 			// Assert
 			Assert.IsFalse (File.Exists (tempFile));
 		}
+
+		[Test]
+		public void Search_TemplateExist_TemplateFound ()
+		{
+			//Arrange
+			Utils.PlayerDummy player = new Utils.PlayerDummy ();
+			DummyTeam team = new DummyTeam {
+				Name = "Dummy"
+			};
+			team.List.Add (player);
+			TeamVM teamVM = new TeamVM { Model = team };
+
+			templatesController.ViewModel.ViewModels.Add (teamVM);
+
+			//Act
+			var evt = new SearchEvent {
+				TextFilter = "Dummy"
+			};
+
+			// Action
+			App.Current.EventsBroker.Publish (evt);
+
+
+			//Assert
+			Assert.AreEqual (1, templatesController.ViewModel.VisibleViewModels.Count);
+			Assert.AreEqual ("Dummy", templatesController.ViewModel.VisibleViewModels.FirstOrDefault ().Name);
+		}
+
+		[Test]
+		public void Search_TemplateThatDoesntExist_VisibleViewModelsEmpty ()
+		{
+			//Arrange
+			Utils.PlayerDummy player = new Utils.PlayerDummy ();
+			DummyTeam team = new DummyTeam {
+				Name = "Dummy"
+			};
+			team.List.Add (player);
+			TeamVM teamVM = new TeamVM { Model = team };
+
+			templatesController.ViewModel.ViewModels.Add (teamVM);
+
+			//Act
+			var evt = new SearchEvent {
+				TextFilter = "This doesn't exist"
+			};
+
+			// Action
+			App.Current.EventsBroker.Publish (evt);
+
+
+			//Assert
+			Assert.AreEqual (0, templatesController.ViewModel.VisibleViewModels.Count);
+		}
 	}
 }
