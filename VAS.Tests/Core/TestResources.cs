@@ -20,6 +20,8 @@ using VAS.Core.Common;
 using VAS.Core;
 using VAS.Core.Interfaces;
 using System.IO;
+using System.Reflection;
+using System.Collections.Generic;
 
 namespace VAS.Tests.Core
 {
@@ -57,6 +59,52 @@ namespace VAS.Tests.Core
 				delegate {
 					var img = resources.LoadImage ("not-found.svg");
 				});
+		}
+
+		[Test ()]
+		public void GetEmbeddedResourceFileStream_NotRegisteredAssembly_ReturnsImage ()
+		{
+			// Arrange
+			DummyLocator locator = new DummyLocator ();
+
+			// Action
+			var stream = locator.GetEmbeddedResourceFileStream ("vas-dibujo.svg");
+
+			// Assert
+			Assert.IsNotNull (stream);
+			Assert.AreEqual (1, locator.Assemblies.Count);
+		}
+
+		[Test ()]
+		public void GetEmbeddedResourceFileStream_RegisteredAssembly_ReturnsImage ()
+		{
+			// Arrange
+			DummyLocator locator = new DummyLocator ();
+			locator.Register (Assembly.GetExecutingAssembly ());
+
+			// Action
+			var stream = locator.GetEmbeddedResourceFileStream ("vas-dibujo.svg");
+
+			// Assert
+			Assert.IsNotNull (stream);
+			Assert.AreEqual (1, locator.Assemblies.Count);
+		}
+
+		class DummyLocator : ResourcesLocatorBase
+		{
+			public HashSet<Assembly> Assemblies {
+				get => assemblies;
+			}
+
+			public override Image LoadEmbeddedImage (string resourceId, int width = 0, int height = 0)
+			{
+				throw new System.NotImplementedException ();
+			}
+
+			public override Image LoadImage (string name, int width = 0, int height = 0)
+			{
+				throw new System.NotImplementedException ();
+			}
 		}
 	}
 }
