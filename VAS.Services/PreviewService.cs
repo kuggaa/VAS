@@ -72,7 +72,8 @@ namespace VAS.Services
 			return null;
 		}
 
-		protected void CreateInternalPreview (ICanvasView view, IViewModel vm, double width, double height) {
+		protected Image CreateInternalPreview (ICanvasView view, IViewModel vm, double width, double height)
+		{
 			NoWindowWidget widget = new NoWindowWidget ();
 			view.SetWidget (widget);
 			view.SetViewModel (vm);
