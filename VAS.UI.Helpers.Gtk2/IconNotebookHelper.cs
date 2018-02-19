@@ -32,7 +32,7 @@ namespace VAS.UI.Helpers
 		public IconNotebookHelper (Notebook notebook)
 		{
 			Notebook = notebook;
-			TabIcons = new Dictionary<Widget, Tuple<Image, Image>> (notebook.NPages);
+			TabIcons = new Dictionary<Widget, Tuple<Image, Image, Color>> (notebook.NPages);
 			TabToolTips = new Dictionary<Widget, string> (notebook.NPages);
 			CurrentPage = notebook.CurrentPage;
 
@@ -45,7 +45,7 @@ namespace VAS.UI.Helpers
 			set;
 		}
 
-		Dictionary<Widget, Tuple<Image, Image>> TabIcons {
+		Dictionary<Widget, Tuple<Image, Image, Color>> TabIcons {
 			get;
 			set;
 		}
@@ -67,11 +67,11 @@ namespace VAS.UI.Helpers
 		/// <param name="icon">Icon showed when the tab is not selected</param>
 		/// <param name="activeIcon">Icon showed when the tab is selected</param>
 		/// <param name="tooltiptext">Text to add to the tab of the widget as tooltip</param>
-		public void SetTabIcon (Widget widget, string icon, string activeIcon, string tooltiptext)
+		public void SetTabIcon (Widget widget, string icon, string activeIcon, string tooltiptext, Color color = null)
 		{
-			var pixIcon = App.Current.ResourcesLocator.LoadIcon (icon, Sizes.NotebookTabIconSize);
-			var pixActiveIcon = App.Current.ResourcesLocator.LoadIcon (activeIcon, Sizes.NotebookTabIconSize);
-			SetTabIcon (widget, pixIcon, pixActiveIcon, tooltiptext);
+			var pixIcon = App.Current.ResourcesLocator.LoadIcon (icon);
+			var pixActiveIcon = App.Current.ResourcesLocator.LoadIcon (activeIcon);
+			SetTabIcon (widget, pixIcon, pixActiveIcon, tooltiptext, color);
 		}
 
 		/// <summary>
@@ -81,9 +81,9 @@ namespace VAS.UI.Helpers
 		/// <param name="pixIcon">Icon showed when the tab is not selected</param>
 		/// <param name="pixActiveIcon">Icon showed when the tab is selected</param>
 		/// <param name="tooltiptext">Text to add to the tab of the widget as tooltip</param>
-		public void SetTabIcon (Widget widget, Image pixIcon, Image pixActiveIcon, string tooltiptext)
+		public void SetTabIcon (Widget widget, Image pixIcon, Image pixActiveIcon, string tooltiptext, Color color = null)
 		{
-			TabIcons.Add (widget, new Tuple<Image, Image> (pixIcon, pixActiveIcon));
+			TabIcons.Add (widget, new Tuple<Image, Image, Color> (pixIcon, pixActiveIcon, color));
 			TabToolTips.Add (widget, tooltiptext);
 		}
 
@@ -96,7 +96,7 @@ namespace VAS.UI.Helpers
 		/// <param name="tooltiptext">Text to add to the tab of the widget as tooltip</param>
 		public void SetTabIcon (int tabIndex, string icon, string activeIcon, string tooltiptext)
 		{
-			SetTabIcon (Notebook.GetNthPage (tabIndex), icon, activeIcon, tooltiptext);
+			SetTabIcon (Notebook.GetNthPage (tabIndex), icon, activeIcon, tooltiptext, null);
 		}
 
 		public void UpdateTabs ()
@@ -132,6 +132,7 @@ namespace VAS.UI.Helpers
 				var tuple = TabIcons [widget];
 				img.Image = active ? tuple.Item2 : tuple.Item1;
 				img.TooltipText = TabToolTips [widget];
+				img.MaskColor = tuple.Item3;
 			} catch (KeyNotFoundException ex) {
 				Log.Warning ("No icon set for tab number <" + Notebook.PageNum (widget) + "> with child <" + widget + ">");
 			}

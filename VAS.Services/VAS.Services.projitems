@@ -49,7 +49,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)DynamicButtonToolbarService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EditPlaylistElementVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModelFactoryBaseService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)PreviewWidget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PreviewService.cs" />
   </ItemGroup>
   <ItemGroup>

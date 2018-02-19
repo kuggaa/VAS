@@ -51,6 +51,7 @@ namespace VAS.Core.Resources
 		public const string SubsUnlock = "vas-player-swap-unlock";
 		public const string Subs = "vas-subs-arrow";
 		public const string DefaultShield = "vas-default-shield";
+		public const string BigDefaultShield = "vas-default-shield-big";
 
 		public const string OpenButton = "vas-open";
 		public const string EditButton = "vas-pencil";
