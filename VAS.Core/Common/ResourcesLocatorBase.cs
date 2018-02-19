@@ -54,9 +54,14 @@ namespace VAS.Core
 		/// <param name="resourceId">Resource identifier.</param>
 		public Stream GetEmbeddedResourceFileStream (string resourceId)
 		{
-			var assembly = Assembly.GetCallingAssembly ();
-			if (assembly.GetManifestResourceNames ().Contains (resourceId)) {
-				return assembly.GetManifestResourceStream (resourceId);
+			var callingAssembly = Assembly.GetCallingAssembly ();
+			if (!assemblies.Contains (callingAssembly)) {
+				Register (callingAssembly);
+			}
+			foreach (var assembly in assemblies) {
+				if (assembly.GetManifestResourceNames ().Contains (resourceId)) {
+					return assembly.GetManifestResourceStream (resourceId);
+				}
 			}
 			return null;
 		}
