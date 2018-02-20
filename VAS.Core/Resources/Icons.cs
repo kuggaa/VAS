@@ -125,7 +125,7 @@ namespace VAS.Core.Resources
 		public const string Plugin = "vas-plugin";
 
 		//Capturer
-		public const string Record = "vas-record";
-		public const string ControlDelete = "vas-control-delete";
+		public const string RecordControlBig = "vas-control-record-big";
+		public const string DeleteBig = "vas-delete-big";
 	}
 }
