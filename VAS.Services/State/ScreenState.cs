@@ -204,6 +204,12 @@ namespace VAS.Services.State
 		{
 		}
 
+		// FIXME: change to IService
+		protected T GetService<T> () where T : IController
+		{
+			return Controllers.OfType<T> ().First ();
+		}
+
 		async Task<bool> InternalStopState ()
 		{
 			foreach (IController controller in Controllers) {
