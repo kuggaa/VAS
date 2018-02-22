@@ -26,6 +26,33 @@ using VAS.Core.Interfaces.MVVMC;
 
 namespace VAS.Core.MVVMC
 {
+	/// <summary>
+	/// Temporal class to concentrate common things for the new services.
+	/// </summary>
+	public abstract class ServiceBase : DisposableBase
+	{
+		public virtual IEnumerable<KeyAction> GetDefaultKeyActions ()
+		{
+			return Enumerable.Empty<KeyAction> ();
+		}
+
+	}
+
+	public class ServiceBase<TViewModel> : ServiceBase
+		where TViewModel : class, IViewModel
+	{
+		TViewModel viewModel;
+
+		public virtual TViewModel ViewModel {
+			get {
+				return viewModel;
+			}
+			set {
+				viewModel = value;
+			}
+		}
+	}
+
 	public abstract class ControllerBase : DisposableBase, IController
 	{
 		protected override void DisposeManagedResources ()
