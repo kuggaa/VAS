@@ -47,6 +47,11 @@ namespace VAS.Core.MVVMC
 		/// <value><c>true</c> if limitation was not applied; otherwise, <c>false</c>.</value>
 		public bool Executed { get; private set; }
 
+		public LimitationCommand (string limitationName)
+		{
+			this.limitationName = limitationName;
+		}
+
 		public LimitationCommand (string limitationName, Action<object> execute) : base (execute)
 		{
 			Contract.Requires (execute != null);
@@ -75,6 +80,8 @@ namespace VAS.Core.MVVMC
 		{
 			Contract.Requires (execute != null);
 			Contract.Requires (canExecute != null);
+
+			this.LimitationCondition = condition;
 		}
 
 		protected override Task InternalExecute (object parameter)
@@ -104,7 +111,7 @@ namespace VAS.Core.MVVMC
 		{
 			Contract.Requires (execute != null);
 
-			this.execute = execute;
+			this.callback = execute;
 			Executable = true;
 			this.limitationName = limitationName;
 		}
@@ -165,7 +172,7 @@ namespace VAS.Core.MVVMC
 		{
 			Contract.Requires (execute != null);
 
-			this.execute = o => execute ((T)o);
+			SetCallback (o => execute ((T)o));
 			this.limitationName = limitationName;
 		}
 
