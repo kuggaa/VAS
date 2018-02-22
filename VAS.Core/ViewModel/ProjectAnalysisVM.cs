@@ -32,7 +32,7 @@ namespace VAS.Core.ViewModel
 		/// Gets or sets the project used in the analysis
 		/// </summary>
 		/// <value>The project.</value>
-		public T Project {
+		public virtual T Project {
 			get;
 			set;
 		}

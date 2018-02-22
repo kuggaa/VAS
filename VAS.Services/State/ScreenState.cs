@@ -167,6 +167,7 @@ namespace VAS.Services.State
 			foreach (IController controller in Controllers) {
 				controller.SetViewModel (ViewModel);
 			}
+			SetCommands ();
 			Panel.SetViewModel (ViewModel);
 
 			foreach (IController controller in Controllers) {
@@ -192,6 +193,14 @@ namespace VAS.Services.State
 		/// </summary>
 		/// <param name="data">Data.</param>
 		protected virtual void CreateControllers (dynamic data)
+		{
+		}
+
+		/// <summary>
+		/// Sets the commands' behaviours in the VM.
+		/// This allows this to have all the state specific logic.
+		/// </summary>
+		protected virtual void SetCommands ()
 		{
 		}
 

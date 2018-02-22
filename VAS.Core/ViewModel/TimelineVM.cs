@@ -55,7 +55,7 @@ namespace VAS.Core.ViewModel
 			FullTimeline = CreateFullTimeline ();
 			FullTimeline.ViewModels.CollectionChanged += HandleTimelineCollectionChanged;
 			FullTimeline.PropertyChanged += FullTimeline_PropertyChanged;
-			EditionCommand = new Command<TimelineEventVM> (HandleEditPlay);
+			EditionCommand = new Command<TimelineEventVM> ();
 			GroupEventsByEventTypeName = false;
 			Filters = new AndPredicate<TimelineEventVM> ();
 			EventsPredicate = new AndPredicate<TimelineEventVM> {
@@ -443,13 +443,6 @@ namespace VAS.Core.ViewModel
 					break;
 				}
 			}
-		}
-
-		void HandleEditPlay (TimelineEventVM eventVM)
-		{
-			// FIXME: Not awaited!
-			IEventEditorService editorService = App.Current.DependencyRegistry.Retrieve<IEventEditorService> ();
-			editorService.EditEvent (eventVM);
 		}
 
 		void AddTimelineEventVM (TimelineEventVM viewModel)
