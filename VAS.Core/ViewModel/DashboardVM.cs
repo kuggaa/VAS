@@ -337,6 +337,12 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
+		/// Gets a value indicating whether this <see cref="T:VAS.Core.ViewModel.DashboardVM"/> is the default dashboard.
+		/// </summary>
+		/// <value><c>true</c> if it's the default dashboard; otherwise, <c>false</c>.</value>
+		public bool IsDefaultDashboard => Name == App.Current.Config.DefaultTemplate;
+
+		/// <summary>
 		/// Creates the sub view model.
 		/// </summary>
 		/// <returns>The sub view model.</returns>
