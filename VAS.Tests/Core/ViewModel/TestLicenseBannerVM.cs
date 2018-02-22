@@ -20,7 +20,7 @@ using Moq;
 using NUnit.Framework;
 using VAS.Core.Common;
 using VAS.Core.Interfaces;
-using VAS.Core.Interfaces.Service;
+using VAS.Core.Interfaces.Services;
 using VAS.Core.Resources;
 using VAS.Core.ViewModel;
 

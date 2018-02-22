@@ -17,7 +17,7 @@
 //
 using System;
 
-namespace VAS.Core.Interfaces.Service
+namespace VAS.Core.Interfaces.Services
 {
 	/// <summary>
 	/// License customization service interface. Service to customize objects based on current license status

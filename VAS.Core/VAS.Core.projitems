@@ -309,12 +309,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\INetworkManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IViewModelFactoryService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\LicenseBannerVM.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Service\ILicenseCustomizationService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IRegistry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IPreviewService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\TemplateManagerViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProjectAnalysisVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ManagerBaseVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Services\ILicenseCustomizationService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
@@ -342,7 +342,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)Resources\" />
     <Folder Include="$(MSBuildThisFileDirectory)Resources\Styles\" />
     <Folder Include="$(MSBuildThisFileDirectory)Common\TypeConverters\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Interfaces\Service\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Interfaces\Services\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)VAS.Core.dll.config">
