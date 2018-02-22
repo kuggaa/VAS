@@ -27,6 +27,7 @@ using VAS.Core.ViewModel;
 using VAS.Core.Store;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Filters;
+using System.Windows.Input;
 
 namespace VAS.Core.ViewModel
 {
@@ -126,6 +127,13 @@ namespace VAS.Core.ViewModel
 			get;
 			protected set;
 		}
+
+		/// <summary>
+		/// Gets or sets the show details command.
+		/// </summary>
+		/// <value>The show details command.</value>
+		[PropertyChanged.DoNotNotify]
+		public ICommand ShowDetailsCommand { get; protected set; }
 
 		/// <summary>
 		/// Command to change the name of a template
