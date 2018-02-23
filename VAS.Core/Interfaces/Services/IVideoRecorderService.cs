@@ -17,13 +17,15 @@
 //
 using System.Threading.Tasks;
 using VAS.Core.Common;
+using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.ViewModel;
 
-namespace VAS.Core.Interfaces
+namespace VAS.Core.Interfaces.Services
 {
 	/// <summary>
 	/// A service that records video from an input source.
 	/// </summary>
-	public interface IVideoRecorderService
+	public interface IVideoRecorderService : IController
 	{
 
 		/// <summary>
@@ -62,5 +64,7 @@ namespace VAS.Core.Interfaces
 		/// Close the recording session.
 		/// </summary>
 		void Close ();
+
+		void SetDefaultCallbacks (ProjectAnalysisVM<ProjectVM> viewModel);
 	}
 }

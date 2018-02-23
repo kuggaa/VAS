@@ -317,8 +317,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Services\IDrawingsService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Services\IEventsService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\VideoRecorderVM.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IVideoRecorderService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\IVideoRecorderDealer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Services\IVideoRecorderService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
