@@ -71,6 +71,22 @@ namespace VAS.Core.Common
 			return c;
 		}
 
+		public Color CopyWithAlpha (float alpha, bool resetChanged = false)
+		{
+			Color c = new Color (R, G, B, A);
+
+			if (alpha < 0 || alpha > 1) {
+				throw new FormatException ("Alpha must be a value between 0 and 1");
+			}
+			c.A = (byte)(byte.MaxValue * alpha);
+
+			if (resetChanged) {
+				c.IsChanged = false;
+			}
+
+			return c;
+		}
+
 		public override bool Equals (object obj)
 		{
 			Color c = obj as Color;
