@@ -37,12 +37,29 @@ namespace VAS.Services.Service
 
 		public bool Started => throw new NotImplementedException ();
 
-		public void SetDefaultCallbacks (VideoRecorderVM recorder)
+		public Task Start ()
 		{
-			recorder.PlayLastEventCommand.SetCallback ();
+			return AsyncHelpers.Return ();
+		}
+		public Task Stop ()
+		{
+			return AsyncHelpers.Return ();
 		}
 
-		public void Close ()
+		public void SetViewModel (IViewModel viewModel)
+		{
+		}
+
+		public void SetDefaultCallbacks (VideoRecorderVM recorder)
+		{
+			recorder.StartRecordingCommand.SetCallback (o => StartRecording ((bool)o));
+			recorder.StopRecordingCommand.SetCallback (StopRecording);
+			recorder.PauseClockCommand.SetCallback (PauseClock);
+			recorder.ResumeClockCommand.SetCallback (ResumeClock);
+
+		}
+
+		public Task Close ()
 		{
 			throw new NotImplementedException ();
 		}
@@ -52,42 +69,27 @@ namespace VAS.Services.Service
 			throw new NotImplementedException ();
 		}
 
-		public void PauseClock ()
+		public Task PauseClock ()
 		{
 			throw new NotImplementedException ();
 		}
 
-		public void ResumeClock ()
+		public Task ResumeClock ()
 		{
 			throw new NotImplementedException ();
 		}
 
-		public void Run ()
+		public Task Run ()
 		{
 			throw new NotImplementedException ();
 		}
 
-		public void SetViewModel (IViewModel viewModel)
+		public Task StartRecording (bool newPeriod = true)
 		{
 			throw new NotImplementedException ();
 		}
 
-		public Task Start ()
-		{
-			throw new NotImplementedException ();
-		}
-
-		public void StartRecording (bool newPeriod = true)
-		{
-			throw new NotImplementedException ();
-		}
-
-		public Task Stop ()
-		{
-			throw new NotImplementedException ();
-		}
-
-		public void StopRecording ()
+		public Task StopRecording ()
 		{
 			throw new NotImplementedException ();
 		}
