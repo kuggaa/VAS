@@ -49,9 +49,9 @@ namespace VAS.Services.Controller
 
 		protected virtual VideoPlayerVM VideoPlayer { get; set; }
 
-		protected virtual ProjectVM Project { get; set; }
+		protected virtual VideoRecorderVM VideoRecorder { get; set; }
 
-		protected virtual ICapturerBin Capturer { get; set; }
+		protected virtual ProjectVM Project { get; set; }
 
 		#region IController implementation
 
@@ -107,7 +107,7 @@ namespace VAS.Services.Controller
 		{
 			VideoPlayer = ((IVideoPlayerDealer)viewModel).VideoPlayer;
 			Project = (viewModel as IProjectDealer)?.Project;
-			Capturer = (viewModel as ICapturerBinDealer)?.Capturer;
+			VideoRecorder = (viewModel as IVideoRecorderDealer)?.VideoRecorder;
 		}
 
 		public void SetDefaultCallbacks (TimelineVM timelineVM)
@@ -151,7 +151,7 @@ namespace VAS.Services.Controller
 				return;
 			}
 			if (Project.IsLive) {
-				if (!Capturer.Capturing) {
+				if (!VideoRecorder.Recording) {
 					App.Current.Dialogs.WarningMessage (Catalog.GetString ("Video capture is stopped"));
 					return;
 				}
@@ -181,7 +181,7 @@ namespace VAS.Services.Controller
 				return;
 
 			if (Project.IsLive) {
-				if (!Capturer.Capturing) {
+				if (!VideoRecorder.Recording) {
 					App.Current.Dialogs.WarningMessage (Catalog.GetString ("Video capture is stopped"));
 					return;
 				}

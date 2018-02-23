@@ -60,5 +60,16 @@ namespace VAS.Core.Resources
 
 		public static string DeleteButton => Catalog.GetString ("Delete");
 		public static string BackButton => Catalog.GetString ("Back");
+
+		public static string StartRecording => Catalog.GetString ("Start recording period");
+		public static string StopRecording => Catalog.GetString ("Stop recording period");
+		public static string PauseClock => Catalog.GetString ("Pause clock");
+		public static string ResumeClock => Catalog.GetString ("Resume clock");
+
+		public static string SaveProject => Catalog.GetString ("Save project");
+		public static string CancelProject => Catalog.GetString ("Cancel project");
+
+		public static string DeleteEvent => Catalog.GetString ("Delete event");
+		public static string ReplayEvent => Catalog.GetString ("Replay event");
 	}
 }

@@ -1,5 +1,5 @@
 ﻿//
-//  Copyright (C) 2017 Fluendo S.A.
+//  Copyright (C) 2018 Fluendo S.A.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -16,15 +16,19 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
-using VAS.Core.Interfaces.GUI;
+using VAS.Core.ViewModel;
 
 namespace VAS.Core.Interfaces.MVVMC
 {
 	/// <summary>
-	/// Interface that every ViewModel that has an <see cref="ICapturerBin"/> should implement
+	/// Interface that every ViewModel that has a <see cref="VideoRecorderVM"/> should implement
 	/// </summary>
-	public interface ICapturerBinDealer
+	public interface IVideoRecorderDealer
 	{
-		ICapturerBin Capturer { get; }
+		/// <summary>
+		/// Gets the video recorder View Model.
+		/// </summary>
+		/// <value>The video recorder.</value>
+		VideoRecorderVM VideoRecorder { get; }
 	}
 }
