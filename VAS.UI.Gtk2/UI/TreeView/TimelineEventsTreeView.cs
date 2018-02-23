@@ -159,12 +159,12 @@ namespace VAS.UI.Component
 					}
 				}
 				if (events.Any () && loadEventsOnSelectionChanged) {
-					ViewModel.LoadEvents (events, false);
+					ViewModel.LoadEventsCommand.Execute (new Tuple<IEnumerable<TimelineEventVM>, bool> (events, false));
 				}
 				isSelecting = false;
 			}
 			if (Selection.CountSelectedRows () == 0) {
-				ViewModel.UnloadEvents ();
+				ViewModel.UnloadEventsCommand.Execute ();
 			}
 
 			// update selection
@@ -173,9 +173,9 @@ namespace VAS.UI.Component
 
 		protected override void HandleTreeviewRowActivated (object o, RowActivatedArgs args)
 		{
-			TimelineEventVM viewModel = GetViewModelAtPath (args.Path) as TimelineEventVM;
-			if (viewModel != null) {
-				ViewModel.LoadEvent (viewModel, true);
+			TimelineEventVM timelineEvent = GetViewModelAtPath (args.Path) as TimelineEventVM;
+			if (timelineEvent != null) {
+				ViewModel.LoadEventCommand.Execute (new Tuple<TimelineEventVM, bool> (timelineEvent, true));
 			}
 		}
 	}

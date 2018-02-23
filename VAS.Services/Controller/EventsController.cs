@@ -39,7 +39,7 @@ namespace VAS.Services.Controller
 	/// <summary>
 	/// Events controller, base class of the Events Controller.
 	/// </summary>
-	public class EventsController : ControllerBase
+	public class EventsController : ControllerBase, IEventsService
 	{
 		/// <summary>
 		/// Gets or sets the current loaded play.
@@ -58,8 +58,6 @@ namespace VAS.Services.Controller
 		public override async Task Start ()
 		{
 			await base.Start ();
-			App.Current.EventsBroker.Subscribe<LoadTimelineEventEvent<TimelineEventVM>> (HandleLoadEvent);
-			App.Current.EventsBroker.Subscribe<LoadTimelineEventEvent<IEnumerable<TimelineEventVM>>> (HandleLoadEventsList);
 			App.Current.EventsBroker.Subscribe<LoadTimelineEventEvent<EventTypeTimelineVM>> (HandleLoadEventType);
 
 			App.Current.EventsBroker.Subscribe<NewEventEvent> (HandleNewEvent);
@@ -84,8 +82,6 @@ namespace VAS.Services.Controller
 		public override async Task Stop ()
 		{
 			await base.Stop ();
-			App.Current.EventsBroker.Unsubscribe<LoadTimelineEventEvent<TimelineEventVM>> (HandleLoadEvent);
-			App.Current.EventsBroker.Unsubscribe<LoadTimelineEventEvent<IEnumerable<TimelineEventVM>>> (HandleLoadEventsList);
 			App.Current.EventsBroker.Unsubscribe<LoadTimelineEventEvent<EventTypeTimelineVM>> (HandleLoadEventType);
 
 			App.Current.EventsBroker.Unsubscribe<NewEventEvent> (HandleNewEvent);
@@ -112,6 +108,21 @@ namespace VAS.Services.Controller
 			VideoPlayer = ((IVideoPlayerDealer)viewModel).VideoPlayer;
 			Project = (viewModel as IProjectDealer)?.Project;
 			Capturer = (viewModel as ICapturerBinDealer)?.Capturer;
+		}
+
+		public void SetDefaultCallbacks (TimelineVM timelineVM)
+		{
+			timelineVM.LoadEventCommand.SetCallback (args => {
+				Tuple<TimelineEventVM, bool> argsTuple = (Tuple<TimelineEventVM, bool>)args;
+				LoadTimelineEvent (argsTuple.Item1, argsTuple.Item2);
+			});
+			timelineVM.LoadEventsCommand.SetCallback (args => {
+				Tuple<IEnumerable<TimelineEventVM>, bool> argsTuple = (Tuple<IEnumerable<TimelineEventVM>, bool>)args;
+				LoadEventList (argsTuple.Item1, argsTuple.Item2);
+			});
+			timelineVM.UnloadEventsCommand.SetCallback (args => {
+				LoadTimelineEvent (null, false);
+			});
 		}
 
 		#endregion
@@ -250,14 +261,13 @@ namespace VAS.Services.Controller
 			await DeletePlays (e.TimelineEvents);
 		}
 
-		void HandleLoadEvent (LoadTimelineEventEvent<TimelineEventVM> e)
+		public void LoadTimelineEvent (TimelineEventVM evt, bool playing)
 		{
-			VideoPlayer.LoadEvent (e.Object, e.Playing);
+			VideoPlayer.LoadEvent (evt, playing);
 		}
 
-		void HandleLoadEventsList (LoadTimelineEventEvent<IEnumerable<TimelineEventVM>> e)
+		public void LoadEventList (IEnumerable<TimelineEventVM> eventVMs, bool playing)
 		{
-			var eventVMs = e.Object;
 			//Only order them if they have the same EventType
 			var firstEventVM = eventVMs.FirstOrDefault ();
 
@@ -265,7 +275,7 @@ namespace VAS.Services.Controller
 				eventVMs = eventVMs.OrderBy (evt => evt.Start);
 			}
 
-			VideoPlayer.LoadEvents (eventVMs, e.Playing);
+			VideoPlayer.LoadEvents (eventVMs, playing);
 		}
 
 		void HandleLoadEventType (LoadTimelineEventEvent<EventTypeTimelineVM> e)
