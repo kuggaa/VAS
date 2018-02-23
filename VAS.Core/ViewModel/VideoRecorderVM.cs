@@ -29,41 +29,37 @@ namespace VAS.Core.ViewModel
 {
 	public class VideoRecorderVM : ViewModelBase
 	{
-		IVideoRecorderService service;
-
-		public VideoRecorderVM (CaptureSettings settings, MediaFileVM outputFile, ICapturer capturer, IVideoRecorderService service)
+		public VideoRecorderVM (CaptureSettings settings, MediaFileVM outputFile, ICapturer capturer)
 		{
-			this.service = service;
-
-			StartRecordingCommand = new Command<bool> (service.StartRecording) {
+			StartRecordingCommand = new Command<bool> () {
 				ToolTipText = Strings.StartRecording,
 				IconName = "vas-control-record"
 			};
-			StopRecordingCommand = new Command (service.StopRecording) {
+			StopRecordingCommand = new Command () {
 				ToolTipText = Strings.StopRecording,
 				IconName = "vas-stop"
 			};
-			PauseClockCommand = new Command (service.PauseClock) {
+			PauseClockCommand = new Command () {
 				ToolTipText = Strings.PauseClock,
 				IconName = "vas-pause-clock"
 			};
-			ResumeClockCommand = new Command (service.ResumeClock) {
+			ResumeClockCommand = new Command () {
 				ToolTipText = Strings.ResumeClock,
 				IconName = "vas-pause-clock"
 			};
-			SaveCommand = new AsyncCommand (service.Save) {
+			SaveCommand = new AsyncCommand () {
 				ToolTipText = Strings.SaveProject,
 				IconName = "vas-save"
 			};
-			CancelCommand = new AsyncCommand (service.Cancel) {
+			CancelCommand = new AsyncCommand () {
 				ToolTipText = Strings.CancelProject,
 				IconName = "vas-cancel-rec"
 			};
-			DeleteLastEventCommand = new Command (service.DeleteLastEvent) {
+			DeleteLastEventCommand = new Command () {
 				ToolTipText = Strings.DeleteEvent,
 				IconName = "vas-delete"
 			};
-			PlayLastEventCommand = new Command (service.PlayLastEvent) {
+			PlayLastEventCommand = new Command () {
 				ToolTipText = Strings.ReplayEvent,
 				IconName = "vas-control-play"
 			};
