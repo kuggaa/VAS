@@ -24,7 +24,7 @@ namespace VAS.Core.Interfaces.Services
 {
 	public interface IEventsService : IController
 	{
-		void SetDefaultCallbacks (TimelineVM timelineVM);
+		void SetDefaultCallbacks (TimelineVM timelineVM, VideoRecorderVM recorder);
 
 		void LoadTimelineEvent (TimelineEventVM evt, bool playing);
 

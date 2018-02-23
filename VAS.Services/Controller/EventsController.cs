@@ -110,7 +110,7 @@ namespace VAS.Services.Controller
 			VideoRecorder = (viewModel as IVideoRecorderDealer)?.VideoRecorder;
 		}
 
-		public void SetDefaultCallbacks (TimelineVM timelineVM)
+		public void SetDefaultCallbacks (TimelineVM timelineVM, VideoRecorderVM recorder)
 		{
 			timelineVM.LoadEventCommand.SetCallback (args => {
 				Tuple<TimelineEventVM, bool> argsTuple = (Tuple<TimelineEventVM, bool>)args;
@@ -120,9 +120,9 @@ namespace VAS.Services.Controller
 				Tuple<IEnumerable<TimelineEventVM>, bool> argsTuple = (Tuple<IEnumerable<TimelineEventVM>, bool>)args;
 				LoadEventList (argsTuple.Item1, argsTuple.Item2);
 			});
-			timelineVM.UnloadEventsCommand.SetCallback (args => {
-				LoadTimelineEvent (null, false);
-			});
+			timelineVM.UnloadEventsCommand.SetCallback (() => LoadTimelineEvent (null, false));
+
+			recorder.PlayLastEventCommand.SetCallback (() => LoadTimelineEvent (recorder.LastCreatedEvent, true));
 		}
 
 		#endregion

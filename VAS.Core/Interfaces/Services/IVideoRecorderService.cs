@@ -65,6 +65,6 @@ namespace VAS.Core.Interfaces.Services
 		/// </summary>
 		void Close ();
 
-		void SetDefaultCallbacks (ProjectAnalysisVM<ProjectVM> viewModel);
+		void SetDefaultCallbacks (VideoRecorderVM recorderVM);
 	}
 }
