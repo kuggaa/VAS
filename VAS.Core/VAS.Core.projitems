@@ -317,6 +317,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Services\ILicenseCustomizationService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Services\IEventEditorService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Services\IDrawingsService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Services\IEventsService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />

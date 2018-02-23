@@ -56,6 +56,9 @@ namespace VAS.Core.ViewModel
 			FullTimeline.ViewModels.CollectionChanged += HandleTimelineCollectionChanged;
 			FullTimeline.PropertyChanged += FullTimeline_PropertyChanged;
 			EditionCommand = new Command<TimelineEventVM> ();
+			LoadEventCommand = new Command<Tuple<TimelineEventVM, bool>> ();
+			LoadEventsCommand = new Command<Tuple<IEnumerable<TimelineEventVM>, bool>> ();
+			UnloadEventsCommand = new Command ();
 			GroupEventsByEventTypeName = false;
 			Filters = new AndPredicate<TimelineEventVM> ();
 			EventsPredicate = new AndPredicate<TimelineEventVM> {
@@ -318,42 +321,30 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
-		/// Load a TimelineEvent to the player to start playing it. The EventsController should be the responsible
-		/// to Add the Events to the player
+		/// Gets or sets the command to load an event.
 		/// </summary>
-		/// <param name="viewModel">RATimelineEventVM ViewModel</param>
-		/// <param name="playing">If set to <c>true</c> playing. Else starts paused</param>
-		public void LoadEvent (TimelineEventVM viewModel, bool playing)
-		{
-			App.Current.EventsBroker.Publish (new LoadTimelineEventEvent<TimelineEventVM> {
-				Object = viewModel,
-				Playing = playing
-			});
+		/// <value>The load event command.</value>
+		public Command<Tuple<TimelineEventVM, bool>> LoadEventCommand {
+			get;
+			set;
 		}
 
 		/// <summary>
-		/// Loads a List of Events to the player in order to start playing them, The EventsController should be the responsible
-		/// to Add the Events to the player
+		/// Gets or sets the command to load an event.
 		/// </summary>
-		/// <param name="viewModels">A list of RATimelineEventVM</param>
-		/// <param name="playing">If set to <c>true</c> playing. Else starts paused</param>
-		public void LoadEvents (IEnumerable<TimelineEventVM> viewModels, bool playing)
-		{
-			App.Current.EventsBroker.Publish (new LoadTimelineEventEvent<IEnumerable<TimelineEventVM>> {
-				Object = viewModels,
-				Playing = playing
-			});
+		/// <value>The load event command.</value>
+		public Command<Tuple<IEnumerable<TimelineEventVM>, bool>> LoadEventsCommand {
+			get;
+			set;
 		}
 
 		/// <summary>
-		/// Unloads the events from the player
+		/// Gets or sets the command to unload events.
 		/// </summary>
-		public void UnloadEvents ()
-		{
-			App.Current.EventsBroker.Publish (new LoadTimelineEventEvent<TimelineEventVM> {
-				Object = null,
-				Playing = false
-			});
+		/// <value>The unload events command.</value>
+		public Command UnloadEventsCommand {
+			get;
+			set;
 		}
 
 		/// <summary>
