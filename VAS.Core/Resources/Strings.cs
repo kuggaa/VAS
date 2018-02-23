@@ -31,5 +31,16 @@ namespace VAS.Core.Resources
 		public static string Won => Catalog.GetString ("Won");
 		public static string Lost => Catalog.GetString ("Lost");
 		public static string Loading => Catalog.GetString ("Loading...");
+
+		public static string StartRecording => Catalog.GetString ("Start recording period");
+		public static string StopRecording => Catalog.GetString ("Stop recording period");
+		public static string PauseClock => Catalog.GetString ("Pause clock");
+		public static string ResumeClock => Catalog.GetString ("Resume clock");
+
+		public static string SaveProject => Catalog.GetString ("Save project");
+		public static string CancelProject => Catalog.GetString ("Cancel project");
+
+		public static string DeleteEvent => Catalog.GetString ("Delete event");
+		public static string ReplayEvent => Catalog.GetString ("Replay event");
 	}
 }

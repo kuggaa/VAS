@@ -44,7 +44,7 @@ namespace VAS.Core.Interfaces.GUI
 
 		IVideoPlayerController Player { get; }
 
-		ICapturerBin Capturer { get; }
+		IVideoRecorderService Capturer { get; }
 	}
 }
 

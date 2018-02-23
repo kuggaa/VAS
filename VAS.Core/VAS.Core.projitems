@@ -110,7 +110,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IMainController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IBusyDialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\IPanel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\GUI\ICapturerBin.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Multimedia\ICapturer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Multimedia\IMultimediaToolkit.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Multimedia\IDiscoverer.cs" />
@@ -242,7 +241,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\IProjectDealer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\IPlaylistCollectionDealer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\IDashboardDealer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\ICapturerBinDealer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ActionLinkVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\HotKeyVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Converter.cs" />
@@ -308,6 +306,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\NetworkManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\INetworkManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IViewModelFactoryService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\VideoRecorderVM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IVideoRecorderService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\IVideoRecorderDealer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
