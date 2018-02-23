@@ -21,7 +21,10 @@ using System.Threading.Tasks;
 using VAS.Core;
 using VAS.Core.Common;
 using VAS.Core.Events;
+using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
+using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.Interfaces.Services;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
@@ -30,6 +33,63 @@ namespace VAS.Services.Service
 {
 	public class VideoRecoderService : DisposableBase, IVideoRecorderService
 	{
+		public Image CurrentFrame => throw new NotImplementedException ();
 
+		public bool Started => throw new NotImplementedException ();
+
+		public void SetDefaultCallbacks (VideoRecorderVM recorder)
+		{
+			recorder.PlayLastEventCommand.SetCallback ();
+		}
+
+		public void Close ()
+		{
+			throw new NotImplementedException ();
+		}
+
+		public IEnumerable<KeyAction> GetDefaultKeyActions ()
+		{
+			throw new NotImplementedException ();
+		}
+
+		public void PauseClock ()
+		{
+			throw new NotImplementedException ();
+		}
+
+		public void ResumeClock ()
+		{
+			throw new NotImplementedException ();
+		}
+
+		public void Run ()
+		{
+			throw new NotImplementedException ();
+		}
+
+		public void SetViewModel (IViewModel viewModel)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public Task Start ()
+		{
+			throw new NotImplementedException ();
+		}
+
+		public void StartRecording (bool newPeriod = true)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public Task Stop ()
+		{
+			throw new NotImplementedException ();
+		}
+
+		public void StopRecording ()
+		{
+			throw new NotImplementedException ();
+		}
 	}
 }
