@@ -70,6 +70,12 @@ namespace VAS.Core.Serialization
 		public void Save<T> (T obj, Stream stream,
 							 SerializationType type = SerializationType.Json)
 		{
+			Save (obj, stream, type, null);
+		}
+
+
+		void Save<T> (T obj, Stream stream, SerializationType type, IsChangedContractResolver resolver)
+		{
 			switch (type) {
 			case SerializationType.Binary:
 				BinaryFormatter formatter = new BinaryFormatter ();
@@ -82,7 +88,9 @@ namespace VAS.Core.Serialization
 			case SerializationType.Json:
 				StreamWriter sw = new StreamWriter (stream, Encoding.UTF8);
 				sw.NewLine = "\n";
-				sw.Write (JsonConvert.SerializeObject (obj, JsonSettings));
+				JsonSerializerSettings settings = JsonSettings;
+				settings.ContractResolver = resolver ?? IsChangedContractResolver.Instance;
+				sw.Write (JsonConvert.SerializeObject (obj, settings));
 				sw.Flush ();
 				break;
 			}
@@ -102,9 +110,12 @@ namespace VAS.Core.Serialization
 				File.Move (tmpPath, filepath);
 			}
 		}
+		public object Load (Type type, Stream stream, SerializationType serType = SerializationType.Json)
+		{
+			return Load (type, stream, serType, null);
+		}
 
-		public object Load (Type type, Stream stream,
-							SerializationType serType = SerializationType.Json)
+		object Load (Type type, Stream stream, SerializationType serType, IsChangedContractResolver resolver)
 		{
 			switch (serType) {
 			case SerializationType.Binary:
@@ -116,17 +127,21 @@ namespace VAS.Core.Serialization
 			case SerializationType.Json:
 				StreamReader sr = new StreamReader (stream, Encoding.UTF8);
 				JsonSerializerSettings settings = JsonSettings;
-				settings.ContractResolver = IsChangedContractResolver.Instance;
+				settings.ContractResolver = resolver ?? IsChangedContractResolver.Instance;
 				return JsonConvert.DeserializeObject (sr.ReadToEnd (), type, settings);
 			default:
 				throw new Exception ();
 			}
 		}
-
 		public T Load<T> (Stream stream,
 						  SerializationType type = SerializationType.Json)
 		{
-			return (T)Load (typeof (T), stream, type);
+			return (T)Load (typeof (T), stream, type, null);
+		}
+
+		T Load<T> (Stream stream, SerializationType type, IsChangedContractResolver resolver)
+		{
+			return (T)Load (typeof (T), stream, type, resolver);
 		}
 
 		public T Load<T> (string filepath,
@@ -172,29 +187,10 @@ namespace VAS.Core.Serialization
 		{
 			T retStorable;
 
-			switch (serType) {
-			case SerializationType.Json:
-				var jsonSettings = JsonSettings;
-				jsonSettings.ContractResolver = ClonerContractResolver.Instance;
-				using (Stream s = new MemoryStream ()) {
-					using (StreamWriter sw = new StreamWriter (s, Encoding.UTF8)) {
-						sw.NewLine = "\n";
-						sw.Write (JsonConvert.SerializeObject (obj, jsonSettings));
-						sw.Flush ();
-						s.Seek (0, SeekOrigin.Begin);
-						using (StreamReader sr = new StreamReader (s, Encoding.UTF8)) {
-							retStorable = (T)JsonConvert.DeserializeObject (sr.ReadToEnd (), obj.GetType (), jsonSettings);
-						}
-					}
-				}
-				break;
-			default:
-				using (Stream s = new MemoryStream ()) {
-					Save<T> (obj, s, serType);
-					s.Seek (0, SeekOrigin.Begin);
-					retStorable = Load<T> (s, serType);
-				}
-				break;
+			using (Stream s = new MemoryStream ()) {
+				Save<T> (obj, s, serType, CloneModeContractResolver.Instance);
+				s.Seek (0, SeekOrigin.Begin);
+				retStorable = Load<T> (s, serType, CloneModeContractResolver.Instance);
 			}
 
 			return retStorable;
@@ -316,16 +312,21 @@ namespace VAS.Core.Serialization
 	}
 
 	/// <summary>
-	// Cloner Contract Resolver. Serializes all writable properties, even those marked as JsonIgnore and only ignore
-	// the properties marked as CloneIgnore or NonSerialized
+	/// Is Changed Contract resolver, it sets the IsChanged property to false, used mainly for deserialize/Load
+	/// Use CloneMode == true if you're cloning the object
 	/// </summary>
-	public sealed class ClonerContractResolver : DefaultContractResolver
+	public class IsChangedContractResolver : DefaultContractResolver
 	{
-		private static readonly ClonerContractResolver instance = new ClonerContractResolver ();
+		static readonly IsChangedContractResolver instance = new IsChangedContractResolver ();
 
-		private ClonerContractResolver () { }
+		protected bool cloneMode;
 
-		public static ClonerContractResolver Instance {
+		public IsChangedContractResolver ()
+		{
+			cloneMode = false;
+		}
+
+		public static IsChangedContractResolver Instance {
 			get {
 				return instance;
 			}
@@ -334,6 +335,10 @@ namespace VAS.Core.Serialization
 		protected override JsonProperty CreateProperty (MemberInfo member, MemberSerialization memberSerialization)
 		{
 			var property = base.CreateProperty (member, memberSerialization);
+			if (!cloneMode) {
+				return property;
+			}
+
 			var attribs = property.AttributeProvider.GetAttributes (typeof (NonSerializedAttribute), true);
 			var attribs2 = property.AttributeProvider.GetAttributes (typeof (CloneIgnoreAttribute), true);
 			if (attribs.Count + attribs2.Count > 0 || !property.Writable) {
@@ -342,22 +347,6 @@ namespace VAS.Core.Serialization
 				property.Ignored = false;
 			}
 			return property;
-		}
-	}
-
-	/// <summary>
-	/// Is Changed Contract resolver, it sets the IsChanged property to false, used mainly for deserialize/Load
-	/// </summary>
-	public sealed class IsChangedContractResolver : DefaultContractResolver
-	{
-		private static readonly IsChangedContractResolver instance = new IsChangedContractResolver ();
-
-		private IsChangedContractResolver () { }
-
-		public static IsChangedContractResolver Instance {
-			get {
-				return instance;
-			}
 		}
 
 		protected override JsonContract CreateContract (Type objectType)
@@ -369,6 +358,22 @@ namespace VAS.Core.Serialization
 					(o, context) => { (o as IChanged).IsChanged = false; });
 			}
 			return contract;
+		}
+	}
+
+	public class CloneModeContractResolver : IsChangedContractResolver
+	{
+		static readonly CloneModeContractResolver instance = new CloneModeContractResolver ();
+
+		public CloneModeContractResolver ()
+		{
+			cloneMode = true;
+		}
+
+		public static new CloneModeContractResolver Instance {
+			get {
+				return instance;
+			}
 		}
 	}
 
