@@ -44,7 +44,7 @@ namespace VAS.Drawing.Widgets
 		FrameDrawing drawing;
 		ISurface backbuffer;
 		ButtonModifier modifier;
-		bool handdrawing, inObjectCreation, inZooming;
+		bool inObjectCreation, inZooming;
 		double currentZoom;
 		List<Selection> copiedItems;
 		Point centerZoom;
@@ -100,10 +100,10 @@ namespace VAS.Drawing.Widgets
 					foreach (IBlackboardObject d in drawing.Drawables) {
 						Add (d);
 					}
-					backbuffer = tk.CreateSurface (Background.Width, Background.Height,
-						drawing.Freehand);
-				} else {
-					backbuffer = tk.CreateSurface (Background.Width, Background.Height);
+					if (drawing.Freehand != null) {
+						backbuffer = tk.CreateSurface (Background.Width, Background.Height,
+							drawing.Freehand);
+					}
 				}
 				Accuracy = Background.Width / 100;
 			}
@@ -283,7 +283,7 @@ namespace VAS.Drawing.Widgets
 			Area roi;
 
 			ClearSelection ();
-			drawing.Freehand = backbuffer.Copy ();
+			drawing.Freehand = backbuffer?.Copy ();
 			roi = RegionOfInterest;
 			if (roi == null || roi.Empty) {
 				roi = new Area (0, 0, Background.Width, Background.Height);
@@ -445,7 +445,10 @@ namespace VAS.Drawing.Widgets
 				}
 			case DrawTool.Pen:
 			case DrawTool.Eraser:
-				handdrawing = true;
+				var freeHand = new FreeHand ();
+				freeHand.Points.Add (MoveStart);
+				drawable = freeHand;
+				pos = SelectionPosition.New;
 				break;
 			case DrawTool.Zoom: {
 					double newZoom = currentZoom;
@@ -510,7 +513,6 @@ namespace VAS.Drawing.Widgets
 				}
 				inObjectCreation = false;
 			}
-			handdrawing = false;
 			inZooming = false;
 		}
 
@@ -561,25 +563,6 @@ namespace VAS.Drawing.Widgets
 				RegionOfInterest.Start -= diff;
 				ClipRoi (RegionOfInterest);
 				RegionOfInterest = RegionOfInterest;
-			} else if (handdrawing) {
-				using (IContext c = backbuffer.Context) {
-					tk.Context = c;
-					tk.Begin ();
-					tk.LineStyle = LineStyle.Normal;
-					tk.LineWidth = LineWidth;
-					if (tool == DrawTool.Eraser) {
-						tk.StrokeColor = tk.FillColor = new Color (0, 0, 0, 255);
-						tk.LineWidth = LineWidth * 4;
-						tk.ClearOperation = true;
-					} else {
-						tk.StrokeColor = tk.FillColor = Color;
-					}
-					tk.DrawLine (MoveStart, coords);
-					tk.End ();
-				}
-				Area area = new MultiPoints (new List<Point> { ToDeviceCoords (MoveStart), ToDeviceCoords (coords) }).Area;
-				widget.ReDraw (new Area (new Point (area.TopLeft.X - LineWidth, area.TopLeft.Y - LineWidth),
-													area.Width + LineWidth * 2, area.Height + LineWidth * 2));
 			} else {
 				base.CursorMoved (coords);
 				if (Tool == DrawTool.Selection) {

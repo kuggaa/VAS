@@ -19,40 +19,32 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using VAS.Core.Common;
 
 namespace VAS.Core.Store.Drawables
 {
 	[Serializable]
-	public class MultiPoints: Rectangle
+	public class MultiPoints : Rectangle
 	{
-		ObservableCollection<Point> points;
 
 		public MultiPoints ()
 		{
+			Points = new RangeObservableCollection<Point> ();
 		}
 
 		public MultiPoints (List<Point> points)
 		{
-			Points = new ObservableCollection<Point> (points);
+			Points = new RangeObservableCollection<Point> (points);
+			UpdateArea ();
 		}
 
-		public ObservableCollection<Point> Points {
-			get {
-				return points;
-			}
-			set {
-				if (points != null) {
-					points.CollectionChanged -= ListChanged;
-				}
-				points = value;
-				if (points != null) {
-					points.CollectionChanged += ListChanged;
-				}
-				UpdateArea ();
-			}
-		}
+		/// <summary>
+		/// List of points composing this object.
+		/// </summary>
+		/// <value>The points.</value>
+		public RangeObservableCollection<Point> Points { get; set; }
 
 		public override Selection GetSelection (Point p, double pr, bool inMotion = false)
 		{
@@ -66,16 +58,16 @@ namespace VAS.Core.Store.Drawables
 		public override void Move (Selection sel, Point p, Point moveStart)
 		{
 			switch (sel.Position) {
-			case SelectionPosition.All:
-				{
+			case SelectionPosition.All: {
 					double xdiff, ydiff;
-				
+
 					xdiff = p.X - moveStart.X;
 					ydiff = p.Y - moveStart.Y;
 					foreach (Point point in Points) {
 						point.X += xdiff;
 						point.Y += ydiff;
 					}
+					UpdateArea ();
 					break;
 				}
 			default:
@@ -108,9 +100,12 @@ namespace VAS.Core.Store.Drawables
 			BottomRight = new Point (xmax, ymax);
 		}
 
-		void ListChanged (object sender, NotifyCollectionChangedEventArgs e)
+		protected override void RaisePropertyChanged (PropertyChangedEventArgs args, object sender = null)
 		{
-			IsChanged = true;
+			if (args.PropertyName == $"Collection_{nameof (Points)}") {
+				UpdateArea ();
+			}
+			base.RaisePropertyChanged (args, sender);
 		}
 	}
 }

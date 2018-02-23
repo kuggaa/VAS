@@ -31,27 +31,27 @@ namespace VAS.Core.Store.Drawables
 		{
 		}
 
-		public Color StrokeColor {
+		public virtual Color StrokeColor {
 			get;
 			set;
 		}
 
-		public int LineWidth {
+		public virtual int LineWidth {
 			get;
 			set;
 		}
 
-		public Color FillColor {
+		public virtual Color FillColor {
 			get;
 			set;
 		}
 
-		public bool Selected {
+		public virtual bool Selected {
 			get;
 			set;
 		}
 
-		public LineStyle Style {
+		public virtual LineStyle Style {
 			get;
 			set;
 		}

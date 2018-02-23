@@ -37,6 +37,7 @@ namespace VAS.Drawing
 			CanvasFromDrawableObjectRegistry.AddMapping (typeof (Rectangle), typeof (RectangleObject), "VAS.Drawing");
 			CanvasFromDrawableObjectRegistry.AddMapping (typeof (RectangleArea), typeof (RectangleObject), "VAS.Drawing");
 			CanvasFromDrawableObjectRegistry.AddMapping (typeof (Text), typeof (TextObject), "VAS.Drawing");
+			CanvasFromDrawableObjectRegistry.AddMapping (typeof (FreeHand), typeof (FreeHandView), "VAS.Drawing");
 		}
 	}
 }

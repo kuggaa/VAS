@@ -16,6 +16,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 //
 using System;
+using System.Collections.Generic;
 using VAS.Core.Common;
 
 namespace VAS.Core.Interfaces.Drawing
@@ -109,6 +110,8 @@ namespace VAS.Core.Interfaces.Drawing
 		void DrawRoundedRectangle (Point start, double width, double height, double radius);
 
 		void DrawArea (params Point [] vertices);
+
+		void DrawHandDrawing (IList<Point> points);
 
 		void DrawPoint (Point point);
 

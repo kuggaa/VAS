@@ -98,7 +98,7 @@ namespace VAS.UI.Dialog
 				button.Name = "DrawingToolButton-" + button.Name;
 				button.Toggled += HandleToolClicked;
 			}
-			
+
 			CreateToolSettings ();
 			UpdateSettingsVisibility (DrawTool.Selection);
 
@@ -572,7 +572,6 @@ namespace VAS.UI.Dialog
 			Color c;
 			if (ignoreChanges)
 				return;
-
 
 			c = Misc.ToLgmColor (backgroundcolorbutton.Color,
 				backgroundcolorbutton.Alpha);

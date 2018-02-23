@@ -316,18 +316,12 @@ namespace VAS.Drawing.Cairo
 
 		public void DrawArea (params Point [] vertices)
 		{
-			double x1, y1;
-			Point initial_point = vertices [0];
-			CContext.MoveTo (initial_point.X, initial_point.Y);
-			for (int i = 1; i < vertices.Length; i++) {
-				x1 = vertices [i].X;
-				y1 = vertices [i].Y;
-				CContext.LineTo (x1, y1);
+			DrawConnectedPoints (vertices);
+		}
 
-			}
-
-			CContext.ClosePath ();
-			StrokeAndFill ();
+		public void DrawHandDrawing (IList<Point> points)
+		{
+			DrawConnectedPoints (points, false);
 		}
 
 		public void DrawRectangle (Point start, double width, double height)
@@ -388,7 +382,7 @@ namespace VAS.Drawing.Cairo
 			StrokeAndFill ();
 		}
 
-		public void DrawArc (Point center, double radius, double angle1, double angle2) 
+		public void DrawArc (Point center, double radius, double angle1, double angle2)
 		{
 			CContext.Arc (center.X, center.Y, radius, angle1, angle2);
 			StrokeAndFill (false);
@@ -680,6 +674,24 @@ namespace VAS.Drawing.Cairo
 			}
 			return weight;
 		}
+
+		void DrawConnectedPoints (IList<Point> points, bool closePath = true)
+		{
+			Point lastPoint = null;
+			foreach (Point p in points) {
+				if (lastPoint == null) {
+					CContext.MoveTo (p.X, p.Y);
+				} else {
+					CContext.LineTo (p.X, p.Y);
+				}
+				lastPoint = p;
+			}
+			if (closePath) {
+				CContext.ClosePath ();
+			}
+			StrokeAndFill ();
+		}
+
 	}
 
 	/// <summary>

@@ -317,6 +317,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ManagerBaseVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Store\Drawables\RectangleArea.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Store\Drawables\EllipseArea.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Store\Drawables\FreeHand.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
