@@ -51,7 +51,8 @@ using System.Runtime.CompilerServices;
 // This is not required, if you don't want signing let these attributes like they're.
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyFile("")]
-[assembly: InternalsVisibleTo("Tests")]
+[assembly: InternalsVisibleTo("RiftAnalyst.Tests")]
+[assembly: InternalsVisibleTo("LongoMatch.Tests")]
 [assembly: InternalsVisibleTo("VAS.Tests")]
 [assembly: InternalsVisibleTo ("FluVAS.Tests")]
 [assembly: InternalsVisibleTo ("LongoMatch.Plugins.Pro.Tests")]
