@@ -40,6 +40,7 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
+    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
   </ItemGroup>
   <Import Project="VAS.Services.projitems" Label="Shared" Condition="Exists('VAS.Services.projitems')" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
