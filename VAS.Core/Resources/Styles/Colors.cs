@@ -34,14 +34,7 @@ namespace VAS.Core.Resources.Styles
 		public static Color CanvasSelectionAnchor => App.Current.Style.ColorWhite;
 		public static Color DefaultShield => App.Current.Style.ThemeSecondary;
 
-		// FIXME: add a method to obtain an alpha version of a color directly and a way to use it XAML
-		public static Color NavigationTopBarContrast {
-			get {
-				Color color = App.Current.Style.ThemeContrastBase.Copy ();
-				color.SetAlpha (0.95F);
-				return color;
-			}
-		}
+		public static Color NavigationTopBarContrast => App.Current.Style.ThemeContrastBase.CopyWithAlpha (0.95F);
 
 		// Alphas
 		public static float AlphaImageSensitive = 1f;
