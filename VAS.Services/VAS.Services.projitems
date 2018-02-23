@@ -51,11 +51,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)DynamicButtonToolbarService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EditPlaylistElementVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModelFactoryBaseService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\VideoRecoderService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ViewModel\" />
     <Folder Include="$(MSBuildThisFileDirectory)Controller\" />
     <Folder Include="$(MSBuildThisFileDirectory)State\" />
     <Folder Include="$(MSBuildThisFileDirectory)Interfaces\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Service\" />
   </ItemGroup>
 </Project>
