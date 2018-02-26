@@ -53,10 +53,10 @@ namespace VAS.Core.ViewModel
 		}
 
 		/// <summary>
- 		/// Gets or sets the visible view models, viewmodels that has boolean Visible property setted to true.
- 		/// </summary>
- 		/// <value>The visible view models.</value>
- 		public VisibleRangeObservableProxy<TViewModel> VisibleViewModels { get; protected set; }
+		/// Gets or sets the visible view models, viewmodels that has boolean Visible property setted to true.
+		/// </summary>
+		/// <value>The visible view models.</value>
+		public VisibleRangeObservableProxy<TViewModel> VisibleViewModels { get; protected set; }
 
 		/// <summary>
 		/// Gets or sets the View Model for the template loaded. This view model does not change, instead the model
@@ -93,7 +93,7 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		/// <value>The delete command.</value>
 		[PropertyChanged.DoNotNotify]
-		public Command<TViewModel> DeleteCommand {
+		public AsyncCommand<TViewModel> DeleteCommand {
 			get;
 			protected set;
 		}
@@ -103,7 +103,7 @@ namespace VAS.Core.ViewModel
 		/// </summary>
 		/// <value>The save command.</value>
 		[PropertyChanged.DoNotNotify]
-		public Command<bool> SaveCommand {
+		public AsyncCommand<bool> SaveCommand {
 			get;
 			protected set;
 		}
@@ -218,11 +218,12 @@ namespace VAS.Core.ViewModel
 			return AsyncHelpers.Return (false);
 		}
 
-		protected bool CanDelete (TViewModel viewModel) {
+		protected bool CanDelete (TViewModel viewModel)
+		{
 			if (viewModel != null) {
 				return viewModel.Editable;
 			}
-			
+
 			return LoadedTemplate.Model != null && LoadedTemplate.Editable;
 		}
 	}

@@ -355,13 +355,13 @@ namespace VAS.Core.MVVMC
 			Contract.Requires (canExecute != null);
 		}
 
-		public void SetCallback (Func<T, Task> execute)
+		public void SetCallback (Action<T> execute)
 		{
 			Contract.Requires (execute != null);
-			this.callback = o => execute ((T)o);
+			base.SetCallback (o => execute ((T)o));
 		}
 
-		public void SetCallback (Func<T, Task> execute, Func<T, bool> canExecute)
+		public void SetCallback (Action<T> execute, Func<T, bool> canExecute)
 		{
 			Contract.Requires (execute != null);
 			Contract.Requires (canExecute != null);
@@ -369,7 +369,7 @@ namespace VAS.Core.MVVMC
 			SetCanExecute (canExecute);
 		}
 
-		public void SetCallback (Func<T, Task> execute, Func<bool> canExecute)
+		public void SetCallback (Action<T> execute, Func<bool> canExecute)
 		{
 			Contract.Requires (execute != null);
 			Contract.Requires (canExecute != null);
@@ -378,8 +378,7 @@ namespace VAS.Core.MVVMC
 
 		protected void SetCanExecute (Func<T, bool> canExecute)
 		{
-			this.canExecute = o => canExecute ((T)o);
-			EmitCanExecuteChanged ();
+			base.SetCanExecute (o => canExecute ((T)o));
 		}
 	}
 
@@ -387,7 +386,7 @@ namespace VAS.Core.MVVMC
 	/// Command implementation of <see cref="ICommand"/> for async functions using generics for the type of the first
 	/// command argument
 	/// </summary>
-	public class AsyncCommand<T> : Command<T>
+	public class AsyncCommand<T> : AsyncCommand
 	{
 		public AsyncCommand (Func<T, Task> execute)
 		{
@@ -410,6 +409,32 @@ namespace VAS.Core.MVVMC
 			Contract.Requires (canExecute != null);
 
 			SetCanExecute (canExecute);
+		}
+
+		public void SetCallback (Func<T, Task> execute)
+		{
+			Contract.Requires (execute != null);
+			base.SetCallback (o => execute ((T)o));
+		}
+
+		public void SetCallback (Func<T, Task> execute, Func<T, bool> canExecute)
+		{
+			Contract.Requires (execute != null);
+			Contract.Requires (canExecute != null);
+			SetCallback (execute);
+			SetCanExecute (canExecute);
+		}
+
+		public void SetCallback (Func<T, Task> execute, Func<bool> canExecute)
+		{
+			Contract.Requires (execute != null);
+			Contract.Requires (canExecute != null);
+			SetCallback (execute, o => canExecute ());
+		}
+
+		protected void SetCanExecute (Func<T, bool> canExecute)
+		{
+			base.SetCanExecute (o => canExecute ((T)o));
 		}
 	}
 }

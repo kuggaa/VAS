@@ -31,6 +31,8 @@ using VAS.Core.ViewModel;
 
 namespace VAS.Services.Service
 {
+	// FIXME: Make it a real reference
+	[Controller ("LiveProjectAnalysis")]
 	public class VideoRecoderService : DisposableBase, IVideoRecorderService
 	{
 		public Image CurrentFrame => throw new NotImplementedException ();

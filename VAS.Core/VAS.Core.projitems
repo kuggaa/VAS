@@ -319,6 +319,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\VideoRecorderVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\MVVMC\IVideoRecorderDealer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Services\IVideoRecorderService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\Services\IPlaylistService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Common\" />
