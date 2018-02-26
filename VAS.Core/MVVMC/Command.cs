@@ -170,8 +170,7 @@ namespace VAS.Core.MVVMC
 			Contract.Requires (execute != null);
 			Contract.Requires (canExecute != null);
 			SetCallback (execute);
-			this.canExecute = canExecute;
-			EmitCanExecuteChanged ();
+			SetCanExecute (canExecute);
 		}
 
 		public void SetCallback (Action execute, Func<object, bool> canExecute)
@@ -189,48 +188,6 @@ namespace VAS.Core.MVVMC
 		}
 
 		public void SetCallback (Action<object> execute, Func<bool> canExecute)
-		{
-			Contract.Requires (execute != null);
-			Contract.Requires (canExecute != null);
-			SetCallback (execute, o => canExecute ());
-		}
-
-		public void SetCallback (Func<object, Task> execute)
-		{
-			Contract.Requires (execute != null);
-			this.callback = async (o) => await execute (o);
-		}
-
-		public void SetCallback (Func<Task> execute)
-		{
-			Contract.Requires (execute != null);
-			SetCallback (o => execute ());
-		}
-
-		public void SetCallback (Func<Task> execute, Func<object, bool> canExecute)
-		{
-			Contract.Requires (execute != null);
-			Contract.Requires (canExecute != null);
-			SetCallback (o => execute (), canExecute);
-		}
-
-		public void SetCallback (Func<object, Task> execute, Func<object, bool> canExecute)
-		{
-			Contract.Requires (execute != null);
-			Contract.Requires (canExecute != null);
-			SetCallback (execute);
-			this.canExecute = canExecute;
-			EmitCanExecuteChanged ();
-		}
-
-		public void SetCallback (Func<Task> execute, Func<bool> canExecute)
-		{
-			Contract.Requires (execute != null);
-			Contract.Requires (canExecute != null);
-			SetCallback (o => execute (), o => canExecute ());
-		}
-
-		public void SetCallback (Func<object, Task> execute, Func<bool> canExecute)
 		{
 			Contract.Requires (execute != null);
 			Contract.Requires (canExecute != null);
@@ -281,6 +238,17 @@ namespace VAS.Core.MVVMC
 
 			return AsyncHelpers.Return ();
 		}
+
+		protected void SetCanExecute (Func<object, bool> canExec)
+		{
+			this.canExecute = canExec;
+			EmitCanExecuteChanged ();
+		}
+
+		protected void SetCanExecute (Func<bool> canExec)
+		{
+			SetCanExecute (o => canExec ());
+		}
 	}
 
 	/// <summary>
@@ -318,6 +286,47 @@ namespace VAS.Core.MVVMC
 			Contract.Requires (execute != null);
 			Contract.Requires (canExecute != null);
 		}
+
+		public void SetCallback (Func<object, Task> execute)
+		{
+			Contract.Requires (execute != null);
+			this.callback = execute;
+		}
+
+		public void SetCallback (Func<Task> execute)
+		{
+			Contract.Requires (execute != null);
+			SetCallback (o => execute ());
+		}
+
+		public void SetCallback (Func<object, Task> execute, Func<object, bool> canExecute)
+		{
+			Contract.Requires (execute != null);
+			Contract.Requires (canExecute != null);
+			SetCallback (execute);
+			SetCanExecute (canExecute);
+		}
+
+		public void SetCallback (Func<Task> execute, Func<object, bool> canExecute)
+		{
+			Contract.Requires (execute != null);
+			Contract.Requires (canExecute != null);
+			SetCallback (o => execute (), canExecute);
+		}
+
+		public void SetCallback (Func<Task> execute, Func<bool> canExecute)
+		{
+			Contract.Requires (execute != null);
+			Contract.Requires (canExecute != null);
+			SetCallback (o => execute (), o => canExecute ());
+		}
+
+		public void SetCallback (Func<object, Task> execute, Func<bool> canExecute)
+		{
+			Contract.Requires (execute != null);
+			Contract.Requires (canExecute != null);
+			SetCallback (execute, o => canExecute ());
+		}
 	}
 
 	/// <summary>
@@ -345,6 +354,33 @@ namespace VAS.Core.MVVMC
 			Contract.Requires (execute != null);
 			Contract.Requires (canExecute != null);
 		}
+
+		public void SetCallback (Func<T, Task> execute)
+		{
+			Contract.Requires (execute != null);
+			this.callback = o => execute ((T)o);
+		}
+
+		public void SetCallback (Func<T, Task> execute, Func<T, bool> canExecute)
+		{
+			Contract.Requires (execute != null);
+			Contract.Requires (canExecute != null);
+			SetCallback (execute);
+			SetCanExecute (canExecute);
+		}
+
+		public void SetCallback (Func<T, Task> execute, Func<bool> canExecute)
+		{
+			Contract.Requires (execute != null);
+			Contract.Requires (canExecute != null);
+			SetCallback (execute, o => canExecute ());
+		}
+
+		protected void SetCanExecute (Func<T, bool> canExecute)
+		{
+			this.canExecute = o => canExecute ((T)o);
+			EmitCanExecuteChanged ();
+		}
 	}
 
 	/// <summary>
@@ -357,7 +393,7 @@ namespace VAS.Core.MVVMC
 		{
 			Contract.Requires (execute != null);
 
-			this.callback = o => execute ((T)o);
+			SetCallback (execute);
 		}
 
 		public AsyncCommand (Func<T, Task> execute, Func<T, bool> canExecute) : this (execute)
@@ -365,7 +401,7 @@ namespace VAS.Core.MVVMC
 			Contract.Requires (execute != null);
 			Contract.Requires (canExecute != null);
 
-			this.canExecute = o => canExecute ((T)o);
+			SetCanExecute (canExecute);
 		}
 
 		public AsyncCommand (Func<T, Task> execute, Func<bool> canExecute) : this (execute)
@@ -373,7 +409,7 @@ namespace VAS.Core.MVVMC
 			Contract.Requires (execute != null);
 			Contract.Requires (canExecute != null);
 
-			this.canExecute = o => canExecute ();
+			SetCanExecute (canExecute);
 		}
 	}
 }
