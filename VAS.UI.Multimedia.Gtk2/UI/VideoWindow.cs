@@ -145,7 +145,7 @@ namespace VAS.UI
 
 		public virtual bool Ready {
 			get;
-			protected set;
+			set;
 		} = false;
 
 		public virtual Cursor Cursor {

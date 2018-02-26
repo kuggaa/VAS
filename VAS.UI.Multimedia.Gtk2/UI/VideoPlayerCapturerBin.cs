@@ -76,11 +76,11 @@ namespace VAS.UI
 			base.OnDestroyed ();
 		}
 
-		public virtual ICapturerBin Capturer {
-			get {
-				return capturerbin;
-			}
-		}
+		//public virtual ICapturerBin Capturer {
+		//	get {
+		//		return capturerbin;
+		//	}
+		//}
 
 		public PlayerViewOperationMode Mode {
 			set {

@@ -40,7 +40,7 @@ namespace VAS.UI
 	[System.ComponentModel.Category ("VAS")]
 	[System.ComponentModel.ToolboxItem (true)]
 
-	public partial class CapturerBin : Gtk.Bin, ICapturerBin
+	public partial class CapturerBin : Gtk.Bin//, ICapturerBin
 	{
 		CapturerType type;
 		CaptureSettings settings;
