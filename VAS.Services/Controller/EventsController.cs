@@ -122,9 +122,11 @@ namespace VAS.Services.Controller
 			});
 			timelineVM.UnloadEventsCommand.SetCallback (() => LoadTimelineEvent (null, false));
 
-			recorder.PlayLastEventCommand.SetCallback (() => LoadTimelineEvent (recorder.LastCreatedEvent, true));
-			// FIXME: Should we ask for confirmation here?
-			recorder.DeleteLastEventCommand.SetCallback (() => DeletePlays (recorder.LastCreatedEvent.ToEnumerable (), false));
+			if (recorder != null) {
+				recorder.PlayLastEventCommand.SetCallback (() => LoadTimelineEvent (recorder.LastCreatedEvent, true));
+				// FIXME: Should we ask for confirmation here?
+				recorder.DeleteLastEventCommand.SetCallback (() => DeletePlays (recorder.LastCreatedEvent.ToEnumerable (), false));
+			}
 		}
 
 		#endregion

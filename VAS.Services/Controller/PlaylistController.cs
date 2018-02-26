@@ -29,6 +29,7 @@ using VAS.Core.Events;
 using VAS.Core.Hotkeys;
 using VAS.Core.Interfaces;
 using VAS.Core.Interfaces.MVVMC;
+using VAS.Core.Interfaces.Services;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.Store.Playlists;
@@ -42,7 +43,7 @@ namespace VAS.Services.Controller
 	/// </summary>
 	//FIXME: Until Presentations is migrated to MVVM, this can't inherit ControllerBase<PlaylistCollectionVM> easily.
 	//		 Meanwhile in Presentations the ViewModel property is not set
-	public class PlaylistController : ControllerBase//<PlaylistCollectionVM>
+	public class PlaylistController : ControllerBase, IPlaylistService//<PlaylistCollectionVM>
 	{
 		string confirmDeletePlaylist =
 			Catalog.GetString ("Do you really want to delete the selected playlist/s?");
@@ -126,6 +127,33 @@ namespace VAS.Services.Controller
 		public override IEnumerable<KeyAction> GetDefaultKeyActions ()
 		{
 			return Enumerable.Empty<KeyAction> ();
+		}
+
+		public void SetDefaultCallbacks (PlaylistCollectionVM viewModel)
+		{
+			// FIXME: Remove publish and use the service directly
+			viewModel.NewCommand.SetCallback (() => App.Current.EventsBroker.Publish (new CreateEvent<PlaylistVM> ()));
+			viewModel.DeleteCommand.SetCallback (() => App.Current.EventsBroker.Publish (new DeleteEvent<PlaylistVM> ()), HasItemsSelected);
+			viewModel.EditCommand.SetCallback (
+				() => App.Current.EventsBroker.Publish (new EditEvent<PlaylistVM> { Object = viewModel.Selection.First () }),
+				() => { return viewModel.Selection.Count == 1; }
+			);
+			viewModel.RenderCommand.SetCallback (
+				() => App.Current.EventsBroker.Publish (new RenderPlaylistEvent { Playlist = viewModel.Selection.First () }),
+				() => { return viewModel.Selection.Count == 1; }
+			);
+			viewModel.InsertVideoCommand.SetCallback (
+				position => App.Current.EventsBroker.Publish (new InsertVideoInPlaylistEvent { Position = (PlaylistPosition)position }),
+				HasChildsItemsSelected
+			);
+			viewModel.InsertImageCommand.SetCallback (
+				position => App.Current.EventsBroker.Publish (new InsertImageInPlaylistEvent { Position = (PlaylistPosition)position }),
+				HasChildsItemsSelected
+			);
+			viewModel.EditPlaylistElementCommand.SetCallback (
+				() => App.Current.EventsBroker.Publish (new EditEvent<PlaylistElementVM> { Object = GetFirstSelectedPlaylistElement () }),
+				CheckJustOneElementSelectedAndIsNotVideo
+			);
 		}
 
 		#endregion
@@ -393,6 +421,55 @@ namespace VAS.Services.Controller
 			}
 		}
 		#endregion
+
+		protected bool HasItemsSelected ()
+		{
+			bool selection = false;
+
+			selection = ViewModel.Selection.Any ();
+			if (!selection) {
+				foreach (var playlist in ViewModel.ViewModels) {
+					if (playlist.Selection.Any ()) {
+						selection = true;
+						break;
+					}
+				}
+			}
+			return selection;
+		}
+
+		bool HasChildsItemsSelected ()
+		{
+			if (!ViewModel.Selection.Any ()) {
+				foreach (var playlist in ViewModel.ViewModels) {
+					if (playlist.Selection.Any ()) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		PlaylistElementVM GetFirstSelectedPlaylistElement ()
+		{
+			foreach (var playlist in ViewModel.ViewModels) {
+				if (playlist.Selection.Any ()) {
+					return (PlaylistElementVM)playlist.Selection.First ();
+				}
+			}
+			return null;
+		}
+
+		bool CheckJustOneElementSelectedAndIsNotVideo ()
+		{
+			List<PlaylistElementVM> elements = new List<PlaylistElementVM> ();
+			if (!ViewModel.Selection.Any ()) {
+				foreach (var playlist in ViewModel.ViewModels) {
+					elements.AddRange (playlist.Selection);
+				}
+			}
+			return (elements.Count == 1 && !(elements [0] is PlaylistVideoVM));
+		}
 	}
 }
 

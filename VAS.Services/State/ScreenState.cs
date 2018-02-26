@@ -207,6 +207,7 @@ namespace VAS.Services.State
 		// FIXME: change to IService
 		protected T GetService<T> () where T : IController
 		{
+			Log.Debug ("Getting service " + typeof (T));
 			return Controllers.OfType<T> ().First ();
 		}
 
