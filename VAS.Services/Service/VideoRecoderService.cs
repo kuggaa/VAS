@@ -59,7 +59,7 @@ namespace VAS.Services.Service
 
 		}
 
-		public Task Close ()
+		public void Close ()
 		{
 			throw new NotImplementedException ();
 		}
@@ -69,27 +69,27 @@ namespace VAS.Services.Service
 			throw new NotImplementedException ();
 		}
 
-		public Task PauseClock ()
+		public void PauseClock ()
 		{
 			throw new NotImplementedException ();
 		}
 
-		public Task ResumeClock ()
+		public void ResumeClock ()
 		{
 			throw new NotImplementedException ();
 		}
 
-		public Task Run ()
+		public void Run ()
 		{
 			throw new NotImplementedException ();
 		}
 
-		public Task StartRecording (bool newPeriod = true)
+		public void StartRecording (bool newPeriod = true)
 		{
 			throw new NotImplementedException ();
 		}
 
-		public Task StopRecording ()
+		public void StopRecording ()
 		{
 			throw new NotImplementedException ();
 		}
