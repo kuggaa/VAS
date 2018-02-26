@@ -107,6 +107,7 @@ namespace VAS.Core.Resources
 		public const string PlayerControlRewind = "vas-control-rw";
 		public const string PlayerControlFastForward = "vas-control-ff";
 		public const string PlayerControlPlay = "vas-control-play";
+		public const string PlayerControlPlayBig = "vas-control-play-big";
 		public const string PlayerControlPause = "vas-control-pause";
 		public const string PlayerControlDraw = "vas-control-draw";
 		public const string PlayerControlVolumeHigh = "vas-control-volume-hi";
