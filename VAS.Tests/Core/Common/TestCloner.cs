@@ -46,17 +46,33 @@ namespace VAS.Tests.Core.Common
 		}
 
 		[Test ()]
-		public void TestClone_IsBindableBase_CloneProperty ()
+		public void CloneObject_IsBindableBase_IsChangedIsFalse ()
+		{
+			// Arrange
+			var team = new DummyTeam ();
+			team.IsChanged = true;
+
+			// Action
+			var clonedTeam = team.Clone ();
+
+			// Assert
+			Assert.IsTrue (team.IsChanged);
+			Assert.IsFalse (clonedTeam.IsChanged);
+		}
+
+		[Test ()]
+		public void CloneProperty_IsBindableBase_ClonesSubProperties ()
 		{
 			// Arrange
 			Utils.DashboardDummy dashboard = new Utils.DashboardDummy ();
+			dashboard.Name = "DashboardTest";
 			Utils.ProjectDummy p = new Utils.ProjectDummy ();
 
 			// Action
 			p.Dashboard = dashboard.Clone ();
 
 			// Assert
-			Assert.IsTrue (p.Dashboard.IsChanged);
+			Assert.AreEqual (dashboard.Name, p.Dashboard.Name);
 		}
 
 		[Test ()]
@@ -67,9 +83,8 @@ namespace VAS.Tests.Core.Common
 			bindableBase.IsChanged = true;
 			var bindableBase2 = bindableBase.Clone ();
 			Assert.IsTrue (bindableBase2.IgnoreEvents);
-			Assert.IsTrue (bindableBase2.IsChanged);
+			Assert.IsFalse (bindableBase2.IsChanged);
 			bindableBase.IgnoreEvents = false;
-			bindableBase.IsChanged = false;
 			bindableBase2 = bindableBase.Clone ();
 			Assert.IsFalse (bindableBase2.IgnoreEvents);
 			Assert.IsFalse (bindableBase2.IsChanged);
@@ -85,7 +100,7 @@ namespace VAS.Tests.Core.Common
 			var mediaFileSet2 = mediaFileSet.Clone ();
 			Assert.AreEqual (mediaFileSet.DocumentID, mediaFileSet2.DocumentID);
 			Assert.AreEqual (mediaFileSet.ParentID, mediaFileSet2.ParentID);
-			Assert.IsTrue (mediaFileSet2.IsChanged);
+			Assert.IsFalse (mediaFileSet2.IsChanged);
 		}
 
 
@@ -97,7 +112,7 @@ namespace VAS.Tests.Core.Common
 			player.IsChanged = true;
 			var player2 = player.Clone ();
 			Assert.AreEqual (player.Color, player2.Color);
-			Assert.IsTrue (player2.IsChanged);
+			Assert.IsFalse (player2.IsChanged);
 		}
 
 		[Test ()]
