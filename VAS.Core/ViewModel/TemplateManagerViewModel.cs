@@ -42,31 +42,21 @@ namespace VAS.Core.ViewModel
 	{
 		public TemplatesManagerViewModel ()
 		{
-			LoadedTemplate = new TViewModel ();
+			LoadedItem = new TViewModel ();
 			NewCommand = new AsyncCommand (New) { IconName = "vas-plus" };
-			SaveCommand = new AsyncCommand<bool> (Save, () => LoadedTemplate.Model != null && LoadedTemplate.Edited);
+			SaveCommand = new AsyncCommand<bool> (Save, () => LoadedItem.Model != null && LoadedItem.Edited);
 			DeleteCommand = new AsyncCommand<TViewModel> (Delete, CanDelete);
-			ExportCommand = new AsyncCommand (Export, () => LoadedTemplate.Model != null);
+			ExportCommand = new AsyncCommand (Export, () => LoadedItem.Model != null);
 			ImportCommand = new AsyncCommand (Import);
 			OpenCommand = new AsyncCommand<TModel> (Open);
 			VisibleViewModels = new VisibleRangeObservableProxy<TViewModel> (ViewModels);
 		}
 
 		/// <summary>
- 		/// Gets or sets the visible view models, viewmodels that has boolean Visible property setted to true.
- 		/// </summary>
- 		/// <value>The visible view models.</value>
- 		public VisibleRangeObservableProxy<TViewModel> VisibleViewModels { get; protected set; }
-
-		/// <summary>
-		/// Gets or sets the View Model for the template loaded. This view model does not change, instead the model
-		/// is updated so the View displaying the loaded ViewModel should only listen to the Model property changed.
+		/// Gets or sets the visible view models, viewmodels that has boolean Visible property setted to true.
 		/// </summary>
-		/// <value>The loaded template.</value>
-		public TViewModel LoadedTemplate {
-			get;
-			protected set;
-		}
+		/// <value>The visible view models.</value>
+		public VisibleRangeObservableProxy<TViewModel> VisibleViewModels { get; protected set; }
 
 		/// <summary>
 		/// Command to create a new template.
@@ -84,16 +74,6 @@ namespace VAS.Core.ViewModel
 		/// <value>The open command.</value>
 		[PropertyChanged.DoNotNotify]
 		public Command OpenCommand {
-			get;
-			protected set;
-		}
-
-		/// <summary>
-		/// Command to delete a template.
-		/// </summary>
-		/// <value>The delete command.</value>
-		[PropertyChanged.DoNotNotify]
-		public Command<TViewModel> DeleteCommand {
 			get;
 			protected set;
 		}
@@ -210,7 +190,7 @@ namespace VAS.Core.ViewModel
 		/// <param name="force">If set to <c>true</c> does not prompt to save.</param>
 		protected virtual Task<bool> Save (bool force)
 		{
-			TModel template = LoadedTemplate.Model;
+			TModel template = LoadedItem.Model;
 			if (template != null) {
 				return App.Current.EventsBroker.PublishWithReturn (
 					new UpdateEvent<TModel> { Object = template, Force = force });
@@ -218,12 +198,13 @@ namespace VAS.Core.ViewModel
 			return AsyncHelpers.Return (false);
 		}
 
-		protected bool CanDelete (TViewModel viewModel) {
+		protected bool CanDelete (TViewModel viewModel)
+		{
 			if (viewModel != null) {
 				return viewModel.Editable;
 			}
-			
-			return LoadedTemplate.Model != null && LoadedTemplate.Editable;
+
+			return LoadedItem.Model != null && LoadedItem.Editable;
 		}
 	}
 }

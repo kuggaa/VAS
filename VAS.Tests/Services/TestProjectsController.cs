@@ -95,9 +95,9 @@ namespace VAS.Tests.Services
 
 			controller.ViewModel.Select (controller.ViewModel.ViewModels.First ());
 
-			Assert.AreNotEqual (controller.ViewModel.ViewModels.First (), controller.ViewModel.LoadedProject);
-			Assert.AreSame (controller.ViewModel.ViewModels.First ().Model, controller.ViewModel.LoadedProject.Model);
-			Assert.IsTrue (controller.ViewModel.LoadedProject.Stateful);
+			Assert.AreNotEqual (controller.ViewModel.ViewModels.First (), controller.ViewModel.LoadedItem);
+			Assert.AreSame (controller.ViewModel.ViewModels.First ().Model, controller.ViewModel.LoadedItem.Model);
+			Assert.IsTrue (controller.ViewModel.LoadedItem.Stateful);
 		}
 
 		[Test]
@@ -109,8 +109,8 @@ namespace VAS.Tests.Services
 
 			controller.ViewModel.Selection.Replace (Enumerable.Empty<DummyProjectVM> ());
 
-			Assert.IsNull (controller.ViewModel.LoadedProject.Model);
-			Assert.IsNotNull (controller.ViewModel.LoadedProject);
+			Assert.IsNull (controller.ViewModel.LoadedItem.Model);
+			Assert.IsNotNull (controller.ViewModel.LoadedItem);
 		}
 
 		[Test]
@@ -121,16 +121,16 @@ namespace VAS.Tests.Services
 
 			DummyProjectVM firstLoadedProject = controller.ViewModel.ViewModels.First ();
 			controller.ViewModel.Select (firstLoadedProject);
-			controller.ViewModel.LoadedProject.ProjectType = ProjectType.URICaptureProject;
+			controller.ViewModel.LoadedItem.ProjectType = ProjectType.URICaptureProject;
 
 			// Act
 			controller.ViewModel.Select (controller.ViewModel.ViewModels.Skip (1).First ());
 
 			// Assert
 			storageMock.Verify (s => s.Store (firstLoadedProject.Model, false), Times.Once ());
-			Assert.AreNotEqual (firstLoadedProject, controller.ViewModel.LoadedProject);
-			Assert.AreNotSame (firstLoadedProject.Model, controller.ViewModel.LoadedProject.Model);
-			Assert.IsTrue (controller.ViewModel.LoadedProject.Stateful);
+			Assert.AreNotEqual (firstLoadedProject, controller.ViewModel.LoadedItem);
+			Assert.AreNotSame (firstLoadedProject.Model, controller.ViewModel.LoadedItem.Model);
+			Assert.IsTrue (controller.ViewModel.LoadedItem.Stateful);
 			Assert.IsFalse (firstLoadedProject.Model.IsChanged);
 			Assert.AreEqual (ProjectType.URICaptureProject, firstLoadedProject.ProjectType);
 			Assert.AreEqual (ProjectType.URICaptureProject, firstLoadedProject.Model.ProjectType);
@@ -148,8 +148,8 @@ namespace VAS.Tests.Services
 			controller.ViewModel.Select (firstLoadedProject);
 
 			// Act
-			controller.ViewModel.LoadedProject.Timeline.FullTimeline.FirstOrDefault ().Playing = true;
-			bool edited = controller.ViewModel.LoadedProject.Edited;
+			controller.ViewModel.LoadedItem.Timeline.FullTimeline.FirstOrDefault ().Playing = true;
+			bool edited = controller.ViewModel.LoadedItem.Edited;
 			controller.ViewModel.Select (controller.ViewModel.ViewModels.Skip (1).First ());
 
 			// Assert

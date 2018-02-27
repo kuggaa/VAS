@@ -37,7 +37,7 @@ namespace VAS.Tests.Core.ViewModel
 		[Test]
 		public void DeleteCommand_LoadedTemplateEditable_Executable ()
 		{
-			manager.LoadedTemplate.Model = new Utils.DashboardDummy ();
+			manager.LoadedItem.Model = new Utils.DashboardDummy ();
 
 			Assert.IsTrue (manager.DeleteCommand.CanExecute ());
 		}
@@ -45,8 +45,8 @@ namespace VAS.Tests.Core.ViewModel
 		[Test]
 		public void DeleteCommand_LoadedTemplateNotEditable_NotExecutable ()
 		{
-			manager.LoadedTemplate.Model = new Utils.DashboardDummy ();
-			manager.LoadedTemplate.Model.Static = true;
+			manager.LoadedItem.Model = new Utils.DashboardDummy ();
+			manager.LoadedItem.Model.Static = true;
 
 			Assert.IsFalse (manager.DeleteCommand.CanExecute ());
 		}

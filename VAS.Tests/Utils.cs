@@ -315,12 +315,12 @@ namespace VAS.Tests
 	{
 		public DummyDashboardManagerVM (DashboardVM vm)
 		{
-			LoadedTemplate = vm;
+			LoadedItem = vm;
 		}
 
 		public DashboardVM Dashboard {
 			get {
-				return LoadedTemplate;
+				return LoadedItem;
 			}
 		}
 	}
@@ -329,12 +329,12 @@ namespace VAS.Tests
 	{
 		public DummyTeamManagerVM (TeamVM vm)
 		{
-			LoadedTemplate = vm;
+			LoadedItem = vm;
 		}
 
 		public TeamVM Team {
 			get {
-				return LoadedTemplate;
+				return LoadedItem;
 			}
 		}
 	}
