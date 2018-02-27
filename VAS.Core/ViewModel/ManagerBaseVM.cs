@@ -83,6 +83,14 @@ namespace VAS.Core.ViewModel
 		/// <value><c>true</c> if no results; otherwise, <c>false</c>.</value>
 		public bool NoResults { get; set; }
 
+		//FIXME: this should not be needed once we start using the new MVVM architecture
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="T:VAS.Core.ViewModel.ManagerBaseVM`2"/> 
+		/// should perform a move back after deleting an item.
+		/// </summary>
+		/// <value><c>true</c> if move back on delete; otherwise, <c>false</c>.</value>
+		public bool MoveBackOnDelete { get; set; } = false;
+
 		protected virtual MenuVM CreateMenu (IViewModel viewModel)
 		{
 			return null;

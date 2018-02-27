@@ -362,7 +362,13 @@ namespace VAS.Services.Controller
 							String.Format (ConfirmDeleteText, templates.FirstOrDefault ().Name) : ConfirmDeleteListText;
 					if (await App.Current.Dialogs.QuestionMessage (msg, null)) {
 						RemoveTemplates (templates);
-						ViewModel.Select (ViewModel.Model.FirstOrDefault ());
+
+						if (ViewModel.MoveBackOnDelete) {
+							await App.Current.StateController.MoveBack ();
+						} else {
+							ViewModel.Select (ViewModel.Model.FirstOrDefault ());
+						}
+
 						evt.ReturnValue = true;
 					}
 				} else {
