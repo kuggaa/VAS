@@ -73,9 +73,9 @@ namespace VAS.Tests.Services
 			templatesController.ViewModel.Selection.Replace (templatesController.ViewModel.ViewModels);
 
 			// Assert
-			Assert.IsNotNull (templatesController.ViewModel.LoadedTemplate,
+			Assert.IsNotNull (templatesController.ViewModel.LoadedItem,
 						   "Loaded template model");
-			Assert.IsNotEmpty (templatesController.ViewModel.LoadedTemplate.SubViewModel,
+			Assert.IsNotEmpty (templatesController.ViewModel.LoadedItem.SubViewModel,
 						   "Loaded template subVM");
 		}
 
@@ -95,9 +95,9 @@ namespace VAS.Tests.Services
 			templatesController.ViewModel.Selection.Clear ();
 
 			// Assert
-			Assert.IsNull (templatesController.ViewModel.LoadedTemplate.Model,
+			Assert.IsNull (templatesController.ViewModel.LoadedItem.Model,
 						   "Loaded template model");
-			Assert.IsEmpty (templatesController.ViewModel.LoadedTemplate.SubViewModel,
+			Assert.IsEmpty (templatesController.ViewModel.LoadedItem.SubViewModel,
 						   "Loaded template subVM");
 		}
 

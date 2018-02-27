@@ -67,12 +67,12 @@ namespace VAS.Services.Controller
 			set {
 				if (viewModel != null) {
 					viewModel.PropertyChanged -= HandleSelectionChanged;
-					viewModel.LoadedTemplate.PropertyChanged -= HandleTemplateChanged;
+					viewModel.LoadedItem.PropertyChanged -= HandleTemplateChanged;
 				}
 				viewModel = value;
 				if (viewModel != null) {
 					viewModel.PropertyChanged += HandleSelectionChanged;
-					viewModel.LoadedTemplate.PropertyChanged += HandleTemplateChanged;
+					viewModel.LoadedItem.PropertyChanged += HandleTemplateChanged;
 					if (viewModel.Selection.Count == 0) {
 						viewModel.Select (viewModel.Model.FirstOrDefault ());
 					}
@@ -312,8 +312,8 @@ namespace VAS.Services.Controller
 		{
 			TModel template, templateToDelete;
 
-			if (ViewModel.LoadedTemplate.Edited) {
-				await HandleSave (new UpdateEvent<TModel> { Force = false, Object = ViewModel.LoadedTemplate.Model });
+			if (ViewModel.LoadedItem.Edited) {
+				await HandleSave (new UpdateEvent<TModel> { Force = false, Object = ViewModel.LoadedItem.Model });
 			}
 
 			if (!await App.Current.GUIToolkit.CreateNewTemplate<TModel> (ViewModel.Model.ToList (),
@@ -423,8 +423,8 @@ namespace VAS.Services.Controller
 			TViewModel selectedVM = ViewModel.Selection.FirstOrDefault ();
 			TModel loadedTemplate = null;
 
-			if (ViewModel.LoadedTemplate.Edited) {
-				await HandleSave (new UpdateEvent<TModel> { Force = false, Object = ViewModel.LoadedTemplate.Model });
+			if (ViewModel.LoadedItem.Edited) {
+				await HandleSave (new UpdateEvent<TModel> { Force = false, Object = ViewModel.LoadedItem.Model });
 			}
 
 			if (selectedVM != null) {
@@ -444,7 +444,7 @@ namespace VAS.Services.Controller
 
 			// Load the model
 			viewModel.PropertyChanged -= HandleSelectionChanged;
-			ViewModel.LoadedTemplate.Model = loadedTemplate;
+			ViewModel.LoadedItem.Model = loadedTemplate;
 			viewModel.PropertyChanged += HandleSelectionChanged;
 
 			// Update controls visiblity

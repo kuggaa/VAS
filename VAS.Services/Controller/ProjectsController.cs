@@ -29,7 +29,6 @@ using VAS.Core.Interfaces.Plugins;
 using VAS.Core.MVVMC;
 using VAS.Core.Store;
 using VAS.Core.ViewModel;
-using VAS.Services.ViewModel;
 
 namespace VAS.Services.Controller
 {
@@ -163,15 +162,15 @@ namespace VAS.Services.Controller
 			TViewModel selectedVM = ViewModel.Selection.FirstOrDefault ();
 
 			if (selectedVM != null) {
-				if (ViewModel.LoadedProject?.Model != null && ViewModel.LoadedProject.Edited) {
-					await Save (ViewModel.LoadedProject, false);
+				if (ViewModel.LoadedItem?.Model != null && ViewModel.LoadedItem.Edited) {
+					await Save (ViewModel.LoadedItem, false);
 				}
 
 				// Load the model, creating a copy to edit changes in a different viewmodel in case the user
 				// does not want to save them.
-				ViewModel.LoadedProject = new TViewModel { Model = selectedVM.Model, Stateful = true };
-				originalMediaFileSet = ViewModel.LoadedProject.FileSet.Model.Clone ();
-				ViewModel.LoadedProject.IsChanged = false;
+				ViewModel.LoadedItem = new TViewModel { Model = selectedVM.Model, Stateful = true };
+				originalMediaFileSet = ViewModel.LoadedItem.FileSet.Model.Clone ();
+				ViewModel.LoadedItem.IsChanged = false;
 			}
 
 			//Update commands
@@ -189,7 +188,7 @@ namespace VAS.Services.Controller
 			if (!force) {
 				string msg = Catalog.GetString ("Do you want to save the current project?");
 				if (!(await App.Current.Dialogs.QuestionMessage (msg, null, this))) {
-					ViewModel.LoadedProject.FileSet.Model.MediaFiles.Reset (originalMediaFileSet.MediaFiles);
+					ViewModel.LoadedItem.FileSet.Model.MediaFiles.Reset (originalMediaFileSet.MediaFiles);
 					return false;
 				}
 			}

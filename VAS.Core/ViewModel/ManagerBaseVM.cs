@@ -42,6 +42,8 @@ namespace VAS.Core.ViewModel
 			FilterText = string.Empty;
 		}
 
+		public TViewModel LoadedItem { get; set; }
+
 		/// <summary>
 		/// Gets the project menu.
 		/// </summary>
@@ -55,6 +57,13 @@ namespace VAS.Core.ViewModel
 		/// <value>The search projects command.</value>
 		[PropertyChanged.DoNotNotify]
 		public Command<string> SearchCommand { get; protected set; }
+
+		/// <summary>
+		/// Command to delete a template.
+		/// </summary>
+		/// <value>The delete command.</value>
+		[PropertyChanged.DoNotNotify]
+		public Command<TViewModel> DeleteCommand { get; protected set; }
 
 		/// <summary>
 		/// Gets or sets the filter text.
@@ -74,7 +83,8 @@ namespace VAS.Core.ViewModel
 		/// <value><c>true</c> if no results; otherwise, <c>false</c>.</value>
 		public bool NoResults { get; set; }
 
-		protected virtual MenuVM CreateMenu (IViewModel viewModel) {
+		protected virtual MenuVM CreateMenu (IViewModel viewModel)
+		{
 			return null;
 		}
 	}

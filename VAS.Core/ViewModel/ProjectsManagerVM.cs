@@ -35,15 +35,15 @@ namespace VAS.Core.ViewModel
 		where TModel : Project
 		where TViewModel : ProjectVM<TModel>, new()
 	{
-		TViewModel loadedProject;
+		TViewModel loadedItem;
 
 		public ProjectsManagerVM ()
 		{
-			LoadedProject = new TViewModel ();
+			LoadedItem = new TViewModel ();
 			NewCommand = new LimitationCommand (VASCountLimitedObjects.Projects.ToString (), New) { IconName = "vas-plus" };
 			OpenCommand = new AsyncCommand<TViewModel> (Open, (arg) => Selection.Count == 1);
 			DeleteCommand = new AsyncCommand<TViewModel> (Delete, (arg) => Selection.Any () || arg != null) { IconName = "vas-delete" };
-			SaveCommand = new AsyncCommand (Save, () => LoadedProject?.Model != null && LoadedProject.IsChanged);
+			SaveCommand = new AsyncCommand (Save, () => LoadedItem?.Model != null && LoadedItem.IsChanged);
 			ExportCommand = new AsyncCommand (Export, () => Selection.Count == 1);
 			EmptyCard = new EmptyCardVM {
 				HeaderText = ProjectsNoneCreated,
@@ -56,21 +56,21 @@ namespace VAS.Core.ViewModel
 		protected override void DisposeManagedResources ()
 		{
 			base.DisposeManagedResources ();
-			LoadedProject = null;
+			LoadedItem = null;
 		}
 
-		public TViewModel LoadedProject {
+		public new TViewModel LoadedItem {
 			get {
-				return loadedProject;
+				return loadedItem;
 			}
 			set {
-				if (loadedProject != null) {
-					loadedProject.PropertyChanged -= HandleLoadedProjectChanged;
+				if (loadedItem != null) {
+					loadedItem.PropertyChanged -= HandleLoadedProjectChanged;
 				}
-				loadedProject = value;
-				if (loadedProject != null) {
-					loadedProject.PropertyChanged += HandleLoadedProjectChanged;
-					loadedProject.Sync ();
+				loadedItem = value;
+				if (loadedItem != null) {
+					loadedItem.PropertyChanged += HandleLoadedProjectChanged;
+					loadedItem.Sync ();
 				}
 			}
 		}
@@ -80,9 +80,6 @@ namespace VAS.Core.ViewModel
 
 		[PropertyChanged.DoNotNotify]
 		public Command OpenCommand { get; protected set; }
-
-		[PropertyChanged.DoNotNotify]
-		public Command DeleteCommand { get; protected set; }
 
 		[PropertyChanged.DoNotNotify]
 		public Command SaveCommand { get; protected set; }
@@ -160,8 +157,8 @@ namespace VAS.Core.ViewModel
 
 		protected virtual async Task<bool> Save (bool force = true)
 		{
-			if (LoadedProject != null && LoadedProject.Model != null) {
-				return await App.Current.EventsBroker.PublishWithReturn (new UpdateEvent<TViewModel> { Object = LoadedProject, Force = force });
+			if (LoadedItem != null && LoadedItem.Model != null) {
+				return await App.Current.EventsBroker.PublishWithReturn (new UpdateEvent<TViewModel> { Object = LoadedItem, Force = force });
 			}
 			return false;
 		}
