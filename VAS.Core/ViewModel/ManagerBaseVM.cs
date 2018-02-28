@@ -17,12 +17,10 @@
 //
 using System;
 using VAS.Core.MVVMC;
-using System.ComponentModel;
 using VAS.Core.Interfaces.MVVMC;
 using VAS.Core.Interfaces;
 using System.Windows.Input;
 using VAS.Core.Events;
-using VAS.Core.Filters;
 
 namespace VAS.Core.ViewModel
 {
