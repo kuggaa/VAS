@@ -290,9 +290,16 @@ namespace VAS.UI
 
 		protected bool ShowModalWindow (IPanel panel, IPanel parent)
 		{
+			Window parentWindow = null;
+			foreach (var window in Window.ListToplevels ()) {
+				if (window.IsActive) {
+					parentWindow = window;
+					break;
+				}
+			}
 			var dialog = panel as Gtk.Dialog;
 			if (dialog != null) {
-				dialog.TransientFor = ((Bin)parent).Toplevel as Window;
+				dialog.TransientFor = parentWindow ?? ((Bin)parent).Toplevel as Window;
 				dialog.Response += HandleModalWindowResponse;
 				dialog.Center ();
 				panel.OnLoad ();
@@ -303,7 +310,7 @@ namespace VAS.UI
 				modalWindow.DefaultHeight = (panel as Gtk.Bin).HeightRequest;
 				modalWindow.Title = panel.Title;
 				modalWindow.Modal = true;
-				modalWindow.TransientFor = ((Bin)parent).Toplevel as Window;
+				modalWindow.TransientFor = parentWindow ?? ((Bin)parent).Toplevel as Window;
 				modalWindow.DeleteEvent += HandleModalWindowDeleteEvent;
 				Widget widget = panel as Gtk.Widget;
 				modalWindow.Add (widget);

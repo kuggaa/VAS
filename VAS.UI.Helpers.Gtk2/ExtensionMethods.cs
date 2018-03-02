@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using Gdk;
 using Gtk;
+using VAS.Core.Common;
 
 namespace VAS.UI.Helpers
 {
@@ -60,6 +61,10 @@ namespace VAS.UI.Helpers
 			int ox, oy, x, y, w, h;
 			Widget parent;
 
+			//We need to make sure that there aren't any size allocations pending to the dialog, before trying to center it
+			while (Application.EventsPending ()) {
+				Application.RunIteration ();
+			}
 			parent = dialog.TransientFor;
 
 			if (parent.GdkWindow != null) {
@@ -81,6 +86,37 @@ namespace VAS.UI.Helpers
 			}
 
 			dialog.Move (x, y);
+		}
+
+		/// <summary>
+		/// Resizes the window, by specifiyng the total percentage of the current active screen to be used by this window
+		/// </summary>
+		/// <param name="window">Window.</param>
+		/// <param name="screenPercentage">Screen percentage.</param>
+		public static void ResizeWindow (this Gtk.Window window, double screenPercentage, Gtk.Window parentWindow = null)
+		{
+			Gdk.Rectangle monitor_geometry = new Rectangle ();
+			if (parentWindow != null) {
+				//Get Rectangle Area for parent window
+				monitor_geometry = parentWindow.GdkWindow.FrameExtents;
+			} else {
+				// Default screen
+				Gdk.Screen screen = Gdk.Display.Default.DefaultScreen;
+				// Which monitor is our window on
+				int monitor = screen.GetMonitorAtWindow (window.GdkWindow);
+				// Monitor size
+				monitor_geometry = screen.GetMonitorGeometry (monitor);
+			}
+			// Resize to a convenient size
+			var width = (int)(monitor_geometry.Width * screenPercentage);
+			var height = (int)(monitor_geometry.Height * screenPercentage);
+			window.Resize (width, height);
+
+			if (Utils.OS == OperatingSystemID.OSX) {
+				var position = (1 - screenPercentage) / 2;
+				window.Move ((int)(monitor_geometry.X + monitor_geometry.Width * position),
+							 (int)(monitor_geometry.Y + monitor_geometry.Height * position));
+			}
 		}
 
 		static void Clamp (ref int @base, int extent, int clampBase, int clampExtent)

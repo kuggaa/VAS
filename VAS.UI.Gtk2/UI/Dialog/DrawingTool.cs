@@ -99,7 +99,7 @@ namespace VAS.UI.Dialog
 				button.Name = "DrawingToolButton-" + button.Name;
 				button.Toggled += HandleToolClicked;
 			}
-			
+
 			CreateToolSettings ();
 			UpdateSettingsVisibility (DrawTool.Selection);
 
@@ -188,7 +188,7 @@ namespace VAS.UI.Dialog
 			Bind ();
 		}
 
-		public DrawingTool (Window parent) : this ()
+		public DrawingTool (Gtk.Window parent) : this ()
 		{
 			TransientFor = parent;
 		}
@@ -380,6 +380,7 @@ namespace VAS.UI.Dialog
 
 		public void OnLoad ()
 		{
+			this.ResizeWindow (0.9, TransientFor);
 		}
 
 		public void OnUnload ()
@@ -858,7 +859,7 @@ namespace VAS.UI.Dialog
 			}
 
 			DrawToolSettings drawingSettings = settings as DrawToolSettings;
-			TextToolSettings textSettings = (drawingSettings != null) ? 
+			TextToolSettings textSettings = (drawingSettings != null) ?
 				drawingSettings.TextSettings : settings as TextToolSettings;
 
 			// updates frames visibility
@@ -895,7 +896,8 @@ namespace VAS.UI.Dialog
 			zoombox.Visible = tool == DrawTool.Zoom;
 		}
 
-		ToolSettingBase GetSettingsForSelectedDrawable () {
+		ToolSettingBase GetSettingsForSelectedDrawable ()
+		{
 			if (selectedDrawable is Text) {
 				return toolSettings [DrawTool.Text];
 			} else if (selectedDrawable is Counter) {
@@ -952,7 +954,8 @@ namespace VAS.UI.Dialog
 	/// <summary>
 	/// Abstract class for the tool settings
 	/// </summary>
-	abstract class ToolSettingBase {
+	abstract class ToolSettingBase
+	{
 		public bool Color {
 			get;
 			set;
